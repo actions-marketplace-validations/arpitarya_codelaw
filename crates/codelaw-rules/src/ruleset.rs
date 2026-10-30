@@ -3,7 +3,8 @@
 
 use crate::LoadError;
 use crate::engine_rules::engine_rule;
-use crate::pack::{ExtendsSpec, PackSearch, RulePack, first_party_npm, first_party_pypi, load_pack_from, load_rules_dir};
+use crate::search::PackSearch;
+use crate::pack::{ExtendsSpec, RulePack, first_party_npm, first_party_pypi, load_pack_from, load_rules_dir};
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, Stability};
 use codelaw_cache::{Key, KeyBuilder};
 use codelaw_config::{Config, Layer, PresetScope, RuleConfig, RuleSetting};
@@ -145,9 +146,9 @@ impl RuleSet {
             };
             let Some(dir) = dir else {
                 let msg = match &spec {
-                    ExtendsSpec::FirstParty { pack, .. } => PackSearch::missing_first_party(&label, pack),
-                    ExtendsSpec::Npm(n) => format!("`{spec_text}`: no `node_modules/{n}` with a codelaw-pack.toml above {}", codelaw_core::normalize_path(&options.search.config_dir)),
-                    ExtendsSpec::Pypi(n) => format!("`{spec_text}`: `{n}` is not installed in the Python environment"),
+                    ExtendsSpec::FirstParty { pack, .. } => options.search.missing_first_party_in(&label, pack),
+                    ExtendsSpec::Npm(n) => format!("`{spec_text}`: no `{n}` with a codelaw-pack.toml in node_modules{}", options.search.searched(true, false)),
+                    ExtendsSpec::Pypi(n) => format!("`{spec_text}`: `{n}` is not installed in the Python environment{}", options.search.searched(false, true)),
                     ExtendsSpec::Path(p) => format!("`{spec_text}`: no codelaw-pack.toml in `{p}`"),
                 };
                 errors.push(LoadError::new(config_file.clone(), msg));

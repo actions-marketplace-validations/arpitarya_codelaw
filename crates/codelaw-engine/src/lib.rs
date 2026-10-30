@@ -49,7 +49,7 @@ pub use watch::{COALESCE, Changes, Rerun, Snapshot, Watch};
 use codelaw_cache::DiskCache;
 use codelaw_config::{Config, ConfigError};
 use codelaw_core::{Diagnostic, Language, Skipped};
-use codelaw_rules::{LoadError, LoadOptions, PackSearch, RuleSet};
+use codelaw_rules::{LoadError, LoadOptions, PackEnv, PackSearch, RuleSet};
 use std::collections::BTreeSet;
 use std::fmt;
 use std::path::{Path, PathBuf};
@@ -119,13 +119,19 @@ pub struct EngineOptions {
 }
 
 impl EngineOptions {
+    /// The two variables the pack lookup reads (SR-PACK-LOOKUP decision 4).
+    pub fn pack_env(&self) -> PackEnv {
+        PackEnv { site_packages: self.site_packages_env.clone(), virtual_env: self.virtual_env.clone() }
+    }
+
     /// The options the environment gives, before any flag.
     pub fn from_env() -> Self {
         let var = |k: &str| std::env::var(k).ok().filter(|v| !v.is_empty());
+        let pack_env = PackEnv::from_env();
         EngineOptions {
             cache_dir_env: var("CODELAW_CACHE_DIR"),
-            site_packages_env: var("CODELAW_SITE_PACKAGES"),
-            virtual_env: var("VIRTUAL_ENV"),
+            site_packages_env: pack_env.site_packages,
+            virtual_env: pack_env.virtual_env,
             path_env: std::env::var_os("PATH"),
             as_of_env: var("CODELAW_AS_OF"),
             profile_env: var("CODELAW_PROFILE"),
@@ -289,12 +295,7 @@ impl Project {
     }
 
     pub fn from_config(config: Config, options: EngineOptions) -> Result<Project, EngineError> {
-        let search = PackSearch::new(
-            config.config_dir(),
-            &config.root_dir,
-            options.site_packages_env.as_deref(),
-            options.virtual_env.as_deref(),
-        );
+        let search = PackSearch::new(&config, &options.pack_env());
         let known = |id: &str| codelaw_native::lookup(id).is_some() || id == codelaw_types::TYPE_ERROR_NATIVE;
         let rules = RuleSet::load(&config, &LoadOptions { search, known_native: &known }).map_err(EngineError::Load)?;
         Project::from_parts(config, rules, options)

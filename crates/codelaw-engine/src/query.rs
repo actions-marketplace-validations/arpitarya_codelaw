@@ -51,6 +51,9 @@ pub struct RuleWhy {
     pub title: String,
     pub source: String,
     pub path: String,
+    /// The folder the rule's pack was loaded from (SR-PACK-LOOKUP
+    /// decision 8); `None` for a local rule.
+    pub pack_dir: Option<String>,
     pub shadows: Vec<String>,
     pub enabled_by: Option<String>,
     pub default: String,
@@ -148,6 +151,10 @@ impl Project {
             title: r.rule.title.clone(),
             source: r.source.label(),
             path: codelaw_core::normalize_path(&r.rule.path),
+            pack_dir: match &r.source {
+                codelaw_rules::RuleSource::Pack { dir, .. } => Some(codelaw_core::normalize_path(dir)),
+                codelaw_rules::RuleSource::Local => None,
+            },
             shadows: r.shadows.clone(),
             enabled_by: r.enabled_by.clone(),
             default: severity_name(&r.default),

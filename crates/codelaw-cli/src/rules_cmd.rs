@@ -182,7 +182,21 @@ pub fn rules(args: RulesArgs) -> ExitCode {
     if json {
         let v = codelaw_report::rules_json(&rows, args.for_path.as_deref().map(codelaw_core::normalize_path).as_deref());
         let notes = args.for_path.as_deref().map(|p| project.dependency_notes(p)).unwrap_or_default();
-        return print_json(&codelaw_report::with_dependencies(v, notes));
+        let mut v = codelaw_report::with_dependencies(v, notes);
+        // Each pack beside the folder it was loaded from (SR-PACK-LOOKUP decision 8).
+        let packs: Vec<serde_json::Value> = project
+            .rules
+            .packs
+            .iter()
+            .map(|(label, dir)| {
+                let (name, version) = label.rsplit_once('@').unwrap_or((label, ""));
+                serde_json::json!({ "name": name, "version": version, "dir": codelaw_core::normalize_path(dir) })
+            })
+            .collect();
+        if !packs.is_empty() {
+            v["packs"] = serde_json::Value::Array(packs);
+        }
+        return print_json(&v);
     }
     print!("{}", codelaw_report::rules_text(&rows));
     ExitCode::SUCCESS

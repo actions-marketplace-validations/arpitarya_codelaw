@@ -7,13 +7,14 @@
 //!
 //! Finding it is a filesystem lookup only (L5: no network), in this order:
 //! `CODELAW_SKILLS`; `node_modules/@codelaw/skills` from the project root
-//! upwards; `codelaw_skills/` in the site-packages the rule packs are found in
-//! (`CODELAW_SITE_PACKAGES`, else `$VIRTUAL_ENV`, else `.venv/`); then the
+//! upwards; `codelaw_skills/` in the site-packages of the rule packs' default
+//! Python places (`CODELAW_SITE_PACKAGES`, then `$VIRTUAL_ENV`, then `.venv/`:
+//! SR-PACK-LOOKUP decision 4, searched through); then the
 //! environment the binary itself is installed in (a `pipx` or `uvx` codelaw).
 //! A package whose version is not this binary's is never used.
 
 use codelaw_core::template;
-use codelaw_rules::PackSearch;
+use codelaw_rules::{PackEnv, python_places};
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
@@ -118,15 +119,13 @@ pub fn candidates(project_root: &Path, var: &dyn Fn(&str) -> Option<String>, exe
     for d in project_root.ancestors() {
         out.push(d.join("node_modules").join("@codelaw").join("skills"));
     }
-    let site = PackSearch::new(project_root, project_root, var("CODELAW_SITE_PACKAGES").as_deref(), var("VIRTUAL_ENV").as_deref());
-    out.extend(site.site_packages.iter().map(|sp| sp.join(PY_MODULE)));
+    out.extend(python_places(project_root, &PackEnv::from_vars(var)).iter().map(|p| p.dir.join(PY_MODULE)));
     // The binary's own environment: `<prefix>/bin/codelaw` (`Scripts\` on
     // Windows) beside `<prefix>/lib/python3.*/site-packages`, and an npm
     // install's `node_modules/@codelaw/cli-<key>/codelaw`.
     if let Some(exe) = exe {
         if let Some(prefix) = exe.parent().and_then(Path::parent) {
-            let own = PackSearch::new(prefix, prefix, None, prefix.to_str());
-            out.extend(own.site_packages.iter().map(|sp| sp.join(PY_MODULE)));
+            out.extend(codelaw_config::venv_site_packages(prefix).iter().map(|sp| sp.join(PY_MODULE)));
         }
         for d in exe.ancestors().skip(1) {
             out.push(d.join("node_modules").join("@codelaw").join("skills"));
@@ -179,7 +178,7 @@ pub fn find(project_root: &Path, var: &dyn Fn(&str) -> Option<String>, exe: Opti
     )];
     looked.extend(places.iter().filter(|p| !p.ends_with(&npm)).map(|p| format!("  {}", p.display())));
     looked.push(format!(
-        "  {PY_MODULE}/ in the site-packages of CODELAW_SITE_PACKAGES, else $VIRTUAL_ENV, else {}, and of the binary's own Python environment",
+        "  {PY_MODULE}/ in the site-packages of CODELAW_SITE_PACKAGES, $VIRTUAL_ENV and {}, and of the binary's own Python environment",
         project_root.join(".venv").display()
     ));
     Err(format!(

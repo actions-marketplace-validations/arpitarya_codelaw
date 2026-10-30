@@ -334,6 +334,19 @@ locale = "en-US"                          # or en-GB; unset accepts both
 
 A missing file at the default path is no error; a `words_file` you set must exist. `init` writes the file and fills it with **`codelaw spell learn`**, which runs `spell/unknown-word` over the project (whatever the config turns on) and adds each word it reports, lower case and sorted, after the lines already there. A word that is a known typo or one edit from a common word is listed for review, never added. A second run adds only new words ([SR-SPELL](records/0116_spell.md)).
 
+### Where rule packs are found
+
+Each pack in `extends` is looked for in `node_modules/` — in the config's folder, then every folder above it — and then in the Python environment: the launcher's paths, then `$VIRTUAL_ENV`, then the project's own `.venv/`. All three are searched, so an editor started from another project's shell (and its `VIRTUAL_ENV`) still finds the packs in this project's `.venv/`. To pin the places, set any of these; a key you set replaces its default:
+
+```toml
+[packs]
+order        = ["npm", "pypi"]   # the registries, in order; leave one out to skip it
+node_modules = ["node_modules"]  # exactly these folders, no walk-up
+venv         = ".venv"           # only this venv; CODELAW_SITE_PACKAGES and VIRTUAL_ENV are ignored
+```
+
+Folders are relative to the root config, and a folder you set must exist. `codelaw config --print` lists every place in search order with its source (`packs.npm[0]`, `packs.pypi[0]`, …), `codelaw rules --why <id>` names the folder the rule's pack came from, and a missing pack's error lists every folder searched ([SR-PACK-LOOKUP](records/0118_pack-lookup.md)).
+
 ### Type-aware rules
 
 With TypeScript 7.1 or later installed in your project, the `ts` pack's `ts/type-checked` preset asks **your own TypeScript** about types — a Promise nobody awaits, an `await` on a plain value, a value typed `any` called or read from — and reports TypeScript's own errors as `ts/type-error`. They are `preview` until TypeScript 7.1 is GA:
