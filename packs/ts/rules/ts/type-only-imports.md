@@ -5,6 +5,7 @@ languages: [typescript, tsx]
 fix: suggest
 fix_reason: "a type-only import is erased, so code that relied on the module's side effects changes"
 stability: preview
+ported_from: [typescript-eslint/consistent-type-imports]
 since: 0.1.0
 ---
 

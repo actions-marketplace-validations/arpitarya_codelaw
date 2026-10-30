@@ -9,6 +9,7 @@ options:
     type: "object"
     default: {}
     description: "a dotted path to { use, from, drop_in?, allow_in? }: `use` is the function or variable to call instead, `from` the module it comes from, `drop_in` lets `codelaw fix` swap it in and add the import, `allow_in` lists globs of files exempt (the wrapper itself)"
+ported_from: [ruff/TID251]
 since: 0.3.0
 ---
 

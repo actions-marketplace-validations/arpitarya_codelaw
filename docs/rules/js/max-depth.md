@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (flattening nested blocks changes the function's structure; which guard to invert or which block to extract is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/max-depth` |
+| **Ported from** | `eslint/max-depth`, `eslint-plugin-sonarjs/nested-control-flow` |
 
 ## What it checks
 

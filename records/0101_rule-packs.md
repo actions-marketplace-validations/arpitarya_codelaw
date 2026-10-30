@@ -12,7 +12,7 @@ owns:
   - fixtures/react-no-context
   - crates/codelaw-cli/tests/react_no_context.rs
 laws: [L0, L2, L3, L4, L5, L6, L7]
-timestamp: 2026-10-30T12:00:00Z
+timestamp: 2026-10-30T18:30:00Z
 content_sha: ""
 ---
 
@@ -64,8 +64,8 @@ This record was rewritten to that ruling and then accepted ("go with the recomme
 |---|---|---|---|---|
 | engine | `codelaw` | `codelaw` | none: this is the engine. It ships only the `codelaw/*` meta diagnostics, the formatter's `format/unformatted` and `format/failed`, and `graph/no-deprecated-usage` | — |
 | `js` | `@codelaw/rules-js` | `codelaw-rules-js` | JS, JSX; its core rules also run on TS and TSX | `js/recommended`, `js/typescript`, `js/conventions`, `js/project`, `js/size`, `js/markers` · *later:* `js/strict` |
-| `ts` | `@codelaw/rules-ts` | — | TS, TSX | `ts/recommended`, `ts/conventions`, `ts/type-checked` (the type-aware rules, [SR-TYPES](0117_types.md)) |
-| `react` | `@codelaw/rules-react` | `codelaw-rules-react` | JSX, TSX, and React in JS and TS | `react/recommended`, `react/conventions`, `react/size` (decision 15, W-132) |
+| `ts` | `@codelaw/rules-ts` | — | TS, TSX | `ts/recommended`, `ts/conventions`, `ts/type-checked` (the type-aware rules — nine `preview` rules and `ts/type-error` as of W-105, 2026-10-30 — [SR-TYPES](0117_types.md)) |
+| `react` | `@codelaw/rules-react` | `codelaw-rules-react` | JSX, TSX, and React in JS and TS | `react/recommended`, `react/a11y` (decision 18, W-139), `react/conventions`, `react/size` (decision 15, W-132) |
 | `node` | `@codelaw/rules-node` | — | JS, JSX, TS, TSX run on Node.js | `node/recommended` |
 | `stencil` | `@codelaw/rules-stencil` | — | TS, TSX Stencil components | `stencil/recommended`, `stencil/conventions` |
 | `html` | `@codelaw/rules-html` | `codelaw-rules-html` | HTML, incl. HTML embedded in Markdown and templates | `html/recommended`, `html/a11y`, `html/document`, `html/conventions`, `html/security`, `html/size`, `html/markers` |
@@ -171,12 +171,8 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
      - `tanstack-query` → `rules-tanstack-query`; `redux-toolkit` → `rules-redux-toolkit`;
      - `sec-js` → `rules-security-js`; `sec-ts` → `rules-security-ts`; `sec-html` → `rules-security-html`; `sec-py` → `rules-security-python`.
      - `spell` → `rules-spell` (W-103).
-   - **The pack is found in this order,** each place only for a registry the pack is published on:
-     1. `node_modules/@codelaw/rules-<name>`, walking up from the config file's directory.
-     2. The Python environment: the site-packages paths the Python launcher passes in (`CODELAW_SITE_PACKAGES`); otherwise `$VIRTUAL_ENV`; otherwise `.venv/` at the project root.
-
-     The first one found wins. Both copies of one version are identical (decision 3).
-   - **A missing pack stops the run:** exit 2, with an error naming every install command the pack has, for example `npm i -D @codelaw/rules-js` and `pip install codelaw-rules-js`; a pack on one registry is named as that registry's only (`@codelaw/rules-ts, which is published on npm only`).
+   - **Where the pack is found** — the folders, their order, the project `.venv` fallback and the `[packs]` keys that replace them — is [SR-PACK-LOOKUP](0118_pack-lookup.md). The first folder holding the pack wins; both copies of one version are identical (decision 3).
+   - **A missing pack stops the run:** exit 2, with an error naming every install command the pack has and every folder searched (SR-PACK-LOOKUP decision 8), for example `npm i -D @codelaw/rules-js` and `pip install codelaw-rules-js`; a pack on one registry is named as that registry's only (`@codelaw/rules-ts, which is published on npm only`).
 5. **One version, released together.** The engine and the nineteen packs carry one version and are published by one release job ([L6](0008_LAW-6-python-and-node-packages.md) decision 9).
    - Each pack's manifest declares `min_codelaw`. An engine older than that refuses the pack, with an error naming the upgrade.
    - `codelaw rules --why <id>` and the JSON output name the pack and version each rule came from.
@@ -257,6 +253,8 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
     - **Three findings:** a file no pattern owns (one finding per project, naming up to ten paths and the count); a pattern that matches no file (stale); a pattern that names no owner, unless `[codeowners] allow_unowned = true` (the line then takes its paths out of ownership on purpose and neither it nor they are reported). Each is a message on the project's **root manifest** — `package.json`, else `pyproject.toml`, else `codelaw.toml` — once per project, naming the CODEOWNERS line. The mirror finding on the CODEOWNERS line itself waits for [W-136](../work/open/W-136-l3-findings-on-plain-text-config.md) (L3 amended so a listed plain-text file may carry findings; ruled Q-A → B, 2026-10-30). Fix `manual`: add a pattern, delete the stale line, name an owner; the skill carries the steps.
     - **`[codeowners]`** is the root config's ([SR-CONFIG](0110_config.md) decision 2): `[codeowners] path`, `[codeowners] allow_unowned` (default `false`) and `[codeowners] ignore` (gitignore-style patterns of paths that need no owner, such as `*.lock`). The rule receives them as its options.
 17. **Feature-flag expiry** (W-130, 2026-10-30; Arpit asked for it 2026-10-29). Five project rules, placed by the agent as the item allowed — **no new pack, and [L6](0008_LAW-6-python-and-node-packages.md)'s eighteen are unchanged**: the reads in the existing language packs, `js/flag-expiry` (JS, JSX, TS, TSX; `suggest`) and `py/flag-expiry` (`suggest`); the inline markers beside them, `js/flag-marker` and `py/flag-marker` (`auto`) — a rule of its own because its fix is `auto` and a read's is `suggest`, and a rule has one fix class ([L4](0006_LAW-4-every-rule-has-a-fix.md)); and the registry in `data`, `data/flag-registry` (TOML, `.codelaw/flags.toml`; `auto`). Each is `graph: { flags: reads | markers | registry }`: what they read, find and fix, and `[flags]`, are [SR-PROJECT-GRAPH](0103_project-graph.md) decision 11. They are in no preset: a `[flags]` table turns them on. A manual fix is carried by the default `codelaw-fix` skill and the rules' steps; no flag-specific skill ships.
+
+18. **Rule parity ports** (W-139; Arpit's rulings of 2026-10-30 on W-138 and W-144, [the proposal](../work/proposals/rule-parity.md)). The rules the proposal's CSVs mark `port` are written fresh into the pack the CSV names, under the id it proposes, each `stability: preview` (SR-RULE-AUTHORING decision 6) with its cases and its corpus count. **Tranche A** — the rules the source's own recommended config turns on — joins the pack's `recommended` at the source's severity; every other port is in no preset until its `strict` or opt-in preset is built. They land in slices, one source at a time. **eslint-plugin-promise 7.3.0** (slice 1): 17 `js/promise-*` rules, the plugin's 10 recommended in `js/recommended` (its `warn` rules at `warn`); `js/promise-prefer-catch` is `suggest`, not the plugin's `auto`, since `.catch(b).then(a)` passes the handler's result on to `a` ([L4](0006_LAW-4-every-rule-has-a-fix.md)). **eslint-plugin-jsx-a11y 6.10.2** (slice 2): 31 `react/a11y-*` rules in a new preset **`react/a11y`** — B-048's — at the plugin's `error`, which `react/recommended` extends, so they are on with it and usable alone; DOM elements are read by name, ARIA's attribute, role and value lists are written into the matchers from the W3C specifications (no data table, no dependency). **Biome 2.6.4's own recommended rules** (slice 3): 21 rules — 16 in `js`, 3 in `ts`, 2 in `react` — each in its pack's `recommended` (the two unused-name rules at `warn`); `noDuplicateAttributes` and `noUselessEscapeInString` are what `html/no-dup-attr` and `js/no-useless-escape` already do, so those name them in `ported_from:` instead of a second rule; `noConstantMathMinMaxClamp` waits for a native rule (it compares two numbers). Three ports are `manual` where Biome's fix computes a literal or picks an operator, which a fix template cannot. The same slice adds the 22 `ported_from:` lines of the proposal's equivalents (`*` in the CSVs). **ESLint core, tranche C** (slice 4): 45 of its 117 `port` rows as `js/<eslint name>` rules, `preview` and in no preset, since ESLint's own recommended does not turn them on. jsx-a11y's 5 rules outside its recommended (slice 5) are `preview` in no preset, which completes that plugin.
 
 ### Starter catalogue (v0)
 

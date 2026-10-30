@@ -31,7 +31,20 @@ pub const PROTOCOL: u32 = 1;
 
 /// SR-TYPES decision 4's vocabulary: the only questions a `type:` clause
 /// may ask. A new one is an amendment of the record.
-pub const QUESTIONS: &[&str] = &["promise-like", "thenable", "any", "nullable", "union", "deprecated", "never"];
+pub const QUESTIONS: &[&str] = &[
+    "promise-like",
+    "thenable",
+    "any",
+    "nullable",
+    "union",
+    "deprecated",
+    "never",
+    // Added 2026-10-30 (W-105) under decision 4's ruling of 2026-10-29.
+    "unknown",
+    "typed-target",
+    "promise-to-void",
+    "non-exhaustive",
+];
 
 /// The TypeScript versions the fixtures pass on (decision 7).
 pub const TESTED: &str = ">=7.1.0-beta, <7.2.0";

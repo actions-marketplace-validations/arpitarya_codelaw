@@ -6,6 +6,7 @@ fix: auto
 stability: preview
 options:
   internal: { type: "string[]", default: ["@/", "~/"], description: "prefixes of internal imports" }
+ported_from: [eslint-plugin-import/order]
 since: 0.1.0
 ---
 
