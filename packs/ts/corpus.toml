@@ -2,15 +2,18 @@
 # Rewrite with --update-snapshot, and review the change.
 
 [findings]
+"ts/adjacent-overload-signatures" = 6
 "ts/array-type" = 5
 "ts/await-thenable" = 0
 "ts/ban-ts-comment" = 96
 "ts/ban-tslint-comment" = 88
+"ts/class-literal-property-style" = 0
 "ts/consistent-generic-constructors" = 3
 "ts/consistent-indexed-object-style" = 93
 "ts/consistent-type-assertions" = 0
 "ts/consistent-type-definitions" = 213
 "ts/explicit-function-return-type" = 1648
+"ts/explicit-member-accessibility" = 1746
 "ts/explicit-module-boundary-types" = 71
 "ts/method-signature-style" = 256
 "ts/no-array-constructor" = 0
@@ -25,8 +28,10 @@
 "ts/no-extraneous-class" = 73
 "ts/no-floating-promises" = 0
 "ts/no-implicit-any-let" = 22
+"ts/no-import-type-side-effects" = 1
 "ts/no-inferrable-types" = 1
 "ts/no-invalid-void-type" = 100
+"ts/no-mergeable-namespace" = 0
 "ts/no-misused-new" = 0
 "ts/no-misused-promises" = 0
 "ts/no-namespace" = 1
@@ -51,6 +56,7 @@
 "ts/parameter-properties" = 288
 "ts/prefer-as-const" = 0
 "ts/prefer-enum-initializers" = 0
+"ts/prefer-for-of" = 6
 "ts/prefer-function-type" = 0
 "ts/prefer-literal-enum-member" = 20
 "ts/prefer-namespace-keyword" = 0
