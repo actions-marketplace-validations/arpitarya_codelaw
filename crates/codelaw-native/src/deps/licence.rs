@@ -88,13 +88,21 @@ impl NativeRule for Licence {
     /// A transitive finding from yarn classic's `yarn.lock` has a copy on
     /// the lockfile's entry (SR-LAW-3 decision 10), as `deps/vulnerable`'s.
     fn elsewhere(&self, finding: &NativeFinding, ctx: &NativeContext<'_>) -> Vec<Elsewhere> {
-        let Some((who, _)) = finding.message.split_once(" (installed through another package, in yarn.lock)") else { return Vec::new() };
-        let mut words = who.split_whitespace();
-        let (Some(name), Some(version)) = (words.next().map(|n| n.trim_matches('`')), words.next()) else { return Vec::new() };
+        let Some((_, list)) = finding.message.split_once(" (installed through another package, in yarn.lock) ") else { return Vec::new() };
         let dir = folder_of(ctx.file.path());
         let path = if dir.is_empty() { "yarn.lock".to_owned() } else { format!("{dir}/yarn.lock") };
         let Some(text) = ctx.file.read(&path) else { return Vec::new() };
-        yarn_entry_line(&text, name, version).and_then(|n| Elsewhere::line(path, &text, n)).into_iter().collect()
+        // Each named package: `` `name` version (`licence`, grade) ``.
+        let list = list.split_once(": ").map(|(_, l)| l).unwrap_or("");
+        let mut out = Vec::new();
+        for item in list.split(", `").take(LISTED) {
+            let mut words = item.trim_start_matches('`').split_whitespace();
+            let (Some(name), Some(version)) = (words.next().map(|n| n.trim_end_matches('`')), words.next()) else { continue };
+            if let Some(e) = yarn_entry_line(&text, name, version).and_then(|n| Elsewhere::line(path.clone(), &text, n)) {
+                out.push(e);
+            }
+        }
+        out
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let path = ctx.file.path();
@@ -152,6 +160,9 @@ impl NativeRule for Licence {
         }
         let lock_file = lockfile.rsplit('/').next().unwrap_or(&lockfile).to_owned();
         let line_end = ctx.source.find('\n').unwrap_or(ctx.source.len());
+        // One finding for every transitive package: the engine keeps one
+        // finding per rule and place, and they all sit on the first line.
+        let mut hits: Vec<(String, &'static str)> = Vec::new();
         for l in all_locked(&lock_file, &text).into_iter().filter(|l| !l.direct && !direct.contains(&(l.name.clone(), l.version.clone()))) {
             let key = format!("{}:{}", eco.prefix(), l.name);
             let Some(pkg) = snap.packages.get(&key) else { continue };
@@ -165,11 +176,35 @@ impl NativeRule for Licence {
             if !wanted(&j) {
                 continue;
             }
-            let (why, grade) = j.unwrap_or_default();
-            out.push(NativeFinding { start: 0, end: line_end, message: format!("`{}` {}{THROUGH}{lock_file}) {why} ({grade})", l.name, l.version), edits: Vec::new() });
+            let (_, grade) = j.unwrap_or_default();
+            hits.push((format!("`{}` {} (`{text}`, {grade})", l.name, l.version), grade));
         }
+        if hits.is_empty() {
+            return;
+        }
+        // Denied first; the finding is graded by its worst.
+        hits.sort_by_key(|(_, g)| *g != "denied");
+        let grade = hits[0].1;
+        let n = hits.len();
+        let listed: Vec<&str> = hits.iter().take(LISTED).map(|(t, _)| t.as_str()).collect();
+        let more = if n > LISTED { format!(" and {} more", n - LISTED) } else { String::new() };
+        let what = if n == 1 { "1 package" } else { &format!("{n} packages") };
+        out.push(NativeFinding {
+            start: 0,
+            end: line_end,
+            message: format!(
+                "{what}{THROUGH}{lock_file}) {} a licence `[deps.licence]` does not allow: {}{more}; replace the dependency that brings {} in, add the licence to `[deps.licence] allow`, or add a dated `[deps.licence] ignore` entry with a reason ({grade})",
+                if n == 1 { "has" } else { "have" },
+                listed.join(", "),
+                if n == 1 { "it" } else { "them" },
+            ),
+            edits: Vec::new(),
+        });
     }
 }
+
+/// How many transitive packages a finding names.
+const LISTED: usize = 10;
 
 /// The licence the snapshot keeps for `version`: `Some(None)` when the
 /// registry named none for a package the refresh asked about, `None` when

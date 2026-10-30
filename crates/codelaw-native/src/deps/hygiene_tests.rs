@@ -122,7 +122,8 @@ fn licence_direct_transitive_and_grades() {
     assert!(got[1].message.contains("`see LICENSE`, which is not an SPDX expression") && got[1].severity == Some(Severity::Warn), "{}", got[1].message);
     assert!(got[2].message.contains("`MPL-2.0`, which `[deps.licence]` neither allows nor denies"), "{}", got[2].message);
     assert!(got[3].message.starts_with("`none` 1.0.0 names no licence in the registry"), "{}", got[3].message);
-    assert!(got[4].message.starts_with("`deep` 0.4.0 (installed through another package, in package-lock.json) is licensed `AGPL-3.0-or-later`"), "{}", got[4].message);
+    assert!(got[4].message.starts_with("1 package (installed through another package, in package-lock.json) has a licence `[deps.licence]` does not allow: `deep` 0.4.0 (`AGPL-3.0-or-later`, denied); replace"), "{}", got[4].message);
+    assert!(got[4].message.ends_with("(denied)"));
     assert_eq!(got[4].at, "{");
     assert!(got.iter().all(|g| g.fixed.is_empty() || g.fixed == LICENCE_MANIFEST));
 

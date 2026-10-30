@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**Built and closed 2026-10-30 (Claude Code): W-129** — `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` (SR-RULE-PACKS decision 15). Found on the way: the engine keeps one finding per rule and span, so `deps/vulnerable`'s transitive findings (all on the manifest's first line) collapse to the first — `deps/licence` reports its transitive ones as one listing finding; `deps/vulnerable` is unchanged and needs the same treatment.
+
 **Merged 2026-10-30 (Cowork): the queue is 14 items, from 22.** W-151 is the whole 0.4.1 release (was also W-150, W-134, W-135); W-142 all new-pack names (W-147); W-95 both editor stores (W-117); W-97 the Action and pre-commit (W-64); W-105 types and the version watch (W-106); W-141 the formatter with Oxc's (W-148).
 
 **Reviewed 2026-10-30 (Cowork): the queue, item by item.** `main` is red since the batch landing (W-149 🧨, first). W-132 was built and is now closed. W-129 is unblocked; W-95's install docs are unblocked; Open VSX still waits on claim #14928; W-134/W-135 wait only on the next release.

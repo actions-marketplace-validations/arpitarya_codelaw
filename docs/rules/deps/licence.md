@@ -37,7 +37,7 @@ unknown = "warn"                     # error | warn | info | off
 ignore = [{ package = "npm:some-gpl-tool", expires = "2027-01-01", reason = "dev-only, replaced in Q1" }]
 ```
 
-A denied licence is reported at the rule's severity (`error`); an unknown one — on neither list, free text, or a direct dependency the registry names no licence for — at `[deps.licence] unknown`. A direct dependency's finding is on its manifest line; a transitive one's on the first line of the manifest beside the lockfile, and a yarn classic one has a copy on its `yarn.lock` entry. `[deps] ignore` (whole packages) and `[deps.licence] ignore` hold a package.
+A denied licence is reported at the rule's severity (`error`); an unknown one — on neither list, free text, or a direct dependency the registry names no licence for — at `[deps.licence] unknown`. A direct dependency's finding is on its manifest line. The transitive ones are one finding on the first line of the manifest beside the lockfile, naming up to ten packages and how many more, graded by the worst; for yarn classic each named package has a copy on its `yarn.lock` entry. `[deps] ignore` (whole packages) and `[deps.licence] ignore` hold a package.
 
 **Why:** A copyleft licence deep in the tree can oblige the whole product; an unknown one is a question nobody has answered yet. Both are cheaper to answer when the package arrives than after it ships.
 

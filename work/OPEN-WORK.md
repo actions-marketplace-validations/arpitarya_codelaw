@@ -33,13 +33,11 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
-### build (8)
+### build (7)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
-
-🟢 **W-129** `agent` `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` — unblocked: W-128 and W-136 built 10-30; nothing built yet. Filed by Arpit (Cowork). [detail](open/W-129-deps-hygiene-rules.md)
 
 🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30): five PyPI framework packs, npm `testing`/`nextjs`; tranche A on, rest preview/opt-in. Landed: 17 promise, 36 jsx-a11y (`react/a11y`), 21 Biome, 45 ESLint core; links done. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 

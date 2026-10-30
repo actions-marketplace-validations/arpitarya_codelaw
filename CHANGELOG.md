@@ -12,6 +12,8 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 - **Biome's own recommended rules (W-139):** 21 rules Biome 2.6.4 recommends that no other linter has — 16 in `js`, 3 in `ts`, 2 in `react` — on in each pack's `recommended`; 22 existing rules now name the upstream rules they already reimplement in `ported_from:`, so `codelaw migrate` maps them.
 - **ESLint core rules (W-139):** 45 more of ESLint's rules as `js/*` — `no-eval`, `no-bitwise`, `no-sequences`, `no-await-in-loop`, `default-case`, `guard-for-in`, `radix` and others — preview and opt-in under `[rules]`.
 
+- **Four more `deps` rules (W-129):** `deps/licence` (SPDX expressions against `[deps.licence] allow`/`deny`; copyleft and source-available denied by default, free text `unknown`), `deps/lockfile-sync` (a manifest its `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `uv.lock` or Poetry `content-hash` no longer matches, with the lock command), `deps/version-drift` (one range per dependency across npm, pnpm, yarn and uv workspaces; `[deps.drift] policy`) and `deps/runtime-agreement` (`engines.node`, `volta`, `.nvmrc`, `.node-version`, `.tool-versions`, `mise.toml`, `setup-node`/`setup-python` and `Dockerfile` agree; a text file's pin shows on its own line too). All in `deps/recommended`.
+
 ### Changed
 
 - **The work queue's check (W-152):** `scripts/check-work-system.py` refuses a ball that disagrees with its item — green while the inbox, the first unfinished step or the row says the next move is the decider's, or while a choice is left unruled (SR-WORK-OPEN-QUEUE rule 21a).
