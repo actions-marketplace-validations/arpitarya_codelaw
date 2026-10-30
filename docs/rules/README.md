@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 896 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 960 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,9 +35,9 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 165 | 12 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 62 | 1 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 134 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 74 | 18 |
@@ -103,6 +103,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-control-regex`](js/no-control-regex.md) | No control characters in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-debugger`](js/no-debugger.md) | No debugger statements | `auto` | — | `js/recommended` |
 | [`js/no-default-export`](js/no-default-export.md) | No default exports | `manual` | — | `js/conventions` |
+| [`js/no-default-import`](js/no-default-import.md) | No default imports | `manual` | — | *[rules] only* |
 | [`js/no-delete-var`](js/no-delete-var.md) | No delete on a variable | `manual` | — | `js/recommended` |
 | [`js/no-document-cookie-biome`](js/no-document-cookie-biome.md) | No direct writes to document.cookie | `manual` | — | `js/recommended` |
 | [`js/no-dupe-args`](js/no-dupe-args.md) | No two parameters share a name | `manual` | — | `js/recommended` |
@@ -173,6 +174,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `manual` | `env`, `globals`, `typeof` | `js/recommended` |
 | [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `manual` | — | `js/recommended` |
+| [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | No arrow that only forwards to a function | `suggest` | — | *[rules] only* |
 | [`js/no-unreachable`](js/no-unreachable.md) | No code after a return, throw, break or continue | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `manual` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
@@ -224,6 +226,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/radix`](js/radix.md) | parseInt gets a radix | `suggest` | — | *[rules] only* |
 | [`js/require-yield`](js/require-yield.md) | A generator function yields | `manual` | — | `js/recommended` |
 | [`js/skipped-test`](js/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `js/markers` |
+| [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last switch clause | `auto` | — | *[rules] only* |
 | [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `manual` | — | *[rules] only* |
 | [`js/todo-marker`](js/todo-marker.md) | JavaScript and TypeScript TODO comments carry a ticket and, when asked, a date | `manual` | — | `js/markers` |
 | [`js/use-instead`](js/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `js/recommended` |
@@ -342,43 +345,104 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-tabindex-no-positive`](react/a11y-tabindex-no-positive.md) | No positive tabIndex | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/boolean-prop-naming`](react/boolean-prop-naming.md) | Boolean props are named is… or has… | `manual` | — | *[rules] only* |
+| [`react/button-has-type`](react/button-has-type.md) | A <button> says its type | `suggest` | — | *[rules] only* |
+| [`react/capitalized-calls`](react/capitalized-calls.md) | Components are rendered with JSX, not called | `manual` | — | *[rules] only* |
+| [`react/checked-requires-onchange-or-readonly`](react/checked-requires-onchange-or-readonly.md) | A checked input has onChange or readOnly | `suggest` | — | *[rules] only* |
 | [`react/component-max-lines`](react/component-max-lines.md) | A React component stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `ignore_names` | `react/size` |
+| [`react/default-props-match-prop-types`](react/default-props-match-prop-types.md) | Every default prop is a declared prop | `manual` | — | *[rules] only* |
+| [`react/destructuring-assignment`](react/destructuring-assignment.md) | Props and state are destructured | `manual` | — | *[rules] only* |
 | [`react/display-name`](react/display-name.md) | A component passed to memo or forwardRef has a name | `manual` | — | `react/recommended` |
 | [`react/error-boundaries`](react/error-boundaries.md) | Errors in children are caught by an Error Boundary, not try/catch | `manual` | — | `react/recommended` |
 | [`react/exhaustive-deps`](react/exhaustive-deps.md) | Effect and memo dependency lists name every value they read | `suggest` | — | `react/recommended` |
+| [`react/forbid-component-props`](react/forbid-component-props.md) | No className or style on a component | `manual` | — | *[rules] only* |
+| [`react/forbid-foreign-prop-types`](react/forbid-foreign-prop-types.md) | No reading another component's propTypes | `manual` | — | *[rules] only* |
+| [`react/forbid-prop-types`](react/forbid-prop-types.md) | No PropTypes.any, array or object | `manual` | — | *[rules] only* |
+| [`react/forward-ref-uses-ref`](react/forward-ref-uses-ref.md) | A forwardRef callback takes the ref | `suggest` | — | *[rules] only* |
+| [`react/function-component-definition`](react/function-component-definition.md) | Named components are function declarations | `manual` | — | *[rules] only* |
 | [`react/globals`](react/globals.md) | Render doesn't change module-level or global values | `manual` | — | `react/recommended` |
 | [`react/hook-prefix`](react/hook-prefix.md) | Functions that call hooks are named use… | `manual` | — | `react/conventions` |
+| [`react/hook-use-state`](react/hook-use-state.md) | useState is destructured as \[value, setValue\] | `manual` | — | *[rules] only* |
+| [`react/iframe-missing-sandbox`](react/iframe-missing-sandbox.md) | An <iframe> has a sandbox | `suggest` | — | *[rules] only* |
+| [`react/immutability`](react/immutability.md) | Props and state are never mutated | `manual` | — | `react/recommended` |
+| [`react/incompatible-library`](react/incompatible-library.md) | No library API that defeats memoisation | `manual` | — | `react/recommended` |
+| [`react/jsx-boolean-value`](react/jsx-boolean-value.md) | A true prop is written bare | `auto` | — | *[rules] only* |
+| [`react/jsx-child-element-spacing`](react/jsx-child-element-spacing.md) | No inline element glued to text across a line break | `manual` | — | *[rules] only* |
+| [`react/jsx-curly-brace-presence`](react/jsx-curly-brace-presence.md) | No braces around a plain string prop | `auto` | — | *[rules] only* |
+| [`react/jsx-filename-extension`](react/jsx-filename-extension.md) | JSX lives in .jsx and .tsx files | `manual` | — | *[rules] only* |
+| [`react/jsx-fragments`](react/jsx-fragments.md) | <>…</> rather than <React.Fragment> | `auto` | — | *[rules] only* |
+| [`react/jsx-handler-names`](react/jsx-handler-names.md) | Handlers are named handle…, handler props on… | `manual` | — | *[rules] only* |
 | [`react/jsx-key`](react/jsx-key.md) | Elements in an array or a map() callback have a key | `manual` | — | `react/recommended` |
+| [`react/jsx-no-bind`](react/jsx-no-bind.md) | No new function in a JSX prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-comment-textnodes`](react/jsx-no-comment-textnodes.md) | No comment syntax as text inside JSX | `manual` | — | `react/recommended` |
+| [`react/jsx-no-constructed-context-values`](react/jsx-no-constructed-context-values.md) | A context value is not rebuilt on every render | `manual` | — | *[rules] only* |
 | [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `manual` | — | `react/recommended` |
+| [`react/jsx-no-leaked-render`](react/jsx-no-leaked-render.md) | No && that can render 0 or "" | `suggest` | — | *[rules] only* |
+| [`react/jsx-no-literals`](react/jsx-no-literals.md) | No bare text in JSX | `manual` | — | *[rules] only* |
+| [`react/jsx-no-script-url`](react/jsx-no-script-url.md) | No javascript: URLs in JSX | `manual` | — | *[rules] only* |
 | [`react/jsx-no-target-blank`](react/jsx-no-target-blank.md) | Links that open a new tab set rel="noreferrer" | `auto` | — | `react/recommended` |
 | [`react/jsx-no-undef`](react/jsx-no-undef.md) | Components used in JSX are declared | `manual` | — | `react/recommended` |
+| [`react/jsx-no-useless-fragment`](react/jsx-no-useless-fragment.md) | No fragment around a single element | `auto` | — | *[rules] only* |
+| [`react/jsx-pascal-case`](react/jsx-pascal-case.md) | Component names are PascalCase | `manual` | — | *[rules] only* |
+| [`react/jsx-props-no-spread-multi`](react/jsx-props-no-spread-multi.md) | One object is not spread twice into a JSX element | `suggest` | — | *[rules] only* |
+| [`react/jsx-props-no-spreading`](react/jsx-props-no-spreading.md) | No spread props in JSX | `manual` | — | *[rules] only* |
 | [`react/max-jsx-depth`](react/max-jsx-depth.md) | JSX elements nest no deeper than a maximum | `manual` | `max` | `react/size` |
 | [`react/max-props`](react/max-props.md) | A React component takes at most a maximum number of props | `manual` | `max`, `ignore_names` | `react/size` |
+| [`react/memoized-effect-dependencies`](react/memoized-effect-dependencies.md) | Effect dependencies are stable values | `manual` | — | *[rules] only* |
+| [`react/no-access-state-in-setstate`](react/no-access-state-in-setstate.md) | setState does not read this.state | `manual` | — | *[rules] only* |
+| [`react/no-array-index-key`](react/no-array-index-key.md) | No array index as a key | `manual` | — | *[rules] only* |
+| [`react/no-arrow-function-lifecycle`](react/no-arrow-function-lifecycle.md) | Lifecycle methods are methods, not arrow fields | `auto` | — | *[rules] only* |
 | [`react/no-children-prop`](react/no-children-prop.md) | Children are passed as children, not as a prop | `manual` | — | `react/recommended` |
 | [`react/no-context`](react/no-context.md) | No React context: no createContext, no useContext | `manual` | `use_instead` | *[rules] only* |
 | [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `manual` | — | `react/recommended` |
 | [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `manual` | — | `react/recommended` |
+| [`react/no-deriving-state-in-effects`](react/no-deriving-state-in-effects.md) | No effect that only copies a value into state | `manual` | — | *[rules] only* |
+| [`react/no-did-mount-set-state`](react/no-did-mount-set-state.md) | No setState in componentDidMount | `manual` | — | *[rules] only* |
+| [`react/no-did-update-set-state`](react/no-did-update-set-state.md) | No setState in componentDidUpdate | `manual` | — | *[rules] only* |
 | [`react/no-direct-mutation-state`](react/no-direct-mutation-state.md) | No assigning to this.state outside the constructor | `manual` | — | `react/recommended` |
 | [`react/no-find-dom-node`](react/no-find-dom-node.md) | No findDOMNode | `manual` | — | `react/recommended` |
+| [`react/no-invalid-html-attribute`](react/no-invalid-html-attribute.md) | rel holds only valid link types | `manual` | — | *[rules] only* |
 | [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `manual` | — | `react/recommended` |
+| [`react/no-multi-comp`](react/no-multi-comp.md) | One component per file | `manual` | — | *[rules] only* |
+| [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
 | [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
+| [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
+| [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
 | [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `manual` | — | `react/recommended` |
+| [`react/no-set-state`](react/no-set-state.md) | No this.setState | `manual` | — | *[rules] only* |
 | [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `manual` | — | `react/recommended` |
 | [`react/no-set-state-in-render`](react/no-set-state-in-render.md) | State is not set on every render | `manual` | — | `react/recommended` |
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
 | [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `manual` | — | `react/recommended` |
+| [`react/no-this-in-sfc`](react/no-this-in-sfc.md) | No this in a function component | `manual` | — | *[rules] only* |
+| [`react/no-typos`](react/no-typos.md) | No miscased React class members | `manual` | — | *[rules] only* |
 | [`react/no-unescaped-entities`](react/no-unescaped-entities.md) | No unescaped >, ", ' or } in JSX text | `manual` | — | `react/recommended` |
 | [`react/no-unknown-property`](react/no-unknown-property.md) | DOM elements use React's prop names, not HTML attribute names | `auto` | — | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `manual` | — | `react/recommended` |
+| [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | *[rules] only* |
+| [`react/no-unused-class-component-methods`](react/no-unused-class-component-methods.md) | Every class component method is used | `suggest` | — | *[rules] only* |
+| [`react/no-will-update-set-state`](react/no-will-update-set-state.md) | No setState in componentWillUpdate | `manual` | — | *[rules] only* |
+| [`react/prefer-es6-class`](react/prefer-es6-class.md) | Class components, not createReactClass | `manual` | — | *[rules] only* |
 | [`react/prefer-lazy-state-init`](react/prefer-lazy-state-init.md) | useState's initial value is not computed on every render | `suggest` | — | `react/recommended` |
+| [`react/prefer-read-only-props`](react/prefer-read-only-props.md) | Props types are readonly | `auto` | — | *[rules] only* |
+| [`react/prefer-stateless-function`](react/prefer-stateless-function.md) | A class with only render is a function | `manual` | — | *[rules] only* |
+| [`react/prop-types`](react/prop-types.md) | Props are declared in propTypes | `manual` | — | `react/recommended` |
 | [`react/props-type-name`](react/props-type-name.md) | A component's props type is named <Component>Props | `suggest` | — | `react/conventions` |
 | [`react/purity`](react/purity.md) | Render doesn't call Math.random(), Date.now() or other impure functions | `manual` | — | `react/recommended` |
+| [`react/require-default-props`](react/require-default-props.md) | Every optional prop has a default | `manual` | — | *[rules] only* |
+| [`react/require-optimization`](react/require-optimization.md) | Class components say when to skip a render | `manual` | — | *[rules] only* |
 | [`react/require-render-return`](react/require-render-return.md) | A class component's render() returns | `manual` | — | `react/recommended` |
+| [`react/rule-suppression`](react/rule-suppression.md) | The hooks rules are not switched off | `auto` | — | *[rules] only* |
 | [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `manual` | — | `react/recommended` |
+| [`react/self-closing-comp`](react/self-closing-comp.md) | An element with no children closes itself | `auto` | — | *[rules] only* |
+| [`react/state-in-constructor`](react/state-in-constructor.md) | State is set in the constructor | `manual` | — | *[rules] only* |
+| [`react/static-property-placement`](react/static-property-placement.md) | Static component properties are assigned after the class | `manual` | — | *[rules] only* |
+| [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `manual` | — | *[rules] only* |
+| [`react/unsupported-syntax`](react/unsupported-syntax.md) | No eval or with in components and hooks | `manual` | — | `react/recommended` |
 | [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `manual` | — | `react/recommended` |
+| [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
 
 ## node
 

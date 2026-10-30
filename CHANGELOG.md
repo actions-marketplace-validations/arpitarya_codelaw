@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **eslint-plugin-react, react-hooks' compiler rules and three TSLint rules (W-139):** 53 `react/*` rules from eslint-plugin-react (`button-has-type`, `jsx-no-leaked-render`, `no-array-index-key`, `self-closing-comp`, … — preview), 7 from eslint-plugin-react-hooks' compiler set, and `js/no-default-import`, `js/no-unnecessary-callback-wrapper`, `js/switch-final-break`; `react/recommended` now also turns on `react/prop-types`, `react/immutability`, `react/unsupported-syntax` and (at `warn`) `react/incompatible-library`.
 - **typescript-eslint's last non-type rules, and TSLint's `no-mergeable-namespace` (W-139):** `ts/adjacent-overload-signatures`, `ts/class-literal-property-style`, `ts/explicit-member-accessibility`, `ts/no-import-type-side-effects`, `ts/prefer-for-of` and `ts/no-mergeable-namespace` — preview and opt-in.
 - **typescript-eslint stylistic and strict rules (W-139):** 22 more `ts/*` rules — `array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type` and others — preview and opt-in.
 - **Five Python framework packs (W-139):** `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy` and `-pandas`, PyPI only — 29 of Ruff's framework rules (flake8-django, FastAPI, Airflow, NumPy, pandas-vet), each pack's `recommended` holding the stable ones at `warn`.

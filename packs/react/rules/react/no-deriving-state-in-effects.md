@@ -9,7 +9,7 @@ ported_from: [eslint-plugin-react-hooks/no-deriving-state-in-effects]
 since: 0.5.0
 ---
 
-A `useEffect` whose body does nothing but call state setters (`setFullName(first + " " + last)`) is replaced by a value computed during render.
+A `useEffect` whose body does nothing but call setters — at least one of them from this component's `useState` — with plain values (not updater functions) (`setFullName(first + " " + last)`) is replaced by a value computed during render.
 
 **Why:** Deriving state in an effect renders twice, once with the stale value, and keeps two sources of truth in step by hand.
 
@@ -18,6 +18,18 @@ match:
   kind: call_expression
   all:
     - has: { field: function, regex: '^(React\.)?useEffect$' }
+    - inside:
+        stopBy: end
+        kind: statement_block
+        has:
+          kind: lexical_declaration
+          has:
+            kind: variable_declarator
+            all:
+              - has: { field: name, kind: array_pattern, has: { nthChild: 2, kind: identifier, pattern: $S } }
+              - has: { field: value, kind: call_expression, has: { field: function, regex: '^(React\.)?useState$' } }
+    - has: { field: arguments, has: { nthChild: 1, has: { field: body, has: { kind: expression_statement, has: { kind: call_expression, has: { field: function, pattern: $S } } } } } }
+    - not: { has: { field: arguments, has: { nthChild: 1, has: { field: body, has: { kind: expression_statement, has: { kind: call_expression, has: { field: arguments, has: { any: [{ kind: arrow_function }, { kind: function_expression }] } } } } } } } }
   has:
     field: arguments
     has:

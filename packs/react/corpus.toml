@@ -83,13 +83,13 @@
 "react/max-props" = 0
 "react/memoized-effect-dependencies" = 0
 "react/no-access-state-in-setstate" = 0
-"react/no-adjacent-inline-elements" = 62
+"react/no-array-index-key" = 6
 "react/no-arrow-function-lifecycle" = 0
 "react/no-children-prop" = 1
 "react/no-context" = 10
 "react/no-danger-with-children" = 0
 "react/no-deprecated" = 0
-"react/no-deriving-state-in-effects" = 15
+"react/no-deriving-state-in-effects" = 1
 "react/no-did-mount-set-state" = 0
 "react/no-did-update-set-state" = 0
 "react/no-direct-mutation-state" = 0
@@ -129,7 +129,7 @@
 "react/require-render-return" = 0
 "react/rule-suppression" = 0
 "react/rules-of-hooks" = 65
-"react/self-closing-comp" = 2
+"react/self-closing-comp" = 0
 "react/state-in-constructor" = 1
 "react/static-property-placement" = 0
 "react/style-prop-object" = 0

@@ -18,7 +18,7 @@ match:
   all:
     - has: { field: open_tag, not: { regex: '^<>$' }, has: { nthChild: { position: 1, reverse: true }, pattern: $L } }
     - has: { field: close_tag, pattern: $C }
-    - not: { has: { any: [{ kind: jsx_element }, { kind: jsx_self_closing_element }, { kind: jsx_expression }, { kind: jsx_text }] } }
+    - not: { has: { nthChild: 3 } }
 message: "Write this element self-closing"
 fix:
   - insert-after: { target: $L, text: " /" }

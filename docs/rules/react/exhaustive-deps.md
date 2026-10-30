@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (adding a dependency can make an effect run more often) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint-plugin-react-hooks/exhaustive-deps` |
+| **Ported from** | `eslint-plugin-react-hooks/exhaustive-deps`, `eslint-plugin-react-hooks/exhaustive-effect-dependencies`, `eslint-plugin-react-hooks/memo-dependencies`, `eslint-plugin-react-hooks/preserve-manual-memoization` |
 
 ## What it checks
 

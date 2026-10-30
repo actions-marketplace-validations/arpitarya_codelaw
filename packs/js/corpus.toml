@@ -37,6 +37,7 @@
 "js/no-control-regex" = 0
 "js/no-debugger" = 0
 "js/no-default-export" = 61
+"js/no-default-import" = 161
 "js/no-delete-var" = 0
 "js/no-document-cookie-biome" = 1
 "js/no-dupe-args" = 0
@@ -107,6 +108,7 @@
 "js/no-undef" = 61
 "js/no-undef-init" = 2
 "js/no-unexpected-multiline" = 0
+"js/no-unnecessary-callback-wrapper" = 5
 "js/no-unreachable" = 0
 "js/no-unsafe-finally" = 0
 "js/no-unsafe-negation" = 0
@@ -158,6 +160,7 @@
 "js/radix" = 1
 "js/require-yield" = 0
 "js/skipped-test" = 0
+"js/switch-final-break" = 1
 "js/symbol-description" = 3
 "js/todo-marker" = 21
 "js/use-instead" = 0

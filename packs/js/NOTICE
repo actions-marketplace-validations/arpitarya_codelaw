@@ -16,3 +16,8 @@ ISC License); no code or documentation text of it is included.
 The rules whose `ported_from:` names a `biome/` rule reproduce the documented
 behaviour of Biome 2.6.4 (https://biomejs.dev, MIT License); no Biome code or
 documentation text is included.
+
+`js/no-default-import`, `js/no-unnecessary-callback-wrapper` and
+`js/switch-final-break` reproduce the documented behaviour of the TSLint rules
+of those names (https://palantir.github.io/tslint, Apache License 2.0); no
+TSLint code or documentation text is included.

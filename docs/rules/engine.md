@@ -152,14 +152,14 @@
 **A new or edited function is reached by no test file** · severity `error` · fix `manual`
 
 1. Write a unit test that imports the function (or its module, for a function the module does not export) and calls it: a test needs judgment, so codelaw does not write one.
-2. If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` with `forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.
+2. If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` — `<path>#<name> graph/untested-function forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.
 
 ## `graph/function-coverage`
 
 **A new or edited function's line coverage is under `[coverage] min`** · severity `error` · fix `manual`
 
 1. Add test cases that run the lines the coverage report shows as missed, regenerate the lcov report in the same job, and run `codelaw check --coverage <report>` again: a test needs judgment, so codelaw does not write one.
-2. If the function cannot reasonably be covered, exempt it in `.codelawignore` with a reason, `expires=` or `forever`, and `on_touch=`.
+2. If the function cannot reasonably be covered, exempt it in `.codelawignore` — `<path>#<name> graph/function-coverage` with `expires=` or `forever`, `on_touch=` and a reason.
 
 ## `codelaw/stale-coverage`
 
@@ -175,8 +175,8 @@
 
 **A `.codelawignore` line is missing a field or contradicts itself, so it exempts nothing** · severity `error` · fix `manual`
 
-1. Give the line what the message names: a reason after a colon (always, with `expires=` or `forever`), `expires=YYYY-MM-DD` or `forever` (`[coverage.ignore] require_expiry`), and `on_touch=error|warn|keep` unless it is `forever` (`[coverage.ignore] require_on_touch`).
-2. `forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`.
+1. Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).
+2. `forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule.
 
 ## `git/commit-message`
 
