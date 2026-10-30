@@ -157,7 +157,7 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         fix: FixClass::Manual,
         steps: &[
             "Write a unit test that imports the function (or its module, for a function the module does not export) and calls it: a test needs judgment, so codelaw does not write one.",
-            "If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` with `forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.",
+            "If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` — `<path>#<name> graph/untested-function forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.",
         ],
     },
     EngineRule {
@@ -167,7 +167,7 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         fix: FixClass::Manual,
         steps: &[
             "Add test cases that run the lines the coverage report shows as missed, regenerate the lcov report in the same job, and run `codelaw check --coverage <report>` again: a test needs judgment, so codelaw does not write one.",
-            "If the function cannot reasonably be covered, exempt it in `.codelawignore` with a reason, `expires=` or `forever`, and `on_touch=`.",
+            "If the function cannot reasonably be covered, exempt it in `.codelawignore` — `<path>#<name> graph/function-coverage` with `expires=` or `forever`, `on_touch=` and a reason.",
         ],
     },
     EngineRule {
@@ -190,8 +190,8 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         severity: Severity::Error,
         fix: FixClass::Manual,
         steps: &[
-            "Give the line what the message names: a reason after a colon (always, with `expires=` or `forever`), `expires=YYYY-MM-DD` or `forever` (`[coverage.ignore] require_expiry`), and `on_touch=error|warn|keep` unless it is `forever` (`[coverage.ignore] require_on_touch`).",
-            "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`.",
+            "Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).",
+            "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule.",
         ],
     },
     EngineRule {

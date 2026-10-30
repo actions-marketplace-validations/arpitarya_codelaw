@@ -113,6 +113,10 @@ impl Project {
                 report.new_code = header;
             }
         }
+        // `.codelawignore` (SR-BASELINE decision 12): its own findings, then
+        // the findings its lines exempt are dropped.
+        report.diagnostics.extend(self.ignore_file_findings(parts.graph.as_ref().map(|g| &g.sources[..])));
+        self.apply_ignore_file(&mut report.diagnostics);
         // The adapters (SR-ARCHITECTURE decision 4, step 5): a finding a
         // pack rule already reports is shown once.
         if let Some(run) = &parts.adapters {

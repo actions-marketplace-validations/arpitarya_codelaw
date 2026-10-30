@@ -39,7 +39,14 @@ export interface FindingData {
   flag?: string;
   owner?: string;
   baseline?: boolean;
+  /** A `.codelawignore` line exempts it: shown as a baseline finding is. */
+  ignored?: boolean;
   fixable?: boolean;
+}
+
+/** The baseline or `.codelawignore` holds it: not the person's to fix now. */
+export function held(data: FindingData): boolean {
+  return Boolean(data.baseline || data.ignored);
 }
 
 /** One finding as the extension keeps it: before any view changes it. */
@@ -124,14 +131,14 @@ const ICONS: Record<string, string> = {
 
 export function toneOf(data: FindingData, severity: number): Tone {
   if (data.kind === "clean") return "ok";
-  if (data.baseline) return "muted";
+  if (held(data)) return "muted";
   return severity === ERROR ? "error" : severity === WARNING ? "warn" : severity === INFO ? "info" : "muted";
 }
 
 export function iconOf(data: FindingData, severity: number): string {
   const icon = data.kind ? ICONS[data.kind] : undefined;
   if (icon) return icon;
-  if (data.baseline) return "circle-large-outline";
+  if (held(data)) return "circle-large-outline";
   return severity === ERROR ? "error" : severity === WARNING ? "warning" : "info";
 }
 
@@ -143,12 +150,12 @@ export function badgeOf(f: Pick<Finding, "data" | "rule">): string {
 /**
  * The squiggle a finding gets: the severity's own, green when codelaw fixes
  * it on save (nothing for the person to do), dotted grey when the baseline
- * holds it.
+ * or `.codelawignore` holds it.
  */
 export type Squiggle = "severity" | "fixOnSave" | "baseline";
 
 export function squiggleOf(data: FindingData, fixOnSave: boolean): Squiggle {
-  if (data.baseline) return "baseline";
+  if (held(data)) return "baseline";
   if (fixOnSave && data.fix === "auto" && data.fixable) return "fixOnSave";
   return "severity";
 }
@@ -243,7 +250,7 @@ export function missingSources(message: string): string[] {
 
 /** A file's tab: its count and the tone of its worst finding. */
 export function fileBadge(findings: Finding[]): { badge: string; tone: Tone } | undefined {
-  const shown = findings.filter((f) => f.severity !== HINT && !f.data.baseline);
+  const shown = findings.filter((f) => f.severity !== HINT && !held(f.data));
   if (shown.length === 0) return undefined;
   const worst = Math.min(...shown.map((f) => f.severity));
   return { badge: shown.length > 9 ? "9+" : String(shown.length), tone: worst === ERROR ? "error" : worst === WARNING ? "warn" : "info" };
@@ -263,7 +270,7 @@ export function actionsOf(data: FindingData, path: string, fixOnSave: boolean): 
   const apply = (title = "Apply fix"): Action => ({ title, command: "codelaw.applyFix" });
   const ask = (title = "Ask agent to fix"): Action => ({ title, command: "codelaw.askAgent" });
   const manifest = isManifest(path);
-  if (data.baseline) return [ask(), rule];
+  if (held(data)) return [ask(), rule];
   if (squiggleOf(data, fixOnSave) === "fixOnSave") {
     return [{ title: "Fix now", command: "codelaw.fixAll" }, rule, { title: "Stop fixing on save", command: "codelaw.stopFixOnSave" }];
   }

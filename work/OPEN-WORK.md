@@ -26,6 +26,8 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-102 itself | |
 | 🔴 **A public repo, twice** ([W-97](open/W-97-github-action.md)): the Action's proof needs a throwaway repo, and the pre-commit mirror its own. Claude Code's permission check refused `gh repo create --public`. **Allow it** when it asks, or create `arpitarya/codelaw-action-test` and `arpitarya/codelaw-pre-commit` yourself and say so. | 2026-10-30 |
 | ↳ **blocks:** W-97 itself | |
+| 🔴 **Reasons on `"off"` in `codelaw.toml`** ([W-158](open/W-158-codelawignore-every-rule.md)): `.codelawignore` and the inline comment now both demand a reason; a rule set to `"off"` in `[rules]` or a scope needs none. Recommended: a `reason` key on a rule entry that turns a rule off (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`) plus `[rules] require_reason` (default `false`, so no config breaks). **Rule on it, or leave `codelaw.toml` as it is.** | 2026-10-31 |
+| ↳ **blocks:** W-158's last step | |
 | 🔴 **Open VSX — waiting on Open VSX** ([W-95](open/W-95-publish-vscode-extension.md), was W-117): the ownership claim is [EclipseFdn/open-vsx.org#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928), open. Ruled 2026-10-30: **no token — trusted publishing.** Nothing to do until the claim is approved; then you add the trusted publisher (`arpitarya` · `codelaw` · `publish.yml` · `vscode`). | 2026-10-29 |
 | ↳ **blocks:** W-95 (its Open VSX half) | |
 
@@ -53,7 +55,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-157** `agent` codelaw completes and checks its own `codelaw.toml`: schema registered + `#:schema` from `init` now; then the LSP offers real rule ids, presets, options and the down-only `fix`, and shows config errors as you type. Filed by Arpit (Claude app). [detail](open/W-157-config-completion.md)
 
-🟢 **W-158** `agent` `.codelawignore` for every rule, not just test coverage: each line names its rules, a reason, `expires=` or `forever`; same stale/incomplete checks. Open: reasons on `"off"` in `codelaw.toml`. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
+🔴 **W-158** `arpit` `.codelawignore` covers every rule — built 10-31 (rule ids and namespaces per line, same stale/incomplete checks, `[codelawignore]`, unfixed by `fix`, grey in the editor). Left: Arpit's ruling on reasons for `"off"` in `codelaw.toml` (inbox). Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
 ### ci/cd (4)
 

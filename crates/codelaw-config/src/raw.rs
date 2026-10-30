@@ -61,9 +61,12 @@ pub struct RawConfig {
     /// SR-BASELINE decision 9: dated exceptions. Root config only.
     pub exceptions: Option<RawExceptions>,
     /// SR-PROJECT-GRAPH decision 9 (W-71): the test rules of new code —
-    /// the lcov report and the rules' options; `[coverage.ignore]` is
-    /// SR-BASELINE decision 12's. Root config only.
+    /// the lcov report and the rules' options; `[coverage.ignore]` is the
+    /// deprecated spelling of `[codelawignore]`. Root config only.
     pub coverage: Option<RawCoverage>,
+    /// SR-BASELINE decision 12 (W-158): what every `.codelawignore` line
+    /// must carry, and a line's defaults. Root config only.
+    pub codelawignore: Option<RawCoverageIgnore>,
     /// SR-RULE-PACKS decision 15: the dependency rules. Root config only.
     #[serde(default)]
     pub deps: RawDeps,
@@ -287,11 +290,13 @@ pub struct RawCoverage {
     pub on_no_change_set: Option<String>,
     /// A regex: function names that are never judged.
     pub ignore_names: Option<String>,
-    /// `[coverage.ignore]`: what every `.codelawignore` line must carry.
+    /// `[coverage.ignore]`: the deprecated spelling of `[codelawignore]`,
+    /// read for one minor release.
     pub ignore: Option<RawCoverageIgnore>,
 }
 
-/// `[coverage.ignore]`: SR-BASELINE decision 12.
+/// `[codelawignore]` (and its old spelling `[coverage.ignore]`):
+/// SR-BASELINE decision 12.
 #[derive(Debug, Default, Clone, PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RawCoverageIgnore {

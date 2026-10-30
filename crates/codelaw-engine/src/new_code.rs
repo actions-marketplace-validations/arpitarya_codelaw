@@ -3,21 +3,22 @@
 //! JS, TS or Python function that no test file reaches — and
 //! `graph/function-coverage` — one whose lines an lcov report shows under
 //! `[coverage] min`. Only the change set's new and edited functions are
-//! judged (diff-scoped); `.codelawignore` exempts the rest, and an edit
-//! revokes an exemption unless it is `forever` or `on_touch=keep`.
+//! judged (diff-scoped); `.codelawignore` lines naming these rules exempt
+//! the rest, and an edit revokes an exemption unless it is `forever` or
+//! `on_touch=keep` (`codelawignore.rs` reads the file).
 //!
 //! Opt-in: `extends = ["codelaw:tests"]`, a `[coverage]` table, or a rule
 //! named in `[rules]`. Off, nothing here runs and no graph is built for it
 //! (L8). The engine never runs tests: it reads the report a runner wrote
 //! (L5).
 
+use crate::codelawignore::{Exempt, covers, verdict};
 use crate::lcov::Lcov;
-use crate::lint::{meta_diagnostic, meta_severity};
+use crate::lint::meta_diagnostic;
 use crate::project::{Source, suppressed, suppressions, within};
 use crate::{ChangedFunctions, EngineError, Project};
-use codelaw_baseline::exception::{EXPIRED_RULE, EXPIRING_RULE, Expiry, expiry};
-use codelaw_baseline::ignore_file::{self, IGNORE_FILE, INCOMPLETE_RULE, IgnoreEntry, IgnoreOnTouch, IgnorePolicy, IgnoreTarget, STALE_IGNORE_RULE, TouchScope};
-use codelaw_core::{Diagnostic, FixClass, Language, LineIndex, Severity, TextEdit};
+use codelaw_baseline::ignore_file::{IgnoreEntry, IgnorePolicy, TouchScope};
+use codelaw_core::{Diagnostic, Language, LineIndex, Severity};
 use codelaw_graph::{Graph, is_test_file};
 use codelaw_lang::{Change, Function};
 use serde_json::json;
@@ -47,10 +48,6 @@ pub(crate) struct TestRules {
     /// The rules the config turns on (before `--rule`).
     pub on: BTreeSet<&'static str>,
     pub config: CoverageConfig,
-    pub policy: IgnorePolicy,
-    /// `.codelawignore`, when the project has one.
-    pub ignore_text: Option<String>,
-    pub ignore: Vec<IgnoreEntry>,
 }
 
 /// The header lines a run with the test rules prints (SR-CLI-MCP).
@@ -67,7 +64,7 @@ fn config_error(file: Option<&Path>, e: String) -> EngineError {
     EngineError::Config(codelaw_config::ConfigError::new(file.map(Path::to_path_buf), e))
 }
 
-/// `[coverage]` and `.codelawignore`, read at load; `None` when the project
+/// `[coverage]`, read at load; `None` when the project
 /// does not turn the test rules on.
 pub(crate) fn load(config: &codelaw_config::Config) -> Result<Option<TestRules>, EngineError> {
     let raw = config.files.first().and_then(|f| f.raw.coverage.as_ref());
@@ -103,87 +100,34 @@ pub(crate) fn load(config: &codelaw_config::Config) -> Result<Option<TestRules>,
     };
     let ignore_names = c.ignore_names.as_deref().map(|r| regex::Regex::new(r).map_err(|e| err(format!("`ignore_names`: {e}")))).transpose()?;
     let report = c.report.as_deref().map(|r| config.config_dir().join(r));
-    let policy = policy(config).map_err(|e| config_error(file, e))?;
-    let ignore_text = std::fs::read_to_string(config.root_dir.join(IGNORE_FILE)).ok();
-    let ignore = ignore_text.as_deref().map(|t| ignore_file::parse(t, &policy)).unwrap_or_default();
     Ok(Some(TestRules {
         on,
         config: CoverageConfig { report, public_only, min, patch, require_report: c.require_report.unwrap_or(false), all_without_change_set, ignore_names },
-        policy,
-        ignore_text,
-        ignore,
     }))
 }
 
-/// `[coverage.ignore]`.
-pub(crate) fn policy(config: &codelaw_config::Config) -> Result<IgnorePolicy, String> {
-    match config.files.first().and_then(|f| f.raw.coverage.as_ref()).and_then(|c| c.ignore.as_ref()) {
-        Some(i) => IgnorePolicy::from_table(i.require_expiry, i.require_on_touch, i.on_touch.as_deref(), i.on_touch_scope.as_deref()),
-        None => Ok(IgnorePolicy::default()),
-    }
-}
-
-/// What `.codelawignore` makes of one function.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum Exempt {
-    /// No line covers it.
-    No,
-    /// A line covers it and holds.
-    Holds,
-    /// Every line that covers it was revoked by an edit: the findings come
-    /// back, as warnings when every such line says `on_touch=warn`.
-    Revoked { warn: bool },
-}
-
-/// One function the rules judge.
+/// One function the rules judge: what the lines naming each test rule
+/// (`UNTESTED_RULE`, `COVERAGE_RULE`) make of it, and whether that rule
+/// judges it.
 struct Judged<'a> {
     rel: &'a str,
     language: Language,
     function: &'a Function,
     change: Change,
-    exempt: Exempt,
+    exempt: [Exempt; 2],
+    judge: [bool; 2],
 }
 
-/// The `.codelawignore` lines that cover something on the as-of date.
-fn live<'a>(project: &Project, entries: &'a [IgnoreEntry]) -> Vec<&'a IgnoreEntry> {
-    let today = project.as_of().date;
-    entries
-        .iter()
-        .filter(|e| e.valid())
-        .filter(|e| !matches!(expiry(today, e.expires, None, e.warn_days.unwrap_or(project.exceptions.warn_days)), Expiry::Expired { .. }))
-        .collect()
-}
-
-fn glob(pattern: &str) -> Option<globset::GlobMatcher> {
-    globset::GlobBuilder::new(pattern).literal_separator(true).build().ok().map(|g| g.compile_matcher())
-}
-
-fn covers(e: &IgnoreEntry, rel: &str, name: &str) -> bool {
-    match &e.target {
-        IgnoreTarget::Function { path, name: n } => path == rel && n == name,
-        // `.gitignore`-style: a pattern without a `/` matches a name at
-        // any depth; a folder covers what is under it.
-        IgnoreTarget::Glob(g) => {
-            let name = rel.rsplit('/').next().unwrap_or(rel);
-            glob(g).is_some_and(|m| m.is_match(rel) || (!g.contains('/') && m.is_match(name))) || rel.starts_with(&format!("{}/", g.trim_end_matches('/')))
-        }
-    }
-}
-
-fn exemption(entries: &[&IgnoreEntry], policy: &IgnorePolicy, rel: &str, f: &Function, change: Change, file_touched: bool) -> Exempt {
-    let mut revoked = Vec::new();
-    for e in entries.iter().filter(|e| covers(e, rel, &f.name)) {
+/// What the `.codelawignore` lines naming `rule` make of one function.
+fn exemption(entries: &[&IgnoreEntry], rule: &str, policy: &IgnorePolicy, rel: &str, f: &Function, change: Change, file_touched: bool) -> Exempt {
+    let covering = entries.iter().copied().filter(|e| e.names(rule) && covers(e, rel, Some(&f.name))).map(|e| {
         let touched = match e.scope(policy) {
             TouchScope::File => file_touched,
             TouchScope::Function => change != Change::Untouched,
         };
-        match e.on_touch(policy) {
-            IgnoreOnTouch::Keep => return Exempt::Holds,
-            _ if !touched => return Exempt::Holds,
-            t => revoked.push(t),
-        }
-    }
-    if revoked.is_empty() { Exempt::No } else { Exempt::Revoked { warn: revoked.iter().all(|t| *t == IgnoreOnTouch::Warn) } }
+        (e, touched)
+    });
+    verdict(covering, policy)
 }
 
 /// The test file a finding suggests: `orders.test.ts`, `test_billing.py`.
@@ -228,13 +172,8 @@ impl Project {
         !self.test_rules_on().is_empty()
     }
 
-    /// An engine diagnostic on one line of `.codelawignore`.
-    fn ignore_line(&self, line: u32, rule: &str, message: String) -> Option<Diagnostic> {
-        self.at_line(IGNORE_FILE, line, rule, message)
-    }
-
-    /// The test rules over a linked graph: their findings, the
-    /// `.codelawignore` findings, and the header lines.
+    /// The test rules over a linked graph: their findings and the header
+    /// lines.
     pub(crate) fn new_code_findings(&self, graph: &Graph, sources: &[Source], scopes: &[String], warnings: &mut Vec<String>) -> (Vec<Diagnostic>, Option<NewCodeHeader>) {
         let Some(tests) = &self.tests else { return (Vec::new(), None) };
         let on = self.test_rules_on();
@@ -242,8 +181,8 @@ impl Project {
             return (Vec::new(), None);
         }
         let mut out = Vec::new();
-        out.extend(self.ignore_findings(tests, sources));
-        let entries = live(self, &tests.ignore);
+        let entries = self.live_ignores();
+        let policy = self.ignore_policy();
         let changed = match self.changed_functions() {
             Ok(c) => c,
             Err(e) => {
@@ -284,12 +223,12 @@ impl Project {
             if tests.config.ignore_names.as_ref().is_some_and(|r| r.is_match(bare(&f.name))) {
                 continue;
             }
-            let exempt = exemption(&entries, &tests.policy, rel, f, change, touched.contains(rel));
+            let exempt = [UNTESTED_RULE, COVERAGE_RULE].map(|r| exemption(&entries, r, &policy, rel, f, change, touched.contains(rel)));
             // Judged: new or edited, every function under `all`, and an
             // untouched one whose exemption an edit revoked.
-            let judge = all_mode || change != Change::Untouched || matches!(exempt, Exempt::Revoked { .. });
-            if judge && exempt != Exempt::Holds {
-                judged.push(Judged { rel, language, function: f, change, exempt });
+            let judge = exempt.map(|x| (all_mode || change != Change::Untouched || matches!(x, Exempt::Revoked { .. })) && x != Exempt::Holds);
+            if judge.iter().any(|j| *j) {
+                judged.push(Judged { rel, language, function: f, change, exempt, judge });
             }
         }
         let header_change = if changed.no_change_set() {
@@ -309,7 +248,7 @@ impl Project {
         };
         let mut header = NewCodeHeader { change_set: header_change, coverage: None };
         if on.contains(&UNTESTED_RULE) {
-            for j in &judged {
+            for j in judged.iter().filter(|j| j.judge[0]) {
                 let module_name = bare(&j.function.name);
                 let top = module_name.split('.').next().unwrap_or(module_name);
                 let importable = j.language == Language::Python || j.function.public;
@@ -327,7 +266,7 @@ impl Project {
                     j.function.name,
                     test_name(j.rel, j.language)
                 );
-                if let Some(d) = self.function_diagnostic(UNTESTED_RULE, &by_rel, j, message, json!({ "function": j.function.name, "change": j.change.name() })) {
+                if let Some(d) = self.function_diagnostic(UNTESTED_RULE, 0, &by_rel, j, message, json!({ "function": j.function.name, "change": j.change.name() })) {
                     out.push(d);
                 }
             }
@@ -355,11 +294,12 @@ impl Project {
         (kept, Some(header))
     }
 
-    fn function_diagnostic(&self, rule: &str, by_rel: &BTreeMap<&str, &Source>, j: &Judged<'_>, message: String, data: serde_json::Value) -> Option<Diagnostic> {
+    /// `which` is the rule's index in `Judged::exempt`.
+    fn function_diagnostic(&self, rule: &str, which: usize, by_rel: &BTreeMap<&str, &Source>, j: &Judged<'_>, message: String, data: serde_json::Value) -> Option<Diagnostic> {
         let src = by_rel.get(j.rel)?;
         let layers = self.config.layers_for(&src.abs);
         let mut d = meta_diagnostic(j.rel, &layers, rule, message)?;
-        if let Exempt::Revoked { warn: true } = j.exempt {
+        if let Exempt::Revoked { warn: true } = j.exempt[which] {
             d.severity = Severity::Warn;
         }
         let (a, b) = first_line_span(&src.text, j.function);
@@ -399,7 +339,7 @@ impl Project {
             }
         };
         let mut files: BTreeMap<&str, Vec<&Judged<'_>>> = BTreeMap::new();
-        for j in judged {
+        for j in judged.iter().filter(|j| j.judge[1]) {
             files.entry(j.rel).or_default().push(j);
         }
         let (mut total_lines, mut total_covered) = (0usize, 0usize);
@@ -444,7 +384,7 @@ impl Project {
                     let pct = covered * 100 / n;
                     let message = format!("`{}` is {pct}% covered ({covered} of {n} lines; min {})", j.function.name, cfg.min);
                     let data = json!({ "function": j.function.name, "change": j.change.name(), "covered": covered, "lines": n, "pct": pct, "min": cfg.min });
-                    out.extend(self.function_diagnostic(COVERAGE_RULE, by_rel, j, message, data));
+                    out.extend(self.function_diagnostic(COVERAGE_RULE, 1, by_rel, j, message, data));
                 }
             }
         }
@@ -455,112 +395,13 @@ impl Project {
             let pct = total_covered * 100 / total_lines;
             let message = format!("new and edited code is {pct}% covered ({total_covered} of {total_lines} lines; min {}, mode = \"patch\")", cfg.min);
             let data = json!({ "covered": total_covered, "lines": total_lines, "pct": pct, "min": cfg.min });
-            out.extend(self.function_diagnostic(COVERAGE_RULE, by_rel, j, message, data));
+            out.extend(self.function_diagnostic(COVERAGE_RULE, 1, by_rel, j, message, data));
         }
         let mut line = format!("coverage: {shown} ({} files)", lcov.files.len());
         if lcov.unmapped > 0 {
             line.push_str(&format!("; {} outside the project", lcov.unmapped));
         }
         (out, line)
-    }
-
-    /// `.codelawignore`'s own findings: lines that cannot be read, are
-    /// incomplete, expire, or match nothing.
-    fn ignore_findings(&self, tests: &TestRules, sources: &[Source]) -> Vec<Diagnostic> {
-        let mut out = Vec::new();
-        let Some(text) = &tests.ignore_text else { return out };
-        let today = self.as_of().date;
-        let files: BTreeSet<&str> = sources.iter().map(|s| s.rel.as_str()).collect();
-        let index = LineIndex::new(text);
-        for e in &tests.ignore {
-            if let Some(bad) = &e.unreadable {
-                out.extend(self.ignore_line(e.line, "codelaw/unknown-suppression", format!("This `.codelawignore` line cannot be read, so it exempts nothing: {bad}")));
-                continue;
-            }
-            if !e.incomplete.is_empty() {
-                out.extend(self.ignore_line(e.line, INCOMPLETE_RULE, format!("This `.codelawignore` line exempts nothing until it has {}", e.incomplete.join("; "))));
-                continue;
-            }
-            match expiry(today, e.expires, None, e.warn_days.unwrap_or(self.exceptions.warn_days)) {
-                Expiry::Expired { expires } => {
-                    out.extend(self.ignore_line(e.line, EXPIRED_RULE, format!("`{}` in `.codelawignore` expired on {expires}: it no longer exempts anything", e.target.text())));
-                    continue;
-                }
-                Expiry::Expiring { days, expires } => {
-                    out.extend(self.ignore_line(e.line, EXPIRING_RULE, format!("`{}` in `.codelawignore` expires {}", e.target.text(), codelaw_baseline::exception::when(days, expires))));
-                }
-                Expiry::Holds => {}
-            }
-            let matches = match &e.target {
-                IgnoreTarget::Glob(_) => files.iter().any(|f| covers(e, f, "")),
-                IgnoreTarget::Function { path, name } => {
-                    let abs = self.root().join(path);
-                    match (Language::from_path(&abs).filter(|l| codelaw_lang::has_functions(*l)), std::fs::read_to_string(&abs)) {
-                        (Some(l), Ok(t)) => codelaw_lang::functions(l, &t).iter().any(|f| &f.name == name),
-                        _ => false,
-                    }
-                }
-            };
-            if !matches {
-                let what = match &e.target {
-                    IgnoreTarget::Glob(g) => format!("`{g}` matches no file"),
-                    IgnoreTarget::Function { path, name } => format!("`{path}` has no function `{name}`"),
-                };
-                if let Some(mut d) = self.ignore_line(e.line, STALE_IGNORE_RULE, format!("{what}: this `.codelawignore` line exempts nothing; `codelaw fix` removes it")) {
-                    let start = index.line_start(e.line).unwrap_or(0);
-                    let end = index.line_start(e.line + 1).unwrap_or(text.len());
-                    d.edits = vec![TextEdit::delete(start, end)];
-                    d.fix = FixClass::Auto;
-                    out.push(d);
-                }
-            }
-        }
-        out
-    }
-
-    /// `codelaw fix`: drop the `.codelawignore` lines that match nothing.
-    /// Returns how many it removed.
-    pub(crate) fn prune_ignore_file(&self, diagnostics: &[Diagnostic]) -> usize {
-        let stale: Vec<u32> = diagnostics.iter().filter(|d| d.rule == STALE_IGNORE_RULE && d.file == IGNORE_FILE).map(|d| d.start.line).collect();
-        if stale.is_empty() || meta_severity(&[], STALE_IGNORE_RULE).is_none() {
-            return 0;
-        }
-        let path = self.root().join(IGNORE_FILE);
-        let Ok(text) = std::fs::read_to_string(&path) else { return 0 };
-        if std::fs::write(&path, ignore_file::without_lines(&text, &stale)).is_err() {
-            return 0;
-        }
-        stale.len()
-    }
-
-    /// The `.codelawignore` rows of `codelaw exceptions`: one per line and
-    /// rule, `forever` shown as such.
-    pub(crate) fn ignore_exceptions(&self) -> Vec<crate::Exception> {
-        let Ok(text) = std::fs::read_to_string(self.root().join(IGNORE_FILE)) else { return Vec::new() };
-        let policy = policy(&self.config).unwrap_or_default();
-        let mut out = Vec::new();
-        for e in ignore_file::parse(&text, &policy).into_iter().filter(IgnoreEntry::valid) {
-            let (files, symbol) = match &e.target {
-                IgnoreTarget::Glob(g) => (vec![g.clone()], None),
-                IgnoreTarget::Function { path, name } => (vec![path.clone()], Some(name.clone())),
-            };
-            for rule in codelaw_rules::TEST_RULES {
-                out.push(crate::Exception {
-                    kind: crate::ExceptionKind::Ignore,
-                    rule: (*rule).to_owned(),
-                    files: files.clone(),
-                    symbol: symbol.clone(),
-                    expires: e.expires,
-                    forever: e.forever,
-                    added_by: e.by.clone(),
-                    reason: e.reason.clone(),
-                    uses: 1,
-                    at: IGNORE_FILE.to_owned(),
-                    line: e.line,
-                });
-            }
-        }
-        out
     }
 }
 
@@ -576,21 +417,26 @@ mod tests {
     fn exemption_follows_on_touch_and_its_scope() {
         let p = IgnorePolicy::default();
         let parse = |t: &str| codelaw_baseline::ignore_file::parse(t, &p);
+        let u = UNTESTED_RULE;
         let file = parse("a.py#f on_touch=error expires=2099-01-01: why");
         let refs: Vec<&IgnoreEntry> = file.iter().collect();
-        assert_eq!(exemption(&refs, &p, "a.py", &f("f"), Change::Untouched, false), Exempt::Holds);
-        assert_eq!(exemption(&refs, &p, "a.py", &f("f"), Change::Untouched, true), Exempt::Revoked { warn: false }, "file scope: any edit to the file");
-        assert_eq!(exemption(&refs, &p, "a.py", &f("g"), Change::Edited, true), Exempt::No);
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::Untouched, false), Exempt::Holds);
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::Untouched, true), Exempt::Revoked { warn: false }, "file scope: any edit to the file");
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("g"), Change::Edited, true), Exempt::No);
         let func = parse("a.py#f on_touch=warn on_touch_scope=function expires=2099-01-01: why");
         let refs: Vec<&IgnoreEntry> = func.iter().collect();
-        assert_eq!(exemption(&refs, &p, "a.py", &f("f"), Change::Untouched, true), Exempt::Holds, "function scope: the file's edit is not this function's");
-        assert_eq!(exemption(&refs, &p, "a.py", &f("f"), Change::Edited, true), Exempt::Revoked { warn: true });
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::Untouched, true), Exempt::Holds, "function scope: the file's edit is not this function's");
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::Edited, true), Exempt::Revoked { warn: true });
         let forever = parse("src/** forever: generated");
         let refs: Vec<&IgnoreEntry> = forever.iter().collect();
-        assert_eq!(exemption(&refs, &p, "src/x/a.ts", &f("f"), Change::Edited, true), Exempt::Holds, "forever is never revoked");
+        assert_eq!(exemption(&refs, u, &p, "src/x/a.ts", &f("f"), Change::Edited, true), Exempt::Holds, "forever is never revoked");
         let keep = parse("a.py#f on_touch=keep expires=2099-01-01: why");
         let refs: Vec<&IgnoreEntry> = keep.iter().collect();
-        assert_eq!(exemption(&refs, &p, "a.py", &f("f"), Change::Edited, true), Exempt::Holds);
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::Edited, true), Exempt::Holds);
+        let one_rule = parse("a.py#f graph/function-coverage forever: covered by e2e");
+        let refs: Vec<&IgnoreEntry> = one_rule.iter().collect();
+        assert_eq!(exemption(&refs, u, &p, "a.py", &f("f"), Change::New, true), Exempt::No, "a line exempts only the rules it names");
+        assert_eq!(exemption(&refs, COVERAGE_RULE, &p, "a.py", &f("f"), Change::New, true), Exempt::Holds);
     }
 
     #[test]

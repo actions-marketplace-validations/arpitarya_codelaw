@@ -187,6 +187,7 @@ impl Project {
         let mut report = crate::CheckReport { diagnostics, skipped: Vec::new(), files_checked: 1, warnings: self.warnings.clone(), as_of: None, profile: None, new_code: None, types: self.types.report() };
         // The file's own rules ran, on this text: the baseline applies to
         // them as `check` applies it (SR-BASELINE).
+        self.apply_ignore_file(&mut report.diagnostics);
         let ran = crate::baseline::Ran { files: [rel.clone()].into(), scopes: vec![rel], project: false };
         self.apply_baselines(&mut report, Vec::new(), &ran);
         self.finish(&mut report);
