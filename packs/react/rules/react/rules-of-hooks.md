@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving a hook can change what the code does on the renders that skipped it"
 stability: preview
-ported_from: [eslint-plugin-react-hooks/rules-of-hooks]
+ported_from: [eslint-plugin-react-hooks/rules-of-hooks, eslint-plugin-react-hooks/hooks]
 since: 0.1.0
 ---
 
