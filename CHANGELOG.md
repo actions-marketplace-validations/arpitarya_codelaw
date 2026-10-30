@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **Formatting (W-141) — a formatting change: `codelaw format` rewrites files it left alone before.** HTML void elements are written `<br />`, as Prettier writes them; a `style` attribute is formatted (`color: red; display: inline`); a `<script>` body wraps inside its indentation; a CSS or SCSS comment on its own line stays there when a rule or declaration follows it directly (`*/.a {` became `*/ .a {`). New `[format]` keys from Prettier: `arrow_parens`, `bracket_spacing`, `jsx_quote_style`, `quote_props`, also read by `codelaw format --import-config` and `codelaw migrate biome`.
 - **Release pipeline (W-154):** `publish.yml`'s list of PyPI projects CI may create is back to `codelaw` alone — 0.4.2 and 0.4.3 created the `deps` pack and its index.
 
 ## 0.4.3 — 2026-10-30

@@ -12,7 +12,7 @@ owns:
   - scripts/format-parity.py
   - scripts/format-corpus.py
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-24T12:00:00Z
+timestamp: 2026-10-30T18:00:00Z
 content_sha: ""
 ---
 
@@ -114,6 +114,10 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    quote_style     = "double"      # JS/TS
    semicolons      = "always"      # JS/TS: always | as-needed
    trailing_commas = "all"         # JS/TS: all | es5 | none
+   arrow_parens    = "always"      # JS/TS: always | avoid      (Prettier's arrowParens)
+   bracket_spacing = true          # JS/TS: `{ a }` or `{a}`    (bracketSpacing)
+   jsx_quote_style = "double"      # JSX: double | single       (jsxSingleQuote)
+   quote_props     = "as-needed"   # JS/TS: as-needed | preserve (quoteProps; Prettier's `consistent` has no engine behind it)
    exclude         = ["**/generated/**"]
 
    [format.python]
@@ -130,7 +134,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
      - **What wins:** a key `[format]` (or `[format.python]`) sets is never changed by `.editorconfig`. Section globs go through `globset` (MIT / Unlicense), already a dependency of the engine.
    - **Migrating from existing configs:** `codelaw format --import-config` reads `.prettierrc*`, `[tool.ruff.format]` and `[tool.black]` once and writes the equivalent `[format]` keys. From then on, `codelaw.toml` is the only source.
      - **What is read** (`crates/codelaw-format/src/import.rs` translates; `codelaw-cli` reads and writes): in the project root, `.prettierrc` (JSON or YAML), `.prettierrc.json`, `.yaml`, `.yml`, `.json5`, `.toml`, and `package.json`'s `"prettier"` object; `pyproject.toml`'s `[tool.ruff]`, `[tool.ruff.format]` and `[tool.black]`. A Prettier config that is a program (`.prettierrc.js`, `prettier.config.*`, …) is never run ([L5](0007_LAW-5-no-model-in-the-engine.md)) and is listed as not imported, as is a string naming a shared config package (an error).
-     - **The mapping:** `printWidth` → `line_width`, `tabWidth` → `indent_width`, `useTabs` → `indent_style`, `endOfLine` (`lf`, `crlf`) → `end_of_line`, `singleQuote` → `quote_style`, `semi` → `semicolons`, `trailingComma` → `trailing_commas`. Ruff's `line-length` and `indent-width` (top-level `[tool.ruff]`, where Ruff keeps them, not `[tool.ruff.format]`) and Black's `line-length` → `[format.python]`. Ruff's `[tool.ruff.format]` options have no `[format]` key, so codelaw keeps Ruff's defaults for them. Every setting with no key is printed as `not imported: …`, never guessed at.
+     - **The mapping:** `printWidth` → `line_width`, `tabWidth` → `indent_width`, `useTabs` → `indent_style`, `endOfLine` (`lf`, `crlf`) → `end_of_line`, `singleQuote` → `quote_style`, `semi` → `semicolons`, `trailingComma` → `trailing_commas`, `arrowParens` → `arrow_parens`, `bracketSpacing` → `bracket_spacing`, `jsxSingleQuote` → `jsx_quote_style`, `quoteProps` (`as-needed`, `preserve`) → `quote_props` (`W-141`, on the decider's ruling of 2026-10-30 on W-138's R3; Prettier's other options stay at its defaults). Ruff's `line-length` and `indent-width` (top-level `[tool.ruff]`, where Ruff keeps them, not `[tool.ruff.format]`) and Black's `line-length` → `[format.python]`. Ruff's `[tool.ruff.format]` options have no `[format]` key, so codelaw keeps Ruff's defaults for them. Every setting with no key is printed as `not imported: …`, never guessed at.
      - **Order and once:** the first source to give a key keeps it (Prettier's files in the order above, Ruff before Black). A key the config already sets is kept as written and printed as `kept`; so a second run writes nothing. Nothing is formatted.
      - **Where it writes:** the project's config — `codelaw.toml`, or `[tool.codelaw.format]` when the config lives in `pyproject.toml`; a project with none gets `codelaw.toml`. A config in `package.json` is refused with exit `2` (the command writes TOML). The rest of the file is kept byte for byte through `toml_edit` (MIT OR Apache-2.0).
 

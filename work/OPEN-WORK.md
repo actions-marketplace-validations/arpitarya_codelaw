@@ -41,7 +41,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-139** `agent` Ruled 10-30: build all — both rounds, 2,572 rules: five PyPI framework packs, two npm packs (`testing`, `nextjs`); tranche A on by default, the rest preview/opt-in; SonarJS, Pylint, jsdoc opt-in; regexp, promise on. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-141** `agent` Formatter vs Prettier (CSS 42%, HTML 17%): CSS comment defect and void elements first; Oxc's formatters (was W-148: CSS 88.6%, Markdown 97.3%) measured in codelaw, then L11 to Arpit. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
+🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Left: gaps inside Biome/markup_fmt; Oxc's crates wait on Arpit's L11 call. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
