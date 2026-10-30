@@ -33,9 +33,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (13)
+## Open items (14)
 
-### build (7)
+### build (8)
 
 🟢 **W-105** `agent` Type-aware TypeScript: five rules landed; the four type questions, previews, profiling, corpus counts, the RC (11-10); then the version watch (was W-106: tested range, CI, nightly, bump job). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -50,6 +50,8 @@ here. Read that record before changing anything below it.
 🔴 **W-145** `arpit` A `tailwind` pack (both registries), the class-order table as data, class sorting in the formatter. Its table and its parity check need Tailwind and prettier-plugin-tailwindcss run, neither ratified (L11) — inbox. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
 🟢 **W-146** `agent` PR hygiene: `git/commit-message` (Conventional Commits, configurable), `git/branch-name`, `git/pr-size` (400 lines), `git/pr-description`; commit-msg hook, CI, agent hook; git use widened (SR-ARCHITECTURE 14). Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
+
+🟢 **W-155** `agent` Pack lookup ([SR-PACK-LOOKUP](../records/0118_pack-lookup.md), filed 10-30): Python step tries launcher paths → `$VIRTUAL_ENV` → `./.venv`, not just the first set; `[packs]` `order`/`node_modules`/`venv` replace the defaults. Nothing built. Filed by Arpit (Claude app). [detail](open/W-155-pack-lookup.md)
 
 ### ci/cd (4)
 
