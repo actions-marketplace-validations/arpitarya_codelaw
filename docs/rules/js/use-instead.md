@@ -14,6 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
+| **Ported from** | `eslint/no-restricted-imports`, `eslint/no-restricted-globals`, `eslint/no-restricted-properties` |
 
 ## What it checks
 

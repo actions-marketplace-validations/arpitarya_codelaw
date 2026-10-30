@@ -5,6 +5,11 @@ following the skill: step 2 found no codelaw rule whose `ported_from:` names the
 public documentation was read (nothing was run); the rule was scaffolded with `codelaw new-rule`, given
 `ported_from:` and `stability: preview`, and its examples and cases were written fresh.
 
+Since W-139 (2026-10-30) two of the three sources have first-party ports too — `js/no-nested-ternary`
+(ESLint `no-nested-ternary`) and `css/no-important`, whose `ported_from:` now names stylelint
+`declaration-no-important` — so the skill's step 2 would find them today and stop. The fixture keeps
+the three project rules as the loop's evidence, as each one's `**Why:**` foresees.
+
 | source rule | licence | codelaw rule | fix | `codelaw test` |
 |---|---|---|---|---|
 | ESLint core `no-nested-ternary` | MIT | `acme/no-nested-ternary` (JS, JSX, TS, TSX) | `manual` — ESLint has no autofix | 22 checks, 0 failed |

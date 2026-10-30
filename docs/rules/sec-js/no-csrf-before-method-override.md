@@ -15,6 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-352 · OWASP A01:2025 · security severity `medium` |
+| **Ported from** | `eslint-plugin-security/detect-no-csrf-before-method-override` |
 
 ## What it checks
 

@@ -15,6 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Files** | only `src/**` |
+| **Ported from** | `ruff/T201` |
 
 ## What it checks
 

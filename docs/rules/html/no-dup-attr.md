@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `html-validate/no-dup-attr`, `htmlhint/attr-no-duplication` |
+| **Ported from** | `html-validate/no-dup-attr`, `htmlhint/attr-no-duplication`, `biome/correctness/noDuplicateAttributes` |
 
 ## What it checks
 

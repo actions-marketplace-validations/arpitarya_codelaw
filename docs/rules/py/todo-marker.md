@@ -14,6 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a ticket and a date are facts about the work that only the author knows; the engine can't invent them) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
+| **Ported from** | `ruff/FIX001`, `ruff/FIX002`, `ruff/FIX003`, `ruff/FIX004`, `pylint/fixme` |
 
 ## What it checks
 
