@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "every importer of the default export must change"
 stability: preview
+ported_from: [eslint-plugin-import/no-default-export]
 since: 0.1.0
 ---
 

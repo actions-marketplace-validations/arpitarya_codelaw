@@ -12,7 +12,7 @@ owns:
   - .claude/hooks/guard-open-work-inbox.sh
   - scripts/check-work-system.py
 laws: [L0]
-timestamp: 2026-10-29T16:15:00Z
+timestamp: 2026-10-30T18:00:00Z
 content_sha: ""
 ---
 
@@ -123,6 +123,25 @@ the top.
 20. A ball on every row, always, and exactly one.
 21. 🔴 blocked on the decider's decision — directly, or through any chain of items
     ending at one.
+21a. **The ball agrees with the item's own words** (Arpit, 2026-10-30, W-152:
+    *"So it is blocked on me, so it should be red. … Why is it green?"* ·
+    *"There was nothing that could have been done if I wouldn't have made the
+    call, right? So that should also have been red."*). A row is 🔴, with an
+    inbox row, when any of these holds — whatever its lane or the smaller tasks
+    left in it:
+    - the inbox links the item or names it under `↳ **blocks:**` (rule 43);
+    - the first unfinished step of its *At a glance* (a state cell that is not
+      plainly ✅) carries 🔴 — the decider's move (rule 59);
+    - its row names the decider as what it waits for now — *needs Arpit*,
+      *Arpit's allow*, *waits on the decider*, *(inbox)*;
+    - an unfinished step carries a choice put and not ruled — *not ruled*,
+      *unruled*, *if a step needs one*, *only if asked*. A choice reaches the
+      decider; it is never left inside a green item.
+
+    And a 🔴 row is in the inbox, or names the item it is red through by rule
+    27's verbs. Words inside backticks or quotation marks are about a phrase,
+    not a use of it, and do not count. The phrase lists are the check's, in
+    `scripts/check-work-system.py`; a phrasing they miss is still this rule.
 22. 🟣 gated on a named date — the row that owns the gate names `YYYY-MM-DD`;
     a row behind it names the item it waits on.
 23. 🟡 waiting on another item whose chain ends at neither the decider nor a date —
@@ -282,6 +301,8 @@ under its header:
   - the inbox — every row 🔴 (44) and followed by its `↳ **blocks:**`
     sub-row (42), and no stored `age` column (40);
   - each row's item file — its `ball:` matches the row (64);
+  - each ball against the item's own words — the inbox, its first unfinished
+    step, its row, an unruled choice; and a 🔴 row in the inbox (21a);
   - a `W-nn` named in `CLAUDE.md`, `work/`, `records/` or `docs/` that
     resolves to neither `work/open/` nor `archive/open/` (the veto).
 

@@ -6,6 +6,7 @@ files: ["src/**"]
 fix: suggest
 fix_reason: "the log level, and whether the output was meant for the user, need a person"
 stability: preview
+ported_from: [ruff/T201]
 since: 0.1.0
 ---
 

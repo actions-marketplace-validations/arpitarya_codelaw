@@ -2,6 +2,42 @@
 # Rewrite with --update-snapshot, and review the change.
 
 [findings]
+"react/a11y-alt-text" = 0
+"react/a11y-anchor-ambiguous-text" = 0
+"react/a11y-anchor-has-content" = 0
+"react/a11y-anchor-is-valid" = 0
+"react/a11y-aria-activedescendant-has-tabindex" = 0
+"react/a11y-aria-props" = 0
+"react/a11y-aria-proptypes" = 0
+"react/a11y-aria-role" = 0
+"react/a11y-aria-unsupported-elements" = 0
+"react/a11y-autocomplete-valid" = 0
+"react/a11y-click-events-have-key-events" = 2
+"react/a11y-control-has-associated-label" = 2
+"react/a11y-heading-has-content" = 0
+"react/a11y-html-has-lang" = 0
+"react/a11y-iframe-has-title" = 0
+"react/a11y-img-redundant-alt" = 0
+"react/a11y-interactive-supports-focus" = 0
+"react/a11y-label-has-associated-control" = 0
+"react/a11y-lang" = 0
+"react/a11y-media-has-caption" = 0
+"react/a11y-mouse-events-have-key-events" = 0
+"react/a11y-no-access-key" = 0
+"react/a11y-no-aria-hidden-on-focusable" = 0
+"react/a11y-no-autofocus" = 1
+"react/a11y-no-distracting-elements" = 0
+"react/a11y-no-interactive-element-to-noninteractive-role" = 0
+"react/a11y-no-noninteractive-element-interactions" = 0
+"react/a11y-no-noninteractive-element-to-interactive-role" = 0
+"react/a11y-no-noninteractive-tabindex" = 0
+"react/a11y-no-redundant-roles" = 0
+"react/a11y-no-static-element-interactions" = 2
+"react/a11y-prefer-tag-over-role" = 0
+"react/a11y-role-has-required-aria-props" = 0
+"react/a11y-role-supports-aria-props" = 0
+"react/a11y-scope" = 0
+"react/a11y-tabindex-no-positive" = 0
 "react/component-max-lines" = 0
 "react/display-name" = 0
 "react/error-boundaries" = 0
@@ -28,6 +64,8 @@
 "react/no-set-state-in-effect" = 5
 "react/no-set-state-in-render" = 0
 "react/no-string-refs" = 0
+"react/no-suspicious-semicolon-in-jsx" = 0
+"react/no-svg-without-title" = 0
 "react/no-unescaped-entities" = 9
 "react/no-unknown-property" = 0
 "react/no-unnecessary-use-prefix" = 1

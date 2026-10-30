@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting a file changes its structure; which exports belong together is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
-| **Ported from** | `eslint/max-lines` |
+| **Ported from** | `eslint/max-lines`, `eslint-plugin-sonarjs/max-lines` |
 
 ## What it checks
 

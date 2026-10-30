@@ -4,8 +4,17 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **Type-aware TypeScript (W-105):** four more `preview` rules in `ts/type-checked` — `ts/switch-exhaustiveness-check`, `ts/no-unsafe-argument`, `ts/no-unsafe-assignment` and `ts/no-misused-promises` (a Promise-returning function where a `void` one is expected) — answered by four new type questions (`unknown`, `typed-target`, `promise-to-void`, `non-exhaustive`); `ts/await-thenable` no longer reports `await` on a value typed `unknown`.
+- **Promise rules (W-139):** 17 `js/promise-*` rules reimplementing eslint-plugin-promise 7.3.0; its 10 recommended rules join `js/recommended` at the plugin's severities, the other 7 are preview and opt-in.
+- **Accessibility rules for JSX (W-139):** 31 `react/a11y-*` rules reimplementing eslint-plugin-jsx-a11y 6.10.2's recommended set, in a new `react/a11y` preset that `react/recommended` extends; its 5 other rules are preview and opt-in.
+- **Biome's own recommended rules (W-139):** 21 rules Biome 2.6.4 recommends that no other linter has — 16 in `js`, 3 in `ts`, 2 in `react` — on in each pack's `recommended`; 22 existing rules now name the upstream rules they already reimplement in `ported_from:`, so `codelaw migrate` maps them.
+- **ESLint core rules (W-139):** 45 more of ESLint's rules as `js/*` — `no-eval`, `no-bitwise`, `no-sequences`, `no-await-in-loop`, `default-case`, `guard-for-in`, `radix` and others — preview and opt-in under `[rules]`.
+
 ### Changed
 
+- **The work queue's check (W-152):** `scripts/check-work-system.py` refuses a ball that disagrees with its item — green while the inbox, the first unfinished step or the row says the next move is the decider's, or while a choice is left unruled (SR-WORK-OPEN-QUEUE rule 21a).
 - **Release pipeline (W-154):** `publish.yml`'s list of PyPI projects CI may create is back to `codelaw` alone — 0.4.2 and 0.4.3 created the `deps` pack and its index.
 
 ## 0.4.3 — 2026-10-30

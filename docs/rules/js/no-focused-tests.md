@@ -14,6 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (dropping the focus puts every other test in the file back in the run, and tests that were hidden behind it may fail; the author should see that) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
+| **Ported from** | `biome/suspicious/noFocusedTests`, `eslint-plugin-jest/no-focused-tests`, `eslint-plugin-playwright/no-focused-test` |
 
 ## What it checks
 

@@ -1,0 +1,191 @@
+# typescript-bump — the TypeScript the type rules are tested on, kept current
+# (SR-TYPES decision 7; W-105, was W-106 step 4; L11 §3 D-45). Modelled on
+# fux-bump.yml. Daily, and by hand:
+#
+#     gh workflow run typescript-bump.yml -R arpitarya/codelaw                      # npm's newest
+#     gh workflow run typescript-bump.yml -R arpitarya/codelaw -f version=7.1.0-rc  # an exact release (a test of this job)
+#
+# `scripts/typescript-watch.py latest` reads npm's dist-tags (`latest`, `rc`,
+# `beta`; never `next`, which ci.yml's nightly `types-next` reports on) and
+# compares the newest with the 7.1 API to the version fixtures/types pins.
+# The same: nothing is written, the run is green. Newer: `typescript-watch.py
+# bump <v>` pins it, widening codelaw_types::TESTED (and SR-TYPES decision 7)
+# when <v> is past it and naming the pin in D-45; `npm install` rewrites the
+# lock; then the type rules' tests run on it — `cargo test --test types` and
+# `codelaw test packs/ts`:
+#   - green → the change is committed on `deps/typescript-<v>` and proposed as
+#     ONE pull request, exactly as fux-bump.yml does (rebuilt from main each
+#     run, pushed only when its tree changed, an older `deps/typescript-*` PR
+#     closed as superseded, ci.yml dispatched on the branch);
+#   - red → ONE issue, "TypeScript <v> breaks the type rules", with the
+#     failing output's tail; a re-run comments on it instead of opening another.
+#
+# 🔑 Token: GITHUB_TOKEN only (see fux-bump.yml for why ci.yml is dispatched).
+# ⚠ `gh pr create` needs *Allow GitHub Actions to create and approve pull
+#   requests* (Settings → Actions → General) — the decider's, as for fux-bump.
+#
+# Every `run:` is `bash -eo pipefail`; every action is pinned by commit SHA and
+# its comment names the release (W-18). No third-party action or package
+# (L11): `gh`, `git`, npm, cargo and the standard-library Python on the
+# runner, and actions ci.yml already pins.
+name: typescript-bump
+on:
+  schedule:
+    - cron: '30 4 * * *' # 10:00 IST, after ci.yml's nightly
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'an exact typescript release to pin instead of npm''s newest (blank: the newest)'
+        required: false
+        default: ''
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash # an explicit `bash` is `bash --noprofile --norc -eo pipefail`; the implicit default has no pipefail
+concurrency:
+  group: typescript-bump
+  cancel-in-progress: false
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: '0'
+jobs:
+  bump:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write # push deps/typescript-<v>
+      pull-requests: write # open or update its one PR
+      issues: write # or open one issue naming what broke
+      actions: write # dispatch ci.yml on the branch — the one event GITHUB_TOKEN may start
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: true # this job pushes deps/typescript-<v>, and nothing else
+      - name: npm's newest TypeScript with the 7.1 API against the pinned one
+        id: want
+        env:
+          V: ${{ inputs.version }} # blank on the schedule: npm's newest
+        run: |
+          python3 scripts/typescript-watch.py latest ${V:+--version "$V"} > "$RUNNER_TEMP/latest"
+          read -r state version < "$RUNNER_TEMP/latest"
+          pinned="$(python3 -c 'import json; print(json.load(open("fixtures/types/package.json"))["devDependencies"]["typescript"])')"
+          { echo "state=$state"; echo "version=$version"; echo "pinned=$pinned"; } >> "$GITHUB_OUTPUT"
+          if [ "$state" = current ]; then
+            echo "✔ typescript $pinned is pinned and is the newest with the 7.1 API — nothing to do" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.want.outputs.state == 'newer'
+        id: rustc
+        run: |
+          echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
+      - if: steps.want.outputs.state == 'newer'
+        run: rustup toolchain install ${{ steps.rustc.outputs.v }} --profile minimal --no-self-update
+      - if: steps.want.outputs.state == 'newer'
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - if: steps.want.outputs.state == 'newer'
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+      - name: pin it, then run the type rules' tests on it
+        if: steps.want.outputs.state == 'newer'
+        id: try
+        env:
+          V: ${{ steps.want.outputs.version }}
+          CODELAW_TYPES_REQUIRED: '1'
+          CODELAW_TYPESCRIPT: ${{ github.workspace }}/fixtures/types/node_modules/typescript
+        run: |
+          python3 scripts/typescript-watch.py bump "$V" | tee "$RUNNER_TEMP/what"
+          (cd fixtures/types && npm install --ignore-scripts --no-audit --no-fund)
+          set +e
+          {
+            cargo test --locked -p codelaw-cli --test types &&
+            target/debug/codelaw test packs/ts
+          } > "$RUNNER_TEMP/test.log" 2>&1
+          code=$?
+          set -e
+          tail -n 60 "$RUNNER_TEMP/test.log"
+          echo "ok=$([ "$code" = 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: green — commit on deps/typescript-<v>, open or update its one PR, run ci.yml on it
+        if: steps.want.outputs.state == 'newer' && steps.try.outputs.ok == 'true'
+        env:
+          V: ${{ steps.want.outputs.version }}
+          OLD: ${{ steps.want.outputs.pinned }}
+        run: |
+          branch="deps/typescript-$V"
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          what="$(cat "$RUNNER_TEMP/what")"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -q -c "$branch"
+          git add fixtures/types/package.json fixtures/types/package-lock.json crates/codelaw-types/src/lib.rs records/0117_types.md records/0013_LAW-11-dependencies.md
+          # A re-pin inside the range changes no record but L11's D-45 row,
+          # which names the pin; a widening also amends SR-TYPES decision 7.
+          case "$what" in widened:*) escape='' ;; *) escape=$'\n\nno SR affected' ;; esac
+          printf 'deps: typescript %s → %s (W-105, typescript-bump.yml)\n\n%s\n\nThe type rules'"'"' tests passed on it in %s.%s\n' \
+            "$OLD" "$V" "$what" "$run_url" "$escape" | git commit -q -F -
+          dispatch=false
+          if git fetch -q origin "refs/heads/$branch" 2>/dev/null \
+            && [ "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$(git rev-parse 'HEAD^{tree}')" ]; then
+            echo "$branch already holds this tree — not pushed"
+          else
+            git push -q --force origin "HEAD:refs/heads/$branch" # the job's own branch, rebuilt from main each run
+            dispatch=true
+          fi
+          printf '%s\n' \
+            "typescript **$OLD → $V**, found by [typescript-bump.yml]($run_url) (SR-TYPES decision 7; L11 §3 D-45)." \
+            "" \
+            "- $what" \
+            "- \`cargo test --test types\` and \`codelaw test packs/ts\` passed on it in that run." \
+            "- ci.yml runs on this branch as a \`workflow_dispatch\` run (a PR opened with GITHUB_TOKEN starts no \`pull_request\` run). Merge when it is green." \
+            > "$RUNNER_TEMP/body.md"
+          pr="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md" >/dev/null
+            echo "updated #$pr" >> "$GITHUB_STEP_SUMMARY"
+          else
+            url="$(gh pr create --base main --head "$branch" --title "deps: typescript $OLD → $V" --body-file "$RUNNER_TEMP/body.md")" || {
+              echo "::error title=typescript-bump::gh pr create failed — the repository setting 'Allow GitHub Actions to create and approve pull requests' (Settings → Actions → General) must be on. $branch is pushed."
+              exit 1
+            }
+            pr="${url##*/}"
+            dispatch=true
+            echo "opened $url" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          gh pr list --state open --json number,headRefName --jq '.[] | "\(.number) \(.headRefName)"' |
+            while read -r n head; do
+              case "$head" in
+                deps/typescript-*) [ "$head" = "$branch" ] || gh pr close "$n" --delete-branch --comment "Superseded by #$pr (typescript $V)." ;;
+              esac
+            done
+          if [ "$dispatch" = true ]; then
+            gh workflow run ci.yml --ref "$branch"
+            echo "dispatched ci.yml on $branch" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: red — one issue naming what broke
+        if: steps.want.outputs.state == 'newer' && steps.try.outputs.ok != 'true'
+        env:
+          V: ${{ steps.want.outputs.version }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          title="TypeScript $V breaks the type rules"
+          {
+            echo "[typescript-bump.yml]($run_url) pinned typescript **$V** in \`fixtures/types\` and the type rules' tests failed (SR-TYPES decision 7: outside the tested range the type rules run with a warning; this is what a widening would break)."
+            echo
+            echo "$(cat "$RUNNER_TEMP/what")"
+            echo
+            echo '```text'
+            tail -n 80 "$RUNNER_TEMP/test.log"
+            echo '```'
+          } > "$RUNNER_TEMP/issue.md"
+          n="$(gh issue list --state open --search "\"$title\" in:title" --json number,title --jq ".[] | select(.title == \"$title\") | .number" | head -n1)"
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body-file "$RUNNER_TEMP/issue.md" >/dev/null
+            echo "commented on #$n" >> "$GITHUB_STEP_SUMMARY"
+          else
+            url="$(gh issue create --title "$title" --body-file "$RUNNER_TEMP/issue.md")"
+            echo "opened $url" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "::warning title=typescript-bump::typescript $V breaks the type rules — see the issue"
