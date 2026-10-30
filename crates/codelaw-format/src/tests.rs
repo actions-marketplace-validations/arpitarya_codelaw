@@ -175,3 +175,70 @@ fn ignore_markers_edge_cases() {
     // A marker in a string is not a marker.
     assert_eq!(fmt(Language::Javascript, "a.js", "const s='// prettier-ignore'\n"), "const s = \"// prettier-ignore\";\n");
 }
+
+/// W-141: a comment that starts its own line keeps it, as Prettier writes it,
+/// even when the source puts the next rule or declaration right after it.
+#[test]
+fn a_css_comment_on_its_own_line_stays_there() {
+    let cases: &[(Language, &str, &str, &str)] = &[
+        (Language::Css, "a.css", "/*!\n * banner\n */.a{color:red}\n", "/*!\n * banner\n */\n.a {\n  color: red;\n}\n"),
+        (Language::Css, "a.css", "/* one */ .b{color:red}\n", "/* one */\n.b {\n  color: red;\n}\n"),
+        (Language::Css, "a.css", "@media print{\n/* x */.e{color:red}}\n", "@media print {\n  /* x */\n  .e {\n    color: red;\n  }\n}\n"),
+        (Language::Css, "a.css", ".f{\n/* in */color:red}\n", ".f {\n  /* in */\n  color: red;\n}\n"),
+        // A comment after a node on the same line stays a trailing comment.
+        (Language::Css, "a.css", ".c{color:red}/* tail */\n.d{color:blue}\n", ".c {\n  color: red;\n} /* tail */\n.d {\n  color: blue;\n}\n"),
+        // Inside a selector list the comment is not statement level: untouched.
+        (Language::Css, "a.css", "a,\n/* x */ b{color:red}\n", "a,\n/* x */ b {\n  color: red;\n}\n"),
+        // A comment followed by another comment is left as it is.
+        (Language::Scss, "a.scss", ".a {\n  b: c;\n  /*! */ // why\n}\n", ".a {\n  b: c;\n  /*! */ // why\n}\n"),
+        (Language::Scss, "a.scss", "// see https://x.y/*z\n/* c */.a{b:url(//x/*y)}\n", "// see https://x.y/*z\n/* c */\n.a {\n  b: url(//x/*y);\n}\n"),
+    ];
+    let mut wrong = Vec::new();
+    for (language, path, input, want) in cases {
+        let got = fmt(*language, path, input);
+        if got != *want {
+            wrong.push(format!("{input:?}:\n--- got\n{got}--- want\n{want}"));
+        }
+        assert_eq!(fmt(*language, path, &got), got, "{input:?}: not idempotent");
+    }
+    assert!(wrong.is_empty(), "{}", wrong.join("\n"));
+}
+
+/// W-141: void elements end in ` />`, as Prettier writes them.
+#[test]
+fn html_void_elements_are_self_closed() {
+    let got = fmt(Language::Html, "a.html", "<head><meta charset=\"utf-8\"><link rel=\"x\" href=\"y\"></head>\n<p>a<br>b</p>\n");
+    assert!(got.contains("<meta charset=\"utf-8\" />") && got.contains("<link rel=\"x\" href=\"y\" />") && got.contains("<br />"), "{got}");
+    assert_eq!(fmt(Language::Html, "a.html", &got), got, "not idempotent");
+}
+
+/// W-141: a `style` attribute and a `<script>` body as Prettier writes them.
+#[test]
+fn html_style_attributes_and_scripts_match_prettier() {
+    let input = "<html>\n<body>\n<p style=\"color:red;display : inline;\">x</p>\n<script>\nconst fileName = img.currentSrc?.substring(img.currentSrc.lastIndexOf(\"/\"));\n</script>\n</body>\n</html>\n";
+    let want = "<html>\n  <body>\n    <p style=\"color: red; display: inline\">x</p>\n    <script>\n      const fileName = img.currentSrc?.substring(\n        img.currentSrc.lastIndexOf(\"/\"),\n      );\n    </script>\n  </body>\n</html>\n";
+    let got = fmt(Language::Html, "a.html", input);
+    assert_eq!(got, want);
+    assert_eq!(fmt(Language::Html, "a.html", &got), got, "not idempotent");
+    // A value that does not parse, or holds a comment, is left as written.
+    for kept in ["<p style=\"{{ x }}\">a</p>\n", "<p style=\"color: red; /* c */\">a</p>\n"] {
+        assert_eq!(fmt(Language::Html, "a.html", kept), kept);
+    }
+}
+
+// TEMP-W141-MEASURE (removed before landing)
+#[test]
+#[ignore]
+fn temp_measure_corpus() {
+    let Ok(dir) = std::env::var("W141_DIR") else { return };
+    for e in std::fs::read_dir(&dir).unwrap() {
+        let p = e.unwrap().path();
+        let Some(lang) = Language::from_path(&p) else { continue };
+        let text = std::fs::read_to_string(&p).unwrap();
+        let name = p.file_name().unwrap().to_string_lossy().to_string();
+        match format(lang, &name, &text, &FormatOptions::default()) {
+            Ok(out) => std::fs::write(&p, out).unwrap(),
+            Err(_) => println!("{name}\n  format/failed"),
+        }
+    }
+}

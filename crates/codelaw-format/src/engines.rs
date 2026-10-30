@@ -156,8 +156,76 @@ fn biome_json(text: &str, o: &FormatOptions, width: u16) -> Result<String, Forma
     Ok(formatted.print().map_err(engine_error)?.into_code())
 }
 
+/// Prettier's CSS comment placement (W-141): a block comment that starts its
+/// own line at statement level — after `{`, `}`, `;` or at the start of the
+/// file — stays on its own line, so `*/.a {` and `*/ .a {` become `*/` and
+/// `.a {`. Biome keeps such a comment as the next node's leading trivia on
+/// the same line. Only whitespace is inserted, between tokens that whitespace
+/// already separates, so no token changes (decision 3). Strings, `url(…)`
+/// and, in SCSS, `//` comments are skipped.
+pub(crate) fn css_comment_breaks(text: &str, scss: bool) -> Cow<'_, str> {
+    let b = text.as_bytes();
+    let mut out: Option<String> = None;
+    let mut copied = 0;
+    let mut last = b'{'; // the start of the file is statement level
+    let mut i = 0;
+    while i < b.len() {
+        let c = b[i];
+        match c {
+            b'"' | b'\'' => {
+                i += 1;
+                while i < b.len() && b[i] != c && b[i] != b'\n' {
+                    i += if b[i] == b'\\' { 2 } else { 1 };
+                }
+                last = c;
+                i += 1;
+            }
+            b'/' if b.get(i + 1) == Some(&b'*') => {
+                let start = i;
+                let end = text[i + 2..].find("*/").map_or(b.len(), |e| i + 2 + e + 2);
+                let line_start = text[..start].rfind('\n').map_or(0, |n| n + 1);
+                let own_line = text[line_start..start].bytes().all(|x| x == b' ' || x == b'\t');
+                i = end;
+                let mut j = end;
+                while j < b.len() && (b[j] == b' ' || b[j] == b'\t') {
+                    j += 1;
+                }
+                let next_is_content = j < b.len() && !matches!(b[j], b'\n' | b'\r' | b'}') && !text[j..].starts_with("/*") && !(scss && text[j..].starts_with("//"));
+                if own_line && matches!(last, b'{' | b'}' | b';') && next_is_content && end <= b.len() && text[..end].ends_with("*/") {
+                    let indent = &text[line_start..start];
+                    let o = out.get_or_insert_with(String::new);
+                    o.push_str(&text[copied..end]);
+                    o.push('\n');
+                    o.push_str(indent);
+                    copied = j;
+                }
+            }
+            b'/' if scss && b.get(i + 1) == Some(&b'/') => {
+                i = text[i..].find('\n').map_or(b.len(), |n| i + n);
+            }
+            b'u' | b'U' if text[i..].len() >= 4 && text[i..i + 4].eq_ignore_ascii_case("url(") => {
+                i = text[i..].find(')').map_or(b.len(), |n| i + n + 1);
+                last = b')';
+            }
+            b' ' | b'\t' | b'\n' | b'\r' => i += 1,
+            _ => {
+                last = c;
+                i += 1;
+            }
+        }
+    }
+    match out {
+        Some(mut o) => {
+            o.push_str(&text[copied..]);
+            Cow::Owned(o)
+        }
+        None => Cow::Borrowed(text),
+    }
+}
+
 fn biome_css(text: &str, o: &FormatOptions, width: u16, source: biome_languages::CssFileSource) -> Result<String, FormatError> {
     use biome_css_formatter::context::CssFormatOptions;
+    let text = &*css_comment_breaks(text, source.is_scss());
     let parsed = biome_css_parser::parse_css(text, source, biome_css_parser::CssParserOptions::default());
     if parsed.has_errors() {
         return Err(FormatError::Syntax("biome_css_parser rejects it".into()));
@@ -293,6 +361,25 @@ fn markdown(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
 
 // ---- markup_fmt: HTML ----
 
+/// A `style=""` attribute as Prettier writes it (W-141): each declaration
+/// formatted as CSS, joined by `; `, with no `;` after the last. `None`
+/// leaves the attribute as written — a value that does not parse, or one
+/// with a comment.
+fn style_attribute(code: &str, o: &FormatOptions) -> Option<String> {
+    if code.trim().is_empty() || code.contains("/*") {
+        return None;
+    }
+    let mut inner = o.clone();
+    inner.line_width = 320;
+    let rule = crate::format(Language::Css, "x.css", &format!("a{{{code}}}"), &inner).ok()?;
+    let body = rule.strip_prefix("a {\n")?.trim_end().strip_suffix('}')?;
+    let mut declarations = Vec::new();
+    for line in body.lines() {
+        declarations.push(line.trim().strip_suffix(';')?);
+    }
+    Some(declarations.join("; "))
+}
+
 fn html(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
     let mut options = markup_fmt::config::FormatOptions::default();
     options.layout.print_width = o.line_width as usize;
@@ -303,13 +390,26 @@ fn html(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
     options.language.script_indent = true;
     options.language.style_indent = true;
     options.language.doctype_keyword_case = markup_fmt::config::DoctypeKeywordCase::Lower;
+    // Prettier writes every void element as `<br />` (W-141); html-validate's
+    // `void-style` leaves the spelling to the formatter (packs/html README).
+    options.language.html_void_self_closing = Some(true);
     options.language.ignore_comment_directive = markers::PRETTIER.into();
     options.layout.line_break = match o.eol() {
         options::EndOfLine::Lf => markup_fmt::config::LineBreak::Lf,
         options::EndOfLine::Crlf => markup_fmt::config::LineBreak::Crlf,
     };
     markup_fmt::format_text(text, markup_fmt::Language::Html, &options, |code, hints| {
-        let width = u16::try_from(hints.print_width).unwrap_or(u16::MAX);
+        if hints.attr && hints.ext == "css" {
+            return Ok(style_attribute(code, o).map_or(Cow::Borrowed(code), Cow::Owned));
+        }
+        // markup_fmt hands a `<style>` body the width left after its
+        // indentation but a `<script>` body the whole line; Prettier fits
+        // both inside the line (W-141).
+        let mut width = hints.print_width;
+        if !hints.attr && !matches!(hints.ext, "css" | "scss" | "less" | "sass") {
+            width = width.saturating_sub((hints.indent_level as usize + 1) * o.indent_width as usize);
+        }
+        let width = u16::try_from(width).unwrap_or(u16::MAX);
         Ok(match embedded(hints.ext, code, o, width) {
             Some(s) => Cow::Owned(s),
             None => Cow::Borrowed(code),
