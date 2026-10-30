@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 690 rules in 19 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 694 rules in 19 packs, plus the engine's 23 own rules.
 
 ## Configuring any rule — the forms
 
@@ -51,7 +51,7 @@ remap = { error = "warn" }
 | [security-ts](#security-ts) | `@codelaw/rules-security-ts` | — | 16 | 3 |
 | [security-html](#security-html) | `@codelaw/rules-security-html` | `codelaw-rules-security-html` | 19 | 1 |
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
-| [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 4 | 0 |
+| [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
 | [python](#python) | — | `codelaw-rules-python` | 109 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [engine](engine.md) | in `codelaw` | in `codelaw` | 23 | 0 |
@@ -692,8 +692,12 @@ Presets: `codelaw:deps/recommended`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`deps/incomplete-scan`](deps/incomplete-scan.md) | Every advisory source was read | `manual` | — | `deps/recommended` |
+| [`deps/licence`](deps/licence.md) | Every dependency has a licence the project allows | `manual` | — | `deps/recommended` |
+| [`deps/lockfile-sync`](deps/lockfile-sync.md) | The lockfile matches its manifest | `manual` | — | `deps/recommended` |
 | [`deps/outdated`](deps/outdated.md) | Dependencies are on their latest version | `suggest` | — | `deps/recommended` |
+| [`deps/runtime-agreement`](deps/runtime-agreement.md) | Every place that names the Node or Python version agrees | `suggest` | — | `deps/recommended` |
 | [`deps/stale-snapshot`](deps/stale-snapshot.md) | The dependency snapshot is recent | `manual` | — | `deps/recommended` |
+| [`deps/version-drift`](deps/version-drift.md) | A monorepo declares each dependency with one range | `suggest` | — | `deps/recommended` |
 | [`deps/vulnerable`](deps/vulnerable.md) | No dependency in use has a known vulnerability | `suggest` | — | `deps/recommended` |
 
 ## python

@@ -3,6 +3,10 @@
 
 [findings]
 "deps/incomplete-scan" = 0
+"deps/licence" = 0
+"deps/lockfile-sync" = 0
 "deps/outdated" = 0
+"deps/runtime-agreement" = 0
 "deps/stale-snapshot" = 0
+"deps/version-drift" = 0
 "deps/vulnerable" = 0

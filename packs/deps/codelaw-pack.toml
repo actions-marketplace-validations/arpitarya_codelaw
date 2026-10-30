@@ -3,4 +3,4 @@ version = "0.4.3"
 min_codelaw = "0.4.0"
 languages = ["json", "yaml", "toml"]
 presets = ["deps/recommended"]
-description = "codelaw's dependency rules: vulnerable packages and the version to move to, latest versions, the snapshot they read (SR-RULE-PACKS)"
+description = "codelaw's dependency rules: vulnerable packages and the version to move to, latest versions, licences, lockfiles in sync, monorepo version drift, runtime versions that agree (SR-RULE-PACKS)"
