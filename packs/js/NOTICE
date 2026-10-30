@@ -17,7 +17,12 @@ The rules whose `ported_from:` names a `biome/` rule reproduce the documented
 behaviour of Biome 2.6.4 (https://biomejs.dev, MIT License); no Biome code or
 documentation text is included.
 
-`js/no-default-import`, `js/no-unnecessary-callback-wrapper` and
-`js/switch-final-break` reproduce the documented behaviour of the TSLint rules
-of those names (https://palantir.github.io/tslint, Apache License 2.0); no
-TSLint code or documentation text is included.
+The `js/jsdoc-*` rules reproduce the documented behaviour of eslint-plugin-jsdoc
+65.4.2 (https://github.com/gajus/eslint-plugin-jsdoc, BSD-3-Clause License);
+the `js/import-*` rules that of eslint-plugin-import 2.32.0
+(https://github.com/import-js/eslint-plugin-import, MIT License) and
+eslint-plugin-import-x 4.17.1 (https://github.com/un-ts/eslint-plugin-import-x,
+MIT License); the rules whose `ported_from:` names an `oxlint/` rule that of
+Oxlint (https://oxc.rs, MIT License); and those naming a `tslint/` rule that of
+TSLint (https://palantir.github.io/tslint/, Apache License 2.0). No code or
+documentation text of any of them is included.

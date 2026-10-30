@@ -2,7 +2,7 @@
 
 # `js/no-unnecessary-callback-wrapper`
 
-**No arrow that only forwards to a function**
+**Pass the function, not a wrapper**
 
 | | |
 |---|---|
@@ -11,16 +11,16 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (passing `f` directly also passes the caller's extra arguments (`map` passes the index too) and drops the wrapper's `this`) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (unwrapping `x => f(x)` to `f` passes every argument the caller supplies (`map` passes the index too) and loses the receiver of `obj.f`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `tslint/no-unnecessary-callback-wrapper` |
 
 ## What it checks
 
-An arrow function that only passes its parameters, in order, to a named function (`(x) => f(x)`) is replaced by that function (`f`).
+An arrow function that only forwards its own parameters, in order, to another function is replaced by that function.
 
-**Why:** The wrapper adds a call and a name to read and does nothing.
+**Why:** The wrapper is a closure allocated on every evaluation and one more layer to read through for no behaviour.
 
 ## Configuration
 
@@ -129,13 +129,13 @@ codelaw config --print --for <file>                      # the resolved setting,
 #### Don't
 
 ```js
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```js
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### JSX
@@ -143,13 +143,13 @@ const names = users.map(format);
 #### Don't
 
 ```jsx
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```jsx
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### TypeScript
@@ -157,13 +157,13 @@ const names = users.map(format);
 #### Don't
 
 ```ts
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```ts
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### TSX
@@ -171,13 +171,13 @@ const names = users.map(format);
 #### Don't
 
 ```tsx
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```tsx
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ---

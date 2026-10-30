@@ -1,26 +1,30 @@
 ---
 id: js/no-unnecessary-callback-wrapper
-title: "No arrow that only forwards to a function"
+title: "Pass the function, not a wrapper"
 languages: [javascript, jsx, typescript, tsx]
 fix: suggest
-fix_reason: "passing `f` directly also passes the caller's extra arguments (`map` passes the index too) and drops the wrapper's `this`"
+fix_reason: "unwrapping `x => f(x)` to `f` passes every argument the caller supplies (`map` passes the index too) and loses the receiver of `obj.f`"
 stability: preview
 ported_from: [tslint/no-unnecessary-callback-wrapper]
 since: 0.5.0
 ---
 
-An arrow function that only passes its parameters, in order, to a named function (`(x) => f(x)`) is replaced by that function (`f`).
+An arrow function that only forwards its own parameters, in order, to another function is replaced by that function.
 
-**Why:** The wrapper adds a call and a name to read and does nothing.
+**Why:** The wrapper is a closure allocated on every evaluation and one more layer to read through for no behaviour.
 
 ```codelaw
 match:
   kind: arrow_function
-  not: { regex: '^async\b' }
-  all:
-    - has: { field: parameters, kind: formal_parameters, all: [{ has: { nthChild: 1, any: [{ kind: identifier, pattern: $A }, { kind: required_parameter, has: { field: pattern, kind: identifier, pattern: $A } }] } }, { not: { has: { nthChild: 2 } } }] }
-    - has: { field: body, kind: call_expression, all: [{ has: { field: function, kind: identifier, pattern: $F } }, { has: { field: arguments, all: [{ has: { nthChild: 1, pattern: $A } }, { not: { has: { nthChild: 2 } } }] } }] }
-message: "`$$MATCH` only forwards to `$F`; pass `$F`"
+  not: { regex: ^async\b }
+  any:
+    - pattern: $A => $F($A)
+    - pattern: ($A) => $F($A)
+    - pattern: ($A, $B) => $F($A, $B)
+    - pattern: ($A, $B, $C) => $F($A, $B, $C)
+constraints:
+  F: { any: [{kind: identifier}, {kind: member_expression}] }
+message: "This arrow only forwards to `$F`; pass `$F` itself"
 fix: "$F"
 ```
 
@@ -31,13 +35,13 @@ fix: "$F"
 #### Don't
 
 ```js
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```js
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### JSX
@@ -45,13 +49,13 @@ const names = users.map(format);
 #### Don't
 
 ```jsx
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```jsx
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### TypeScript
@@ -59,13 +63,13 @@ const names = users.map(format);
 #### Don't
 
 ```ts
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```ts
-const names = users.map(format);
+items.forEach(render);
 ```
 
 ### TSX
@@ -73,11 +77,11 @@ const names = users.map(format);
 #### Don't
 
 ```tsx
-const names = users.map((u) => format(u));
+items.forEach((item) => render(item));
 ```
 
 #### Do
 
 ```tsx
-const names = users.map(format);
+items.forEach(render);
 ```

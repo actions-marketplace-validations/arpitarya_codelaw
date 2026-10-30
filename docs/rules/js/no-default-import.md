@@ -2,7 +2,7 @@
 
 # `js/no-default-import`
 
-**No default imports**
+**Import by name, not the default**
 
 | | |
 |---|---|
@@ -11,16 +11,16 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the named export to import is the module's, which the importing file does not show) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the module's named export for this value is not written in this file) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `tslint/no-default-import` |
 
 ## What it checks
 
-Modules are imported by name, never by their default export: `import Button from "./button"` and `import { default as Button } from …` are both reported. Namespace imports and side-effect imports are fine.
+An `import` names the binding it takes (`import { parse } from ...`), not the module's default export. The import-side twin of `js/no-default-export`.
 
-**Why:** A default import can be named anything at each import site, so one thing ends up with several names; the import-side twin of `js/no-default-export`.
+**Why:** A default import can be given any local name, so the same thing is called different names across the codebase, and renaming the export doesn't reach its importers.
 
 ## Configuration
 
@@ -124,7 +124,8 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 
 ## How to fix
 
-1. Import the name the module exports: `import { Button } from "./button"` (export it by name there if it is not).
+1. Find the named export the module offers for this value (export it by name if it has none).
+2. Import it by that name: `import { name } from "module"`.
 
 ## Examples
 
@@ -133,13 +134,13 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 #### Don't
 
 ```js
-import Button from "./button";
+import parse from "./parse";
 ```
 
 #### Do
 
 ```js
-import { Button } from "./button";
+import { parse } from "./parse";
 ```
 
 ### JSX
@@ -147,13 +148,13 @@ import { Button } from "./button";
 #### Don't
 
 ```jsx
-import Button from "./button";
+import parse from "./parse";
 ```
 
 #### Do
 
 ```jsx
-import { Button } from "./button";
+import { parse } from "./parse";
 ```
 
 ### TypeScript
@@ -161,13 +162,13 @@ import { Button } from "./button";
 #### Don't
 
 ```ts
-import Button from "./button";
+import parse from "./parse";
 ```
 
 #### Do
 
 ```ts
-import { Button } from "./button";
+import { parse } from "./parse";
 ```
 
 ### TSX
@@ -175,13 +176,13 @@ import { Button } from "./button";
 #### Don't
 
 ```tsx
-import Button from "./button";
+import parse from "./parse";
 ```
 
 #### Do
 
 ```tsx
-import { Button } from "./button";
+import { parse } from "./parse";
 ```
 
 ---

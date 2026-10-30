@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 960 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1053 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,10 +35,10 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 165 | 12 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 233 | 12 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 62 | 1 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 134 | 4 |
-| [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
+| [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 74 | 18 |
 | [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 73 | 33 |
@@ -64,7 +64,7 @@ remap = { error = "warn" }
 
 ## js
 
-Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers`.
+Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers` · `codelaw:js/jsdoc`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
@@ -79,18 +79,80 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/for-direction`](js/for-direction.md) | A for loop's counter moves toward its end condition | `manual` | — | `js/recommended` |
 | [`js/getter-return`](js/getter-return.md) | A getter returns a value on every path | `manual` | — | `js/recommended` |
 | [`js/guard-for-in`](js/guard-for-in.md) | for-in is filtered | `manual` | — | *[rules] only* |
+| [`js/import-dynamic-import-chunkname`](js/import-dynamic-import-chunkname.md) | Dynamic imports name their webpack chunk | `suggest` | — | *[rules] only* |
+| [`js/import-enforce-node-protocol-usage`](js/import-enforce-node-protocol-usage.md) | Node.js built-ins are imported with node: | `auto` | — | *[rules] only* |
+| [`js/import-first`](js/import-first.md) | Imports come before other statements | `auto` | — | *[rules] only* |
 | [`js/import-groups`](js/import-groups.md) | Imports are grouped builtin, external, internal, relative | `auto` | `internal` | `js/conventions` |
+| [`js/import-max-dependencies`](js/import-max-dependencies.md) | At most ten imports in a module | `manual` | — | *[rules] only* |
+| [`js/import-no-absolute-path`](js/import-no-absolute-path.md) | Imports use relative paths, not absolute ones | `manual` | — | *[rules] only* |
+| [`js/import-no-amd`](js/import-no-amd.md) | No AMD define or require | `manual` | — | *[rules] only* |
+| [`js/import-no-anonymous-default-export`](js/import-no-anonymous-default-export.md) | Default exports have a name | `manual` | — | *[rules] only* |
+| [`js/import-no-internal-modules`](js/import-no-internal-modules.md) | Imports stop at a module's entry point | `manual` | — | *[rules] only* |
+| [`js/import-no-nodejs-modules`](js/import-no-nodejs-modules.md) | No Node.js built-in modules | `manual` | — | *[rules] only* |
+| [`js/import-no-relative-parent-imports`](js/import-no-relative-parent-imports.md) | No imports from a parent folder | `manual` | — | *[rules] only* |
+| [`js/import-no-webpack-loader-syntax`](js/import-no-webpack-loader-syntax.md) | No webpack loaders in import paths | `manual` | — | *[rules] only* |
+| [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `manual` | — | *[rules] only* |
+| [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-check-values`](js/jsdoc-check-values.md) | @version, @since and @kind take valid values | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `manual` | — | *[rules] only* |
+| [`js/jsdoc-empty-tags`](js/jsdoc-empty-tags.md) | Flag tags like @private carry no text | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-implements-on-classes`](js/jsdoc-implements-on-classes.md) | @implements only on classes | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-match-description`](js/jsdoc-match-description.md) | A function's description is a sentence | `manual` | — | *[rules] only* |
+| [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-no-blank-blocks`](js/jsdoc-no-blank-blocks.md) | No empty JSDoc blocks | `auto` | — | *[rules] only* |
+| [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `manual` | — | *[rules] only* |
+| [`js/jsdoc-prefer-import-tag`](js/jsdoc-prefer-import-tag.md) | @import a type instead of inline import() | `manual` | — | *[rules] only* |
+| [`js/jsdoc-reject-any-type`](js/jsdoc-reject-any-type.md) | No any or * types in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-reject-function-type`](js/jsdoc-reject-function-type.md) | No bare Function type in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-description`](js/jsdoc-require-description.md) | A function's JSDoc has a description | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-description-complete-sentence`](js/jsdoc-require-description-complete-sentence.md) | A JSDoc description is complete sentences | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-example`](js/jsdoc-require-example.md) | A function's JSDoc has an @example | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-file-overview`](js/jsdoc-require-file-overview.md) | Each file starts with an @file block | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-jsdoc`](js/jsdoc-require-jsdoc.md) | Function declarations have JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-next-description`](js/jsdoc-require-next-description.md) | @next says what is sent in | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-next-type`](js/jsdoc-require-next-type.md) | @next has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-param`](js/jsdoc-require-param.md) | A documented function documents its parameters | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-param-description`](js/jsdoc-require-param-description.md) | @param says what the parameter is | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-param-name`](js/jsdoc-require-param-name.md) | @param names its parameter | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-param-type`](js/jsdoc-require-param-type.md) | @param has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-property`](js/jsdoc-require-property.md) | An object @typedef lists its properties | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-property-description`](js/jsdoc-require-property-description.md) | @property says what the property is | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-property-name`](js/jsdoc-require-property-name.md) | @property names its property | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-property-type`](js/jsdoc-require-property-type.md) | @property has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-rejects`](js/jsdoc-require-rejects.md) | A function that rejects documents @rejects | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-returns`](js/jsdoc-require-returns.md) | A function that returns a value documents @returns | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-returns-check`](js/jsdoc-require-returns-check.md) | @returns only where a value is returned | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-returns-description`](js/jsdoc-require-returns-description.md) | @returns says what is returned | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-returns-type`](js/jsdoc-require-returns-type.md) | @returns has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-template`](js/jsdoc-require-template.md) | Type parameters are documented with @template | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-template-description`](js/jsdoc-require-template-description.md) | @template says what the type parameter is | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-throws`](js/jsdoc-require-throws.md) | A function that throws documents @throws | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-throws-description`](js/jsdoc-require-throws-description.md) | @throws says when | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-throws-type`](js/jsdoc-require-throws-type.md) | @throws has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-yields`](js/jsdoc-require-yields.md) | A generator that yields documents @yields | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-yields-check`](js/jsdoc-require-yields-check.md) | @yields only where a value is yielded | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-yields-description`](js/jsdoc-require-yields-description.md) | @yields says what is yielded | `manual` | — | *[rules] only* |
+| [`js/jsdoc-require-yields-type`](js/jsdoc-require-yields-type.md) | @yields has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-ts-ban-ts-comment`](js/jsdoc-ts-ban-ts-comment.md) | No @ts-ignore or @ts-nocheck in JavaScript | `manual` | — | *[rules] only* |
+| [`js/jsdoc-ts-no-empty-object-type`](js/jsdoc-ts-no-empty-object-type.md) | No {} type in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/match-all-needs-global`](js/match-all-needs-global.md) | matchAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/max-depth`](js/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `js/size` |
 | [`js/max-lines`](js/max-lines.md) | A file stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `js/size` |
 | [`js/max-lines-per-function`](js/max-lines-per-function.md) | A function stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `include_nested`, `include_iife`, `ignore_names` | `js/size` |
 | [`js/max-params`](js/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `count_this`, `count_varargs`, `ignore_names`, `ignore_overrides`, `ignore_declarations`, `ignore_constructor_injection` | `js/size` |
 | [`js/no-accumulating-spread`](js/no-accumulating-spread.md) | No spread of the accumulator in reduce | `manual` | — | `js/recommended` |
 | [`js/no-alert`](js/no-alert.md) | No alert, confirm or prompt | `manual` | — | *[rules] only* |
+| [`js/no-array-method-on-arguments`](js/no-array-method-on-arguments.md) | arguments has no array methods | `suggest` | — | *[rules] only* |
 | [`js/no-async-promise-executor`](js/no-async-promise-executor.md) | A Promise executor is not an async function | `manual` | — | `js/recommended` |
 | [`js/no-await-in-loop`](js/no-await-in-loop.md) | No await inside a loop | `manual` | — | *[rules] only* |
 | [`js/no-bitwise`](js/no-bitwise.md) | No bitwise operators | `manual` | — | *[rules] only* |
 | [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `manual` | — | *[rules] only* |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `manual` | — | `js/recommended` |
+| [`js/no-char-at-multichar-compare`](js/no-char-at-multichar-compare.md) | charAt() compared with a longer string | `manual` | — | *[rules] only* |
 | [`js/no-class-assign`](js/no-class-assign.md) | A class name is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-compare-neg-zero`](js/no-compare-neg-zero.md) | No comparisons against -0 | `manual` | — | `js/recommended` |
 | [`js/no-cond-assign`](js/no-cond-assign.md) | No assignment in a condition, unless doubly parenthesised | `manual` | — | `js/recommended` |
@@ -103,7 +165,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-control-regex`](js/no-control-regex.md) | No control characters in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-debugger`](js/no-debugger.md) | No debugger statements | `auto` | — | `js/recommended` |
 | [`js/no-default-export`](js/no-default-export.md) | No default exports | `manual` | — | `js/conventions` |
-| [`js/no-default-import`](js/no-default-import.md) | No default imports | `manual` | — | *[rules] only* |
+| [`js/no-default-import`](js/no-default-import.md) | Import by name, not the default | `manual` | — | *[rules] only* |
 | [`js/no-delete-var`](js/no-delete-var.md) | No delete on a variable | `manual` | — | `js/recommended` |
 | [`js/no-document-cookie-biome`](js/no-document-cookie-biome.md) | No direct writes to document.cookie | `manual` | — | `js/recommended` |
 | [`js/no-dupe-args`](js/no-dupe-args.md) | No two parameters share a name | `manual` | — | `js/recommended` |
@@ -118,6 +180,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-empty-pattern`](js/no-empty-pattern.md) | No empty destructuring patterns | `manual` | — | `js/recommended` |
 | [`js/no-empty-static-block`](js/no-empty-static-block.md) | No empty static blocks | `auto` | — | `js/recommended` |
 | [`js/no-eq-null`](js/no-eq-null.md) | No == null | `manual` | — | *[rules] only* |
+| [`js/no-erasing-op`](js/no-erasing-op.md) | Multiplying by zero erases the value | `suggest` | — | *[rules] only* |
 | [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | *[rules] only* |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-extend-native`](js/no-extend-native.md) | No changes to built-in prototypes | `manual` | — | *[rules] only* |
@@ -136,6 +199,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-labels`](js/no-labels.md) | No labels | `manual` | — | *[rules] only* |
 | [`js/no-lone-blocks`](js/no-lone-blocks.md) | No needless nested blocks | `manual` | — | *[rules] only* |
 | [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `manual` | — | `js/recommended` |
+| [`js/no-map-spread`](js/no-map-spread.md) | No object spread of each item in map() | `suggest` | — | *[rules] only* |
 | [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `manual` | — | `js/recommended` |
 | [`js/no-misrefactored-shorthand-assign`](js/no-misrefactored-shorthand-assign.md) | No compound assignment that repeats its target | `manual` | — | `js/recommended` |
 | [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `manual` | — | *[rules] only* |
@@ -168,13 +232,15 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-string-case-mismatch`](js/no-string-case-mismatch.md) | No comparison that case conversion makes impossible | `manual` | — | `js/recommended` |
 | [`js/no-template-curly-in-string`](js/no-template-curly-in-string.md) | No template placeholder in a plain string | `manual` | — | *[rules] only* |
 | [`js/no-this-before-super`](js/no-this-before-super.md) | this is not used before super() in a derived constructor | `manual` | — | `js/recommended` |
+| [`js/no-this-in-exported-function`](js/no-this-in-exported-function.md) | No this in an exported function | `manual` | — | *[rules] only* |
 | [`js/no-this-in-static`](js/no-this-in-static.md) | The class name, not this, in a static method | `suggest` | — | `js/recommended` |
 | [`js/no-throw-literal`](js/no-throw-literal.md) | Throw Error objects | `manual` | — | *[rules] only* |
 | [`js/no-unassigned-vars`](js/no-unassigned-vars.md) | A variable that is read is also assigned | `manual` | — | `js/recommended` |
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `manual` | `env`, `globals`, `typeof` | `js/recommended` |
 | [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `manual` | — | `js/recommended` |
-| [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | No arrow that only forwards to a function | `suggest` | — | *[rules] only* |
+| [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | *[rules] only* |
+| [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | Pass the function, not a wrapper | `suggest` | — | *[rules] only* |
 | [`js/no-unreachable`](js/no-unreachable.md) | No code after a return, throw, break or continue | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `manual` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
@@ -199,6 +265,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-void`](js/no-void.md) | No void operator | `manual` | — | *[rules] only* |
 | [`js/no-void-type-return`](js/no-void-type-return.md) | A void function returns no value | `manual` | — | `js/recommended` |
 | [`js/no-with`](js/no-with.md) | No with statements | `manual` | — | `js/recommended` |
+| [`js/number-arg-out-of-range`](js/number-arg-out-of-range.md) | Number method argument out of range | `manual` | — | *[rules] only* |
 | [`js/prefer-const`](js/prefer-const.md) | const for variables that are never reassigned | `auto` | — | `js/typescript` |
 | [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
 | [`js/prefer-object-has-own`](js/prefer-object-has-own.md) | Object.hasOwn rather than hasOwnProperty.call | `auto` | — | *[rules] only* |
@@ -224,9 +291,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/promise-spec-only`](js/promise-spec-only.md) | Only standard Promise methods | `manual` | — | *[rules] only* |
 | [`js/promise-valid-params`](js/promise-valid-params.md) | Promise methods get the number of arguments they take | `manual` | — | `js/recommended` |
 | [`js/radix`](js/radix.md) | parseInt gets a radix | `suggest` | — | *[rules] only* |
+| [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/require-yield`](js/require-yield.md) | A generator function yields | `manual` | — | `js/recommended` |
 | [`js/skipped-test`](js/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `js/markers` |
-| [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last switch clause | `auto` | — | *[rules] only* |
+| [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last case | `auto` | — | *[rules] only* |
 | [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `manual` | — | *[rules] only* |
 | [`js/todo-marker`](js/todo-marker.md) | JavaScript and TypeScript TODO comments carry a ticket and, when asked, a date | `manual` | — | `js/markers` |
 | [`js/use-instead`](js/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `js/recommended` |
@@ -450,16 +518,41 @@ Presets: `codelaw:node/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
+| [`node/callback-return`](node/callback-return.md) | Return after calling the callback | `suggest` | — | *[rules] only* |
+| [`node/exports-style`](node/exports-style.md) | module.exports, not the exports shortcut | `auto` | — | *[rules] only* |
+| [`node/global-require`](node/global-require.md) | require() at the top of the module | `manual` | — | *[rules] only* |
+| [`node/handle-callback-err`](node/handle-callback-err.md) | Handle the err argument | `manual` | — | *[rules] only* |
 | [`node/hashbang`](node/hashbang.md) | Commands start with a Node.js hashbang, and nothing else has one | `suggest` | — | `node/recommended` |
+| [`node/no-async-express-handler`](node/no-async-express-handler.md) | No async Express route handlers | `manual` | — | *[rules] only* |
+| [`node/no-callback-literal`](node/no-callback-literal.md) | Pass an Error, not a string, to the callback | `suggest` | — | *[rules] only* |
 | [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `manual` | — | `node/recommended` |
 | [`node/no-exports-assign`](node/no-exports-assign.md) | No assigning to exports | `manual` | — | `node/recommended` |
 | [`node/no-extraneous-import`](node/no-extraneous-import.md) | Imported packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-extraneous-require`](node/no-extraneous-require.md) | Required packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-missing-import`](node/no-missing-import.md) | Imported project paths must exist | `manual` | — | `node/recommended` |
 | [`node/no-missing-require`](node/no-missing-require.md) | Required project paths must exist | `manual` | — | `node/recommended` |
+| [`node/no-mixed-requires`](node/no-mixed-requires.md) | Don't mix requires with other declarations | `manual` | — | *[rules] only* |
+| [`node/no-new-require`](node/no-new-require.md) | No new require(...) | `suggest` | — | *[rules] only* |
+| [`node/no-path-concat`](node/no-path-concat.md) | Join paths with path.join, not + | `suggest` | — | *[rules] only* |
+| [`node/no-process-env`](node/no-process-env.md) | No process.env outside the config module | `manual` | — | *[rules] only* |
 | [`node/no-process-exit`](node/no-process-exit.md) | No process.exit() | `manual` | — | `node/recommended` |
+| [`node/no-sync`](node/no-sync.md) | No synchronous *Sync calls | `manual` | — | *[rules] only* |
+| [`node/no-top-level-await`](node/no-top-level-await.md) | No await at the top level of a module | `manual` | — | *[rules] only* |
 | [`node/no-unpublished-import`](node/no-unpublished-import.md) | Published files import only what is published | `manual` | — | `node/recommended` |
 | [`node/no-unpublished-require`](node/no-unpublished-require.md) | Published files require only what is published | `manual` | — | `node/recommended` |
+| [`node/prefer-global-buffer`](node/prefer-global-buffer.md) | Use the global Buffer | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-console`](node/prefer-global-console.md) | Use the global console | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-crypto`](node/prefer-global-crypto.md) | Use the global crypto | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-process`](node/prefer-global-process.md) | Use the global process | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-text-decoder`](node/prefer-global-text-decoder.md) | Use the global TextDecoder | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-text-encoder`](node/prefer-global-text-encoder.md) | Use the global TextEncoder | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-timers`](node/prefer-global-timers.md) | Use the global timer functions | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-url`](node/prefer-global-url.md) | Use the global URL | `suggest` | — | *[rules] only* |
+| [`node/prefer-global-url-search-params`](node/prefer-global-url-search-params.md) | Use the global URLSearchParams | `suggest` | — | *[rules] only* |
+| [`node/prefer-import-assert-strict`](node/prefer-import-assert-strict.md) | Import assert/strict | `suggest` | — | *[rules] only* |
+| [`node/prefer-node-protocol`](node/prefer-node-protocol.md) | Import built-in modules with node: | `auto` | — | *[rules] only* |
+| [`node/prefer-promises-dns`](node/prefer-promises-dns.md) | Use the promise API of dns | `manual` | — | *[rules] only* |
+| [`node/prefer-promises-fs`](node/prefer-promises-fs.md) | Use the promise API of fs | `manual` | — | *[rules] only* |
 
 ## stencil
 

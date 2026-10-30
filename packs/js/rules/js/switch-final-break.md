@@ -1,6 +1,6 @@
 ---
 id: js/switch-final-break
-title: "No break at the end of the last switch clause"
+title: "No break at the end of the last case"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
@@ -8,19 +8,20 @@ ported_from: [tslint/switch-final-break]
 since: 0.5.0
 ---
 
-The last clause of a `switch` does not end in a bare `break;`: control leaves the `switch` there anyway. A labelled `break` is left alone.
+The last clause of a `switch` doesn't end in `break` (the upstream default, `"never"`). A labelled `break` is left alone.
 
-**Why:** The last `break` does nothing, and one less line to read is one less to wonder about.
+**Why:** The `break` jumps to where control already goes next; it is noise in a construct that is already noisy.
 
 ```codelaw
 match:
   kind: break_statement
-  regex: '^break\s*;?$'
-  nthChild: { position: 1, reverse: true }
   inside:
-    any: [{ kind: switch_case }, { kind: switch_default }]
-    nthChild: { position: 1, reverse: true }
-message: "This `break` ends the last clause; drop it"
+    any: [{kind: switch_case}, {kind: switch_default}]
+    not: { precedes: { stopBy: end, any: [{kind: switch_case}, {kind: switch_default}] } }
+  all:
+    - not: { has: { kind: statement_identifier } }
+    - not: { precedes: { stopBy: end, regex: ".", not: { kind: comment } } }
+message: "This `break` ends the last clause anyway; remove it"
 fix:
   - remove
 ```
@@ -32,9 +33,9 @@ fix:
 #### Don't
 
 ```js
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -45,9 +46,9 @@ switch (kind) {
 #### Do
 
 ```js
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -59,9 +60,9 @@ switch (kind) {
 #### Don't
 
 ```jsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -72,9 +73,9 @@ switch (kind) {
 #### Do
 
 ```jsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -86,9 +87,9 @@ switch (kind) {
 #### Don't
 
 ```ts
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -99,9 +100,9 @@ switch (kind) {
 #### Do
 
 ```ts
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -113,9 +114,9 @@ switch (kind) {
 #### Don't
 
 ```tsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -126,9 +127,9 @@ switch (kind) {
 #### Do
 
 ```tsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();

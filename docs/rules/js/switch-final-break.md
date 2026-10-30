@@ -2,7 +2,7 @@
 
 # `js/switch-final-break`
 
-**No break at the end of the last switch clause**
+**No break at the end of the last case**
 
 | | |
 |---|---|
@@ -18,9 +18,9 @@
 
 ## What it checks
 
-The last clause of a `switch` does not end in a bare `break;`: control leaves the `switch` there anyway. A labelled `break` is left alone.
+The last clause of a `switch` doesn't end in `break` (the upstream default, `"never"`). A labelled `break` is left alone.
 
-**Why:** The last `break` does nothing, and one less line to read is one less to wonder about.
+**Why:** The `break` jumps to where control already goes next; it is noise in a construct that is already noisy.
 
 ## Configuration
 
@@ -129,9 +129,9 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 #### Don't
 
 ```js
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -142,9 +142,9 @@ switch (kind) {
 #### Do
 
 ```js
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -156,9 +156,9 @@ switch (kind) {
 #### Don't
 
 ```jsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -169,9 +169,9 @@ switch (kind) {
 #### Do
 
 ```jsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -183,9 +183,9 @@ switch (kind) {
 #### Don't
 
 ```ts
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -196,9 +196,9 @@ switch (kind) {
 #### Do
 
 ```ts
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -210,9 +210,9 @@ switch (kind) {
 #### Don't
 
 ```tsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
@@ -223,9 +223,9 @@ switch (kind) {
 #### Do
 
 ```tsx
-switch (kind) {
+switch (mode) {
   case "a":
-    run();
+    start();
     break;
   default:
     stop();
