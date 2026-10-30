@@ -348,16 +348,35 @@ impl ConfigFile {
         for (old, new, home) in RENAMED_RULES.iter().filter(|(o, _, _)| renamed.contains(o)) {
             deprecations.push(format!("{at}: rule `{old}` is now `{new}`, in {home}; rename it in the config (it runs as `{new}` until the next minor release)"));
         }
-        for e in raw.deps.ignore.iter().flatten() {
+        let named = |p: &str| p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
+        let licence_ignore = raw.deps.licence.as_ref().and_then(|l| l.ignore.as_ref());
+        for (key, e) in raw.deps.ignore.iter().flatten().map(|e| ("[deps] ignore", e)).chain(licence_ignore.into_iter().flatten().map(|e| ("[deps.licence] ignore", e))) {
             let p = e.package();
-            let named = p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
-            if !named {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            if !named(p) {
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
             }
             if let RawDepsIgnore::Dated(d) = e
                 && let Some(x) = d.expires.as_deref().filter(|x| !is_date(x))
             {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+            }
+        }
+        if let Some(d) = &raw.deps.drift {
+            if let Some(p) = d.policy.as_deref().filter(|p| !crate::raw::DRIFT_POLICIES.contains(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] policy`: `{p}` is not one of `highest`, `root`")));
+            }
+            if let Some(p) = d.ignore.iter().flatten().find(|p| !named(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            }
+        }
+        if let Some(src) = raw.deps.runtime.as_ref().and_then(|r| r.source.as_ref()) {
+            for (rt, v, list) in [("node", &src.node, crate::raw::RUNTIME_SOURCES_NODE), ("python", &src.python, crate::raw::RUNTIME_SOURCES_PYTHON)] {
+                if let Some(v) = v.as_deref().filter(|v| !list.contains(v)) {
+                    return Err(ConfigError::new(
+                        Some(path),
+                        format!("`[deps.runtime] source.{rt}`: `{v}` is not one of {}", list.iter().map(|k| format!("`{k}`")).collect::<Vec<_>>().join(", ")),
+                    ));
+                }
             }
         }
         let mut source_names = BTreeSet::new();

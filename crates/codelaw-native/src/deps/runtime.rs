@@ -62,10 +62,6 @@ impl Runtime {
     }
 }
 
-/// The names `[deps.runtime] source` takes, per runtime.
-pub const SOURCES_NODE: &[&str] = &["engines.node", "volta.node", ".nvmrc", ".node-version", ".tool-versions", "mise.toml"];
-pub const SOURCES_PYTHON: &[&str] = &["requires-python", ".python-version", ".tool-versions", "mise.toml"];
-
 #[derive(Clone, Debug, PartialEq)]
 enum Kind {
     Range(String),
@@ -84,7 +80,6 @@ struct Source {
     /// Byte offsets of `value` in the file.
     start: usize,
     end: usize,
-    line: usize,
     kind: Kind,
     /// How the message names it.
     label: String,
@@ -309,8 +304,8 @@ fn workflow(text: &str, action: &str, key: &str) -> Vec<(String, usize, usize, b
 fn sources(rt: Runtime, ctx: &NativeContext<'_>) -> Vec<Source> {
     let read = |p: &str| if p == ctx.file.path() { Some(ctx.source.to_owned()) } else { ctx.file.read(p) };
     let mut out = Vec::new();
-    let mut push = |name: &'static str, path: &str, text: &str, (value, start, end): (String, usize, usize), kind: Kind, label: String, bare: bool| {
-        out.push(Source { name, path: path.to_owned(), value, start, end, line: line_of(text, start), kind, label, bare });
+    let mut push = |name: &'static str, path: &str, _text: &str, (value, start, end): (String, usize, usize), kind: Kind, label: String, bare: bool| {
+        out.push(Source { name, path: path.to_owned(), value, start, end, kind, label, bare });
     };
     let pinned = |v: &str| pin(v).map(Kind::Pin);
     match rt {

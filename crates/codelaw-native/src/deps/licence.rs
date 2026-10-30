@@ -117,6 +117,9 @@ impl NativeRule for Licence {
         let dir = folder_of(path);
         let read = |p: &str| ctx.file.read(p);
         let deps = manifest_deps(ctx.language, path, node.get_inner_node(), ctx.source);
+        // The direct versions judged here: a lockfile that does not mark
+        // them direct (yarn's) lists them again.
+        let mut direct: Vec<(String, String)> = Vec::new();
         for eco in [Ecosystem::Npm, Ecosystem::Pypi] {
             let mine: Vec<_> = deps.iter().filter(|d| d.ecosystem == eco).collect();
             if mine.is_empty() {
@@ -130,6 +133,7 @@ impl NativeRule for Licence {
                     continue;
                 }
                 let Some(version) = installed.get(&lock_name(dep)).cloned().or_else(|| written_version(dep)) else { continue };
+                direct.push((lock_name(dep), version.clone()));
                 let Some(text) = licence_of(pkg, &version) else { continue };
                 let j = judged(&lists, text);
                 if !wanted(&j) {
@@ -148,7 +152,7 @@ impl NativeRule for Licence {
         }
         let lock_file = lockfile.rsplit('/').next().unwrap_or(&lockfile).to_owned();
         let line_end = ctx.source.find('\n').unwrap_or(ctx.source.len());
-        for l in all_locked(&lock_file, &text).into_iter().filter(|l| !l.direct) {
+        for l in all_locked(&lock_file, &text).into_iter().filter(|l| !l.direct && !direct.contains(&(l.name.clone(), l.version.clone()))) {
             let key = format!("{}:{}", eco.prefix(), l.name);
             let Some(pkg) = snap.packages.get(&key) else { continue };
             // A transitive package is in the snapshot only with a licence

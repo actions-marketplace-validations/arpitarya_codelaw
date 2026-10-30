@@ -322,6 +322,23 @@ impl Config {
         push("deps.ignore", v, s);
         let (v, s) = root_key(&["deps", "max_snapshot_age"], |r| r.deps.max_snapshot_age.map(|d| json!(d.0)), json!(14));
         push("deps.max_snapshot_age", v, s);
+        // `[deps.licence]`, `[deps.drift]`, `[deps.runtime]` (W-129).
+        let (v, s) = root_key(&["deps", "licence", "allow"], |r| r.deps.licence.as_ref().and_then(|l| l.allow.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.licence.allow", v, s);
+        let (v, s) = root_key(&["deps", "licence", "deny"], |r| r.deps.licence.as_ref().and_then(|l| l.deny.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.licence.deny", v, s);
+        let (v, s) = root_key(&["deps", "licence", "unknown"], |r| r.deps.licence.as_ref().and_then(|l| l.unknown.as_ref()).map(|x| json!(x.0)), json!("warn"));
+        push("deps.licence.unknown", v, s);
+        let (v, s) = root_key(&["deps", "licence", "ignore"], |r| r.deps.licence.as_ref().and_then(|l| l.ignore.as_ref()).and_then(|x| serde_json::to_value(x).ok()), json!([]));
+        push("deps.licence.ignore", v, s);
+        let (v, s) = root_key(&["deps", "drift", "policy"], |r| r.deps.drift.as_ref().and_then(|d| d.policy.as_ref()).map(|x| json!(x)), json!("highest"));
+        push("deps.drift.policy", v, s);
+        let (v, s) = root_key(&["deps", "drift", "ignore"], |r| r.deps.drift.as_ref().and_then(|d| d.ignore.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.drift.ignore", v, s);
+        let (v, s) = root_key(&["deps", "runtime", "source", "node"], |r| r.deps.runtime.as_ref().and_then(|d| d.source.as_ref()).and_then(|x| x.node.as_ref()).map(|x| json!(x)), json!("engines.node"));
+        push("deps.runtime.source.node", v, s);
+        let (v, s) = root_key(&["deps", "runtime", "source", "python"], |r| r.deps.runtime.as_ref().and_then(|d| d.source.as_ref()).and_then(|x| x.python.as_ref()).map(|x| json!(x)), json!("requires-python"));
+        push("deps.runtime.source.python", v, s);
         // `[css]` (SR-PROJECT-GRAPH decision 8).
         let (v, s) = root_key(&["css", "modules"], |r| r.css.modules.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!([]));
         push("css.modules", v, s);

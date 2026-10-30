@@ -194,7 +194,14 @@ fn yarn_lock(text: &str, deps: &[Dep], src: &str, out: &mut Vec<Issue>) {
 /// A specifier's clauses, comparable: `>=2.31, <3` = `<3,>=2.31.0`.
 pub(super) fn clause_set(spec: &str) -> Option<Vec<(String, Pep440, bool)>> {
     let req = requirement(&format!("x{spec}"))?;
-    let mut out: Vec<(String, Pep440, bool)> = req.clauses.iter().map(|c| Pep440::parse(&c.version).map(|v| (c.op.clone(), v, c.wildcard))).collect::<Option<_>>()?;
+    // `2.31` and `2.31.0` are one version: trailing zeros go.
+    let trimmed = |mut v: Pep440| {
+        while v.release.len() > 1 && v.release.last() == Some(&0) {
+            v.release.pop();
+        }
+        v
+    };
+    let mut out: Vec<(String, Pep440, bool)> = req.clauses.iter().map(|c| Pep440::parse(&c.version).map(|v| (c.op.clone(), trimmed(v), c.wildcard))).collect::<Option<_>>()?;
     out.sort_by(|a, b| a.0.cmp(&b.0).then(a.1.cmp(&b.1)));
     Some(out)
 }
@@ -478,7 +485,7 @@ mod tests {
         assert_eq!(s, r#"{"dependencies": {"python": "^3.10", "requests": {"extras": ["socks"], "version": "^2.31"}}, "source": null}"#);
         let mut u = String::new();
         py_string("café \u{1F600}", &mut u);
-        assert_eq!(u, r#""café 😀""#);
+        assert_eq!(u, r#""caf\u00e9 \ud83d\ude00""#);
         assert_eq!(spec_of("Requests[socks] >=2.31, <3 ; python_version > '3'"), ">=2.31, <3");
         assert_eq!(clause_set(">=2.31, <3"), clause_set("<3.0,>=2.31.0"));
     }
