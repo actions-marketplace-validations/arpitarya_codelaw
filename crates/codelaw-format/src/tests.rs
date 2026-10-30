@@ -226,19 +226,18 @@ fn html_style_attributes_and_scripts_match_prettier() {
     }
 }
 
-// TEMP-W141-MEASURE (removed before landing)
+/// W-141 (DoD 3b): Prettier's `arrowParens`, `bracketSpacing`,
+/// `jsxSingleQuote` and `quoteProps` reach Biome.
 #[test]
-#[ignore]
-fn temp_measure_corpus() {
-    let Ok(dir) = std::env::var("W141_DIR") else { return };
-    for e in std::fs::read_dir(&dir).unwrap() {
-        let p = e.unwrap().path();
-        let Some(lang) = Language::from_path(&p) else { continue };
-        let text = std::fs::read_to_string(&p).unwrap();
-        let name = p.file_name().unwrap().to_string_lossy().to_string();
-        match format(lang, &name, &text, &FormatOptions::default()) {
-            Ok(out) => std::fs::write(&p, out).unwrap(),
-            Err(_) => println!("{name}\n  format/failed"),
-        }
-    }
+fn prettier_js_keys_reach_the_engine() {
+    let text = "const f = (a) => ({ \"b\": a, c: <i x=\"y\" /> });\n";
+    assert_eq!(fmt(Language::Jsx, "a.jsx", text), "const f = (a) => ({ b: a, c: <i x=\"y\" /> });\n");
+    let o = FormatOptions {
+        arrow_parens: ArrowParens::Avoid,
+        bracket_spacing: false,
+        jsx_quote_style: QuoteStyle::Single,
+        quote_props: QuoteProps::Preserve,
+        ..Default::default()
+    };
+    assert_eq!(format(Language::Jsx, "a.jsx", text, &o).unwrap(), "const f = a => ({\"b\": a, c: <i x='y' />});\n");
 }

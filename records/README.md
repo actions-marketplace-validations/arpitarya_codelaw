@@ -254,6 +254,7 @@ yet is owned by an open `W-nn`.
 | `packaging/vscode` | SR-EDITOR | decision 4: the thin VS Code extension (SR-PACKAGES decision 6 is how it ships) |
 | `scripts/version.py` | SR-PACKAGES | decision 7: the one version, written and checked everywhere |
 | `scripts/format-parity.py` | SR-FORMATTER | the Prettier/Black parity measurement in its Consequences |
+| `scripts/format-corpus.py` | SR-FORMATTER | fetches W-141's pinned real-world corpus for the parity measurement |
 | `scripts/law-gate.py` | SR-PACKAGES | decision 11: refuses a release while the engine lacks `format`, `mcp` or `lsp` (L6 decision 3, L7) |
 | `scripts/package.py` | SR-PACKAGES | decision 11: assembles every package and runs the release checks |
 | `scripts/smoke.sh` | SR-PACKAGES | decision 11: the npm-vs-PyPI install smoke |

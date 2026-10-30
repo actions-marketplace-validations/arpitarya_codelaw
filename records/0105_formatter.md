@@ -10,6 +10,7 @@ feature: "formatting"
 owns:
   - crates/codelaw-format
   - scripts/format-parity.py
+  - scripts/format-corpus.py
 laws: [L0, L2, L3, L4, L5, L6]
 timestamp: 2026-10-24T12:00:00Z
 content_sha: ""
@@ -184,6 +185,19 @@ Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclu
   The SCSS row was measured separately on 2026-10-26 (`W-62`), with the same script and pins (Prettier 3.6.2, defaults) at commit `84b392f` plus the W-62 change: 2,288 files in all, 212 of them SCSS— every fenced `scss` example in `packs/` and the files of `fixtures/scss/corpus`; the other rows are the 2026-10-21 run's.
 
   `markup_fmt` (HTML) is the one engine far from Prettier. Markdown differs in a few lines of most files. TOML has no Prettier or Black formatter to compare against.
+- **Real projects' files, measured 2026-10-30 (`W-141`)** with `scripts/format-corpus.py` (pinned sources, fetched outside the repo: Bootstrap 5.3.8, Bulma 1.0.4, Primer CSS 22.3.3, MDN learning-area, GitHub's starter workflows, ESLint, typescript-eslint — all MIT or CC0, none vendored) and `scripts/format-parity.py --corpus`, against Prettier 3.9.10 with defaults. Identical files:
+
+  | language | files | 0.4.3 | after W-141 | oxfmt 0.75.0 (measured, not in codelaw) |
+  |---|--:|--:|--:|--:|
+  | CSS | 78 | 73.1 % | 74.4 % | 88.6 % |
+  | HTML | 147 | 18.4 % | 68.7 % | 100 % (Prettier itself, through Node) |
+  | SCSS | 150 | 80.7 % | 80.7 % | 86.0 % |
+  | YAML | 149 | 89.9 % | 89.9 % | 97.3 % |
+  | Markdown | 150 | 93.3 % | 93.3 % | 97.3 % |
+  | JS · JSX | 139 | 97.1 % | 97.1 % | 97.8 % |
+  | TS · TSX | 129 | 82.2 % | 82.2 % | 82.9 % |
+
+  What `W-141` changed, each in `engines.rs`: a block comment that starts its own line at statement level keeps it (`*/.a {` printed as `*/ .a {` before; only whitespace is inserted, so no token changes); HTML void elements end in ` />`; a `style=""` attribute is formatted as CSS declarations joined by `; `; a `<script>` body fits inside its indentation. What is left is inside the engines: Biome's custom-property lists, `calc()` breaks and `a/b` spacing (CSS, SCSS); `markup_fmt` breaking inside an inline element where Prettier moves the element to the next line, and `<caption>`/empty `<style>` layout (HTML).
 - **The binary grows** by the size of six formatter engines. Accepted, because each package must be complete ([L6](0008_LAW-6-python-and-node-packages.md) decision 3).
 
 ### Alternatives considered

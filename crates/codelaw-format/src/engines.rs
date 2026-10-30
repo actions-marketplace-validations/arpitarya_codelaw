@@ -109,7 +109,7 @@ fn biome_widths(o: &FormatOptions, width: u16) -> Result<(IndentWidth, LineWidth
 }
 
 fn biome_js(source: JsFileSource, text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
-    use biome_js_formatter::context::{JsFormatOptions, Semicolons, trailing_commas::TrailingCommas};
+    use biome_js_formatter::context::{ArrowParentheses, JsFormatOptions, QuoteProperties, Semicolons, trailing_commas::TrailingCommas};
     let parsed = biome_js_parser::parse(text, source, biome_js_parser::JsParserOptions::default());
     if parsed.has_errors() {
         return Err(FormatError::Syntax("biome_js_parser rejects it".into()));
@@ -132,6 +132,19 @@ fn biome_js(source: JsFileSource, text: &str, o: &FormatOptions, width: u16) -> 
             options::TrailingCommas::All => TrailingCommas::All,
             options::TrailingCommas::Es5 => TrailingCommas::Es5,
             options::TrailingCommas::None => TrailingCommas::None,
+        })
+        .with_arrow_parentheses(match o.arrow_parens {
+            options::ArrowParens::Always => ArrowParentheses::Always,
+            options::ArrowParens::Avoid => ArrowParentheses::AsNeeded,
+        })
+        .with_bracket_spacing(o.bracket_spacing.into())
+        .with_jsx_quote_style(match o.jsx_quote_style {
+            options::QuoteStyle::Double => BQuoteStyle::Double,
+            options::QuoteStyle::Single => BQuoteStyle::Single,
+        })
+        .with_quote_properties(match o.quote_props {
+            options::QuoteProps::AsNeeded => QuoteProperties::AsNeeded,
+            options::QuoteProps::Preserve => QuoteProperties::Preserve,
         });
     let formatted = biome_js_formatter::format_node(options, &parsed.syntax(), Vec::new()).map_err(engine_error)?;
     Ok(formatted.print().map_err(engine_error)?.into_code())
