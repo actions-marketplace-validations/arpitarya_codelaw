@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 868 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 890 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -36,7 +36,7 @@ remap = { error = "warn" }
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
 | [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 34 | 1 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 56 | 1 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
@@ -237,23 +237,40 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
+| [`ts/array-type`](ts/array-type.md) | T\[\] rather than Array<T> | `auto` | — | *[rules] only* |
 | [`ts/await-thenable`](ts/await-thenable.md) | `await` only what can be awaited | `suggest` | — | `ts/type-checked` |
 | [`ts/ban-ts-comment`](ts/ban-ts-comment.md) | No @ts-ignore or @ts-nocheck; @ts-expect-error says why | `manual` | — | `ts/recommended` |
+| [`ts/ban-tslint-comment`](ts/ban-tslint-comment.md) | No tslint comments | `auto` | — | *[rules] only* |
+| [`ts/consistent-generic-constructors`](ts/consistent-generic-constructors.md) | Type arguments on the constructor, not the annotation | `auto` | — | *[rules] only* |
+| [`ts/consistent-indexed-object-style`](ts/consistent-indexed-object-style.md) | Record rather than an index signature | `auto` | — | *[rules] only* |
+| [`ts/consistent-type-assertions`](ts/consistent-type-assertions.md) | as, not angle-bracket assertions | `auto` | — | *[rules] only* |
+| [`ts/consistent-type-definitions`](ts/consistent-type-definitions.md) | interface for object types | `auto` | — | *[rules] only* |
+| [`ts/explicit-function-return-type`](ts/explicit-function-return-type.md) | Functions declare their return type | `manual` | — | *[rules] only* |
+| [`ts/explicit-module-boundary-types`](ts/explicit-module-boundary-types.md) | Exported functions declare their types | `manual` | — | *[rules] only* |
+| [`ts/method-signature-style`](ts/method-signature-style.md) | Property signatures for methods | `auto` | — | *[rules] only* |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
+| [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `manual` | — | *[rules] only* |
 | [`ts/no-const-enum`](ts/no-const-enum.md) | enum, not const enum | `auto` | — | `ts/recommended` |
 | [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
+| [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `manual` | — | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `manual` | — | `ts/recommended` |
 | [`ts/no-explicit-any`](ts/no-explicit-any.md) | No explicit any | `suggest` | — | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](ts/no-extra-non-null-assertion.md) | No repeated non-null assertions | `auto` | — | `ts/recommended` |
+| [`ts/no-extraneous-class`](ts/no-extraneous-class.md) | No class used as a namespace | `manual` | — | *[rules] only* |
 | [`ts/no-floating-promises`](ts/no-floating-promises.md) | A Promise is awaited, returned or handled | `suggest` | — | `ts/type-checked` |
 | [`ts/no-implicit-any-let`](ts/no-implicit-any-let.md) | A let without a value has a type | `manual` | — | `ts/recommended` |
+| [`ts/no-inferrable-types`](ts/no-inferrable-types.md) | No annotation that the value already says | `auto` | — | *[rules] only* |
+| [`ts/no-invalid-void-type`](ts/no-invalid-void-type.md) | void only as a return type | `manual` | — | *[rules] only* |
 | [`ts/no-misused-new`](ts/no-misused-new.md) | No constructors declared in interfaces, and no `new` methods in classes | `manual` | — | `ts/recommended` |
 | [`ts/no-misused-promises`](ts/no-misused-promises.md) | No async function where a `void` callback is expected | `manual` | — | `ts/type-checked` |
 | [`ts/no-namespace`](ts/no-namespace.md) | No TypeScript namespaces | `manual` | — | `ts/recommended` |
+| [`ts/no-non-null-asserted-nullish-coalescing`](ts/no-non-null-asserted-nullish-coalescing.md) | No ! before ?? | `suggest` | — | *[rules] only* |
 | [`ts/no-non-null-asserted-optional-chain`](ts/no-non-null-asserted-optional-chain.md) | No non-null assertion after an optional chain | `suggest` | — | `ts/recommended` |
+| [`ts/no-non-null-assertion`](ts/no-non-null-assertion.md) | No non-null assertions | `manual` | — | *[rules] only* |
 | [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `manual` | — | `ts/recommended` |
 | [`ts/no-this-alias`](ts/no-this-alias.md) | No aliasing this to a variable | `manual` | — | `ts/recommended` |
+| [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `manual` | — | *[rules] only* |
 | [`ts/no-unnecessary-type-constraint`](ts/no-unnecessary-type-constraint.md) | No extends any or extends unknown on a type parameter | `suggest` | — | `ts/recommended` |
 | [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |
@@ -264,8 +281,13 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-unsafe-return`](ts/no-unsafe-return.md) | No `return` of a value typed `any` | `manual` | — | `ts/type-checked` |
 | [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `manual` | — | `ts/recommended` |
 | [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `manual` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
+| [`ts/no-useless-empty-export`](ts/no-useless-empty-export.md) | No export {} in a module | `auto` | — | *[rules] only* |
 | [`ts/no-wrapper-object-types`](ts/no-wrapper-object-types.md) | Primitive types, not wrapper object types | `auto` | — | `ts/recommended` |
+| [`ts/parameter-properties`](ts/parameter-properties.md) | No parameter properties | `manual` | — | *[rules] only* |
 | [`ts/prefer-as-const`](ts/prefer-as-const.md) | as const instead of repeating a literal as its type | `auto` | — | `ts/recommended` |
+| [`ts/prefer-enum-initializers`](ts/prefer-enum-initializers.md) | Enum members have initialisers | `suggest` | — | *[rules] only* |
+| [`ts/prefer-function-type`](ts/prefer-function-type.md) | A function type, not an interface with one call signature | `auto` | — | *[rules] only* |
+| [`ts/prefer-literal-enum-member`](ts/prefer-literal-enum-member.md) | Enum members are literals | `manual` | — | *[rules] only* |
 | [`ts/prefer-namespace-keyword`](ts/prefer-namespace-keyword.md) | namespace, not module, for a TypeScript namespace | `auto` | — | `ts/recommended` |
 | [`ts/switch-exhaustiveness-check`](ts/switch-exhaustiveness-check.md) | A `switch` on a union handles every member | `manual` | — | `ts/type-checked` |
 | [`ts/triple-slash-reference`](ts/triple-slash-reference.md) | No /// <reference path> directives | `manual` | — | `ts/recommended` |
