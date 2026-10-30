@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **typescript-eslint's last non-type rules, and TSLint's `no-mergeable-namespace` (W-139):** `ts/adjacent-overload-signatures`, `ts/class-literal-property-style`, `ts/explicit-member-accessibility`, `ts/no-import-type-side-effects`, `ts/prefer-for-of` and `ts/no-mergeable-namespace` — preview and opt-in.
 - **typescript-eslint stylistic and strict rules (W-139):** 22 more `ts/*` rules — `array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type` and others — preview and opt-in.
 - **Five Python framework packs (W-139):** `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy` and `-pandas`, PyPI only — 29 of Ruff's framework rules (flake8-django, FastAPI, Airflow, NumPy, pandas-vet), each pack's `recommended` holding the stable ones at `warn`.
 - **A `nextjs` pack (W-139):** `@codelaw/rules-nextjs`, npm only — 22 `next/*` rules reimplementing @next/eslint-plugin-next, on with `next/recommended`; `codelaw init` adds it when `package.json` depends on `next`.

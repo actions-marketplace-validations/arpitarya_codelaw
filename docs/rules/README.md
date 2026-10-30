@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 890 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 896 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -36,7 +36,7 @@ remap = { error = "warn" }
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
 | [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 56 | 1 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 62 | 1 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
@@ -237,15 +237,18 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
+| [`ts/adjacent-overload-signatures`](ts/adjacent-overload-signatures.md) | Overloads of one name sit together | `manual` | — | *[rules] only* |
 | [`ts/array-type`](ts/array-type.md) | T\[\] rather than Array<T> | `auto` | — | *[rules] only* |
 | [`ts/await-thenable`](ts/await-thenable.md) | `await` only what can be awaited | `suggest` | — | `ts/type-checked` |
 | [`ts/ban-ts-comment`](ts/ban-ts-comment.md) | No @ts-ignore or @ts-nocheck; @ts-expect-error says why | `manual` | — | `ts/recommended` |
 | [`ts/ban-tslint-comment`](ts/ban-tslint-comment.md) | No tslint comments | `auto` | — | *[rules] only* |
+| [`ts/class-literal-property-style`](ts/class-literal-property-style.md) | A literal getter is a readonly field | `suggest` | — | *[rules] only* |
 | [`ts/consistent-generic-constructors`](ts/consistent-generic-constructors.md) | Type arguments on the constructor, not the annotation | `auto` | — | *[rules] only* |
 | [`ts/consistent-indexed-object-style`](ts/consistent-indexed-object-style.md) | Record rather than an index signature | `auto` | — | *[rules] only* |
 | [`ts/consistent-type-assertions`](ts/consistent-type-assertions.md) | as, not angle-bracket assertions | `auto` | — | *[rules] only* |
 | [`ts/consistent-type-definitions`](ts/consistent-type-definitions.md) | interface for object types | `auto` | — | *[rules] only* |
 | [`ts/explicit-function-return-type`](ts/explicit-function-return-type.md) | Functions declare their return type | `manual` | — | *[rules] only* |
+| [`ts/explicit-member-accessibility`](ts/explicit-member-accessibility.md) | Class members say public, protected or private | `auto` | — | *[rules] only* |
 | [`ts/explicit-module-boundary-types`](ts/explicit-module-boundary-types.md) | Exported functions declare their types | `manual` | — | *[rules] only* |
 | [`ts/method-signature-style`](ts/method-signature-style.md) | Property signatures for methods | `auto` | — | *[rules] only* |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
@@ -260,8 +263,10 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-extraneous-class`](ts/no-extraneous-class.md) | No class used as a namespace | `manual` | — | *[rules] only* |
 | [`ts/no-floating-promises`](ts/no-floating-promises.md) | A Promise is awaited, returned or handled | `suggest` | — | `ts/type-checked` |
 | [`ts/no-implicit-any-let`](ts/no-implicit-any-let.md) | A let without a value has a type | `manual` | — | `ts/recommended` |
+| [`ts/no-import-type-side-effects`](ts/no-import-type-side-effects.md) | An import of only types is import type | `auto` | — | *[rules] only* |
 | [`ts/no-inferrable-types`](ts/no-inferrable-types.md) | No annotation that the value already says | `auto` | — | *[rules] only* |
 | [`ts/no-invalid-void-type`](ts/no-invalid-void-type.md) | void only as a return type | `manual` | — | *[rules] only* |
+| [`ts/no-mergeable-namespace`](ts/no-mergeable-namespace.md) | A namespace is declared once per file | `manual` | — | *[rules] only* |
 | [`ts/no-misused-new`](ts/no-misused-new.md) | No constructors declared in interfaces, and no `new` methods in classes | `manual` | — | `ts/recommended` |
 | [`ts/no-misused-promises`](ts/no-misused-promises.md) | No async function where a `void` callback is expected | `manual` | — | `ts/type-checked` |
 | [`ts/no-namespace`](ts/no-namespace.md) | No TypeScript namespaces | `manual` | — | `ts/recommended` |
@@ -286,6 +291,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/parameter-properties`](ts/parameter-properties.md) | No parameter properties | `manual` | — | *[rules] only* |
 | [`ts/prefer-as-const`](ts/prefer-as-const.md) | as const instead of repeating a literal as its type | `auto` | — | `ts/recommended` |
 | [`ts/prefer-enum-initializers`](ts/prefer-enum-initializers.md) | Enum members have initialisers | `suggest` | — | *[rules] only* |
+| [`ts/prefer-for-of`](ts/prefer-for-of.md) | A loop that only reads arr\[i\] is a for-of | `manual` | — | *[rules] only* |
 | [`ts/prefer-function-type`](ts/prefer-function-type.md) | A function type, not an interface with one call signature | `auto` | — | *[rules] only* |
 | [`ts/prefer-literal-enum-member`](ts/prefer-literal-enum-member.md) | Enum members are literals | `manual` | — | *[rules] only* |
 | [`ts/prefer-namespace-keyword`](ts/prefer-namespace-keyword.md) | namespace, not module, for a TypeScript namespace | `auto` | — | `ts/recommended` |

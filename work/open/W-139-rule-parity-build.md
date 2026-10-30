@@ -68,8 +68,20 @@ Each slice is a coherent set of rules, `codelaw test` green on its pack, its cor
 | 6 · the `nextjs` pack (npm only) | 22 `next/*` (@next/eslint-plugin-next 16.4.3, all) | new `nextjs`: `FIRST_PARTY_PACKS`, namespace `next`, reserved namespace, `init` on `next` in `package.json`; L6 decision 11 and its counts, CLAUDE.md's L6 line (a fact, SR-WORK-DOCS 8), SR-RULE-PACKS, SR-PACKAGES, SR-RULE-FORMAT, the register, RELEASING, README | `next/recommended`, at the plugin's severities | `codelaw test packs/nextjs` 22 rules · 289 checks · 0 failed (release and freshly built engine); `cargo test -p codelaw-rules` 22 passed; `codelaw` bin `init` tests 7 passed (new `a_next_dependency_adds_the_nextjs_pack`); `--test promotion --test consumer_layout` passed; no corpus repo yet |
 | 7 · five PyPI framework packs | 29 of Ruff's 39: `django` 7/7, `fastapi` 2/3, `airflow` 4/13, `numpy` 4/4, `pandas` 12/12 | new `django`, `fastapi`, `airflow`, `numpy`, `pandas` (PyPI only): `FIRST_PARTY_PACKS`, namespaces, reserved; L6 (twenty-five packs, seventeen on PyPI), CLAUDE.md's L6 line, SR-RULE-PACKS, SR-PACKAGES, SR-RULE-FORMAT, register, GLOSSARY, RELEASING, README; `django`/`fastapi` in the corpus | each `<ns>/recommended` holds Ruff's stable ones at `warn` (agent's choice — installing the pack is the opt-in); Ruff-preview ones in no preset | `codelaw test` 0 failed on all five (fresh engine); `cargo test -p codelaw-rules` 22 passed; `--test promotion --test consumer_layout` passed; corpus: django 11 findings reviewed (a stacked-`@receiver` false positive fixed first), fastapi 0 |
 | 8 · typescript-eslint, tranche C | 22 of 30 (`ts/array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type`, …) | `ts` | none — `preview` | `codelaw test packs/ts` 0 failed; corpus counts written |
+| 9 · typescript-eslint rest + TSLint (strand W-139-react-ts) | 6: `ts/adjacent-overload-signatures`, `class-literal-property-style`, `explicit-member-accessibility`, `no-import-type-side-effects` (one specifier, no alias, for now), `prefer-for-of`; TSLint `ts/no-mergeable-namespace` — typescript-eslint 27/30 | `ts` | none — `preview` | `codelaw test packs/ts` 62 rules · 586 checks · 0 failed; corpus counts written, adjacent 6 / prefer-for-of 6 reviewed |
 
 **Remaining** (of 2,572 + 18): every other row of the CSVs — 192 built and 2 linked so far (typescript-eslint 22/30, Ruff framework 29/39, Next.js 22/22, promise 17/17, jsx-a11y 36/36, Biome-only recommended 21/22, ESLint core 45/117). Not yet: jsx-a11y's 5 tranche C rules; Biome's `noConstantMathMinMaxClamp` (needs a native rule). New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
+
+## Needs a native rule or a type question (strand W-139-react-ts)
+
+Rows of this strand that a `match:` rule cannot express faithfully; each waits for a `native:` rule (the crates are W-156's while it is open) or, where named, a type question.
+
+| row | why |
+|---|---|
+| typescript-eslint `member-ordering` | orders every member against a configurable group list — a native rule |
+| typescript-eslint `unified-signatures` | compares overload parameter lists pairwise — a native rule |
+| typescript-eslint `no-restricted-types` | matches only the types its options name; options do not reach `match:` — a native rule |
+| `ts/no-import-type-side-effects`, beyond one specifier | the fix rewrites every specifier; a template cannot — a native fix |
 
 ## Blockers
 
