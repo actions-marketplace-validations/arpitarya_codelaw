@@ -12,7 +12,7 @@ options:
   include_nested: { type: "boolean", default: true, description: "the lines of an inner function count toward the outer one too" }
   include_iife: { type: "boolean", default: false, description: "measure an immediately invoked function, `(() => { … })()`, as a function of its own" }
   ignore_names: { type: "string", description: "a regular expression; functions named like this are exempt, e.g. \"^(test|it|describe)\"" }
-ported_from: [eslint/max-lines-per-function]
+ported_from: [eslint/max-lines-per-function, eslint-plugin-sonarjs/max-lines-per-function]
 since: 0.3.0
 ---
 

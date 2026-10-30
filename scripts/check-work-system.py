@@ -2,9 +2,10 @@
 """The work system's mechanical checks — each one a rule its record states
 and nothing else enforced (W-20). This script states no rule of its own:
 
-  queue      SR-WORK-OPEN-QUEUE rules 13-17, 40, 42, 44, 45 and 64 — the
-             shape of every row of work/OPEN-WORK.md and of its inbox (no
-             stored `age`), and each row's item file's `ball:`
+  queue      SR-WORK-OPEN-QUEUE rules 13-17, 21a, 40, 42, 44, 45 and 64 —
+             the shape of every row of work/OPEN-WORK.md and of its inbox (no
+             stored `age`), each row's item file's `ball:`, and each ball
+             against the item's own words (21a)
   lost       SR-WORK-OPEN-QUEUE veto — every `W-nn` named in a live document
              resolves to work/open/ or archive/open/
   ownership  SR-WORK-OWNERSHIP decisions 2 and 9 — each record's `owns:`
@@ -40,6 +41,20 @@ W_RE = re.compile(r"\bW-\d+\b")
 #: Rule 23b: `**<project> W-nn**` is another project's item — not this queue's, never "lost".
 FOREIGN_W_RE = re.compile(r"\*\*[A-Za-z][A-Za-z0-9_.@/-]* W-\d+\*\*")
 SKIP_DIRS = {".git", "target", "node_modules", "worktrees"}
+
+# SR-WORK-OPEN-QUEUE rule 21a (Arpit, 2026-10-30, W-152): the ball agrees with
+# the item's own words. The rule is stated in the record; these only read text.
+#: A row naming the decider as what it waits for now — W-97's "needs Arpit's allow".
+DECIDER_NEXT = re.compile(
+    r"\bneeds (?:Arpit|the decider)\b|\b(?:Arpit|the decider)'s (?:allow|approval|go-ahead|sign-off|pick)\b"
+    r"|\b(?:waits|waiting|blocked) on (?:Arpit|the decider)\b|\(inbox\)", re.I)
+#: A choice put and not yet ruled — W-126's "the rulings below, if a step needs one".
+UNRULED = re.compile(r"\bnot (?:yet )?ruled\b|\bunruled\b|\bif a step needs one\b|\bonly if asked\b", re.I)
+#: Rule 27's verbs: a 🔴 row may be red through another item it names.
+CHAIN = re.compile(r"\b(?:blocked on|after|waiting on|waits on) \*{0,2}W-\d+", re.I)
+INBOX_LINK = re.compile(r"\]\(open/(W-\d+)-")
+#: Quoted words are about a phrase, not a use of it — `code` and "…" are left out of both.
+QUOTED = re.compile(r"`[^`]*`|\"[^\"]*\"|“[^”]*”")
 
 
 def section(lines, heading):
@@ -83,8 +98,10 @@ def check_queue(root):
     if header and "age" in [c.strip().lower() for c in header[0].strip().strip("|").split("|")]:
         out.append("inbox: a stored `age` column; age is computed from `filed`, never stored (SR-WORK-OPEN-QUEUE rule 40)")
     table = [l for l in inbox if l.startswith("|")][2:]  # past the header and separator
+    in_inbox = set()  # rule 21a: the items an inbox row links or its `↳ blocks:` names
     for i, l in enumerate(table):
         cells = [c.strip() for c in l.strip().strip("|").split("|")]
+        in_inbox.update(W_RE.findall(cells[0]) if cells[0].startswith("↳") else INBOX_LINK.findall(cells[0]))
         if cells[0].startswith("↳"):
             if not cells[0].startswith("↳ **blocks:**"):
                 out.append(f"inbox row {i + 1}: a `↳` sub-row is `↳ **blocks:** …` (SR-WORK-OPEN-QUEUE rule 42)")
@@ -131,7 +148,59 @@ def check_queue(root):
             got = frontmatter((base / m.group("link")).read_text(encoding="utf-8")).get("ball")
             if got != want:
                 out.append(f"{name}: its file says `ball: {got or '(none)'}`; the row makes it `{want}` (SR-WORK-OPEN-QUEUE rule 64)")
+        if m:
+            item = base / m.group("link")
+            out += ball_agrees(name, m.group("ball"), text, item.read_text(encoding="utf-8") if item.is_file() else "", in_inbox)
         links_exist(text, base, name, out)
+    return out
+
+
+def at_a_glance(text):
+    """The rows of an item file's `## At a glance` table, as cell lists, past its header."""
+    lines = text.splitlines()
+    try:
+        start = next(i for i, l in enumerate(lines) if l.strip() == "## At a glance")
+    except StopIteration:
+        return []
+    rows, seen = [], False
+    for l in lines[start + 1:]:
+        if l.startswith("## "):
+            break
+        if l.startswith("|"):
+            seen = True
+            rows.append([c.strip() for c in l.strip().strip("|").split("|")])
+        elif seen:
+            break
+    return [r for r in rows[2:] if r]  # past the header and separator
+
+
+def done(state):
+    return state.startswith("✅") and not any(x in state for x in ("🔴", "⏳", "🟡", "🔄"))
+
+
+def ball_agrees(name, ball, row, item, in_inbox):
+    """Rule 21a: every way the row's ball disagrees with its own words, its item file's
+    meeting view, or the inbox."""
+    out = []
+    wid = name
+    steps = [s for s in at_a_glance(item) if not done(s[-1])]
+    said = QUOTED.sub("", row)
+    unruled = [h for h in (UNRULED.search(QUOTED.sub("", " | ".join(s))) for s in steps) if h]
+    if ball != "🔴":
+        why = None
+        if wid in in_inbox:
+            why = "the inbox names it"
+        elif steps and "🔴" in steps[0][-1]:
+            why = f"its first unfinished step is the decider's (`{steps[0][-1][:50]}`)"
+        elif DECIDER_NEXT.search(said):
+            why = f"its row says `{DECIDER_NEXT.search(said).group(0)}`"
+        elif unruled:
+            why = f"an unfinished step carries a choice not yet ruled (`{unruled[0].group(0)}`) — put it to the decider"
+        if why:
+            out.append(f"{wid}: is {ball} but {why}; the row is 🔴 with an inbox row (SR-WORK-OPEN-QUEUE rule 21a)")
+    elif wid not in in_inbox and not CHAIN.search(said):
+        out.append(f"{wid}: is 🔴 but no inbox row links it or names it under `↳ **blocks:**`, "
+                   f"and it names no item it is blocked on (SR-WORK-OPEN-QUEUE rule 21a)")
     return out
 
 
@@ -326,12 +395,30 @@ def self_test():
             "scripts/a.sh": "", "scripts/b.sh": "", "scripts/c.sh": "", "packs/x/rule.yml": "",
             "work/OPEN-WORK.md": "# OPEN-WORK\n\n---\n\n## Blocked on the decider\n\n| what | filed | age |\n|---|---|---|\n"
             "| Decide a thing ([W-01](open/W-01-a.md)) | 2026-10-20 | 0 d |\n"
-            "| 🔴 Decide another ([x](open/nope.md)) | 2026-10-20 | 0 d |\n| ↳ **blocks:** W-01 | | |\n\n---\n\n## Open items\n\n### build\n\n"
+            "| 🔴 Decide another ([x](open/nope.md)) | 2026-10-20 | 0 d |\n| ↳ **blocks:** W-01, W-07 | | |\n\n---\n\n## Open items\n\n### build\n\n"
             "🟢 **W-01** `agent` Fine. Filed by Arpit (Cowork). [detail](open/W-01-a.md)\n"
             "🟢 **W-01** `agent` Wrong file. Filed by Arpit (Cowork). [detail](open/W-02-b.md)\n"
             "🟢 **W-01** `agent` " + "long " * 60 + "Filed by Arpit (Cowork). [detail](open/W-01-a.md)\n"
             "- a body under it\n"
-            "🟢 W-01 no shape\n\n---\n",
+            "🟢 W-01 no shape\n"
+            # rule 21a: five balls that disagree with their words, and W-08, which agrees
+            "🟢 **W-03** `agent` The proof, which needs Arpit's allow. Filed by Arpit (Cowork). [detail](open/W-03-c.md)\n"
+            "🟢 **W-04** `agent` Next step. Filed by Arpit (Cowork). [detail](open/W-04-d.md)\n"
+            "🟢 **W-05** `agent` Next step. Filed by Arpit (Cowork). [detail](open/W-05-e.md)\n"
+            "🔴 **W-06** `arpit` Red, and no inbox row. Filed by Arpit (Cowork). [detail](open/W-06-f.md)\n"
+            "🟢 **W-07** `agent` The inbox holds it. Filed by Arpit (Cowork). [detail](open/W-07-g.md)\n"
+            "🟢 **W-08** `agent` Checks `needs Arpit` phrases. Filed by Arpit (Cowork). [detail](open/W-08-h.md)\n"
+            "🔴 **W-09** `arpit` Blocked on **W-06**. Filed by Arpit (Cowork). [detail](open/W-09-i.md)\n\n---\n",
+            "work/open/W-03-c.md": "---\nball: agent\n---\n",
+            "work/open/W-04-d.md": "---\nball: agent\n---\n# W-04\n\n## At a glance\n\n| step | what | gives | state |\n|---|---|---|---|\n"
+            "| 1 | a | b | ✅ 2026-10-30 |\n| 2 | a | b | 🔴 the decider picks |\n| 3 | a | b | ⏳ |\n",
+            "work/open/W-05-e.md": "---\nball: agent\n---\n# W-05\n\n## At a glance\n\n| step | what | gives | state |\n|---|---|---|---|\n"
+            "| 1 | a | b | ⏳ |\n| 2 | The rulings below, if a step needs one | — | ⏳ |\n",
+            "work/open/W-06-f.md": "---\nball: arpit\n---\n",
+            "work/open/W-07-g.md": "---\nball: agent\n---\n",
+            "work/open/W-08-h.md": "---\nball: agent\n---\n# W-08\n\n## At a glance\n\n| step | what | gives | state |\n|---|---|---|---|\n"
+            "| 1 | refuse \"offered, not ruled\" | b | ⏳ |\n| 2 | a | b | 🔴 the decider ratifies, later |\n| 3 | a | b | ✅ ruled |\n",
+            "work/open/W-09-i.md": "---\nball: arpit\n---\n",
         }
         for p, text in files.items():
             (r / p).parent.mkdir(parents=True, exist_ok=True)
@@ -343,9 +430,12 @@ def self_test():
             "`scripts/gone.sh` does not exist", "points into archive/", "`work/MISSING.md` does not exist",
             "`work/README.md` has two rows", "`work/NEW.md` is a maintained document", "a second archive: docs/old/archive/",
             "rule 40", "rule 64", "`packs/x` has no row", "decision 9",
+            "W-03: is 🟢 but its row says", "W-04: is 🟢 but its first unfinished step is the decider's",
+            "W-05: is 🟢 but an unfinished step carries a choice", "W-06: is 🔴 but no inbox row",
+            "W-07: is 🟢 but the inbox names it",
         ]
         missed = [e for e in expect if e not in got]
-        if missed or "W-01 (named" in got or "W-02 (named" in got:
+        if missed or "W-01 (named" in got or "W-02 (named" in got or "W-08:" in got or "W-09:" in got:
             print("self-test failed; missed: " + repr(missed) + "\n" + got)
             return 1
     print(f"self-test: {len(expect)} breaks, each named")

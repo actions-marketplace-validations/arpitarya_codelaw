@@ -6,7 +6,7 @@ item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -17,7 +17,7 @@ ball: agent
 | step | what we do | what it gives us | state |
 |---|---|---|---|
 | 1 | W-138's research and Arpit's ruling | a decided list | ✅ 2026-10-30 — build all: 1,690 + 16 taste + 39 framework = **1,745**; round 2 (W-144) ruled the same day — **2,572 in all** |
-| 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | ⏳ |
+| 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | 🔄 slice by slice — see *Progress* |
 | 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ⏳ |
 | 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ⏳ |
 
@@ -46,13 +46,26 @@ ball: agent
 | DoD | what | state |
 |---|---|---|
 | 1 · rules | every rule on the ruled port list (the CSVs in `work/proposals/rule-parity/` on `class = port`, `proposed_pack` not `tailwind`; plus `tslint-recheck.csv`'s 6 and `oxlint.csv`'s 18 `port` rows, W-148), in its pack, with valid and invalid cases and its fix class | ⏳ |
-| 1b · links | the 29 equivalents marked `*` in the CSVs' `codelaw` column get their `ported_from:` line; the 3 id collisions the proposal names are checked first | ⏳ |
+| 1b · links | the 29 equivalents marked `*` in the CSVs' `codelaw` column get their `ported_from:` line; the 3 id collisions the proposal names are checked first | ✅ slice 3: every `UNLINKED` pair of `method/classify.py` (22 rule files) |
 | 2 · presets | tranche A in `recommended`; the rest `preview`, in `strict` or opt-in presets; `js/unicorn` and a taste preset opt-in; B-048's `js/strict`, `react/a11y`, `py/strict`, pydocstyle preset; round 2: `js/sonarjs`, `js/jsdoc`, `py/pylint` opt-in, regexp's and promise's tranche A in `js/recommended`, a `testing/*` preset per framework | ⏳ |
 | 2b · packs | five new PyPI packs `django`, `fastapi`, `airflow`, `numpy`, `pandas` for Ruff's 39 framework rules (`ruff.csv`, class `out-of-scope`); L6 amended; names W-142 | ⏳ |
 | 2c · npm packs | `testing` and `nextjs`, npm only; L6 amended (decision 11's table, the counts, CLAUDE.md's L6 line); names W-147 | ⏳ |
 | 2d · defaults (from W-148) | the 38 tranche B/C ports Oxlint ranks `correctness` (`oxlint.csv`) corpus-run; those with no false positive proposed for `recommended` | ⏳ |
 | 3 · checks | `codelaw test` 0 failed on every pack; the layout check clean; corpus counts; L8 budgets measured, not loosened | ⏳ |
 | 4 · docs | `scripts/rule-docs.py` pages, `docs-sync.py` counts, CHANGELOG, the proposal's before/after table | ⏳ |
+
+## Progress — slices landed
+
+Each slice is a coherent set of rules, `codelaw test` green on its pack, its corpus counts written (`scripts/corpus.py run --pack <p> --update`), the docs counts synced.
+
+| slice | rules | pack | presets | evidence |
+|---|---|---|---|---|
+| 1 · eslint-plugin-promise 7.3.0 | 17 (`js/promise-*`) | `js` | the 10 upstream-recommended in `js/recommended` at upstream severities; 7 `preview`, in no preset | `codelaw test packs/js`: 101 rules · 1,921 checks · 0 failed; corpus: 699 files, held; `rules lint` 0 problems |
+| 2 · eslint-plugin-jsx-a11y 6.10.2 | 31 (`react/a11y-*`, every tranche A row) | `react` | new `react/a11y` (B-048), all at `error`; `react/recommended` extends it | `codelaw test packs/react`: 66 rules · 889 checks · 0 failed; corpus: 646 files, 5 a11y findings, each a true positive; `rules lint` 0 |
+| 3 · Biome 2.6.4 recommended (Biome-only) + DoD 1b links | 21 new (`js` 16, `ts` 3, `react` 2); 2 linked to existing rules; 22 `ported_from:` lines added to the `*` equivalents | `js`, `ts`, `react`, + 9 files in `html`, `python`, `css`, `scss`, `security-js`, `spell` | each pack's `recommended` (unused-name rules at `warn`) | `codelaw test` 0 failed on js (117 rules), ts (30), react (68), html, python, css, scss, security-js, spell; corpus held on js/ts/react, `ts/no-implicit-any-let` 22 and `ts/no-const-enum` 5 reviewed; `rules lint` 0 |
+| 4 · ESLint 10.13.0 core, tranche C | 45 of 117 (`js/no-alert` … `js/no-empty-function`) | `js` | none — `preview`, opt-in by `[rules]` | `codelaw test packs/js`: 162 rules · 3,124 checks · 0 failed; corpus held (699 files); findings sampled; `no-useless-computed-key` narrowed to object, class and pattern keys after a TS-interface finding the source does not make |
+
+**Remaining** (of 2,572 + 18): every other row of the CSVs — 114 built and 2 linked so far (promise 17/17, jsx-a11y 31/36, Biome-only recommended 21/22, ESLint core 45/117). Not yet: jsx-a11y's 5 tranche C rules; Biome's `noConstantMathMinMaxClamp` (needs a native rule). New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
 
 ## Blockers
 

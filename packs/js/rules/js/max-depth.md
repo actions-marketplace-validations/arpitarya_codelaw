@@ -7,7 +7,7 @@ fix_reason: "flattening nested blocks changes the function's structure; which gu
 stability: preview
 options:
   max: { type: "integer", default: 4, description: "the most blocks that may nest inside one another in a function" }
-ported_from: [eslint/max-depth]
+ported_from: [eslint/max-depth, eslint-plugin-sonarjs/nested-control-flow]
 since: 0.5.0
 ---
 
