@@ -13,6 +13,7 @@ use std::path::{Path, PathBuf};
 pub const RESERVED_NAMESPACES: &[&str] = &[
     "js", "ts", "react", "node", "stencil", "py", "json", "yaml", "toml", "md", "data", "css", "html", "graph", "format",
     "codelaw", "tanstack-query", "redux-toolkit", "sec-js", "sec-ts", "sec-html", "sec-py", "scss", "css-modules", "spell", "deps", "next",
+    "django", "fastapi", "airflow", "numpy", "pandas",
 ];
 
 /// The namespaces of the four security packs: a rule in one must carry

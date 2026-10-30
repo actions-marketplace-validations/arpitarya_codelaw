@@ -1,0 +1,7 @@
+description = "the 4 Ruff's `NPY` rules (Ruff 0.16.9) that Ruff calls stable, reimplemented (W-139)"
+
+[rules]
+"numpy/numpy-deprecated-function" = "warn"
+"numpy/numpy-deprecated-type-alias" = "warn"
+"numpy/numpy-legacy-random" = "warn"
+"numpy/numpy2-deprecation" = "warn"

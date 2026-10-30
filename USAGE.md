@@ -27,7 +27,7 @@ mkdir -p node_modules/@codelaw .codelaw-packs
 for p in js ts react node stencil html css scss css-modules data tanstack-query redux-toolkit security-js security-ts security-html spell deps nextjs; do
   ln -s "$OLDPWD/codelaw/packs/$p" "node_modules/@codelaw/rules-$p"
 done
-for p in python security-python; do
+for p in python security-python django fastapi airflow numpy pandas; do
   ln -s "$OLDPWD/codelaw/packs/$p" ".codelaw-packs/codelaw_rules_${p//-/_}"
 done
 export CODELAW_SITE_PACKAGES="$PWD/.codelaw-packs"

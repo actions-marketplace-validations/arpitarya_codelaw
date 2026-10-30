@@ -5,8 +5,9 @@ decision 9). What ships is [SR-PACKAGES](records/0107_packages.md) §1: npm
 `codelaw` + eight `@codelaw/cli-*` + eighteen `@codelaw/rules-*` (`js`, `ts`,
 `react`, `node`, `stencil`, `html`, `css`, `scss`, `css-modules`, `data`, `tanstack-query`,
 `redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps`, `nextjs`), PyPI `codelaw`
-(eight wheels) + twelve `codelaw-rules-*` (`js`, `react`, `html`, `css`, `scss`,
-`python`, `data`, `security-js`, `security-html`, `security-python`, `spell`, `deps`). Which pack goes where is `FIRST_PARTY_PACKS` in
+(eight wheels) + seventeen `codelaw-rules-*` (`js`, `react`, `html`, `css`, `scss`,
+`python`, `data`, `security-js`, `security-html`, `security-python`, `spell`, `deps`,
+`django`, `fastapi`, `airflow`, `numpy`, `pandas`). Which pack goes where is `FIRST_PARTY_PACKS` in
 `crates/codelaw-rules/src/pack.rs`; `python3 scripts/package.py names` prints
 every name.
 

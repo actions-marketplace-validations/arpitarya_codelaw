@@ -1,0 +1,6 @@
+name = "codelaw-rules-django"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["python"]
+presets = ["django/recommended"]
+description = "codelaw's rules for Django code, from flake8-django; PyPI only (SR-RULE-PACKS)"
