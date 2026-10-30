@@ -171,3 +171,10 @@ pub struct Skipped {
     pub file: String,
     pub reason: String,
 }
+
+/// Whether a finding's `file` is a logical location, not a path: a commit
+/// (`commit:<id>`), a branch (`branch:<name>`) or the pull request (`pr`),
+/// for the `git/*` rules (SR-ARCHITECTURE decision 14, W-146).
+pub fn is_logical_location(file: &str) -> bool {
+    file == "pr" || file.starts_with("commit:") || file.starts_with("branch:")
+}

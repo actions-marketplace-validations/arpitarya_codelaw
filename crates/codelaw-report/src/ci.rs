@@ -87,6 +87,12 @@ pub fn check_github(report: &CheckReport) -> String {
             Severity::Warn => "warning",
             Severity::Info => "notice",
         };
+        // A commit, a branch or the pull request is no file to annotate:
+        // the finding shows in the run's summary instead (W-146).
+        if codelaw_core::is_logical_location(&d.file) {
+            let _ = writeln!(out, "::{cmd} title={}::{}", gh_prop(&d.rule), gh_data(&format!("{} {}", d.message, fix_tail(d))));
+            continue;
+        }
         let _ = writeln!(
             out,
             "::{cmd} file={},line={},col={},endLine={},endColumn={},title={}::{}",

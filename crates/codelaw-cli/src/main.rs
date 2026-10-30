@@ -191,6 +191,11 @@ struct CheckArgs {
     /// Keep running: check again each time a file is saved, until Ctrl-C.
     #[arg(long)]
     watch: bool,
+    /// Check only this commit message file against `[commits]` — what the
+    /// `commit-msg` hook passes (`git/commit-message`, W-146); no file is
+    /// checked.
+    #[arg(long, value_name = "FILE", conflicts_with_all = ["watch", "paths"])]
+    commit_msg: Option<PathBuf>,
 }
 
 #[derive(Args)]
@@ -391,9 +396,15 @@ fn check(args: CheckArgs, ctx: &Ctx) -> Output {
         Ok(p) => p,
         Err(e) => return Output::fail(e),
     };
-    let report = match project.check(&args.paths) {
-        Ok(r) => r,
-        Err(e) => return Output::fail(e),
+    let report = match &args.commit_msg {
+        Some(file) => match commit_msg_report(&project, file) {
+            Ok(r) => r,
+            Err(e) => return Output::fail(e),
+        },
+        None => match project.check(&args.paths) {
+            Ok(r) => r,
+            Err(e) => return Output::fail(e),
+        },
     };
     let mut out = Output::default();
     match fmt {
@@ -406,6 +417,19 @@ fn check(args: CheckArgs, ctx: &Ctx) -> Output {
     timings(&project, fmt, &mut out);
     out.code = codelaw_report::exit_code(&report, args.max_warnings) as u8;
     out
+}
+
+/// `check --commit-msg <file>`: `git/commit-message` over the message git
+/// is about to record. The finding points at the file, relative to the
+/// project root when it is inside it.
+fn commit_msg_report(project: &Project, file: &Path) -> Result<codelaw_engine::CheckReport, String> {
+    let text = std::fs::read_to_string(file).map_err(|e| format!("cannot read the commit message {}: {e}", file.display()))?;
+    let abs = std::path::absolute(file).unwrap_or_else(|_| file.to_path_buf());
+    let root = std::fs::canonicalize(project.root()).unwrap_or_else(|_| project.root().to_path_buf());
+    let abs = std::fs::canonicalize(&abs).unwrap_or(abs);
+    let shown = abs.strip_prefix(&root).map(codelaw_core::normalize_path).unwrap_or_else(|_| codelaw_core::normalize_path(file));
+    let diagnostics = project.check_commit_message(&shown, &text)?;
+    Ok(codelaw_engine::CheckReport { diagnostics, ..Default::default() })
 }
 
 /// What a CI platform reads (SR-CLI-MCP decision 4). Only the five CI
