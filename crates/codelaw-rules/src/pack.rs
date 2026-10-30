@@ -425,7 +425,10 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
         match fs::read_to_string(&path) {
             Ok(text) => match toml::from_str::<PresetFile>(&text) {
                 Ok(p) => {
-                    for id in p.rules.keys() {
+                    // The engine's `git/*` rules are in no pack; a preset may
+                    // still set them, to share `[commits]`, `[branches]` and
+                    // `[pr]` (SR-CONFIG decision 11b, W-146).
+                    for id in p.rules.keys().filter(|id| !(id.starts_with("git/") && crate::engine_rules::engine_rule(id).is_some())) {
                         if !rules.iter().any(|r| &r.id == id) {
                             errors.push(LoadError::new(Some(path.clone()), format!("preset `{name}` names `{id}`, which is not in this pack")));
                         }

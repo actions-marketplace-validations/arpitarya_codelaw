@@ -45,8 +45,10 @@ impl PreAgent {
         let event = |key: &str| payload.get(key).and_then(Value::as_str).unwrap_or_default();
         if event("hook_event_name") == "BeforeTool" {
             PreAgent::Gemini
-        } else if event("hook_event_name") == "pre_write_code" || event("agent_action_name") == "pre_write_code" {
+        } else if ["pre_write_code", "pre_run_command"].iter().any(|e| event("hook_event_name") == *e || event("agent_action_name") == *e) {
             PreAgent::Windsurf
+        } else if event("hook_event_name") == "beforeShellExecution" {
+            PreAgent::Cursor
         } else if payload.get("toolArgs").is_some() {
             PreAgent::Copilot
         } else {
@@ -540,7 +542,10 @@ pub fn answer(agent: PreAgent, v: &Verdict) -> Answer {
             ),
             PreAgent::Copilot | PreAgent::Vscode => Answer::json(json!({ "permissionDecision": "deny", "permissionDecisionReason": reason })),
             PreAgent::Gemini => Answer::json(json!({ "decision": "deny", "reason": reason })),
-            PreAgent::Cursor => Answer::json(json!({ "permission": "deny", "agent_message": reason, "user_message": format!("codelaw refused a write that adds {}", plural(v.errors.len(), "error")) })),
+            PreAgent::Cursor => {
+                let what = if v.commit { "a commit whose message adds" } else { "a write that adds" };
+                Answer::json(json!({ "permission": "deny", "agent_message": reason, "user_message": format!("codelaw refused {what} {}", plural(v.errors.len(), "error")) }))
+            }
             PreAgent::Kiro | PreAgent::Windsurf => Answer { stdout: String::new(), stderr: reason, code: 2 },
         };
     }
@@ -558,15 +563,45 @@ pub fn decide(payload: &str, agent: Option<PreAgent>, profile: Option<String>) -
     let v: Value = serde_json::from_str(payload).map_err(|_| "the hook payload on stdin is not JSON".to_owned())?;
     let agent = agent.unwrap_or_else(|| PreAgent::detect(&v));
     // A shell command: only a `git commit -m` is judged, by its message (W-146).
-    if let Some(command) = v.get("tool_input").and_then(|t| t.get("command")).and_then(Value::as_str)
-        && patch_text(v.get("tool_input").unwrap_or(&Value::Null)).is_none()
-    {
-        let Some(message) = commit_message(command) else { return Ok(Answer::allow()) };
+    if let Some(command) = shell_command(&v) {
+        let Some(message) = commit_message(&command) else { return Ok(Answer::allow()) };
         let cwd = v.get("cwd").and_then(Value::as_str).map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
         return Ok(answer(agent, &judge_commit(&cwd, &message, profile)?));
     }
     let files = rebuild(&v)?;
     Ok(answer(agent, &judge(&files, profile)?))
+}
+
+/// The shell command a payload runs, when it runs one: `command` in the
+/// tool's arguments (Claude Code and Codex `Bash`, Gemini
+/// `run_shell_command`, Copilot and VS Code's shell tool through `toolArgs`)
+/// — a string, or a `["bash", "-lc", "<script>"]` list whose script is the
+/// last word — unless it holds an `apply_patch` envelope or names a file;
+/// Windsurf's
+/// `pre_run_command` `tool_info.command_line`; Cursor's
+/// `beforeShellExecution`, whose `command` is at the top of the payload.
+fn shell_command(payload: &Value) -> Option<String> {
+    let args = arguments(payload).unwrap_or(Value::Null);
+    // An editor tool may call its action `command` (`str_replace`): a
+    // payload that names a file is a write, never a shell command.
+    if patch_text(&args).is_some() || str_of(&args, &["file_path", "path", "filePath", "absolute_path"]).is_some() {
+        return None;
+    }
+    let from_args = match args.get("command") {
+        Some(Value::String(s)) => Some(s.clone()),
+        Some(Value::Array(words)) => {
+            let words: Vec<&str> = words.iter().filter_map(Value::as_str).collect();
+            match words.as_slice() {
+                [.., flag, script] if flag.starts_with('-') && flag.ends_with('c') => Some((*script).to_owned()),
+                w if !w.is_empty() => Some(w.join(" ")),
+                _ => None,
+            }
+        }
+        _ => None,
+    };
+    from_args
+        .or_else(|| str_of(&args, &["command_line"]).map(str::to_owned))
+        .or_else(|| (payload.get("hook_event_name").and_then(Value::as_str) == Some("beforeShellExecution")).then(|| payload.get("command").and_then(Value::as_str).map(str::to_owned)).flatten())
 }
 
 /// Judge a commit message as the `commit-msg` hook would, with the `ci`
@@ -916,6 +951,28 @@ mod tests {
         assert_eq!(PreAgent::detect(&json!({ "agent_action_name": "pre_write_code" })), PreAgent::Windsurf);
         assert_eq!(PreAgent::detect(&json!({ "toolName": "edit", "toolArgs": "{}" })), PreAgent::Copilot);
         assert_eq!(PreAgent::detect(&json!({ "hook_event_name": "PreToolUse" })), PreAgent::Claude);
+        assert_eq!(PreAgent::detect(&json!({ "agent_action_name": "pre_run_command" })), PreAgent::Windsurf);
+        assert_eq!(PreAgent::detect(&json!({ "hook_event_name": "beforeShellExecution", "command": "ls" })), PreAgent::Cursor);
+    }
+
+    #[test]
+    fn every_agents_shell_command_is_read() {
+        let cmd = |v: Value| shell_command(&v);
+        let commit = Some("git commit -m 'feat: x'".to_owned());
+        // Claude Code and Codex `Bash`, Gemini `run_shell_command`.
+        assert_eq!(cmd(json!({ "tool_name": "Bash", "tool_input": { "command": "git commit -m 'feat: x'" } })), commit);
+        assert_eq!(cmd(json!({ "hook_event_name": "BeforeTool", "tool_name": "run_shell_command", "tool_input": { "command": "git commit -m 'feat: x'" } })), commit);
+        // A list: the script after `-c` / `-lc`.
+        assert_eq!(cmd(json!({ "tool_input": { "command": ["bash", "-lc", "git commit -m 'feat: x'"] } })), commit);
+        // Copilot and VS Code: `toolArgs`, an object or a JSON string.
+        assert_eq!(cmd(json!({ "toolName": "bash", "toolArgs": "{\"command\":\"git commit -m 'feat: x'\"}" })), commit);
+        // Windsurf `pre_run_command`; Cursor `beforeShellExecution`.
+        assert_eq!(cmd(json!({ "agent_action_name": "pre_run_command", "tool_info": { "command_line": "git commit -m 'feat: x'", "cwd": "/r" } })), commit);
+        assert_eq!(cmd(json!({ "hook_event_name": "beforeShellExecution", "command": "git commit -m 'feat: x'", "cwd": "/r" })), commit);
+        // Not a shell command: a patch, an editor tool's `command`, a write.
+        assert_eq!(cmd(json!({ "tool_name": "apply_patch", "tool_input": { "command": "*** Begin Patch\n*** End Patch" } })), None);
+        assert_eq!(cmd(json!({ "tool_input": { "command": "str_replace", "path": "a.ts", "old_str": "a", "new_str": "b" } })), None);
+        assert_eq!(cmd(json!({ "tool_input": { "file_path": "a.ts", "content": "x" } })), None);
     }
 
     #[test]

@@ -90,7 +90,7 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     // The compiled rule set is kept by fingerprint, and a rule compiled with
     // other options is another rule set.
     let fingerprint = if options.is_empty() { Key([0; 32]) } else { codelaw_cache::hash_bytes(format!("{}{}", loaded.rule.id, serde_json::to_string(options).unwrap_or_default()).as_bytes()) };
-    let rules = RuleSet { rules: vec![lr], packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), fingerprint };
+    let rules = RuleSet { rules: vec![lr], packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), engine_settings: Vec::new(), fingerprint };
     let config = Config::defaults(PathBuf::from("/codelaw-test"));
     // A type rule's examples are answered by the TypeScript
     // `CODELAW_TYPESCRIPT` names, with Node from `PATH` (SR-TYPES).

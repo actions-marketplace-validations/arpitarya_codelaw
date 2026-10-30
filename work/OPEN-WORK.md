@@ -49,9 +49,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
-🟢 **W-146** `agent` PR hygiene: the four `git/*` rules, `[commits]`/`[branches]`/`[pr]`, commit-msg hook, CI and Gate landed 2026-10-30; left: sharing the tables through a pack preset, other agents' shell tools. Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
-
-
 🟢 **W-156** `agent` Fix ladder (L4 rewritten 10-30): auto, else suggest for the agent, else manual by exception. Review of 717 rules: manual 577 → 147. Engine: per-finding rung, choices, `fix_exception`, ceiling. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🔴 **W-158** `arpit` `.codelawignore` covers every rule — built 10-31 (rule ids and namespaces per line, same stale/incomplete checks, `[codelawignore]`, unfixed by `fix`, grey in the editor). Left: Arpit's ruling on reasons for `"off"` in `codelaw.toml` (inbox). Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)

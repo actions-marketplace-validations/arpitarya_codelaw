@@ -3,7 +3,7 @@ command = "{{command}}"
 args = [{{args}}]
 
 [[hooks.PreToolUse]]
-matcher = "apply_patch|Edit|Write"
+matcher = "apply_patch|Edit|Write|Bash"
 [[hooks.PreToolUse.hooks]]
 type = "command"
 command = "{{cmd}} hook --pre --agent codex"
