@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**Ruled 2026-10-30 (voice): W-145 — providers.** No copy of Tailwind's class order in codelaw: `@codelaw/provider-tailwind` (npm only, the release's version, peer dependency `tailwindcss`) builds the table from the project's installed Tailwind; the engine runs it with Node and caches it by Tailwind version and config hash. The `tailwind` pack depends on its provider (exact pin) and names it in `codelaw-pack.toml`; L6 is amended when it is built. `[providers] on_missing` is `skip` (default) or `error`. Then all three L11 asks ratified (D-48 `tailwindcss` in fixtures only, D-49 the Prettier-plugin parity instrument, leave for Claude Code to run them) — W-145 is 🟢 `agent`: records and the provider first, the pack's registration after W-139.
+
 **Merged 2026-10-30 (Cowork): the queue is 14 items, from 22.** W-151 is the whole 0.4.1 release (was also W-150, W-134, W-135); W-142 all new-pack names (W-147); W-95 both editor stores (W-117); W-97 the Action and pre-commit (W-64); W-105 types and the version watch (W-106); W-141 the formatter with Oxc's (W-148).
 
 **Reviewed 2026-10-30 (Cowork): the queue, item by item.** `main` is red since the batch landing (W-149 🧨, first). W-132 was built and is now closed. W-129 is unblocked; W-95's install docs are unblocked; Open VSX still waits on claim #14928; W-134/W-135 wait only on the next release.
