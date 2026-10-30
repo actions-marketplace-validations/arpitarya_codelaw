@@ -41,7 +41,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-129** `agent` `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` — unblocked: W-128 and W-136 built 10-30; nothing built yet. Filed by Arpit (Cowork). [detail](open/W-129-deps-hygiene-rules.md)
 
-🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30): five PyPI framework packs, npm `testing`/`nextjs`; tranche A on, rest preview/opt-in. Slices landed: 17 promise (`js/recommended`), 31 jsx-a11y (`react/a11y`), 21 Biome, 45 ESLint core (preview); links done. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30): five PyPI framework packs, npm `testing`/`nextjs`; tranche A on, rest preview/opt-in. Landed: 17 promise, 31 jsx-a11y (`react/a11y`), 21 Biome, 45 ESLint core; links done. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-141** `agent` Formatter vs Prettier (CSS 42%, HTML 17%): CSS comment defect and void elements first; Oxc's formatters (was W-148: CSS 88.6%, Markdown 97.3%) measured in codelaw, then L11 to Arpit. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
