@@ -342,6 +342,12 @@ impl ConfigFile {
                 "{at}: `[[overrides]]` is deprecated and goes in the next minor release; write `[scope.<name>]` (each entry loads as `scope.override-<n>`)"
             ));
         }
+        if raw.coverage.as_ref().is_some_and(|c| c.ignore.is_some()) {
+            if raw.codelawignore.is_some() {
+                return Err(ConfigError::new(Some(path), "`[coverage.ignore]` and `[codelawignore]` are the same table; keep `[codelawignore]`".to_owned()));
+            }
+            deprecations.push(format!("{at}: `[coverage.ignore]` is deprecated and goes in the next minor release; write `[codelawignore]` (`.codelawignore` covers every rule now)"));
+        }
         if !alias_profiles.is_empty() {
             deprecations.push(format!("{at}: `[profiles.<name>]` is deprecated and goes in the next minor release; write `[profile.<name>]`"));
         }
@@ -705,7 +711,7 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 /// Keys a nested config may not set yet; they belong to the root config.
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
-    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]", "[packs]",
+    "[deps]", "[css]", "[coverage]", "[codelawignore]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]", "[packs]",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -725,6 +731,7 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.deps != Default::default(),
         raw.css != Default::default(),
         raw.coverage.is_some(),
+        raw.codelawignore.is_some(),
         raw.spell != Default::default(),
         raw.reviews != Default::default(),
         raw.todo != Default::default(),

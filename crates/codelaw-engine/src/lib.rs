@@ -4,6 +4,7 @@
 
 mod adapters;
 mod baseline;
+mod codelawignore;
 mod changed_functions;
 mod compile;
 mod debug;
@@ -236,6 +237,8 @@ pub struct Project {
     /// The test rules of new code, `[coverage]` and `.codelawignore`
     /// (W-71), when the project turns them on.
     pub(crate) tests: Option<new_code::TestRules>,
+    /// `.codelawignore` (SR-BASELINE decision 12), when the project has one.
+    pub(crate) ignore: Option<codelawignore::IgnoreFile>,
     /// The as-of date and the change set, read on first use.
     as_of: std::sync::OnceLock<AsOf>,
     touched: std::sync::OnceLock<(BTreeSet<String>, Vec<String>)>,
@@ -335,6 +338,7 @@ impl Project {
         let (baselines, deprecations, exceptions) = baseline::load(&config)?;
         flags::check_config(&config)?;
         let tests = new_code::load(&config)?;
+        let ignore = codelawignore::load(&config, &rules, &mut warnings)?;
         let aliases = Aliases::load(&config, &rules);
         let pool = pool(options.threads);
         let adapters = std::sync::OnceLock::new();
@@ -353,6 +357,7 @@ impl Project {
             deprecations,
             exceptions,
             tests,
+            ignore,
             as_of: std::sync::OnceLock::new(),
             touched: std::sync::OnceLock::new(),
             aliases,

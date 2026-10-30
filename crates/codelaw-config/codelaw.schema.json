@@ -326,7 +326,7 @@
         },
         "ignore": {
           "x-codelaw-record": "SR-BASELINE",
-          "description": "What every `.codelawignore` line must carry, and the defaults of a line (SR-BASELINE decision 12).",
+          "description": "Deprecated: the old spelling of `[codelawignore]`, read until the next minor release (SR-BASELINE decision 12).",
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -351,6 +351,34 @@
               "default": "file"
             }
           }
+        }
+      }
+    },
+    "codelawignore": {
+      "x-codelaw-record": "SR-BASELINE",
+      "description": "What every `.codelawignore` line must carry, and the defaults of a line; the file exempts named files or functions from any rule (SR-BASELINE decision 12). Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_expiry": {
+          "description": "Every line says `expires=…` or `forever`; one without is `codelaw/incomplete-ignore`.",
+          "type": "boolean",
+          "default": true
+        },
+        "require_on_touch": {
+          "description": "Every line that is not `forever` says `on_touch=…`; one without is `codelaw/incomplete-ignore`.",
+          "type": "boolean",
+          "default": true
+        },
+        "on_touch": {
+          "description": "What an edit does to a line that does not say: `error` revokes it, `warn` revokes it as warnings, `keep` keeps it.",
+          "enum": ["error", "warn", "keep"],
+          "default": "error"
+        },
+        "on_touch_scope": {
+          "description": "What counts as an edit for a line that does not say: `file`, any change to the file; `function`, the function's tokens changed.",
+          "enum": ["file", "function"],
+          "default": "file"
         }
       }
     },

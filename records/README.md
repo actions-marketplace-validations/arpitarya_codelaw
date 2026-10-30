@@ -230,6 +230,7 @@ yet is owned by an open `W-nn`.
 | `fixtures/css-modules` | SR-PROJECT-GRAPH | decision 8: the React app the `css-modules` rules run on |
 | `crates/codelaw-cli/tests/css_modules.rs` | SR-PROJECT-GRAPH | decision 8: runs that app, `[css]` and `init` through the binary |
 | `crates/codelaw-cli/tests/tests_for_new_code.rs` | SR-PROJECT-GRAPH | decision 9: the test rules of new code and `.codelawignore` on real git repos |
+| `crates/codelaw-cli/tests/codelawignore.rs` | SR-BASELINE | decision 12: `.codelawignore` for every rule on real git repos (W-158) |
 | `fixtures/flags` | SR-PROJECT-GRAPH | decision 11: the repo the feature-flag rules run on — every SDK preset in JS/TS and Python, a two-level wrapper, markers and a registry (W-130) |
 | `crates/codelaw-cli/tests/flags.rs` | SR-PROJECT-GRAPH | decision 11: runs that repo through `check`, `fix --unsafe` and `flags accessors` (W-130) |
 | `fixtures/scss` | SR-LAW-3 | SCSS as a CSS dialect (amended 2026-10-26): the corpus the `css` and `scss` packs hold finding counts on |
@@ -303,6 +304,7 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 | `crates/codelaw-adapters` | SR-ARCHITECTURE | decision 19: the adapter contract (lookup, versions, process handling, cache key) the crate implements |
 | `crates/codelaw-engine/src/adapters.rs` | SR-LINTER | decision 2: which adapters run, the per-tool mapping and the ported-rule dedupe |
 | `crates/codelaw-engine/src/baseline.rs` | SR-BASELINE | decisions 2–6, 8 and 9: the as-of date, the change set, `graph/no-deprecated-usage`, the baseline stage and the `added_by` check |
+| `crates/codelaw-engine/src/codelawignore.rs` | SR-BASELINE | decision 12: `.codelawignore` for every rule — the load, the exemption stage, its line findings and exceptions rows |
 | `crates/codelaw-cli/src/baseline_cmd.rs` | SR-BASELINE | decisions 5 and 6: `baseline add`, `prune`, `check` and `deprecate` |
 | `scripts/check-work-system.py` | SR-WORK-OWNERSHIP | decision 2: its `owns:` ↔ Ownership-table check |
 | `scripts/check-work-system.py` | SR-WORK-REGISTRY | decisions 5–8: its registry check |

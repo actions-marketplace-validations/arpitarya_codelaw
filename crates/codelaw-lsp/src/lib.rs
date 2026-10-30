@@ -719,7 +719,7 @@ impl<'c> Server<'c> {
                 // The card (W-137): title and chips, why, the example, meta.
                 seen.entry(d.rule.clone()).or_insert_with(|| {
                     let data = match project {
-                        Some(p) => data_in(p, d),
+                        Some(p) => data_in(p, d, Some(body)),
                         None => card::data(&card::Facts { diagnostic: d, rel: &d.file, baseline: false, as_of: None, rule: None }),
                     };
                     let rule = project.and_then(|p| p.rules.get(&d.rule)).map(|r| &*r.rule);
@@ -745,7 +745,7 @@ impl<'c> Server<'c> {
             .filter(|d| owns(doc, d))
             .map(|d| {
                 let data = match project {
-                    Some(p) => data_in(p, d),
+                    Some(p) => data_in(p, d, Some(doc.body().0)),
                     None => card::data(&card::Facts { diagnostic: d, rel: &d.file, baseline: false, as_of: None, rule: None }),
                 };
                 (idx.range(d.start_byte + shift, d.end_byte + shift), data, d)
@@ -862,7 +862,7 @@ fn to_lsp(doc: &Doc, entry: Option<&FileEntry>, project: Option<&Project>, diagn
             let own = entry.is_some_and(|e| e.rel == d.file);
             let mut out = lsp_diagnostic(d, if own { idx.range(d.start_byte + shift, d.end_byte + shift) } else { Range::default() });
             if let Some(p) = project {
-                out.data = Some(data_in(p, d));
+                out.data = Some(data_in(p, d, own.then(|| doc.body().0)));
             }
             if !own && let Some(root) = root {
                 let path = root.join(&d.file);
@@ -954,12 +954,22 @@ fn workspace_edit(uri: &Uri, edits: Vec<TextEdit>) -> WorkspaceEdit {
 }
 
 /// A diagnostic's `data` with what its project knows: whether the baseline
-/// holds it, the as-of date a due date is counted from, its rule file.
-fn data_in(project: &Project, d: &Diagnostic) -> serde_json::Value {
+/// or a `.codelawignore` line holds it, the as-of date a due date is
+/// counted from, its rule file. `text` is the diagnostic's file's, when the
+/// document is that file (an unsaved buffer); otherwise the disk's is read.
+fn data_in(project: &Project, d: &Diagnostic, text: Option<&str>) -> serde_json::Value {
     let baseline = project.baselines.rules.get(&d.rule).is_some_and(|b| b.find(&d.file, None).is_some_and(|e| e.count > 0));
     let as_of = project.as_of().date.map(codelaw_engine::Date::days);
     let rule = project.rules.get(&d.rule).map(|r| &*r.rule);
-    card::data(&card::Facts { diagnostic: d, rel: &d.file, baseline, as_of, rule })
+    let mut data = card::data(&card::Facts { diagnostic: d, rel: &d.file, baseline, as_of, rule });
+    // Shown as a baseline finding is (SR-EDITOR decision 8, SR-BASELINE
+    // decision 12).
+    if project.codelawignore_holds(&d.rule, &d.file, d.start.line, text)
+        && let Some(o) = data.as_object_mut()
+    {
+        o.insert("ignored".into(), serde_json::Value::Bool(true));
+    }
+    data
 }
 
 /// The line a fix changes, before and after, when every edit of it lies on

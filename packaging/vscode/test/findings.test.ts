@@ -77,6 +77,7 @@ test("green squiggle only when codelaw fixes it on save; dotted grey for the bas
   assert.equal(squiggleOf({ fix: "auto", fixable: true }, false), "severity");
   assert.equal(squiggleOf({ fix: "suggest", fixable: true }, true), "severity");
   assert.equal(squiggleOf({ fix: "auto", fixable: true, baseline: true }, true), "baseline");
+  assert.equal(squiggleOf({ fix: "auto", fixable: true, ignored: true }, true), "baseline", "a .codelawignore exemption is drawn as the baseline's");
 });
 
 test("every sidebar group's kinds are distinct", () => {

@@ -12,7 +12,7 @@ use crate::lint::{FileResult, RunMode, lint_text, meta_diagnostic};
 use crate::{CheckReport, EngineError, Project};
 use codelaw_cache::hash_bytes;
 use codelaw_core::{Diagnostic, FixClass};
-use codelaw_fix::{Failure, LoopTrace, fix_loop_with};
+use codelaw_fix::{Candidate, Failure, LoopTrace, fix_loop_with};
 use codelaw_lang::Grammar;
 use rayon::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -111,6 +111,11 @@ pub(crate) fn firing(diagnostics: &[Diagnostic]) -> BTreeSet<String> {
     diagnostics.iter().filter(|d| !d.rule.starts_with("codelaw/")).map(|d| d.rule.clone()).collect()
 }
 
+/// The 1-based line of byte `offset`.
+fn line_of(text: &str, offset: usize) -> u32 {
+    u32::try_from(text.as_bytes()[..offset.min(text.len())].iter().filter(|b| **b == b'\n').count() + 1).unwrap_or(u32::MAX)
+}
+
 /// A lint pass of the fix loop.
 fn mode<'a>(external_fixers: bool, refused: &'a BTreeSet<String>, bom: bool, tree: Tree<'a>) -> RunMode<'a> {
     RunMode { external_fixers, refused: Some(refused), bom, tree }
@@ -133,7 +138,13 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
                 if before.is_none() {
                     *before = Some(firing(&out.diagnostics));
                 }
-                out.candidates.into_iter().filter(|(c, class)| wanted(*class) && !denied.contains(&c.rule)).map(|(c, _)| c).collect()
+                // A finding `.codelawignore` exempts is not fixed (SR-BASELINE
+                // decision 12).
+                let exempt = |c: &Candidate| {
+                    project.ignore.is_some()
+                        && c.edits.first().is_some_and(|e| project.codelawignore_holds(&c.rule, &entry.rel, line_of(current, e.start), Some(current)))
+                };
+                out.candidates.into_iter().filter(|(c, class)| wanted(*class) && !denied.contains(&c.rule) && !exempt(c)).map(|(c, _)| c).collect()
             },
             trace,
         )
@@ -377,16 +388,20 @@ pub(crate) fn fix_paths(project: &mut Project, paths: &[PathBuf], options: &FixO
             deprecated = project.deprecated_occurrences(&graph, &sources).into_iter().filter(|o| crate::project::within(&o.diag.file, &scopes)).collect();
         }
         if project.tests_on() {
-            let (mut found, header) = project.new_code_findings(&graph, &sources, &scopes, &mut report.check.warnings);
-            // `codelaw/stale-ignore` is `auto`: the line goes, and so does
-            // the finding.
-            if !options.dry_run && project.prune_ignore_file(&found) > 0 {
-                found.retain(|d| d.rule != codelaw_baseline::STALE_IGNORE_RULE);
-            }
+            let (found, header) = project.new_code_findings(&graph, &sources, &scopes, &mut report.check.warnings);
             report.check.diagnostics.extend(found);
             report.check.new_code = header;
         }
     }
+    // `.codelawignore`: its own findings — `codelaw/stale-ignore` is
+    // `auto`, so the line goes and so does the finding — then the findings
+    // its lines exempt are dropped.
+    let mut found = project.ignore_file_findings(None);
+    if !options.dry_run && project.prune_ignore_file(&found) > 0 {
+        found.retain(|d| d.rule != codelaw_baseline::STALE_IGNORE_RULE);
+    }
+    report.check.diagnostics.extend(found);
+    project.apply_ignore_file(&mut report.check.diagnostics);
     let ran = crate::baseline::Ran {
         files: files.iter().filter(|e| !skipped.iter().any(|s| s.file == e.rel)).map(|e| e.rel.clone()).collect(),
         scopes,
