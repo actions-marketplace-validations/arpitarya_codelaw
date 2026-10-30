@@ -69,6 +69,7 @@ Each slice is a coherent set of rules, `codelaw test` green on its pack, its cor
 | 7 · five PyPI framework packs | 29 of Ruff's 39: `django` 7/7, `fastapi` 2/3, `airflow` 4/13, `numpy` 4/4, `pandas` 12/12 | new `django`, `fastapi`, `airflow`, `numpy`, `pandas` (PyPI only): `FIRST_PARTY_PACKS`, namespaces, reserved; L6 (twenty-five packs, seventeen on PyPI), CLAUDE.md's L6 line, SR-RULE-PACKS, SR-PACKAGES, SR-RULE-FORMAT, register, GLOSSARY, RELEASING, README; `django`/`fastapi` in the corpus | each `<ns>/recommended` holds Ruff's stable ones at `warn` (agent's choice — installing the pack is the opt-in); Ruff-preview ones in no preset | `codelaw test` 0 failed on all five (fresh engine); `cargo test -p codelaw-rules` 22 passed; `--test promotion --test consumer_layout` passed; corpus: django 11 findings reviewed (a stacked-`@receiver` false positive fixed first), fastapi 0 |
 | 8 · typescript-eslint, tranche C | 22 of 30 (`ts/array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type`, …) | `ts` | none — `preview` | `codelaw test packs/ts` 0 failed; corpus counts written |
 | 9 · typescript-eslint rest + TSLint (strand W-139-react-ts) | 6: `ts/adjacent-overload-signatures`, `class-literal-property-style`, `explicit-member-accessibility`, `no-import-type-side-effects` (one specifier, no alias, for now), `prefer-for-of`; TSLint `ts/no-mergeable-namespace` — typescript-eslint 27/30 | `ts` | none — `preview` | `codelaw test packs/ts` 62 rules · 586 checks · 0 failed; corpus counts written, adjacent 6 / prefer-for-of 6 reviewed |
+| 10 · eslint-plugin-jsdoc, eslint-plugin-import, eslint-plugin-n, Oxlint- and TSLint-only (W-139-js) | 96: `js/jsdoc-*` 48 of 71, `js/import-*` 11 of 44, `node/*` 24 of 30, Oxlint 10 of 12, TSLint 3 of 5 | `js`, `node` | new opt-in `js/jsdoc` = the plugin's 30 recommended that are built, at `warn`; the rest `preview` in no preset | `codelaw test packs/js` 233 rules · 4,447 checks · 0 failed; `packs/node` 35 · 776 · 0 failed; corpus counts written |
 
 **Remaining** (of 2,572 + 18): every other row of the CSVs — 192 built and 2 linked so far (typescript-eslint 22/30, Ruff framework 29/39, Next.js 22/22, promise 17/17, jsx-a11y 36/36, Biome-only recommended 21/22, ESLint core 45/117). Not yet: jsx-a11y's 5 tranche C rules; Biome's `noConstantMathMinMaxClamp` (needs a native rule). New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
 
@@ -82,6 +83,20 @@ Rows of this strand that a `match:` rule cannot express faithfully; each waits f
 | typescript-eslint `unified-signatures` | compares overload parameter lists pairwise — a native rule |
 | typescript-eslint `no-restricted-types` | matches only the types its options name; options do not reach `match:` — a native rule |
 | `ts/no-import-type-side-effects`, beyond one specifier | the fix rewrites every specifier; a template cannot — a native fix |
+## Needs native — W-139-js (for the W-139-native strand)
+
+Rows of the `js`/`node` strand a declarative matcher cannot express; each waits for a `native:` rule.
+
+| id | what the matcher lacks |
+|---|---|
+| `js/jsdoc-check-tag-names` | a tag checked against an allow-list of ~70 names: the complement regex is too large to compile, and there is no look-ahead |
+| `js/jsdoc-sort-tags` | tag order compared with a list, and a fix that reorders lines inside a comment |
+| `js/jsdoc-tag-lines` (tranche A) | the find is a regex; the fix deletes blank lines inside a comment, and no edit primitive rewrites text within a node |
+| `js/jsdoc-type-formatting`, `js/jsdoc-valid-types` (tranche A) | a parser for JSDoc type expressions |
+| `js/jsdoc-ts-method-signature-style`, `js/jsdoc-ts-no-unnecessary-template-expression`, `js/jsdoc-ts-prefer-function-type` | a JSDoc type parser, and a fix inside the comment |
+| `js/branches-sharing-code` | comparing a statement of one branch with a statement of the other |
+
+Not built, no defect in the default configuration: `js/jsdoc-require-tags` (its list of required tags is empty by default) and `js/jsdoc-text-escaping` (does nothing until `escapeHTML` or `escapeMarkdown` is set).
 
 ## Blockers
 

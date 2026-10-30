@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **JSDoc, import and more Node rules (W-139):** 48 `js/jsdoc-*` rules reimplementing eslint-plugin-jsdoc 65.4.2, its 30 recommended in a new opt-in preset `js/jsdoc` at `warn`; 11 `js/import-*` rules from eslint-plugin-import 2.32.0; 24 more `node/*` rules from eslint-plugin-n 18.5.0; and 13 rules only Oxlint or TSLint had (`js/match-all-needs-global`, `js/no-map-spread`, `node/no-async-express-handler`, `js/no-default-import` and others) — preview and opt-in under `[rules]`.
 - **typescript-eslint's last non-type rules, and TSLint's `no-mergeable-namespace` (W-139):** `ts/adjacent-overload-signatures`, `ts/class-literal-property-style`, `ts/explicit-member-accessibility`, `ts/no-import-type-side-effects`, `ts/prefer-for-of` and `ts/no-mergeable-namespace` — preview and opt-in.
 - **typescript-eslint stylistic and strict rules (W-139):** 22 more `ts/*` rules — `array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type` and others — preview and opt-in.
 - **Five Python framework packs (W-139):** `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy` and `-pandas`, PyPI only — 29 of Ruff's framework rules (flake8-django, FastAPI, Airflow, NumPy, pandas-vet), each pack's `recommended` holding the stable ones at `warn`.

@@ -22,6 +22,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `js/project` | 1 | `graph/no-unused-exports`, the rule that reads the whole repo, from knip's `exports` and `types` — opt in |
 | `js/size` | 5 | size limits at `warn`, with ESLint's defaults: `js/max-lines` (300 per file), `js/max-lines-per-function` (50) and `js/max-params` (3) — opt in |
 | `js/markers` | 3 | TODO comments with a ticket (and a date when asked), no focused tests, skipped tests with a reason and an expiry; opt in (SR-CONFIG decision 11a) |
+| `js/jsdoc` | 30 | eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc-* rules at the plugin's warn; opt in (W-139, ruled 2026-10-30 on W-144: R7) |
 
 <!-- /docs-sync:presets -->
 
