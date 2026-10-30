@@ -8,3 +8,6 @@ or documentation text is included.
 The rules whose `ported_from:` names a `biome/` rule reproduce the documented
 behaviour of Biome 2.6.4 (https://biomejs.dev, MIT License); no Biome code or
 documentation text is included.
+
+The rules ported from typescript-eslint's stylistic and strict sets in W-139
+follow the same terms: behaviour only, written fresh (typescript-eslint, MIT License).

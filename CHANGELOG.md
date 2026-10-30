@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **typescript-eslint stylistic and strict rules (W-139):** 22 more `ts/*` rules — `array-type`, `consistent-type-definitions`, `no-non-null-assertion`, `prefer-function-type` and others — preview and opt-in.
 - **Five Python framework packs (W-139):** `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy` and `-pandas`, PyPI only — 29 of Ruff's framework rules (flake8-django, FastAPI, Airflow, NumPy, pandas-vet), each pack's `recommended` holding the stable ones at `warn`.
 - **A `nextjs` pack (W-139):** `@codelaw/rules-nextjs`, npm only — 22 `next/*` rules reimplementing @next/eslint-plugin-next, on with `next/recommended`; `codelaw init` adds it when `package.json` depends on `next`.
 - **Type-aware TypeScript (W-105):** four more `preview` rules in `ts/type-checked` — `ts/switch-exhaustiveness-check`, `ts/no-unsafe-argument`, `ts/no-unsafe-assignment` and `ts/no-misused-promises` (a Promise-returning function where a `void` one is expected) — answered by four new type questions (`unknown`, `typed-target`, `promise-to-void`, `non-exhaustive`); `ts/await-thenable` no longer reports `await` on a value typed `unknown`.
