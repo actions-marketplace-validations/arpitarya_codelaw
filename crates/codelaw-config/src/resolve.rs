@@ -433,6 +433,7 @@ impl ConfigFile {
                 return Err(ConfigError::new(Some(path), format!("`[flags] inline`: `{i}` is not one of `allow`, `registry-only`")));
             }
         }
+        crate::packs::check(&raw.packs, &path, &dir)?;
         let spell_file_words = read_words_file(&path, &dir, raw.spell.words_file.as_deref())?;
         if let Some(globs) = &raw.css.modules {
             glob_set(globs, &path).map_err(|e| ConfigError::new(Some(path.clone()), format!("`[css] modules`: {}", e.message)))?;
@@ -704,7 +705,7 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 /// Keys a nested config may not set yet; they belong to the root config.
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
-    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]",
+    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]", "[packs]",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -733,6 +734,7 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.commits != Default::default(),
         raw.branches != Default::default(),
         raw.pr != Default::default(),
+        raw.packs != Default::default(),
     ];
     ROOT_ONLY.iter().zip(set).filter(|(_, s)| *s).map(|(k, _)| *k).collect()
 }
@@ -855,7 +857,7 @@ impl Config {
         }
     }
 
-    fn root_raw(&self) -> Option<&RawConfig> {
+    pub(crate) fn root_raw(&self) -> Option<&RawConfig> {
         self.files.first().map(|f| &f.raw)
     }
 

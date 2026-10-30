@@ -285,6 +285,7 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 |---|---|---|
 | `crates/codelaw-rules` | SR-RULE-PACKS | pack layout, resolution, presets and precedence (decisions 3–5, 10–14) are the loader's |
 | `crates/codelaw-rules/src/pack.rs::PackSearch,site_packages_of` | SR-PACK-LOOKUP | decisions 2–5 and 9: the folders searched for a pack and their order (W-155 moves them to their own file and makes this an ownership row) |
+| `crates/codelaw-config/src/packs.rs` | SR-PACK-LOOKUP | decisions 5–7: `[packs]` parsed and checked, and a venv's site-packages folders (W-155) |
 | `crates/codelaw-cli/src/init.rs` | SR-RULE-PACKS | decision 6 is what `codelaw init` does |
 | `crates/codelaw-cli/src/init.rs` | SR-SPELL | decision 1: `init` adds the spell pack and writes and fills the words file (W-112) |
 | `templates/init/.codelaw/spell` | SR-SPELL | decision 7: the words file's template (W-112) |

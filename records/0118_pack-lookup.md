@@ -116,9 +116,9 @@ places to be settable in the TOML file.
 
    | key | value | default | when set |
    |---|---|---|---|
-   | `order` | an array of `"npm"` and `"pypi"`: one or both, no repeats | `["npm", "pypi"]` | the registries searched, in that order; a registry left out is not searched |
-   | `node_modules` | an array of folders | decision 3's walk-up | exactly these folders, in order; no walk-up |
-   | `venv` | one folder | decision 4's a–c | only this venv's site-packages; `CODELAW_SITE_PACKAGES` and `$VIRTUAL_ENV` are ignored |
+   | `[packs] order` | an array of `"npm"` and `"pypi"`: one or both, no repeats | `["npm", "pypi"]` | the registries searched, in that order; a registry left out is not searched |
+   | `[packs] node_modules` | an array of folders | decision 3's walk-up | exactly these folders, in order; no walk-up |
+   | `[packs] venv` | one folder | decision 4's a–c | only this venv's site-packages; `CODELAW_SITE_PACKAGES` and `$VIRTUAL_ENV` are ignored |
 
    Relative paths resolve against the root config's folder
    ([SR-CONFIG](0110_config.md)). Absolute paths are allowed, and no `~` or

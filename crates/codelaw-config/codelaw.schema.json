@@ -561,6 +561,31 @@
         }
       }
     },
+    "packs": {
+      "x-codelaw-record": "SR-PACK-LOOKUP",
+      "description": "Where the engine finds a rule pack (SR-PACK-LOOKUP decisions 6-7). Every key is optional; a key that is set replaces its default and is never added in front of it. Folders are relative to the root config's folder; absolute paths are allowed and no `~` or variable is expanded. Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "description": "The registries searched for each pack, in this order; a registry left out is not searched.",
+          "type": "array",
+          "items": { "enum": ["npm", "pypi"] },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": ["npm", "pypi"]
+        },
+        "node_modules": {
+          "description": "The folders that hold npm packages, searched in this order with no walk-up. Unset: `node_modules/` in the config's folder and in every parent folder. A folder set here that does not exist is a config error.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "venv": {
+          "description": "One virtual environment whose site-packages are the only Python place; `CODELAW_SITE_PACKAGES` and `$VIRTUAL_ENV` are then ignored. Unset: the launcher's paths, then `$VIRTUAL_ENV`, then `.venv/` in the config's folder. A folder that does not exist, or has no site-packages folder, is a config error.",
+          "type": "string"
+        }
+      }
+    },
     "deps": {
       "x-codelaw-record": "SR-RULE-PACKS",
       "description": "The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`, `deps/stale-snapshot`, `deps/licence`, `deps/lockfile-sync`, `deps/version-drift` and `deps/runtime-agreement` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.",
