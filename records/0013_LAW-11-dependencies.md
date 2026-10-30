@@ -195,6 +195,17 @@ Installed only by `scripts/bench-rivals.py install` inside `.github/workflows/be
 |---|---|---|---|---|
 | D-45 | **typescript** (npm, Apache-2.0) | the TypeScript codelaw's own type-aware tests and CI run against (W-105's fixtures, W-106's matrix); installed into fixture folders only — never in a package, the engine or a consumer's repo. A consumer's project uses its own TypeScript, which is no dependency of codelaw ([SR-TYPES](0117_types.md) decision 5). Separate from D-28, the extension's compiler | the **7.1** line, blocking; `typescript@next` in a nightly, reporting-only job. **Pinned by W-105 (2026-10-28)** in `fixtures/types/package-lock.json`: `typescript@7.1.0-beta` (no dependencies of its own) and its 21 optional platform-binary packages `@typescript/typescript-<platform>@7.1.0-beta`, of which npm installs the one for the machine (≈ 33 MB) — nothing else. Installed by `npm ci` in `fixtures/types` (ci.yml); moves to the RC and GA by W-105 step 6 and by `typescript-bump.yml`'s PRs (`scripts/typescript-watch.py bump` rewrites this pin; W-105, 2026-10-30) | ratified 2026-10-27 — *"Yes."* (the decider, 2026-10-27 (voice docket); with *"make sure it is as fast as possible"*) |
 
+### Tests and CI — Tailwind for the provider and its parity check (W-145)
+
+Installed into fixture folders or a throwaway bench folder only — never in the engine, a package, a pack or a consumer's repo. A consumer's project uses its own Tailwind: `@codelaw/provider-tailwind` declares it as a peer dependency (ruled 2026-10-30), named here when W-145 writes its DoD 1. No ledger line until a manifest or lockfile in the repo names them.
+
+| id | unit | what it does | pin | status |
+|---|---|---|---|---|
+| D-48 | **tailwindcss** (npm, MIT, no dependencies) | the Tailwind `@codelaw/provider-tailwind`'s own tests and CI run against; installed into fixture folders only | `tailwindcss@4.3.3`, tarball SHA-256 `f1493c5bcb29a80310da63d19282d233ba259479f36561a27146cd4747d1faef` | ratified 2026-10-30 — *"Approve all the three items presented in the chat for work item 145."* (the decider, Cowork); fixtures only |
+| D-49 | **prettier-plugin-tailwindcss** (npm, MIT, no dependencies) with **prettier** (D-38's pin) | the measuring instrument of W-145's DoD 3: Tailwind class order compared byte for byte with codelaw's on a corpus of Tailwind projects | `prettier-plugin-tailwindcss@0.8.1`, SHA-256 `c2d90bbe3f89aedc62a1a1a187b0dc649125e0f85cc9028889cb0322d55388e3`; `prettier@3.9.10` | ratified 2026-10-30 — *"Approve all the three items presented in the chat for work item 145."* (the decider, Cowork); by hand or CI-only |
+
+**Running them:** Claude Code may run D-48 and D-49 when its permission check asks (the same ruling, item 3).
+
 ### CI — the VS Code extension's registry tools (L2 decision 8, W-95)
 
 Allowed only to publish the codelaw extension and to check what each registry holds of it, in `publish.yml`'s extension job and a check command beside it — never in the engine, a package, a test, `ci.yml` or a consumer's repo ([L2](0004_LAW-2-foss-dependencies.md) decision 8). Each ratification takes the unit's tree as pinned when W-95 lands it (decision 4).

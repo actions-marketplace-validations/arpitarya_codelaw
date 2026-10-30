@@ -24,6 +24,32 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-10-30 — W-145: the three L11 asks ratified (D-48, D-49)  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Approve all the three items presented in the chat for work item 145."*
+- **Done:** SR-LAW-11 §3 gains *Tests and CI — Tailwind for the provider and its parity check*: D-48 `tailwindcss@4.3.3` (fixtures only), D-49 `prettier-plugin-tailwindcss@0.8.1` with D-38's `prettier@3.9.10` (by hand or CI-only), and leave for Claude Code to run them; the inbox row and its blocks sub-row removed; W-145 re-balled 🟢 `agent`; item file and INTERVIEW §1.
+- **Decided / left open:** the peer dependency the provider declares is named in L11 with W-145's DoD 1, not now. The parity corpus is still unpinned.
+- **Mistakes:** none.
+- **Next:** W-145 to Claude Code — records (DoD 1, 2a, 5), then the provider.
+
+## 2026-10-30 — L4 rewritten as the fix ladder; every non-auto rule reviewed; W-156 filed  ·  Claude app (Opus 5.5)
+
+- **Asked:** *research which rules can be fixed automatically and propose how; make it a law — auto first, suggest so an agent can fix it second, manual only by exception.*
+- **Done:** inventory of all 810 first-party rules (93 auto, 140 suggest, 577 manual) joined to each upstream tool's fix ability; the 717 non-auto rules reviewed in five parallel groups against one rubric, three proposed `auto` fixes corrected to `suggest`; `work/proposals/fix-ladder.md` + `fix-ladder/rules.csv` (proposed: 112 auto, 142 auto for a subset, 254 suggest, 155 suggest with choices, 147 manual); SR-LAW-4 rewritten in place (decisions 2, 4–7, 15 new) and its one-liner in SR-LAWS, the register and CLAUDE.md; W-156 opened.
+- **Decided / left open:** a rewrite of L4, not a new L12 — SR-LAWS: a law restated twice is two laws. Left for Arpit: `on_save: false` for edits that destroy work in progress; browser targets and target Python as config inputs.
+- **Mistakes:** two scratch files were written into codelaw-playground/.tmp-fixres to move them into the cloud workspace; the bridge cannot delete them.
+- **Next:** W-156 slice A — per-finding rung and choices in the engine.
+
+## 2026-10-30 — W-145 ruled: providers — Tailwind's order from the project's own Tailwind  ·  Cowork (Opus 5.5)
+
+- **Asked:** *what is the blocker on W-145?* → by voice, the ruling → *"file it."* Earlier in the session, chat only: what `codelaw.view.code/manifests/markers` cover (`card.rs` `view_of`), and why toggling `codelaw.view.manifests` seems to do nothing (diagnosed, no change at his choice).
+- **Done:** W-145's item (the ruling verbatim, At a glance, DoD, Blockers, Hazards); OPEN-WORK's inbox row narrowed and its W-145 row; INTERVIEW §1; GLOSSARY *provider*; the registry rows. No record or law text changed: L6, L11, SR-RULE-PACKS, SR-PACKAGES, SR-CONFIG and SR-ARCHITECTURE are W-145's DoD 1 and 5, written with the build (as W-128's L6 amendment was).
+- **Decided / left open:** Arpit ruled no committed copy of Tailwind's order; a *provider* package (`@codelaw/provider-tailwind`, npm only, peer dependency `tailwindcss`) the engine runs with Node, cached by Tailwind version and config hash; the pack depends on it (exact pin) and names it in `codelaw-pack.toml`; `[providers] on_missing` `skip` (default) or `error`. The per-provider override was proposed and not objected to — filed, flagged as droppable. Still open (inbox): `tailwindcss` in test fixtures, the Prettier-plugin parity instrument, leave to run them. Also found, not filed: the editor's badges view never hides the squiggle and badges only appear after a settings change (likely overlapping async `paint()` calls) — he asked for diagnosis only.
+- **Mistakes:** none.
+- **Next:** Arpit rules the narrowed W-145 inbox row.
+
+---
+
 ## 2026-10-30 — W-155 filed: SR-PACK-LOOKUP, the .venv fallback and `[packs]`  ·  Claude app (Opus 5.5)
 
 - **Asked:** *create an SR for how Node and .venv packages and paths are picked; fall back to the project's .venv; make both paths configurable in the TOML* — after codelaw-playground's editor loaded no Python packs under an inherited `VIRTUAL_ENV`.
