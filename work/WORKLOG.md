@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-10-30 — W-155 filed: SR-PACK-LOOKUP, the .venv fallback and `[packs]`  ·  Claude app (Opus 5.5)
+
+- **Asked:** *create an SR for how Node and .venv packages and paths are picked; fall back to the project's .venv; make both paths configurable in the TOML* — after codelaw-playground's editor loaded no Python packs under an inherited `VIRTUAL_ENV`.
+- **Done:** `records/0118_pack-lookup.md` (SR-PACK-LOOKUP, built: no); SR-RULE-PACKS decision 4 now links to it for where packs are found; SR-CONFIG gains `[packs]`; register row and a describes row on `pack.rs::PackSearch,site_packages_of`; W-155 opened.
+- **Decided / left open:** Arpit ruled that a set `[packs]` key replaces its default (never prepends) and that `order` is kept; a separate record, not an amendment.
+- **Mistakes:** none.
+- **Next:** build W-155 DoD 1 (the fallback), then `[packs]`.
+
 ## 2026-10-30 — W-152 closed: the queue check refuses a ball that disagrees with its words  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *build W-152* (one of seven parallel agents) — the check Arpit asked for after W-97 and W-126 sat green with his move next.

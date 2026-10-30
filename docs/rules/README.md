@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 831 rules in 20 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 835 rules in 20 packs, plus the engine's 23 own rules.
 
 ## Configuring any rule — the forms
 
@@ -36,7 +36,7 @@ remap = { error = "warn" }
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
 | [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 30 | 1 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 34 | 1 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
@@ -244,11 +244,14 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-floating-promises`](ts/no-floating-promises.md) | A Promise is awaited, returned or handled | `suggest` | — | `ts/type-checked` |
 | [`ts/no-implicit-any-let`](ts/no-implicit-any-let.md) | A let without a value has a type | `manual` | — | `ts/recommended` |
 | [`ts/no-misused-new`](ts/no-misused-new.md) | No constructors declared in interfaces, and no `new` methods in classes | `manual` | — | `ts/recommended` |
+| [`ts/no-misused-promises`](ts/no-misused-promises.md) | No async function where a `void` callback is expected | `manual` | — | `ts/type-checked` |
 | [`ts/no-namespace`](ts/no-namespace.md) | No TypeScript namespaces | `manual` | — | `ts/recommended` |
 | [`ts/no-non-null-asserted-optional-chain`](ts/no-non-null-asserted-optional-chain.md) | No non-null assertion after an optional chain | `suggest` | — | `ts/recommended` |
 | [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `manual` | — | `ts/recommended` |
 | [`ts/no-this-alias`](ts/no-this-alias.md) | No aliasing this to a variable | `manual` | — | `ts/recommended` |
 | [`ts/no-unnecessary-type-constraint`](ts/no-unnecessary-type-constraint.md) | No extends any or extends unknown on a type parameter | `suggest` | — | `ts/recommended` |
+| [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
+| [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-call`](ts/no-unsafe-call.md) | No call of a value typed `any` | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-declaration-merging`](ts/no-unsafe-declaration-merging.md) | No interface that merges with a class of the same name | `manual` | — | `ts/recommended` |
 | [`ts/no-unsafe-function-type`](ts/no-unsafe-function-type.md) | No Function type | `manual` | — | `ts/recommended` |
@@ -259,6 +262,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-wrapper-object-types`](ts/no-wrapper-object-types.md) | Primitive types, not wrapper object types | `auto` | — | `ts/recommended` |
 | [`ts/prefer-as-const`](ts/prefer-as-const.md) | as const instead of repeating a literal as its type | `auto` | — | `ts/recommended` |
 | [`ts/prefer-namespace-keyword`](ts/prefer-namespace-keyword.md) | namespace, not module, for a TypeScript namespace | `auto` | — | `ts/recommended` |
+| [`ts/switch-exhaustiveness-check`](ts/switch-exhaustiveness-check.md) | A `switch` on a union handles every member | `manual` | — | `ts/type-checked` |
 | [`ts/triple-slash-reference`](ts/triple-slash-reference.md) | No /// <reference path> directives | `manual` | — | `ts/recommended` |
 | [`ts/type-error`](ts/type-error.md) | TypeScript's own errors | `manual` | — | `ts/type-checked` |
 | [`ts/type-only-imports`](ts/type-only-imports.md) | Names used only as types are imported with type | `suggest` | — | `ts/conventions` |

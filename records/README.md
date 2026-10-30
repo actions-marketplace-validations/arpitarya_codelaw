@@ -145,6 +145,7 @@ Start from `TEMPLATE.md`.
 | [0115](0115_cli-and-mcp.md) | **SR-CLI-MCP** | The CLI and the MCP server — one engine, two doors, same answers | accepted | partly |
 | [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | partly |
 | [0117](0117_types.md) | **SR-TYPES** | Type-aware TypeScript rules — the project's own TypeScript ≥ 7.1, asked through codelaw's Node helper a fixed vocabulary of type questions; `ts/type-error`; preview until 7.1 is GA | accepted | partly |
+| [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | no |
 
 ---
 
@@ -165,6 +166,8 @@ yet is owned by an open `W-nn`.
 | `scripts/check-work-system.py` | SR-WORK-OPEN-QUEUE | the row, inbox and lost-id checks; it also runs the ownership, registry and archive checks |
 | `scripts/build-packs.py` | SR-PACKAGES | decision 9: the pack tarballs and wheels, built from `packs/` |
 | `scripts/fux-index.py` | SR-PACKAGES | decision 14: the optional Fux index packages, built in CI from a pinned fux |
+| `scripts/typescript-watch.py` | SR-TYPES | decision 7: npm's newest TypeScript with the 7.1 API against the pin, and the bump that pins it and widens the tested range (W-105) |
+| `.github/workflows/typescript-bump.yml` | SR-TYPES | decision 7: the daily job that proposes a TypeScript re-pin as one PR, or one issue naming what broke (W-105) |
 | `scripts/vsix.py` | SR-PACKAGES | decision 6: the editor extension's eight platform `.vsix` files, built and checked in CI (W-95) |
 | `.claude/hooks/guard-open-work-inbox.sh` | SR-WORK-OPEN-QUEUE | rule 45a, in-session |
 | `.claude/hooks/inject-inbox.sh` | SR-WORK-BLOCKERS | decision 7 |
@@ -280,6 +283,7 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 | component | describer | why |
 |---|---|---|
 | `crates/codelaw-rules` | SR-RULE-PACKS | pack layout, resolution, presets and precedence (decisions 3–5, 10–14) are the loader's |
+| `crates/codelaw-rules/src/pack.rs::PackSearch,site_packages_of` | SR-PACK-LOOKUP | decisions 2–5 and 9: the folders searched for a pack and their order (W-155 moves them to their own file and makes this an ownership row) |
 | `crates/codelaw-cli/src/init.rs` | SR-RULE-PACKS | decision 6 is what `codelaw init` does |
 | `crates/codelaw-cli/src/init.rs` | SR-SPELL | decision 1: `init` adds the spell pack and writes and fills the words file (W-112) |
 | `templates/init/.codelaw/spell` | SR-SPELL | decision 7: the words file's template (W-112) |

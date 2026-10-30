@@ -66,7 +66,7 @@ This record was rewritten to that ruling and then accepted ("go with the recomme
 |---|---|---|---|---|
 | engine | `codelaw` | `codelaw` | none: this is the engine. It ships only the `codelaw/*` meta diagnostics, the formatter's `format/unformatted` and `format/failed`, and `graph/no-deprecated-usage` | — |
 | `js` | `@codelaw/rules-js` | `codelaw-rules-js` | JS, JSX; its core rules also run on TS and TSX | `js/recommended`, `js/typescript`, `js/conventions`, `js/project`, `js/size`, `js/markers` · *later:* `js/strict` |
-| `ts` | `@codelaw/rules-ts` | — | TS, TSX | `ts/recommended`, `ts/conventions`, `ts/type-checked` (the type-aware rules, [SR-TYPES](0117_types.md)) |
+| `ts` | `@codelaw/rules-ts` | — | TS, TSX | `ts/recommended`, `ts/conventions`, `ts/type-checked` (the type-aware rules — nine `preview` rules and `ts/type-error` as of W-105, 2026-10-30 — [SR-TYPES](0117_types.md)) |
 | `react` | `@codelaw/rules-react` | `codelaw-rules-react` | JSX, TSX, and React in JS and TS | `react/recommended`, `react/a11y` (decision 18, W-139), `react/conventions`, `react/size` (decision 15, W-132) |
 | `node` | `@codelaw/rules-node` | — | JS, JSX, TS, TSX run on Node.js | `node/recommended` |
 | `stencil` | `@codelaw/rules-stencil` | — | TS, TSX Stencil components | `stencil/recommended`, `stencil/conventions` |
@@ -175,12 +175,8 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
      - `sec-js` → `rules-security-js`; `sec-ts` → `rules-security-ts`; `sec-html` → `rules-security-html`; `sec-py` → `rules-security-python`.
      - `spell` → `rules-spell` (W-103).
      - `next` → `rules-nextjs` (W-139).
-   - **The pack is found in this order,** each place only for a registry the pack is published on:
-     1. `node_modules/@codelaw/rules-<name>`, walking up from the config file's directory.
-     2. The Python environment: the site-packages paths the Python launcher passes in (`CODELAW_SITE_PACKAGES`); otherwise `$VIRTUAL_ENV`; otherwise `.venv/` at the project root.
-
-     The first one found wins. Both copies of one version are identical (decision 3).
-   - **A missing pack stops the run:** exit 2, with an error naming every install command the pack has, for example `npm i -D @codelaw/rules-js` and `pip install codelaw-rules-js`; a pack on one registry is named as that registry's only (`@codelaw/rules-ts, which is published on npm only`).
+   - **Where the pack is found** — the folders, their order, the project `.venv` fallback and the `[packs]` keys that replace them — is [SR-PACK-LOOKUP](0118_pack-lookup.md). The first folder holding the pack wins; both copies of one version are identical (decision 3).
+   - **A missing pack stops the run:** exit 2, with an error naming every install command the pack has and every folder searched (SR-PACK-LOOKUP decision 8), for example `npm i -D @codelaw/rules-js` and `pip install codelaw-rules-js`; a pack on one registry is named as that registry's only (`@codelaw/rules-ts, which is published on npm only`).
 5. **One version, released together.** The engine and the twenty packs carry one version and are published by one release job ([L6](0008_LAW-6-python-and-node-packages.md) decision 9).
    - Each pack's manifest declares `min_codelaw`. An engine older than that refuses the pack, with an error naming the upgrade.
    - `codelaw rules --why <id>` and the JSON output name the pack and version each rule came from.
