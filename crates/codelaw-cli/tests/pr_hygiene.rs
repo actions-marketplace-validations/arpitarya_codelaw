@@ -148,7 +148,7 @@ fn check_changed_since_judges_the_range_commits_and_skips_fixups() {
     assert_eq!(f.len(), 1, "{v:#}");
     assert!(f[0]["file"].as_str().unwrap().starts_with("commit:"));
     assert!(f[0]["message"].as_str().unwrap().contains("Write it as: \"chore: update b\""), "{v:#}");
-    assert_eq!(f[0]["fix"], "manual");
+    assert_eq!(f[0]["fix"]["class"], "manual");
     assert_eq!(f[0]["severity"], "error");
     // No branch pattern: branch names are not checked; a small change is no size finding.
     assert!(findings(&v, "git/branch-name").is_empty() && findings(&v, "git/pr-size").is_empty(), "{v:#}");
@@ -214,14 +214,14 @@ fn pr_description_from_each_ci() {
     git(&d, &["checkout", "-q", "-b", "feat/desc"]);
     commit(&d, "a.txt", "a\n", "feat: add a");
     let event = d.join("event.json");
-    fs::write(&event, r#"{"pull_request":{"title":"Add a","body":"## Summary\n<!-- what and why -->\n"}}"#).unwrap();
+    fs::write(&event, r###"{"pull_request":{"title":"Add a","body":"## Summary\n<!-- what and why -->\n"}}"###).unwrap();
     let v = json_check(&d, &[("GITHUB_EVENT_PATH", event.to_str().unwrap())]);
     let f = findings(&v, "git/pr-description");
     assert_eq!(f.len(), 1, "{v:#}");
     assert_eq!(f[0]["file"], "pr");
     let m = f[0]["message"].as_str().unwrap();
     assert!(m.contains("names a ticket") && m.contains("`Summary` section is empty"), "{m}");
-    fs::write(&event, r#"{"pull_request":{"title":"ABC-1 Add a","body":"## Summary\nAdds a.\n"}}"#).unwrap();
+    fs::write(&event, r###"{"pull_request":{"title":"ABC-1 Add a","body":"## Summary\nAdds a.\n"}}"###).unwrap();
     assert!(findings(&json_check(&d, &[("GITHUB_EVENT_PATH", event.to_str().unwrap())]), "git/pr-description").is_empty());
     // GitLab's variables.
     let v = json_check(&d, &[("CI_MERGE_REQUEST_TITLE", "Add a"), ("CI_MERGE_REQUEST_DESCRIPTION", "no sections")]);

@@ -10,7 +10,7 @@ feature: "configuration"
 owns:
   - crates/codelaw-config
 laws: [L0, L3, L5, L7]
-timestamp: 2026-10-30T12:00:00Z
+timestamp: 2026-10-30T19:00:00Z
 content_sha: ""
 ---
 
@@ -67,6 +67,9 @@ remap = { error = "warn" }
 [reviews]     # SR-AGENT-SURFACES (the codelaw-rules-from-reviews skill's platform and thresholds; validated, read by no engine code)
 [codeowners]  # SR-RULE-PACKS (CODEOWNERS coverage: the file's path, patterns that need no owner)
 [flags]       # SR-PROJECT-GRAPH (feature-flag expiry: accessors, SDK presets, inline markers, warn_days)
+[commits]     # SR-CONFIG (what a commit message must look like: decision 11b)
+[branches]    # SR-CONFIG (what a branch name must look like: decision 11b)
+[pr]          # SR-CONFIG (a pull request's size and description: decision 11b)
 ```
 
 ```mermaid
@@ -174,6 +177,16 @@ Configuration keys were scattered across six records. The decider asked for one 
     - **`[tests.skip]`:** `tests.skip.require_reason` (default `true`), `tests.skip.require_expiry` (default `true`), `tests.skip.require_ticket` (default `false`), `tests.skip.ticket_pattern` and `tests.skip.warn_days` (as in `[todo]`). The reason is the framework's own argument where it has one (`reason=` of pytest's `skip`, `skipif` and `xfail`, the reason argument of `unittest.skip`, `skipIf` and `skipUnless`, Playwright's `test.skip(condition, "reason")`), else the text of a `SKIP(ticket, date): reason` comment on the line directly above the test (above its decorators, in Python) or at the end of its first line; the expiry and the ticket are always from that comment. An expired or expiring skip is reported at the skipped test, on the semantics above.
     - **Focused tests** are an error with a `suggest` fix and no table: `.only` on `describe`, `it`, `test`, `context`, `suite`, `specify` or `bench` (also `test.describe.only` and `it.only.each(…)`), `fit`, `fdescribe` and `ftest`; the fix drops the focus.
     - **Load errors (exit 2):** an unknown key, a `tags` entry that is not one word, a `ticket_pattern` that is not a regular expression, a `warn_days` that is not a non-negative integer. Every other finding is `manual`: the ticket, the date and the reason are facts only the author knows.
+
+11b. **`[commits]`, `[branches]` and `[pr]`: pull-request hygiene** (W-146, the decider, 2026-10-30, voice: *"Pull request hygiene is something I would go for."* · *"want the commit convention to be configurable."* · on the keys below: *"All this looks good."* · on Conventional Commits and a 400-line warning as the defaults: *"Yes."*). Root-only tables; the four engine rules `git/commit-message`, `git/branch-name`, `git/pr-size` and `git/pr-description` ([SR-RULE-PACKS](0101_rule-packs.md) decision 1) read them, and `git/commit-message`'s and `git/branch-name`'s own options in `[rules]` win over their table key by key. Where the rules run and what they read is [SR-ARCHITECTURE](0108_architecture.md) decision 14; the hooks are [SR-CLI-MCP](0115_cli-and-mcp.md) decision 7 and [SR-AGENT-SURFACES](0102_agent-surfaces.md) decision 9.
+    - **`[commits]`:** `[commits] preset` — `conventional` (the default: `<type>(<scope>)!: <subject>`), `angular` (the same form, Angular's eight types), `gitmoji` (a `:code:` or emoji, a space, the subject), `custom` (the subject line must match `[commits] pattern`, which it then requires) or `off`; `[commits] types` (default `feat, fix, docs, refactor, test, chore, perf, ci, build`; Angular's `build, ci, docs, feat, fix, perf, refactor, test` under `angular`); `[commits] scopes` (empty is any); `[commits] require_scope` (`false`); `[commits] subject_max` (`72`, counted over the whole subject line; `0` is off); `[commits] subject_case` (`lower`, the default, `sentence` or `any`: the first letter after the type); `[commits] require_body` (`false`); `[commits] breaking` (`["!", "BREAKING CHANGE:"]`: without `!` in it, a `!` in the subject line is a finding). The second line must be blank.
+    - **`commits.ticket`:** `required` (`false`), `pattern` (`[A-Z]+-[0-9]+`), `place` — `footer` (the default: any line after the subject), `subject` or `either`. **`commits.skip`:** `merges`, `reverts` (`Revert "…"`), `fixups` (`fixup!`, `squash!`, `amend!`) — each `true` — and `authors` (`["dependabot[bot]", "renovate[bot]"]`, matched against the author's name or email).
+    - **`[branches]`:** `[branches] pattern` (a regular expression the whole name must match; empty — the default — leaves branch names unchecked), `[branches] max_length` (`60`), `[branches] protected` (globs never checked: `main`, `develop`, `release/*`), `[branches] skip_authors` (as in `[commits.skip]`, against `HEAD`'s author). **`branches.ticket`:** `required`, `pattern` (as above), `match_commits` (every judged commit of the range names the branch's ticket). The rule runs once a pattern is set, a ticket is required or `match_commits` is on.
+    - **`[pr]`:** `[pr] max_lines` (`400`; added plus deleted lines from the merge base, `0` is off), `[pr] exclude` (globs not counted: `**/*.lock`, `**/package-lock.json`, `**/pnpm-lock.yaml`, `**/generated/**`; a `**/` glob matches at the top too), `[pr] title_pattern`, `[pr] require_ticket` (in the title or the description, by the `[commits.ticket]` pattern) and `[pr] template_sections` (Markdown headings, any level, case ignored, each of which must be present and hold text other than an HTML comment). `git/pr-description` runs once one of the last three is set.
+    - **The agent's defaults** (W-146 DoD, said here as the decider asked): ticket checks off, branch names unchecked until a pattern is set, the description unchecked until a pattern, a ticket or a section is asked for. The decider's: Conventional Commits on, a 400-line size warning.
+    - **Severities:** `git/commit-message`, `git/branch-name` and `git/pr-description` are `error`, `git/pr-size` is `warn`; each is set or turned `off` in `[rules]` like any rule. Every finding is `manual` ([L4](0006_LAW-4-every-rule-has-a-fix.md)): a message, a branch or a description is never rewritten for the author. The finding names what it judged, each problem, and — where one can be derived — a corrected subject line or a branch name that passes.
+    - **Load errors (exit 2):** an unknown key, a `preset`, `subject_case` or `place` out of its list, `custom` without `pattern`, a type holding a space or one of `():!`, a pattern that is not a regular expression, a glob that is not a glob, `match_commits` under `[commits.ticket]` or `place` under `[branches.ticket]`.
+    - **Shared through a pack:** not yet. A preset's `[rules]` settings do not reach engine rules today, so a team shares these tables by copying them; carrying them in a preset is a follow-up named in W-146.
 
 ### Consequences
 
