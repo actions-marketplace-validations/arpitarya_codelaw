@@ -11,7 +11,7 @@ owns:
   - crates/codelaw-lsp
   - packaging/vscode
 laws: [L0, L3, L5, L6, L7, L8]
-timestamp: 2026-10-30T18:30:00Z
+timestamp: 2026-10-31T09:00:00Z
 content_sha: ""
 ---
 
@@ -27,6 +27,7 @@ content_sha: ""
 | Quick fixes | LSP code actions: `auto` and `suggest` fixes, "Explain rule", "Ignore here with reason" |
 | Format document / selection, format on save | LSP formatting ([SR-FORMATTER](0105_formatter.md)) |
 | Rule docs on hover | the rule file's summary, Why and Do/Don't ([SR-RULE-FORMAT](0112_rule-format.md)) |
+| Completion and live errors in `codelaw.toml` | the schema, the installed packs and the config loader (decision 9) |
 
 ```mermaid
 flowchart LR
@@ -86,6 +87,7 @@ The decider asked for a VS Code extension as well as an LSP. Earlier records nam
      4. the bundled binary of its platform-specific package.
 
      The project's own version wins, so the editor agrees with CI.
+   - **codelaw's own config (W-157):** `contributes.tomlValidation` registers the schema for `codelaw.toml` with Even Better TOML, by the release tag's URL (Even Better TOML hands its server the `url` unresolved, so a relative one would not load; `scripts/version.py` writes its version), and the document selector takes `**/codelaw.toml` under any language id, since VS Code has no TOML language of its own.
    - **Published to** the VS Code Marketplace and Open VSX, so Kiro, Cursor and VSCodium get it too.
      **Packaged, not yet published (W-95):** CI builds the eight platform `.vsix` files and checks them ([SR-PACKAGES](0107_packages.md) decision 6); the listing waits on the Marketplace publisher `codelaw` and the Open VSX namespace `codelaw`, which only the decider can create. The README is the listing page, so its links are absolute.
    - **Ruled 2026-10-29, built the same day (W-95): the extension is `codelaw.codelaw-vscode`** (the decider: *"write the email. You go ahead and write the email and send it out. In the meanwhile, let's go ahead and create the extension under a different name, so at least we can publish it."*). The Marketplace holds the name `codelaw` since the 0.2.0 listing was removed, and *"Only Microsoft Marketplace Support can release a deleted extension name"*; Support was asked to release it (email to vsmarketplace@microsoft.com, 2026-10-29). `packaging/vscode/package.json`'s `name` is `codelaw-vscode`; the publisher, the commands (`codelaw.*`) and the settings (`codelaw.*`) are unchanged. If Support releases `codelaw`, returning to `codelaw.codelaw` is a new ruling.
@@ -110,6 +112,15 @@ The decider asked for a VS Code extension as well as an LSP. Earlier records nam
      - **The status bar and the tabs:** `$(shield) n vulnerable`, `$(arrow-up) n outdated`, `$(clock) n expired · n due`, and `codelaw · scan incomplete` on the warning background; a `FileDecorationProvider` gives a file's count and its worst colour.
      - **Colours** are `contributes.colors` (`codelaw.squiggle*`, `codelaw.badge*`, `codelaw.row*`, `codelaw.chip*`, `codelaw.file*`) with dark, light and both high-contrast defaults; badges always carry words. The gutter glyphs are images, so they carry the Dark+ and Light+ values of those colours.
      - **Repainting:** from the latest published diagnostics, visible editors only.
+
+9. **The server completes and checks codelaw's own config** (W-157, the decider 2026-10-30: *"Code law could look into even its own code law.toml file."*). `crates/codelaw-lsp/src/config.rs`.
+   - **Which files:** the three homes of [SR-CONFIG](0110_config.md) decision 1 — `codelaw.toml`; `pyproject.toml` and `package.json` only inside `[tool.codelaw]` and `"codelaw"`. Completion is advertised with the trigger characters `"` `.` `[` `/` `:` `=`; anywhere else it returns nothing.
+   - **The cursor's place** comes from a tolerant scan of the text before it — the table, the inline tables and arrays it is in, a key, a header or a value — never the loader, so a half-typed file still completes.
+   - **Completions:** keys, tables, enums and booleans from `codelaw.schema.json`, each with its description and record; in every rule table (`[rules]`, a scope's, a profile's) the rule ids of the installed packs, the local rules and the engine's own, each with title, fix rung and pack; a rule's keys from the schema, its `options` keys and boolean, `extend|replace` and default values from its frontmatter; severities; `fix` offering only the rule's own rung and those below it ([SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) decision 16); `codelaw:<ns>/<preset>` in `extends` from the installed packs; scope names under `[scope.` from the scopes the config's presets ship; `ci` and `local` under `[profile.`. **A first-party pack not installed** is one item, `<ns>/…` or `codelaw:<ns>/…`, whose detail is its install command: its ids are never guessed.
+   - **Hover:** a rule id shows its title, fix rung, default severity, pack and version, summary and a link to its page; a preset its pack and description; a key its type, description and record. A finding under the cursor keeps its card (decision 8).
+   - **Live errors:** on open and every edit, the text as typed goes through the run's own load — `find_config_with` ([SR-CONFIG](0110_config.md) decision 6), then `Project::from_config` — and each error is a diagnostic (`source: codelaw config`) at what it names: the parser's `line:column`, a rule loader's line, else the name in backticks the text holds (an unknown key, rule, option, preset or pack; a root-only key in a nested config names its keys). A warning that names something in the file is a warning there. An error of another file shows on the first line with that file's name. The loader's "did you mean `x`?" is a preferred quick fix, *Change to `x`*.
+   - **No drift, no second list:** completions come from `codelaw_engine::pack_search` — the search the run loads packs through ([SR-ARCHITECTURE](0108_architecture.md) decision 2) — and from the loaded project's rule set when it loads; errors come from the loader. The list of installed packs is built once per project and `extends`, and dropped on every reload.
+   - **Tests:** `crates/codelaw-lsp/tests/unit/config.rs`.
 
 ### Consequences
 

@@ -378,7 +378,13 @@ pub fn init(args: InitArgs) -> ExitCode {
             Err(e) => return fail(e),
         }
     };
-    let config = match template::render("init/codelaw.toml", &[("extends", &quoted.join(", ")), ("agents", &agents_section)]) {
+    // The `#:schema` line (W-157, SR-CONFIG decision 6): the schema npm
+    // `codelaw` ships, or, from PyPI, the schema of this version's tag.
+    let schema = match preferred("codelaw") {
+        Registry::Npm => codelaw_config::NPM_SCHEMA_PATH.to_owned(),
+        Registry::Pypi => codelaw_config::schema_url(codelaw_core::VERSION),
+    };
+    let config = match template::render("init/codelaw.toml", &[("schema", &schema), ("extends", &quoted.join(", ")), ("agents", &agents_section)]) {
         Ok(c) => c,
         Err(e) => return fail(e),
     };

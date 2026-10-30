@@ -34,6 +34,9 @@
     "workspaceContains:codelaw.toml"
   ],
   "contributes": {
+    "tomlValidation": [
+      { "fileMatch": "codelaw.toml", "url": "https://raw.githubusercontent.com/arpitarya/codelaw/v0.4.3/crates/codelaw-config/codelaw.schema.json" }
+    ],
     "commands": [
       { "command": "codelaw.fixAll", "title": "Fix all auto-fixable problems", "category": "codelaw" },
       { "command": "codelaw.format", "title": "Format document", "category": "codelaw" },

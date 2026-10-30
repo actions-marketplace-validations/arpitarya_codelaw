@@ -13,7 +13,7 @@ mod trace;
 
 pub use packs::{PACK_REGISTRIES, PacksSetting, RawPacks, Registry, venv_site_packages};
 pub use raw::{DEFAULT_OSV_URL, SPELL_WORDS_FILE, RawConfig, RawCoverage, RawCoverageIgnore, RawOverride, RawProfile, RawScope, RuleSetting, ScopeMap};
-pub use resolve::{RENAMED_RULES, Config, PresetScope, ScopeInfo, ConfigFile, DEFAULT_EXCLUDES, words_file_words, Home, Layer, Profile, ProfileChoice, Remap, RuleConfig, find_config, load_file};
+pub use resolve::{RENAMED_RULES, Config, PresetScope, ScopeInfo, ConfigFile, DEFAULT_EXCLUDES, words_file_words, Home, Layer, Profile, ProfileChoice, Remap, RuleConfig, find_config, find_config_with, load_file};
 pub use scope::check_scope_name;
 pub use trace::{TraceEnv, Traced};
 
@@ -22,6 +22,17 @@ pub use trace::{TraceEnv, Traced};
 /// by `codelaw config --schema`; `tests/schema.rs` holds it to the records
 /// and to what the loader accepts.
 pub const SCHEMA: &str = include_str!("../codelaw.schema.json");
+
+/// Where npm `codelaw` puts the schema, from the folder of a `codelaw.toml`
+/// beside `node_modules`: `init`'s `#:schema` line (W-157).
+pub const NPM_SCHEMA_PATH: &str = "./node_modules/codelaw/codelaw.schema.json";
+
+/// The schema of one released version, by its tag: `init`'s `#:schema` line
+/// when codelaw comes from PyPI (whose install path holds the Python
+/// version), and the editor extension's `tomlValidation` (W-157).
+pub fn schema_url(version: &str) -> String {
+    format!("https://raw.githubusercontent.com/arpitarya/codelaw/v{version}/crates/codelaw-config/codelaw.schema.json")
+}
 
 use std::fmt;
 use std::path::PathBuf;

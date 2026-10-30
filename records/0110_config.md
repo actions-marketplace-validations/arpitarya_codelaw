@@ -10,7 +10,7 @@ feature: "configuration"
 owns:
   - crates/codelaw-config
 laws: [L0, L3, L5, L7]
-timestamp: 2026-10-30T19:00:00Z
+timestamp: 2026-10-31T09:00:00Z
 content_sha: ""
 ---
 
@@ -153,9 +153,11 @@ Configuration keys were scattered across six records. The decider asked for one 
    - **A renamed rule id is not unknown for one minor release** (W-128): `RENAMED_RULES` in `crates/codelaw-config` maps it to its new id — today `data/outdated-dependency` → `deps/outdated` and `data/stale-deps-snapshot` → `deps/stale-snapshot` — in `[rules]`, every scope and every profile; the setting applies to the new id, and a warning names the file, both ids and the pack the rule is now in.
    - `requires = ">=0.4"` refuses to run with an older codelaw.
 6. **The schema ships with codelaw.** `codelaw.schema.json` is in the npm package and available as `codelaw config --schema`, so TOML and JSON editors offer completion and validation.
+   - **Where editors find it (W-157, 2026-10-31):** `init` writes `#:schema` as `codelaw.toml`'s first line (decision 8); the VS Code extension registers the schema for `codelaw.toml` with Even Better TOML ([SR-EDITOR](0114_editor.md) decision 4); and codelaw's own language server completes and checks the file from the schema and the installed packs ([SR-EDITOR](0114_editor.md) decision 9). The PyPI wheel holds no schema and its install path names the Python version, so a PyPI-installed codelaw points at the schema of its own release tag: `https://raw.githubusercontent.com/arpitarya/codelaw/v<version>/crates/codelaw-config/codelaw.schema.json` (`codelaw_config::schema_url`). The editor fetches it; the engine never does ([L5](0007_LAW-5-no-model-in-the-engine.md)).
+   - **A config as typed:** `find_config_with(start, file, text)` is `find_config` with one file's text as the editor holds it, unsaved — the same loader, so the editor's errors are the run's.
 7. **Traceable.** `codelaw config --print [--for <file>]` prints the resolved configuration for a file, with the source of each value (default, `.editorconfig`, file:line, scope name, env or flag); `codelaw config --scopes` lists every scope with its files and source, in precedence order.
 8. **Creating it.**
-   - `codelaw init` writes a minimal `codelaw.toml`: `extends` with the `recommended` presets of the rule packs it installs for the languages it detects ([SR-RULE-PACKS](0101_rule-packs.md) decision 6), and nothing else; with `--agents`, also the `[agents]` section naming them ([SR-AGENT-SURFACES](0102_agent-surfaces.md) decision 6).
+   - `codelaw init` writes a minimal `codelaw.toml`: the `#:schema` line of decision 6 — `./node_modules/codelaw/codelaw.schema.json` when codelaw comes from npm, the release tag's URL when it comes from PyPI (W-157) — then `extends` with the `recommended` presets of the rule packs it installs for the languages it detects ([SR-RULE-PACKS](0101_rule-packs.md) decision 6), and nothing else; with `--agents`, also the `[agents]` section naming them ([SR-AGENT-SURFACES](0102_agent-surfaces.md) decision 6).
    - `codelaw format --import-config` converts Prettier, Ruff or Black configs ([SR-FORMATTER](0105_formatter.md) decision 5).
    - `codelaw migrate eslint|prettier|biome|ruff|stylelint` writes the whole file from another tool's config: `extends`, `[rules]`, a `[scope.<tool>-<n>]` per files group, `[format]` and the tool's ignore alias, with a report of every setting that did not map ([SR-CLI-MCP](0115_cli-and-mcp.md) decision 15). Into an existing `codelaw.toml` it adds only what that file does not set.
 9. **Deterministic ([L5](0007_LAW-5-no-model-in-the-engine.md)):** the resolved config is a pure function of the files, environment and flags. Its hash is part of every cache key ([SR-CACHE](0109_cache.md)), the words of [SR-SPELL](0116_spell.md)'s `[spell] words_file` included (W-112).

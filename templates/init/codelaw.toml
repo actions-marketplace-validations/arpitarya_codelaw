@@ -1,3 +1,4 @@
+#:schema {{schema}}
 # codelaw configuration — see `codelaw config --print` and SR-CONFIG.
 extends = [{{extends}}]
 {{agents}}

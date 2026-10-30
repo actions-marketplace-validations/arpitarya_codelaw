@@ -83,6 +83,8 @@ fn init_writes_config_rules_folder_and_gitignore() {
         config.contains(r#"extends = ["codelaw:data/recommended", "codelaw:deps/recommended", "codelaw:js/recommended", "codelaw:js/typescript", "codelaw:py/recommended", "codelaw:react/recommended", "codelaw:spell/recommended", "codelaw:ts/recommended"]"#),
         "{config}"
     );
+    // W-157: the schema line, npm's path when codelaw comes from npm.
+    assert!(config.starts_with("#:schema ./node_modules/codelaw/codelaw.schema.json\n"), "{config}");
     assert!(out.contains("pnpm add -D @codelaw/rules-data @codelaw/rules-deps @codelaw/rules-js @codelaw/rules-react @codelaw/rules-spell @codelaw/rules-ts"), "{out}");
     assert!(out.contains("uv add --dev codelaw-rules-python"), "{out}");
     assert_eq!(fs::read_to_string(d.join(".gitignore")).unwrap(), "dist/\n.codelaw/cache/\n");
@@ -99,6 +101,8 @@ fn init_writes_config_rules_folder_and_gitignore() {
     assert!(out.contains("note: @codelaw/rules-ts is published on npm only"), "{out}");
     let config = fs::read_to_string(d.join("codelaw.toml")).unwrap();
     assert!(!config.contains("codelaw:ts/"), "{config}");
+    // From PyPI, the schema of this version's tag (its install path holds the Python version).
+    assert!(config.starts_with(&format!("#:schema https://raw.githubusercontent.com/arpitarya/codelaw/v{}/crates/codelaw-config/codelaw.schema.json\n", env!("CARGO_PKG_VERSION"))), "{config}");
     // An npm-only repo with Python in it leaves the PyPI-only pack out.
     fs::remove_file(d.join("codelaw.toml")).unwrap();
     fs::remove_file(d.join("pyproject.toml")).unwrap();
