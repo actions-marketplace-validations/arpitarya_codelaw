@@ -388,6 +388,15 @@ impl Config {
         push("flags.inline", v, s);
         let (v, s) = root_key(&["flags", "warn_days"], |r| r.flags.as_ref()?.warn_days.map(|d| json!(d.0)), json!(14));
         push("flags.warn_days", v, s);
+        // `[packs]` as written (SR-PACK-LOOKUP decision 6); the places
+        // they resolve to are `packs.npm[n]` and `packs.pypi[n]`, which
+        // `codelaw config --print` adds from the lookup itself.
+        let (v, s) = root_key(&["packs", "order"], |r| r.packs.order.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!(["npm", "pypi"]));
+        push("packs.order", v, s);
+        let (v, s) = root_key(&["packs", "node_modules"], |r| r.packs.node_modules.as_ref().and_then(|x| serde_json::to_value(x).ok()), serde_json::Value::Null);
+        push("packs.node_modules", v, s);
+        let (v, s) = root_key(&["packs", "venv"], |r| r.packs.venv.as_ref().map(|x| json!(x)), serde_json::Value::Null);
+        push("packs.venv", v, s);
         // The sections not validated yet: shown as written.
         for (name, get) in [
             ("format", (|r: &RawConfig| r.format.clone()) as fn(&RawConfig) -> Option<toml::Table>),

@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-155-pack-lookup.md`](open/W-155-pack-lookup.md) | 2026-10-31 | done — [SR-PACK-LOOKUP](../records/0118_pack-lookup.md) (`crates/codelaw-rules/src/search.rs`; `[packs]` in `crates/codelaw-config/src/packs.rs`); the playground check after a release is B-069 |
 | [`W-152-ball-matches-the-text.md`](open/W-152-ball-matches-the-text.md) | 2026-10-30 | done — [SR-WORK-OPEN-QUEUE](../records/0051_WORK-open-queue.md) rule 21a, checked by `scripts/check-work-system.py` |
 | [`W-150-publish-dev-server-plugins.md`](open/W-150-publish-dev-server-plugins.md) | 2026-10-30 | merged into [W-151](../work/open/W-151-release-0-4-1.md) §*Merged in: W-150* (Arpit: *"go ahead, merge them."*) |
 | [`W-134-deps-pypi-pending-publishers.md`](open/W-134-deps-pypi-pending-publishers.md) | 2026-10-30 | merged into [W-151](../work/open/W-151-release-0-4-1.md) §*Merged in: W-134* (Arpit: *"go ahead, merge them."*) |

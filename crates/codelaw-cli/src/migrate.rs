@@ -14,7 +14,7 @@ use codelaw_core::{Language, template};
 use codelaw_engine::suppress::{Alias, upstream_keys};
 use codelaw_format::import::{Imported, PRETTIER_FILES, PRETTIER_PROGRAMS};
 use codelaw_lang::SyntaxNode;
-use codelaw_rules::{FIRST_PARTY_PACKS, PackSearch, RuleFile, RulePack, Stability, load_pack_from, namespace_pack};
+use codelaw_rules::{FIRST_PARTY_PACKS, PackEnv, PackSearch, RuleFile, RulePack, Stability, load_pack_from, namespace_pack};
 use serde_json::{Value as Json, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
@@ -148,7 +148,10 @@ struct Catalog {
 
 impl Catalog {
     fn load(root: &Path) -> Catalog {
-        let search = PackSearch::new(root, root, std::env::var("CODELAW_SITE_PACKAGES").ok().as_deref(), std::env::var("VIRTUAL_ENV").ok().as_deref());
+        // The project's own lookup (SR-PACK-LOOKUP decision 9); a config
+        // that does not load yet is the one migrate is writing.
+        let config = codelaw_config::find_config(root).unwrap_or_else(|_| codelaw_config::Config::defaults(root.to_path_buf()));
+        let search = PackSearch::new(&config, &PackEnv::from_env());
         let mut c = Catalog { rules: BTreeMap::new(), by_upstream: BTreeMap::new(), packs: BTreeMap::new(), not_installed: Vec::new() };
         for p in FIRST_PARTY_PACKS {
             let Some(pack) = search.find_first_party(p.short).and_then(|d| load_pack_from(&d, true).ok()) else {

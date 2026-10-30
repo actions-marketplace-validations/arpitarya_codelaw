@@ -48,6 +48,7 @@ pub fn run(args: ConfigArgs) -> ExitCode {
         other => return fail(format!("unknown --format `{other}` (text or json)")),
     };
     let options = EngineOptions { no_cache: true, profile: args.profile.clone(), ..EngineOptions::from_env() };
+    let pack_env = options.pack_env();
     let project = match load(&args.for_path.iter().cloned().collect::<Vec<_>>(), options) {
         Ok(p) => p,
         Err(e) => return fail(e),
@@ -79,6 +80,19 @@ pub fn run(args: ConfigArgs) -> ExitCode {
     let format_env = codelaw_report::FormatEnv::from_env(std::io::IsTerminal::is_terminal(&std::io::stdout()));
     if let Ok((fmt, source)) = codelaw_report::resolve_format(None, &format_env) {
         values.push(codelaw_config::Traced { key: "format".into(), value: serde_json::json!(fmt.name()), source });
+    }
+    // Every folder a pack is looked for in, in order, with its source
+    // (SR-PACK-LOOKUP decision 8): the lookup itself, not a copy of it.
+    let search = codelaw_rules::PackSearch::new(&project.config, &pack_env);
+    let mut n = std::collections::BTreeMap::new();
+    for p in search.places() {
+        let i = n.entry(p.registry.name()).or_insert(0usize);
+        values.push(codelaw_config::Traced {
+            key: format!("packs.{}[{i}]", p.registry.name()),
+            value: serde_json::json!(codelaw_core::normalize_path(&p.dir)),
+            source: p.source.into(),
+        });
+        *i += 1;
     }
     let abs = file.map(|f| std::fs::canonicalize(f).unwrap_or_else(|_| f.to_path_buf()));
     let files = project.config.governing_files(abs.as_deref());

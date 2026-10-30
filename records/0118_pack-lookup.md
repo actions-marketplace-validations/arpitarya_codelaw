@@ -7,7 +7,8 @@ description: "The folders the engine searches for each rule pack, their default 
 status: accepted
 date: 2026-10-30
 feature: pack lookup (W-155)
-owns: []
+owns:
+  - crates/codelaw-rules/src/search.rs
 laws: [L6]
 timestamp: 2026-10-30T14:40:00Z
 content_sha: ""
@@ -157,10 +158,14 @@ places to be settable in the TOML file.
   all load the same packs, whatever shell started them.
 - **The playground's workaround goes:** its `.vscode/codelaw.sh` and its
   `codelaw.path` line can be deleted once a release carries this record.
-- **Owed:** [W-155](../work/open/W-155-pack-lookup.md) builds it. Until then
-  `built` is `no`, and the lookup code is described by this record but owned
-  by SR-RULE-FORMAT through `crates/codelaw-rules`. W-155 moves it to its own
-  file, and this record takes that file in `owns`.
+- **Built** (W-155, 2026-10-31): the lookup is `PackSearch` and
+  `python_places` in `crates/codelaw-rules/src/search.rs`, which this record
+  owns; `[packs]` is parsed and checked in `crates/codelaw-config/src/packs.rs`
+  (with a venv's site-packages folders, decision 5), which it describes. The
+  two variables are read once, by `PackEnv::from_env` (or `from_vars` in a
+  test). `config --print` lists `packs.npm[n]` and `packs.pypi[n]`;
+  `rules --why` names `pack_dir`; `rules --format json` lists `packs[]` with
+  `dir`.
 
 ### Alternatives considered
 
@@ -180,8 +185,10 @@ places to be settable in the TOML file.
 
 ### Reference (required)
 
-- `crates/codelaw-rules/src/pack.rs`: `PackSearch::new`, `site_packages_of`,
-  `find_npm`, `find_pypi`. This is the lookup before this record.
+- `crates/codelaw-rules/src/search.rs`: `PackSearch::new`, `python_places`,
+  `find_npm`, `find_pypi`, `searched`: the lookup. (Before this record it was
+  `PackSearch` in `crates/codelaw-rules/src/pack.rs`, which took only the
+  first Python source that was set.)
 - `crates/codelaw-engine/src/lib.rs` `Project::from_config`,
   `crates/codelaw-cli/src/migrate.rs` and `crates/codelaw-agents/src/package.rs`
   `candidates`: the callers.
@@ -209,7 +216,8 @@ is never listed here.*
 
 **Code**
 
-- [`crates/codelaw-rules/src/pack.rs`](../crates/codelaw-rules/src/pack.rs)
+- [`crates/codelaw-rules/src/search.rs`](../crates/codelaw-rules/src/search.rs)
+- [`crates/codelaw-config/src/packs.rs`](../crates/codelaw-config/src/packs.rs)
 - [`crates/codelaw-engine/src/lib.rs`](../crates/codelaw-engine/src/lib.rs)
 - [`crates/codelaw-cli/src/migrate.rs`](../crates/codelaw-cli/src/migrate.rs)
 - [`crates/codelaw-agents/src/package.rs`](../crates/codelaw-agents/src/package.rs)
@@ -217,4 +225,4 @@ is never listed here.*
 
 **Project docs**
 
-- [`work/open/W-155-pack-lookup.md`](../work/open/W-155-pack-lookup.md)
+- [`archive/open/W-155-pack-lookup.md`](../archive/open/W-155-pack-lookup.md) (the closed item, named not cited)

@@ -183,7 +183,7 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
      - `sec-js` → `rules-security-js`; `sec-ts` → `rules-security-ts`; `sec-html` → `rules-security-html`; `sec-py` → `rules-security-python`.
      - `spell` → `rules-spell` (W-103).
      - `next` → `rules-nextjs`; `django`, `fastapi`, `airflow`, `numpy`, `pandas` → `rules-<the same name>` (W-139).
-   - **Where the pack is found** — the folders, their order, the project `.venv` fallback and the `[packs]` keys that replace them — is [SR-PACK-LOOKUP](0118_pack-lookup.md). The first folder holding the pack wins; both copies of one version are identical (decision 3).
+   - **Where the pack is found** — the folders, their order, the project `.venv` fallback and the `[packs]` keys that replace them — is [SR-PACK-LOOKUP](0118_pack-lookup.md), built in `crates/codelaw-rules/src/search.rs` (W-155). The first folder holding the pack wins; both copies of one version are identical (decision 3).
    - **A missing pack stops the run:** exit 2, with an error naming every install command the pack has and every folder searched (SR-PACK-LOOKUP decision 8), for example `npm i -D @codelaw/rules-js` and `pip install codelaw-rules-js`; a pack on one registry is named as that registry's only (`@codelaw/rules-ts, which is published on npm only`).
 5. **One version, released together.** The engine and the twenty-five packs carry one version and are published by one release job ([L6](0008_LAW-6-python-and-node-packages.md) decision 9).
    - Each pack's manifest declares `min_codelaw`. An engine older than that refuses the pack, with an error naming the upgrade.

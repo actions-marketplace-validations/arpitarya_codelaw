@@ -132,6 +132,7 @@ pub fn why_json(w: &RuleWhy) -> Value {
         "title": w.title,
         "source": w.source,
         "path": w.path,
+        "pack_dir": w.pack_dir,
         "shadows": w.shadows,
         "enabled_by": w.enabled_by,
         "default": w.default,
@@ -144,6 +145,9 @@ pub fn why_json(w: &RuleWhy) -> Value {
 pub fn why_text(w: &RuleWhy) -> String {
     let mut out = format!("{}  {}\n", w.id, w.title);
     out.push_str(&format!("  source:     {} ({})\n", w.source, w.path));
+    if let Some(d) = &w.pack_dir {
+        out.push_str(&format!("  pack dir:   {d}\n"));
+    }
     if !w.shadows.is_empty() {
         out.push_str(&format!("  shadows:    {}\n", w.shadows.join(", ")));
     }

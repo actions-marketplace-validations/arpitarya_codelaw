@@ -1,5 +1,5 @@
-//! Rule packs: layout, manifest, presets and where they are found
-//! (SR-RULE-PACKS decisions 3–5 and 11).
+//! Rule packs: layout, manifest and presets (SR-RULE-PACKS decisions 3–5
+//! and 11). Where they are found is `search.rs` (SR-PACK-LOOKUP).
 
 use crate::LoadError;
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, parse_cases, parse_rule};
@@ -250,87 +250,6 @@ impl RulePack {
     }
 }
 
-/// Where packs are looked for (decision 4).
-#[derive(Clone, Debug, Default)]
-pub struct PackSearch {
-    /// `node_modules` is searched from here upwards.
-    pub config_dir: PathBuf,
-    /// Python site-packages folders, in order.
-    pub site_packages: Vec<PathBuf>,
-}
-
-fn site_packages_of(venv: &Path) -> Vec<PathBuf> {
-    let mut out = Vec::new();
-    if let Ok(entries) = fs::read_dir(venv.join("lib")) {
-        let mut names: Vec<PathBuf> = entries
-            .flatten()
-            .filter(|e| e.file_name().to_string_lossy().starts_with("python"))
-            .map(|e| e.path().join("site-packages"))
-            .filter(|p| p.is_dir())
-            .collect();
-        names.sort();
-        out.extend(names);
-    }
-    let windows = venv.join("Lib").join("site-packages");
-    if windows.is_dir() {
-        out.push(windows);
-    }
-    out
-}
-
-impl PackSearch {
-    /// `CODELAW_SITE_PACKAGES` (set by the Python launcher), else
-    /// `$VIRTUAL_ENV`, else `.venv/` at the project root.
-    pub fn new(config_dir: &Path, project_root: &Path, site_packages_env: Option<&str>, virtual_env: Option<&str>) -> Self {
-        let site_packages = if let Some(env) = site_packages_env.filter(|e| !e.is_empty()) {
-            std::env::split_paths(env).collect()
-        } else if let Some(venv) = virtual_env.filter(|e| !e.is_empty()) {
-            site_packages_of(Path::new(venv))
-        } else {
-            site_packages_of(&project_root.join(".venv"))
-        };
-        PackSearch { config_dir: config_dir.to_owned(), site_packages }
-    }
-
-    pub fn find_npm(&self, package: &str) -> Option<PathBuf> {
-        let mut dir = Some(self.config_dir.as_path());
-        while let Some(d) = dir {
-            let candidate = d.join("node_modules").join(package);
-            if candidate.join("codelaw-pack.toml").is_file() {
-                return Some(candidate);
-            }
-            dir = d.parent();
-        }
-        None
-    }
-
-    pub fn find_pypi(&self, distribution: &str) -> Option<PathBuf> {
-        let module = distribution.replace(['-', '.'], "_").to_ascii_lowercase();
-        self.site_packages.iter().map(|sp| sp.join(&module)).find(|p| p.join("codelaw-pack.toml").is_file())
-    }
-
-    /// The npm copy first, then the Python one (decision 4), each only on
-    /// a registry the pack is published on.
-    pub fn find_first_party(&self, short: &str) -> Option<PathBuf> {
-        let p = first_party(short);
-        p.npm.and_then(|n| self.find_npm(n)).or_else(|| p.pypi.and_then(|d| self.find_pypi(d)))
-    }
-
-    /// The error for a missing first-party pack, naming every install it
-    /// has, and saying so when it is on one registry only.
-    pub fn missing_first_party(spec: &str, short: &str) -> String {
-        let p = first_party(short);
-        match (p.npm, p.pypi) {
-            (Some(npm), Some(pypi)) => {
-                format!("`{spec}` needs the rule pack {npm} (npm) or {pypi} (PyPI); install it with `npm i -D {npm}` or `pip install {pypi}`")
-            }
-            (Some(npm), None) => format!("`{spec}` needs the rule pack {npm}, which is published on npm only; install it with `npm i -D {npm}`"),
-            (None, Some(pypi)) => format!("`{spec}` needs the rule pack {pypi}, which is published on PyPI only; install it with `pip install {pypi}`"),
-            (None, None) => unreachable!("every first-party pack is on a registry"),
-        }
-    }
-}
-
 fn read_rules(dir: &Path, errors: &mut Vec<LoadError>) -> Vec<RuleFile> {
     let mut rules = Vec::new();
     let Ok(namespaces) = fs::read_dir(dir) else { return rules };
@@ -558,6 +477,7 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::search::PackSearch;
 
     #[test]
     fn extends_specs() {
