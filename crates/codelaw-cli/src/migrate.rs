@@ -656,6 +656,10 @@ fn biome_format(source: &str, f: &Json, prefix: &str, input: &mut Input) {
             ("quoteStyle", Json::String(s)) if s == "single" || s == "double" => Some(("quote_style", toml::Value::String(s.clone()))),
             ("semicolons", Json::String(s)) if s == "always" || s == "asNeeded" => Some(("semicolons", toml::Value::String(if s == "always" { "always" } else { "as-needed" }.into()))),
             ("trailingCommas", Json::String(s)) if matches!(s.as_str(), "all" | "es5" | "none") => Some(("trailing_commas", toml::Value::String(s.clone()))),
+            ("arrowParentheses", Json::String(s)) if s == "always" || s == "asNeeded" => Some(("arrow_parens", toml::Value::String(if s == "always" { "always" } else { "avoid" }.into()))),
+            ("bracketSpacing", Json::Bool(b)) => Some(("bracket_spacing", toml::Value::Boolean(*b))),
+            ("jsxQuoteStyle", Json::String(s)) if s == "single" || s == "double" => Some(("jsx_quote_style", toml::Value::String(s.clone()))),
+            ("quoteProperties", Json::String(s)) if s == "asNeeded" || s == "preserve" => Some(("quote_props", toml::Value::String(if s == "preserve" { "preserve" } else { "as-needed" }.into()))),
             _ => None,
         };
         match to {

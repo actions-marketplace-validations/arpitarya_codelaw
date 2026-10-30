@@ -10,8 +10,9 @@ feature: "formatting"
 owns:
   - crates/codelaw-format
   - scripts/format-parity.py
+  - scripts/format-corpus.py
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-24T12:00:00Z
+timestamp: 2026-10-30T18:00:00Z
 content_sha: ""
 ---
 
@@ -113,6 +114,10 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    quote_style     = "double"      # JS/TS
    semicolons      = "always"      # JS/TS: always | as-needed
    trailing_commas = "all"         # JS/TS: all | es5 | none
+   arrow_parens    = "always"      # JS/TS: always | avoid      (Prettier's arrowParens)
+   bracket_spacing = true          # JS/TS: `{ a }` or `{a}`    (bracketSpacing)
+   jsx_quote_style = "double"      # JSX: double | single       (jsxSingleQuote)
+   quote_props     = "as-needed"   # JS/TS: as-needed | preserve (quoteProps; Prettier's `consistent` has no engine behind it)
    exclude         = ["**/generated/**"]
 
    [format.python]
@@ -129,7 +134,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
      - **What wins:** a key `[format]` (or `[format.python]`) sets is never changed by `.editorconfig`. Section globs go through `globset` (MIT / Unlicense), already a dependency of the engine.
    - **Migrating from existing configs:** `codelaw format --import-config` reads `.prettierrc*`, `[tool.ruff.format]` and `[tool.black]` once and writes the equivalent `[format]` keys. From then on, `codelaw.toml` is the only source.
      - **What is read** (`crates/codelaw-format/src/import.rs` translates; `codelaw-cli` reads and writes): in the project root, `.prettierrc` (JSON or YAML), `.prettierrc.json`, `.yaml`, `.yml`, `.json5`, `.toml`, and `package.json`'s `"prettier"` object; `pyproject.toml`'s `[tool.ruff]`, `[tool.ruff.format]` and `[tool.black]`. A Prettier config that is a program (`.prettierrc.js`, `prettier.config.*`, …) is never run ([L5](0007_LAW-5-no-model-in-the-engine.md)) and is listed as not imported, as is a string naming a shared config package (an error).
-     - **The mapping:** `printWidth` → `line_width`, `tabWidth` → `indent_width`, `useTabs` → `indent_style`, `endOfLine` (`lf`, `crlf`) → `end_of_line`, `singleQuote` → `quote_style`, `semi` → `semicolons`, `trailingComma` → `trailing_commas`. Ruff's `line-length` and `indent-width` (top-level `[tool.ruff]`, where Ruff keeps them, not `[tool.ruff.format]`) and Black's `line-length` → `[format.python]`. Ruff's `[tool.ruff.format]` options have no `[format]` key, so codelaw keeps Ruff's defaults for them. Every setting with no key is printed as `not imported: …`, never guessed at.
+     - **The mapping:** `printWidth` → `line_width`, `tabWidth` → `indent_width`, `useTabs` → `indent_style`, `endOfLine` (`lf`, `crlf`) → `end_of_line`, `singleQuote` → `quote_style`, `semi` → `semicolons`, `trailingComma` → `trailing_commas`, `arrowParens` → `arrow_parens`, `bracketSpacing` → `bracket_spacing`, `jsxSingleQuote` → `jsx_quote_style`, `quoteProps` (`as-needed`, `preserve`) → `quote_props` (`W-141`, on the decider's ruling of 2026-10-30 on W-138's R3; Prettier's other options stay at its defaults). Ruff's `line-length` and `indent-width` (top-level `[tool.ruff]`, where Ruff keeps them, not `[tool.ruff.format]`) and Black's `line-length` → `[format.python]`. Ruff's `[tool.ruff.format]` options have no `[format]` key, so codelaw keeps Ruff's defaults for them. Every setting with no key is printed as `not imported: …`, never guessed at.
      - **Order and once:** the first source to give a key keeps it (Prettier's files in the order above, Ruff before Black). A key the config already sets is kept as written and printed as `kept`; so a second run writes nothing. Nothing is formatted.
      - **Where it writes:** the project's config — `codelaw.toml`, or `[tool.codelaw.format]` when the config lives in `pyproject.toml`; a project with none gets `codelaw.toml`. A config in `package.json` is refused with exit `2` (the command writes TOML). The rest of the file is kept byte for byte through `toml_edit` (MIT OR Apache-2.0).
 
@@ -184,6 +189,19 @@ Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclu
   The SCSS row was measured separately on 2026-10-26 (`W-62`), with the same script and pins (Prettier 3.6.2, defaults) at commit `84b392f` plus the W-62 change: 2,288 files in all, 212 of them SCSS— every fenced `scss` example in `packs/` and the files of `fixtures/scss/corpus`; the other rows are the 2026-10-21 run's.
 
   `markup_fmt` (HTML) is the one engine far from Prettier. Markdown differs in a few lines of most files. TOML has no Prettier or Black formatter to compare against.
+- **Real projects' files, measured 2026-10-30 (`W-141`)** with `scripts/format-corpus.py` (pinned sources, fetched outside the repo: Bootstrap 5.3.8, Bulma 1.0.4, Primer CSS 22.3.3, MDN learning-area, GitHub's starter workflows, ESLint, typescript-eslint — all MIT or CC0, none vendored) and `scripts/format-parity.py --corpus`, against Prettier 3.9.10 with defaults. Identical files:
+
+  | language | files | 0.4.3 | after W-141 | oxfmt 0.75.0 (measured, not in codelaw) |
+  |---|--:|--:|--:|--:|
+  | CSS | 78 | 73.1 % | 74.4 % | 88.6 % |
+  | HTML | 147 | 18.4 % | 68.7 % | 100 % (Prettier itself, through Node) |
+  | SCSS | 150 | 80.7 % | 80.7 % | 86.0 % |
+  | YAML | 149 | 89.9 % | 89.9 % | 97.3 % |
+  | Markdown | 150 | 93.3 % | 93.3 % | 97.3 % |
+  | JS · JSX | 139 | 97.1 % | 97.1 % | 97.8 % |
+  | TS · TSX | 129 | 82.2 % | 82.2 % | 82.9 % |
+
+  What `W-141` changed, each in `engines.rs`: a block comment that starts its own line at statement level keeps it (`*/.a {` printed as `*/ .a {` before; only whitespace is inserted, so no token changes); HTML void elements end in ` />`; a `style=""` attribute is formatted as CSS declarations joined by `; `; a `<script>` body fits inside its indentation. What is left is inside the engines: Biome's custom-property lists, `calc()` breaks and `a/b` spacing (CSS, SCSS); `markup_fmt` breaking inside an inline element where Prettier moves the element to the next line, and `<caption>`/empty `<style>` layout (HTML).
 - **The binary grows** by the size of six formatter engines. Accepted, because each package must be complete ([L6](0008_LAW-6-python-and-node-packages.md) decision 3).
 
 ### Alternatives considered
