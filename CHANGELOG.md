@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **Promise rules (W-139):** 17 `js/promise-*` rules reimplementing eslint-plugin-promise 7.3.0; its 10 recommended rules join `js/recommended` at the plugin's severities, the other 7 are preview and opt-in.
+
 ### Changed
 
 - **Release pipeline (W-154):** `publish.yml`'s list of PyPI projects CI may create is back to `codelaw` alone — 0.4.2 and 0.4.3 created the `deps` pack and its index.

@@ -6,7 +6,7 @@ item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -17,7 +17,7 @@ ball: agent
 | step | what we do | what it gives us | state |
 |---|---|---|---|
 | 1 | W-138's research and Arpit's ruling | a decided list | ✅ 2026-10-30 — build all: 1,690 + 16 taste + 39 framework = **1,745**; round 2 (W-144) ruled the same day — **2,572 in all** |
-| 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | ⏳ |
+| 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | 🔄 slice by slice — see *Progress* |
 | 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ⏳ |
 | 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ⏳ |
 
@@ -53,6 +53,16 @@ ball: agent
 | 2d · defaults (from W-148) | the 38 tranche B/C ports Oxlint ranks `correctness` (`oxlint.csv`) corpus-run; those with no false positive proposed for `recommended` | ⏳ |
 | 3 · checks | `codelaw test` 0 failed on every pack; the layout check clean; corpus counts; L8 budgets measured, not loosened | ⏳ |
 | 4 · docs | `scripts/rule-docs.py` pages, `docs-sync.py` counts, CHANGELOG, the proposal's before/after table | ⏳ |
+
+## Progress — slices landed
+
+Each slice is a coherent set of rules, `codelaw test` green on its pack, its corpus counts written (`scripts/corpus.py run --pack <p> --update`), the docs counts synced.
+
+| slice | rules | pack | presets | evidence |
+|---|---|---|---|---|
+| 1 · eslint-plugin-promise 7.3.0 | 17 (`js/promise-*`) | `js` | the 10 upstream-recommended in `js/recommended` at upstream severities; 7 `preview`, in no preset | `codelaw test packs/js`: 101 rules · 1,921 checks · 0 failed; corpus: 699 files, held; `rules lint` 0 problems |
+
+**Remaining** (of 2,572 + 18): every other row of the CSVs. New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
 
 ## Blockers
 

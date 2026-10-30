@@ -16,7 +16,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `js/recommended` | 66 | ESLint `js.configs.recommended`, `@eslint/js` 10.0.1 — all 64 rules — plus `js/no-console` at `warn`, which ESLint leaves out, and `js/use-instead` at `warn`, inert until `replacements` is set (W-73); a team turns it to `error` in `[profiles.ci]` |
+| `js/recommended` | 76 | ESLint `js.configs.recommended`, `@eslint/js` 10.0.1 — all 64 rules — plus `js/no-console` at `warn`, which ESLint leaves out, and `js/use-instead` at `warn`, inert until `replacements` is set (W-73); a team turns it to `error` in `[profiles.ci]`; and eslint-plugin-promise 7.3.0's `recommended` — all 10 `js/promise-*` rules, at its severities (W-139) |
 | `js/typescript` | 4 | the four core rules typescript-eslint 8.71.2's `eslint-recommended` switches on for TypeScript: `js/no-var`, `js/prefer-const`, `js/prefer-rest-params`, `js/prefer-spread`; use it with `codelaw:ts/recommended` |
 | `js/conventions` | 3 | codelaw's starter catalogue: `js/exports-at-end`, `js/import-groups`, `js/no-default-export` — opt in |
 | `js/project` | 1 | `graph/no-unused-exports`, the rule that reads the whole repo, from knip's `exports` and `types` — opt in |
@@ -51,8 +51,11 @@ section says so. The larger ones:
 | `js/no-undef` | environments come from the `env` option (`shared-node-browser` by default), using the `globals` data tables |
 | `js/prefer-spread` | only `f.apply(null, args)` on a plain function name |
 | `js/no-var` | `suggest`, not `auto`: `let` is block-scoped, so the swap can change meaning |
+| `js/promise-always-return`, `js/promise-no-multiple-resolved` | read the callback's statements, not each code path: a `return` anywhere counts, and two settling calls are reported only one after the other in one block |
+| `js/promise-no-nesting` | every nested chain; the source allows one whose callback uses the outer callback's parameters |
+| `js/promise-prefer-catch` | `suggest`, not `auto`: `.catch(b).then(a)` passes the handler's result on to `a` |
 
-Nothing from `js.configs.recommended` is left out.
+Nothing from `js.configs.recommended` or eslint-plugin-promise's `recommended` is left out; the plugin's seven other rules are `preview` and in no preset.
 
 ## Data
 
