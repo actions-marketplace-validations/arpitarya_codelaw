@@ -28,7 +28,7 @@ ball: agent
 
 ## Goal
 
-Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 4, 5, 6, 7 and 15, then move each rule to the rung [`fix-ladder/rules.csv`](../proposals/fix-ladder/rules.csv) proposes.
+Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 4, 5, 6, 7, 15 and 16, then move each rule to the rung [`fix-ladder/rules.csv`](../proposals/fix-ladder/rules.csv) proposes.
 
 ## Definition of done
 
@@ -39,6 +39,7 @@ Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 
 | A3 · `fix_exception` | the rule schema gains it; the loader refuses a `manual` rule without one of `value`, `restructure`, `authored`, `security` (decision 5); `ENGINE_RULES` carry one (decision 15). Lands with B0, so nothing fails to load | ⏳ |
 | A4 · ceiling | `packs/fix-ladder.toml` at today's counts; a `laws.rs` test fails a pack over its ceiling (decision 6) | ⏳ |
 | A5 · `--fix-stats` | `codelaw rules --fix-stats [--check]`, text and JSON; `scripts/rule-docs.py` writes each pack README's table (decision 7) | ⏳ |
+| A6 · lowering | a rule entry's `fix` key in `[rules]`, scopes and profiles: lower only, raising is exit 2 naming the rule's rung; `config --print` and `rules --why` show it; schema updated (decision 16; SR-CONFIG) | ⏳ |
 | B0 · exceptions | the 147 rules staying `manual` get their `fix_exception` from the CSV | ⏳ |
 | B1 · choices rules | the 155 `suggest-choices` rows, pack by pack, each with its `Fixed (<label>)` examples | ⏳ |
 | B2 · subset `auto` | the 142 `auto+` rows: the subset condition in `fix_reason`, a `Don't` example on each side | ⏳ |
@@ -57,7 +58,7 @@ None for A and B. Open questions 1 and 2 hold only their own rows.
 
 ## Record affected
 
-SR-LAW-4 (rewritten 2026-10-30); SR-RULE-FORMAT (the `fix_exception` key, choices in `fix:` steps, `Fixed (<label>)` blocks); SR-ARCHITECTURE (the fix verifier for choices); SR-EDITOR and SR-CLI-MCP (choices on every surface).
+SR-LAW-4 (rewritten 2026-10-30; decision 16, lowering, the same day); SR-CONFIG (a rule entry's `fix` key); SR-RULE-FORMAT (the `fix_exception` key, choices in `fix:` steps, `Fixed (<label>)` blocks); SR-ARCHITECTURE (the fix verifier for choices); SR-EDITOR and SR-CLI-MCP (choices on every surface).
 
 ## Hazards
 
