@@ -31,9 +31,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (16)
 
-### build (8)
+### build (10)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -50,6 +50,10 @@ here. Read that record before changing anything below it.
 🟢 **W-155** `agent` Pack lookup ([SR-PACK-LOOKUP](../records/0118_pack-lookup.md), filed 10-30): Python step tries launcher paths → `$VIRTUAL_ENV` → `./.venv`, not just the first set; `[packs]` `order`/`node_modules`/`venv` replace the defaults. Nothing built. Filed by Arpit (Claude app). [detail](open/W-155-pack-lookup.md)
 
 🟢 **W-156** `agent` Fix ladder (L4 rewritten 10-30): auto, else suggest for the agent, else manual by exception. Review of 717 rules: manual 577 → 147. Engine: per-finding rung, choices, `fix_exception`, ceiling. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+
+🟢 **W-157** `agent` codelaw completes and checks its own `codelaw.toml`: schema registered + `#:schema` from `init` now; then the LSP offers real rule ids, presets, options and the down-only `fix`, and shows config errors as you type. Filed by Arpit (Claude app). [detail](open/W-157-config-completion.md)
+
+🟢 **W-158** `agent` `.codelawignore` for every rule, not just test coverage: each line names its rules, a reason, `expires=` or `forever`; same stale/incomplete checks. Open: reasons on `"off"` in `codelaw.toml`. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
 ### ci/cd (4)
 

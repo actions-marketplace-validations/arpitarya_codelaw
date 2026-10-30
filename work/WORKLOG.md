@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-10-30 — L4 decision 16 (lower a rule's fix, never raise it); W-157 and W-158 filed  ·  Claude app (Opus 5.5)
+
+- **Asked (voice, then "file it"):** let a project switch a rule's fix down only; autocomplete in `codelaw.toml`; one file for every rule's exceptions.
+- **Done:** SR-LAW-4 decision 16 and W-156 DoD A6 (a rule entry's `fix` key: lower only, raising is exit 2); W-157 (schema registration and `#:schema` now, then the LSP completes and checks the config from the installed packs); W-158 (`.codelawignore`, built for two coverage rules under SR-BASELINE decision 12, extended to any rule).
+- **Decided / left open:** Arpit ruled down-only. Open in W-158: a `reason` on rules turned `"off"` in `codelaw.toml`. Corrected in-session: config exceptions are `[scope.<name>]` (`[[overrides]]` is the deprecated spelling), and `.codelawignore` exists but covers only test coverage.
+- **Mistakes:** the voice answer showed `[[overrides]]`/`disable`, the deprecated spelling; corrected here.
+- **Next:** W-156 slice A.
+
 ## 2026-10-30 — W-145: the three L11 asks ratified (D-48, D-49)  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Approve all the three items presented in the chat for work item 145."*

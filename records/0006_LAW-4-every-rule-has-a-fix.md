@@ -181,9 +181,25 @@ a diff.
     like a pack's: each `manual` one carries its `fix_exception` in
     `ENGINE_RULES`.
 
+16. **A project may lower a rule's fix, never raise it** (the decider,
+    2026-10-30: *"Only down switching be allowed"*). `fix` in a rule's entry —
+    `[rules]`, a `[scope.<name>]`'s `rules` or a `[profile.<name>.rules]` —
+    takes a rung at or below the rule's own: `"py/unused-import" = { severity
+    = "error", fix = "suggest" }`.
+    - **Lowered to `suggest`:** the edit is no longer applied by `codelaw fix`,
+      save or the agent hook; it is shown as a diff to accept, as decision 4.
+    - **Lowered to `manual`:** no surface applies the edit; the finding shows
+      it as the step to make by hand.
+    - **Raising** (`fix = "auto"` on a `suggest` rule, anything above `manual`
+      on a `manual` one) is a config error: exit 2, naming the rule and its own
+      rung. Nothing forces an edit the rule's author did not prove safe.
+    - `codelaw config --print` and `rules --why` show the lowered rung and the
+      line that lowered it. A lowered rule counts against no ceiling (decision
+      6 counts what a pack ships).
+
 #### How L4 is enforced
 
-- Rule loader: decisions 1, 5 and 13.
+- Rule loader: decisions 1, 5 and 13; the config loader: decision 16.
 - `codelaw test`: decisions 11 and 13's steps, in CI over every first-party
   and project rule.
 - The fix verifier: decisions 9 and 10, on every fix, not only in tests.
@@ -195,7 +211,7 @@ a diff.
 
 - **Built: partly.** Decisions 1, 3, 9–14 were built under the 2026-10-18 law.
   The per-finding drop to `suggest` (2), choices (4), `fix_exception` (5), the
-  ceiling (6) and `--fix-stats` (7) are W-156; until it lands, the loader does
+  ceiling (6), `--fix-stats` (7) and the project's lowering (16) are W-156; until it lands, the loader does
   not yet refuse a `manual` rule without `fix_exception`.
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
