@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **Promise rules (W-139):** 17 `js/promise-*` rules reimplementing eslint-plugin-promise 7.3.0; its 10 recommended rules join `js/recommended` at the plugin's severities, the other 7 are preview and opt-in.
+
 ### Changed
 
 - **The work queue's check (W-152):** `scripts/check-work-system.py` refuses a ball that disagrees with its item — green while the inbox, the first unfinished step or the row says the next move is the decider's, or while a choice is left unruled (SR-WORK-OPEN-QUEUE rule 21a).
