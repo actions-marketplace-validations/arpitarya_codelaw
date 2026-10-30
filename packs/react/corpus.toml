@@ -59,6 +59,8 @@
 "react/no-set-state-in-effect" = 5
 "react/no-set-state-in-render" = 0
 "react/no-string-refs" = 0
+"react/no-suspicious-semicolon-in-jsx" = 0
+"react/no-svg-without-title" = 0
 "react/no-unescaped-entities" = 9
 "react/no-unknown-property" = 0
 "react/no-unnecessary-use-prefix" = 1

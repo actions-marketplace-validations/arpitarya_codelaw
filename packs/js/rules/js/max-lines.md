@@ -10,7 +10,7 @@ options:
   skip_blank_lines: { type: "boolean", default: true, description: "blank lines do not count" }
   skip_comments: { type: "boolean", default: true, description: "lines that hold only a comment do not count" }
   skip_imports: { type: "boolean", default: false, description: "the import block does not count" }
-ported_from: [eslint/max-lines]
+ported_from: [eslint/max-lines, eslint-plugin-sonarjs/max-lines]
 since: 0.3.0
 ---
 

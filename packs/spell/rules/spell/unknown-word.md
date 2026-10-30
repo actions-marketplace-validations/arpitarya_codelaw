@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx, python, json, yaml, toml, markdown
 fix: suggest
 fix_reason: "a word no list holds is often a real name, a product or a term of the trade; the nearest dictionary word is a guess the author confirms"
 stability: preview
+ported_from: [pylint/wrong-spelling-in-comment, pylint/wrong-spelling-in-docstring]
 since: 0.3.0
 ---
 

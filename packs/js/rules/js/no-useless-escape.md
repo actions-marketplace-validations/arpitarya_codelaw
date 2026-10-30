@@ -4,7 +4,7 @@ title: "No backslash that changes nothing"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
-ported_from: [eslint/no-useless-escape]
+ported_from: [eslint/no-useless-escape, biome/suspicious/noUselessEscapeInString]
 since: 0.1.0
 ---
 
