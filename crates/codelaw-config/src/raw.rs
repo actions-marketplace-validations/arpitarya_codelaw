@@ -85,6 +85,16 @@ pub struct RawConfig {
     /// SR-CONFIG decision 11a (W-131): `[tests.skip]`. Root config only.
     #[serde(default)]
     pub tests: RawTests,
+    /// SR-CONFIG decision 11b (W-146): `git/commit-message`. Root config only.
+    #[serde(default)]
+    pub commits: RawCommits,
+    /// SR-CONFIG decision 11b (W-146): `git/branch-name`. Root config only.
+    #[serde(default)]
+    pub branches: RawBranches,
+    /// SR-CONFIG decision 11b (W-146): `git/pr-size` and
+    /// `git/pr-description`. Root config only.
+    #[serde(default)]
+    pub pr: RawPr,
     /// SR-PROJECT-GRAPH decision 11 (W-130): feature-flag expiry — the
     /// accessors, the SDK presets, the inline markers' policy and the
     /// warning window. Its presence turns the flag rules on. Root config only.
@@ -394,6 +404,112 @@ pub struct RawTestsSkip {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warn_days: Option<u32>,
 }
+
+/// `[commits]`: what a commit message must look like (SR-CONFIG decision
+/// 11b, W-146). `git/commit-message` reads it as its options (the rule's
+/// own options win), so it serialises to the JSON the rule reads.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawCommits {
+    /// `conventional` (the default), `angular`, `gitmoji`, `custom` or `off`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_scope: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subject_max: Option<u32>,
+    /// `lower`, `sentence` or `any`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subject_case: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_body: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub breaking: Option<Vec<String>>,
+    /// The regular expression a subject line must match, `preset = "custom"` only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub ticket: RawGitTicket,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub skip: RawCommitsSkip,
+}
+
+/// `[commits.ticket]` and `[branches.ticket]`.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawGitTicket {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// `[commits.ticket]` only: `subject`, `footer` or `either`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place: Option<String>,
+    /// `[branches.ticket]` only: every commit names the branch's ticket.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub match_commits: Option<bool>,
+}
+
+/// `[commits.skip]`: the commits `git/commit-message` passes over.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawCommitsSkip {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merges: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reverts: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fixups: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authors: Option<Vec<String>>,
+}
+
+/// `[branches]`: `git/branch-name` (SR-CONFIG decision 11b).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawBranches {
+    /// A regular expression the whole name must match; empty or unset, the
+    /// name is not checked (unless a ticket is required).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_length: Option<u32>,
+    /// Globs of the branches never checked.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protected: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub skip_authors: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub ticket: RawGitTicket,
+}
+
+/// `[pr]`: `git/pr-size` and `git/pr-description` (SR-CONFIG decision 11b).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawPr {
+    /// Warn above this many changed lines; 0 is off; 400 by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_lines: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_pattern: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_ticket: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template_sections: Option<Vec<String>>,
+}
+
+fn is_default<T: Default + PartialEq>(v: &T) -> bool {
+    *v == T::default()
+}
+
+/// `[commits] preset`'s values.
+pub const COMMIT_PRESETS: &[&str] = &["conventional", "angular", "gitmoji", "custom", "off"];
 
 /// The ticket pattern when `ticket_pattern` is not set (`ABC-123`).
 pub const DEFAULT_TICKET_PATTERN: &str = "[A-Z][A-Z0-9]+-\\d+";

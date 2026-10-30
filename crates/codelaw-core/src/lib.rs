@@ -11,7 +11,7 @@ pub mod template;
 mod text;
 pub mod text_config;
 
-pub use diagnostic::{Diagnostic, FixClass, Severity, Skipped, TextEdit};
+pub use diagnostic::{Diagnostic, FixClass, Severity, Skipped, TextEdit, is_logical_location};
 pub use language::Language;
 pub use text::{LineIndex, Position, normalize_path};
 pub use text_config::{TEXT_CONFIG_FILES, is_text_config};

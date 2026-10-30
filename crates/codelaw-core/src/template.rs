@@ -34,6 +34,7 @@ pub const TEMPLATES: &[Template] = &[
     t!("ci/github/codelaw.yml"),
     t!("ci/gitlab/autofix-suggest-job.yml"),
     t!("ci/gitlab/codelaw-autofix.yml"),
+    t!("git-hooks/commit-msg"),
     t!("git-hooks/post-commit"),
     t!("git-hooks/pre-commit"),
     t!("init/.codelaw/rules/README.md"),

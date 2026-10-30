@@ -47,7 +47,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
-🟢 **W-146** `agent` PR hygiene: `git/commit-message` (Conventional Commits, configurable), `git/branch-name`, `git/pr-size` (400 lines), `git/pr-description`; commit-msg hook, CI, agent hook; git use widened (SR-ARCHITECTURE 14). Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
+🟢 **W-146** `agent` PR hygiene: the four `git/*` rules, `[commits]`/`[branches]`/`[pr]`, commit-msg hook, CI and Gate landed 2026-10-30; left: sharing the tables through a pack preset, other agents' shell tools. Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
 
 🟢 **W-155** `agent` Pack lookup ([SR-PACK-LOOKUP](../records/0118_pack-lookup.md), filed 10-30): Python step tries launcher paths → `$VIRTUAL_ENV` → `./.venv`, not just the first set; `[packs]` `order`/`node_modules`/`venv` replace the defaults. Nothing built. Filed by Arpit (Claude app). [detail](open/W-155-pack-lookup.md)
 

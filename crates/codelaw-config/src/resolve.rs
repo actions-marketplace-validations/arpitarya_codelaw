@@ -402,6 +402,7 @@ impl ConfigFile {
         }
         check_reviews(&raw.reviews, &path)?;
         check_markers(&raw, &path)?;
+        check_git(&raw, &path)?;
         if let Some(f) = &raw.flags {
             if let Some(p) = f.presets.iter().flatten().find(|p| !crate::raw::FLAG_PRESETS.contains(&p.as_str())) {
                 return Err(ConfigError::new(
@@ -485,6 +486,55 @@ fn check_reviews(r: &crate::raw::RawReviews, path: &Path) -> Result<(), ConfigEr
     }
     if let Some(w) = r.window.as_deref().filter(|w| !crate::raw::is_review_window(w)) {
         return err(format!("`[reviews] window`: `{w}` is not a window; write e.g. \"6m\", \"90d\", \"2w\" or \"1y\""));
+    }
+    Ok(())
+}
+
+/// `[commits]`, `[branches]` and `[pr]` (SR-CONFIG decision 11b, W-146):
+/// a value out of its list or a pattern that is not a regular expression
+/// fails on a laptop as it would in CI.
+fn check_git(raw: &RawConfig, path: &Path) -> Result<(), ConfigError> {
+    let fail = |m: String| Err(ConfigError::new(Some(path.to_path_buf()), m));
+    let c = &raw.commits;
+    if let Some(p) = c.preset.as_deref().filter(|p| !crate::raw::COMMIT_PRESETS.contains(p)) {
+        return fail(format!("`[commits] preset`: `{p}` is not one of `conventional`, `angular`, `gitmoji`, `custom`, `off`"));
+    }
+    if c.preset.as_deref() == Some("custom") && c.pattern.as_deref().is_none_or(str::is_empty) {
+        return fail("`[commits] preset = \"custom\"` needs a `pattern`".into());
+    }
+    if let Some(v) = c.subject_case.as_deref().filter(|v| !["lower", "sentence", "any"].contains(v)) {
+        return fail(format!("`[commits] subject_case`: `{v}` is not one of `lower`, `sentence`, `any`"));
+    }
+    if let Some(v) = c.ticket.place.as_deref().filter(|v| !["subject", "footer", "either"].contains(v)) {
+        return fail(format!("`[commits.ticket] place`: `{v}` is not one of `subject`, `footer`, `either`"));
+    }
+    if c.ticket.match_commits.is_some() {
+        return fail("`[commits.ticket] match_commits` belongs to `[branches.ticket]`".into());
+    }
+    if raw.branches.ticket.place.is_some() {
+        return fail("`[branches.ticket] place` belongs to `[commits.ticket]`".into());
+    }
+    if let Some(t) = c.types.iter().flatten().find(|t| t.is_empty() || t.chars().any(|ch| ch.is_whitespace() || "():!".contains(ch))) {
+        return fail(format!("`[commits] types`: `{t}` is not a commit type"));
+    }
+    let patterns = [
+        ("[commits] pattern", &c.pattern),
+        ("[commits.ticket] pattern", &c.ticket.pattern),
+        ("[branches] pattern", &raw.branches.pattern),
+        ("[branches.ticket] pattern", &raw.branches.ticket.pattern),
+        ("[pr] title_pattern", &raw.pr.title_pattern),
+    ];
+    for (key, pattern) in patterns {
+        if let Some(p) = pattern
+            && let Err(e) = regex::Regex::new(p)
+        {
+            return fail(format!("`{key}`: `{p}` is not a regular expression: {e}"));
+        }
+    }
+    for (key, globs) in [("[branches] protected", &raw.branches.protected), ("[pr] exclude", &raw.pr.exclude)] {
+        if let Some(g) = globs.iter().flatten().find(|g| globset::Glob::new(g).is_err()) {
+            return fail(format!("`{key}`: `{g}` is not a glob"));
+        }
     }
     Ok(())
 }
@@ -635,7 +685,7 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 /// Keys a nested config may not set yet; they belong to the root config.
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
-    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]",
+    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -661,6 +711,9 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.tests != Default::default(),
         raw.codeowners != Default::default(),
         raw.flags.is_some(),
+        raw.commits != Default::default(),
+        raw.branches != Default::default(),
+        raw.pr != Default::default(),
     ];
     ROOT_ONLY.iter().zip(set).filter(|(_, s)| *s).map(|(k, _)| *k).collect()
 }
@@ -900,6 +953,9 @@ impl Config {
             ("deps", Some(r)) => serde_json::to_value(&r.deps).ok(),
             ("css", Some(r)) => serde_json::to_value(&r.css).ok(),
             ("todo", Some(r)) => serde_json::to_value(&r.todo).ok(),
+            ("commits", Some(r)) => serde_json::to_value(&r.commits).ok(),
+            ("branches", Some(r)) => serde_json::to_value(&r.branches).ok(),
+            ("pr", Some(r)) => serde_json::to_value(&r.pr).ok(),
             ("tests.skip", Some(r)) => serde_json::to_value(&r.tests.skip).ok(),
             ("codeowners", Some(r)) => serde_json::to_value(&r.codeowners).ok(),
             ("flags", Some(r)) => r.flags.as_ref().and_then(|f| serde_json::to_value(f).ok()),
