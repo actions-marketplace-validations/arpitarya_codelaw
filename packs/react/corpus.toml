@@ -3,6 +3,7 @@
 
 [findings]
 "react/a11y-alt-text" = 0
+"react/a11y-anchor-ambiguous-text" = 0
 "react/a11y-anchor-has-content" = 0
 "react/a11y-anchor-is-valid" = 0
 "react/a11y-aria-activedescendant-has-tabindex" = 0
@@ -12,15 +13,18 @@
 "react/a11y-aria-unsupported-elements" = 0
 "react/a11y-autocomplete-valid" = 0
 "react/a11y-click-events-have-key-events" = 2
+"react/a11y-control-has-associated-label" = 2
 "react/a11y-heading-has-content" = 0
 "react/a11y-html-has-lang" = 0
 "react/a11y-iframe-has-title" = 0
 "react/a11y-img-redundant-alt" = 0
 "react/a11y-interactive-supports-focus" = 0
 "react/a11y-label-has-associated-control" = 0
+"react/a11y-lang" = 0
 "react/a11y-media-has-caption" = 0
 "react/a11y-mouse-events-have-key-events" = 0
 "react/a11y-no-access-key" = 0
+"react/a11y-no-aria-hidden-on-focusable" = 0
 "react/a11y-no-autofocus" = 1
 "react/a11y-no-distracting-elements" = 0
 "react/a11y-no-interactive-element-to-noninteractive-role" = 0
@@ -29,6 +33,7 @@
 "react/a11y-no-noninteractive-tabindex" = 0
 "react/a11y-no-redundant-roles" = 0
 "react/a11y-no-static-element-interactions" = 2
+"react/a11y-prefer-tag-over-role" = 0
 "react/a11y-role-has-required-aria-props" = 0
 "react/a11y-role-supports-aria-props" = 0
 "react/a11y-scope" = 0

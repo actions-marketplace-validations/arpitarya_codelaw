@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 808 rules in 19 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 813 rules in 19 packs, plus the engine's 23 own rules.
 
 ## Configuring any rule — the forms
 
@@ -37,7 +37,7 @@ remap = { error = "warn" }
 |---|---|---|---|---|
 | [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 34 | 1 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 68 | 4 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 74 | 18 |
@@ -273,6 +273,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`react/a11y-alt-text`](react/a11y-alt-text.md) | Images and image-like elements carry alternative text | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-anchor-ambiguous-text`](react/a11y-anchor-ambiguous-text.md) | Link text says where it goes | `manual` | — | *[rules] only* |
 | [`react/a11y-anchor-has-content`](react/a11y-anchor-has-content.md) | A link has content | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-anchor-is-valid`](react/a11y-anchor-is-valid.md) | A link goes somewhere | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-aria-activedescendant-has-tabindex`](react/a11y-aria-activedescendant-has-tabindex.md) | An element with aria-activedescendant is focusable | `manual` | — | `react/recommended`, `react/a11y` |
@@ -282,15 +283,18 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-aria-unsupported-elements`](react/a11y-aria-unsupported-elements.md) | No ARIA on elements that cannot carry it | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-autocomplete-valid`](react/a11y-autocomplete-valid.md) | autoComplete holds a valid token list | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-click-events-have-key-events`](react/a11y-click-events-have-key-events.md) | A clickable element also answers the keyboard | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-control-has-associated-label`](react/a11y-control-has-associated-label.md) | A button has a label | `manual` | — | *[rules] only* |
 | [`react/a11y-heading-has-content`](react/a11y-heading-has-content.md) | A heading has content | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-html-has-lang`](react/a11y-html-has-lang.md) | The html element has a lang | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-iframe-has-title`](react/a11y-iframe-has-title.md) | An iframe has a title | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-img-redundant-alt`](react/a11y-img-redundant-alt.md) | Alt text does not say "image" | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-interactive-supports-focus`](react/a11y-interactive-supports-focus.md) | An element with an interactive role is focusable | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-label-has-associated-control`](react/a11y-label-has-associated-control.md) | A label is tied to a control | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-lang`](react/a11y-lang.md) | lang is a valid language tag | `manual` | — | *[rules] only* |
 | [`react/a11y-media-has-caption`](react/a11y-media-has-caption.md) | Audio and video have captions | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-mouse-events-have-key-events`](react/a11y-mouse-events-have-key-events.md) | Hover handlers have focus twins | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-access-key`](react/a11y-no-access-key.md) | No accessKey | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `manual` | — | *[rules] only* |
 | [`react/a11y-no-autofocus`](react/a11y-no-autofocus.md) | No autoFocus | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-distracting-elements`](react/a11y-no-distracting-elements.md) | No marquee or blink | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-interactive-element-to-noninteractive-role`](react/a11y-no-interactive-element-to-noninteractive-role.md) | Interactive elements keep an interactive role | `manual` | — | `react/recommended`, `react/a11y` |
@@ -299,6 +303,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-no-noninteractive-tabindex`](react/a11y-no-noninteractive-tabindex.md) | Non-interactive elements are not in the tab order | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-redundant-roles`](react/a11y-no-redundant-roles.md) | No role an element already has | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-static-element-interactions`](react/a11y-no-static-element-interactions.md) | div and span have a role when they handle events | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-prefer-tag-over-role`](react/a11y-prefer-tag-over-role.md) | The native element, not a role | `manual` | — | *[rules] only* |
 | [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `manual` | — | `react/recommended`, `react/a11y` |

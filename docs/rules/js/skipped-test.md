@@ -14,6 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (why a test is off, and until when, is a fact only the author knows; the engine can't write it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
+| **Ported from** | `biome/suspicious/noSkippedTests`, `eslint-plugin-jest/no-disabled-tests`, `eslint-plugin-playwright/no-skipped-test` |
 
 ## What it checks
 
