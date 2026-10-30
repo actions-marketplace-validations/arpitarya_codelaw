@@ -1,11 +1,13 @@
 extends = ["codelaw:react/a11y"]
-description = "eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eight of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented; and, through `react/a11y`, eslint-plugin-jsx-a11y 6.10.2's recommended"
+description = "eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eleven of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented; and, through `react/a11y`, eslint-plugin-jsx-a11y 6.10.2's recommended"
 
 [rules]
 "react/display-name" = "error"
 "react/error-boundaries" = "error"
 "react/exhaustive-deps" = "error"
 "react/globals" = "error"
+"react/immutability" = "error"
+"react/incompatible-library" = "warn"
 "react/jsx-key" = "error"
 "react/jsx-no-comment-textnodes" = "error"
 "react/jsx-no-duplicate-props" = "error"
@@ -29,7 +31,9 @@ description = "eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-p
 "react/no-unknown-property" = "error"
 "react/no-unnecessary-use-prefix" = "warn"
 "react/prefer-lazy-state-init" = "warn"
+"react/prop-types" = "error"
 "react/purity" = "error"
 "react/require-render-return" = "error"
 "react/rules-of-hooks" = "error"
+"react/unsupported-syntax" = "error"
 "react/use-memo" = "error"

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the component out means passing in the values it closed over as props) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
-| **Ported from** | `eslint-plugin-react-hooks/static-components`, `@eslint-react/no-nested-component-definitions` |
+| **Ported from** | `eslint-plugin-react-hooks/static-components`, `@eslint-react/no-nested-component-definitions`, `eslint-plugin-react/no-unstable-nested-components` |
 
 ## What it checks
 

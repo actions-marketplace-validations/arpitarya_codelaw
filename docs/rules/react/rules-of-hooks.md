@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving a hook can change what the code does on the renders that skipped it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint-plugin-react-hooks/rules-of-hooks` |
+| **Ported from** | `eslint-plugin-react-hooks/rules-of-hooks`, `eslint-plugin-react-hooks/hooks` |
 
 ## What it checks
 

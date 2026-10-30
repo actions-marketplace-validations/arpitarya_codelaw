@@ -5,7 +5,7 @@ languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving the component out means passing in the values it closed over as props"
 stability: preview
-ported_from: [eslint-plugin-react-hooks/static-components, "@eslint-react/no-nested-component-definitions"]
+ported_from: [eslint-plugin-react-hooks/static-components, "@eslint-react/no-nested-component-definitions", eslint-plugin-react/no-unstable-nested-components]
 since: 0.3.0
 ---
 
