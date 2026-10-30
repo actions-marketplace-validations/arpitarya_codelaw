@@ -431,12 +431,12 @@ fn added_by_is_checked_against_git_and_expires_only_moves_earlier() {
 
     // `--changed-since`: the blame author of the line (here `t@`, the
     // committer the helper sets), not the one running the check.
-    git(&d, &["commit", "-q", "-m", "topic"]);
+    git(&d, &["commit", "-q", "-m", "feat: topic"]);
     let (code, out, _) = codelaw(&d, &["check", "--changed-since", "main", "--as-of", "2026-11-01"]);
     assert_eq!(code, 1, "{out}");
     assert!(out.contains("names `ME@example.com` as its author, but git names `t@example.com`"), "{out}");
     fs::write(d.join("a.py"), "print(1)  # codelaw-ignore fixture/py-no-print by=t@example.com: legacy\n").unwrap();
-    git(&d, &["commit", "-q", "-am", "author"]);
+    git(&d, &["commit", "-q", "-am", "fix: author"]);
     let (code, out, _) = codelaw(&d, &["check", "--changed-since", "main", "--as-of", "2026-11-01"]);
     assert_eq!(code, 0, "{out}");
     // A baseline entry's `added_by`, changed in the index.

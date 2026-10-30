@@ -29,6 +29,21 @@ pub enum Semicolons {
     AsNeeded,
 }
 
+/// `arrow_parens`: Prettier's `arrowParens`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum ArrowParens {
+    Always,
+    Avoid,
+}
+
+/// `quote_props`: Prettier's `quoteProps`. Prettier's `consistent` has no
+/// engine behind it (Biome has `as-needed` and `preserve`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum QuoteProps {
+    AsNeeded,
+    Preserve,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum TrailingCommas {
     All,
@@ -52,6 +67,12 @@ pub struct FormatOptions {
     pub quote_style: QuoteStyle,
     pub semicolons: Semicolons,
     pub trailing_commas: TrailingCommas,
+    /// JS/TS (W-141, Prettier's `arrowParens`, `bracketSpacing`,
+    /// `jsxSingleQuote`, `quoteProps`).
+    pub arrow_parens: ArrowParens,
+    pub bracket_spacing: bool,
+    pub jsx_quote_style: QuoteStyle,
+    pub quote_props: QuoteProps,
     /// Globs of files never formatted, relative to the project root.
     pub exclude: Vec<String>,
     /// `[format.python]`.
@@ -87,6 +108,10 @@ impl Default for FormatOptions {
             quote_style: QuoteStyle::Double,
             semicolons: Semicolons::Always,
             trailing_commas: TrailingCommas::All,
+            arrow_parens: ArrowParens::Always,
+            bracket_spacing: true,
+            jsx_quote_style: QuoteStyle::Double,
+            quote_props: QuoteProps::AsNeeded,
             exclude: Vec::new(),
             python_line_width: 88,
             python_indent_width: 4,
@@ -105,6 +130,10 @@ const KEYS: &[&str] = &[
     "quote_style",
     "semicolons",
     "trailing_commas",
+    "arrow_parens",
+    "bracket_spacing",
+    "jsx_quote_style",
+    "quote_props",
     "exclude",
     "python",
     "markdown",
@@ -168,6 +197,10 @@ impl FormatOptions {
                 "trailing_commas" => {
                     o.trailing_commas = choice(s, key, v, &[("all", TrailingCommas::All), ("es5", TrailingCommas::Es5), ("none", TrailingCommas::None)])?
                 }
+                "arrow_parens" => o.arrow_parens = choice(s, key, v, &[("always", ArrowParens::Always), ("avoid", ArrowParens::Avoid)])?,
+                "bracket_spacing" => o.bracket_spacing = boolean(s, key, v)?,
+                "jsx_quote_style" => o.jsx_quote_style = choice(s, key, v, &[("double", QuoteStyle::Double), ("single", QuoteStyle::Single)])?,
+                "quote_props" => o.quote_props = choice(s, key, v, &[("as-needed", QuoteProps::AsNeeded), ("preserve", QuoteProps::Preserve)])?,
                 "exclude" => {
                     let list = v.as_array().ok_or_else(|| format!("[{s}] exclude: expected a list of globs"))?;
                     o.exclude = list.iter().map(|g| g.as_str().map(str::to_owned).ok_or_else(|| format!("[{s}] exclude: expected a list of globs"))).collect::<Result<_, _>>()?;
@@ -220,5 +253,8 @@ mod tests {
         assert_eq!((o.line_width, o.quote_style, o.python_line_width), (100, QuoteStyle::Single, 120));
         assert!(parse("[format]\nline_widht = 1\n").unwrap_err().contains("unknown key `line_widht`"));
         assert!(parse("[format]\nsemicolons = \"never\"\n").unwrap_err().contains("`as-needed`"));
+        let o = parse("[format]\narrow_parens = \"avoid\"\nbracket_spacing = false\njsx_quote_style = \"single\"\nquote_props = \"preserve\"\n").unwrap();
+        assert_eq!((o.arrow_parens, o.bracket_spacing, o.jsx_quote_style, o.quote_props), (ArrowParens::Avoid, false, QuoteStyle::Single, QuoteProps::Preserve));
+        assert!(parse("[format]\nquote_props = \"consistent\"\n").unwrap_err().contains("`preserve`"));
     }
 }

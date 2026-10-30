@@ -194,6 +194,46 @@ pub const ENGINE_RULES: &[EngineRule] = &[
             "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`.",
         ],
     },
+    EngineRule {
+        id: "git/commit-message",
+        title: "A commit message does not follow `[commits]` (Conventional Commits by default)",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Reword the message to the form the finding shows: `git commit --amend` for the last commit, `git rebase -i <base>` and `reword` for an earlier one; a message is never rewritten for you.",
+            "If the convention is wrong for this repository, change `[commits]` in `codelaw.toml` (`preset`, `types`, `scopes`, `subject_max`, `subject_case`, `ticket`, `skip`).",
+        ],
+    },
+    EngineRule {
+        id: "git/branch-name",
+        title: "The branch name does not follow `[branches]`",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Rename the branch (`git branch -m <new-name>`), push it under the new name and open the pull request from it; the finding shows a name that passes.",
+            "Or change `[branches] pattern` or `max_length`, or add the branch to `[branches] protected`.",
+        ],
+    },
+    EngineRule {
+        id: "git/pr-size",
+        title: "The pull request changes more lines than `[pr] max_lines`",
+        severity: Severity::Warn,
+        fix: FixClass::Manual,
+        steps: &[
+            "Split the change into pull requests that each stand alone — the refactor first, then the feature that uses it.",
+            "Lockfiles and generated files are not counted: add other generated paths to `[pr] exclude`, or raise `[pr] max_lines`.",
+        ],
+    },
+    EngineRule {
+        id: "git/pr-description",
+        title: "The pull request's title or description does not follow `[pr]`",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Edit the pull request as the finding says: a title that matches `[pr] title_pattern`, a ticket in the title or description, each section of `[pr] template_sections` filled in.",
+            "Then run the CI job again: the description is read from what the CI hands the job, never fetched.",
+        ],
+    },
 ];
 
 /// The opt-in preset that turns on the test rules of new code (W-71):

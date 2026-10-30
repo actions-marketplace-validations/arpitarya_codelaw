@@ -18,6 +18,10 @@ Prettier and Black are run at the pinned versions below through `npx` and
 Each tool formats its own copy; a file either tool cannot format (a
 fragment, a deliberate syntax error) is counted as skipped, not compared.
 TOML has no Prettier or Black formatter and is left out.
+
+`--corpus DIR` measures a directory of files instead — W-141's real-world
+corpus, fetched by `scripts/format-corpus.py`; `--prettier` picks the
+Prettier version (W-141 measures against 3.9.10).
 """
 import argparse
 import difflib
@@ -66,7 +70,11 @@ def run(cmd, cwd):
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--binary", required=True, help="the codelaw binary to measure")
+    ap.add_argument("--corpus", help="measure this directory's files instead of the repository's")
+    ap.add_argument("--prettier", default=PRETTIER, help=f"the Prettier to measure against (default {PRETTIER})")
+    ap.add_argument("--diffs", help="write each differing file's unified diff (Prettier's side first) into this directory")
     args = ap.parse_args()
+    prettier = args.prettier if "@" in args.prettier else f"prettier@{args.prettier}"
     repo = pathlib.Path(__file__).resolve().parent.parent
     binary = pathlib.Path(args.binary).resolve()
     commit = run(["git", "rev-parse", "--short", "HEAD"], repo).stdout.strip()
@@ -74,7 +82,13 @@ def main() -> int:
         base = pathlib.Path(tmp)
         src = base / "src"
         src.mkdir()
-        corpus(repo, src)
+        if args.corpus:
+            for p in sorted(pathlib.Path(args.corpus).iterdir()):
+                if p.is_file() and p.suffix.lstrip(".") in EXTENSIONS:
+                    shutil.copyfile(p, src / p.name)
+            commit = f"{args.corpus}"
+        else:
+            corpus(repo, src)
         files = sorted(p.name for p in src.iterdir())
         outs = {}
         for tool in ("codelaw", "prettier", "black"):
@@ -94,14 +108,15 @@ def main() -> int:
                 failed.add(current)
         # Prettier skips what it has no parser for (`.py`); a file it
         # cannot parse is reported on stderr and left as it was.
-        r = run(["npx", "--yes", PRETTIER, "--write", "--no-config", "--log-level", "warn", "."], outs["prettier"])
+        r = run(["npx", "--yes", prettier, "--write", "--no-config", "--log-level", "warn", "."], outs["prettier"])
         if r.returncode not in (0, 2):
             sys.exit(f"format-parity: prettier failed:\n{r.stderr}")
         failed.update(m.group(1) for m in re.finditer(r"^\[error\] (?:\./)?([^:\s]+):", r.stderr, re.M))
-        r = run(["uvx", BLACK, "--quiet", "."], outs["black"])
-        if r.returncode not in (0, 123):
+        r = run(["uvx", BLACK, "--quiet", "."], outs["black"]) if any(f.endswith(".py") for f in files) else None
+        if r and r.returncode not in (0, 123):
             sys.exit(f"format-parity: black failed:\n{r.stderr}")
-        failed.update(m.group(1) for m in re.finditer(r"^error: cannot format (?:\./)?([^:\s]+):", r.stderr, re.M))
+        if r:
+            failed.update(m.group(1) for m in re.finditer(r"^error: cannot format (?:\./)?([^:\s]+):", r.stderr, re.M))
 
         rows = {}
         for f in files:
@@ -115,11 +130,16 @@ def main() -> int:
                 continue
             row["files"] += 1
             row["same"] += ours == theirs
+            if args.diffs and ours != theirs:
+                d = pathlib.Path(args.diffs)
+                d.mkdir(parents=True, exist_ok=True)
+                diff = difflib.unified_diff(theirs.splitlines(True), ours.splitlines(True), f"{ref}/{f}", f"codelaw/{f}")
+                (d / f"{f}.diff").write_text("".join(diff), encoding="utf-8")
             a, b = ours.splitlines(), theirs.splitlines()
             matcher = difflib.SequenceMatcher(None, a, b, autojunk=False)
             row["lines"] += max(len(a), len(b))
             row["same_lines"] += sum(m.size for m in matcher.get_matching_blocks())
-    print(f"Corpus: commit {commit}, {len(files)} files; {PRETTIER}, {BLACK}.\n")
+    print(f"Corpus: {'commit ' if not args.corpus else ''}{commit}, {len(files)} files; {prettier}, {BLACK}.\n")
     print("| language | vs | files compared | identical files | identical lines | skipped |")
     print("|---|---|---|---|---|---|")
     for (lang, ref), r in sorted(rows.items()):

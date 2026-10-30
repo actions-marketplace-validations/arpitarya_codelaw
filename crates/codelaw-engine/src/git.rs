@@ -1,8 +1,9 @@
 //! The `git` binary (SR-ARCHITECTURE decision 14): the merge base and diff
 //! for `--changed-since`, the index for `--staged`, the `HEAD` commit date
 //! for the as-of default, and the baselines of another revision for
-//! `baseline check`. No git library is linked; with no `git`, each caller
-//! says so and the rest of the run goes on.
+//! `baseline check`, and the commits, branch and size of a pull request
+//! for the `git/*` rules (W-146). No git library is linked; with no `git`,
+//! each caller says so and the rest of the run goes on.
 
 use std::collections::BTreeSet;
 use std::path::Path;
@@ -126,6 +127,72 @@ pub(crate) fn commit_date(dir: &Path, rev: &str) -> Result<String, String> {
 pub(crate) fn user_email(dir: &Path) -> Result<String, String> {
     let e = text(git(dir, &["config", "user.email"]).map_err(|e| if e.contains("config") || e.is_empty() { "no `user.email` is set".to_owned() } else { e })?);
     if e.is_empty() { Err("no `user.email` is set".into()) } else { Ok(e) }
+}
+
+/// One commit of a range, as `git log` gives it (W-146).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct Commit {
+    pub id: String,
+    pub author_name: String,
+    pub author_email: String,
+    pub parents: usize,
+    pub message: String,
+}
+
+/// The commits between the merge base of `reference` and `HEAD`, oldest
+/// first: what a pull request adds.
+pub(crate) fn commits_since(dir: &Path, reference: &str) -> Result<Vec<Commit>, String> {
+    let base = merge_base(dir, reference)?;
+    let out = git(dir, &["log", "--reverse", "--topo-order", "--format=%H%x1f%an%x1f%ae%x1f%P%x1f%B%x1e", &format!("{base}..HEAD")])?;
+    Ok(String::from_utf8_lossy(&out)
+        .split('\x1e')
+        .filter_map(|rec| {
+            let rec = rec.trim_start_matches('\n');
+            let mut f = rec.splitn(5, '\x1f');
+            let id = f.next().filter(|s| !s.is_empty())?.to_owned();
+            Some(Commit {
+                id,
+                author_name: f.next()?.to_owned(),
+                author_email: f.next()?.to_owned(),
+                parents: f.next()?.split_whitespace().count(),
+                message: f.next()?.to_owned(),
+            })
+        })
+        .collect())
+}
+
+/// The branch `HEAD` is on; `None` when it is detached.
+pub(crate) fn branch(dir: &Path) -> Result<Option<String>, String> {
+    match git(dir, &["symbolic-ref", "--short", "-q", "HEAD"]) {
+        Ok(b) => Ok(Some(text(b)).filter(|b| !b.is_empty())),
+        Err(e) if e.starts_with("`git symbolic-ref") => Ok(None),
+        Err(e) => Err(e),
+    }
+}
+
+/// `HEAD`'s author, `(name, email)`.
+pub(crate) fn head_author(dir: &Path) -> Result<(String, String), String> {
+    let t = text(git(dir, &["log", "-1", "--format=%an%x1f%ae", "HEAD"])?);
+    let (n, e) = t.split_once('\x1f').unwrap_or((&t, ""));
+    Ok((n.to_owned(), e.to_owned()))
+}
+
+/// Lines added and deleted per file (relative to `dir`) between the merge
+/// base of `reference` and the working tree, as `--changed-since` sees the
+/// change; a binary file counts no lines.
+pub(crate) fn numstat_since(dir: &Path, reference: &str) -> Result<Vec<(String, u64, u64)>, String> {
+    let base = merge_base(dir, reference)?;
+    let out = git(dir, &["diff", "--numstat", "--relative", "--no-renames", "-z", &base, "--"])?;
+    Ok(String::from_utf8_lossy(&out)
+        .split('\0')
+        .filter_map(|rec| {
+            let mut f = rec.splitn(3, '\t');
+            let added = f.next()?.parse().unwrap_or(0);
+            let deleted = f.next()?.parse().unwrap_or(0);
+            let path = f.next().filter(|p| !p.is_empty())?.replace('\\', "/");
+            Some((path, added, deleted))
+        })
+        .collect())
 }
 
 /// The lines each file has after a change, by file (relative to `dir`)

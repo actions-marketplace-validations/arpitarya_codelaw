@@ -6,7 +6,7 @@ item: W-146
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -16,12 +16,12 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Widen SR-ARCHITECTURE decision 14: git may also be read for commit messages in a range and the current branch name — read-only, offline | the data to check | ⏳ ruled |
-| 2 | `git/commit-message` — Conventional Commits by default; `[commits]` configurable | readable history | ⏳ |
-| 3 | `git/branch-name` — `[branches]` pattern, ticket, length | findable branches | ⏳ |
-| 4 | `git/pr-size` — warn above 400 changed lines, lockfiles and generated files excluded | reviewable PRs | ⏳ |
-| 5 | `git/pr-description` — title, ticket link, template sections, from the CI's own event data | complete PRs | ⏳ |
-| 6 | A `commit-msg` hook (`init --git-hooks commit-msg`), CI over the PR's commits, the agent hook | checked before, during and after | ⏳ |
+| 1 | Widen SR-ARCHITECTURE decision 14: git may also be read for commit messages in a range and the current branch name — read-only, offline | the data to check | ✅ SR-ARCHITECTURE 14 |
+| 2 | `git/commit-message` — Conventional Commits by default; `[commits]` configurable | readable history | ✅ |
+| 3 | `git/branch-name` — `[branches]` pattern, ticket, length | findable branches | ✅ |
+| 4 | `git/pr-size` — warn above 400 changed lines, lockfiles and generated files excluded | reviewable PRs | ✅ |
+| 5 | `git/pr-description` — title, ticket link, template sections, from the CI's own event data | complete PRs | ✅ |
+| 6 | A `commit-msg` hook (`init --git-hooks commit-msg`), CI over the PR's commits, the agent hook | checked before, during and after | ✅ (agent hook: Claude Code `Bash`; other agents' shell tools ⏳) |
 
 **Arpit, 2026-10-30 (voice):** *"Pull request hygiene is something I would go for."* · *"want the commit convention to be configurable."* · on the example `[commits]` and `[branches]` keys: *"All this looks good."* · on widening the git rule and the defaults (Conventional Commits, a 400-line warning): *"Yes."* → *"file it."*
 
@@ -77,12 +77,12 @@ Defaults ruled: Conventional Commits on, a 400-line PR-size warning. Defaults ch
 
 | DoD | what | state |
 |---|---|---|
-| 1 · git | SR-ARCHITECTURE decision 14: from six uses to eight — `git log --format` over the `--changed-since` range, and the current branch (or the CI's branch variable) | ⏳ |
-| 2 · rules | the four rules, each `manual` with steps (a message is never rewritten silently); the error shows the message, what is wrong and a corrected example | ⏳ |
-| 3 · where | `init --git-hooks commit-msg` (template in `templates/git-hooks/`, L10); `codelaw check --changed-since` checks the PR's commits; the agent hook checks a commit an agent makes | ⏳ |
-| 4 · PR data | GitHub (`GITHUB_EVENT_PATH`), GitLab (`CI_MERGE_REQUEST_TITLE`, `CI_MERGE_REQUEST_DESCRIPTION`); Bitbucket and Azure DevOps expose no description without an API call — title or branch only there, the rest reported as "not checked here", never fetched (L5) | ⏳ |
-| 5 · config | SR-CONFIG `[commits]`, `[branches]`, `[pr]`; shareable through a pack | ⏳ |
-| 6 · tests | each preset; skips; the hook; each CI's data, from fixtures | ⏳ |
+| 1 · git | SR-ARCHITECTURE decision 14: from six uses to eight — `git log --format` over the `--changed-since` range, and the current branch (or the CI's branch variable) | ✅ |
+| 2 · rules | the four rules, each `manual` with steps (a message is never rewritten silently); the error shows the message, what is wrong and a corrected example | ✅ |
+| 3 · where | `init --git-hooks commit-msg` (template in `templates/git-hooks/`, L10); `codelaw check --changed-since` checks the PR's commits; the agent hook checks a commit an agent makes | ✅ `check --commit-msg`; the GitHub Action already runs `--changed-since` on a PR; the Gate on Claude Code `Bash` |
+| 4 · PR data | GitHub (`GITHUB_EVENT_PATH`), GitLab (`CI_MERGE_REQUEST_TITLE`, `CI_MERGE_REQUEST_DESCRIPTION`); Bitbucket and Azure DevOps expose no description without an API call — title or branch only there, the rest reported as "not checked here", never fetched (L5) | ✅ |
+| 5 · config | SR-CONFIG `[commits]`, `[branches]`, `[pr]`; shareable through a pack | ✅ SR-CONFIG 11b; ⏳ pack sharing — a preset's `[rules]` settings do not reach engine rules today |
+| 6 · tests | each preset; skips; the hook; each CI's data, from fixtures | ✅ `tests/pr_hygiene.rs`, `hygiene` unit tests |
 
 ## Blockers
 
@@ -101,3 +101,14 @@ None — both open points ruled 2026-10-30.
 ## Reference
 
 W-50 (git hooks) · W-131 (ticket patterns, the same `[A-Z]+-\d+` shape)
+
+## Progress — 2026-10-30 (Claude Code)
+
+Landed: `crates/codelaw-engine/src/hygiene.rs` (the four rules), `git.rs` (commits, branch, numstat), `[commits]`/`[branches]`/`[pr]` in `codelaw-config` and `codelaw.schema.json`, `check --commit-msg`, `init --git-hooks commit-msg` (installed only when named; a bare `--git-hooks` stays pre-commit + post-commit), the Gate on `git commit -m` (Claude Code `Bash` matcher), logical locations in SARIF/GitHub output. Records: SR-ARCHITECTURE 14, SR-CONFIG 11b, SR-CLI-MCP 11, SR-AGENT-SURFACES 9, SR-RULE-PACKS 1, SR-RULE-FORMAT 1, SR-LAW-10 3.
+
+**Left (agent):**
+1. Pack sharing: let a preset's `[rules]` settings (severity, options) reach engine rules, so a team pack can carry `git/commit-message` options; today the tables are root-config only.
+2. The Gate for Codex's shell tool and the other agents' (their payload shapes for shell commands are unconfirmed); the `commit-msg` git hook covers them meanwhile.
+3. `init --help`'s `--git-hooks` line still names two hooks (`init.rs` is also described by SR-SPELL; left for a change that touches both).
+
+Behaviour change to note in the changelog: with `--changed-since`, Conventional Commits is now enforced by default (`git/commit-message`, `error`) — a repository with free-form messages sets `[commits] preset = "off"` or turns the rule off.

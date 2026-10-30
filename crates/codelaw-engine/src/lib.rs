@@ -15,6 +15,7 @@ mod fix;
 mod flags;
 mod format;
 mod git;
+pub mod hygiene;
 mod incremental;
 mod lcov;
 mod lint;
@@ -111,6 +112,9 @@ pub struct EngineOptions {
     /// installed from a file's folder up to the root (codelaw's own tests
     /// and its rule tester; SR-TYPES decision 5).
     pub typescript_env: Option<String>,
+    /// The branch and pull-request variables each CI sets, for the `git/*`
+    /// rules (W-146): only the names `hygiene::CI_VARS` lists are read.
+    pub ci_vars: std::collections::BTreeMap<String, String>,
 }
 
 impl EngineOptions {
@@ -126,6 +130,7 @@ impl EngineOptions {
             profile_env: var("CODELAW_PROFILE"),
             ci_env: var("CI"),
             typescript_env: var("CODELAW_TYPESCRIPT"),
+            ci_vars: hygiene::CI_VARS.iter().filter_map(|k| var(k).map(|v| (k.to_string(), v))).collect(),
             ..Default::default()
         }
     }
@@ -403,7 +408,13 @@ impl Project {
         // from them: a watch keeps the parts and redoes only what changed
         // (W-44), so both go through the same `assemble`.
         let parts = self.parts(paths)?;
-        let out = self.assemble(&parts, paths);
+        let mut out = self.assemble(&parts, paths);
+        // The `git/*` rules judge the range, not a file (W-146).
+        let found = self.hygiene_findings(&mut out.0.warnings);
+        if !found.is_empty() {
+            out.0.diagnostics.extend(found);
+            out.0.diagnostics.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));
+        }
         self.cache.prune(self.config.cache_max_size());
         Ok(out)
     }

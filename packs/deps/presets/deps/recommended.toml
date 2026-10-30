@@ -1,7 +1,11 @@
-description = "Vulnerable and outdated dependencies of package.json and pyproject.toml, from the committed snapshot `codelaw deps refresh` writes"
+description = "Vulnerable, outdated and wrongly licensed dependencies of package.json and pyproject.toml, from the committed snapshot `codelaw deps refresh` writes; lockfiles in sync, one range per monorepo, one runtime version"
 
 [rules]
 "deps/incomplete-scan" = "warn"
+"deps/licence" = "error"
+"deps/lockfile-sync" = "error"
 "deps/outdated" = "warn"
+"deps/runtime-agreement" = "warn"
 "deps/stale-snapshot" = "info"
+"deps/version-drift" = "warn"
 "deps/vulnerable" = "error"

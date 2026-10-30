@@ -64,6 +64,7 @@ what consumers receive, edit the template here — the diff is the change.
 | `ci/github/codelaw.yml` | .github/workflows/codelaw.yml — the check workflow, `uses: arpitarya/codelaw@v<version>` | `init --ci github` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decision 12a |
 | `ci/gitlab/autofix-suggest-job.yml` | rendered into the slot `suggest_job` of `ci/gitlab/codelaw-autofix.yml` with `--unsafe` | `init --ci <provider> --autofix` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decision 12 |
 | `ci/gitlab/codelaw-autofix.yml` | .gitlab/codelaw-autofix.yml | `init --ci <provider> --autofix` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decision 12 |
+| `git-hooks/commit-msg` | the git hooks folder's `commit-msg` | `init --git-hooks commit-msg` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `git-hooks/post-commit` | the git hooks folder's `post-commit` | `init --git-hooks` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `git-hooks/pre-commit` | the git hooks folder's `pre-commit` | `init --git-hooks` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `init/.codelaw/rules/README.md` | .codelaw/rules/README.md | `init` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |

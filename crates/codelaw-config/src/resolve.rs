@@ -348,16 +348,35 @@ impl ConfigFile {
         for (old, new, home) in RENAMED_RULES.iter().filter(|(o, _, _)| renamed.contains(o)) {
             deprecations.push(format!("{at}: rule `{old}` is now `{new}`, in {home}; rename it in the config (it runs as `{new}` until the next minor release)"));
         }
-        for e in raw.deps.ignore.iter().flatten() {
+        let named = |p: &str| p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
+        let licence_ignore = raw.deps.licence.as_ref().and_then(|l| l.ignore.as_ref());
+        for (key, e) in raw.deps.ignore.iter().flatten().map(|e| ("[deps] ignore", e)).chain(licence_ignore.into_iter().flatten().map(|e| ("[deps.licence] ignore", e))) {
             let p = e.package();
-            let named = p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
-            if !named {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            if !named(p) {
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
             }
             if let RawDepsIgnore::Dated(d) = e
                 && let Some(x) = d.expires.as_deref().filter(|x| !is_date(x))
             {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+            }
+        }
+        if let Some(d) = &raw.deps.drift {
+            if let Some(p) = d.policy.as_deref().filter(|p| !crate::raw::DRIFT_POLICIES.contains(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] policy`: `{p}` is not one of `highest`, `root`")));
+            }
+            if let Some(p) = d.ignore.iter().flatten().find(|p| !named(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            }
+        }
+        if let Some(src) = raw.deps.runtime.as_ref().and_then(|r| r.source.as_ref()) {
+            for (rt, v, list) in [("node", &src.node, crate::raw::RUNTIME_SOURCES_NODE), ("python", &src.python, crate::raw::RUNTIME_SOURCES_PYTHON)] {
+                if let Some(v) = v.as_deref().filter(|v| !list.contains(v)) {
+                    return Err(ConfigError::new(
+                        Some(path),
+                        format!("`[deps.runtime] source.{rt}`: `{v}` is not one of {}", list.iter().map(|k| format!("`{k}`")).collect::<Vec<_>>().join(", ")),
+                    ));
+                }
             }
         }
         let mut source_names = BTreeSet::new();
@@ -402,6 +421,7 @@ impl ConfigFile {
         }
         check_reviews(&raw.reviews, &path)?;
         check_markers(&raw, &path)?;
+        check_git(&raw, &path)?;
         if let Some(f) = &raw.flags {
             if let Some(p) = f.presets.iter().flatten().find(|p| !crate::raw::FLAG_PRESETS.contains(&p.as_str())) {
                 return Err(ConfigError::new(
@@ -485,6 +505,55 @@ fn check_reviews(r: &crate::raw::RawReviews, path: &Path) -> Result<(), ConfigEr
     }
     if let Some(w) = r.window.as_deref().filter(|w| !crate::raw::is_review_window(w)) {
         return err(format!("`[reviews] window`: `{w}` is not a window; write e.g. \"6m\", \"90d\", \"2w\" or \"1y\""));
+    }
+    Ok(())
+}
+
+/// `[commits]`, `[branches]` and `[pr]` (SR-CONFIG decision 11b, W-146):
+/// a value out of its list or a pattern that is not a regular expression
+/// fails on a laptop as it would in CI.
+fn check_git(raw: &RawConfig, path: &Path) -> Result<(), ConfigError> {
+    let fail = |m: String| Err(ConfigError::new(Some(path.to_path_buf()), m));
+    let c = &raw.commits;
+    if let Some(p) = c.preset.as_deref().filter(|p| !crate::raw::COMMIT_PRESETS.contains(p)) {
+        return fail(format!("`[commits] preset`: `{p}` is not one of `conventional`, `angular`, `gitmoji`, `custom`, `off`"));
+    }
+    if c.preset.as_deref() == Some("custom") && c.pattern.as_deref().is_none_or(str::is_empty) {
+        return fail("`[commits] preset = \"custom\"` needs a `pattern`".into());
+    }
+    if let Some(v) = c.subject_case.as_deref().filter(|v| !["lower", "sentence", "any"].contains(v)) {
+        return fail(format!("`[commits] subject_case`: `{v}` is not one of `lower`, `sentence`, `any`"));
+    }
+    if let Some(v) = c.ticket.place.as_deref().filter(|v| !["subject", "footer", "either"].contains(v)) {
+        return fail(format!("`[commits.ticket] place`: `{v}` is not one of `subject`, `footer`, `either`"));
+    }
+    if c.ticket.match_commits.is_some() {
+        return fail("`[commits.ticket] match_commits` belongs to `[branches.ticket]`".into());
+    }
+    if raw.branches.ticket.place.is_some() {
+        return fail("`[branches.ticket] place` belongs to `[commits.ticket]`".into());
+    }
+    if let Some(t) = c.types.iter().flatten().find(|t| t.is_empty() || t.chars().any(|ch| ch.is_whitespace() || "():!".contains(ch))) {
+        return fail(format!("`[commits] types`: `{t}` is not a commit type"));
+    }
+    let patterns = [
+        ("[commits] pattern", &c.pattern),
+        ("[commits.ticket] pattern", &c.ticket.pattern),
+        ("[branches] pattern", &raw.branches.pattern),
+        ("[branches.ticket] pattern", &raw.branches.ticket.pattern),
+        ("[pr] title_pattern", &raw.pr.title_pattern),
+    ];
+    for (key, pattern) in patterns {
+        if let Some(p) = pattern
+            && let Err(e) = regex::Regex::new(p)
+        {
+            return fail(format!("`{key}`: `{p}` is not a regular expression: {e}"));
+        }
+    }
+    for (key, globs) in [("[branches] protected", &raw.branches.protected), ("[pr] exclude", &raw.pr.exclude)] {
+        if let Some(g) = globs.iter().flatten().find(|g| globset::Glob::new(g).is_err()) {
+            return fail(format!("`{key}`: `{g}` is not a glob"));
+        }
     }
     Ok(())
 }
@@ -635,7 +704,7 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 /// Keys a nested config may not set yet; they belong to the root config.
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
-    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]",
+    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -661,6 +730,9 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.tests != Default::default(),
         raw.codeowners != Default::default(),
         raw.flags.is_some(),
+        raw.commits != Default::default(),
+        raw.branches != Default::default(),
+        raw.pr != Default::default(),
     ];
     ROOT_ONLY.iter().zip(set).filter(|(_, s)| *s).map(|(k, _)| *k).collect()
 }
@@ -900,6 +972,9 @@ impl Config {
             ("deps", Some(r)) => serde_json::to_value(&r.deps).ok(),
             ("css", Some(r)) => serde_json::to_value(&r.css).ok(),
             ("todo", Some(r)) => serde_json::to_value(&r.todo).ok(),
+            ("commits", Some(r)) => serde_json::to_value(&r.commits).ok(),
+            ("branches", Some(r)) => serde_json::to_value(&r.branches).ok(),
+            ("pr", Some(r)) => serde_json::to_value(&r.pr).ok(),
             ("tests.skip", Some(r)) => serde_json::to_value(&r.tests.skip).ok(),
             ("codeowners", Some(r)) => serde_json::to_value(&r.codeowners).ok(),
             ("flags", Some(r)) => r.flags.as_ref().and_then(|f| serde_json::to_value(f).ok()),

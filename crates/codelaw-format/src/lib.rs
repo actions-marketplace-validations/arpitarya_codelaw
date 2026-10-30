@@ -10,7 +10,7 @@ mod engines;
 mod markers;
 mod options;
 
-pub use options::{EndOfLine, FormatOptions, IndentStyle, QuoteStyle, Semicolons, TrailingCommas};
+pub use options::{ArrowParens, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
 
 use codelaw_core::Language;
 use std::fmt;

@@ -11,7 +11,7 @@ owns:
   - crates/codelaw-agents
   - templates/agents
 laws: [L0, L3, L4, L5, L6]
-timestamp: 2026-10-30T18:00:00Z
+timestamp: 2026-10-30T19:00:00Z
 content_sha: ""
 ---
 
@@ -198,6 +198,7 @@ Each agent reads a different set of files from a different place. Maintaining th
   - **Each agent's shape**, all exit `0` unless said: Claude Code and Codex `{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": …}}`; Copilot and VS Code `{"permissionDecision": "deny", "permissionDecisionReason": …}`; Gemini `{"decision": "deny", "reason": …}`; Cursor `{"permission": "deny", "agent_message": …, "user_message": …}`; Kiro and Windsurf exit `2` with the reason on stderr. An allow never says `allow`: on Claude Code that would skip the user's permission prompt.
 - **Fail open, loudly.** A payload that is not JSON or names no file, a config or rule error, a panic in the engine, or a run longer than `--timeout-ms` (5,000 by default) → the write is **allowed**, exit `0`, and one line on stderr: `codelaw hook --pre: <why>; the write is allowed`. Copilot treats any non-zero exit as a deny, so codelaw's own failure must never be one. The post-write hook still runs.
 - **A guardrail, not a boundary.** A shell write (`sed -i`, `>`) passes no pre-write hook; the post-write hook (decision 6) stays the backstop.
+- **A commit an agent makes** (W-146, the decider 2026-10-30). A payload whose `tool_input.command` is a shell command (Claude Code `Bash`; `sync-agents` writes the `PreToolUse` matcher `Write|Edit|MultiEdit|Bash`) is judged only when it runs `git commit` with the message spelled out — `-m` / `--message` (several join as paragraphs, as git joins them), `-am`, `-m<msg>`, `--message=<msg>`, and the `-m "$(cat <<'EOF' … EOF)"` form agents write a multi-line message in. The message goes through `git/commit-message` ([SR-CONFIG](0110_config.md) decision 11b) with the `ci` profile; an `error` denies the command, the reason naming each problem and a subject line that passes, and saying never to skip the hook or disable the rule. Any other command, a message from `-F`, an editor, `--fixup`, `-C`, or one the shell would expand (`$VAR`, a backtick) is allowed untouched: the `commit-msg` git hook ([SR-CLI-MCP](0115_cli-and-mcp.md) decision 11) judges those. Codex's shell tool and the other agents' are not matched yet.
 - **Speed.** [L8](0010_LAW-8-performance-budgets.md)'s `hook_pre`.
 
 #### 10. Rules from review comments: `codelaw-rules-from-reviews`

@@ -3,20 +3,33 @@
 //!
 //! The manifests (`package.json`, `pyproject.toml`), their lockfiles, the
 //! committed snapshot of registry and advisory facts, and the version
-//! arithmetic. `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`
-//! and `deps/stale-snapshot` read only files; `codelaw deps refresh` —
+//! arithmetic. `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`,
+//! `deps/stale-snapshot` and W-129's `deps/licence`, `deps/lockfile-sync`,
+//! `deps/version-drift` and `deps/runtime-agreement` read only files;
+//! `codelaw deps refresh` —
 //! outside the engine — is the one command that reads the network and
 //! writes the snapshot (L5 decision 3).
 
 pub mod advisory;
+mod drift;
+mod licence;
 pub mod lock;
 pub mod npm;
 pub mod pep440;
+pub mod range;
 mod rules;
-mod vulnerable;
+mod runtime;
+mod sha256;
 pub mod snapshot;
+pub mod spdx;
+mod sync;
+mod vulnerable;
 
+pub use drift::VersionDrift;
+pub use licence::Licence;
 pub use rules::{OutdatedDependency, StaleDepsSnapshot};
+pub use runtime::RuntimeAgreement;
+pub use sync::LockfileSync;
 pub use vulnerable::{Assessment, IncompleteScan, Vulnerable, assess, check_dependency};
 
 use crate::data_json::{pairs, string_value, top_object};
@@ -207,3 +220,7 @@ mod tests {
         assert_eq!(deps(Language::Toml, "pyproject.toml", inline).len(), 1);
     }
 }
+
+#[cfg(test)]
+#[path = "hygiene_tests.rs"]
+mod hygiene_tests;
