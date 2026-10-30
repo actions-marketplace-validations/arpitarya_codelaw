@@ -1,0 +1,10 @@
+description = "the 7 flake8-django, through Ruff's `DJ` rules (Ruff 0.16.9) that Ruff calls stable, reimplemented (W-139)"
+
+[rules]
+"django/django-all-with-model-form" = "warn"
+"django/django-exclude-with-model-form" = "warn"
+"django/django-locals-in-render-function" = "warn"
+"django/django-model-without-dunder-str" = "warn"
+"django/django-non-leading-receiver-decorator" = "warn"
+"django/django-nullable-model-string-field" = "warn"
+"django/django-unordered-body-content-in-model" = "warn"

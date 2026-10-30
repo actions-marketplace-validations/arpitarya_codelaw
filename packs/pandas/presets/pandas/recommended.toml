@@ -1,0 +1,15 @@
+description = "the 12 pandas-vet, through Ruff's `PD` rules (Ruff 0.16.9) that Ruff calls stable, reimplemented (W-139)"
+
+[rules]
+"pandas/pandas-nunique-constant-series-check" = "warn"
+"pandas/pandas-use-of-dot-at" = "warn"
+"pandas/pandas-use-of-dot-iat" = "warn"
+"pandas/pandas-use-of-dot-is-null" = "warn"
+"pandas/pandas-use-of-dot-ix" = "warn"
+"pandas/pandas-use-of-dot-not-null" = "warn"
+"pandas/pandas-use-of-dot-pivot-or-unstack" = "warn"
+"pandas/pandas-use-of-dot-read-table" = "warn"
+"pandas/pandas-use-of-dot-stack" = "warn"
+"pandas/pandas-use-of-dot-values" = "warn"
+"pandas/pandas-use-of-inplace-argument" = "warn"
+"pandas/pandas-use-of-pd-merge" = "warn"

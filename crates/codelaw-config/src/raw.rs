@@ -99,6 +99,10 @@ pub struct RawConfig {
     /// accessors, the SDK presets, the inline markers' policy and the
     /// warning window. Its presence turns the flag rules on. Root config only.
     pub flags: Option<RawFlags>,
+    /// SR-PACK-LOOKUP decisions 6–7 (W-155): where rule packs are found.
+    /// Root config only.
+    #[serde(default)]
+    pub packs: crate::packs::RawPacks,
     #[serde(default)]
     pub adapters: RawAdapters,
     #[serde(default)]

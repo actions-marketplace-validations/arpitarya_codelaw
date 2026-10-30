@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 817 rules in 19 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 868 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -52,9 +52,15 @@ remap = { error = "warn" }
 | [security-html](#security-html) | `@codelaw/rules-security-html` | `codelaw-rules-security-html` | 19 | 1 |
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
+| [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [python](#python) | — | `codelaw-rules-python` | 109 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
-| [engine](engine.md) | in `codelaw` | in `codelaw` | 23 | 0 |
+| [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
+| [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 2 | 0 |
+| [airflow](#airflow) | — | `codelaw-rules-airflow` | 4 | 0 |
+| [numpy](#numpy) | — | `codelaw-rules-numpy` | 4 | 0 |
+| [pandas](#pandas) | — | `codelaw-rules-pandas` | 12 | 0 |
+| [engine](engine.md) | in `codelaw` | in `codelaw` | 27 | 0 |
 
 ## js
 
@@ -823,6 +829,35 @@ Presets: `codelaw:deps/recommended`.
 | [`deps/version-drift`](deps/version-drift.md) | A monorepo declares each dependency with one range | `suggest` | — | `deps/recommended` |
 | [`deps/vulnerable`](deps/vulnerable.md) | No dependency in use has a known vulnerability | `suggest` | — | `deps/recommended` |
 
+## nextjs
+
+Presets: `codelaw:next/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`next/google-font-display`](next/google-font-display.md) | Google Fonts load with display=swap or optional | `manual` | — | `next/recommended` |
+| [`next/google-font-preconnect`](next/google-font-preconnect.md) | fonts.gstatic.com is preconnected | `manual` | — | `next/recommended` |
+| [`next/inline-script-id`](next/inline-script-id.md) | An inline next/script has an id | `manual` | — | `next/recommended` |
+| [`next/next-script-for-ga`](next/next-script-for-ga.md) | Google Analytics through next/third-parties | `manual` | — | `next/recommended` |
+| [`next/no-assign-module-variable`](next/no-assign-module-variable.md) | No variable named module | `manual` | — | `next/recommended` |
+| [`next/no-async-client-component`](next/no-async-client-component.md) | Client components are not async | `manual` | — | `next/recommended` |
+| [`next/no-before-interactive-script-outside-document`](next/no-before-interactive-script-outside-document.md) | beforeInteractive scripts live in the document | `manual` | — | `next/recommended` |
+| [`next/no-css-tags`](next/no-css-tags.md) | No stylesheet link tags for local CSS | `manual` | — | `next/recommended` |
+| [`next/no-document-import-in-page`](next/no-document-import-in-page.md) | next/document only in _document | `manual` | — | `next/recommended` |
+| [`next/no-duplicate-head`](next/no-duplicate-head.md) | One Head in _document | `manual` | — | `next/recommended` |
+| [`next/no-head-element`](next/no-head-element.md) | next/head, not head | `manual` | — | `next/recommended` |
+| [`next/no-head-import-in-document`](next/no-head-import-in-document.md) | No next/head in _document | `manual` | — | `next/recommended` |
+| [`next/no-html-link-for-pages`](next/no-html-link-for-pages.md) | Link, not a, for internal pages | `manual` | — | `next/recommended` |
+| [`next/no-img-element`](next/no-img-element.md) | next/image, not img | `manual` | — | `next/recommended` |
+| [`next/no-location-assign-relative-destination`](next/no-location-assign-relative-destination.md) | router.push, not location for in-app paths | `manual` | — | `next/recommended` |
+| [`next/no-page-custom-font`](next/no-page-custom-font.md) | Custom fonts in the document, not a page | `manual` | — | `next/recommended` |
+| [`next/no-script-component-in-head`](next/no-script-component-in-head.md) | No next/script inside next/head | `manual` | — | `next/recommended` |
+| [`next/no-styled-jsx-in-document`](next/no-styled-jsx-in-document.md) | No styled-jsx in _document | `manual` | — | `next/recommended` |
+| [`next/no-sync-scripts`](next/no-sync-scripts.md) | No synchronous scripts | `manual` | — | `next/recommended` |
+| [`next/no-title-in-document-head`](next/no-title-in-document-head.md) | No title in _document's Head | `manual` | — | `next/recommended` |
+| [`next/no-typos`](next/no-typos.md) | Data-fetching functions are spelled right | `manual` | — | `next/recommended` |
+| [`next/no-unwanted-polyfillio`](next/no-unwanted-polyfillio.md) | No polyfill.io | `manual` | — | `next/recommended` |
+
 ## python
 
 Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/project` · `codelaw:py/size` · `codelaw:py/markers`.
@@ -1006,3 +1041,67 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | [`sec-py/urlopen-scheme`](sec-py/urlopen-scheme.md) | `urlopen` of a value that may be `file://` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/weak-key-size`](sec-py/weak-key-size.md) | RSA and DSA keys are at least 2048 bits | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/yaml-safe-load`](sec-py/yaml-safe-load.md) | `yaml.safe_load` instead of `yaml.load` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
+
+## django
+
+Presets: `codelaw:django/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`django/django-all-with-model-form`](django/django-all-with-model-form.md) | ModelForm does not use fields = '__all__' | `manual` | — | `django/recommended` |
+| [`django/django-exclude-with-model-form`](django/django-exclude-with-model-form.md) | ModelForm lists fields, not exclude | `manual` | — | `django/recommended` |
+| [`django/django-locals-in-render-function`](django/django-locals-in-render-function.md) | No locals() as a template context | `manual` | — | `django/recommended` |
+| [`django/django-model-without-dunder-str`](django/django-model-without-dunder-str.md) | A model defines __str__ | `manual` | — | `django/recommended` |
+| [`django/django-non-leading-receiver-decorator`](django/django-non-leading-receiver-decorator.md) | @receiver is the first decorator | `manual` | — | `django/recommended` |
+| [`django/django-nullable-model-string-field`](django/django-nullable-model-string-field.md) | No null=True on string fields | `manual` | — | `django/recommended` |
+| [`django/django-unordered-body-content-in-model`](django/django-unordered-body-content-in-model.md) | A model's body follows Django's order | `manual` | — | `django/recommended` |
+
+## fastapi
+
+Presets: `codelaw:fastapi/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`fastapi/fast-api-non-annotated-dependency`](fastapi/fast-api-non-annotated-dependency.md) | Dependencies through Annotated | `suggest` | — | `fastapi/recommended` |
+| [`fastapi/fast-api-redundant-response-model`](fastapi/fast-api-redundant-response-model.md) | No response_model that repeats the return annotation | `auto` | — | `fastapi/recommended` |
+
+## airflow
+
+Presets: `codelaw:airflow/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`airflow/airflow-dag-no-schedule-argument`](airflow/airflow-dag-no-schedule-argument.md) | A DAG names its schedule | `manual` | — | `airflow/recommended` |
+| [`airflow/airflow-variable-get-outside-task`](airflow/airflow-variable-get-outside-task.md) | Variable.get inside a task | `manual` | — | *[rules] only* |
+| [`airflow/airflow-xcom-pull-in-template-string`](airflow/airflow-xcom-pull-in-template-string.md) | task.output, not xcom_pull in a template | `manual` | — | *[rules] only* |
+| [`airflow/airflow3-dag-dynamic-value`](airflow/airflow3-dag-dynamic-value.md) | No changing values in a DAG's arguments | `manual` | — | *[rules] only* |
+
+## numpy
+
+Presets: `codelaw:numpy/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`numpy/numpy-deprecated-function`](numpy/numpy-deprecated-function.md) | No deprecated NumPy functions | `manual` | — | `numpy/recommended` |
+| [`numpy/numpy-deprecated-type-alias`](numpy/numpy-deprecated-type-alias.md) | Builtins, not NumPy's removed type aliases | `suggest` | — | `numpy/recommended` |
+| [`numpy/numpy-legacy-random`](numpy/numpy-legacy-random.md) | A Generator, not np.random's legacy functions | `manual` | — | `numpy/recommended` |
+| [`numpy/numpy2-deprecation`](numpy/numpy2-deprecation.md) | No names NumPy 2 removed | `manual` | — | `numpy/recommended` |
+
+## pandas
+
+Presets: `codelaw:pandas/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-at`](pandas/pandas-use-of-dot-at.md) | .loc, not .at | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-iat`](pandas/pandas-use-of-dot-iat.md) | .iloc, not .iat | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-is-null`](pandas/pandas-use-of-dot-is-null.md) | .isna, not .isnull | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-ix`](pandas/pandas-use-of-dot-ix.md) | No .ix | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-not-null`](pandas/pandas-use-of-dot-not-null.md) | .notna, not .notnull | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-pivot-or-unstack`](pandas/pandas-use-of-dot-pivot-or-unstack.md) | pivot_table, not pivot or unstack | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-stack`](pandas/pandas-use-of-dot-stack.md) | melt, not stack | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-values`](pandas/pandas-use-of-dot-values.md) | .to_numpy, not .values | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-pd-merge`](pandas/pandas-use-of-pd-merge.md) | df.merge, not pd.merge | `manual` | — | `pandas/recommended` |

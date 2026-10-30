@@ -1,0 +1,6 @@
+name = "codelaw-rules-airflow"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["python"]
+presets = ["airflow/recommended"]
+description = "codelaw's rules for Apache Airflow code, from Ruff's `AIR` rules (Ruff 0.16.9); PyPI only (SR-RULE-PACKS)"

@@ -5,11 +5,13 @@
 //! (decision 5) and the resolved config is a pure function of its inputs
 //! (decision 9). Every value is traceable to its source (decision 7).
 
+mod packs;
 mod raw;
 mod resolve;
 mod scope;
 mod trace;
 
+pub use packs::{PACK_REGISTRIES, PacksSetting, RawPacks, Registry, venv_site_packages};
 pub use raw::{DEFAULT_OSV_URL, SPELL_WORDS_FILE, RawConfig, RawCoverage, RawCoverageIgnore, RawOverride, RawProfile, RawScope, RuleSetting, ScopeMap};
 pub use resolve::{RENAMED_RULES, Config, PresetScope, ScopeInfo, ConfigFile, DEFAULT_EXCLUDES, words_file_words, Home, Layer, Profile, ProfileChoice, Remap, RuleConfig, find_config, load_file};
 pub use scope::check_scope_name;

@@ -1,0 +1,4 @@
+description = "the 1 Ruff's `AIR` rules (Ruff 0.16.9) that Ruff calls stable, reimplemented (W-139)"
+
+[rules]
+"airflow/airflow-dag-no-schedule-argument" = "warn"

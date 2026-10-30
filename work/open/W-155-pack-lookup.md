@@ -6,7 +6,7 @@ item: W-155
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
 updated: 2026-10-30
-updated_by: "Arpit (Claude app, Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -18,7 +18,7 @@ ball: agent
 |---|---|---|---|
 | 1 | Write the lookup down as its own record, SR-PACK-LOOKUP | the spec, ruled before building | ✅ 2026-10-30 |
 | 2 | Make the engine search the launcher's paths, then `$VIRTUAL_ENV`, then `./.venv`, instead of only the first one set | the editor bug is gone with no settings | ⏳ |
-| 3 | Add the `[packs]` section: `order`, `node_modules`, `venv` | a project can pin where its packs come from | ⏳ |
+| 3 | Add the `[packs]` section: `order`, `node_modules`, `venv` | a project can pin where its packs come from | ⏳ parsed and validated (2026-10-30); the lookup does not read it yet |
 | 4 | Show every searched folder in `config --print`, `rules --why` and the missing-pack error | a wrong lookup can be seen, not guessed | ⏳ |
 | 5 | Drop the playground's `codelaw.sh` workaround after the release | proof in a real editor | ⏳ |
 
@@ -35,7 +35,7 @@ Build [SR-PACK-LOOKUP](../../records/0118_pack-lookup.md) decisions 1–10.
 | DoD | what | state |
 |---|---|---|
 | 1 · the fallback | `PackSearch` joins `CODELAW_SITE_PACKAGES` → `$VIRTUAL_ENV` → `./.venv`, drops duplicates and searches in order (decision 4). A unit test sets `VIRTUAL_ENV` to a venv without the pack, puts the pack in `./.venv`, and the pack is found | ⏳ |
-| 2 · `[packs]` | parsed and validated in `codelaw-config`, added to `codelaw.schema.json`, root-only; one test per load error in decision 7 | ⏳ |
+| 2 · `[packs]` | parsed and validated in `codelaw-config`, added to `codelaw.schema.json`, root-only; one test per load error in decision 7 | ✅ 2026-10-30: `crates/codelaw-config/src/packs.rs`; main's schema test green again |
 | 3 · replace, not prepend | with `venv` set, a `VIRTUAL_ENV` that has the pack is ignored; with `node_modules` set, there is no walk-up; `order = ["pypi"]` never reads `node_modules` (tests) | ⏳ |
 | 4 · traceable | `config --print` lists places and their sources; `rules --why` and the JSON name the folder; the missing-pack error lists every folder searched (decision 8) | ⏳ |
 | 5 · one lookup | `migrate.rs` and `codelaw-agents/src/package.rs` go through the same function; the veto's grep is clean (decision 9) | ⏳ |
