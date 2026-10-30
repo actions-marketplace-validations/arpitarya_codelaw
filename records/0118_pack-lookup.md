@@ -163,7 +163,7 @@ places to be settable in the TOML file.
   owns; `[packs]` is parsed and checked in `crates/codelaw-config/src/packs.rs`
   (with a venv's site-packages folders, decision 5), which it describes. The
   two variables are read once, by `PackEnv::from_env` (or `from_vars` in a
-  test). `config --print` lists `packs.npm[n]` and `packs.pypi[n]`;
+  test). `config --print` lists packs.npm[n] and packs.pypi[n];
   `rules --why` names `pack_dir`; `rules --format json` lists `packs[]` with
   `dir`.
 
