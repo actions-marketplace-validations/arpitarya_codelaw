@@ -18,7 +18,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 |---|---|---|
 | `ts/recommended` | 20 | typescript-eslint `recommended` 8.71.2 (not type-checked) — all 20 rules; the four core rules its `eslint-recommended` switches on are `codelaw:js/typescript` in `@codelaw/rules-js` |
 | `ts/conventions` | 1 | codelaw's starter catalogue: `ts/type-only-imports` — opt in |
-| `ts/type-checked` | 6 | typescript-eslint's type-checked rules, answered by the project's own TypeScript ≥ 7.1 (SR-TYPES); every rule is preview until TypeScript 7.1 is GA |
+| `ts/type-checked` | 10 | typescript-eslint's type-checked rules, answered by the project's own TypeScript ≥ 7.1 (SR-TYPES); every rule is preview until TypeScript 7.1 is GA |
 
 <!-- /docs-sync:presets -->
 

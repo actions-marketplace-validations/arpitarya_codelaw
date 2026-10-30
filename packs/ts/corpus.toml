@@ -27,7 +27,11 @@
 # so they do not run there (decision 6) — W-105's left list.
 "ts/await-thenable" = 0
 "ts/no-floating-promises" = 0
+"ts/no-misused-promises" = 0
+"ts/no-unsafe-argument" = 0
+"ts/no-unsafe-assignment" = 0
 "ts/no-unsafe-call" = 0
 "ts/no-unsafe-member-access" = 0
 "ts/no-unsafe-return" = 0
+"ts/switch-exhaustiveness-check" = 0
 "ts/type-error" = 0

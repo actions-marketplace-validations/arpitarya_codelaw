@@ -89,9 +89,13 @@ fn found(v: &Value) -> Vec<String> {
 }
 
 const EXPECTED: &[&str] = &[
+    "src/argument.ts:5:8 ts/no-unsafe-argument",
+    "src/assignment.ts:3:1 ts/no-unsafe-assignment",
     "src/await.ts:2:10 ts/await-thenable",
     "src/error.ts:1:14 ts/type-error",
     "src/floating.ts:2:1 ts/no-floating-promises",
+    "src/misused.ts:3:16 ts/no-misused-promises",
+    "src/switch.ts:3:3 ts/switch-exhaustiveness-check",
     "src/unsafe.ts:2:21 ts/no-unsafe-member-access",
     "src/unsafe.ts:3:1 ts/no-unsafe-call",
     "src/unsafe.ts:5:3 ts/no-unsafe-return",
@@ -113,10 +117,11 @@ fn fake_oxlint(d: &Path) {
         )
     };
     let report = format!(
-        r#"{{ "diagnostics": [{}, {}, {}, {}], "number_of_files": 4, "number_of_rules": 98, "threads_count": 1, "start_time": 0.1 }}"#,
+        r#"{{ "diagnostics": [{}, {}, {}, {}, {}], "number_of_files": 5, "number_of_rules": 98, "threads_count": 1, "start_time": 0.1 }}"#,
         finding("src/floating.ts", "save();", "no-floating-promises"),
         finding("src/await.ts", "await 42", "await-thenable"),
         finding("src/unsafe.ts", "loose(1)", "no-unsafe-call"),
+        finding("src/switch.ts", "switch (s)", "switch-exhaustiveness-check"),
         finding("src/clean.ts", "n;", "no-unnecessary-type-assertion"),
     );
     fs::write(d.join("report.json"), report).unwrap();
@@ -136,7 +141,7 @@ fn each_first_rule_fires_once_and_an_oxlint_port_is_shown_once() {
     let v = json(&out);
     let mut got = found(&v);
     assert_eq!(code, 1, "{out}");
-    // The one oxlint finding no `ts` rule ports passes through; the three
+    // The one oxlint finding no `ts` rule ports passes through; the four
     // a type rule ports are shown once, as codelaw's.
     let adapter: Vec<String> = got.iter().filter(|f| f.contains("adapter/")).cloned().collect();
     assert_eq!(adapter, ["src/clean.ts:6:10 adapter/oxlint/typescript/no-unnecessary-type-assertion"], "{got:?}");

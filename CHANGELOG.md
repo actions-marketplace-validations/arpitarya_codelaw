@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **Type-aware TypeScript (W-105):** four more `preview` rules in `ts/type-checked` — `ts/switch-exhaustiveness-check`, `ts/no-unsafe-argument`, `ts/no-unsafe-assignment` and `ts/no-misused-promises` (a Promise-returning function where a `void` one is expected) — answered by four new type questions (`unknown`, `typed-target`, `promise-to-void`, `non-exhaustive`); `ts/await-thenable` no longer reports `await` on a value typed `unknown`.
+
 ### Changed
 
 - **Release pipeline (W-154):** `publish.yml`'s list of PyPI projects CI may create is back to `codelaw` alone — 0.4.2 and 0.4.3 created the `deps` pack and its index.
