@@ -37,7 +37,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30): five PyPI framework packs, npm `testing`/`nextjs`; tranche A on, rest preview/opt-in. Landed: 17 promise, 36 jsx-a11y (`react/a11y`), 21 Biome, 45 ESLint core; links done. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30): five PyPI framework packs, npm `testing`/`nextjs`; tranche A on, rest preview/opt-in. Landed: 17 promise, 36 jsx-a11y (`react/a11y`), 21 Biome, 45 ESLint; packs `nextjs` and 5 PyPI frameworks. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Left: gaps inside Biome/markup_fmt; Oxc's crates wait on Arpit's L11 call. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 

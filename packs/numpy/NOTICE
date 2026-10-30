@@ -1,0 +1,6 @@
+codelaw-rules-numpy
+
+The rules are reimplementations written for codelaw. Their `ported_from:`
+fields name the Ruff rule codes (https://docs.astral.sh/ruff, MIT License)
+whose documented behaviour they reproduce; for NumPy these come from
+Ruff (MIT). No code or documentation text of either is included.

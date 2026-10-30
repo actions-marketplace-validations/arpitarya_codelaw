@@ -1,0 +1,5 @@
+description = "the 2 Ruff's `FAST` rules (Ruff 0.16.9) that Ruff calls stable, reimplemented (W-139)"
+
+[rules]
+"fastapi/fast-api-non-annotated-dependency" = "warn"
+"fastapi/fast-api-redundant-response-model" = "warn"

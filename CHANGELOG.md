@@ -6,6 +6,8 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **Five Python framework packs (W-139):** `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy` and `-pandas`, PyPI only — 29 of Ruff's framework rules (flake8-django, FastAPI, Airflow, NumPy, pandas-vet), each pack's `recommended` holding the stable ones at `warn`.
+- **A `nextjs` pack (W-139):** `@codelaw/rules-nextjs`, npm only — 22 `next/*` rules reimplementing @next/eslint-plugin-next, on with `next/recommended`; `codelaw init` adds it when `package.json` depends on `next`.
 - **Type-aware TypeScript (W-105):** four more `preview` rules in `ts/type-checked` — `ts/switch-exhaustiveness-check`, `ts/no-unsafe-argument`, `ts/no-unsafe-assignment` and `ts/no-misused-promises` (a Promise-returning function where a `void` one is expected) — answered by four new type questions (`unknown`, `typed-target`, `promise-to-void`, `non-exhaustive`); `ts/await-thenable` no longer reports `await` on a value typed `unknown`.
 - **Promise rules (W-139):** 17 `js/promise-*` rules reimplementing eslint-plugin-promise 7.3.0; its 10 recommended rules join `js/recommended` at the plugin's severities, the other 7 are preview and opt-in.
 - **Accessibility rules for JSX (W-139):** 31 `react/a11y-*` rules reimplementing eslint-plugin-jsx-a11y 6.10.2's recommended set, in a new `react/a11y` preset that `react/recommended` extends; its 5 other rules are preview and opt-in.

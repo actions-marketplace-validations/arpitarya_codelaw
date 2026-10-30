@@ -1,0 +1,6 @@
+name = "codelaw-rules-fastapi"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["python"]
+presets = ["fastapi/recommended"]
+description = "codelaw's rules for FastAPI code, from Ruff's `FAST` rules (Ruff 0.16.9); PyPI only (SR-RULE-PACKS)"
