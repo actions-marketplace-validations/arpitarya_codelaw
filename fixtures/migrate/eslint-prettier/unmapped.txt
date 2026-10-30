@@ -1,2 +1,1 @@
 eslint/eqeqeq
-eslint/no-alert
