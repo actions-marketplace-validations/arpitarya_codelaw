@@ -28,6 +28,8 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-97 itself | |
 | 🔴 **Open VSX — waiting on Open VSX** ([W-95](open/W-95-publish-vscode-extension.md), was W-117): the ownership claim is [EclipseFdn/open-vsx.org#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928), open. Ruled 2026-10-30: **no token — trusted publishing.** Nothing to do until the claim is approved; then you add the trusted publisher (`arpitarya` · `codelaw` · `publish.yml` · `vscode`). | 2026-10-29 |
 | ↳ **blocks:** W-95 (its Open VSX half) | |
+| 🔴 **Tailwind: two tools under L11** ([W-145](open/W-145-tailwind-pack-and-class-sorting.md)): the class-order table is generated from Tailwind and checked against prettier-plugin-tailwindcss, and neither is in L11's list; Claude Code also refused to run the downloaded Tailwind code. **Ratify or refuse:** (1) `tailwindcss@4.3.3` (MIT, no dependencies) — run by hand by a `scripts/` generator, its output committed to the pack, like D-36; (2) `prettier-plugin-tailwindcss@0.8.1` + `prettier` (MIT) — the measuring instrument for DoD 3, by hand or CI-only, like D-38; (3) allow running them when Claude Code asks. | 2026-10-30 |
+| ↳ **blocks:** W-145 itself | |
 
 ---
 
@@ -45,7 +47,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-145** `agent` A `tailwind` pack (both registries) with the class-order table as data; the formatter sorts classes when the project uses Tailwind, matching prettier-plugin-tailwindcss. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
+🔴 **W-145** `arpit` A `tailwind` pack (both registries), the class-order table as data, class sorting in the formatter. Its table and its parity check need Tailwind and prettier-plugin-tailwindcss run, neither ratified (L11) — inbox. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
 🟢 **W-146** `agent` PR hygiene: `git/commit-message` (Conventional Commits, configurable), `git/branch-name`, `git/pr-size` (400 lines), `git/pr-description`; commit-msg hook, CI, agent hook; git use widened (SR-ARCHITECTURE 14). Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
 
