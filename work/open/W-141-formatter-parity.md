@@ -6,7 +6,7 @@ item: W-141
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -16,11 +16,11 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | CSS: a comment's `*/` and the next selector stay on separate lines | a defect gone | ⏳ |
-| 2 | HTML: void elements written as Prettier writes them (`<meta charset="utf-8" />`) | most of the HTML gap | ⏳ |
-| 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | ⏳ |
-| 4 | The corpus and the comparison kept as a repeatable check | the number cannot slip back unseen | ⏳ |
-| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ⏳ — see § |
+| 1 | CSS: a comment's `*/` and the next selector stay on separate lines | a defect gone | ✅ 10-30 |
+| 2 | HTML: void elements written as Prettier writes them (`<meta charset="utf-8" />`) | most of the HTML gap | ✅ 10-30 (HTML 18.4% → 68.7%) |
+| 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | 🟡 rerun done; what is left is inside Biome and markup_fmt — see § Built |
+| 4 | The corpus and the comparison kept as a repeatable check | the number cannot slip back unseen | ✅ 10-30 |
+| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | 🟡 oxfmt measured on the corpus; building it in codelaw waits on Arpit — see § Built |
 
 **Merged 2026-10-30 (Arpit, text):** *"There are too many work items. See if we can review all the work items and merge them into few of them."* → *"go ahead, merge them."* Merged in: W-148.
 
@@ -43,11 +43,33 @@ Seen in the samples:
 
 | DoD | what | state |
 |---|---|---|
-| 1 · CSS defect | the comment/selector join fixed, with a case | ⏳ |
-| 2 · HTML void | Prettier's ` />`, or a record ruling for codelaw's form | ⏳ |
+| 1 · CSS defect | the comment/selector join fixed, with a case | ✅ |
+| 2 · HTML void | Prettier's ` />`, or a record ruling for codelaw's form | ✅ |
 | 3 · the rest | Markdown, CSS, SCSS, YAML, JS, TS each ≥ 98% identical on the corpus, or the difference named in SR-FORMATTER | ⏳ |
-| 3b · Prettier keys | `[format]` keys for `arrowParens`, `bracketSpacing`, `jsxSingleQuote`, `quoteProps` (W-138 R3, ruled 2026-10-30); the other seven Prettier options stay at Prettier's default | ⏳ |
-| 4 · repeatable | the corpus (sources and licences listed, not vendored where large) and a script that prints the table — in `perf/` or `fixtures/`; not in CI unless cheap | ⏳ |
+| 3b · Prettier keys | `[format]` keys for `arrowParens`, `bracketSpacing`, `jsxSingleQuote`, `quoteProps` (W-138 R3, ruled 2026-10-30); the other seven Prettier options stay at Prettier's default | ✅ `arrow_parens`, `bracket_spacing`, `jsx_quote_style`, `quote_props` (no `consistent`: Biome has none) |
+| 4 · repeatable | the corpus (sources and licences listed, not vendored where large) and a script that prints the table — in `perf/` or `fixtures/`; not in CI unless cheap | ✅ `scripts/format-corpus.py` (pinned sources, fetched outside the repo) + `scripts/format-parity.py --corpus`; not in CI |
+
+## Built 2026-10-30 (Claude Code, Opus 5.5)
+
+**Corpus.** `python3 scripts/format-corpus.py` fetches pinned sources (Bootstrap 5.3.8, Bulma 1.0.4, Primer CSS 22.3.3 — npm; MDN learning-area, actions/starter-workflows, ESLint, typescript-eslint — git commits; MIT or CC0) into `~/.cache/codelaw-format-corpus`, never into the repo, and takes up to 150 files a language, evenly spaced; `python3 scripts/format-parity.py --binary <codelaw> --corpus <dir>/files --prettier 3.9.10 [--diffs <dir>]` prints the table. Its CSS is the 79 files W-138 measured (oxfmt's 88.6% reproduces exactly); its HTML, JS, TS and Markdown files differ from W-138's, so its numbers are not W-138's.
+
+| language | files | 0.4.3 | after this change | oxfmt 0.75.0 |
+|---|--:|--:|--:|--:|
+| CSS | 78 | 73.1% | 74.4% | 88.6% |
+| HTML | 147 | 18.4% | **68.7%** | 100% (Prettier itself) |
+| SCSS | 150 | 80.7% | 80.7% | 86.0% |
+| YAML | 149 | 89.9% | 89.9% | 97.3% |
+| Markdown | 150 | 93.3% | 93.3% | 97.3% |
+| JS · JSX | 139 | 97.1% | 97.1% | 97.8% |
+| TS · TSX | 129 | 82.2% | 82.2% | 82.9% |
+
+**Changed** (`crates/codelaw-format`): own-line CSS/SCSS block comments at statement level keep their line (whitespace only, so no token changes; a comment followed by another comment is left); HTML void elements as ` />`; `style=""` as `a: b; c: d`; a `<script>` body gets the width left after its indentation; the four Prettier keys (DoD 3b) in `[format]`, `--import-config` and `migrate biome`. `codelaw test` on `html`, `css`, `scss`, `security-html`: 0 failed, the one CSS advisory warning 0.4.3 already gives.
+
+**What is left is inside the engines**, not codelaw's code: CSS/SCSS — Biome fills custom-property comma lists on one line, breaks `calc()` at every operator, spaces `a/b`; HTML — markup_fmt breaks inside an inline element (`<a\n  href>`) where Prettier moves the element to the next line, prints `<caption>` on one line and an empty `<style>` on two; YAML, Markdown, TS — not examined this round. Reaching 98% means changing engines, which is the W-148 question.
+
+**W-148 step 1, as far as an agent may take it.** oxfmt 0.75.0 (npm, installed in a scratch folder outside the repo, deleted after) measured on the same corpus — the table's last column. On the CSS, SCSS, Markdown and YAML files (529, 3.5 MB) oxfmt took 0.23 s single-threaded against `codelaw format`'s 2.3 s (codelaw formats each file twice to verify; not like for like). Its native module is 7.0 MB against codelaw's 30.8 MB binary. **Not done:** `oxc_formatter_css`/`_markdown`/`_yaml` built behind codelaw's formatter — adding a git dependency, even on a branch, is the L11 question, and the machine was past its disk ceiling (13 GB of 14 approved) while seven agents built.
+
+**For Arpit (L11):** ratify Oxc's native formatter crates (`oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers and `oxc_formatter_core`, `oxc_allocator`; MIT; git rev, `publish = false`) for a measured build inside codelaw — CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3% on this corpus — or refuse, and W-141 closes with the engine gaps named in SR-FORMATTER.
 
 ## Blockers
 

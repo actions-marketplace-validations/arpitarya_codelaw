@@ -70,6 +70,10 @@ impl Imported {
                 ("singleQuote", Json::Bool(b)) => Some(("quote_style", Value::String(if *b { "single" } else { "double" }.into()))),
                 ("semi", Json::Bool(b)) => Some(("semicolons", Value::String(if *b { "always" } else { "as-needed" }.into()))),
                 ("trailingComma", Json::String(s)) if matches!(s.as_str(), "all" | "es5" | "none") => Some(("trailing_commas", Value::String(s.clone()))),
+                ("arrowParens", Json::String(s)) if s == "always" || s == "avoid" => Some(("arrow_parens", Value::String(s.clone()))),
+                ("bracketSpacing", Json::Bool(b)) => Some(("bracket_spacing", Value::Boolean(*b))),
+                ("jsxSingleQuote", Json::Bool(b)) => Some(("jsx_quote_style", Value::String(if *b { "single" } else { "double" }.into()))),
+                ("quoteProps", Json::String(s)) if s == "as-needed" || s == "preserve" => Some(("quote_props", Value::String(s.clone()))),
                 _ => None,
             };
             match to {
@@ -137,6 +141,14 @@ mod tests {
             "indent_style=\"tab\""
         ]);
         assert_eq!(i.skipped, [".prettierrc: proseWrap = \"always\""]);
+        let mut j = Imported::default();
+        j.prettier(".prettierrc", "{\"arrowParens\": \"avoid\", \"bracketSpacing\": false, \"jsxSingleQuote\": true, \"quoteProps\": \"consistent\"}").unwrap();
+        assert_eq!(j.keys.iter().map(|(k, v)| format!("{k}={v}")).collect::<Vec<_>>(), [
+            "arrow_parens=\"avoid\"",
+            "bracket_spacing=false",
+            "jsx_quote_style=\"single\""
+        ]);
+        assert_eq!(j.skipped, [".prettierrc: quoteProps = \"consistent\""]);
         let mut y = Imported::default();
         y.prettier(".prettierrc", "printWidth: 100\nsingleQuote: true\n").unwrap();
         assert_eq!(y.keys.len(), 2);
