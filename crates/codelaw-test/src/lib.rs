@@ -434,7 +434,9 @@ fn header_path(line: &str) -> Option<String> {
         return None;
     }
     let name = p.rsplit('/').next().unwrap_or(p);
-    let known = Language::from_path(std::path::Path::new(p)).is_some() || matches!(name, "setup.py" | "setup.cfg") || text_config;
+    // A lockfile no language reads (`uv.lock`, `poetry.lock`) is a file of
+    // a snippet too, for the rules that read it (W-129).
+    let known = Language::from_path(std::path::Path::new(p)).is_some() || matches!(name, "setup.py" | "setup.cfg" | "uv.lock" | "poetry.lock") || text_config;
     known.then(|| p.to_owned())
 }
 

@@ -573,7 +573,67 @@ pub struct RawDeps {
     /// a CI verdict.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub agent: Option<RawDepsAgent>,
+    /// `[deps.licence]`: `deps/licence` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub licence: Option<RawDepsLicence>,
+    /// `[deps.drift]`: `deps/version-drift` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drift: Option<RawDepsDrift>,
+    /// `[deps.runtime]`: `deps/runtime-agreement` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<RawDepsRuntime>,
 }
+
+/// `[deps.licence]`: globs over SPDX ids, checked before the defaults (a
+/// configured `allow` lifts a default denial), the severity of an unknown
+/// licence, and dated exceptions shaped as `[deps] ignore`'s.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsLicence {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deny: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unknown: Option<GradeSeverity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<RawDepsIgnore>>,
+}
+
+/// `[deps.drift]`: which range a monorepo's workspaces align to, and the
+/// packages never compared.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsDrift {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub policy: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<String>>,
+}
+
+/// The values of `[deps.drift] policy`.
+pub const DRIFT_POLICIES: &[&str] = &["highest", "root"];
+
+/// `[deps.runtime]`: the source that is the truth, per runtime.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsRuntime {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<RawRuntimeSource>,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawRuntimeSource {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub python: Option<String>,
+}
+
+/// The names `[deps.runtime] source` takes (`deps/runtime-agreement`).
+pub const RUNTIME_SOURCES_NODE: &[&str] = &["engines.node", "volta.node", ".nvmrc", ".node-version", ".tool-versions", "mise.toml"];
+pub const RUNTIME_SOURCES_PYTHON: &[&str] = &["requires-python", ".python-version", ".tool-versions", "mise.toml"];
 
 /// The kinds of advisory source: the wire shape a source speaks.
 pub const ADVISORY_KINDS: &[&str] = &["registry", "osv"];

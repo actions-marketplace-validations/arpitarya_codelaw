@@ -112,7 +112,7 @@ The `ci` profile runs when `CI` is set; `local` otherwise; `--profile <name>` or
 
 ### Also configured by `[deps]`
 
-The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated` and `deps/stale-snapshot` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.
+The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`, `deps/stale-snapshot`, `deps/licence`, `deps/lockfile-sync`, `deps/version-drift` and `deps/runtime-agreement` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.
 
 | Key | Type | Default | What it does |
 |---|---|---|---|
@@ -137,6 +137,18 @@ The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/out
 | `agent.high` | `inform` · `block` | `"inform"` |  |
 | `agent.moderate` | `inform` · `block` | `"inform"` |  |
 | `agent.low` | `inform` · `block` | `"inform"` |  |
+| `[deps.licence]` | table | — | `deps/licence`: which licences a dependency may have. `allow` and `deny` are globs over SPDX ids (`*` any run; `GPL-2.0-only WITH Classpath-exception-2.0` matches a `WITH` id), checked before the defaults, so a configured `allow` lifts a default denial. Defaults: permissive allowed (MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, PSF-2.0, Python-2.0, BlueOak-1.0.0), copyleft and source-available denied (GPL-*, AGPL-*, LGPL-*, SSPL-*, BUSL-*, EUPL-*), anything else unknown. |
+| `licence.allow` | `array` | — |  |
+| `licence.deny` | `array` | — |  |
+| `licence.unknown` | `error` · `warn` · `info` · `off` | `"warn"` | The severity of a licence neither allowed nor denied, free text, or none. |
+| `licence.ignore` | `array` | — | Packages whose licence is not judged: `npm:<name>` / `pypi:<name>`, or a table with `package`, an `expires` date, `added_by` and `reason`. |
+| `[deps.drift]` | table | — | `deps/version-drift`: the range a monorepo's workspaces align one dependency to. |
+| `drift.policy` | `highest` · `root` | `"highest"` | `highest`: the range whose floor is highest; `root`: the root manifest's, else the highest. |
+| `drift.ignore` | `array` | — | Packages never compared. |
+| `[deps.runtime]` | table | — | `deps/runtime-agreement`: the place that names the true Node and Python version. |
+| `[deps.runtime.source]` | table | — |  |
+| `runtime.source.node` | `engines.node` · `volta.node` · `.nvmrc` · `.node-version` · `.tool-versions` · `mise.toml` | `"engines.node"` |  |
+| `runtime.source.python` | `requires-python` · `.python-version` · `.tool-versions` · `mise.toml` | `"requires-python"` |  |
 
 ```toml
 [deps]
