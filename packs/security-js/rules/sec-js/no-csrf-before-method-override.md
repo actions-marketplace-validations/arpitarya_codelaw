@@ -6,6 +6,7 @@ fix: suggest
 fix_reason: "moving a middleware changes the order every route in the file runs them in"
 stability: preview
 security: { cwe: [352], owasp: ["A01:2025"], severity: medium }
+ported_from: [eslint-plugin-security/detect-no-csrf-before-method-override]
 since: 0.3.0
 ---
 

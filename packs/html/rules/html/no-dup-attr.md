@@ -4,7 +4,7 @@ title: "No attribute written twice"
 languages: [html]
 fix: auto
 stability: preview
-ported_from: [html-validate/no-dup-attr, htmlhint/attr-no-duplication]
+ported_from: [html-validate/no-dup-attr, htmlhint/attr-no-duplication, biome/correctness/noDuplicateAttributes]
 since: 0.1.0
 ---
 

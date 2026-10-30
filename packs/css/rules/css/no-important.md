@@ -5,6 +5,7 @@ languages: [css, scss]
 fix: manual
 fix_reason: "the selector or layer that should win instead is a design call"
 stability: preview
+ported_from: [stylelint/declaration-no-important]
 since: 0.1.0
 ---
 

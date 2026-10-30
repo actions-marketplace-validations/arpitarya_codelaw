@@ -3,10 +3,13 @@ description = "typescript-eslint's recommended preset (8.71.2, not type-checked)
 [rules]
 "ts/ban-ts-comment" = "error"
 "ts/no-array-constructor" = "error"
+"ts/no-const-enum" = "error"
 "ts/no-duplicate-enum-values" = "error"
 "ts/no-empty-object-type" = "error"
+"ts/no-empty-type-parameters" = "error"
 "ts/no-explicit-any" = "error"
 "ts/no-extra-non-null-assertion" = "error"
+"ts/no-implicit-any-let" = "error"
 "ts/no-misused-new" = "error"
 "ts/no-namespace" = "error"
 "ts/no-non-null-asserted-optional-chain" = "error"
