@@ -36,7 +36,7 @@ ball: agent
 3. L8: after three `perf` runs on `main` that time `check_types_cold` / `check_types_warm`, an inbox row to the decider with decision 4's method applied (min(target, 1.5 × the worst p95); no design target exists for either).
 4. The type rules' corpus counts stay 0, and installing TypeScript in the `corpus` job would not make them real: level 4 checks each corpus file alone (the rule tester's root is not the repo), and the corpus repos have no `node_modules`, so every import reads as `any`. Tried 2026-10-28 with 7.1.0-beta over the `ts` pack's four repos: `no-unsafe-call` 65 665, `no-unsafe-member-access` 42 581, `no-unsafe-return` 2 022, `type-error` 23 377, `no-floating-promises` 141, `await-thenable` 0 — the unresolved imports, not the code. Real counts need level 4 to check a typed rule's files in their repo's program (codelaw-test, SR-RULE-AUTHORING) **and** each corpus repo's dependencies installed in CI, which L11 would have to ratify — not asked yet.
 5. Step 6: re-pin `fixtures/types` to `7.1.0-rc` on 2026-11-10, rerun, release as preview; step 7 after GA (2026-11-24).
-6. The version watch (§ W-106 below): steps 2–4.
+6. The version watch (§ W-106 below): steps 1–3 done, step 4 written; left its proof — dispatch `typescript-bump.yml` with `version=7.1.0-rc` once the RC is out (a re-pin PR) and with a version that breaks (an issue).
 
 **Arpit, 2026-10-27 (voice), W-101:** rulings R1–R8 in [the proposal](../proposals/type-aware-rules.md) §3 — TypeScript 7.1's own API through the project's installed copy, Node at runtime, rules in the `ts` pack, preview on the 7.1 RC, *"Go with the recommendation"* on version checks.
 
@@ -67,10 +67,10 @@ SR-TYPES (W-104; amended with the as-built decisions 2–5, 7–10 and 12, and i
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | A tested TS range in SR-TYPES and the helper; outside it, type rules run with a warning (the adapter pattern) | users on newer TS keep working | ⏳ |
-| 2 | `ci.yml`: the type-rule fixtures against the latest 7.1 on every change (blocking) | no regressions | ⏳ |
-| 3 | Nightly: the same against `typescript@next`, report only | early warning | ⏳ |
-| 4 | `typescript-bump.yml`, modelled on `fux-bump.yml`: a new TS release → run the fixtures → PR widening the range, or an issue naming what broke | nobody has to watch | ⏳ |
+| 1 | A tested TS range in SR-TYPES and the helper; outside it, type rules run with a warning (the adapter pattern) | users on newer TS keep working | ✅ 2026-10-28 — `codelaw_types::TESTED` `>=7.1.0-beta, <7.2.0`, SR-TYPES decision 7 (step 2 of W-105's table) |
+| 2 | `ci.yml`: the type-rule fixtures against the latest 7.1 on every change (blocking) | no regressions | ✅ 2026-10-30 — the `test` job reruns `tests/types.rs` and `codelaw test packs/ts` on npm's newest 7.1 release (`scripts/typescript-watch.py latest --below 7.2`; a range would pick a `7.1.0-dev` nightly) when it is not the pin; skipped with a reused verdict, so a push between nightlies may miss a new release |
+| 3 | Nightly: the same against `typescript@next`, report only | early warning | ✅ 2026-10-30 — `ci.yml` `types-next` (schedule and dispatch, `continue-on-error`, the summary says pass or fail) |
+| 4 | `typescript-bump.yml`, modelled on `fux-bump.yml`: a new TS release → run the fixtures → PR widening the range, or an issue naming what broke | nobody has to watch | 🟡 2026-10-30 — written: `typescript-watch.py latest`/`bump` (tried on a scratch copy: beta→rc re-pins, rc→7.2.0 widens to `<7.3.0`, 7.0.0 refused) and the workflow (one PR or one issue). ⏳ the definition of done — a dispatch with an older and a newer version — needs it on GitHub and the *Allow GitHub Actions to create … pull requests* setting (the decider's, as for `fux-bump`) |
 
 **Arpit, 2026-10-27 (voice), W-101:** rulings R1–R8 in [the proposal](../proposals/type-aware-rules.md) §3 — TypeScript 7.1's own API through the project's installed copy, Node at runtime, rules in the `ts` pack, preview on the 7.1 RC, *"Go with the recommendation"* on version checks.
 

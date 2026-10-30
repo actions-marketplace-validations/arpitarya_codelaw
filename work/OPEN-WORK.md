@@ -37,7 +37,7 @@ here. Read that record before changing anything below it.
 
 ### build (7)
 
-🟢 **W-105** `agent` Type-aware TypeScript: nine rules landed (the four type questions built 10-30); next profiling, corpus counts, the RC (11-10); then the version watch (was W-106: tested range, CI, nightly, bump job). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-129** `agent` `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` — unblocked: W-128 and W-136 built 10-30; nothing built yet. Filed by Arpit (Cowork). [detail](open/W-129-deps-hygiene-rules.md)
 
