@@ -7,6 +7,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 ### Added
 
 - **Promise rules (W-139):** 17 `js/promise-*` rules reimplementing eslint-plugin-promise 7.3.0; its 10 recommended rules join `js/recommended` at the plugin's severities, the other 7 are preview and opt-in.
+- **Accessibility rules for JSX (W-139):** 31 `react/a11y-*` rules reimplementing eslint-plugin-jsx-a11y 6.10.2's recommended set, in a new `react/a11y` preset that `react/recommended` extends.
 
 ### Changed
 

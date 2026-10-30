@@ -61,8 +61,9 @@ Each slice is a coherent set of rules, `codelaw test` green on its pack, its cor
 | slice | rules | pack | presets | evidence |
 |---|---|---|---|---|
 | 1 · eslint-plugin-promise 7.3.0 | 17 (`js/promise-*`) | `js` | the 10 upstream-recommended in `js/recommended` at upstream severities; 7 `preview`, in no preset | `codelaw test packs/js`: 101 rules · 1,921 checks · 0 failed; corpus: 699 files, held; `rules lint` 0 problems |
+| 2 · eslint-plugin-jsx-a11y 6.10.2 | 31 (`react/a11y-*`, every tranche A row) | `react` | new `react/a11y` (B-048), all at `error`; `react/recommended` extends it | `codelaw test packs/react`: 66 rules · 889 checks · 0 failed; corpus: 646 files, 5 a11y findings, each a true positive; `rules lint` 0 |
 
-**Remaining** (of 2,572 + 18): every other row of the CSVs. New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
+**Remaining** (of 2,572 + 18): every other row of the CSVs — 48 of them built; jsx-a11y's 5 tranche C rules not yet. New packs (`testing`, `nextjs`, the five PyPI framework packs) and the `js/strict`, `js/unicorn`, taste, `js/sonarjs`, `js/jsdoc`, `py/pylint` presets have not been started. Rules whose source checks regular-expression internals (`regexp`, 80) need a regex parser in a native rule.
 
 ## Blockers
 

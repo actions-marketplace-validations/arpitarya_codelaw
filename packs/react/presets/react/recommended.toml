@@ -1,4 +1,5 @@
-description = "eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eight of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented"
+extends = ["codelaw:react/a11y"]
+description = "eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eight of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented; and, through `react/a11y`, eslint-plugin-jsx-a11y 6.10.2's recommended"
 
 [rules]
 "react/display-name" = "error"
