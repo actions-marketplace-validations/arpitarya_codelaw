@@ -193,6 +193,45 @@ function thenable(checker, type, promiseShape) {
     return false;
 }
 
+/** The type a node is expected to have where it stands (an argument's parameter, an annotated target), or `undefined`. */
+function expected(checker, node) {
+    try {
+        return checker.getContextualType(node);
+    } catch {
+        // Not an expression: nothing is expected of it.
+        return undefined;
+    }
+}
+
+/** A unit type's identity: the regular type of a fresh literal, else its own. */
+function unitKey(t) {
+    return t.regularType || t.id;
+}
+
+/** `switch` (decision 4, `non-exhaustive`): no `default`, a discriminant made only of unit types, and one of them in no `case`. */
+function nonExhaustive(checker, node) {
+    let sw = node;
+    while (sw && sw.kind !== SyntaxKind.SwitchStatement) sw = sw.parent;
+    if (!sw || !sw.caseBlock) return false;
+    const clauses = sw.caseBlock.clauses;
+    if (clauses.some((c) => c.kind === SyntaxKind.DefaultClause)) return false;
+    const members = parts(checker.getTypeAtLocation(sw.expression));
+    if (!members.length || !members.every((m) => (m.flags & ts.TypeFlags.Unit) !== 0)) return false;
+    const covered = new Set();
+    for (const c of clauses) for (const t of parts(checker.getTypeAtLocation(c.expression))) covered.add(unitKey(t));
+    return members.some((m) => !covered.has(unitKey(m)));
+}
+
+/** `promise-to-void`: a function returning a thenable where every expected call signature returns `void`. */
+function promiseToVoid(checker, node, type) {
+    const own = parts(type).flatMap((p) => p.getCallSignatures());
+    if (!own.some((s) => thenable(checker, s.getReturnType(), false))) return false;
+    const want = expected(checker, node);
+    if (!want) return false;
+    const sigs = parts(want).flatMap((p) => p.getCallSignatures());
+    return sigs.length > 0 && sigs.every((s) => (s.getReturnType().flags & ts.TypeFlags.Void) !== 0);
+}
+
 /** SR-TYPES decision 4's vocabulary. A question outside it is an error. */
 function holds(checker, node, q) {
     const F = ts.TypeFlags;
@@ -201,12 +240,21 @@ function holds(checker, node, q) {
         if (sym && sym.flags & ts.SymbolFlags.Alias) sym = checker.getAliasedSymbol(sym);
         return !!sym && sym.getJsDocTags(checker).some((t) => t.name === "deprecated");
     }
+    if (q === "non-exhaustive") return nonExhaustive(checker, node);
+    if (q === "typed-target") {
+        const want = expected(checker, node);
+        return !!want && !want.isErrorType() && (want.flags & (F.AnyOrUnknown | F.TypeParameter)) === 0;
+    }
     const type = checker.getTypeAtLocation(node);
     switch (q) {
         case "any":
             return (type.flags & F.Any) !== 0;
         case "never":
             return (type.flags & F.Never) !== 0;
+        case "unknown":
+            return (type.flags & F.Unknown) !== 0;
+        case "promise-to-void":
+            return promiseToVoid(checker, node, type);
         case "nullable":
             return parts(type).some((p) => (p.flags & (F.Null | F.Undefined | F.Void)) !== 0);
         case "union":

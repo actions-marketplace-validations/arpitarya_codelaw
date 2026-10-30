@@ -10,7 +10,7 @@ tags: [types, async]
 since: 0.3.0
 ---
 
-`await` is applied only to a Promise, another thenable, or a value typed `any`.
+`await` is applied only to a Promise, another thenable, or a value typed `any` or `unknown`.
 
 **Why:** Awaiting anything else does nothing but delay the code after it; it usually means a call
 that was thought to be asynchronous is not, or a Promise was unwrapped twice.
@@ -19,7 +19,7 @@ that was thought to be asynchronous is not, or a Promise was unwrapped twice.
 match:
   pattern: await $X
 type:
-  $X: { not: { any: [thenable, any] } }
+  $X: { not: { any: [thenable, any, unknown] } }
 message: "`$X` is not a Promise or a thenable, so awaiting it does nothing"
 fix: "$X"
 ```
@@ -80,5 +80,5 @@ async function main() {
 
 ## Differences from the source
 
-A value typed `unknown` is reported: typescript-eslint allows it, but SR-TYPES's type questions do
-not yet tell `unknown` apart from any other type that is not a thenable.
+None for the rule's checks: a value typed `any` or `unknown` may be a thenable, so awaiting it is
+allowed, as typescript-eslint allows it.
