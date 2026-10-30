@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-10-30 — codelaw-playground on the published 0.4.3  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"Update the sibling repo so I can get a full feel of how codelaw is working. With the extension and everything … Set it up for CodeLaw playground."*
+- **Done:** `~/my_programs/codelaw-playground` 7616ab8 (its own repo; nothing here changed): npm `codelaw@0.4.3` + 14 `@codelaw/rules-*` packs, the two Python packs from PyPI in `.venv` (Python 3.12 via uv), samples in all nine languages plus markers and vulnerable manifests, `deps refresh` snapshot, `.vscode` recommending `codelaw.codelaw-vscode`. `check`: 50 errors, 30 warnings, 3 infos across every file.
+- **Decided / left open:** observed, not filed — (1) every rule but 42 CSS ones is `preview` in 0.4.3, so a fresh `init` reports little beyond formatting; (2) `deps/vulnerable` on `pyproject.toml` with no lockfile says ``then run `your install` ``; (3) `package-lock.json` as npm writes it is `format/unformatted`; (4) `:global(…)` in a `*.module.css` is `format/failed` (biome_css_parser).
+- **Mistakes:** none.
+- **Next:** Arpit tries the extension on the playground; the four observations become backlog rows if he wants them.
+
 ## 2026-10-30 — A `cleanup` section in the queue  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"create another section for cleanup."*
