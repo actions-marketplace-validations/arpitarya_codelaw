@@ -103,7 +103,7 @@ fn unavailable<'s>(snap: &'s Snapshot, options: &Options) -> Vec<(&'s String, &'
 }
 
 /// The command that brings the lockfile up to date.
-fn install_command(lockfile: Option<&str>, eco: Ecosystem) -> &'static str {
+pub(super) fn install_command(lockfile: Option<&str>, eco: Ecosystem) -> &'static str {
     match lockfile.map(|l| l.rsplit('/').next().unwrap_or(l)) {
         Some("pnpm-lock.yaml") => "pnpm install",
         Some("yarn.lock") => "yarn install",
@@ -332,7 +332,7 @@ impl Vulnerable {
 }
 
 /// The name `lock::installed` keys a dependency by.
-fn lock_name(dep: &Dep) -> String {
+pub(super) fn lock_name(dep: &Dep) -> String {
     match dep.ecosystem {
         Ecosystem::Npm => dep.name.clone(),
         Ecosystem::Pypi => normalize(&dep.name),
@@ -340,7 +340,7 @@ fn lock_name(dep: &Dep) -> String {
 }
 
 /// The version a requirement starts from, when no lockfile says.
-fn written_version(dep: &Dep) -> Option<String> {
+pub(super) fn written_version(dep: &Dep) -> Option<String> {
     match dep.ecosystem {
         Ecosystem::Npm => Range::parse(&dep.spec).map(|r| r.base().to_string()),
         Ecosystem::Pypi => {
@@ -452,7 +452,7 @@ impl NativeRule for Vulnerable {
 
 /// The 1-based line of the `yarn.lock` entry that installs `name` at
 /// `version`: its descriptor line.
-fn yarn_entry_line(text: &str, name: &str, version: &str) -> Option<usize> {
+pub(super) fn yarn_entry_line(text: &str, name: &str, version: &str) -> Option<usize> {
     let mut header: Option<(usize, bool)> = None;
     for (i, line) in text.lines().enumerate() {
         if line.starts_with('#') || line.trim().is_empty() {
