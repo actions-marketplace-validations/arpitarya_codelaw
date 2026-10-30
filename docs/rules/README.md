@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 690 rules in 19 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 809 rules in 19 packs, plus the engine's 23 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,9 +35,9 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 84 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 27 | 1 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 35 | 4 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 162 | 12 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 30 | 1 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 73 | 4 |
 | [node](#node) | `@codelaw/rules-node` | — | 10 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 74 | 18 |
@@ -65,17 +65,25 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`graph/no-unused-exports`](graph/no-unused-exports.md) | Exported symbols must be used somewhere | `suggest` | — | `js/project`, `py/project` |
 | [`js/complexity`](js/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `count_optional_chain`, `ignore_names` | `js/size` |
 | [`js/constructor-super`](js/constructor-super.md) | A derived class's constructor calls super(); a base class's does not | `manual` | — | `js/recommended` |
+| [`js/default-case`](js/default-case.md) | A switch has a default | `manual` | — | *[rules] only* |
+| [`js/default-case-last`](js/default-case-last.md) | default comes last | `manual` | — | *[rules] only* |
 | [`js/exports-at-end`](js/exports-at-end.md) | Exports are gathered at the end of the file | `auto` | — | `js/conventions` |
 | [`js/flag-expiry`](js/flag-expiry.md) | Every feature flag read is registered, with an owner and a date it goes | `suggest` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`js/flag-marker`](js/flag-marker.md) | An inline flag marker agrees with the registry | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`js/for-direction`](js/for-direction.md) | A for loop's counter moves toward its end condition | `manual` | — | `js/recommended` |
 | [`js/getter-return`](js/getter-return.md) | A getter returns a value on every path | `manual` | — | `js/recommended` |
+| [`js/guard-for-in`](js/guard-for-in.md) | for-in is filtered | `manual` | — | *[rules] only* |
 | [`js/import-groups`](js/import-groups.md) | Imports are grouped builtin, external, internal, relative | `auto` | `internal` | `js/conventions` |
 | [`js/max-depth`](js/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `js/size` |
 | [`js/max-lines`](js/max-lines.md) | A file stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `js/size` |
 | [`js/max-lines-per-function`](js/max-lines-per-function.md) | A function stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `include_nested`, `include_iife`, `ignore_names` | `js/size` |
 | [`js/max-params`](js/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `count_this`, `count_varargs`, `ignore_names`, `ignore_overrides`, `ignore_declarations`, `ignore_constructor_injection` | `js/size` |
+| [`js/no-accumulating-spread`](js/no-accumulating-spread.md) | No spread of the accumulator in reduce | `manual` | — | `js/recommended` |
+| [`js/no-alert`](js/no-alert.md) | No alert, confirm or prompt | `manual` | — | *[rules] only* |
 | [`js/no-async-promise-executor`](js/no-async-promise-executor.md) | A Promise executor is not an async function | `manual` | — | `js/recommended` |
+| [`js/no-await-in-loop`](js/no-await-in-loop.md) | No await inside a loop | `manual` | — | *[rules] only* |
+| [`js/no-bitwise`](js/no-bitwise.md) | No bitwise operators | `manual` | — | *[rules] only* |
+| [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `manual` | — | *[rules] only* |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `manual` | — | `js/recommended` |
 | [`js/no-class-assign`](js/no-class-assign.md) | A class name is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-compare-neg-zero`](js/no-compare-neg-zero.md) | No comparisons against -0 | `manual` | — | `js/recommended` |
@@ -84,67 +92,137 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-const-assign`](js/no-const-assign.md) | A const is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-constant-binary-expression`](js/no-constant-binary-expression.md) | No binary expression whose result is fixed | `manual` | — | `js/recommended` |
 | [`js/no-constant-condition`](js/no-constant-condition.md) | No conditions that are always true or always false | `manual` | — | `js/recommended` |
+| [`js/no-constructor-return`](js/no-constructor-return.md) | A constructor returns no value | `manual` | — | *[rules] only* |
+| [`js/no-continue`](js/no-continue.md) | No continue | `manual` | — | *[rules] only* |
 | [`js/no-control-regex`](js/no-control-regex.md) | No control characters in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-debugger`](js/no-debugger.md) | No debugger statements | `auto` | — | `js/recommended` |
 | [`js/no-default-export`](js/no-default-export.md) | No default exports | `manual` | — | `js/conventions` |
 | [`js/no-delete-var`](js/no-delete-var.md) | No delete on a variable | `manual` | — | `js/recommended` |
+| [`js/no-document-cookie-biome`](js/no-document-cookie-biome.md) | No direct writes to document.cookie | `manual` | — | `js/recommended` |
 | [`js/no-dupe-args`](js/no-dupe-args.md) | No two parameters share a name | `manual` | — | `js/recommended` |
 | [`js/no-dupe-class-members`](js/no-dupe-class-members.md) | No two class members share a name | `manual` | — | `js/recommended` |
 | [`js/no-dupe-else-if`](js/no-dupe-else-if.md) | No two conditions in an if/else-if chain are the same | `manual` | — | `js/recommended` |
 | [`js/no-dupe-keys`](js/no-dupe-keys.md) | No two keys in an object literal are the same | `manual` | — | `js/recommended` |
 | [`js/no-duplicate-case`](js/no-duplicate-case.md) | No two case labels in a switch are the same | `manual` | — | `js/recommended` |
+| [`js/no-dynamic-namespace-import-access`](js/no-dynamic-namespace-import-access.md) | No computed access on a namespace import | `manual` | — | `js/recommended` |
 | [`js/no-empty`](js/no-empty.md) | No empty blocks | `manual` | — | `js/recommended` |
 | [`js/no-empty-character-class`](js/no-empty-character-class.md) | No empty character classes in regular expressions | `manual` | — | `js/recommended` |
+| [`js/no-empty-function`](js/no-empty-function.md) | No empty functions | `manual` | — | *[rules] only* |
 | [`js/no-empty-pattern`](js/no-empty-pattern.md) | No empty destructuring patterns | `manual` | — | `js/recommended` |
 | [`js/no-empty-static-block`](js/no-empty-static-block.md) | No empty static blocks | `auto` | — | `js/recommended` |
+| [`js/no-eq-null`](js/no-eq-null.md) | No == null | `manual` | — | *[rules] only* |
+| [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | *[rules] only* |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
+| [`js/no-extend-native`](js/no-extend-native.md) | No changes to built-in prototypes | `manual` | — | *[rules] only* |
 | [`js/no-extra-boolean-cast`](js/no-extra-boolean-cast.md) | No needless !! or Boolean() in a condition | `auto` | — | `js/recommended` |
 | [`js/no-fallthrough`](js/no-fallthrough.md) | A switch case does not fall through into the next by accident | `manual` | — | `js/recommended` |
+| [`js/no-flat-map-identity`](js/no-flat-map-identity.md) | flat, not flatMap of the identity | `suggest` | — | `js/recommended` |
 | [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers` |
 | [`js/no-func-assign`](js/no-func-assign.md) | A function declaration is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-global-assign`](js/no-global-assign.md) | No assignment to built-in globals | `manual` | — | `js/recommended` |
+| [`js/no-global-is-finite`](js/no-global-is-finite.md) | Number.isFinite, not the global isFinite | `suggest` | — | `js/recommended` |
+| [`js/no-global-is-nan`](js/no-global-is-nan.md) | Number.isNaN, not the global isNaN | `suggest` | — | `js/recommended` |
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-invalid-regexp`](js/no-invalid-regexp.md) | RegExp() is given a valid pattern and flags | `manual` | — | `js/recommended` |
 | [`js/no-irregular-whitespace`](js/no-irregular-whitespace.md) | No irregular whitespace in templates, regular expressions, JSX text or comments | `suggest` | — | `js/recommended` |
+| [`js/no-iterator`](js/no-iterator.md) | No __iterator__ | `manual` | — | *[rules] only* |
+| [`js/no-labels`](js/no-labels.md) | No labels | `manual` | — | *[rules] only* |
+| [`js/no-lone-blocks`](js/no-lone-blocks.md) | No needless nested blocks | `manual` | — | *[rules] only* |
 | [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `manual` | — | `js/recommended` |
 | [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `manual` | — | `js/recommended` |
+| [`js/no-misrefactored-shorthand-assign`](js/no-misrefactored-shorthand-assign.md) | No compound assignment that repeats its target | `manual` | — | `js/recommended` |
+| [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `manual` | — | *[rules] only* |
+| [`js/no-multi-str`](js/no-multi-str.md) | No multiline strings with a backslash | `manual` | — | *[rules] only* |
+| [`js/no-negated-condition`](js/no-negated-condition.md) | No negated condition with an else | `manual` | — | *[rules] only* |
+| [`js/no-nested-ternary`](js/no-nested-ternary.md) | No nested conditional expressions | `manual` | — | *[rules] only* |
+| [`js/no-new`](js/no-new.md) | No new for side effects | `manual` | — | *[rules] only* |
+| [`js/no-new-func`](js/no-new-func.md) | No Function constructor | `manual` | — | *[rules] only* |
 | [`js/no-new-native-nonconstructor`](js/no-new-native-nonconstructor.md) | No new on Symbol or BigInt | `suggest` | — | `js/recommended` |
+| [`js/no-new-wrappers`](js/no-new-wrappers.md) | No primitive wrapper objects | `manual` | — | *[rules] only* |
 | [`js/no-nonoctal-decimal-escape`](js/no-nonoctal-decimal-escape.md) | No \8 or \9 escapes in strings | `manual` | — | `js/recommended` |
 | [`js/no-obj-calls`](js/no-obj-calls.md) | No calling Math, JSON, Reflect, Atomics or Intl as functions | `manual` | — | `js/recommended` |
+| [`js/no-object-constructor`](js/no-object-constructor.md) | {} rather than new Object() | `suggest` | — | *[rules] only* |
 | [`js/no-octal`](js/no-octal.md) | No legacy octal literals | `manual` | — | `js/recommended` |
+| [`js/no-octal-escape`](js/no-octal-escape.md) | No octal escapes | `manual` | — | *[rules] only* |
+| [`js/no-plusplus`](js/no-plusplus.md) | No ++ or -- | `manual` | — | *[rules] only* |
+| [`js/no-promise-executor-return`](js/no-promise-executor-return.md) | A promise executor returns nothing | `manual` | — | *[rules] only* |
+| [`js/no-proto`](js/no-proto.md) | No __proto__ | `manual` | — | *[rules] only* |
 | [`js/no-prototype-builtins`](js/no-prototype-builtins.md) | No calling Object.prototype methods on the object itself | `suggest` | — | `js/recommended` |
 | [`js/no-redeclare`](js/no-redeclare.md) | No variable is declared twice | `manual` | — | `js/recommended` |
+| [`js/no-redundant-use-strict`](js/no-redundant-use-strict.md) | No redundant "use strict" | `auto` | — | `js/recommended` |
 | [`js/no-regex-spaces`](js/no-regex-spaces.md) | No runs of spaces in a regular expression | `auto` | — | `js/recommended` |
+| [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `manual` | — | *[rules] only* |
 | [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `manual` | — | `js/recommended` |
+| [`js/no-self-compare`](js/no-self-compare.md) | No comparing a value with itself | `manual` | — | *[rules] only* |
+| [`js/no-sequences`](js/no-sequences.md) | No comma operator | `manual` | — | *[rules] only* |
 | [`js/no-setter-return`](js/no-setter-return.md) | A setter does not return a value | `manual` | — | `js/recommended` |
 | [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `manual` | — | `js/recommended` |
 | [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `manual` | — | `js/recommended` |
+| [`js/no-string-case-mismatch`](js/no-string-case-mismatch.md) | No comparison that case conversion makes impossible | `manual` | — | `js/recommended` |
+| [`js/no-template-curly-in-string`](js/no-template-curly-in-string.md) | No template placeholder in a plain string | `manual` | — | *[rules] only* |
 | [`js/no-this-before-super`](js/no-this-before-super.md) | this is not used before super() in a derived constructor | `manual` | — | `js/recommended` |
+| [`js/no-this-in-static`](js/no-this-in-static.md) | The class name, not this, in a static method | `suggest` | — | `js/recommended` |
+| [`js/no-throw-literal`](js/no-throw-literal.md) | Throw Error objects | `manual` | — | *[rules] only* |
 | [`js/no-unassigned-vars`](js/no-unassigned-vars.md) | A variable that is read is also assigned | `manual` | — | `js/recommended` |
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `manual` | `env`, `globals`, `typeof` | `js/recommended` |
+| [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `manual` | — | `js/recommended` |
 | [`js/no-unreachable`](js/no-unreachable.md) | No code after a return, throw, break or continue | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `manual` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `manual` | — | `js/recommended` |
+| [`js/no-unused-function-parameters`](js/no-unused-function-parameters.md) | No unused trailing parameter | `suggest` | — | `js/recommended` |
+| [`js/no-unused-imports`](js/no-unused-imports.md) | No unused imports | `suggest` | — | `js/recommended` |
 | [`js/no-unused-labels`](js/no-unused-labels.md) | Every label is used | `auto` | — | `js/recommended` |
 | [`js/no-unused-private-class-members`](js/no-unused-private-class-members.md) | Every private class member is read | `manual` | — | `js/recommended` |
 | [`js/no-unused-vars`](js/no-unused-vars.md) | Every declared name is used | `manual` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `js/recommended` |
 | [`js/no-useless-assignment`](js/no-useless-assignment.md) | No value is stored that nothing reads | `manual` | — | `js/recommended` |
 | [`js/no-useless-backreference`](js/no-useless-backreference.md) | No backreference that can only match the empty string | `manual` | — | `js/recommended` |
+| [`js/no-useless-call`](js/no-useless-call.md) | No needless call or apply | `manual` | — | *[rules] only* |
 | [`js/no-useless-catch`](js/no-useless-catch.md) | No catch that only rethrows | `manual` | — | `js/recommended` |
+| [`js/no-useless-computed-key`](js/no-useless-computed-key.md) | No computed key that is a literal | `auto` | — | *[rules] only* |
+| [`js/no-useless-concat`](js/no-useless-concat.md) | No concatenation of two literals | `manual` | — | *[rules] only* |
+| [`js/no-useless-continue-biome`](js/no-useless-continue-biome.md) | No continue at the end of a loop | `auto` | — | `js/recommended` |
 | [`js/no-useless-escape`](js/no-useless-escape.md) | No backslash that changes nothing | `auto` | — | `js/recommended` |
+| [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
+| [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
+| [`js/no-useless-string-raw`](js/no-useless-string-raw.md) | No String.raw without an escape | `manual` | — | `js/recommended` |
 | [`js/no-var`](js/no-var.md) | let or const instead of var | `suggest` | — | `js/typescript` |
+| [`js/no-void`](js/no-void.md) | No void operator | `manual` | — | *[rules] only* |
+| [`js/no-void-type-return`](js/no-void-type-return.md) | A void function returns no value | `manual` | — | `js/recommended` |
 | [`js/no-with`](js/no-with.md) | No with statements | `manual` | — | `js/recommended` |
 | [`js/prefer-const`](js/prefer-const.md) | const for variables that are never reassigned | `auto` | — | `js/typescript` |
+| [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
+| [`js/prefer-object-has-own`](js/prefer-object-has-own.md) | Object.hasOwn rather than hasOwnProperty.call | `auto` | — | *[rules] only* |
+| [`js/prefer-promise-reject-errors`](js/prefer-promise-reject-errors.md) | Reject with an Error | `manual` | — | *[rules] only* |
 | [`js/prefer-rest-params`](js/prefer-rest-params.md) | Rest parameters instead of arguments | `manual` | — | `js/typescript` |
 | [`js/prefer-spread`](js/prefer-spread.md) | Spread instead of .apply() | `auto` | — | `js/typescript` |
 | [`js/preserve-caught-error`](js/preserve-caught-error.md) | A rethrown error keeps the caught one as its cause | `suggest` | — | `js/recommended` |
+| [`js/promise-always-return`](js/promise-always-return.md) | A then callback returns or throws | `manual` | — | `js/recommended` |
+| [`js/promise-avoid-new`](js/promise-avoid-new.md) | No new Promise | `manual` | — | *[rules] only* |
+| [`js/promise-catch-or-return`](js/promise-catch-or-return.md) | A promise chain is returned, awaited or ends in catch | `manual` | — | `js/recommended` |
+| [`js/promise-no-callback-in-promise`](js/promise-no-callback-in-promise.md) | No node-style callback is called inside a then or catch | `manual` | — | `js/recommended` |
+| [`js/promise-no-multiple-resolved`](js/promise-no-multiple-resolved.md) | A promise executor settles once on each path | `manual` | — | *[rules] only* |
+| [`js/promise-no-native`](js/promise-no-native.md) | Promise is imported, not the global | `manual` | — | *[rules] only* |
+| [`js/promise-no-nesting`](js/promise-no-nesting.md) | Promise chains are flattened, not nested | `manual` | — | `js/recommended` |
+| [`js/promise-no-new-statics`](js/promise-no-new-statics.md) | Promise's static methods are called without new | `auto` | — | `js/recommended` |
+| [`js/promise-no-promise-in-callback`](js/promise-no-promise-in-callback.md) | No promise chain inside a node-style callback | `manual` | — | `js/recommended` |
+| [`js/promise-no-return-in-finally`](js/promise-no-return-in-finally.md) | A finally callback returns nothing | `manual` | — | `js/recommended` |
+| [`js/promise-no-return-wrap`](js/promise-no-return-wrap.md) | A then or catch callback returns the value, not Promise.resolve or Promise.reject | `manual` | — | `js/recommended` |
+| [`js/promise-param-names`](js/promise-param-names.md) | A promise executor names its parameters resolve and reject | `manual` | — | `js/recommended` |
+| [`js/promise-prefer-await-to-callbacks`](js/promise-prefer-await-to-callbacks.md) | async and await, not callbacks | `manual` | — | *[rules] only* |
+| [`js/promise-prefer-await-to-then`](js/promise-prefer-await-to-then.md) | await, not then | `manual` | — | *[rules] only* |
+| [`js/promise-prefer-catch`](js/promise-prefer-catch.md) | catch, not a second then argument | `suggest` | — | *[rules] only* |
+| [`js/promise-spec-only`](js/promise-spec-only.md) | Only standard Promise methods | `manual` | — | *[rules] only* |
+| [`js/promise-valid-params`](js/promise-valid-params.md) | Promise methods get the number of arguments they take | `manual` | — | `js/recommended` |
+| [`js/radix`](js/radix.md) | parseInt gets a radix | `suggest` | — | *[rules] only* |
 | [`js/require-yield`](js/require-yield.md) | A generator function yields | `manual` | — | `js/recommended` |
 | [`js/skipped-test`](js/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `js/markers` |
+| [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `manual` | — | *[rules] only* |
 | [`js/todo-marker`](js/todo-marker.md) | JavaScript and TypeScript TODO comments carry a ticket and, when asked, a date | `manual` | — | `js/markers` |
 | [`js/use-instead`](js/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `js/recommended` |
 | [`js/use-isnan`](js/use-isnan.md) | Test for NaN with Number.isNaN | `manual` | — | `js/recommended` |
+| [`js/use-simple-number-keys`](js/use-simple-number-keys.md) | Plain decimal numbers as object keys | `manual` | — | `js/recommended` |
 | [`js/valid-typeof`](js/valid-typeof.md) | typeof is compared with a type it can return | `manual` | — | `js/recommended` |
 
 ## ts
@@ -156,11 +234,14 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/await-thenable`](ts/await-thenable.md) | `await` only what can be awaited | `suggest` | — | `ts/type-checked` |
 | [`ts/ban-ts-comment`](ts/ban-ts-comment.md) | No @ts-ignore or @ts-nocheck; @ts-expect-error says why | `manual` | — | `ts/recommended` |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
+| [`ts/no-const-enum`](ts/no-const-enum.md) | enum, not const enum | `auto` | — | `ts/recommended` |
 | [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `manual` | — | `ts/recommended` |
+| [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `manual` | — | `ts/recommended` |
 | [`ts/no-explicit-any`](ts/no-explicit-any.md) | No explicit any | `suggest` | — | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](ts/no-extra-non-null-assertion.md) | No repeated non-null assertions | `auto` | — | `ts/recommended` |
 | [`ts/no-floating-promises`](ts/no-floating-promises.md) | A Promise is awaited, returned or handled | `suggest` | — | `ts/type-checked` |
+| [`ts/no-implicit-any-let`](ts/no-implicit-any-let.md) | A let without a value has a type | `manual` | — | `ts/recommended` |
 | [`ts/no-misused-new`](ts/no-misused-new.md) | No constructors declared in interfaces, and no `new` methods in classes | `manual` | — | `ts/recommended` |
 | [`ts/no-namespace`](ts/no-namespace.md) | No TypeScript namespaces | `manual` | — | `ts/recommended` |
 | [`ts/no-non-null-asserted-optional-chain`](ts/no-non-null-asserted-optional-chain.md) | No non-null assertion after an optional chain | `suggest` | — | `ts/recommended` |
@@ -183,10 +264,46 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 
 ## react
 
-Presets: `codelaw:react/recommended` · `codelaw:react/conventions` · `codelaw:react/size`.
+Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/conventions` · `codelaw:react/size`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
+| [`react/a11y-alt-text`](react/a11y-alt-text.md) | Images and image-like elements carry alternative text | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-anchor-ambiguous-text`](react/a11y-anchor-ambiguous-text.md) | Link text says where it goes | `manual` | — | *[rules] only* |
+| [`react/a11y-anchor-has-content`](react/a11y-anchor-has-content.md) | A link has content | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-anchor-is-valid`](react/a11y-anchor-is-valid.md) | A link goes somewhere | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-activedescendant-has-tabindex`](react/a11y-aria-activedescendant-has-tabindex.md) | An element with aria-activedescendant is focusable | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-props`](react/a11y-aria-props.md) | ARIA attributes are real ones | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-proptypes`](react/a11y-aria-proptypes.md) | ARIA attribute values have the right type | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-role`](react/a11y-aria-role.md) | A role is a real ARIA role | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-unsupported-elements`](react/a11y-aria-unsupported-elements.md) | No ARIA on elements that cannot carry it | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-autocomplete-valid`](react/a11y-autocomplete-valid.md) | autoComplete holds a valid token list | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-click-events-have-key-events`](react/a11y-click-events-have-key-events.md) | A clickable element also answers the keyboard | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-control-has-associated-label`](react/a11y-control-has-associated-label.md) | A button has a label | `manual` | — | *[rules] only* |
+| [`react/a11y-heading-has-content`](react/a11y-heading-has-content.md) | A heading has content | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-html-has-lang`](react/a11y-html-has-lang.md) | The html element has a lang | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-iframe-has-title`](react/a11y-iframe-has-title.md) | An iframe has a title | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-img-redundant-alt`](react/a11y-img-redundant-alt.md) | Alt text does not say "image" | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-interactive-supports-focus`](react/a11y-interactive-supports-focus.md) | An element with an interactive role is focusable | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-label-has-associated-control`](react/a11y-label-has-associated-control.md) | A label is tied to a control | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-lang`](react/a11y-lang.md) | lang is a valid language tag | `manual` | — | *[rules] only* |
+| [`react/a11y-media-has-caption`](react/a11y-media-has-caption.md) | Audio and video have captions | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-mouse-events-have-key-events`](react/a11y-mouse-events-have-key-events.md) | Hover handlers have focus twins | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-access-key`](react/a11y-no-access-key.md) | No accessKey | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `manual` | — | *[rules] only* |
+| [`react/a11y-no-autofocus`](react/a11y-no-autofocus.md) | No autoFocus | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-distracting-elements`](react/a11y-no-distracting-elements.md) | No marquee or blink | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-interactive-element-to-noninteractive-role`](react/a11y-no-interactive-element-to-noninteractive-role.md) | Interactive elements keep an interactive role | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-element-interactions`](react/a11y-no-noninteractive-element-interactions.md) | Non-interactive elements have no handlers | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-element-to-interactive-role`](react/a11y-no-noninteractive-element-to-interactive-role.md) | Non-interactive elements keep their role | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-tabindex`](react/a11y-no-noninteractive-tabindex.md) | Non-interactive elements are not in the tab order | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-redundant-roles`](react/a11y-no-redundant-roles.md) | No role an element already has | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-static-element-interactions`](react/a11y-no-static-element-interactions.md) | div and span have a role when they handle events | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-prefer-tag-over-role`](react/a11y-prefer-tag-over-role.md) | The native element, not a role | `manual` | — | *[rules] only* |
+| [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-tabindex-no-positive`](react/a11y-tabindex-no-positive.md) | No positive tabIndex | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/component-max-lines`](react/component-max-lines.md) | A React component stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `ignore_names` | `react/size` |
 | [`react/display-name`](react/display-name.md) | A component passed to memo or forwardRef has a name | `manual` | — | `react/recommended` |
 | [`react/error-boundaries`](react/error-boundaries.md) | Errors in children are caught by an Error Boundary, not try/catch | `manual` | — | `react/recommended` |
@@ -213,6 +330,8 @@ Presets: `codelaw:react/recommended` · `codelaw:react/conventions` · `codelaw:
 | [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `manual` | — | `react/recommended` |
 | [`react/no-set-state-in-render`](react/no-set-state-in-render.md) | State is not set on every render | `manual` | — | `react/recommended` |
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
+| [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
+| [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `manual` | — | `react/recommended` |
 | [`react/no-unescaped-entities`](react/no-unescaped-entities.md) | No unescaped >, ", ' or } in JSX text | `manual` | — | `react/recommended` |
 | [`react/no-unknown-property`](react/no-unknown-property.md) | DOM elements use React's prop names, not HTML attribute names | `auto` | — | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `manual` | — | `react/recommended` |

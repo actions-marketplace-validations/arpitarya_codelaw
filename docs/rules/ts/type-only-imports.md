@@ -14,6 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a type-only import is erased, so code that relied on the module's side effects changes) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
+| **Ported from** | `typescript-eslint/consistent-type-imports` |
 
 ## What it checks
 
