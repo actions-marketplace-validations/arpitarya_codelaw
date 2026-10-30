@@ -14,6 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the selector or layer that should win instead is a design call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
+| **Ported from** | `stylelint/declaration-no-important` |
 
 ## What it checks
 

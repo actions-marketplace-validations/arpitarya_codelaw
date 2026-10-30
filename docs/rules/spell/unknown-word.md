@@ -14,6 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a word no list holds is often a real name, a product or a term of the trade; the nearest dictionary word is a guess the author confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
+| **Ported from** | `pylint/wrong-spelling-in-comment`, `pylint/wrong-spelling-in-docstring` |
 
 ## What it checks
 

@@ -14,6 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (every importer of the default export must change) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
+| **Ported from** | `eslint-plugin-import/no-default-export` |
 
 ## What it checks
 

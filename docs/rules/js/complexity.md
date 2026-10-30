@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting a function changes its structure; where to cut and what to call each piece is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/complexity` |
+| **Ported from** | `eslint/complexity`, `eslint-plugin-sonarjs/cyclomatic-complexity` |
 
 ## What it checks
 

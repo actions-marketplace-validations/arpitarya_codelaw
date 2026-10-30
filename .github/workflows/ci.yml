@@ -3,7 +3,9 @@
 # artifact this run assembled: nothing is compiled at release time
 # (SR-PACKAGES decision 11; W-04).
 #
-#   test      cargo test --workspace (the law checks: L2 licences, L3 fixtures, L5 network fence, layers)
+#   test      cargo test --workspace (the law checks: L2 licences, L3 fixtures, L5 network fence, layers),
+#             then the type rules again on npm's newest TypeScript 7.1 when it is not the pinned one (blocking)
+#   types-next nightly and dispatch only: the type rules on `typescript@next` — reports, never blocks
 #   lint      the version copies agree (W-18) · the SR guard replayed from RULE-SINCE ·
 #             the work-system checks (W-20) · clippy
 #   perf      L8's gate (W-19): `codelaw bench` on the reference workload against
@@ -113,6 +115,26 @@ jobs:
           CODELAW_REQUIRE_NETWORK_FENCE: '1'
           # the type-aware tests fail here instead of skipping, and every
           # type rule's examples are checked against that TypeScript
+          CODELAW_TYPES_REQUIRED: '1'
+          CODELAW_TYPESCRIPT: ${{ github.workspace }}/fixtures/types/node_modules/typescript
+      # SR-TYPES decision 7 (W-105, was W-106 step 2): the type rules on npm's
+      # newest TypeScript 7.1 too, not only the pinned one — blocking, so a 7.1
+      # release that breaks them turns this job red (D-45: the 7.1 line,
+      # blocking). Skipped with a reused verdict; the nightly never reuses one.
+      # typescript-bump.yml proposes the newest as the pin.
+      - name: the type rules on the newest TypeScript 7.1
+        if: steps.verdict.outputs.cache-hit != 'true'
+        run: |
+          # npm's `latest`, `rc` and `beta` tags, never a nightly (`7.1.0-dev.*`)
+          read -r state newest < <(python3 scripts/typescript-watch.py latest --below 7.2)
+          echo "TypeScript 7.1: the pinned one is $state; newest release $newest" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$state" = newer ]; then
+            (cd fixtures/types && npm install --no-save --ignore-scripts --no-audit --no-fund "typescript@$newest")
+            cargo test --locked -p codelaw-cli --test types
+            target/debug/codelaw test packs/ts
+            (cd fixtures/types && npm ci --ignore-scripts --no-audit --no-fund)
+          fi
+        env:
           CODELAW_TYPES_REQUIRED: '1'
           CODELAW_TYPESCRIPT: ${{ github.workspace }}/fixtures/types/node_modules/typescript
       - if: steps.verdict.outputs.cache-hit != 'true'
@@ -726,3 +748,47 @@ jobs:
           cache-on-failure: true
       - name: cargo +${{ steps.msrv.outputs.v }} check --workspace
         run: cargo +${{ steps.msrv.outputs.v }} check --workspace --all-targets --locked
+
+  types-next:
+    # SR-TYPES decision 7 (W-105, was W-106 step 3): the type rules on
+    # `typescript@next`, nightly and by dispatch — an early warning, reported
+    # in the summary. `continue-on-error`: it never fails the run, so it never
+    # blocks main or a release (D-45: `next` is reporting-only).
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false # nothing here pushes (W-18)
+      - id: rustc
+        run: echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
+      - run: rustup toolchain install ${{ steps.rustc.outputs.v }} --profile minimal --no-self-update
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          cache-on-failure: true
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 22
+      - name: the type rules on typescript@next
+        working-directory: fixtures/types
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm install --no-save --ignore-scripts --no-audit --no-fund typescript@next
+          next="$(node -p 'require("./node_modules/typescript/package.json").version')"
+          cd ../..
+          set +e
+          { cargo test --locked -p codelaw-cli --test types && target/debug/codelaw test packs/ts; } > "$RUNNER_TEMP/next.log" 2>&1
+          code=$?
+          set -e
+          tail -n 60 "$RUNNER_TEMP/next.log"
+          if [ "$code" = 0 ]; then
+            echo "✔ the type rules pass on typescript@next ($next)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            { echo "⚠ the type rules fail on typescript@next ($next) — report only (SR-TYPES decision 7)"; echo; echo '```text'; tail -n 40 "$RUNNER_TEMP/next.log"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=types-next::the type rules fail on typescript@next ($next)"
+          fi
+        env:
+          CODELAW_TYPES_REQUIRED: '1'
+          CODELAW_TYPESCRIPT: ${{ github.workspace }}/fixtures/types/node_modules/typescript

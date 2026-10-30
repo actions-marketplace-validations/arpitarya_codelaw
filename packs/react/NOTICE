@@ -11,3 +11,13 @@ whose documented behaviour they reproduce; no code or documentation text from
 any of them is included. `react/purity`, `react/globals`, `react/use-memo` and
 `react/error-boundaries` share their names with the eslint-plugin-react-hooks
 and @eslint-react rules they port.
+
+The `react/a11y-*` rules reproduce the documented behaviour of
+eslint-plugin-jsx-a11y 6.10.2 (MIT License); no code or documentation text of
+it is included. The ARIA attribute, role and value lists in their matchers are
+written from the W3C's WAI-ARIA 1.2, DPUB-ARIA and Graphics-ARIA
+specifications, and the autofill tokens from the WHATWG HTML standard.
+
+The rules whose `ported_from:` names a `biome/` rule reproduce the documented
+behaviour of Biome 2.6.4 (https://biomejs.dev, MIT License); no Biome code or
+documentation text is included.

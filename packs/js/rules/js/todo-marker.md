@@ -6,6 +6,7 @@ severity: error
 fix: manual
 fix_reason: "a ticket and a date are facts about the work that only the author knows; the engine can't invent them"
 stability: preview
+ported_from: [eslint/no-warning-comments, eslint-plugin-unicorn/expiring-todo-comments, eslint-plugin-sonarjs/todo-tag, eslint-plugin-sonarjs/fixme-tag]
 since: 0.5.0
 ---
 
