@@ -3,13 +3,13 @@ type: Standing Record
 kind: law
 name: SR-LAW-6
 title: "SR-LAW-6 (0008) — L6 — one release, two packages: PyPI and npm"
-description: "codelaw ships as a Python package and a Node package, released together under one version, each a complete engine, with its rules as nineteen packs — seventeen on npm, twelve on PyPI, each registry carrying the packs its users install, and each pack with an optional Fux index package that is never installed by default; every agent-facing file ships apart from the engine as the skills package, @codelaw/skills and codelaw-skills, which depends on codelaw at the exact same version; both engines produce byte-identical results."
+description: "codelaw ships as a Python package and a Node package, released together under one version, each a complete engine, with its rules as twenty packs — eighteen on npm, twelve on PyPI, each registry carrying the packs its users install, and each pack with an optional Fux index package that is never installed by default; every agent-facing file ships apart from the engine as the skills package, @codelaw/skills and codelaw-skills, which depends on codelaw at the exact same version; both engines produce byte-identical results."
 status: accepted
 date: 2026-10-18
 feature: "how codelaw is packaged and released"
 owns: []
 laws: [L0, L2, L3, L6]
-timestamp: 2026-10-29T05:00:00Z
+timestamp: 2026-10-30T20:00:00Z
 content_sha: ""
 ---
 
@@ -33,7 +33,7 @@ flowchart LR
     B["one source tree"] --> X["native binary per platform"]
     X --> N["npm: codelaw"]
     X --> Y["PyPI: codelaw"]
-    B --> R["nineteen rule packs"]
+    B --> R["twenty rule packs"]
     R --> N2["npm: @codelaw/rules-* (16)"]
     R --> Y2["PyPI: codelaw-rules-* (11)"]
     N --> O["byte-identical output"]
@@ -48,7 +48,7 @@ flowchart LR
 ```text
    source --> binary per platform --+--> npm  codelaw ----------+
           |                         +--> PyPI codelaw ----------+
-          +-> nineteen rule packs ---+--> npm  @codelaw/rules-* (17) +--> identical output
+          +-> twenty rule packs ----+--> npm  @codelaw/rules-* (18) +--> identical output
                                     +--> PyPI codelaw-rules-* (11) -+    (same packs)
 ```
 
@@ -108,18 +108,18 @@ flowchart LR
     - **PyPI:** one engine distribution, `codelaw`, whose platform builds are wheels of it, plus the twelve rule packs `codelaw-rules-<name>` (decision 11), their optional index packages `codelaw-rules-<name>-fux-index` (decision 12) and the skills package `codelaw-skills` (decision 13). PyPI has no scopes, so no other codelaw distribution is published.
     - **npm**'s skills package is `@codelaw/skills` (decision 13).
     - The `@codelaw` npm organisation, the `codelaw` names on both registries and the twelve `codelaw-rules-<name>` names on PyPI are reserved before the first release; each `-fux-index` name is reserved before the release that first publishes it.
-11. **Rule packs** ([SR-RULE-PACKS](0101_rule-packs.md)). **Ruled by Arpit, 2026-10-19** (five packs on both registries); **amended 2026-10-24** (W-31; and W-32, two npm-only library packs), **2026-10-25** (W-53, four security packs), **2026-10-26** (W-62, the `scss` pack; W-63, the npm-only `css-modules` pack), **2026-10-27** (W-103, the `spell` pack on both) and **2026-10-29** (W-128, the `deps` pack on both):
+11. **Rule packs** ([SR-RULE-PACKS](0101_rule-packs.md)). **Ruled by Arpit, 2026-10-19** (five packs on both registries); **amended 2026-10-24** (W-31; and W-32, two npm-only library packs), **2026-10-25** (W-53, four security packs), **2026-10-26** (W-62, the `scss` pack; W-63, the npm-only `css-modules` pack), **2026-10-27** (W-103, the `spell` pack on both), **2026-10-29** (W-128, the `deps` pack on both) and **2026-10-30** (W-144, ruled by voice: *"The next JS pack. Let's create it."* — the npm-only `nextjs` pack, built by W-139):
 
     | registry | packs |
     |---|---|
-    | npm, `@codelaw/rules-<name>` | `js`, `ts`, `react`, `node`, `stencil`, `html`, `css`, `scss`, `css-modules`, `data`, `tanstack-query`, `redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps` |
+    | npm, `@codelaw/rules-<name>` | `js`, `ts`, `react`, `node`, `stencil`, `html`, `css`, `scss`, `css-modules`, `data`, `tanstack-query`, `redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps`, `nextjs` |
     | PyPI, `codelaw-rules-<name>` | `js`, `react`, `html`, `css`, `scss`, `python`, `data`, `security-js`, `security-html`, `security-python`, `spell`, `deps` |
 
     - Each is pure data (rule files, presets, data tables): one tarball on npm, one `py3-none-any` wheel on PyPI, or both. **A pack on both registries holds the same files on both.**
     - Each declares `min_codelaw` and shares the engine's version (decision 9).
     - A pack whose presets extend another pack's (`security-ts` → `security-js`, `security-html` → `html`; [SR-RULE-PACKS](0101_rule-packs.md) decision 3) extends only a pack published on every registry it is, so neither registry's users need the other.
     - A Python-only repo installs `codelaw` and `codelaw-rules-python` (plus `codelaw-rules-data` for its TOML, YAML and Markdown) from PyPI and never touches npm. A Node-only repo does the same from npm ([L3](0005_LAW-3-languages.md) decision 2).
-    - **What each registry leaves out is the decider's accepted cost:** an npm-only install has no Python rules (`py/*`, `sec-py/*`), and a PyPI-only install has no `ts/*`, `node/*`, `stencil/*`, `tanstack-query/*`, `redux-toolkit/*` or `sec-ts/*` rules. The engine on either registry is still complete (decision 3): it formats and parses every language, and its TypeScript gets the `js` rules that declare it.
+    - **What each registry leaves out is the decider's accepted cost:** an npm-only install has no Python rules (`py/*`, `sec-py/*`), and a PyPI-only install has no `ts/*`, `node/*`, `stencil/*`, `tanstack-query/*`, `redux-toolkit/*`, `next/*` or `sec-ts/*` rules. The engine on either registry is still complete (decision 3): it formats and parses every language, and its TypeScript gets the `js` rules that declare it.
 
 12. **The optional Fux index package** ([W-34](../work/open/W-34-fux-index-packages.md); **ruled by Arpit, 2026-10-25**, words above). Each rule pack that holds rules has one companion package, released with its pack at the same version (decision 9):
 
@@ -128,7 +128,7 @@ flowchart LR
     | npm | `@codelaw/rules-<name>-fux-index` for each npm pack of decision 11 that holds rules |
     | PyPI | `codelaw-rules-<name>-fux-index` for each PyPI pack that holds rules |
 
-    - **Today that is seventeen on npm and twelve on PyPI** — one per pack, every pack now holding rules (sixteen and eleven before the `deps` pack, W-128; fifteen and ten before the `spell` pack, W-103; ten and six before the `scss` and `css-modules` packs, W-62 and W-63; twelve and seven until the four security packs held their first rule files): Fux refuses an empty index, so a pack gets its package with its first rule.
+    - **Today that is eighteen on npm and twelve on PyPI** — one per pack, every pack now holding rules (seventeen and twelve before the `nextjs` pack, W-139; sixteen and eleven before the `deps` pack, W-128; fifteen and ten before the `spell` pack, W-103; ten and six before the `scss` and `css-modules` packs, W-62 and W-63; twelve and seven until the four security packs held their first rule files): Fux refuses an empty index, so a pack gets its package with its first rule.
     - **What it holds:** Fux's index of that pack's `rules/` and nothing else — the shards, `identifiers.toml` and `fux-index.json` ([SR-PKG-INDEX](https://github.com/arpitarya/fux/blob/main/records/0166_pkg-index.md), Fux's record). **Pure data, zero runtime dependencies.** Fux reads it; codelaw's engine never does, so codelaw stays complete with no Fux ([L5](0007_LAW-5-no-model-in-the-engine.md)).
     - **Never inside the rule pack, never a dependency of it, never installed by `codelaw init`.** `init` only prints how to add them, and only when the repo has a `.fux/` folder ([SR-RULE-PACKS](0101_rule-packs.md) decision 6).
     - **A segment is the same on both registries** (one digest, Fux's SR-PKG-INDEX decision 4); a pack on one registry has its index on that registry only.
@@ -159,12 +159,13 @@ flowchart LR
 
 ### Consequences
 
-- **Every release builds a binary for each platform and publishes the engine to both registries, seventeen packs to npm and twelve to PyPI.** One failed publish fails the release.
+- **Every release builds a binary for each platform and publishes the engine to both registries, eighteen packs to npm and twelve to PyPI.** One failed publish fails the release.
 - **The four security packs (W-53, 2026-10-25) are six new names to bind by hand once:** three on npm (`@codelaw/rules-security-js`, `-security-ts`, `-security-html`) and three on PyPI (`codelaw-rules-security-js`, `-security-html`, `-security-python`), as W-38 did for the first six ([SR-PACKAGES](0107_packages.md) Consequences).
 - **The first npm publish (0.1.0, 2026-10-24, W-29) predates the split:** it carried the five packs, so `@codelaw/rules-python` is unpublished from npm by hand and 0.2.0 is the first release in the per-registry layout ([W-31](../archive/open/W-31-registry-pack-split.md)).
 - **Nineteen more names to bind by hand once (W-34, 2026-10-25; W-62 added `scss`'s two, W-63 `css-modules`' one):** twelve on npm (`@codelaw/rules-<name>-fux-index`) and seven on PyPI (`codelaw-rules-<name>-fux-index`), each with its trusted publisher, as W-29 and W-38 did for the packs; the four security packs add theirs when they hold rules. **That step is the decider's and is not done:** `scripts/fux-index.py` builds the packages in CI, and nothing uploads them ([RELEASING.md](../RELEASING.md)).
 - **Two more pack names to bind by hand once (W-103, 2026-10-27):** `@codelaw/rules-spell` on npm and `codelaw-rules-spell` on PyPI, each with its trusted publisher, and their `-fux-index` companions with the others; that step is the decider's ([RELEASING.md](../RELEASING.md)).
 - **Two more pack names to bind by hand once (W-128, 2026-10-29):** `@codelaw/rules-deps` on npm and `codelaw-rules-deps` on PyPI, each with its trusted publisher, and their `-fux-index` companions — [W-135](../work/open/W-151-release-0-4-1.md) and [W-134](../work/open/W-151-release-0-4-1.md), the decider's, before the release that carries the pack.
+- **One more pack name to bind by hand once (W-139, 2026-10-30):** `@codelaw/rules-nextjs` on npm, with its trusted publisher, and its `-fux-index` companion — the decider's, under [W-142](../work/open/W-142-framework-pack-names.md), before the release that carries the pack.
 - **Two more names to bind by hand once (W-77, 2026-10-27):** `@codelaw/skills` on npm and `codelaw-skills` on PyPI, each with its trusted publisher. Until then `publish.yml`'s trust check stops a release before anything is uploaded ([RELEASING.md](../RELEASING.md)).
 - **A breaking change for consumers of agent files:** from the first release that carries W-77 (the next minor), `sync-agents` and `init --agents` need the skills package installed beside codelaw; the refusal names the install line (CHANGELOG).
 - **A Fux release that changes the segment format rebuilds every index package;** the pin in `scripts/fux-index.py` is what keeps that a deliberate act.

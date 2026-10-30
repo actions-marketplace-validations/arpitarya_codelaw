@@ -2,11 +2,11 @@
 
 **One release, both registries, one version** ([L6](records/0008_LAW-6-python-and-node-packages.md)
 decision 9). What ships is [SR-PACKAGES](records/0107_packages.md) §1: npm
-`codelaw` + eight `@codelaw/cli-*` + sixteen `@codelaw/rules-*` (`js`, `ts`,
+`codelaw` + eight `@codelaw/cli-*` + eighteen `@codelaw/rules-*` (`js`, `ts`,
 `react`, `node`, `stencil`, `html`, `css`, `scss`, `css-modules`, `data`, `tanstack-query`,
-`redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`), PyPI `codelaw`
-(eight wheels) + eleven `codelaw-rules-*` (`js`, `react`, `html`, `css`, `scss`,
-`python`, `data`, `security-js`, `security-html`, `security-python`, `spell`). Which pack goes where is `FIRST_PARTY_PACKS` in
+`redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps`, `nextjs`), PyPI `codelaw`
+(eight wheels) + twelve `codelaw-rules-*` (`js`, `react`, `html`, `css`, `scss`,
+`python`, `data`, `security-js`, `security-html`, `security-python`, `spell`, `deps`). Which pack goes where is `FIRST_PARTY_PACKS` in
 `crates/codelaw-rules/src/pack.rs`; `python3 scripts/package.py names` prints
 every name.
 

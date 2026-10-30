@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 809 rules in 19 packs, plus the engine's 23 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 831 rules in 20 packs, plus the engine's 23 own rules.
 
 ## Configuring any rule — the forms
 
@@ -52,6 +52,7 @@ remap = { error = "warn" }
 | [security-html](#security-html) | `@codelaw/rules-security-html` | `codelaw-rules-security-html` | 19 | 1 |
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 4 | 0 |
+| [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [python](#python) | — | `codelaw-rules-python` | 109 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [engine](engine.md) | in `codelaw` | in `codelaw` | 23 | 0 |
@@ -814,6 +815,35 @@ Presets: `codelaw:deps/recommended`.
 | [`deps/outdated`](deps/outdated.md) | Dependencies are on their latest version | `suggest` | — | `deps/recommended` |
 | [`deps/stale-snapshot`](deps/stale-snapshot.md) | The dependency snapshot is recent | `manual` | — | `deps/recommended` |
 | [`deps/vulnerable`](deps/vulnerable.md) | No dependency in use has a known vulnerability | `suggest` | — | `deps/recommended` |
+
+## nextjs
+
+Presets: `codelaw:next/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`next/google-font-display`](next/google-font-display.md) | Google Fonts load with display=swap or optional | `manual` | — | `next/recommended` |
+| [`next/google-font-preconnect`](next/google-font-preconnect.md) | fonts.gstatic.com is preconnected | `manual` | — | `next/recommended` |
+| [`next/inline-script-id`](next/inline-script-id.md) | An inline next/script has an id | `manual` | — | `next/recommended` |
+| [`next/next-script-for-ga`](next/next-script-for-ga.md) | Google Analytics through next/third-parties | `manual` | — | `next/recommended` |
+| [`next/no-assign-module-variable`](next/no-assign-module-variable.md) | No variable named module | `manual` | — | `next/recommended` |
+| [`next/no-async-client-component`](next/no-async-client-component.md) | Client components are not async | `manual` | — | `next/recommended` |
+| [`next/no-before-interactive-script-outside-document`](next/no-before-interactive-script-outside-document.md) | beforeInteractive scripts live in the document | `manual` | — | `next/recommended` |
+| [`next/no-css-tags`](next/no-css-tags.md) | No stylesheet link tags for local CSS | `manual` | — | `next/recommended` |
+| [`next/no-document-import-in-page`](next/no-document-import-in-page.md) | next/document only in _document | `manual` | — | `next/recommended` |
+| [`next/no-duplicate-head`](next/no-duplicate-head.md) | One Head in _document | `manual` | — | `next/recommended` |
+| [`next/no-head-element`](next/no-head-element.md) | next/head, not head | `manual` | — | `next/recommended` |
+| [`next/no-head-import-in-document`](next/no-head-import-in-document.md) | No next/head in _document | `manual` | — | `next/recommended` |
+| [`next/no-html-link-for-pages`](next/no-html-link-for-pages.md) | Link, not a, for internal pages | `manual` | — | `next/recommended` |
+| [`next/no-img-element`](next/no-img-element.md) | next/image, not img | `manual` | — | `next/recommended` |
+| [`next/no-location-assign-relative-destination`](next/no-location-assign-relative-destination.md) | router.push, not location for in-app paths | `manual` | — | `next/recommended` |
+| [`next/no-page-custom-font`](next/no-page-custom-font.md) | Custom fonts in the document, not a page | `manual` | — | `next/recommended` |
+| [`next/no-script-component-in-head`](next/no-script-component-in-head.md) | No next/script inside next/head | `manual` | — | `next/recommended` |
+| [`next/no-styled-jsx-in-document`](next/no-styled-jsx-in-document.md) | No styled-jsx in _document | `manual` | — | `next/recommended` |
+| [`next/no-sync-scripts`](next/no-sync-scripts.md) | No synchronous scripts | `manual` | — | `next/recommended` |
+| [`next/no-title-in-document-head`](next/no-title-in-document-head.md) | No title in _document's Head | `manual` | — | `next/recommended` |
+| [`next/no-typos`](next/no-typos.md) | Data-fetching functions are spelled right | `manual` | — | `next/recommended` |
+| [`next/no-unwanted-polyfillio`](next/no-unwanted-polyfillio.md) | No polyfill.io | `manual` | — | `next/recommended` |
 
 ## python
 

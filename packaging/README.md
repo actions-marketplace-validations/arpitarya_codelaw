@@ -27,7 +27,7 @@ codelaw's exact version: `npm i -D @codelaw/skills` or `pip install codelaw-skil
 
 | registry | named | packs |
 |---|---|---|
-| npm | `@codelaw/rules-<name>` | `js` · `ts` · `react` · `node` · `stencil` · `html` · `css` · `scss` · `css-modules` · `data` · `tanstack-query` · `redux-toolkit` · `security-js` · `security-ts` · `security-html` · `spell` · `deps` |
+| npm | `@codelaw/rules-<name>` | `js` · `ts` · `react` · `node` · `stencil` · `html` · `css` · `scss` · `css-modules` · `data` · `tanstack-query` · `redux-toolkit` · `security-js` · `security-ts` · `security-html` · `spell` · `deps` · `nextjs` |
 | PyPI | `codelaw-rules-<name>` | `js` · `react` · `html` · `css` · `scss` · `python` · `data` · `security-js` · `security-html` · `security-python` · `spell` · `deps` |
 
 <!-- /docs-sync:registries -->
