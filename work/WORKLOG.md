@@ -48,6 +48,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** none.
 - **Next:** W-164's rewrite.
 
+## 2026-11-05 — W-161 and W-163 researched; W-161 closed; three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research w-161, w-163"*
+- **Done:** two proposals, `work/proposals/fix-capabilities.md` and `work/proposals/save-behaviour-and-targets.md`. W-161 closed and archived: 151 waiting rules, of which 112 move with six capabilities and 37 are re-judged `manual`; build order in the proposal. W-162 is red on the multi-file call; W-163 is red on its proposal and its two calls.
+- **Decided / left open:** nothing ruled. Inbox: W-162's multi-file fixes (L4 10, 12); W-163's proposal, its browser table and the two `auto` Python rules with a floor.
+- **Mistakes:** the Mac dropped off the bridge mid-research; the drafts waited in Cowork until it was back.
+- **Next:** the decider rules the three calls.
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*
