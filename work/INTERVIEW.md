@@ -140,6 +140,8 @@ checkout.
 
 ## 2 · In flight, and the immediate next step
 
+**Researched 2026-11-05 (Cowork):** W-161 is closed. 151 rules wait on a fix capability: 112 move with six capabilities, built by W-162 in the order in `work/proposals/fix-capabilities.md`, and 37 are re-judged `manual`. W-163's proposal is `work/proposals/save-behaviour-and-targets.md`. **Inbox:** W-162's multi-file fixes and W-163's proposal with its two calls.
+
 **Ruled 2026-11-05 (Claude app, voice; filed on *"file it."*):** positioning — lead *"Your team's rules, enforced on every AI edit"*, then deterministic and the same with no AI (W-164). Every pack is still built (W-139, W-141, W-143, W-145), pausing refused; **W-102 runs only after W-139**; rework measurement is B-072.
 
 **Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. **W-139** — no manual ceiling at all: L4 decision 6 retired; W-139 removes `packs/fix-ladder.toml` and lands its 231 held ports. **W-141** — Oxc's formatter crates ratified (L11 D-52); W-141 builds them. **W-156** — closes once only the ~119 capability-blocked rules are left, their `fix_pending:` naming W-162 (L4 decision 5 amended); **W-161** researches the six capabilities, **W-162** builds them (🟡 on W-161); **W-163** researches per-rule save/agent-hook behaviour and target versions, configurable, with defaults. **Next for an agent (🟢):** W-139 step 2a, W-141's Oxc build, W-156's moves.
