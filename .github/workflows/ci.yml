@@ -290,8 +290,12 @@ jobs:
     # 2026-10-30). Nothing `needs` this job. A gated group (a set budget)
     # fails the run on a breach — L8 decision 7 — and so publish.yml's gate;
     # an ungated one is `continue-on-error` and holds neither.
+    # `needs: build` waits for all eight legs, but only linux-x64-gnu's binary
+    # is used: another platform's failure does not skip the measurement (run
+    # 42053047689: linux-arm64-musl red, perf skipped). With no linux-x64-gnu
+    # artifact the download fails, and the run is red already.
     needs: [perf-plan, build]
-    if: needs.perf-plan.outputs.run == 'true'
+    if: ${{ !cancelled() && needs.perf-plan.outputs.run == 'true' }}
     name: perf ${{ matrix.group }}
     runs-on: ubuntu-24.04 # L8 reference machine (the decider, 2026-10-24); never ubuntu-latest
     timeout-minutes: 20
