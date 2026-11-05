@@ -24,7 +24,7 @@ entry.**
 
 ## 1 · State of play
 
-**Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (`demo/W-45…`, `keep/W-70/71/73…`, `lm/W-82`, six `lm/handoff-*`, `lm/save-20261029-214816`). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)
+**Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (a demo, three `keep/` Fux-index branches, eight stale `lm/` handoff and save branches; listed in the item). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)
 
 **Built and closed 2026-10-30 (Claude Code): W-129** — `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` (SR-RULE-PACKS decision 15). Found on the way: the engine keeps one finding per rule and span, so `deps/vulnerable`'s transitive findings (all on the manifest's first line) collapse to the first — `deps/licence` reports its transitive ones as one listing finding; `deps/vulnerable` is unchanged and needs the same treatment.
 
