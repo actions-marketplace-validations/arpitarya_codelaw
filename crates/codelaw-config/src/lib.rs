@@ -12,7 +12,7 @@ mod scope;
 mod trace;
 
 pub use packs::{PACK_REGISTRIES, PacksSetting, RawPacks, Registry, venv_site_packages};
-pub use raw::{DEFAULT_OSV_URL, SPELL_WORDS_FILE, RawConfig, RawCoverage, RawCoverageIgnore, RawOverride, RawProfile, RawScope, RuleSetting, ScopeMap};
+pub use raw::{OnMissing, RawProviderTailwind, RawProviders, DEFAULT_OSV_URL, SPELL_WORDS_FILE, RawConfig, RawCoverage, RawCoverageIgnore, RawOverride, RawProfile, RawScope, RuleSetting, ScopeMap};
 pub use resolve::{RENAMED_RULES, Config, PresetScope, ScopeInfo, ConfigFile, DEFAULT_EXCLUDES, words_file_words, Home, Layer, Profile, ProfileChoice, Remap, RuleConfig, find_config, find_config_with, load_file};
 pub use scope::check_scope_name;
 pub use trace::{TraceEnv, Traced};
