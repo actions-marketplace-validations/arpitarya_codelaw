@@ -3,7 +3,7 @@ type: Standing Record
 kind: law
 name: SR-LAW-6
 title: "SR-LAW-6 (0008) — L6 — one release, two packages: PyPI and npm"
-description: "codelaw ships as a Python package and a Node package, released together under one version, each a complete engine, with its rules as twenty-seven packs — twenty on npm, eighteen on PyPI, each registry carrying the packs its users install, a pack's data table optionally built from the project by its own npm-only provider, and each pack with an optional Fux index package that is never installed by default; every agent-facing file ships apart from the engine as the skills package, @codelaw/skills and codelaw-skills, which depends on codelaw at the exact same version; both engines produce byte-identical results."
+description: "codelaw ships as a Python package and a Node package, released together under one version, each a complete engine, with its rules as twenty-seven packs — twenty on npm, eighteen on PyPI, each registry carrying the packs its users install, a pack's data table optionally built from the project by its own npm-only provider, and each pack with an optional Fux index package that is never installed by default; every agent-facing file ships apart from the engine as the skills package, @codelaw/skills and codelaw-skills, which depends on codelaw at the exact same version; both engines produce byte-identical results; tables that change on the world's schedule ship as data packages on both registries, on their own version line."
 status: accepted
 date: 2026-10-18
 feature: "how codelaw is packaged and released"
@@ -106,8 +106,8 @@ flowchart LR
 
 10. **Package names.**
     - **npm:** exactly one unscoped package, `codelaw`. Everything else lives under the `@codelaw` scope, for example the per-platform binaries `@codelaw/cli-<os>-<arch>` and the rule packs `@codelaw/rules-<name>` ([SR-PACKAGES](0107_packages.md)).
-    - **PyPI:** one engine distribution, `codelaw`, whose platform builds are wheels of it, plus the twelve rule packs `codelaw-rules-<name>` (decision 11), their optional index packages `codelaw-rules-<name>-fux-index` (decision 12) and the skills package `codelaw-skills` (decision 13). PyPI has no scopes, so no other codelaw distribution is published.
-    - **npm**'s skills package is `@codelaw/skills` (decision 13).
+    - **PyPI:** one engine distribution, `codelaw`, whose platform builds are wheels of it, plus the twelve rule packs `codelaw-rules-<name>` (decision 11), their optional index packages `codelaw-rules-<name>-fux-index` (decision 12) and the skills package `codelaw-skills` (decision 13). and the data packages `codelaw-data-<name>` (decision 15). PyPI has no scopes, so no other codelaw distribution is published.
+    - **npm**'s skills package is `@codelaw/skills` (decision 13), and its data packages are `@codelaw/data-<name>` (decision 15).
     - The `@codelaw` npm organisation, the `codelaw` names on both registries and the twelve `codelaw-rules-<name>` names on PyPI are reserved before the first release; each `-fux-index` name is reserved before the release that first publishes it.
 11. **Rule packs** ([SR-RULE-PACKS](0101_rule-packs.md)). **Ruled by Arpit, 2026-10-19** (five packs on both registries); **amended 2026-10-24** (W-31; and W-32, two npm-only library packs), **2026-10-25** (W-53, four security packs), **2026-10-26** (W-62, the `scss` pack; W-63, the npm-only `css-modules` pack), **2026-10-27** (W-103, the `spell` pack on both), **2026-10-29** (W-128, the `deps` pack on both) and **2026-10-30** (W-144, ruled by voice: *"The next JS pack. Let's create it."* — the npm-only `nextjs` pack, built by W-139; and W-138, ruled the same day: *"Let's build the 39 ones."* and *"Give each framework its own pack."* — five PyPI-only framework packs, `django`, `fastapi`, `airflow`, `numpy`, `pandas`, built by W-139; and W-144's *"Let's create it."* — the npm-only `testing` pack for Jest, Vitest, Testing Library and Playwright, built by W-139 under the namespace `testing`, the coordinator's call, reversible by rename under W-142):
 
@@ -155,6 +155,18 @@ flowchart LR
 
     - **Its own package, never in an engine**, released at the release's version (decision 9). It runs on Node (decision 3's second exception).
     - **The pack depends on it, and names it:** `@codelaw/rules-<name>` depends on its provider at exactly the release's version (decision 4's exception; L11 D-51), and `providers = [...]` in its `codelaw-pack.toml` names it. A pack may depend on its own provider and on nothing else. The PyPI copy of the pack declares no dependency and holds the same files.
+
+15. **Data packages** (W-166; **ruled by Arpit, 2026-11-05**, voice: *"can we have it as a separate package"* · *"let's have a CI/CD pipeline to keep a check on it"* · on PyPI: *"yeah i do"*). A **data package** holds a table the engine reads that is codelaw's own but changes on the world's schedule, not codelaw's. Today there is one: the browser-support table, `data-browsers` ([SR-RULE-FORMAT](0112_rule-format.md) decision 2c).
+
+    | registry | name |
+    |---|---|
+    | npm | `@codelaw/data-<name>` — today `@codelaw/data-browsers` |
+    | PyPI | `codelaw-data-<name>` — today `codelaw-data-browsers` |
+
+    - **Data only:** JSON, its schema version and its NOTICE. No code, and no dependency (decision 4).
+    - **Its own version line**, the one exception to decision 1: the date of the data's last change, `YYYY.M.D`. It ships with every codelaw release, and between releases from its own workflow when a data change lands. The engine reads any version whose schema it knows. `--version --json` and the cache key name the version used ([L5](0007_LAW-5-no-model-in-the-engine.md) decision 2).
+    - **Optional:** neither `codelaw` package depends on it. A rule that needs it and does not find it says so, and keeps its lower rung.
+    - **Kept current by CI:** a scheduled workflow checks the browsers' releases weekly and opens a pull request naming the rows to review. The network is CI's, never the engine's (L5). Every row is written from the browser's own release notes or the specification, never copied from caniuse or MDN ([L2](0004_LAW-2-foss-dependencies.md)).
 
 #### How L6 is enforced
 
