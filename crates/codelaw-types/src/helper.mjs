@@ -350,13 +350,18 @@ function check(req) {
             const node = nodeAt(sf, s, e);
             return node ? yield* holds(checker, node, q) : null;
         });
-        // One batch: the file's questions advance together, each round of
-        // their calls sent as one request.
-        const out = { answers: asks.length ? api.batch(...asks) : [] };
+        // One batch: the file's questions, and its diagnostics when asked,
+        // advance together, each round of their calls sent as one request.
+        const program = project.program;
+        const want = req.diagnostics ? [program.getSyntacticDiagnostics.gen(file), program.getSemanticDiagnostics.gen(file)] : [];
+        const all = asks.length || want.length ? api.batch(...asks, ...want) : [];
+        const out = { answers: all.slice(0, asks.length) };
         if (req.diagnostics) {
             const toBytes = utf16ToByte(sf.text);
             const flat = (d) => (d.messageChain && d.messageChain.length ? [d.text, ...d.messageChain.map(flat)].join(" ") : d.text);
-            out.diagnostics = [...project.program.getSyntacticDiagnostics(file), ...project.program.getSemanticDiagnostics(file)]
+            out.diagnostics = all
+                .slice(asks.length)
+                .flat()
                 .filter((d) => d.category === 0 || d.category === 1)
                 .map((d) => ({
                     start: toBytes[Math.min(d.pos, sf.text.length)],
