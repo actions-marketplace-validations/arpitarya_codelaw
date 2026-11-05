@@ -4,7 +4,7 @@ title: "TypeScript's own errors"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "TypeScript 7.1's API offers no code fixes yet, so each error is fixed by hand"
-fix_pending: "suggest-choices; needs TS language-service code fixes"
+fix_pending: "suggest-choices; needs TS language-service code fixes (W-105)"
 stability: preview
 tags: [types]
 since: 0.3.0

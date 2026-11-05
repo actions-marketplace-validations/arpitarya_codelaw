@@ -4,7 +4,7 @@ title: "No UTF-8 byte-order mark"
 languages: [html]
 fix: manual
 fix_reason: "the mark is in the file's bytes, outside the text a fix can edit; the editor's encoding setting removes it"
-fix_pending: "auto-subset; needs byte-level-edit"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 ported_from: [html-validate/no-utf8-bom]
 since: 0.1.0

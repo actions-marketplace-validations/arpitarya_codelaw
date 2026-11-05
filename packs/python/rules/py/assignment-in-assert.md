@@ -4,7 +4,7 @@ title: "No walrus inside assert"
 languages: [python]
 fix: manual
 fix_reason: "the binding moves to its own statement before the assert"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [ruff/RUF018]
 since: 0.5.0

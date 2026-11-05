@@ -4,7 +4,7 @@ title: "CSS Module class names can be read as styles.name"
 languages: [css, scss]
 fix: manual
 fix_reason: "renaming a class must update every file that reads it"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 options:
   style: { type: "string", default: "camelCase", description: "`camelCase` (a name `styles.x` reaches without brackets), `kebab` (kebab-case) or `any` (no check)" }
 stability: preview

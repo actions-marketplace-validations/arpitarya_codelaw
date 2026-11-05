@@ -4,7 +4,7 @@ title: "No == between floats"
 languages: [python]
 fix: manual
 fix_reason: "`math.isclose` uses a tolerance, so values that compared unequal may compare equal"
-fix_pending: "suggest; needs add-import"
+fix_pending: "suggest; needs add-import (W-162)"
 stability: preview
 ported_from: [ruff/RUF069]
 since: 0.5.0

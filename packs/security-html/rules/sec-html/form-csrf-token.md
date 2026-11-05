@@ -4,7 +4,7 @@ title: "A POST form carries a CSRF token"
 languages: [html]
 fix: manual
 fix_reason: "which token the server checks depends on its framework"
-fix_pending: "suggest; needs cross-file"
+fix_exception: security
 stability: preview
 options:
   names: { type: "string[]", default: [], description: "extra names (field names or template tags) that count as a CSRF token, besides csrf, xsrf, authenticity_token, antiforgery, csrfmiddlewaretoken, __requestverificationtoken and _token" }

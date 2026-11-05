@@ -4,7 +4,7 @@ title: "A loop that only reads arr[i] is a for-of"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "value: the loop variable needs a name the code does not contain"
-fix_pending: "suggest; needs scope-rename"
+fix_pending: "suggest; needs scope-rename (W-162)"
 stability: preview
 ported_from: [typescript-eslint/prefer-for-of]
 since: 0.5.0

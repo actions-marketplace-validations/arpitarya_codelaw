@@ -4,7 +4,7 @@ title: "Flag tags like @private carry no text"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to the description)"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/empty-tags]
 since: 0.5.0

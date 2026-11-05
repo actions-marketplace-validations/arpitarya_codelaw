@@ -4,7 +4,7 @@ title: "a ||= b rather than a = a || b"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the operator of the rewrite depends on which of three patterns matched"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/logical-assignment-operators, eslint-plugin-unicorn/logical-assignment-operators]
 since: 0.5.0

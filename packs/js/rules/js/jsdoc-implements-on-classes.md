@@ -4,7 +4,7 @@ title: "@implements only on classes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the tag moves to the class that implements the interface, or is removed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/implements-on-classes]
 since: 0.5.0

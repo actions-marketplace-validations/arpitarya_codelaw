@@ -4,7 +4,7 @@ title: "for…of rather than forEach"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a `return` in the callback becomes `continue`, and an index parameter becomes `.entries()`"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-for-each]
 since: 0.5.0

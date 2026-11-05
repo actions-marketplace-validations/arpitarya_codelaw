@@ -4,7 +4,7 @@ title: "Mutable class attribute is ClassVar"
 languages: [python]
 fix: manual
 fix_reason: "the fix needs `ClassVar` imported, and whether sharing was meant is the author's"
-fix_pending: "suggest; needs add-import"
+fix_pending: "suggest; needs add-import (W-162)"
 stability: preview
 ported_from: [ruff/RUF012]
 since: 0.5.0

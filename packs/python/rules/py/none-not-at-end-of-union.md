@@ -4,7 +4,7 @@ title: "None goes last in a union"
 languages: [python]
 fix: manual
 fix_reason: "reordering a union of more than two members is left to the author"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [ruff/RUF036]
 since: 0.5.0

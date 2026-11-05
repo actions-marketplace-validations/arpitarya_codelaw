@@ -4,7 +4,7 @@ title: "Use dataset for data- attributes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/dom-node-dataset]
 since: 0.5.0

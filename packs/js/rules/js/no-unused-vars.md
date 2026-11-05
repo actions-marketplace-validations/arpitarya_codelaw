@@ -4,7 +4,7 @@ title: "Every declared name is used"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "removing a declaration can drop the side effects of its initialiser"
-fix_pending: "auto-subset; needs purity"
+fix_pending: "auto-subset; needs purity (W-162)"
 stability: preview
 options:
   vars: { type: string, default: all, description: "all, or local to skip module-level names" }

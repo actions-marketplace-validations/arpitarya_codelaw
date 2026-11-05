@@ -4,7 +4,7 @@ title: "Layer names are kebab-case"
 languages: [css, scss]
 fix: manual
 fix_reason: "renaming must update every use of the layer"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: stable
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)([.-][a-z0-9]+)*$", description: "a regular expression names must match" }

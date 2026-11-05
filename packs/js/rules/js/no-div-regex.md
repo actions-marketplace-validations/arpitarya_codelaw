@@ -4,7 +4,7 @@ title: "No regex starting with ="
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the edit inside the pattern is not a template edit"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/no-div-regex]
 since: 0.5.0

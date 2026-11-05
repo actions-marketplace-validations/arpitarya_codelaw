@@ -4,7 +4,7 @@ title: "Template literal rather than string concatenation"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "escaping the parts into one template literal is a computed edit"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/prefer-template]
 since: 0.5.0

@@ -4,7 +4,7 @@ title: "=== rather than =="
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/eqeqeq]
 since: 0.5.0

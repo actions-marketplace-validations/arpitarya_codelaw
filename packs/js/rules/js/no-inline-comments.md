@@ -4,7 +4,7 @@ title: "Comments on their own line"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving the comment above the code is a cross-line edit"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/no-inline-comments]
 since: 0.5.0
