@@ -2,9 +2,8 @@
 id: pandas/pandas-use-of-inplace-argument
 title: "No inplace=True"
 languages: [python]
-fix: manual
-fix_reason: "the call must become an assignment of its result, which changes the statement"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the statement becomes an assignment of the result, so other references to the object no longer see the change; the reviewer confirms (offered for a call on a plain name used as a statement)"
 stability: preview
 ported_from: [ruff/PD002]
 since: 0.5.0
@@ -19,7 +18,24 @@ match:
   kind: keyword_argument
   regex: '^inplace\s*=\s*True$'
   inside: { kind: module, stopBy: end, has: { any: [{kind: import_statement}, {kind: import_from_statement}], regex: '^(import|from)\s+pandas\b' } }
+  any:
+    - all:
+        - pattern: $K
+        - inside:
+            kind: argument_list
+            stopBy: neighbor
+            inside:
+              kind: call
+              stopBy: neighbor
+              all:
+                - pattern: $C
+                - has: { field: function, kind: attribute, has: { field: object, kind: identifier, pattern: $D } }
+              inside: { kind: expression_statement, stopBy: neighbor }
+    - kind: keyword_argument
 message: "Assign the result instead of passing `inplace=True`"
+fix:
+  - remove: $K
+  - insert-before: { target: $C, text: "$D = " }
 ```
 
 ## How to fix

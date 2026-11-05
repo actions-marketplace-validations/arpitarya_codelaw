@@ -71962,7 +71962,7 @@ x = np.nan
 ## `pandas/pandas-nunique-constant-series-check` — No nunique() to test a constant series
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the faster check is written by hand)
+- **Fix:** `suggest` (the replacement reads the first value and compares it with the rest; the reviewer confirms how an empty series and NaN should count)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-nunique-constant-series-check.md
 
@@ -72201,7 +72201,7 @@ wide = df.pivot_table(index='d', columns='k', values='v', aggfunc='sum')
 ## `pandas/pandas-use-of-dot-read-table` — read_csv, not read_table
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the separator argument has to be added)
+- **Fix:** `auto` (auto when the call passes no separator of its own (no `sep`, `delimiter`, `delim_whitespace`, second positional or splat); a call that does is reported as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-read-table.md
 
@@ -72302,7 +72302,7 @@ arr = df['a'].to_numpy()
 ## `pandas/pandas-use-of-inplace-argument` — No inplace=True
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the call must become an assignment of its result, which changes the statement)
+- **Fix:** `suggest` (the statement becomes an assignment of the result, so other references to the object no longer see the change; the reviewer confirms (offered for a call on a plain name used as a statement))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-inplace-argument.md
 
