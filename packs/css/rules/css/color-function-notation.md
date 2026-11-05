@@ -2,8 +2,9 @@
 id: css/color-function-notation
 title: "Space-separated colour functions"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers before 2018 understand only the comma syntax"
+fix: auto
+fix_target: { browsers: "css-color:space-separated-functions" }
+fix_reason: "browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 ported_from: [stylelint/color-function-notation]
 since: 0.1.0

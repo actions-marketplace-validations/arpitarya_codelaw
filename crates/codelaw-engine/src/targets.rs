@@ -44,6 +44,18 @@ pub(crate) fn at_least(a: &[u64], b: &[u64]) -> bool {
     true
 }
 
+/// `text[start..end]` with the edits inside it applied, lowercased: the
+/// `$FIXED` of a `browsers` feature id.
+pub(crate) fn fixed_text(text: &str, start: usize, end: usize, edits: &[codelaw_core::TextEdit]) -> String {
+    let mut inside: Vec<&codelaw_core::TextEdit> = edits.iter().filter(|e| e.start >= start && e.end <= end).collect();
+    inside.sort_by_key(|e| std::cmp::Reverse(e.start));
+    let mut s = text.get(start..end).unwrap_or_default().to_owned();
+    for e in inside {
+        s.replace_range(e.start - start..e.end - start, &e.text);
+    }
+    s.trim().to_ascii_lowercase()
+}
+
 /// The folders from `abs`'s up to the project root, nearest first.
 fn upward<'a>(abs: &'a Path, root: &'a Path) -> impl Iterator<Item = &'a Path> + 'a {
     abs.ancestors().skip(1).take_while(move |d| d.starts_with(root))
@@ -146,7 +158,10 @@ impl Project {
     /// Whether `rule`'s `auto` fix may stay `auto` in `entry`: `Err` is
     /// the note of a finding that drops to `suggest`, naming the line that
     /// would make it `auto` (SR-RULE-FORMAT decision 2c).
-    pub(crate) fn target_gate(&self, entry: &FileEntry, rule: &str, target: &FixTarget) -> Result<(), String> {
+    /// A `browsers` feature id may hold `$FIXED`: the finding's text with its
+    /// own edits applied, lowercased (`css-property:$FIXED` is
+    /// `css-property:appearance` for `-webkit-appearance`).
+    pub(crate) fn target_gate(&self, entry: &FileEntry, rule: &str, target: &FixTarget, fixed: &dyn Fn() -> String) -> Result<(), String> {
         match target {
             FixTarget::Python(need) => {
                 let need_s = dotted(need);
@@ -158,6 +173,7 @@ impl Project {
                 }
             }
             FixTarget::Browsers(feature) => {
+                let feature = &if feature.contains("$FIXED") { feature.replace("$FIXED", &fixed()) } else { feature.clone() };
                 let got = self.browsers_target(&entry.abs, Some(rule));
                 let Some(browsers) = got.value else {
                     return Err(format!("fix-target: this fix needs the browsers that support `{feature}` unprefixed, and the target is {}; `[targets] browsers = [\"chrome >= …\", …]` in codelaw.toml makes it `auto`", got.source));

@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
-### build (7)
+### build (6)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -43,7 +43,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. 37 re-judged by W-156. Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
-🟢 **W-166** `agent` Build W-163's save-and-targets design ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Steps 0–2 ✅ (`on_edit`, `[targets]`). Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 
 
 ### ci/cd (4)

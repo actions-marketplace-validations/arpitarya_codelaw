@@ -558,7 +558,7 @@ eslint-plugin-css-modules's `no-unused-class` reads one JS file against its styl
 ## `css/alpha-value-notation` — Alpha values are percentages
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (old browsers accept only numbers for alpha in `rgba()`)
+- **Fix:** `auto` (old browsers accept only numbers for alpha in `rgba()`; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/alpha-value-notation.md
 
@@ -1078,7 +1078,7 @@ On `.scss` files `scss/at-rule-no-unknown` takes this rule's place: it knows Sas
 ## `css/at-rule-no-vendor-prefix` — No vendor-prefixed at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the rule)
+- **Fix:** `auto` (browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-no-vendor-prefix.md
 
@@ -1340,7 +1340,7 @@ a {
 ## `css/color-function-alias-notation` — `rgb()` and `hsl()`, not `rgba()` and `hsla()`
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers before 2018 ignore an alpha channel in `rgb()`)
+- **Fix:** `auto` (browsers before 2018 ignore an alpha channel in `rgb()`; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/color-function-alias-notation.md
 
@@ -1395,7 +1395,7 @@ Ported with stylelint-config-standard's setting, `without-alpha`.
 ## `css/color-function-notation` — Space-separated colour functions
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers before 2018 understand only the comma syntax)
+- **Fix:** `auto` (browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/color-function-notation.md
 
@@ -1719,7 +1719,7 @@ a {
 ## `css/comment-no-empty` — No empty comments
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/comment-no-empty.md
 
@@ -6023,7 +6023,7 @@ Two rules in the same at-rule context do not have the same selector list (order 
 ## `css/no-empty-block` — No empty blocks
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-empty-block.md
 
@@ -6875,7 +6875,7 @@ a {
 ## `css/property-no-deprecated` — No deprecated properties
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (older browsers may support only the deprecated name)
+- **Fix:** `auto` (older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/property-no-deprecated.md
 
@@ -6931,7 +6931,7 @@ a {
 ## `css/property-no-vendor-prefix` — No vendor-prefixed properties
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the declaration)
+- **Fix:** `auto` (browsers that need the prefix lose the declaration; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/property-no-vendor-prefix.md
 
@@ -8743,7 +8743,7 @@ A compound selector doesn't name two ids, two types, or anything after a pseudo-
 ## `css/selector-no-vendor-prefix` — No vendor-prefixed selectors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the rule)
+- **Fix:** `auto` (browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-no-vendor-prefix.md
 
@@ -10065,7 +10065,7 @@ a {
 ## `css/value-no-vendor-prefix` — No vendor-prefixed values
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the value)
+- **Fix:** `auto` (browsers that need the prefix lose the value; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/value-no-vendor-prefix.md
 
@@ -33055,7 +33055,7 @@ const re = /\f/;
 ## `js/no-debugger` — No debugger statements
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a debugging aid put there on purpose while debugging, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-debugger.md
 
@@ -35088,7 +35088,7 @@ const { a = {} } = options;
 ## `js/no-empty-static-block` — No empty static blocks
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-empty-static-block.md
 
@@ -46982,7 +46982,7 @@ A default import or namespace import is reported on its name, and the fix remove
 ## `js/no-unused-labels` — Every label is used
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unused-labels.md
 
@@ -60035,7 +60035,7 @@ const re = /a*/;
 ## `js/regexp-no-unused-capturing-group` — No capturing group whose capture is never read
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/regexp` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/regexp-no-unused-capturing-group.md
 
@@ -75473,7 +75473,7 @@ class A:
 ## `py/empty-comment` — No empty comments
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/empty-comment.md
 
@@ -75551,7 +75551,7 @@ class Shape(ABC):
 ## `py/empty-type-checking-block` — No empty TYPE_CHECKING block
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/empty-type-checking-block.md
 
@@ -76070,7 +76070,7 @@ def greet():
 ## `py/f-string-missing-placeholders` — An f-string has a placeholder
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/f-string-missing-placeholders.md
 
@@ -76488,7 +76488,7 @@ msg = "done"
 ## `py/format-unused-named-argument` — Every keyword passed to `.format` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-unused-named-argument.md
 
@@ -76521,7 +76521,7 @@ The fix is offered only when the removed values are plain names or literals.
 ## `py/format-unused-positional-argument` — Every positional argument to `.format` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-unused-positional-argument.md
 
@@ -82263,7 +82263,7 @@ message = "%s" % (1,)
 ## `py/percent-format-unused-named-argument` — Every key given to `%` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-unused-named-argument.md
 
@@ -87563,7 +87563,7 @@ f = open("notes.txt", encoding="utf-8")
 ## `py/unused-annotation` — Every annotated local is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/unused-annotation.md
 
@@ -103050,7 +103050,7 @@ The pattern applies to declarations, not to the names in an `@each` or a mixin's
 ## `scss/double-slash-comment-empty` — No empty `//` comments
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/double-slash-comment-empty.md
 

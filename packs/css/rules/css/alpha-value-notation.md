@@ -2,8 +2,9 @@
 id: css/alpha-value-notation
 title: "Alpha values are percentages"
 languages: [css, scss]
-fix: suggest
-fix_reason: "old browsers accept only numbers for alpha in `rgba()`"
+fix: auto
+fix_target: { browsers: "css-color:alpha-percentage" }
+fix_reason: "old browsers accept only numbers for alpha in `rgba()`; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   exceptProperties: { type: "string[]", default: ["opacity", "fill-opacity", "flood-opacity", "stop-opacity", "stroke-opacity"], description: "properties whose alpha is a number" }

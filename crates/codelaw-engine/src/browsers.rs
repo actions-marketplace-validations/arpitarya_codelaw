@@ -74,6 +74,17 @@ pub fn find(search: &PackSearch) -> Option<PathBuf> {
     })
 }
 
+/// The installed table's version and folder for the project around
+/// `start`, for `codelaw --version --json` (L6 decision 15); `None` when
+/// it is not installed or not read.
+pub fn installed(start: &Path, options: &crate::EngineOptions) -> Option<(String, PathBuf)> {
+    let start = std::fs::canonicalize(start).unwrap_or_else(|_| start.to_path_buf());
+    let config = codelaw_config::find_config(&start).ok()?;
+    let dir = find(&crate::pack_search(&config, options))?;
+    let table = BrowserTable::parse(&std::fs::read_to_string(dir.join(TABLE_FILE)).ok()?, &dir).ok()?;
+    Some((table.version, dir))
+}
+
 impl Project {
     /// The browser-support table, when its package is installed; a table
     /// that cannot be read is a warning and no table.

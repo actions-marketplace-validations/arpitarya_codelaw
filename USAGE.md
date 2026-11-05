@@ -250,7 +250,7 @@ files = ["legacy/**"]
 targets = { python = "3.8" }                         # a scope's is over [targets]; a rule entry's `targets` over both
 ```
 
-Browsers are `chrome`, `edge`, `firefox`, `safari`, `ios_saf` and `samsung`. A `browserslist` in `package.json` or `.browserslistrc` counts only when every query is `<browser> >= <version>`. `codelaw config --print` shows `targets.python` and `targets.browsers` with their source; `codelaw migrate ruff` copies Ruff's `target-version` ([SR-CONFIG](records/0110_config.md) decision 11f).
+Browsers are `chrome`, `edge`, `firefox`, `safari`, `ios_saf` and `samsung`. A `browserslist` in `package.json` or `.browserslistrc` counts only when every query is `<browser> >= <version>`. CSS prefix and colour-notation fixes also need codelaw's browser-support table, an optional package: `npm install -D @codelaw/data-browsers` or `pip install codelaw-data-browsers`; a feature it has no row for stays a suggestion. `codelaw config --print` shows `targets.python` and `targets.browsers` with their source; `codelaw migrate ruff` copies Ruff's `target-version` ([SR-CONFIG](records/0110_config.md) decision 11f).
 
 ### Saying why a rule is off
 

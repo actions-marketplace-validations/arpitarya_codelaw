@@ -178,7 +178,7 @@ aliases.
 
 ## 3 · Two calls for the decider
 
-**Ruled 2026-11-05:** both as recommended; the table ships as its own data package on npm and PyPI ([L6](../../records/0008_LAW-6-python-and-node-packages.md) decision 15), with a weekly CI check. Built by [W-166](../open/W-166-save-behaviour-and-targets-build.md).
+**Ruled 2026-11-05:** both as recommended; the table ships as its own data package on npm and PyPI ([L6](../../records/0008_LAW-6-python-and-node-packages.md) decision 15), with a weekly CI check. Built by [W-166](../../archive/open/W-166-save-behaviour-and-targets-build.md).
 
 ### 3.1 · The browser-support table
 

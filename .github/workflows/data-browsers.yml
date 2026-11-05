@@ -1,0 +1,76 @@
+# data-browsers — codelaw's browser-support table kept current (L6 decision
+# 15; SR-RULE-FORMAT decision 2c; W-166). Weekly, and by hand:
+#
+#     gh workflow run data-browsers.yml -R arpitarya/codelaw
+#
+# `scripts/data-browsers-check.py --review` reads each browser's current
+# stable release from its vendor (Chrome's release dashboard, Mozilla's
+# product details, WebKit's blog feed) and writes the rows to review into
+# data-packages/browsers/REVIEW.md: every row that leaves a browser out, and
+# the releases since the table's version date. When that file changes, it is
+# committed on `data/browsers-review` and proposed as ONE pull request for a
+# person to read the release notes and edit the rows, each with its source.
+# Nothing is copied from caniuse or MDN (L2). The network is this job's,
+# never the engine's (L5).
+#
+# 🔑 Token: GITHUB_TOKEN only.
+# ⚠ `gh pr create` needs *Allow GitHub Actions to create and approve pull
+#   requests* (Settings → Actions → General) — the decider's, as for fux-bump.
+#
+# Every `run:` is `bash -eo pipefail`; every action is pinned by commit SHA.
+# No third-party action or package (L11): `gh`, `git` and the
+# standard-library Python on the runner, and actions ci.yml already pins.
+name: data-browsers
+on:
+  schedule:
+    - cron: '0 5 * * 1' # Mondays, 10:30 IST
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: data-browsers
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push data/browsers-review
+      pull-requests: write # open or update its one PR
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: the table is well-formed and cites its sources
+        run: python3 scripts/data-browsers-check.py --check
+      - name: the rows to review
+        run: python3 scripts/data-browsers-check.py --review data-packages/browsers/REVIEW.md
+      - name: one pull request naming them
+        run: |
+          if git diff --quiet -- data-packages/browsers/REVIEW.md && git ls-files --error-unmatch data-packages/browsers/REVIEW.md >/dev/null 2>&1; then
+            echo "nothing new to review" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          branch=data/browsers-review
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -q -c "$branch"
+          git add data-packages/browsers/REVIEW.md
+          printf 'W-166: the browser-support table'"'"'s rows to review (data-browsers.yml)\n\nno SR affected\n' | git commit -q -F -
+          git push -q --force origin "HEAD:refs/heads/$branch"
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          { echo "The browser-support table's rows to review, found by [data-browsers.yml]($run_url) (L6 decision 15)."; echo; cat data-packages/browsers/REVIEW.md; } > "$RUNNER_TEMP/body.md"
+          pr="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md" >/dev/null
+            echo "updated #$pr" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh pr create --base main --head "$branch" --title "data-browsers: rows to review" --body-file "$RUNNER_TEMP/body.md" >> "$GITHUB_STEP_SUMMARY" || {
+              echo "::error title=data-browsers::gh pr create failed — 'Allow GitHub Actions to create and approve pull requests' (Settings → Actions → General) must be on. $branch is pushed."
+              exit 1
+            }
+          fi

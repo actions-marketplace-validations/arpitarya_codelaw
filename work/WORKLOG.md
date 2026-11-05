@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.
+- **Done:** `data-packages/browsers/` (7 rows, each browser only where a vendor source confirms it: chromestatus, Chrome blog, Bugzilla, WebKit blog), the engine's reader, `$FIXED` feature ids, eight CSS rules gated, `--version --json`, `data-browsers-check.py`, `data-browsers.yml`, CI lint step; W-166 archived.
+- **Decided / left open:** `css/media-feature-name-no-vendor-prefix` stays `manual` (its fix converts the value; `fix_target:` on `manual` is a load error). Publishing manifests wait on W-142's names; more rows — B-080.
+- **Mistakes:** none new.
+- **Next:** B-080 when W-142 reserves the names.
+
+---
+
 ## 2026-11-05 — W-166 step 2: `[targets]` and `fix_target:`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 2 — `[targets]` per project, scope and rule; `fix_target:`; the two lru_cache rules target-gated.

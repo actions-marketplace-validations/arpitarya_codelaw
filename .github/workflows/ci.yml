@@ -180,6 +180,8 @@ jobs:
         run: python3 scripts/docs-sync.py --check
       - name: the rule pages agree with the rule files (scripts/rule-docs.py; SR-WORK-REGISTRY)
         run: python3 scripts/rule-docs.py --check
+      - name: the browser-support table is well-formed and cites its sources (L6 decision 15, W-166)
+        run: python3 scripts/data-browsers-check.py --check
       - id: rustc # the pinned toolchain, read from the file — nothing is installed to learn it
         run: echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
       - id: verdict

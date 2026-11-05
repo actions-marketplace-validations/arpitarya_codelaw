@@ -2,8 +2,9 @@
 id: css/selector-no-vendor-prefix
 title: "No vendor-prefixed selectors"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers that need the prefix lose the rule"
+fix: auto
+fix_target: { browsers: "css-selector:$FIXED" }
+fix_reason: "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   ignoreSelectors: { type: "string[]", default: [], description: "selectors to accept; `/regex/` for a pattern" }

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/double-slash-comment-empty`, `stylelint-scss/comment-no-empty` |

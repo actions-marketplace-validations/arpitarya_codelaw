@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreProperties` |
-| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (older browsers may support only the deprecated name) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/property-no-deprecated` |

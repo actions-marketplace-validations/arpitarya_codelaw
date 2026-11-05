@@ -475,8 +475,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "old browsers accept only numbers for alpha in `rgba()`",
+   "fix": "auto",
+   "fix_reason": "old browsers accept only numbers for alpha in `rgba()`; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -888,8 +888,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the rule",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1091,8 +1091,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers before 2018 ignore an alpha channel in `rgb()`",
+   "fix": "auto",
+   "fix_reason": "browsers before 2018 ignore an alpha channel in `rgb()`; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1137,8 +1137,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers before 2018 understand only the comma syntax",
+   "fix": "auto",
+   "fix_reason": "browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1402,7 +1402,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4295,7 +4295,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -5017,8 +5017,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "older browsers may support only the deprecated name",
+   "fix": "auto",
+   "fix_reason": "older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -5069,8 +5069,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the declaration",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the declaration; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -6413,8 +6413,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the rule",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -7485,8 +7485,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the value",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the value; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -21991,7 +21991,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a debugging aid put there on purpose while debugging, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -23122,7 +23122,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -29789,7 +29789,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -37664,7 +37664,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -49850,7 +49850,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -49934,7 +49934,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -50567,7 +50567,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51019,7 +51019,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51062,7 +51062,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -58189,7 +58189,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -64688,7 +64688,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -75284,7 +75284,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
