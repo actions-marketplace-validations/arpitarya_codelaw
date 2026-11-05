@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which language the code is in can't always be told from the code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD040` |
@@ -133,6 +133,30 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 
 ````md
 ```
+npm install codelaw
+```
+````
+
+#### Fixed (plain text)
+
+````md
+```text
+npm install codelaw
+```
+````
+
+#### Fixed (shell)
+
+````md
+```sh
+npm install codelaw
+```
+````
+
+#### Fixed (json)
+
+````md
+```json
 npm install codelaw
 ```
 ````

@@ -1282,7 +1282,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`json/tsconfig-strict`](json/tsconfig-strict.md) | tsconfig.json turns on strict mode | `suggest` | — | `data/tsconfig` |
 | [`md/commands-show-output`](md/commands-show-output.md) | No $ before shell commands that show no output | `auto` | — | `md/recommended` |
 | [`md/descriptive-link-text`](md/descriptive-link-text.md) | Link text says where the link goes | `manual` | `prohibited_texts` | `md/recommended` |
-| [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `manual` | — | `md/recommended` |
+| [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `suggest` | — | `md/recommended` |
 | [`md/first-line-heading`](md/first-line-heading.md) | A document starts with its title heading | `manual` | `level`, `allow_preamble` | `md/recommended` |
 | [`md/heading-increment`](md/heading-increment.md) | Heading levels go down one at a time | `suggest` | — | `md/recommended` |
 | [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `manual` | `ignore_case` | `md/recommended` |
@@ -1293,7 +1293,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/no-blanks-blockquote`](md/no-blanks-blockquote.md) | No blank line inside a blockquote | `suggest` | — | `md/recommended` |
 | [`md/no-duplicate-heading`](md/no-duplicate-heading.md) | No two sibling headings with the same text | `manual` | `siblings_only` | `md/recommended` |
 | [`md/no-emphasis-as-heading`](md/no-emphasis-as-heading.md) | Headings are headings, not bold lines | `manual` | `punctuation` | `md/recommended` |
-| [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `manual` | — | `md/recommended` |
+| [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `suggest` | — | `md/recommended` |
 | [`md/no-inline-html`](md/no-inline-html.md) | No raw HTML in Markdown | `manual` | `allowed_elements` | `data/conventions` |
 | [`md/no-reversed-links`](md/no-reversed-links.md) | Links are written \[text\](url), not (text)\[url\] | `auto` | — | `md/recommended` |
 | [`md/no-trailing-punctuation`](md/no-trailing-punctuation.md) | No punctuation at the end of a heading | `auto` | `punctuation` | `md/recommended` |

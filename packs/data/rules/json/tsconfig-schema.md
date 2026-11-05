@@ -5,7 +5,7 @@ languages: [json]
 files: ["**/tsconfig.json", "**/tsconfig.*.json"]
 fix: manual
 fix_reason: "a misspelt or misshapen option has several possible meanings; the author picks the one they intended"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [schemastore/tsconfig.json]
 since: 0.1.0

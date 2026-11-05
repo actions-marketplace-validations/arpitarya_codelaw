@@ -66117,7 +66117,7 @@ For details, see [the setup guide](docs/setup.md).
 ## `md/fence-language` — Fenced code blocks name their language
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which language the code is in can't always be told from the code)
+- **Fix:** `suggest` (the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/fence-language.md
 
@@ -66140,6 +66140,30 @@ A fenced code block names its language after the opening fence: ` ```ts `, ` ```
 
 ````md
 ```
+npm install codelaw
+```
+````
+
+##### Fixed (plain text)
+
+````md
+```text
+npm install codelaw
+```
+````
+
+##### Fixed (shell)
+
+````md
+```sh
+npm install codelaw
+```
+````
+
+##### Fixed (json)
+
+````md
+```json
 npm install codelaw
 ```
 ````
@@ -66593,7 +66617,7 @@ Run the installer.
 ## `md/no-empty-links` — Links have a destination
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (where the link should go needs the author)
+- **Fix:** `suggest` (unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-empty-links.md
 
@@ -66618,10 +66642,22 @@ A link has a destination: not `()`, `(<>)` or a bare `(#)`.
 See [the changelog]().
 ````
 
+##### Fixed
+
+````md
+See the changelog.
+````
+
 ##### Don't
 
 ````md
 See [the changelog](#).
+````
+
+##### Fixed
+
+````md
+See the changelog.
 ````
 
 ##### Do

@@ -5,7 +5,7 @@ languages: [json]
 files: ["**/package.json"]
 fix: manual
 fix_reason: "a value the schema rejects is wrong in a way only its author knows how to correct"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [schemastore/package.json]
 since: 0.1.0

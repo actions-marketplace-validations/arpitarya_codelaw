@@ -41686,8 +41686,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which language the code is in can't always be told from the code",
+   "fix": "suggest",
+   "fix_reason": "the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42271,8 +42271,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "where the link should go needs the author",
+   "fix": "suggest",
+   "fix_reason": "unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
