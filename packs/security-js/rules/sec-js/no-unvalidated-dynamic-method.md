@@ -2,9 +2,8 @@
 id: sec-js/no-unvalidated-dynamic-method
 title: "No method chosen by a request value"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which methods are allowed is a decision for the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an own-key check blocks prototype methods and keeps `this`, but the reviewer confirms the own keys are the ones meant to be callable"
 stability: preview
 ported_from: [eslint-plugin-security/detect-object-injection]
 security: { cwe: [470], owasp: ["A05:2025"], severity: high }
@@ -21,6 +20,7 @@ match:
 where:
   $K: { from_source: { tables: [sources/express, sources/koa, sources/nextjs] } }
 message: "`$K` comes from the request and chooses the method that is called"
+fix: "(Object.hasOwn($O, $K) ? $O[$K] : null).call($O, $$$ARGS)"
 ```
 
 ## How to fix
@@ -36,6 +36,12 @@ message: "`$K` comes from the request and chooses the method that is called"
 
 ```js
 handlers[req.query.action](req, res);
+```
+
+#### Fixed
+
+```js
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 #### Do
@@ -54,6 +60,12 @@ if (req.query.action === "list") {
 handlers[req.query.action](req, res);
 ```
 
+#### Fixed
+
+```jsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 #### Do
 
 ```jsx
@@ -70,6 +82,12 @@ if (req.query.action === "list") {
 handlers[req.query.action](req, res);
 ```
 
+#### Fixed
+
+```ts
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 #### Do
 
 ```ts
@@ -84,6 +102,12 @@ if (req.query.action === "list") {
 
 ```tsx
 handlers[req.query.action](req, res);
+```
+
+#### Fixed
+
+```tsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 #### Do

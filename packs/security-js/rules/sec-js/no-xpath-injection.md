@@ -4,7 +4,7 @@ title: "No XPath built from a template or concatenation"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "how a value is bound depends on the XPath library"
-fix_pending: "suggest"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 security: { cwe: [643], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

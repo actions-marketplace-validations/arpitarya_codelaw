@@ -1364,16 +1364,16 @@ Presets: `codelaw:sec-js/recommended` · `codelaw:sec-js/strict`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`sec-js/angularjs-sce-disabled`](sec-js/angularjs-sce-disabled.md) | No AngularJS strict contextual escaping switched off | `manual` | `sanitizers` | `sec-js/strict`, `sec-ts/strict` |
+| [`sec-js/angularjs-sce-disabled`](sec-js/angularjs-sce-disabled.md) | No AngularJS strict contextual escaping switched off | `suggest` | `sanitizers` | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/cookie-flags`](sec-js/cookie-flags.md) | A cookie sets httpOnly, secure and sameSite | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/express-hardening`](sec-js/express-hardening.md) | An Express app turns off x-powered-by or uses helmet | `suggest` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/express-session-secret`](sec-js/express-session-secret.md) | express-session has a secret from the environment and a secure cookie | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/graphql-hardening`](sec-js/graphql-hardening.md) | A GraphQL server limits query depth and cost, and hides introspection | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
-| [`sec-js/helmet-config`](sec-js/helmet-config.md) | helmet is not given false for a header it sets | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/jwt-verify`](sec-js/jwt-verify.md) | A JWT is verified with a named algorithm, never `none` | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/helmet-config`](sec-js/helmet-config.md) | helmet is not given false for a header it sets | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/jwt-verify`](sec-js/jwt-verify.md) | A JWT is verified with a named algorithm, never `none` | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/missing-rate-limit`](sec-js/missing-rate-limit.md) | A login or reset route has a rate limit | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-archive-slip`](sec-js/no-archive-slip.md) | No archive entry name written to disk unchecked | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-bad-tag-filter`](sec-js/no-bad-tag-filter.md) | No regular expression that filters HTML tags | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-bad-tag-filter`](sec-js/no-bad-tag-filter.md) | No regular expression that filters HTML tags | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-biased-random`](sec-js/no-biased-random.md) | No byte taken modulo a number that does not divide 256 | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-bidi-characters`](sec-js/no-bidi-characters.md) | No hidden bidirectional control characters in code | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-child-process-shell`](sec-js/no-child-process-shell.md) | No shell command built from a value | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
@@ -1388,46 +1388,46 @@ Presets: `codelaw:sec-js/recommended` · `codelaw:sec-js/strict`.
 | [`sec-js/no-format-string`](sec-js/no-format-string.md) | No request data as a format string | `suggest` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-hardcoded-crypto-key`](sec-js/no-hardcoded-crypto-key.md) | No key or IV written into the source | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-hardcoded-secret`](sec-js/no-hardcoded-secret.md) | No secret written into the source | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-header-injection`](sec-js/no-header-injection.md) | No response header value taken from a request | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-header-injection`](sec-js/no-header-injection.md) | No response header value taken from a request | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-incomplete-sanitization`](sec-js/no-incomplete-sanitization.md) | No escaping that stops at the first match, no one-pass stripping | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-incomplete-url-check`](sec-js/no-incomplete-url-check.md) | No URL checked with a substring test | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-incomplete-url-check`](sec-js/no-incomplete-url-check.md) | No URL checked with a substring test | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-insecure-random`](sec-js/no-insecure-random.md) | No Math.random for a token, a secret or a password | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-javascript-url`](sec-js/no-javascript-url.md) | No javascript: URL, no navigation to a URL taken from the address | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-jquery-html-sink`](sec-js/no-jquery-html-sink.md) | No jQuery call that parses a built string as HTML | `manual` | `sanitizers` | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-javascript-url`](sec-js/no-javascript-url.md) | No javascript: URL, no navigation to a URL taken from the address | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-jquery-html-sink`](sec-js/no-jquery-html-sink.md) | No jQuery call that parses a built string as HTML | `suggest` | `sanitizers` | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-ldap-injection`](sec-js/no-ldap-injection.md) | No LDAP filter built from a template or concatenation | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-llm-output-to-sink`](sec-js/no-llm-output-to-sink.md) | No model output run, written as HTML or used as SQL | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-log-injection`](sec-js/no-log-injection.md) | No request data written to a log unchanged | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
+| [`sec-js/no-log-injection`](sec-js/no-log-injection.md) | No request data written to a log unchanged | `suggest` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-mass-assignment`](sec-js/no-mass-assignment.md) | No request body written straight into a model | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-new-buffer`](sec-js/no-new-buffer.md) | No new Buffer, no noAssert | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-non-literal-fs-filename`](sec-js/no-non-literal-fs-filename.md) | No file path that is not a literal | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-non-literal-require`](sec-js/no-non-literal-require.md) | No require or import of a computed module name | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-nosql-injection`](sec-js/no-nosql-injection.md) | No request object passed straight to a query, no $where | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-open-redirect`](sec-js/no-open-redirect.md) | No redirect to an address taken from a request | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-open-redirect`](sec-js/no-open-redirect.md) | No redirect to an address taken from a request | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-path-traversal`](sec-js/no-path-traversal.md) | No file path taken from a request | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-prompt-injection`](sec-js/no-prompt-injection.md) | No request data in a model's system prompt | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-prototype-pollution`](sec-js/no-prototype-pollution.md) | No request value used as a key to write or merge | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-prototype-pollution`](sec-js/no-prototype-pollution.md) | No request value used as a key to write or merge | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-secret-in-log`](sec-js/no-secret-in-log.md) | No password, token or secret written to a log | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-sensitive-get-query`](sec-js/no-sensitive-get-query.md) | No password, token or secret read from the query string | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-server-env-in-client`](sec-js/no-server-env-in-client.md) | No server environment variable in a client component, no secret in a public one | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-sql-template`](sec-js/no-sql-template.md) | No SQL built from a template or concatenation | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-ssrf`](sec-js/no-ssrf.md) | No request made to an address taken from a request | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-ssti`](sec-js/no-ssti.md) | No template compiled from a request, no template data taken whole from a request | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-stack-trace-response`](sec-js/no-stack-trace-response.md) | No error object or stack trace in a response | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-stack-trace-response`](sec-js/no-stack-trace-response.md) | No error object or stack trace in a response | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-tls-bypass`](sec-js/no-tls-bypass.md) | No switching off of certificate checks | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-token-in-web-storage`](sec-js/no-token-in-web-storage.md) | No token kept in localStorage or sessionStorage | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-unsafe-deserialize`](sec-js/no-unsafe-deserialize.md) | No deserializer that builds objects or runs code | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-unsafe-regex`](sec-js/no-unsafe-regex.md) | No regular expression that can run for ever, no regular expression built from a request | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-unsanitized-html`](sec-js/no-unsanitized-html.md) | No HTML written from a value that is not a literal | `suggest` | `sanitizers` | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-unvalidated-dynamic-method`](sec-js/no-unvalidated-dynamic-method.md) | No method chosen by a request value | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-unvalidated-dynamic-method`](sec-js/no-unvalidated-dynamic-method.md) | No method chosen by a request value | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-user-controlled-auth-bypass`](sec-js/no-user-controlled-auth-bypass.md) | No privileged branch decided by a request value | `manual` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/no-weak-cipher`](sec-js/no-weak-cipher.md) | No createCipher, no DES, RC4, Blowfish or ECB | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/no-weak-hash`](sec-js/no-weak-hash.md) | No MD5 or SHA-1 | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/no-weak-hash`](sec-js/no-weak-hash.md) | No MD5 or SHA-1 | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-weak-key-size`](sec-js/no-weak-key-size.md) | No short RSA key, no weak elliptic curve | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-window-open-opener`](sec-js/no-window-open-opener.md) | No window.open without noopener | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-xpath-injection`](sec-js/no-xpath-injection.md) | No XPath built from a template or concatenation | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/no-xxe`](sec-js/no-xxe.md) | No XML entity expansion | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/password-hash-effort`](sec-js/password-hash-effort.md) | A password is stored with a slow, salted hash | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-js/postmessage-origin`](sec-js/postmessage-origin.md) | postMessage names its target, a message handler checks the sender | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-js/postmessage-origin`](sec-js/postmessage-origin.md) | postMessage names its target, a message handler checks the sender | `suggest` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-js/timing-safe-compare`](sec-js/timing-safe-compare.md) | A token, hash or signature is compared in constant time | `suggest` | — | `sec-js/strict`, `sec-ts/strict` |
 | [`sec-js/upload-limits`](sec-js/upload-limits.md) | multer has size limits and a file filter | `manual` | — | `sec-js/recommended`, `sec-js/strict`, `sec-ts/recommended`, `sec-ts/strict` |
 

@@ -2,9 +2,8 @@
 id: sec-js/no-header-injection
 title: "No response header value taken from a request"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "encoding or rejecting is a choice that depends on the header"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "encoding or stripping line breaks keeps the value out of the header structure, and the reviewer picks the one the header tolerates"
 stability: preview
 security: { cwe: [113], owasp: ["A05:2025"], severity: high }
 since: 0.3.0
@@ -30,6 +29,12 @@ match:
 where:
   $V: { from_source: { tables: [sources/express, sources/koa, sources/nextjs] } }
 message: "`$V` comes from the request and is written into a response header"
+fix:
+  choices:
+    - label: encode
+      fix: {replace: {target: $V, with: "encodeURIComponent(String($V))"}}
+    - label: strip line breaks
+      fix: {replace: {target: $V, with: 'String($V).replace(/[\r\n]/g, "")'}}
 ```
 
 ## How to fix
@@ -47,6 +52,18 @@ message: "`$V` comes from the request and is written into a response header"
 res.setHeader("X-Name", req.query.name);
 ```
 
+#### Fixed (encode)
+
+```js
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```js
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 #### Do
 
 ```js
@@ -59,6 +76,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```jsx
 res.setHeader("X-Name", req.query.name);
+```
+
+#### Fixed (encode)
+
+```jsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```jsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 #### Do
@@ -75,6 +104,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 res.setHeader("X-Name", req.query.name);
 ```
 
+#### Fixed (encode)
+
+```ts
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```ts
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 #### Do
 
 ```ts
@@ -87,6 +128,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```tsx
 res.setHeader("X-Name", req.query.name);
+```
+
+#### Fixed (encode)
+
+```tsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```tsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 #### Do

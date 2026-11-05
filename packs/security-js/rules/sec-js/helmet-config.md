@@ -2,9 +2,8 @@
 id: sec-js/helmet-config
 title: "helmet is not given false for a header it sets"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the header's directives should be is a decision for the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "deleting the `false` pair makes helmet fall back to its default for that header, which the reviewer checks against the app's inline scripts"
 stability: preview
 security: { cwe: [693], owasp: ["A02:2025"], severity: medium }
 since: 0.3.0
@@ -20,9 +19,12 @@ match:
     - pattern: helmet($$$ARGS)
     - has:
         kind: pair
+        pattern: $HDR
         stopBy: end
         regex: '^["'']?(contentSecurityPolicy|frameguard|hsts|noSniff|xssFilter|crossOriginOpenerPolicy|crossOriginEmbedderPolicy|crossOriginResourcePolicy|referrerPolicy)["'']?\s*:\s*false\s*$'
 message: "`helmet` is told not to send one of its headers"
+fix:
+  - remove: $HDR
 ```
 
 ## How to fix
@@ -40,6 +42,12 @@ message: "`helmet` is told not to send one of its headers"
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+#### Fixed
+
+```js
+app.use(helmet({  }));
+```
+
 #### Do
 
 ```js
@@ -52,6 +60,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 
 ```jsx
 app.use(helmet({ contentSecurityPolicy: false }));
+```
+
+#### Fixed
+
+```jsx
+app.use(helmet({  }));
 ```
 
 #### Do
@@ -68,6 +82,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+#### Fixed
+
+```ts
+app.use(helmet({  }));
+```
+
 #### Do
 
 ```ts
@@ -80,6 +100,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 
 ```tsx
 app.use(helmet({ contentSecurityPolicy: false }));
+```
+
+#### Fixed
+
+```tsx
+app.use(helmet({  }));
 ```
 
 #### Do

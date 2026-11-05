@@ -101922,7 +101922,7 @@ A `<script>` or `<link>` from another origin that has `integrity` also has `cros
 ## `sec-js/angularjs-sce-disabled` — No AngularJS strict contextual escaping switched off
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which sources the application loads from is a decision for the author)
+- **Fix:** `suggest` (switching `$sce` back on and narrowing the whitelist to `self` is fail-closed, but the reviewer adds the hosts the templates load from)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/strict` at `warn` · `codelaw:sec-ts/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/angularjs-sce-disabled.md
 
@@ -102410,7 +102410,7 @@ const server = new ApolloServer({
 ## `sec-js/helmet-config` — helmet is not given false for a header it sets
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the header's directives should be is a decision for the author)
+- **Fix:** `suggest` (deleting the `false` pair makes helmet fall back to its default for that header, which the reviewer checks against the app's inline scripts)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/helmet-config.md
 
@@ -102435,6 +102435,12 @@ const server = new ApolloServer({
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+##### Fixed
+
+```js
+app.use(helmet({  }));
+```
+
 ##### Do
 
 ```js
@@ -102447,6 +102453,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 
 ```jsx
 app.use(helmet({ contentSecurityPolicy: false }));
+```
+
+##### Fixed
+
+```jsx
+app.use(helmet({  }));
 ```
 
 ##### Do
@@ -102463,6 +102475,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+##### Fixed
+
+```ts
+app.use(helmet({  }));
+```
+
 ##### Do
 
 ```ts
@@ -102477,6 +102495,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+##### Fixed
+
+```tsx
+app.use(helmet({  }));
+```
+
 ##### Do
 
 ```tsx
@@ -102486,7 +102510,7 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 ## `sec-js/jwt-verify` — A JWT is verified with a named algorithm, never `none`
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the algorithm to name is the one the issuer signs with)
+- **Fix:** `suggest` (naming the algorithm is fail-closed, but the reviewer confirms it is the one the issuer signs with (RS256, HS256 or ES256))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/jwt-verify.md
 
@@ -102512,6 +102536,24 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 const claims = jwt.verify(token, publicKey);
 ```
 
+##### Fixed (RS256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+##### Fixed (HS256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+##### Fixed (ES256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
+```
+
 ##### Do
 
 ```js
@@ -102524,6 +102566,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 
 ```jsx
 const claims = jwt.verify(token, publicKey);
+```
+
+##### Fixed (RS256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+##### Fixed (HS256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+##### Fixed (ES256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 ```
 
 ##### Do
@@ -102540,6 +102600,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 const claims = jwt.verify(token, publicKey);
 ```
 
+##### Fixed (RS256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+##### Fixed (HS256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+##### Fixed (ES256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
+```
+
 ##### Do
 
 ```ts
@@ -102552,6 +102630,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 
 ```tsx
 const claims = jwt.verify(token, publicKey);
+```
+
+##### Fixed (RS256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+##### Fixed (HS256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+##### Fixed (ES256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 ```
 
 ##### Do
@@ -102751,7 +102847,7 @@ entry.pipe(fs.createWriteStream(target));
 ## `sec-js/no-bad-tag-filter` — No regular expression that filters HTML tags
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which tags and attributes may stay is a decision for the author)
+- **Fix:** `suggest` (escaping shows the markup as text and a sanitizer keeps safe markup (the reviewer imports it); which one the page needs is the author's choice)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-bad-tag-filter.md
 
@@ -102776,6 +102872,18 @@ A regular expression is not used to strip or test HTML tags (`/<script>/`, `/<[^
 const clean = input.replace(/<script>/gi, "");
 ```
 
+##### Fixed (escape)
+
+```js
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+##### Fixed (sanitizer)
+
+```js
+const clean = DOMPurify.sanitize(input);
+```
+
 ##### Do
 
 ```js
@@ -102788,6 +102896,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```jsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+##### Fixed (escape)
+
+```jsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+##### Fixed (sanitizer)
+
+```jsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 ##### Do
@@ -102804,6 +102924,18 @@ const clean = DOMPurify.sanitize(input);
 const clean = input.replace(/<script>/gi, "");
 ```
 
+##### Fixed (escape)
+
+```ts
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+##### Fixed (sanitizer)
+
+```ts
+const clean = DOMPurify.sanitize(input);
+```
+
 ##### Do
 
 ```ts
@@ -102816,6 +102948,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```tsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+##### Fixed (escape)
+
+```tsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+##### Fixed (sanitizer)
+
+```tsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 ##### Do
@@ -104062,7 +104206,7 @@ const dbPassword = process.env.DB_PASSWORD;
 ## `sec-js/no-header-injection` — No response header value taken from a request
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (encoding or rejecting is a choice that depends on the header)
+- **Fix:** `suggest` (encoding or stripping line breaks keeps the value out of the header structure, and the reviewer picks the one the header tolerates)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-header-injection.md
 
@@ -104087,6 +104231,18 @@ A response header is not set from request data unchanged.
 res.setHeader("X-Name", req.query.name);
 ```
 
+##### Fixed (encode)
+
+```js
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+##### Fixed (strip line breaks)
+
+```js
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 ##### Do
 
 ```js
@@ -104099,6 +104255,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```jsx
 res.setHeader("X-Name", req.query.name);
+```
+
+##### Fixed (encode)
+
+```jsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+##### Fixed (strip line breaks)
+
+```jsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 ##### Do
@@ -104115,6 +104283,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 res.setHeader("X-Name", req.query.name);
 ```
 
+##### Fixed (encode)
+
+```ts
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+##### Fixed (strip line breaks)
+
+```ts
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 ##### Do
 
 ```ts
@@ -104127,6 +104307,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```tsx
 res.setHeader("X-Name", req.query.name);
+```
+
+##### Fixed (encode)
+
+```tsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+##### Fixed (strip line breaks)
+
+```tsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 ##### Do
@@ -104235,7 +104427,7 @@ const safe = input.replaceAll("<", "&lt;");
 ## `sec-js/no-incomplete-url-check` — No URL checked with a substring test
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which hosts are allowed is a decision for the author)
+- **Fix:** `suggest` (the host literal is in the code, and the reviewer picks exact host or host with its subdomains (a prefix test becomes an origin comparison either way))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-incomplete-url-check.md
 
@@ -104263,6 +104455,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+##### Fixed (exact host)
+
+```js
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+##### Fixed (host or subdomain)
+
+```js
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 ##### Do
 
 ```js
@@ -104277,6 +104485,22 @@ if (new URL(url).hostname === "example.com") {
 
 ```jsx
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+##### Fixed (exact host)
+
+```jsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+##### Fixed (host or subdomain)
+
+```jsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```
@@ -104299,6 +104523,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+##### Fixed (exact host)
+
+```ts
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+##### Fixed (host or subdomain)
+
+```ts
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 ##### Do
 
 ```ts
@@ -104313,6 +104553,22 @@ if (new URL(url).hostname === "example.com") {
 
 ```tsx
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+##### Fixed (exact host)
+
+```tsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+##### Fixed (host or subdomain)
+
+```tsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```
@@ -104425,7 +104681,7 @@ const token = crypto.randomUUID();
 ## `sec-js/no-javascript-url` — No javascript: URL, no navigation to a URL taken from the address
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which targets a page may navigate to is a decision for the author)
+- **Fix:** `suggest` (a navigation target taken from the address is cut down to a same-origin path, and the reviewer confirms; a `javascript:` literal has no edit and must move into a handler)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-javascript-url.md
 
@@ -104447,14 +104703,18 @@ A `javascript:` URL is not written into `location` or `href`, and the address, t
 ##### Don't
 
 ```js
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+##### Fixed
+
+```js
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 ##### Do
 
 ```js
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -104463,14 +104723,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ##### Don't
 
 ```jsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+##### Fixed
+
+```jsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 ##### Do
 
 ```jsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -104479,14 +104743,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ##### Don't
 
 ```ts
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+##### Fixed
+
+```ts
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 ##### Do
 
 ```ts
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -104495,21 +104763,25 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ##### Don't
 
 ```tsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+##### Fixed
+
+```tsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 ##### Do
 
 ```tsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 ## `sec-js/no-jquery-html-sink` — No jQuery call that parses a built string as HTML
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the value is text or markup is a decision for the author)
+- **Fix:** `suggest` (`.text()` writes the value as text instead of markup, and the reviewer confirms no markup was meant; built markup strings have no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-jquery-html-sink.md
 
@@ -104542,14 +104814,18 @@ jQuery's `.html(x)` is not given a value that is not a literal, and `$(x)`, `.ap
 
 ```js
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+##### Fixed
+
+```js
+$("#out").text(comment.body);
 ```
 
 ##### Do
 
 ```js
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 #### JSX
@@ -104558,14 +104834,18 @@ $("#list").append($("<li>").text(name));
 
 ```jsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+##### Fixed
+
+```jsx
+$("#out").text(comment.body);
 ```
 
 ##### Do
 
 ```jsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 #### TypeScript
@@ -104574,14 +104854,18 @@ $("#list").append($("<li>").text(name));
 
 ```ts
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+##### Fixed
+
+```ts
+$("#out").text(comment.body);
 ```
 
 ##### Do
 
 ```ts
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 #### TSX
@@ -104590,14 +104874,18 @@ $("#list").append($("<li>").text(name));
 
 ```tsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+##### Fixed
+
+```tsx
+$("#out").text(comment.body);
 ```
 
 ##### Do
 
 ```tsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ## `sec-js/no-ldap-injection` — No LDAP filter built from a template or concatenation
@@ -104764,7 +105052,7 @@ const data = JSON.parse(out);
 ## `sec-js/no-log-injection` — No request data written to a log unchanged
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the value goes in the log line is the author's choice)
+- **Fix:** `suggest` (stripping line breaks changes only log text that held them, and the reviewer confirms nothing downstream parses the line)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/strict` at `warn` · `codelaw:sec-ts/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-log-injection.md
 
@@ -104789,6 +105077,12 @@ A log call is not given request data as its message.
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+##### Fixed
+
+```js
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 ##### Do
 
 ```js
@@ -104801,6 +105095,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```jsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+##### Fixed
+
+```jsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 ##### Do
@@ -104817,6 +105117,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+##### Fixed
+
+```ts
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 ##### Do
 
 ```ts
@@ -104829,6 +105135,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```tsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+##### Fixed
+
+```tsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 ##### Do
@@ -105243,7 +105555,7 @@ const user = await User.findOne({ email: String(req.body.email) });
 ## `sec-js/no-open-redirect` — No redirect to an address taken from a request
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which targets are allowed is a decision for the author)
+- **Fix:** `suggest` (the target is cut down to a same-origin path with a fallback to `/`, and the reviewer confirms no cross-origin target was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-open-redirect.md
 
@@ -105269,6 +105581,12 @@ const user = await User.findOne({ email: String(req.body.email) });
 res.redirect(req.query.next);
 ```
 
+##### Fixed
+
+```js
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 ##### Do
 
 ```js
@@ -105282,6 +105600,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```jsx
 res.redirect(req.query.next);
+```
+
+##### Fixed
+
+```jsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 ##### Do
@@ -105299,6 +105623,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 res.redirect(req.query.next);
 ```
 
+##### Fixed
+
+```ts
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 ##### Do
 
 ```ts
@@ -105312,6 +105642,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```tsx
 res.redirect(req.query.next);
+```
+
+##### Fixed
+
+```tsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 ##### Do
@@ -105506,7 +105842,7 @@ const messages = [
 ## `sec-js/no-prototype-pollution` — No request value used as a key to write or merge
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which keys a client may set is a decision for the author)
+- **Fix:** `suggest` (defining an own property cannot reach `Object.prototype` even for the key `__proto__`, and the reviewer confirms a plain assignment (setters, frozen objects) is not relied on)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-prototype-pollution.md
 
@@ -105533,6 +105869,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+##### Fixed
+
+```js
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 ##### Do
 
 ```js
@@ -105547,6 +105890,13 @@ settings.set(key, value);
 ```jsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+##### Fixed
+
+```jsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 ##### Do
@@ -105565,6 +105915,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+##### Fixed
+
+```ts
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 ##### Do
 
 ```ts
@@ -105579,6 +105936,13 @@ settings.set(key, value);
 ```tsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+##### Fixed
+
+```tsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 ##### Do
@@ -106082,7 +106446,7 @@ res.render("profile", { name: String(req.body.name) });
 ## `sec-js/no-stack-trace-response` — No error object or stack trace in a response
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the client should be told is a decision for the author)
+- **Fix:** `suggest` (the client gets a generic message and the error is logged first, and the reviewer confirms the client needs nothing else (a JSON client may want an object))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-stack-trace-response.md
 
@@ -106107,6 +106471,12 @@ A response is not given an error object or its `stack`.
 res.status(500).send(err.stack);
 ```
 
+##### Fixed
+
+```js
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 ##### Do
 
 ```js
@@ -106120,6 +106490,12 @@ res.status(500).send("Something went wrong");
 
 ```jsx
 res.status(500).send(err.stack);
+```
+
+##### Fixed
+
+```jsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 ##### Do
@@ -106137,6 +106513,12 @@ res.status(500).send("Something went wrong");
 res.status(500).send(err.stack);
 ```
 
+##### Fixed
+
+```ts
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 ##### Do
 
 ```ts
@@ -106150,6 +106532,12 @@ res.status(500).send("Something went wrong");
 
 ```tsx
 res.status(500).send(err.stack);
+```
+
+##### Fixed
+
+```tsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 ##### Do
@@ -106615,7 +107003,7 @@ element.textContent = comment.body;
 ## `sec-js/no-unvalidated-dynamic-method` — No method chosen by a request value
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which methods are allowed is a decision for the author)
+- **Fix:** `suggest` (an own-key check blocks prototype methods and keeps `this`, but the reviewer confirms the own keys are the ones meant to be callable)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-unvalidated-dynamic-method.md
 
@@ -106640,6 +107028,12 @@ A function is not looked up on an object by a request value and then called: `ob
 handlers[req.query.action](req, res);
 ```
 
+##### Fixed
+
+```js
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 ##### Do
 
 ```js
@@ -106654,6 +107048,12 @@ if (req.query.action === "list") {
 
 ```jsx
 handlers[req.query.action](req, res);
+```
+
+##### Fixed
+
+```jsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 ##### Do
@@ -106672,6 +107072,12 @@ if (req.query.action === "list") {
 handlers[req.query.action](req, res);
 ```
 
+##### Fixed
+
+```ts
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 ##### Do
 
 ```ts
@@ -106686,6 +107092,12 @@ if (req.query.action === "list") {
 
 ```tsx
 handlers[req.query.action](req, res);
+```
+
+##### Fixed
+
+```tsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 ##### Do
@@ -106868,7 +107280,7 @@ const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
 ## `sec-js/no-weak-hash` — No MD5 or SHA-1
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the digest length changes, so what stores or compares it has to change too)
+- **Fix:** `suggest` (SHA-256 replaces the broken hash, and the reviewer checks that no stored or protocol-fixed digest depends on the old length)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/no-weak-hash.md
 
@@ -107389,7 +107801,7 @@ const hash = crypto.pbkdf2Sync(password, salt, 600000, 32, "sha256");
 ## `sec-js/postmessage-origin` — postMessage names its target, a message handler checks the sender
 
 - **Pack:** `@codelaw/rules-security-js` · `codelaw-rules-security-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the origin to name is known only to the application)
+- **Fix:** `suggest` (naming the page's own origin and wrapping a listener in a same-origin check is fail-closed, and a cross-origin partner needs its origin typed by the reviewer)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-js/postmessage-origin.md
 
@@ -107418,6 +107830,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+##### Fixed
+
+```js
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 ##### Do
 
 ```js
@@ -107437,6 +107858,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+##### Fixed
+
+```jsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 ##### Do
@@ -107460,6 +107890,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+##### Fixed
+
+```ts
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 ##### Do
 
 ```ts
@@ -107479,6 +107918,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+##### Fixed
+
+```tsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 ##### Do

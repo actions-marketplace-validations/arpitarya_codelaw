@@ -2,9 +2,8 @@
 id: sec-js/no-javascript-url
 title: "No javascript: URL, no navigation to a URL taken from the address"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which targets a page may navigate to is a decision for the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a navigation target taken from the address is cut down to a same-origin path, and the reviewer confirms; a `javascript:` literal has no edit and must move into a handler"
 stability: preview
 ported_from: [eslint/no-script-url]
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
@@ -24,11 +23,18 @@ match:
       regex: '^[\w$.]*location\.(assign|replace)\(\s*["''`]\s*(javascript|vbscript|data:text/html)'
     - kind: call_expression
       regex: '^[\w$.]*setAttribute\(\s*["'']href["'']\s*,\s*["''`]\s*(javascript|vbscript)'
-    - kind: assignment_expression
-      regex: '^[\w$.]*(location|href)\s*=\s*(window\.|document\.)?(location\.(hash|search|href)|URL|documentURI|baseURI|referrer|name)\b'
-    - kind: call_expression
-      regex: '^[\w$.]*location\.(assign|replace)\(\s*(window\.|document\.)?(location\.(hash|search|href)|URL|documentURI|baseURI|referrer|name)\b'
+    - all:
+        - pattern: $L = $R
+        - regex: '^[\w$.]*(location|href)\s*=\s*(window\.|document\.)?(location\.(hash|search|href)|URL|documentURI|baseURI|referrer|name)\b'
+    - all:
+        - any:
+            - pattern: $LOC.$M($R2)
+            - pattern: $LOC.$M($R2, $$$X)
+        - regex: '^[\w$.]*location\.(assign|replace)\(\s*(window\.|document\.)?(location\.(hash|search|href)|URL|documentURI|baseURI|referrer|name)\b'
 message: "This navigation target can run script or is taken from the address"
+fix:
+  - replace: {target: $R, with: "new URL($R, location.origin).pathname"}
+  - replace: {target: $R2, with: "new URL($R2, location.origin).pathname"}
 ```
 
 ## How to fix
@@ -43,14 +49,18 @@ message: "This navigation target can run script or is taken from the address"
 #### Don't
 
 ```js
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```js
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```js
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -59,14 +69,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```jsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```jsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```jsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -75,14 +89,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```ts
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```ts
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```ts
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -91,13 +109,17 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```tsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```tsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```tsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```

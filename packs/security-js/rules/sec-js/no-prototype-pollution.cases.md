@@ -39,3 +39,17 @@ _.set(obj, req.query.path, 1);
 ```expect
 1:1 sec-js/no-prototype-pollution
 ```
+
+### case: fix: own property defined
+
+```js
+config[req.body.key] = req.body.value;
+```
+
+```expect
+1:1 sec-js/no-prototype-pollution
+```
+
+```fixed
+Object.defineProperty(config, req.body.key, { value: req.body.value, writable: true, enumerable: true, configurable: true });
+```

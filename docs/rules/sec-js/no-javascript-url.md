@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which targets a page may navigate to is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a navigation target taken from the address is cut down to a same-origin path, and the reviewer confirms; a `javascript:` literal has no edit and must move into a handler) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -132,14 +132,18 @@ codelaw config --print --for <file>            # the resolved setting, and where
 #### Don't
 
 ```js
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```js
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```js
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -148,14 +152,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```jsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```jsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```jsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -164,14 +172,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```ts
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```ts
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```ts
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
@@ -180,14 +192,18 @@ window.location = new URL(location.hash.slice(1), location.origin).pathname;
 #### Don't
 
 ```tsx
-window.location.href = "javascript:" + code;
 window.location = location.hash.slice(1);
+```
+
+#### Fixed
+
+```tsx
+window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
 #### Do
 
 ```tsx
-window.location.href = "/next";
 window.location = new URL(location.hash.slice(1), location.origin).pathname;
 ```
 
