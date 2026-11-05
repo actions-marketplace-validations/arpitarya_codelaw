@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the code meant to clear is a decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`delete x` does nothing on a binding; resetting it to `undefined` is the closest live meaning, which the reviewer confirms (the author may have meant another value or to drop the line)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-delete-var` |
@@ -135,6 +135,13 @@ let cache = {};
 delete cache;
 ```
 
+#### Fixed
+
+```js
+let cache = {};
+cache = undefined;
+```
+
 #### Do
 
 ```js
@@ -149,6 +156,13 @@ cache = {};
 ```jsx
 let cache = {};
 delete cache;
+```
+
+#### Fixed
+
+```jsx
+let cache = {};
+cache = undefined;
 ```
 
 #### Do
@@ -167,6 +181,13 @@ let cache = {};
 delete cache;
 ```
 
+#### Fixed
+
+```ts
+let cache = {};
+cache = undefined;
+```
+
 #### Do
 
 ```ts
@@ -181,6 +202,13 @@ cache = {};
 ```tsx
 let cache = {};
 delete cache;
+```
+
+#### Fixed
+
+```tsx
+let cache = {};
+cache = undefined;
 ```
 
 #### Do

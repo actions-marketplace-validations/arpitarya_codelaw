@@ -2,9 +2,8 @@
 id: js/no-lone-blocks
 title: "No needless nested blocks"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the block may be a lost `if`; the author decides"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "the match already excludes blocks that declare a let, const, class or function, so unwrapping a bare block and keeping its statements is exact"
 stability: preview
 ported_from: [eslint/no-lone-blocks]
 since: 0.5.0
@@ -17,6 +16,7 @@ A block `{ … }` is not written on its own unless it scopes a `let`, `const`, `
 ```codelaw
 match:
   kind: statement_block
+  pattern: "{ $$$S }"
   any:
     - inside: { kind: statement_block }
     - inside: { kind: program }
@@ -25,6 +25,7 @@ match:
     has:
       any: [{kind: lexical_declaration}, {kind: class_declaration}, {kind: function_declaration}]
 message: "This block is not needed"
+fix: "$$$S"
 ```
 
 ## How to fix
@@ -42,6 +43,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+#### Fixed
+
+```js
+function f() {
+  run();
 }
 ```
 
@@ -65,6 +74,14 @@ function f() {
 }
 ```
 
+#### Fixed
+
+```jsx
+function f() {
+  run();
+}
+```
+
 #### Do
 
 ```jsx
@@ -85,6 +102,14 @@ function f() {
 }
 ```
 
+#### Fixed
+
+```ts
+function f() {
+  run();
+}
+```
+
 #### Do
 
 ```ts
@@ -102,6 +127,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+#### Fixed
+
+```tsx
+function f() {
+  run();
 }
 ```
 

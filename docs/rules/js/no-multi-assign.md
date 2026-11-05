@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting the chain into statements is a change of the author's code shape) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a chain of identifier targets written as a whole expression statement splits right to left with the same evaluation order; member targets, declarators and chains inside larger expressions carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-multi-assign` |
@@ -136,6 +136,13 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 a = b = 0;
 ```
 
+#### Fixed
+
+```js
+b = 0;
+a = b;
+```
+
 #### Do
 
 ```js
@@ -149,6 +156,13 @@ b = 0;
 
 ```jsx
 a = b = 0;
+```
+
+#### Fixed
+
+```jsx
+b = 0;
+a = b;
 ```
 
 #### Do
@@ -166,6 +180,13 @@ b = 0;
 a = b = 0;
 ```
 
+#### Fixed
+
+```ts
+b = 0;
+a = b;
+```
+
 #### Do
 
 ```ts
@@ -179,6 +200,13 @@ b = 0;
 
 ```tsx
 a = b = 0;
+```
+
+#### Fixed
+
+```tsx
+b = 0;
+a = b;
 ```
 
 #### Do

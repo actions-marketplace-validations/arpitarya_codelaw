@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the comparison's operator decides whether to negate) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the comparison is constant today, so the fix changes behaviour by design; the operator picks the negation and the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/use-isnan` |
@@ -121,8 +121,7 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ## How to fix
 
-1. Replace `x === NaN` or `x == NaN` with `Number.isNaN(x)`.
-2. Replace `x !== NaN` or `x != NaN` with `!Number.isNaN(x)`.
+1. Check the branch that ran on a comparison with `NaN` (always false) is the one meant, then keep the `Number.isNaN` form.
 
 ## Examples
 
@@ -132,6 +131,14 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ```js
 if (price === NaN) {
+  reset();
+}
+```
+
+#### Fixed
+
+```js
+if (Number.isNaN(price)) {
   reset();
 }
 ```
@@ -154,6 +161,14 @@ if (price === NaN) {
 }
 ```
 
+#### Fixed
+
+```jsx
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 #### Do
 
 ```jsx
@@ -172,6 +187,14 @@ if (price === NaN) {
 }
 ```
 
+#### Fixed
+
+```ts
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +209,14 @@ if (Number.isNaN(price)) {
 
 ```tsx
 if (price === NaN) {
+  reset();
+}
+```
+
+#### Fixed
+
+```tsx
+if (Number.isNaN(price)) {
   reset();
 }
 ```

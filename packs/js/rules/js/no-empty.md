@@ -2,9 +2,8 @@
 id: js/no-empty
 title: "No empty blocks"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether to fill the block, remove it or document it needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "an empty block standing alone as a statement has no effect and is removed; an empty catch, if, loop or switch body carries no edit (it needs a reason or a body)"
 stability: preview
 ported_from: [eslint/no-empty]
 since: 0.1.0
@@ -19,6 +18,12 @@ may be empty.
 match:
   any:
     - kind: statement_block
+      pattern: $B
+      regex: ^\{\s*\}$
+      inside:
+        stopBy: neighbor
+        any: [{kind: program}, {kind: statement_block}]
+    - kind: statement_block
       regex: ^\{\s*\}$
       not:
         inside:
@@ -27,6 +32,8 @@ match:
     - kind: switch_statement
       has: { field: body, regex: '^\{\s*\}$' }
 message: "Empty block; remove it or say why it's empty"
+fix:
+  - remove: $B
 ```
 
 ## How to fix
@@ -41,18 +48,18 @@ message: "Empty block; remove it or say why it's empty"
 #### Don't
 
 ```js
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```js
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -61,18 +68,18 @@ try {
 #### Don't
 
 ```jsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```jsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -81,18 +88,18 @@ try {
 #### Don't
 
 ```ts
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```ts
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -101,17 +108,17 @@ try {
 #### Don't
 
 ```tsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```tsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value belongs in a `.then()` before the `finally` or should be dropped is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the returned value is dropped from the result either way; the reviewer confirms it should not move to a `.then()`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/no-return-in-finally` |
@@ -135,6 +135,14 @@ load().finally(() => {
 });
 ```
 
+#### Fixed
+
+```js
+load().finally(() => {
+  cleanup();
+});
+```
+
 #### Do
 
 ```js
@@ -150,6 +158,14 @@ load().finally(() => {
 ```jsx
 load().finally(() => {
   return cleanup();
+});
+```
+
+#### Fixed
+
+```jsx
+load().finally(() => {
+  cleanup();
 });
 ```
 
@@ -171,6 +187,14 @@ load().finally(() => {
 });
 ```
 
+#### Fixed
+
+```ts
+load().finally(() => {
+  cleanup();
+});
+```
+
 #### Do
 
 ```ts
@@ -186,6 +210,14 @@ load().finally(() => {
 ```tsx
 load().finally(() => {
   return cleanup();
+});
+```
+
+#### Fixed
+
+```tsx
+load().finally(() => {
+  cleanup();
 });
 ```
 

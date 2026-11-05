@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the value may have been meant for `resolve`; the author decides) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (dropping an ignored return value is exact; a call to `resolve` or `reject`, or a call taking one of them, is auto, and any other returned value (it may have been meant for `resolve`) reports suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-promise-executor-return` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 new Promise((resolve) => setTimeout(resolve, 10));
 ```
 
+#### Fixed
+
+```js
+new Promise((resolve) => { setTimeout(resolve, 10); });
+```
+
 #### Do
 
 ```js
@@ -150,6 +156,12 @@ new Promise((resolve) => {
 
 ```jsx
 new Promise((resolve) => setTimeout(resolve, 10));
+```
+
+#### Fixed
+
+```jsx
+new Promise((resolve) => { setTimeout(resolve, 10); });
 ```
 
 #### Do
@@ -168,6 +180,12 @@ new Promise((resolve) => {
 new Promise((resolve) => setTimeout(resolve, 10));
 ```
 
+#### Fixed
+
+```ts
+new Promise((resolve) => { setTimeout(resolve, 10); });
+```
+
 #### Do
 
 ```ts
@@ -182,6 +200,12 @@ new Promise((resolve) => {
 
 ```tsx
 new Promise((resolve) => setTimeout(resolve, 10));
+```
+
+#### Fixed
+
+```tsx
+new Promise((resolve) => { setTimeout(resolve, 10); });
 ```
 
 #### Do

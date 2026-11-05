@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether `async` or an `await` is missing is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (dropping `async` changes the function to return its value directly, which callers may not expect; the reviewer confirms, since an `await` the author forgot is the other fix) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/require-await` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ## How to fix
 
-1. If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise.
+1. If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise; the fix removes `async`.
 
 ## Examples
 
@@ -134,6 +134,14 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ```js
 async function load() {
+  return fetch(url);
+}
+```
+
+#### Fixed
+
+```js
+ function load() {
   return fetch(url);
 }
 ```
@@ -156,6 +164,14 @@ async function load() {
 }
 ```
 
+#### Fixed
+
+```jsx
+ function load() {
+  return fetch(url);
+}
+```
+
 #### Do
 
 ```jsx
@@ -174,6 +190,14 @@ async function load() {
 }
 ```
 
+#### Fixed
+
+```ts
+ function load() {
+  return fetch(url);
+}
+```
+
 #### Do
 
 ```ts
@@ -188,6 +212,14 @@ function load() {
 
 ```tsx
 async function load() {
+  return fetch(url);
+}
+```
+
+#### Fixed
+
+```tsx
+ function load() {
   return fetch(url);
 }
 ```

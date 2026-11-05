@@ -47,3 +47,29 @@ const v = a !== b ? 1 : 2;
 ```expect
 1:11 js/no-negated-condition
 ```
+
+```fixed
+const v = a === b ? 2 : 1;
+```
+
+### case: a not-equal test swaps the branches
+
+```js
+if (a != b) {
+  x();
+} else {
+  y();
+}
+```
+
+```expect
+1:1 js/no-negated-condition
+```
+
+```fixed
+if (a == b) {
+  y();
+} else {
+  x();
+}
+```

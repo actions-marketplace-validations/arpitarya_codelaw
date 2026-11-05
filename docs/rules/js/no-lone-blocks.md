@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the block may be a lost `if`; the author decides) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the match already excludes blocks that declare a let, const, class or function, so unwrapping a bare block and keeping its statements is exact) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-lone-blocks` |
@@ -140,6 +140,14 @@ function f() {
 }
 ```
 
+#### Fixed
+
+```js
+function f() {
+  run();
+}
+```
+
 #### Do
 
 ```js
@@ -157,6 +165,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+#### Fixed
+
+```jsx
+function f() {
+  run();
 }
 ```
 
@@ -180,6 +196,14 @@ function f() {
 }
 ```
 
+#### Fixed
+
+```ts
+function f() {
+  run();
+}
+```
+
 #### Do
 
 ```ts
@@ -197,6 +221,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+#### Fixed
+
+```tsx
+function f() {
+  run();
 }
 ```
 

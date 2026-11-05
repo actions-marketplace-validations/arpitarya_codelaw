@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether a length or a single element was meant decides the rewrite) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a length and a single element give different arrays: both rewrites are offered and the reviewer picks the one that was meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-new-array` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>   # the resolved setting, and where it came 
 const slots = new Array(size);
 ```
 
+#### Fixed (a length)
+
+```js
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```js
+const slots = [size];
+```
+
 #### Do
 
 ```js
@@ -145,6 +157,18 @@ const slots = Array.from({ length: size });
 
 ```jsx
 const slots = new Array(size);
+```
+
+#### Fixed (a length)
+
+```jsx
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```jsx
+const slots = [size];
 ```
 
 #### Do
@@ -161,6 +185,18 @@ const slots = Array.from({ length: size });
 const slots = new Array(size);
 ```
 
+#### Fixed (a length)
+
+```ts
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```ts
+const slots = [size];
+```
+
 #### Do
 
 ```ts
@@ -173,6 +209,18 @@ const slots = Array.from({ length: size });
 
 ```tsx
 const slots = new Array(size);
+```
+
+#### Fixed (a length)
+
+```tsx
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```tsx
+const slots = [size];
 ```
 
 #### Do

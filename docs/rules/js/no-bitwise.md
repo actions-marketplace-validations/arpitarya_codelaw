@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether `&&` / `||` was meant, or the bit operation is intended, is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`&&` / `||` differ from `&` / `|` in value and short-circuiting; the reviewer confirms a boolean test was meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-bitwise` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 if (a | b) run();
 ```
 
+#### Fixed
+
+```js
+if (a || b) run();
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ if (a || b) run();
 
 ```jsx
 if (a | b) run();
+```
+
+#### Fixed
+
+```jsx
+if (a || b) run();
 ```
 
 #### Do
@@ -164,6 +176,12 @@ if (a || b) run();
 if (a | b) run();
 ```
 
+#### Fixed
+
+```ts
+if (a || b) run();
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ if (a || b) run();
 
 ```tsx
 if (a | b) run();
+```
+
+#### Fixed
+
+```tsx
+if (a || b) run();
 ```
 
 #### Do

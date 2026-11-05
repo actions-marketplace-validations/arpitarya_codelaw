@@ -2,9 +2,8 @@
 id: js/no-iterator
 title: "No __iterator__"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "moving to `Symbol.iterator` rewrites the iterator"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the edit activates the standard iteration protocol in place of the dead SpiderMonkey one, which the reviewer confirms"
 stability: preview
 ported_from: [eslint/no-iterator]
 since: 0.5.0
@@ -19,9 +18,14 @@ match:
   any:
     - kind: member_expression
       has: { field: property, regex: '^__iterator__$' }
+      all:
+        - has: { field: object, pattern: $O }
     - kind: subscript_expression
       has: { field: index, regex: '^["''`]__iterator__["''`]$' }
+      all:
+        - has: { field: object, pattern: $O }
 message: "Use `Symbol.iterator` instead of `__iterator__`"
+fix: "$O[Symbol.iterator]"
 ```
 
 ## How to fix
@@ -38,6 +42,12 @@ message: "Use `Symbol.iterator` instead of `__iterator__`"
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+#### Fixed
+
+```js
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 #### Do
 
 ```js
@@ -50,6 +60,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```jsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+#### Fixed
+
+```jsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 #### Do
@@ -66,6 +82,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+#### Fixed
+
+```ts
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 #### Do
 
 ```ts
@@ -78,6 +100,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```tsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+#### Fixed
+
+```tsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 #### Do

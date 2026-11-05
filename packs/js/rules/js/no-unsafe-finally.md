@@ -2,9 +2,8 @@
 id: js/no-unsafe-finally
 title: "No return, throw, break or continue in finally"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what should happen to the try block's result is a decision"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing the control statement lets the try or catch result through, and a value it carried is dropped; the reviewer confirms"
 stability: preview
 ported_from: [eslint/no-unsafe-finally]
 since: 0.1.0
@@ -33,11 +32,13 @@ match:
           stopBy: { kind: finally_clause }
           any: [{ kind: for_statement }, { kind: for_in_statement }, { kind: while_statement }, { kind: do_statement }, { kind: switch_statement }]
 message: "Control flow in `finally` overrides the try block's return or exception"
+fix:
+  - remove
 ```
 
 ## How to fix
 
-1. Move the `return` or `throw` out of `finally` into the `try` or `catch` block.
+1. Check the statement removed was not carrying a value the function needs; if it was, move it into the `try` or `catch` block.
 
 ## Examples
 
@@ -51,6 +52,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+#### Fixed
+
+```js
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```
@@ -81,6 +93,17 @@ function load() {
 }
 ```
 
+#### Fixed
+
+```jsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 #### Do
 
 ```jsx
@@ -107,6 +130,17 @@ function load() {
 }
 ```
 
+#### Fixed
+
+```ts
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -129,6 +163,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```

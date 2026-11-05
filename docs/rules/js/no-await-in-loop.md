@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the iterations may depend on each other; only the author knows if they can run together) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`Promise.all` runs the iterations together, which changes ordering and failure handling; the reviewer confirms they are independent) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-await-in-loop` |
@@ -140,6 +140,14 @@ async function f(ids) {
 }
 ```
 
+#### Fixed
+
+```js
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
+}
+```
+
 #### Do
 
 ```js
@@ -157,6 +165,14 @@ async function f(ids) {
   for (const id of ids) {
     await load(id);
   }
+}
+```
+
+#### Fixed
+
+```jsx
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
 }
 ```
 
@@ -180,6 +196,14 @@ async function f(ids) {
 }
 ```
 
+#### Fixed
+
+```ts
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
+}
+```
+
 #### Do
 
 ```ts
@@ -197,6 +221,14 @@ async function f(ids) {
   for (const id of ids) {
     await load(id);
   }
+}
+```
+
+#### Fixed
+
+```tsx
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
 }
 ```
 

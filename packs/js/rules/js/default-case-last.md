@@ -4,7 +4,7 @@ title: "default comes last"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving a clause can change fall-through behaviour"
-fix_pending: "auto-subset"
+fix_pending: "auto-subset; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/default-case-last, eslint-plugin-sonarjs/prefer-default-last]
 since: 0.5.0

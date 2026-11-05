@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the clearer form — `if`, `switch` or a lookup table — is the author's to choose) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a nested conditional that is the whole value of a `return` or an arrow's concise body becomes an exact if/return chain; nesting elsewhere (declarations, arguments, parentheses) carries no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-nested-ternary`, `eslint-plugin-sonarjs/no-nested-conditional`, `eslint-plugin-unicorn/no-nested-ternary` |
@@ -130,7 +130,17 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 #### Don't
 
 ```js
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```js
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -148,7 +158,17 @@ function size(n) {
 #### Don't
 
 ```jsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```jsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -166,7 +186,17 @@ function size(n) {
 #### Don't
 
 ```ts
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```ts
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -184,7 +214,17 @@ function size(n) {
 #### Don't
 
 ```tsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```tsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do

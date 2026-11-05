@@ -2,9 +2,8 @@
 id: js/no-useless-string-raw
 title: "No String.raw without an escape"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "dropping the tag is safe only once the author confirms no escape was meant to be added"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "without a backslash the cooked and raw strings are identical, so dropping the tag changes nothing"
 stability: preview
 ported_from: [biome/complexity/noUselessStringRaw]
 since: 0.5.0
@@ -22,8 +21,10 @@ match:
   - has:
       field: arguments
       kind: template_string
+      pattern: $T
       not: {regex: \\}
 message: '`String.raw` has no backslash to keep here; use a plain template'
+fix: "$T"
 ```
 
 ## How to fix
@@ -40,6 +41,12 @@ message: '`String.raw` has no backslash to keep here; use a plain template'
 const p = String.raw`/usr/local`;
 ```
 
+#### Fixed
+
+```js
+const p = `/usr/local`;
+```
+
 #### Do
 
 ```js
@@ -52,6 +59,12 @@ const p = `/usr/local`;
 
 ```jsx
 const p = String.raw`/usr/local`;
+```
+
+#### Fixed
+
+```jsx
+const p = `/usr/local`;
 ```
 
 #### Do
@@ -68,6 +81,12 @@ const p = `/usr/local`;
 const p = String.raw`/usr/local`;
 ```
 
+#### Fixed
+
+```ts
+const p = `/usr/local`;
+```
+
 #### Do
 
 ```ts
@@ -80,6 +99,12 @@ const p = `/usr/local`;
 
 ```tsx
 const p = String.raw`/usr/local`;
+```
+
+#### Fixed
+
+```tsx
+const p = `/usr/local`;
 ```
 
 #### Do

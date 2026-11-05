@@ -3,9 +3,8 @@ id: js/promise-no-nesting
 title: "Promise chains are flattened, not nested"
 languages: [javascript, jsx, typescript, tsx]
 severity: warn
-fix: manual
-fix_reason: "flattening a chain moves code between callbacks and may need values carried along"
-fix_pending: "auto-subset"
+fix: suggest
+fix_reason: "hoisting the inner `.then` onto the outer chain is only equivalent when its callback uses nothing the outer callback declared, which the reviewer confirms"
 stability: preview
 ported_from: [eslint-plugin-promise/no-nesting]
 since: 0.5.0
@@ -18,6 +17,18 @@ A `.then()` or `.catch()` is not called inside another `.then()` or `.catch()` c
 ```codelaw
 match:
   kind: call_expression
+  any:
+    - pattern: $B.then($I)
+      inside:
+        kind: arrow_function
+        nthChild: 1
+        inside:
+          kind: arguments
+          inside:
+            kind: call_expression
+            pattern: $OUTER
+            has: { field: function, kind: member_expression, has: { field: property, regex: '^then$' } }
+    - kind: call_expression
   has: { field: function, kind: member_expression, has: { field: property, regex: '^(then|catch)$' } }
   inside:
     stopBy: end
@@ -28,11 +39,14 @@ match:
         kind: call_expression
         has: { field: function, kind: member_expression, has: { field: property, regex: '^(then|catch)$' } }
 message: "Avoid nesting promise chains; return the inner promise and chain the next step"
+fix:
+  - replace: { target: match, with: "$B" }
+  - insert-after: { target: $OUTER, text: ".then($I)" }
 ```
 
 ## How to fix
 
-1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain.
+1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain; the fix does this for a single-argument `.then` that is the arrow callback's whole body, and the reviewer checks the moved callback uses nothing the outer callback declared.
 
 ## Examples
 
@@ -44,6 +58,14 @@ message: "Avoid nesting promise chains; return the inner promise and chain the n
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+#### Fixed
+
+```js
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 #### Do
@@ -64,6 +86,14 @@ getUser().then((user) =>
 );
 ```
 
+#### Fixed
+
+```jsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 #### Do
 
 ```jsx
@@ -82,6 +112,14 @@ getUser().then((user) =>
 );
 ```
 
+#### Fixed
+
+```ts
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 #### Do
 
 ```ts
@@ -98,6 +136,14 @@ getUser()
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+#### Fixed
+
+```tsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 #### Do

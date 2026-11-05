@@ -2,9 +2,8 @@
 id: js/no-accumulating-spread
 title: "No spread of the accumulator in reduce"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "pushing onto the accumulator changes the callback's shape; the author rewrites it"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a push onto an array-literal start value nothing else holds is auto; any other start value, a nested function in the elements, or the object form is a suggestion"
 stability: preview
 ported_from: [biome/performance/noAccumulatingSpread]
 since: 0.5.0
@@ -17,11 +16,32 @@ A `reduce` callback does not build a new array or object by spreading its accumu
 ```codelaw
 match:
   any:
-    - pattern: "$XS.reduce(($ACC, $$$P) => [...$ACC, $$$R], $$$I)"
-    - pattern: "$XS.reduce(($ACC, $$$P) => ({ ...$ACC, $$$R }), $$$I)"
-    - pattern: "$XS.reduce(function ($ACC, $$$P) { return [...$ACC, $$$R]; }, $$$I)"
-    - pattern: "$XS.reduce(function ($ACC, $$$P) { return { ...$ACC, $$$R }; }, $$$I)"
+    - all: [{ pattern: $W1 }, { pattern: "$XS.reduce(($ACC, $$$P) => [...$ACC, $$$R], $$$I)" }]
+    - all: [{ pattern: $W2 }, { pattern: "$XS.reduce(($ACC, $$$P) => ({ ...$ACC, $$$R }), $$$I)" }]
+    - all: [{ pattern: $W3 }, { pattern: "$XS.reduce(function ($ACC, $$$P) { return [...$ACC, $$$R]; }, $$$I)" }]
+    - all: [{ pattern: $W4 }, { pattern: "$XS.reduce(function ($ACC, $$$P) { return { ...$ACC, $$$R }; }, $$$I)" }]
+auto_when:
+  any:
+    - all:
+        - pattern: "$XS.reduce(($ACC, $$$P) => [...$ACC, $$$R], [$$$E])"
+        - not:
+            has:
+              stopBy: end
+              kind: array
+              has: { stopBy: end, any: [{kind: arrow_function}, {kind: function_expression}, {kind: function}, {kind: class}] }
+    - all:
+        - pattern: "$XS.reduce(function ($ACC, $$$P) { return [...$ACC, $$$R]; }, [$$$E])"
+        - not:
+            has:
+              stopBy: end
+              kind: array
+              has: { stopBy: end, any: [{kind: arrow_function}, {kind: function_expression}, {kind: function}, {kind: class}] }
 message: "Spreading the accumulator on every step is quadratic; push onto it or assign to it instead"
+fix:
+  - replace: { target: $W1, with: "$XS.reduce(($ACC, $$$P) => {\n  $ACC.push($$$R);\n  return $ACC;\n}, $$$I)" }
+  - replace: { target: $W2, with: "$XS.reduce(($ACC, $$$P) => Object.assign($ACC, { $$$R }), $$$I)" }
+  - replace: { target: $W3, with: "$XS.reduce(function ($ACC, $$$P) {\n  $ACC.push($$$R);\n  return $ACC;\n}, $$$I)" }
+  - replace: { target: $W4, with: "$XS.reduce(function ($ACC, $$$P) {\n  return Object.assign($ACC, { $$$R });\n}, $$$I)" }
 ```
 
 ## How to fix
@@ -36,6 +56,15 @@ message: "Spreading the accumulator on every step is quadratic; push onto it or 
 
 ```js
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+#### Fixed
+
+```js
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 #### Do
@@ -55,6 +84,15 @@ const ids = rows.reduce((acc, r) => {
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+#### Fixed
+
+```jsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 #### Do
 
 ```jsx
@@ -72,6 +110,15 @@ const ids = rows.reduce((acc, r) => {
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+#### Fixed
+
+```ts
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 #### Do
 
 ```ts
@@ -87,6 +134,15 @@ const ids = rows.reduce((acc, r) => {
 
 ```tsx
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+#### Fixed
+
+```tsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 #### Do

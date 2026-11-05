@@ -2,9 +2,8 @@
 id: js/no-new-array
 title: "No new Array(n)"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether a length or a single element was meant decides the rewrite"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "a length and a single element give different arrays: both rewrites are offered and the reviewer picks the one that was meant"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-new-array]
 since: 0.5.0
@@ -18,6 +17,12 @@ since: 0.5.0
 match:
   pattern: "new Array($N)"
 message: "Use `Array.from({ length })` or an array literal"
+fix:
+  choices:
+    - label: a length
+      fix: "Array.from({ length: $N })"
+    - label: one element
+      fix: "[$N]"
 ```
 
 ## How to fix
@@ -34,6 +39,18 @@ message: "Use `Array.from({ length })` or an array literal"
 const slots = new Array(size);
 ```
 
+#### Fixed (a length)
+
+```js
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```js
+const slots = [size];
+```
+
 #### Do
 
 ```js
@@ -46,6 +63,18 @@ const slots = Array.from({ length: size });
 
 ```jsx
 const slots = new Array(size);
+```
+
+#### Fixed (a length)
+
+```jsx
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```jsx
+const slots = [size];
 ```
 
 #### Do
@@ -62,6 +91,18 @@ const slots = Array.from({ length: size });
 const slots = new Array(size);
 ```
 
+#### Fixed (a length)
+
+```ts
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```ts
+const slots = [size];
+```
+
 #### Do
 
 ```ts
@@ -74,6 +115,18 @@ const slots = Array.from({ length: size });
 
 ```tsx
 const slots = new Array(size);
+```
+
+#### Fixed (a length)
+
+```tsx
+const slots = Array.from({ length: size });
+```
+
+#### Fixed (one element)
+
+```tsx
+const slots = [size];
 ```
 
 #### Do

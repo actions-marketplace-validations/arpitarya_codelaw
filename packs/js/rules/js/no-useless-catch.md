@@ -2,9 +2,8 @@
 id: js/no-useless-catch
 title: "No catch that only rethrows"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "removing the try block changes the scope of declarations inside it"
-fix_pending: "auto"
+fix: auto
+fix_reason: "the try block stays as a block, keeping its declarations scoped, and the same error rethrows; with a `finally` only the catch clause goes"
 stability: preview
 ported_from: [eslint/no-useless-catch]
 since: 0.1.0
@@ -17,6 +16,15 @@ A `catch` clause does more than rethrow the error it caught.
 ```codelaw
 match:
   kind: catch_clause
+  inside:
+    kind: try_statement
+    any:
+      - pattern: $TRY
+        has: { field: body, pattern: $BODY }
+        not: { has: { field: finalizer, kind: finally_clause } }
+      - all:
+          - has: { field: handler, pattern: $CATCH }
+          - has: { field: finalizer, kind: finally_clause }
   all:
     - has: { field: parameter, pattern: $E }
     - has:
@@ -24,11 +32,14 @@ match:
         regex: ^\{\s*throw\s+[A-Za-z_$][A-Za-z0-9_$]*\s*;?\s*\}$
         has: { kind: throw_statement, has: { pattern: $E }, stopBy: end }
 message: "This catch only rethrows `$E`; remove it"
+fix:
+  - replace: { target: $TRY, with: "$BODY" }
+  - remove: $CATCH
 ```
 
 ## How to fix
 
-1. If there is no `finally`, replace the `try` statement with the statements of its block.
+1. If there is no `finally`, replace the `try` statement with the statements of its block (the fix keeps them in a block).
 2. If there is a `finally`, remove only the `catch` clause.
 
 ## Examples
@@ -42,6 +53,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+#### Fixed
+
+```js
+{
+  load();
 }
 ```
 
@@ -63,6 +82,14 @@ try {
 }
 ```
 
+#### Fixed
+
+```jsx
+{
+  load();
+}
+```
+
 #### Do
 
 ```jsx
@@ -81,6 +108,14 @@ try {
 }
 ```
 
+#### Fixed
+
+```ts
+{
+  load();
+}
+```
+
 #### Do
 
 ```ts
@@ -96,6 +131,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+#### Fixed
+
+```tsx
+{
+  load();
 }
 ```
 

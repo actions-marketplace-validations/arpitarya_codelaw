@@ -2,9 +2,8 @@
 id: js/default-case
 title: "A switch has a default"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the default should do is the author's"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "what the default does with an unmatched value is chosen: a quiet `break` or a thrown error"
 stability: preview
 ported_from: [eslint/default-case]
 since: 0.5.0
@@ -18,6 +17,7 @@ A `switch` has a `default` clause, or a `// no default` comment at its end.
 match:
   kind: switch_statement
   all:
+  - pattern: switch ($D) { $$$C }
   - not:
       has:
         field: body
@@ -27,6 +27,13 @@ match:
         field: body
         has: {kind: comment, regex: '(?i)no default'}
 message: Add a `default` clause
+fix:
+  choices:
+    - label: break
+      default: true
+      fix: "switch ($D) {\n  $$$C\n  default:\n    break;\n}"
+    - label: throw
+      fix: "switch ($D) {\n  $$$C\n  default:\n    throw new Error(`Unexpected ${$D}`);\n}"
 ```
 
 ## How to fix
@@ -43,6 +50,28 @@ message: Add a `default` clause
 switch (x) {
   case 1:
     a();
+}
+```
+
+#### Fixed (break)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 
@@ -69,6 +98,28 @@ switch (x) {
 }
 ```
 
+#### Fixed (break)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 #### Do
 
 ```jsx
@@ -92,6 +143,28 @@ switch (x) {
 }
 ```
 
+#### Fixed (break)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 #### Do
 
 ```ts
@@ -112,6 +185,28 @@ switch (x) {
 switch (x) {
   case 1:
     a();
+}
+```
+
+#### Fixed (break)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 

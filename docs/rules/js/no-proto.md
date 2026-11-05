@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement depends on whether it was read or written) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`Object.getPrototypeOf` and `Object.setPrototypeOf` differ from `__proto__` for null-prototype objects and own `__proto__` properties, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-proto` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 const p = obj.__proto__;
 ```
 
+#### Fixed
+
+```js
+const p = Object.getPrototypeOf(obj);
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ const p = Object.getPrototypeOf(obj);
 
 ```jsx
 const p = obj.__proto__;
+```
+
+#### Fixed
+
+```jsx
+const p = Object.getPrototypeOf(obj);
 ```
 
 #### Do
@@ -164,6 +176,12 @@ const p = Object.getPrototypeOf(obj);
 const p = obj.__proto__;
 ```
 
+#### Fixed
+
+```ts
+const p = Object.getPrototypeOf(obj);
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const p = Object.getPrototypeOf(obj);
 
 ```tsx
 const p = obj.__proto__;
+```
+
+#### Fixed
+
+```tsx
+const p = Object.getPrototypeOf(obj);
 ```
 
 #### Do

@@ -3,8 +3,8 @@ id: js/jsdoc-require-property-name
 title: "@property names its property"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
-fix_reason: "which property the tag is for is the author's to say"
-fix_pending: "suggest"
+fix_reason: "the property name the tag documents is in no code to copy; the author supplies it"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-property-name]
 since: 0.5.0

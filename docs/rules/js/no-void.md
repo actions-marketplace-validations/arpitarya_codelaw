@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement — `undefined`, or handling the promise — depends on the use) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`void <literal>` is `undefined` exactly; `void e;` as a statement stays a suggestion, as the `void` may mark a promise left unhandled on purpose) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-void` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ## How to fix
 
-1. Write `undefined`, or handle the promise with `await` or `.catch()`.
+1. Write `undefined`, or handle the promise with `await` or `.catch()`; the fix writes `undefined` for `void` of a literal and offers the bare expression for a `void e;` statement.
 
 ## Examples
 
@@ -134,6 +134,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ```js
 const nothing = void 0;
+```
+
+#### Fixed
+
+```js
+const nothing = undefined;
 ```
 
 #### Do
@@ -150,6 +156,12 @@ const nothing = undefined;
 const nothing = void 0;
 ```
 
+#### Fixed
+
+```jsx
+const nothing = undefined;
+```
+
 #### Do
 
 ```jsx
@@ -164,6 +176,12 @@ const nothing = undefined;
 const nothing = void 0;
 ```
 
+#### Fixed
+
+```ts
+const nothing = undefined;
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const nothing = undefined;
 
 ```tsx
 const nothing = void 0;
+```
+
+#### Fixed
+
+```tsx
+const nothing = undefined;
 ```
 
 #### Do

@@ -2,9 +2,8 @@
 id: js/no-undefined
 title: "No undefined identifier"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether to omit the value or write `void 0` depends on the position"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "`void 0` stands wherever `undefined` does, but leaving the value out may read better; the reviewer picks"
 stability: preview
 ported_from: [eslint/no-undefined]
 since: 0.5.0
@@ -19,11 +18,12 @@ The identifier `undefined` is not used (taste preset).
 match:
   kind: undefined
 message: "Use `void 0`, or leave the value out, rather than `undefined`"
+fix: "void 0"
 ```
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Leave the value out where the position allows it, as the message says; otherwise `void 0` is what the fix writes.
 
 ## Examples
 
@@ -33,6 +33,12 @@ message: "Use `void 0`, or leave the value out, rather than `undefined`"
 
 ```js
 let value = undefined;
+```
+
+#### Fixed
+
+```js
+let value = void 0;
 ```
 
 #### Do
@@ -49,6 +55,12 @@ let value;
 let value = undefined;
 ```
 
+#### Fixed
+
+```jsx
+let value = void 0;
+```
+
 #### Do
 
 ```jsx
@@ -63,6 +75,12 @@ let value;
 let value = undefined;
 ```
 
+#### Fixed
+
+```ts
+let value = void 0;
+```
+
 #### Do
 
 ```ts
@@ -75,6 +93,12 @@ let value;
 
 ```tsx
 let value = undefined;
+```
+
+#### Fixed
+
+```tsx
+let value = void 0;
 ```
 
 #### Do

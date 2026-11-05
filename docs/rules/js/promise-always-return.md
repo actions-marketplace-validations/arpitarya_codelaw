@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the callback should return is the author's to decide) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (returning the last expression passes a new value downstream and `return undefined;` only silences the rule, so the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/always-return` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>            # the resolved setting, and where
 
 ## How to fix
 
-1. Return the value the next step needs — often the inner promise the callback started — or throw if the callback found an error.
+1. Return the value the next step needs, or throw if the callback found an error; the fix offers `return` of the last expression, or `return undefined;` when nothing is meant to pass on.
 
 ## Examples
 
@@ -132,6 +132,22 @@ codelaw config --print --for <file>            # the resolved setting, and where
 ```js
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+#### Fixed (return the value)
+
+```js
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```js
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 
@@ -153,6 +169,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+#### Fixed (return the value)
+
+```jsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```jsx
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 #### Do
 
 ```jsx
@@ -171,6 +203,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+#### Fixed (return the value)
+
+```ts
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```ts
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 #### Do
 
 ```ts
@@ -186,6 +234,22 @@ load().then((data) => {
 ```tsx
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+#### Fixed (return the value)
+
+```tsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```tsx
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 

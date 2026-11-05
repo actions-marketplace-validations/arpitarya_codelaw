@@ -2,9 +2,8 @@
 id: js/no-template-curly-in-string
 title: "No template placeholder in a plain string"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "switching to backticks is right only if interpolation was meant"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "switching to backticks is right only if interpolation was meant, which the reviewer confirms; a string holding a backtick or an escape carries no edit"
 stability: preview
 ported_from: [eslint/no-template-curly-in-string]
 since: 0.5.0
@@ -18,7 +17,14 @@ A plain string does not contain `${…}`.
 match:
   kind: string
   regex: '\$\{[^}]*\}'
+  any:
+    - pattern: $M
+      has: { kind: string_fragment, regex: '^[^`\\]*$', pattern: $F }
+      not: { has: { kind: escape_sequence } }
+    - kind: string
 message: "This string holds `${…}`; did you mean a template literal?"
+fix:
+  - replace: { target: $M, with: "`$F`" }
 ```
 
 ## How to fix

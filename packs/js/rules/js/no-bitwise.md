@@ -2,9 +2,8 @@
 id: js/no-bitwise
 title: "No bitwise operators"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether `&&` / `||` was meant, or the bit operation is intended, is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`&&` / `||` differ from `&` / `|` in value and short-circuiting; the reviewer confirms a boolean test was meant"
 stability: preview
 ported_from: [eslint/no-bitwise]
 since: 0.5.0
@@ -17,6 +16,14 @@ The bitwise operators `&`, `|`, `^`, `~`, `<<`, `>>` and `>>>` are not used.
 ```codelaw
 match:
   any:
+    - all:
+        - { pattern: $A | $B, kind: binary_expression }
+        - { pattern: $OR }
+        - inside: { kind: parenthesized_expression, inside: { any: [{kind: if_statement}, {kind: while_statement}, {kind: do_statement}], field: condition } }
+    - all:
+        - { pattern: $A & $B, kind: binary_expression }
+        - { pattern: $AND }
+        - inside: { kind: parenthesized_expression, inside: { any: [{kind: if_statement}, {kind: while_statement}, {kind: do_statement}], field: condition } }
     - kind: binary_expression
       has: { field: operator, regex: '^(&|\||\^|<<|>>|>>>)$' }
     - kind: unary_expression
@@ -25,6 +32,9 @@ match:
       regex: '(&|\||\^|<<|>>|>>>)=[^=]'
       not: { regex: '(&&|\|\||\?\?)=' }
 message: "Unexpected bitwise operator"
+fix:
+  - replace: { target: $OR, with: "$A || $B" }
+  - replace: { target: $AND, with: "$A && $B" }
 ```
 
 ## How to fix
@@ -41,6 +51,12 @@ message: "Unexpected bitwise operator"
 if (a | b) run();
 ```
 
+#### Fixed
+
+```js
+if (a || b) run();
+```
+
 #### Do
 
 ```js
@@ -53,6 +69,12 @@ if (a || b) run();
 
 ```jsx
 if (a | b) run();
+```
+
+#### Fixed
+
+```jsx
+if (a || b) run();
 ```
 
 #### Do
@@ -69,6 +91,12 @@ if (a || b) run();
 if (a | b) run();
 ```
 
+#### Fixed
+
+```ts
+if (a || b) run();
+```
+
 #### Do
 
 ```ts
@@ -81,6 +109,12 @@ if (a || b) run();
 
 ```tsx
 if (a | b) run();
+```
+
+#### Fixed
+
+```tsx
+if (a || b) run();
 ```
 
 #### Do

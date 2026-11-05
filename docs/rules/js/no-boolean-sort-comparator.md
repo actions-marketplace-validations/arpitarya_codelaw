@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right comparator depends on the values compared (numbers, strings)) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a numeric difference or a string comparison suits different values; the author picks by what is sorted) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-boolean-sort-comparator` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 items.sort((a, b) => a > b);
 ```
 
+#### Fixed (numeric difference)
+
+```js
+items.sort((a, b) => a - b);
+```
+
+#### Fixed (string comparison)
+
+```js
+items.sort((a, b) => a.localeCompare(b));
+```
+
 #### Do
 
 ```js
@@ -145,6 +157,18 @@ items.sort((a, b) => a - b);
 
 ```jsx
 items.sort((a, b) => a > b);
+```
+
+#### Fixed (numeric difference)
+
+```jsx
+items.sort((a, b) => a - b);
+```
+
+#### Fixed (string comparison)
+
+```jsx
+items.sort((a, b) => a.localeCompare(b));
 ```
 
 #### Do
@@ -161,6 +185,18 @@ items.sort((a, b) => a - b);
 items.sort((a, b) => a > b);
 ```
 
+#### Fixed (numeric difference)
+
+```ts
+items.sort((a, b) => a - b);
+```
+
+#### Fixed (string comparison)
+
+```ts
+items.sort((a, b) => a.localeCompare(b));
+```
+
 #### Do
 
 ```ts
@@ -173,6 +209,18 @@ items.sort((a, b) => a - b);
 
 ```tsx
 items.sort((a, b) => a > b);
+```
+
+#### Fixed (numeric difference)
+
+```tsx
+items.sort((a, b) => a - b);
+```
+
+#### Fixed (string comparison)
+
+```tsx
+items.sort((a, b) => a.localeCompare(b));
 ```
 
 #### Do

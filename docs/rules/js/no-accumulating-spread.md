@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (pushing onto the accumulator changes the callback's shape; the author rewrites it) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a push onto an array-literal start value nothing else holds is auto; any other start value, a nested function in the elements, or the object form is a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `biome/performance/noAccumulatingSpread` |
@@ -133,6 +133,15 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+#### Fixed
+
+```js
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 #### Do
 
 ```js
@@ -148,6 +157,15 @@ const ids = rows.reduce((acc, r) => {
 
 ```jsx
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+#### Fixed
+
+```jsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 #### Do
@@ -167,6 +185,15 @@ const ids = rows.reduce((acc, r) => {
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+#### Fixed
+
+```ts
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 #### Do
 
 ```ts
@@ -182,6 +209,15 @@ const ids = rows.reduce((acc, r) => {
 
 ```tsx
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+#### Fixed
+
+```tsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 #### Do

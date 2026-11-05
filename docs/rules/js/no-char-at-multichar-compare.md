@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the code meant `startsWith`, a `slice` or a one-character string is the author's; the code is wrong in each case differently) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`startsWith` is one reading of the comparison; a `slice` or a one-character string is another, so the author confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `oxlint/bad-char-at-comparison`, `eslint-plugin-unicorn/no-invalid-character-comparison` |
@@ -136,6 +136,14 @@ if (line.charAt(0) === "//") {
 }
 ```
 
+#### Fixed
+
+```js
+if (line.startsWith("//", 0)) {
+  skip();
+}
+```
+
 #### Do
 
 ```js
@@ -150,6 +158,14 @@ if (line.startsWith("//", 0)) {
 
 ```jsx
 if (line.charAt(0) === "//") {
+  skip();
+}
+```
+
+#### Fixed
+
+```jsx
+if (line.startsWith("//", 0)) {
   skip();
 }
 ```
@@ -172,6 +188,14 @@ if (line.charAt(0) === "//") {
 }
 ```
 
+#### Fixed
+
+```ts
+if (line.startsWith("//", 0)) {
+  skip();
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +210,14 @@ if (line.startsWith("//", 0)) {
 
 ```tsx
 if (line.charAt(0) === "//") {
+  skip();
+}
+```
+
+#### Fixed
+
+```tsx
+if (line.startsWith("//", 0)) {
   skip();
 }
 ```

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (dropping the tag is safe only once the author confirms no escape was meant to be added) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (without a backslash the cooked and raw strings are identical, so dropping the tag changes nothing) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `biome/complexity/noUselessStringRaw` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>            # the resolved setting, and where
 const p = String.raw`/usr/local`;
 ```
 
+#### Fixed
+
+```js
+const p = `/usr/local`;
+```
+
 #### Do
 
 ```js
@@ -145,6 +151,12 @@ const p = `/usr/local`;
 
 ```jsx
 const p = String.raw`/usr/local`;
+```
+
+#### Fixed
+
+```jsx
+const p = `/usr/local`;
 ```
 
 #### Do
@@ -161,6 +173,12 @@ const p = `/usr/local`;
 const p = String.raw`/usr/local`;
 ```
 
+#### Fixed
+
+```ts
+const p = `/usr/local`;
+```
+
 #### Do
 
 ```ts
@@ -173,6 +191,12 @@ const p = `/usr/local`;
 
 ```tsx
 const p = String.raw`/usr/local`;
+```
+
+#### Fixed
+
+```tsx
+const p = `/usr/local`;
 ```
 
 #### Do

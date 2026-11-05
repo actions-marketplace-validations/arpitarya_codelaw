@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`push` mutates the array in place, which other holders of the old array would see) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`push` mutates the array in place, which other holders of the old array would see, and `concat` of a non-array adds the value while a spread throws) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-array-concat-in-loop` |
@@ -135,6 +135,14 @@ for (const page of pages) {
 }
 ```
 
+#### Fixed
+
+```js
+for (const page of pages) {
+  rows.push(...page.rows);
+}
+```
+
 #### Do
 
 ```js
@@ -150,6 +158,14 @@ for (const page of pages) {
 ```jsx
 for (const page of pages) {
   rows = rows.concat(page.rows);
+}
+```
+
+#### Fixed
+
+```jsx
+for (const page of pages) {
+  rows.push(...page.rows);
 }
 ```
 
@@ -171,6 +187,14 @@ for (const page of pages) {
 }
 ```
 
+#### Fixed
+
+```ts
+for (const page of pages) {
+  rows.push(...page.rows);
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +210,14 @@ for (const page of pages) {
 ```tsx
 for (const page of pages) {
   rows = rows.concat(page.rows);
+}
+```
+
+#### Fixed
+
+```tsx
+for (const page of pages) {
+  rows.push(...page.rows);
 }
 ```
 

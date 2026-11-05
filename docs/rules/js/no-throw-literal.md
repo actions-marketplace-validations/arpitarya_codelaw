@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the error class and message are the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the literal is wrapped in a new Error, which catchers testing `typeof` or the value will see as a different object; the reviewer picks the error class and message) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-throw-literal` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>       # the resolved setting, and where it c
 throw 'not found';
 ```
 
+#### Fixed
+
+```js
+throw new Error('not found');
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ throw new Error('not found');
 
 ```jsx
 throw 'not found';
+```
+
+#### Fixed
+
+```jsx
+throw new Error('not found');
 ```
 
 #### Do
@@ -164,6 +176,12 @@ throw new Error('not found');
 throw 'not found';
 ```
 
+#### Fixed
+
+```ts
+throw new Error('not found');
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ throw new Error('not found');
 
 ```tsx
 throw 'not found';
+```
+
+#### Fixed
+
+```tsx
+throw new Error('not found');
 ```
 
 #### Do

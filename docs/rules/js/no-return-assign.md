@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (it may be a comparison or an assignment; the author decides) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (re-reading a plain identifier after assigning it gives the assigned value, so `return x = e` becomes `x = e; return x;` with the same behaviour; member targets (a getter may run) report suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-return-assign` |
@@ -138,6 +138,14 @@ function set(v) {
 }
 ```
 
+#### Fixed
+
+```js
+function set(v) {
+  value = v; return value;
+}
+```
+
 #### Do
 
 ```js
@@ -154,6 +162,14 @@ function set(v) {
 ```jsx
 function set(v) {
   return value = v;
+}
+```
+
+#### Fixed
+
+```jsx
+function set(v) {
+  value = v; return value;
 }
 ```
 
@@ -176,6 +192,14 @@ function set(v) {
 }
 ```
 
+#### Fixed
+
+```ts
+function set(v) {
+  value = v; return value;
+}
+```
+
 #### Do
 
 ```ts
@@ -192,6 +216,14 @@ function set(v) {
 ```tsx
 function set(v) {
   return value = v;
+}
+```
+
+#### Fixed
+
+```tsx
+function set(v) {
+  value = v; return value;
 }
 ```
 

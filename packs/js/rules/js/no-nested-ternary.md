@@ -2,9 +2,8 @@
 id: js/no-nested-ternary
 title: "No nested conditional expressions"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the clearer form — `if`, `switch` or a lookup table — is the author's to choose"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a nested conditional that is the whole value of a `return` or an arrow's concise body becomes an exact if/return chain; nesting elsewhere (declarations, arguments, parentheses) carries no edit"
 stability: preview
 ported_from: [eslint/no-nested-ternary, eslint-plugin-sonarjs/no-nested-conditional, eslint-plugin-unicorn/no-nested-ternary]
 since: 0.5.0
@@ -16,13 +15,42 @@ A conditional expression does not contain another one.
 
 ```codelaw
 match:
-  kind: ternary_expression
-  has:
-    any:
-      - kind: ternary_expression
-      - kind: parenthesized_expression
-        has: { kind: ternary_expression }
+  any:
+    - kind: ternary_expression
+      inside: { kind: return_statement, stopBy: neighbor, pattern: $RET }
+      all:
+        - has: { field: condition, pattern: $A1 }
+        - has: { field: consequence, pattern: $X1 }
+        - has:
+            field: alternative
+            kind: ternary_expression
+            all:
+              - has: { field: condition, pattern: $B1 }
+              - has: { field: consequence, pattern: $Y1 }
+              - has: { field: alternative, pattern: $Z1 }
+    - kind: ternary_expression
+      pattern: $T2
+      inside: { kind: arrow_function, field: body, stopBy: neighbor }
+      all:
+        - has: { field: condition, pattern: $A2 }
+        - has: { field: consequence, pattern: $X2 }
+        - has:
+            field: alternative
+            kind: ternary_expression
+            all:
+              - has: { field: condition, pattern: $B2 }
+              - has: { field: consequence, pattern: $Y2 }
+              - has: { field: alternative, pattern: $Z2 }
+    - kind: ternary_expression
+      has:
+        any:
+          - kind: ternary_expression
+          - kind: parenthesized_expression
+            has: { kind: ternary_expression }
 message: "Do not nest conditional expressions"
+fix:
+  - replace: { target: $RET, with: "if ($A1) return $X1; if ($B1) return $Y1; return $Z1;" }
+  - replace: { target: $T2, with: "{ if ($A2) return $X2; if ($B2) return $Y2; return $Z2; }" }
 ```
 
 ## How to fix
@@ -36,7 +64,17 @@ message: "Do not nest conditional expressions"
 #### Don't
 
 ```js
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```js
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -54,7 +92,17 @@ function size(n) {
 #### Don't
 
 ```jsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```jsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -72,7 +120,17 @@ function size(n) {
 #### Don't
 
 ```ts
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```ts
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do
@@ -90,7 +148,17 @@ function size(n) {
 #### Don't
 
 ```tsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+#### Fixed
+
+```tsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 #### Do

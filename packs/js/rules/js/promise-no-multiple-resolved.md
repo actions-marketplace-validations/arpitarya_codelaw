@@ -2,9 +2,8 @@
 id: js/promise-no-multiple-resolved
 title: "A promise executor settles once on each path"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the first or the second call is the right one is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "early `return` also skips the later statements and deleting the late call hides the bug; the reviewer picks which call is the right one"
 stability: preview
 ported_from: [eslint-plugin-promise/no-multiple-resolved]
 since: 0.5.0
@@ -23,7 +22,7 @@ utils:
       has: { field: function, kind: identifier, regex: '^(resolve|reject)$' }
 match:
   matches: settle
-  follows: { matches: settle, stopBy: end }
+  follows: { matches: settle, pattern: $EARLY, stopBy: end }
   inside:
     stopBy: end
     any: [{kind: arrow_function}, {kind: function_expression}]
@@ -33,11 +32,19 @@ match:
         kind: new_expression
         has: { field: constructor, regex: '^Promise$' }
 message: "The promise is already settled by an earlier call in this block; this one is ignored"
+fix:
+  choices:
+    - label: return from the earlier call
+      fix:
+        - insert-before: { target: $EARLY, text: "return " }
+    - label: drop the later call
+      fix:
+        - remove
 ```
 
 ## How to fix
 
-1. Add the missing `return` after the first call, or delete the call that should not run.
+1. Add the missing `return` after the first call, or delete the call that should not run; the fix offers both.
 
 ## Examples
 
@@ -50,6 +57,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+#### Fixed (return from the earlier call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 
@@ -74,6 +100,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+#### Fixed (return from the earlier call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 #### Do
 
 ```jsx
@@ -95,6 +140,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+#### Fixed (return from the earlier call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 #### Do
 
 ```ts
@@ -113,6 +177,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+#### Fixed (return from the earlier call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 

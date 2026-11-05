@@ -2,9 +2,8 @@
 id: js/require-unicode-regexp
 title: "Regular expressions use the u or v flag"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error; the reviewer confirms the pattern still compiles"
 stability: preview
 ported_from: [eslint/require-unicode-regexp]
 since: 0.5.0
@@ -20,11 +19,13 @@ match:
   kind: regex
   not: { has: { kind: regex_flags, regex: '[uv]' } }
 message: "Add the `u` (or `v`) flag"
+fix:
+  - insert-after: "u"
 ```
 
 ## How to fix
 
-1. Add `u` after the closing slash and check that the pattern still compiles.
+1. Check the pattern still compiles with the `u` flag.
 
 ## Examples
 
@@ -34,6 +35,12 @@ message: "Add the `u` (or `v`) flag"
 
 ```js
 const word = /\w+/g;
+```
+
+#### Fixed
+
+```js
+const word = /\w+/gu;
 ```
 
 #### Do
@@ -50,6 +57,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+#### Fixed
+
+```jsx
+const word = /\w+/gu;
+```
+
 #### Do
 
 ```jsx
@@ -64,6 +77,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+#### Fixed
+
+```ts
+const word = /\w+/gu;
+```
+
 #### Do
 
 ```ts
@@ -76,6 +95,12 @@ const word = /\w+/gu;
 
 ```tsx
 const word = /\w+/g;
+```
+
+#### Fixed
+
+```tsx
+const word = /\w+/gu;
 ```
 
 #### Do

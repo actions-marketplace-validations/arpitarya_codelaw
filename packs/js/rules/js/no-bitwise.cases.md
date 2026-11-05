@@ -31,3 +31,27 @@ const m = ~mask;
 ```expect
 1:11 js/no-bitwise
 ```
+
+### case: a bitwise or in a condition becomes a logical or
+
+```js
+while (a | b) run();
+```
+
+```expect
+1:8 js/no-bitwise
+```
+
+```fixed
+while (a || b) run();
+```
+
+### case: a bitwise and outside a condition carries no edit
+
+```js
+const m = a & b;
+```
+
+```expect
+1:11 js/no-bitwise
+```
