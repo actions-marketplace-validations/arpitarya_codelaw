@@ -8223,8 +8223,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "reordering decorators changes which wrapper is connected",
+   "fix": "suggest",
+   "fix_reason": "swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
