@@ -675,11 +675,11 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/member-ordering`](ts/member-ordering.md) | Class members are in a set order | `manual` | — | *[rules] only* |
 | [`ts/method-signature-style`](ts/method-signature-style.md) | Property signatures for methods | `auto` | — | *[rules] only* |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
-| [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `manual` | — | *[rules] only* |
+| [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `suggest` | — | *[rules] only* |
 | [`ts/no-const-enum`](ts/no-const-enum.md) | enum, not const enum | `auto` | — | `ts/recommended` |
 | [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
 | [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
-| [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `manual` | — | `ts/recommended` |
+| [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `suggest` | — | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `auto` | — | `ts/recommended` |
 | [`ts/no-explicit-any`](ts/no-explicit-any.md) | No explicit any | `suggest` | — | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](ts/no-extra-non-null-assertion.md) | No repeated non-null assertions | `auto` | — | `ts/recommended` |
@@ -695,11 +695,11 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-namespace`](ts/no-namespace.md) | No TypeScript namespaces | `manual` | — | `ts/recommended` |
 | [`ts/no-non-null-asserted-nullish-coalescing`](ts/no-non-null-asserted-nullish-coalescing.md) | No ! before ?? | `suggest` | — | *[rules] only* |
 | [`ts/no-non-null-asserted-optional-chain`](ts/no-non-null-asserted-optional-chain.md) | No non-null assertion after an optional chain | `suggest` | — | `ts/recommended` |
-| [`ts/no-non-null-assertion`](ts/no-non-null-assertion.md) | No non-null assertions | `manual` | — | *[rules] only* |
-| [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `manual` | — | `ts/recommended` |
+| [`ts/no-non-null-assertion`](ts/no-non-null-assertion.md) | No non-null assertions | `suggest` | — | *[rules] only* |
+| [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `suggest` | — | `ts/recommended` |
 | [`ts/no-restricted-types`](ts/no-restricted-types.md) | No type the project restricts | `suggest` | `types` | *[rules] only* |
 | [`ts/no-this-alias`](ts/no-this-alias.md) | No aliasing this to a variable | `manual` | — | `ts/recommended` |
-| [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `manual` | — | *[rules] only* |
+| [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `auto` | — | *[rules] only* |
 | [`ts/no-unnecessary-type-constraint`](ts/no-unnecessary-type-constraint.md) | No extends any or extends unknown on a type parameter | `suggest` | — | `ts/recommended` |
 | [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |

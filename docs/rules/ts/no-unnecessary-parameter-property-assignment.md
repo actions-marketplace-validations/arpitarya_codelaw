@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the assignment is safe only if nothing changes the value in between) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the assignment is the constructor's first statement, so nothing can change the value before it; a later one is reported as a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `typescript-eslint/no-unnecessary-parameter-property-assignment` |
@@ -139,6 +139,15 @@ class A {
 }
 ```
 
+#### Fixed
+
+```ts
+class A {
+  constructor(private x: number) {
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -155,6 +164,15 @@ class A {
 class A {
   constructor(private x: number) {
     this.x = x;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A {
+  constructor(private x: number) {
   }
 }
 ```

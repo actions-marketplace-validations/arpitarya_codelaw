@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the `!` may have been meant as `!==`; the author decides which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `!` may have been meant as the start of `!=`/`!==` or as a stray assertion; the reviewer picks which) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `typescript-eslint/no-confusing-non-null-assertion` |
@@ -135,6 +135,18 @@ codelaw config --print --for <file>                      # the resolved setting,
 if (user! === other) run();
 ```
 
+#### Fixed (drop the !)
+
+```ts
+if (user === other) run();
+```
+
+#### Fixed (not equal)
+
+```ts
+if (user !== other) run();
+```
+
 #### Do
 
 ```ts
@@ -147,6 +159,18 @@ if (user === other) run();
 
 ```tsx
 if (user! === other) run();
+```
+
+#### Fixed (drop the !)
+
+```tsx
+if (user === other) run();
+```
+
+#### Fixed (not equal)
+
+```tsx
+if (user !== other) run();
 ```
 
 #### Do
