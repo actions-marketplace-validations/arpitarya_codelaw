@@ -168,6 +168,43 @@ fn check_changed_since_judges_the_range_commits_and_skips_fixups() {
 }
 
 #[test]
+fn a_preset_shares_the_git_rules_settings_and_the_project_table_wins() {
+    if !have_git() {
+        return;
+    }
+    let d = temp("preset", "");
+    // A pack whose manifest name is first-party, holding only a preset that
+    // sets the engine's `git/*` rules, as a team's own preset would.
+    let pack = d.join("node_modules/@codelaw/rules-js");
+    fs::create_dir_all(pack.join("presets/js")).unwrap();
+    fs::write(pack.join("codelaw-pack.toml"), "name = \"@codelaw/rules-js\"\nversion = \"0.0.1\"\nmin_codelaw = \"0.1.0\"\nlanguages = [\"javascript\"]\npresets = [\"js/team\"]\n").unwrap();
+    fs::write(
+        pack.join("presets/js/team.toml"),
+        "[rules]\n\"git/commit-message\" = { severity = \"warn\", options = { types = [\"feat\"], skip = { fixups = false } } }\n\"git/pr-size\" = { options = { max_lines = 3 } }\n",
+    )
+    .unwrap();
+    fs::write(d.join(".gitignore"), ".codelaw/cache/\nnode_modules/\n").unwrap();
+    fs::write(d.join("codelaw.toml"), "extends = [\"codelaw:js/team\"]\n").unwrap();
+    commit(&d, "base.txt", "base\n", "chore: the team preset");
+    git(&d, &["checkout", "-q", "-b", "feat/team"]);
+    commit(&d, "a.txt", &"x\n".repeat(5), "fix: a");
+    let v = json_check(&d, &[]);
+    let f = findings(&v, "git/commit-message");
+    assert_eq!(f.len(), 1, "the preset's types: `fix` is not one: {v:#}");
+    assert_eq!(f[0]["severity"], "warn", "the preset's severity");
+    assert_eq!(findings(&v, "git/pr-size").len(), 1, "the preset's `max_lines`: {v:#}");
+    // The project's `[commits]` table wins over the preset key by key; the
+    // preset's other keys stay.
+    fs::write(d.join("codelaw.toml"), "extends = [\"codelaw:js/team\"]\n[commits]\ntypes = [\"feat\", \"fix\"]\n").unwrap();
+    let v = json_check(&d, &[]);
+    assert!(findings(&v, "git/commit-message").is_empty(), "{v:#}");
+    assert_eq!(findings(&v, "git/pr-size").len(), 1, "{v:#}");
+    // And its `[rules]` severity over the preset's.
+    fs::write(d.join("codelaw.toml"), "extends = [\"codelaw:js/team\"]\n[rules]\n\"git/commit-message\" = \"error\"\n").unwrap();
+    assert_eq!(findings(&json_check(&d, &[]), "git/commit-message")[0]["severity"], "error");
+}
+
+#[test]
 fn branch_names_once_a_pattern_is_set() {
     if !have_git() {
         return;

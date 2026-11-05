@@ -66,6 +66,12 @@ pub struct RuleSet {
     /// The scopes the presets ship, in `extends` order; the project's
     /// config puts them in front of its own (SR-CONFIG decision 4).
     pub preset_scopes: Vec<PresetScope>,
+    /// What each preset sets for the engine's own `git/*` rules, in
+    /// `extends` order, labelled by the preset: the lowest layers of those
+    /// rules' settings, below the project's `[rules]` (SR-CONFIG decision
+    /// 11b, W-146). No pack holds an engine rule, so these are not in
+    /// `rules`.
+    pub engine_settings: Vec<(String, BTreeMap<String, RuleSetting>)>,
     pub fingerprint: Key,
 }
 
@@ -116,6 +122,7 @@ impl RuleSet {
         let mut loaded_packs: Vec<(PathBuf, Arc<RulePack>)> = Vec::new();
         let mut key = KeyBuilder::new("ruleset");
         let mut preset_scopes: Vec<PresetScope> = Vec::new();
+        let mut engine_settings: Vec<(String, BTreeMap<String, RuleSetting>)> = Vec::new();
 
         // Each entry, with the presets that extended it (outermost first):
         // a preset's own `extends` are resolved before its `[rules]`, so
@@ -273,6 +280,11 @@ impl RuleSet {
                 },
                 _ => pack.rules.iter().map(|r| (r.id.clone(), None)).collect(),
             };
+            let git: BTreeMap<String, RuleSetting> =
+                enabled.iter().filter(|(id, _)| id.starts_with("git/") && engine_rule(id).is_some()).filter_map(|(id, s)| Some((id.clone(), s.clone()?))).collect();
+            if !git.is_empty() {
+                engine_settings.push((label.clone(), git));
+            }
             for (id, setting) in enabled {
                 let Some(entry) = merged.get_mut(&id) else { continue };
                 if entry.source != source {
@@ -403,9 +415,13 @@ impl RuleSet {
         for p in &preset_scopes {
             key.push(format!("scope {} {} {:?}", p.preset, p.name, p.scope));
         }
+        for (label, settings) in &engine_settings {
+            key.push(format!("engine {label} {settings:?}"));
+        }
         Ok(RuleSet {
             rules: merged.into_values().collect(),
             preset_scopes,
+            engine_settings,
             packs: loaded_packs.iter().map(|(d, p)| (p.label(), d.clone())).collect(),
             warnings,
             fingerprint: key.key(),

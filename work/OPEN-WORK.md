@@ -31,9 +31,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (15)
+## Open items (14)
 
-### build (9)
+### build (8)
 
 🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep all eight 11-05; each lands with its item (W-139, W-145, W-146, W-156, W-157). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
@@ -46,9 +46,6 @@ here. Read that record before changing anything below it.
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
-
-🟢 **W-146** `agent` PR hygiene: the four `git/*` rules, `[commits]`/`[branches]`/`[pr]`, commit-msg hook, CI and Gate landed 2026-10-30; left: sharing the tables through a pack preset, other agents' shell tools. Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
-
 
 🟢 **W-156** `agent` Fix ladder (L4 rewritten 10-30): auto, else suggest for the agent, else manual by exception. Review of 717 rules: manual 577 → 147. Engine: per-finding rung, choices, `fix_exception`, ceiling. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 

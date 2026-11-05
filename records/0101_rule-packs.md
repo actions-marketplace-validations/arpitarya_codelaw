@@ -12,7 +12,7 @@ owns:
   - fixtures/react-no-context
   - crates/codelaw-cli/tests/react_no_context.rs
 laws: [L0, L2, L3, L4, L5, L6, L7]
-timestamp: 2026-10-31T09:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ---
 
@@ -139,7 +139,7 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
    - `format/unformatted` and `format/failed`, the formatter's findings in `check` ([SR-FORMATTER](0105_formatter.md) decisions 1 and 4);
    - `graph/no-deprecated-usage`, which reads the consumer's deprecations registry and belongs to no language, and runs only when the project declares deprecations; and `codelaw/stale-baseline`, a baseline entry its file has outgrown ([SR-BASELINE](0104_baseline-and-deprecations.md) decisions 2 and 6); and the dated-exception rules `codelaw/expiring-exception`, `codelaw/expired-exception`, `codelaw/exception-without-expiry` and `codelaw/exception-author` (SR-BASELINE decision 9).
    - the test rules of new code, `graph/untested-function` and `graph/function-coverage`, with `codelaw/stale-coverage` ([SR-PROJECT-GRAPH](0103_project-graph.md) decision 9). They belong to no pack and are off until the project turns them on: the engine's own preset `codelaw:tests` (`extends = ["codelaw:tests"]`, no namespace, resolved by no pack and in no `recommended`), a `[coverage]` table, or the rule named in `[rules]`. `.codelawignore`'s `codelaw/incomplete-ignore` and `codelaw/stale-ignore` (SR-BASELINE decision 12) run whenever the project has the file, since it exempts from any rule (W-158).
-   - the pull-request hygiene rules `git/commit-message`, `git/branch-name`, `git/pr-size` and `git/pr-description` (W-146): they judge commits, a branch and a pull request, not a file of any L3 language, read `[commits]`, `[branches]` and `[pr]` ([SR-CONFIG](0110_config.md) decision 11b), and run only under `--changed-since`, in the `commit-msg` hook and in the agent hook ([SR-ARCHITECTURE](0108_architecture.md) decision 14).
+   - the pull-request hygiene rules `git/commit-message`, `git/branch-name`, `git/pr-size` and `git/pr-description` (W-146): they judge commits, a branch and a pull request, not a file of any L3 language, read `[commits]`, `[branches]` and `[pr]` ([SR-CONFIG](0110_config.md) decision 11b), and run only under `--changed-since`, in the `commit-msg` hook and in the agent hook ([SR-ARCHITECTURE](0108_architecture.md) decision 14). A preset's `[rules]` may set them though no pack holds them — the one exception to a preset naming only its own pack's rules, checked when the pack loads — so a preset shares those tables (SR-CONFIG decision 11b; `RuleSet::engine_settings`).
 
    Every other rule codelaw publishes lives in a pack.
 2. **The twenty-five first-party packs, their registries and their presets** are §1's table. A library pack (`tanstack-query`, `redux-toolkit`) checks one library's API in the JS-family languages; its rules that follow a hook or a constructor check that it is imported from that library, so the same name from elsewhere is left alone.

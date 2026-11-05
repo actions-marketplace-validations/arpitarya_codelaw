@@ -25,7 +25,7 @@ pub struct InitArgs {
     /// Agent files to write: claude, cowork, copilot, codex, kiro (SR-AGENT-SURFACES).
     #[arg(long, value_delimiter = ',')]
     agents: Vec<String>,
-    /// Install git hooks: `pre-commit` (blocks) and `post-commit` (reminds, never blocks); both when none is named. In a repo codelaw already configures, it installs only the hooks (SR-CLI-MCP decision 7).
+    /// Install git hooks: `pre-commit` (blocks), `post-commit` (reminds, never blocks) and `commit-msg` (checks the message against `[commits]`); `pre-commit` and `post-commit` when none is named, `commit-msg` only when named. In a repo codelaw already configures, it installs only the hooks (SR-CLI-MCP decision 7).
     #[arg(long, value_delimiter = ',', num_args = 0.., value_name = "HOOKS")]
     git_hooks: Option<Vec<String>>,
     /// Write a CI workflow. `github` alone: the check workflow, which runs codelaw's GitHub Action at this version (SR-CLI-MCP decision 12a). With `--autofix` (`github` or `gitlab`): the scheduled auto-fix workflow (decision 12). In a repo codelaw already configures, it writes only the workflow.
