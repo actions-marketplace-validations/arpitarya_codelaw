@@ -3,6 +3,8 @@ id: py/unused-annotation
 title: "Every annotated local is used"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/F842]
 since: 0.1.0

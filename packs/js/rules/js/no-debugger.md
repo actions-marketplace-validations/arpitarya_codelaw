@@ -3,6 +3,8 @@ id: js/no-debugger
 title: "No debugger statements"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a debugging aid put there on purpose while debugging, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [eslint/no-debugger]
 since: 0.1.0

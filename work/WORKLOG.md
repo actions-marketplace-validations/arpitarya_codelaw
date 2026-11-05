@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-166 step 1: `on_edit`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 1 — `on_edit` per rule and `[fix] on_edit`; save and the hook honour it; the 14 defaults.
+- **Done:** loader, rule format, engine (`FixOptions.on_edit`), hook, LSP fix-all, `config --print`, `rules --why`, schema, USAGE; 14 rule files `on_edit: false`.
+- **Decided / left open:** the LSP's `source.fixAll.codelaw` counts as save (the proposal's §1.1 table); `on_edit: false` needs `fix_reason:` (2b's "says so in one line").
+- **Mistakes:** the end-of-turn auto-land landed the half-built code (c697d2ac) before its records; the records followed in this change.
+- **Next:** W-166 step 2, `[targets]`.
+
+---
+
 ## 2026-11-05 — W-103 closed: the spell pack byte-identical on npm and PyPI  ·  Claude Code (Opus 5.5)
 
 - **Asked:** finish W-103 — prove DoD 5 locally, mark SR-SPELL built, close the item.

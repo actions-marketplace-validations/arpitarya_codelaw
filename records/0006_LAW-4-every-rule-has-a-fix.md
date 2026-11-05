@@ -182,7 +182,7 @@ a diff.
       ([SR-RULE-FORMAT](0112_rule-format.md) decision 2b), and a project may
       turn it either way ([SR-CONFIG](0110_config.md) decision 11e); its fix
       is still `auto` for `codelaw fix`, pre-commit and CI's `fix --check`,
-      and the hook returns it as what is left. Built: no (W-166, W-162).
+      and the hook returns it as what is left. Built: `on_edit` yes (W-166, 2026-11-05: `FixOptions.on_edit`, set by `codelaw hook` and the editor's `source.fixAll.codelaw`); the multi-file half no (W-162).
 13. **A skill serves every `manual` fix.** `codelaw-fix`
     ([SR-AGENT-SURFACES](0102_agent-surfaces.md)) reads the rule's
     `## How to fix` steps and walks the person or agent through them; a rule

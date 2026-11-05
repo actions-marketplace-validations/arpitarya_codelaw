@@ -147,6 +147,10 @@ pub enum RuleSetting {
         /// that sets `severity = "off"` takes one.
         #[serde(default)]
         reason: Option<String>,
+        /// Whether the rule's `auto` fix runs on save and from the agent
+        /// hook (SR-CONFIG decision 11e); either direction.
+        #[serde(default)]
+        on_edit: Option<bool>,
     },
     /// Not a rule's setting: `[rules] require_reason`, which the loader
     /// takes out of `[rules]`. Anywhere else it is a load error.
@@ -174,6 +178,15 @@ impl RuleSetting {
         match self {
             RuleSetting::Severity(_) | RuleSetting::Flag(_) => None,
             RuleSetting::Full { fix, .. } => fix.as_deref(),
+        }
+    }
+
+    /// Whether the rule's `auto` fix runs on save and from the agent hook,
+    /// as written (SR-CONFIG decision 11e).
+    pub fn on_edit(&self) -> Option<bool> {
+        match self {
+            RuleSetting::Full { on_edit, .. } => *on_edit,
+            _ => None,
         }
     }
 

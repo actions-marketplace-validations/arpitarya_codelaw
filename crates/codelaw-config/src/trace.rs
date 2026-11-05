@@ -219,6 +219,8 @@ impl Config {
         push("cache.max_size", size(self.cache_max_size()), s);
         let (_, s) = root_key(&["fix", "external_timeout"], |r| r.fix.external_timeout.map(|_| Value::Null), Value::Null);
         push("fix.external_timeout", duration(self.external_timeout()), s);
+        let (v, s) = root_key(&["fix", "on_edit"], |r| r.fix.on_edit.map(|x| json!(x)), Value::Null);
+        push("fix.on_edit", v, s);
         let (v, s) = root_key(&["adapters", "enabled"], |r| r.adapters.enabled.as_ref().map(|x| json!(x)), Value::Null);
         push("adapters.enabled", v, s);
         let (_, s) = root_key(&["adapters", "timeout"], |r| r.adapters.timeout.map(|_| Value::Null), Value::Null);
@@ -418,6 +420,13 @@ impl Config {
     /// Every setting of rule `id` that applies to `file` (the root when
     /// `None`), lowest precedence first, with its source: each config's
     /// `[rules]`, then the matching `[[overrides]]` (decision 4).
+    /// `[fix] on_edit` and the line that set it (SR-CONFIG decision 11e);
+    /// `None` when unset.
+    pub fn fix_on_edit_source(&self) -> Option<(bool, String)> {
+        let root = self.files.first()?;
+        root.raw.fix.on_edit.map(|v| (v, self.source(root, &["fix", "on_edit"])))
+    }
+
     pub fn rule_setting_sources(&self, file: Option<&Path>, id: &str) -> Vec<(String, &RuleSetting)> {
         let target = self.target(file);
         let mut out = Vec::new();

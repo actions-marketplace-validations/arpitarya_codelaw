@@ -3,6 +3,8 @@ id: py/empty-type-checking-block
 title: "No empty TYPE_CHECKING block"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/TC005]
 since: 0.5.0

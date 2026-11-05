@@ -215,6 +215,7 @@ struct Frontmatter {
     fix_skill: Option<String>,
     fix_exception: Option<String>,
     fix_pending: Option<String>,
+    on_edit: Option<bool>,
     stability: Option<String>,
     host: Option<String>,
     invariant: Option<OneOrMany>,
@@ -342,6 +343,10 @@ pub struct RuleFile {
     /// A `manual` rule W-156 has not yet moved up the ladder: what it waits
     /// for. Stands in for `fix_exception` until the move lands.
     pub fix_pending: Option<String>,
+    /// Whether the rule's `auto` fix runs on save and from the per-edit
+    /// agent hook (SR-RULE-FORMAT decision 2b); `true` unless the rule
+    /// says `on_edit: false`. A project overrides it (SR-CONFIG 11e).
+    pub on_edit: bool,
     pub stability: Stability,
     pub host: Option<Language>,
     pub invariants: Vec<String>,
@@ -529,7 +534,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
             let msg = if msg.contains("unknown field") {
                 let valid = [
                     "id", "title", "languages", "scope", "files", "exclude", "severity", "fix", "fix_reason", "fix_skill",
-                    "fix_exception", "fix_pending", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
+                    "fix_exception", "fix_pending", "on_edit", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
                 ];
                 let unknown = msg.split('`').nth(1).unwrap_or_default();
                 let near = codelaw_config::did_you_mean(unknown, valid).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -614,6 +619,11 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         && fm.fix_reason.as_deref().is_none_or(|r| r.trim().is_empty())
     {
         err(&mut errors, 2, format!("`fix: {class}` needs `fix_reason:`, one line on why it can't be automatic (L4 decision 2)"));
+    }
+    // SR-RULE-FORMAT decision 2b: a rule that keeps its fix off save says
+    // what work in progress the fix would delete.
+    if fm.on_edit == Some(false) && fm.fix_reason.as_deref().is_none_or(|r| r.trim().is_empty()) {
+        err(&mut errors, 2, "`on_edit: false` needs `fix_reason:`, one line on what work in progress the fix would delete (SR-RULE-FORMAT decision 2b)".into());
     }
     if let Some(skill) = &fm.fix_skill
         && !KNOWN_SKILLS.contains(&skill.as_str())
@@ -947,6 +957,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         severity,
         fix: fix.expect("checked above"),
         fix_reason: fm.fix_reason,
+        on_edit: fm.on_edit.unwrap_or(true),
         fix_skill: fm.fix_skill,
         fix_exception,
         fix_pending,
@@ -1210,6 +1221,17 @@ let a: number = 1;
         assert_eq!(r.examples[0].choices[0].0, "keep const");
         let e = errors(&labelled.replace("Fixed (keep const)", "Fixed (keep var)"));
         assert!(e.iter().any(|m| m.contains("`#### Fixed (keep var)` names no choice")), "{e:?}");
+    }
+
+    #[test]
+    fn on_edit_defaults_true_and_false_needs_a_reason() {
+        let r = parse_rule(Path::new("acme/no-var.md"), GOOD, Some("acme/no-var")).unwrap();
+        assert!(r.on_edit);
+        let off = GOOD.replace("fix: auto\n", "fix: auto\non_edit: false\n");
+        let e = errors(&off);
+        assert!(e.iter().any(|m| m.contains("`on_edit: false` needs `fix_reason:`")), "{e:?}");
+        let r = parse_rule(Path::new("acme/no-var.md"), &off.replace("on_edit: false\n", "on_edit: false\nfix_reason: a draft keeps it\n"), Some("acme/no-var")).unwrap();
+        assert!(!r.on_edit);
     }
 
     #[test]

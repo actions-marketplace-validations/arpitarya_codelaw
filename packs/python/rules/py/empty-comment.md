@@ -3,6 +3,8 @@ id: py/empty-comment
 title: "No empty comments"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/PLR2044]
 since: 0.5.0

@@ -76,6 +76,10 @@
             "reason": {
               "description": "Why the rule is turned off (SR-CONFIG decision 11c): only with `severity = \"off\"`. Mandatory when `[rules] require_reason` is true.",
               "type": "string"
+            },
+            "on_edit": {
+              "description": "Whether the rule's `auto` fix runs on save and from the agent hook (SR-CONFIG decision 11e); `false` leaves it for `codelaw fix`, pre-commit and CI. Either direction; over `[fix] on_edit` and the rule's own default.",
+              "type": "boolean"
             }
           }
         }

@@ -752,7 +752,9 @@ impl<'c> Server<'c> {
             && let Some((project, entry)) = self.project_of(doc)
         {
             let body = doc.body().0;
-            let fixed = project.fix_source(&entry.rel, entry.language, body, false);
+            // Save: a rule whose `on_edit` is `false` waits for `codelaw fix`
+            // (SR-LAW-4 decision 12); its quick fix is still offered above.
+            let fixed = project.fix_source_on_edit(&entry.rel, entry.language, body);
             if fixed.changed() {
                 let edit = TextEdit { range: idx.range(shift, doc.text.len()), new_text: fixed.fixed };
                 out.push(CodeActionOrCommand::CodeAction(CodeAction {

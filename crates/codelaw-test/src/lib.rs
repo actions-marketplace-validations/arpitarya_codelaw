@@ -79,7 +79,7 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     }
     let mut defaults = rule.default_options();
     defaults.extend(options.iter().map(|(k, v)| (k.clone(), v.clone())));
-    let default = RuleConfig { severity: Some(rule.severity), options: defaults, fix: None };
+    let default = RuleConfig { severity: Some(rule.severity), options: defaults, fix: None, on_edit: None };
     let lr = LoadedRule {
         rule: Arc::new(rule),
         default: Some(default),

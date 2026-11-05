@@ -63,6 +63,10 @@ pub struct RuleWhy {
     /// The rung a config entry lowered it to, and the entry that did
     /// (SR-LAW-4 decision 16): for `--for`'s file, else the project root.
     pub fix_lowered: Option<(String, String)>,
+    /// Whether its `auto` fix runs on save and from the agent hook, and
+    /// what set it (SR-CONFIG decision 11e): for `--for`'s file, else the
+    /// project root.
+    pub on_edit: (bool, String),
     pub for_file: Option<WhyForFile>,
 }
 
@@ -138,6 +142,28 @@ impl Project {
     }
 
     /// A rule of this project by id, or an error naming the nearest id.
+    /// Whether `r`'s `auto` fix runs on save and from the agent hook under
+    /// `layers`, and what set it (SR-CONFIG decision 11e). Lowest first:
+    /// the rule's own default, `[fix] on_edit`, then the rule entries in
+    /// layer order, the last naming it winning.
+    pub fn on_edit(&self, r: &LoadedRule, layers: &[codelaw_config::Layer]) -> (bool, String) {
+        if let Some((v, source)) = layers.iter().rev().find_map(|l| l.rules.get(&r.rule.id).and_then(|s| s.on_edit()).map(|v| (v, l.source.clone()))) {
+            return (v, source);
+        }
+        if let Some(set) = self.config.fix_on_edit_source() {
+            return set;
+        }
+        let own = if r.rule.on_edit { "the rule's default" } else { "the rule's default (`on_edit: false`)" };
+        (r.rule.on_edit, own.to_owned())
+    }
+
+    /// The rules whose `auto` fix waits for `codelaw fix` in `abs`: save
+    /// and the agent hook leave them (SR-LAW-4 decision 12).
+    pub(crate) fn on_edit_held(&self, abs: &Path) -> std::collections::BTreeSet<String> {
+        let layers = self.config.layers_for(abs);
+        self.compiled.iter().filter(|c| !self.on_edit(&c.loaded, &layers).0).map(|c| c.id().to_owned()).collect()
+    }
+
     pub fn find_rule(&self, id: &str) -> Result<&LoadedRule, EngineError> {
         self.rules.get(id).ok_or_else(|| {
             let near = codelaw_config::did_you_mean(id, self.rules.rules.iter().map(|r| r.rule.id.as_str()))
@@ -166,6 +192,7 @@ impl Project {
             preview: r.preview_blocked,
             fix: r.rule.fix.name().to_owned(),
             fix_lowered: None,
+            on_edit: self.on_edit(&r, &self.config.layers_for(self.root())),
             for_file: None,
         };
         let lowered = |layers: &[codelaw_config::Layer]| -> Option<(String, String)> {
@@ -181,6 +208,7 @@ impl Project {
         let (abs, rel, language) = self.locate(file)?;
         let layers = self.config.layers_for(&abs);
         why.fix_lowered = lowered(&layers);
+        why.on_edit = self.on_edit(&r, &layers);
         let set_by = layers
             .iter()
             .filter(|l| l.rules.contains_key(id))
@@ -189,6 +217,9 @@ impl Project {
                 let mut v = s.severity().unwrap_or("(options)").to_owned();
                 if let Some(f) = s.fix() {
                     v.push_str(&format!(", fix = {f}"));
+                }
+                if let Some(o) = s.on_edit() {
+                    v.push_str(&format!(", on_edit = {o}"));
                 }
                 (l.source.clone(), v)
             })

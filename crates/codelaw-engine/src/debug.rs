@@ -55,6 +55,13 @@ impl Project {
                 let at = sources.iter().rev().find(|(_, s)| s.fix().is_some()).map(|(s, _)| s.clone()).unwrap_or_default();
                 out.push(Traced { key: format!("rules.{}.fix", serde_json::to_string(id).expect("a string")), value: json!(f.name()), source: at });
             }
+            // Whether its `auto` fix runs on save and from the agent hook,
+            // when the rule or the config says other than the default
+            // (SR-CONFIG decision 11e).
+            let (on_edit, at) = self.on_edit(r, &layers);
+            if !on_edit || !at.starts_with("the rule's default") {
+                out.push(Traced { key: format!("rules.{}.on_edit", serde_json::to_string(id).expect("a string")), value: json!(on_edit), source: at });
+            }
             // Why the rule is off, from the entry that turned it off
             // (SR-CONFIG decision 11c).
             if severity == "off"
