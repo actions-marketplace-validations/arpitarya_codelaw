@@ -4,6 +4,7 @@ title: "A property returns a value"
 languages: [python]
 fix: manual
 fix_reason: "what the property returns is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [ruff/RUF066]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "At most ten imports in a module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the module is a design decision"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/max-dependencies]
 since: 0.5.0

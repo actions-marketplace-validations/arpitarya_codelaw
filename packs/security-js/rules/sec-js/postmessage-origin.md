@@ -4,6 +4,7 @@ title: "postMessage names its target, a message handler checks the sender"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the origin to name is known only to the application"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [346], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

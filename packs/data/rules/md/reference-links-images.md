@@ -4,6 +4,7 @@ title: "Reference links use a label that is defined"
 languages: [markdown]
 fix: manual
 fix_reason: "where the reference should point needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   ignored_labels: { type: "string[]", default: ["x"], description: "labels never reported (`x` is a task-list checkbox)" }

@@ -4,6 +4,7 @@ title: "No new or class prefix in names"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-keyword-prefix]
 since: 0.5.0

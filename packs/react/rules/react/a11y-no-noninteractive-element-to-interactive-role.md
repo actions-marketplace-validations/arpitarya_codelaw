@@ -4,6 +4,7 @@ title: "Non-interactive elements keep their role"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the fix is the native control, which changes the markup"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-noninteractive-element-to-interactive-role]
 since: 0.5.0

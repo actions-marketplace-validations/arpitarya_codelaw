@@ -4,6 +4,7 @@ title: "No string code in setTimeout"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "turning the string into a function means writing that code"
+fix_exception: authored
 stability: preview
 ported_from: [eslint/no-implied-eval]
 since: 0.5.0

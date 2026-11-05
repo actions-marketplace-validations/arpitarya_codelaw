@@ -4,6 +4,7 @@ title: "Parameters are not reassigned"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new variable's name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-param-reassign]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No new Promise"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "replacing an executor means choosing an `async` function or a promisified API"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-promise/avoid-new]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "`contextlib.suppress()` names an exception"
 languages: [python]
 fix: manual
 fix_reason: "the exceptions to suppress are the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B022]
 since: 0.1.0

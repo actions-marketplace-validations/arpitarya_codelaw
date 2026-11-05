@@ -4,6 +4,7 @@ title: "Promise is imported, not the global"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which promise library to import is the project's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-promise/no-native]
 since: 0.5.0

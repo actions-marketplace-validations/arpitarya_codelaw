@@ -65,16 +65,33 @@ fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
     if let Some(i) = rule_index {
         r["ruleIndex"] = json!(i);
     }
-    if d.fix != FixClass::Manual && !d.edits.is_empty() {
-        let replacements: Vec<Value> = d
-            .edits
+    if let Some(x) = d.fix_exception {
+        r["properties"]["fixException"] = json!(x.name());
+    }
+    let replacements = |edits: &[codelaw_core::TextEdit]| -> Vec<Value> {
+        edits
             .iter()
             .map(|e| json!({ "deletedRegion": { "byteOffset": e.start, "byteLength": e.end - e.start }, "insertedContent": { "text": e.text } }))
-            .collect();
+            .collect()
+    };
+    if d.fix != FixClass::Manual && !d.edits.is_empty() {
         r["fixes"] = json!([{
             "description": { "text": format!("{} fix for {}", d.fix.name(), d.rule) },
-            "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements }],
+            "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&d.edits) }],
         }]);
+    } else if d.fix != FixClass::Manual && !d.choices.is_empty() {
+        // One SARIF fix per labelled choice (L4 decision 4).
+        r["fixes"] = d
+            .choices
+            .iter()
+            .map(|c| {
+                json!({
+                    "description": { "text": format!("{}{} — suggest fix for {}", c.label, if c.default { " (default)" } else { "" }, d.rule) },
+                    "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&c.edits) }],
+                })
+            })
+            .collect::<Vec<_>>()
+            .into();
     }
     r
 }

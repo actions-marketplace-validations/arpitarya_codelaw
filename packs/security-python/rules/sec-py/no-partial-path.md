@@ -5,6 +5,7 @@ languages: [python]
 severity: warn
 fix: manual
 fix_reason: "the absolute path differs by system, so it has to come from configuration or `shutil.which` at start-up"
+fix_exception: value
 stability: preview
 ported_from: [bandit/B607, ruff/S607]
 security: { cwe: [426], owasp: ["A08:2025"], severity: low }

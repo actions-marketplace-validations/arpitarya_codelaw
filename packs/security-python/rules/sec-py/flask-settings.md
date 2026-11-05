@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
 fix_reason: "the production values come from the deployment (environment variables, a secret manager)"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [798, 352, 614], owasp: ["A02:2025"], severity: high }
 since: 0.2.0

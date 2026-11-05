@@ -4,6 +4,7 @@ title: "No catch that only rethrows"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "removing the try block changes the scope of declarations inside it"
+fix_pending: "auto"
 stability: preview
 ported_from: [eslint/no-useless-catch]
 since: 0.1.0

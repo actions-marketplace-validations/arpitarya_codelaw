@@ -4,6 +4,7 @@ title: "No archive entry name written to disk unchecked"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what to do with an entry that leaves the folder (skip, stop, report) is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B202, ruff/S202]
 security: { cwe: [22], owasp: ["A01:2025"], severity: high }

@@ -4,6 +4,7 @@ title: "No assignment a parameter property already makes"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "removing the assignment is safe only if nothing changes the value in between"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [typescript-eslint/no-unnecessary-parameter-property-assignment]
 since: 0.5.0

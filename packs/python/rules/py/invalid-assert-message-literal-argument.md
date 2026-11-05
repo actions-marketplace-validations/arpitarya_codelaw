@@ -4,6 +4,7 @@ title: "No empty-collection assert message"
 languages: [python]
 fix: manual
 fix_reason: "whether the literal was a condition or a message is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF040]
 since: 0.5.0

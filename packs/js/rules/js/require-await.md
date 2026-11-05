@@ -4,6 +4,7 @@ title: "An async function awaits something"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `async` or an `await` is missing is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/require-await]
 since: 0.5.0

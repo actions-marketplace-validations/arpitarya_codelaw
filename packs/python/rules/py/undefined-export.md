@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/__init__.py"]
 fix: manual
 fix_reason: "whether the name should be defined or dropped from `__all__` needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F822]
 since: 0.1.0

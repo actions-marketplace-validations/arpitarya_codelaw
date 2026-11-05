@@ -1006,6 +1006,8 @@ mod tests {
             source: "p".into(),
             note: None,
             data: None,
+            choices: Vec::new(),
+            fix_exception: None,
         }
     }
 

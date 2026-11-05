@@ -4,6 +4,7 @@ title: "No locals() as a template context"
 languages: [python]
 fix: manual
 fix_reason: "the context's keys are the author's to list"
+fix_pending: "suggest; needs scope-rename"
 stability: preview
 ported_from: [ruff/DJ003]
 since: 0.5.0

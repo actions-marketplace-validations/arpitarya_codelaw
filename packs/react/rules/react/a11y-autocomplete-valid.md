@@ -4,6 +4,7 @@ title: "autoComplete holds a valid token list"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the intended field name is the author's"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/autocomplete-valid]
 since: 0.5.0

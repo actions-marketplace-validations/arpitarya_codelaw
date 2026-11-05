@@ -4,6 +4,7 @@ title: 'Hugging Face downloads pin a revision'
 languages: [python]
 fix: manual
 fix_reason: "the commit hash to pin is a choice the author makes after reviewing the model"
+fix_exception: value
 stability: preview
 ported_from: [bandit/B615]
 security: { cwe: [494], owasp: ["A03:2025"], severity: medium }

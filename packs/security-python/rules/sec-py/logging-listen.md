@@ -4,6 +4,7 @@ title: "`logging.config.listen` is not used"
 languages: [python]
 fix: manual
 fix_reason: "reconfiguring a running process needs another route (a signal handler, a config reload) the author has to choose"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B612, ruff/S612]
 security: { cwe: [94], owasp: ["A08:2025"], severity: high }

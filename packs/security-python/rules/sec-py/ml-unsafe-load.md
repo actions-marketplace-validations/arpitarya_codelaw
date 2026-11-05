@@ -4,6 +4,7 @@ title: 'Model and array files are not unpickled'
 languages: [python]
 fix: manual
 fix_reason: "the replacement format (`safetensors`, `.npy` without pickle, Parquet) means converting the stored files"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [502], owasp: ["A08:2025"], severity: high }
 since: 0.2.0

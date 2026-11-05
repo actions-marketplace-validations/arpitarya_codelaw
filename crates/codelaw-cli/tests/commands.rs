@@ -278,7 +278,7 @@ fn a_rule_panic_exits_2() {
     fs::write(pack.join("codelaw-pack.toml"), "name = \"@codelaw/rules-js\"\nversion = \"0.1.0\"\nmin_codelaw = \"0.1.0\"\nlanguages = [\"javascript\"]\npresets = [\"js/recommended\"]\n").unwrap();
     fs::write(
         pack.join("rules/js/test-panic.md"),
-        "---\nid: js/test-panic\ntitle: panics\nlanguages: [javascript]\nfix: manual\nfix_reason: test\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/panic\n```\n\n## How to fix\n\n1. Nothing.\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n",
+        "---\nid: js/test-panic\ntitle: panics\nlanguages: [javascript]\nfix: manual\nfix_reason: test\nfix_exception: value\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/panic\n```\n\n## How to fix\n\n1. Nothing.\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n",
     )
     .unwrap();
     fs::write(pack.join("presets/js/recommended.toml"), "[rules]\n\"js/test-panic\" = \"warn\"\n").unwrap();
@@ -318,7 +318,7 @@ fn explain_tree_and_rules_why() {
     assert!(out.starts_with("fixture/py-no-print"), "{out}");
     let (code, out, _) = codelaw(&d, &["check", "--format", "agent"]);
     assert_eq!(code, 1);
-    assert!(out.starts_with("a.py:1:1 fixture/py-no-print print(1) in library code — fix: manual — Change it by hand."), "{out}");
+    assert!(out.starts_with("a.py:1:1 fixture/py-no-print print(1) in library code — fix: manual (value) — Change it by hand."), "{out}");
     let _ = fs::remove_dir_all(&d);
 }
 
@@ -471,7 +471,7 @@ fn hook_fixes_the_edited_file_and_returns_what_is_left() {
     let err = String::from_utf8(out.stderr).unwrap();
     assert_eq!(out.status.code(), Some(2), "{err}");
     assert!(err.contains("codelaw auto-fixed a.js: format/unformatted ×1"), "{err}");
-    assert!(err.contains("a.js:2:1 error js/for-direction") && err.contains("fix: manual — 1."), "{err}");
+    assert!(err.contains("a.js:2:1 error js/for-direction") && err.contains("fix: manual (value) — 1."), "{err}");
     assert!(err.contains("never suppress or disable a rule"), "{err}");
     let fixed = fs::read_to_string(d.join("a.js")).unwrap();
     assert!(fixed.starts_with("let a = 1;\n"), "{fixed}");

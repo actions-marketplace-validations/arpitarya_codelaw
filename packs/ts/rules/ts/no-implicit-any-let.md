@@ -4,6 +4,7 @@ title: "A let without a value has a type"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the variable's type is the author's to write"
+fix_pending: "auto-subset; needs type-info"
 stability: preview
 ported_from: [biome/suspicious/noImplicitAnyLet]
 since: 0.5.0

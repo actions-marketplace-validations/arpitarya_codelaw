@@ -5,6 +5,7 @@ languages: [json, toml]
 files: ["**/package.json", "**/pyproject.toml"]
 fix: manual
 fix_reason: "replacing a package, or accepting its licence, is a legal and product decision no tool can make"
+fix_exception: value
 stability: preview
 since: 0.5.0
 ---

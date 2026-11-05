@@ -4,6 +4,7 @@ title: "No export named default"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the statement is rewritten as `export default`"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-restricted-exports]
 since: 0.5.0

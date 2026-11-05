@@ -4,6 +4,7 @@ title: "No server environment variable in a client component, no secret in a pub
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the secret is used from decides how the code is split"
+fix_exception: restructure
 stability: preview
 security: { cwe: [200], owasp: ["A02:2025"], severity: high }
 since: 0.3.0

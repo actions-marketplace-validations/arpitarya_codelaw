@@ -4,6 +4,7 @@ title: "A shebang names python"
 languages: [python]
 fix: manual
 fix_reason: "which interpreter the script needs is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/EXE003]
 since: 0.5.0

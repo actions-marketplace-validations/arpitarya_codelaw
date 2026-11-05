@@ -4,6 +4,7 @@ title: "State is set in the constructor"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the field moves into a constructor, which may not exist yet"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/state-in-constructor]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "A starred assignment stays within Python's limits"
 languages: [python]
 fix: manual
 fix_reason: "how to restructure the unpacking is a design choice"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/F621]
 since: 0.1.0

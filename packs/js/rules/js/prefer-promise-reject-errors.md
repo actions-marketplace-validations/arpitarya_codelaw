@@ -4,6 +4,7 @@ title: "Reject with an Error"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the error class and message are the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/prefer-promise-reject-errors]
 since: 0.5.0

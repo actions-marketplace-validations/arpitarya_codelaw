@@ -4,6 +4,7 @@ title: "No reduce()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the loop needs a variable for the accumulator"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-reduce]
 since: 0.5.0

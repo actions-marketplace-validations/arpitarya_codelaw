@@ -158,8 +158,14 @@ fn l4_every_diagnostic_carries_its_fix() {
         }
         assert!(d["range"]["start"]["line"].is_u64(), "{d}");
         match class {
-            "auto" | "suggest" => assert!(!edits.is_empty(), "an {class} diagnostic without edits: {d}"),
-            "manual" => assert!(!steps.is_empty(), "a manual diagnostic without steps: {d}"),
+            "auto" => assert!(!edits.is_empty(), "an auto diagnostic without edits: {d}"),
+            // One diff, or labelled choices (SR-LAW-4 decision 4).
+            "suggest" => assert!(!edits.is_empty() || d["fix"]["choices"].as_array().is_some_and(|c| !c.is_empty()), "a suggest diagnostic without edits: {d}"),
+            // Steps and the named exception (decisions 5 and 8).
+            "manual" => {
+                assert!(!steps.is_empty(), "a manual diagnostic without steps: {d}");
+                assert!(["value", "restructure", "authored", "security"].contains(&d["fix"]["exception"].as_str().unwrap_or_default()), "a manual diagnostic without its exception: {d}");
+            }
             other => panic!("unknown fix class {other}"),
         }
     }
@@ -179,6 +185,37 @@ fn l4_the_loader_refuses_a_rule_without_a_fix() {
     let (code, _, err) = codelaw(&repo, &["rules", "lint"]);
     assert_eq!(code, 1, "{err}");
     let _ = fs::remove_dir_all(&repo);
+}
+
+#[test]
+fn l4_the_loader_refuses_a_manual_rule_without_an_exception() {
+    let repo = temp("l4-exception");
+    let rule = fs::read_to_string(fixtures().join("rules/fixture/py-no-print.md")).unwrap().replace("fix_exception: value\n", "");
+    fs::create_dir_all(repo.join(".codelaw/rules/fixture")).unwrap();
+    fs::write(repo.join(".codelaw/rules/fixture/py-no-print.md"), rule).unwrap();
+    fs::write(repo.join("a.py"), "print(1)\n").unwrap();
+    let (code, _, err) = codelaw(&repo, &["check"]);
+    assert_eq!(code, 2);
+    assert!(err.contains("needs `fix_exception:`"), "{err}");
+    let _ = fs::remove_dir_all(&repo);
+}
+
+/// SR-LAW-4 decision 6: no first-party pack ships more `manual` rules than
+/// its ceiling in `packs/fix-ladder.toml`, and every pack has one.
+#[test]
+fn l4_every_pack_is_under_its_manual_ceiling() {
+    let root = repo_root();
+    let (code, out, err) = codelaw(&root, &["rules", "--fix-stats", "--packs", "packs", "--check"]);
+    assert_eq!(code, 0, "{out}{err}");
+    let (_, json, _) = codelaw(&root, &["rules", "--fix-stats", "--packs", "packs", "--format", "json"]);
+    let v: Value = serde_json::from_str(&json).unwrap();
+    let packs = v["packs"].as_array().unwrap();
+    assert_eq!(packs.len(), fs::read_dir(root.join("packs")).unwrap().flatten().filter(|e| e.path().is_dir()).count());
+    for p in packs {
+        let manual = p["manual"].as_u64().unwrap();
+        let named: u64 = p["exceptions"].as_object().unwrap().values().map(|n| n.as_u64().unwrap()).sum();
+        assert_eq!(manual, named + p["pending"].as_u64().unwrap(), "{p}");
+    }
 }
 
 #[test]

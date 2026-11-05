@@ -5,6 +5,7 @@ languages: [toml]
 files: ["**/pyproject.toml"]
 fix: manual
 fix_reason: "a value the schema rejects is wrong in a way only its author knows how to correct"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [schemastore/pyproject.json]
 since: 0.1.0

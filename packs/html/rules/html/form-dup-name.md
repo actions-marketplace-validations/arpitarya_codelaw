@@ -4,6 +4,7 @@ title: "Form controls have unique names"
 languages: [html]
 fix: manual
 fix_reason: "renaming a control changes what the server receives"
+fix_exception: value
 stability: preview
 options:
   allowArrayBrackets: { type: "boolean", default: true, description: "let `name[]` repeat" }

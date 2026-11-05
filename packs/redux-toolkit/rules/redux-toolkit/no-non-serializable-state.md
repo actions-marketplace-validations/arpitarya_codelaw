@@ -4,6 +4,7 @@ title: "State holds only serializable values"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the data has to be stored in another shape, and the code reading it changed"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---

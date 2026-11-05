@@ -4,6 +4,7 @@ title: "No member access on an await expression"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the destructuring depends on how the value is used next"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-await-expression-member]
 since: 0.5.0

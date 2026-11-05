@@ -4,6 +4,7 @@ title: "No \\8 or \\9 escapes in strings"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the digit or a literal backslash was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-nonoctal-decimal-escape]
 since: 0.1.0

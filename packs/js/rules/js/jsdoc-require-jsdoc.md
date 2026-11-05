@@ -4,6 +4,7 @@ title: "Function declarations have JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the documentation is the author's to write"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-jsdoc]
 since: 0.5.0

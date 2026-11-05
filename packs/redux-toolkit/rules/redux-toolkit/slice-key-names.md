@@ -4,6 +4,7 @@ title: "State slices are named after their data"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the key is the state's shape, so every selector that reads it changes too"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---

@@ -4,6 +4,7 @@ title: "No async function where a `void` callback is expected"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the caller should wait for the work, or the work should handle its own errors, is the author's decision"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/no-misused-promises]
 tags: [types, async]

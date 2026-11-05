@@ -4,6 +4,7 @@ title: "Custom errors set name and extend Error"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the constructor must call `super`, and its body changes"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/custom-error-definition]
 since: 0.5.0

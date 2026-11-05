@@ -4,6 +4,7 @@ title: "No spread of an array literal"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "removing the brackets and the dots around the items is not one template edit"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-useless-spread]
 since: 0.5.0

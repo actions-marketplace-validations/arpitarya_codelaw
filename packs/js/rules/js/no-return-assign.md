@@ -4,6 +4,7 @@ title: "No assignment in a return"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "it may be a comparison or an assignment; the author decides"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-return-assign]
 since: 0.5.0

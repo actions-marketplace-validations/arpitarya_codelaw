@@ -4,6 +4,7 @@ title: "Boolean props are named is… or has…"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the new prop name is the author's, and every caller follows it"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/boolean-prop-naming]
 since: 0.5.0

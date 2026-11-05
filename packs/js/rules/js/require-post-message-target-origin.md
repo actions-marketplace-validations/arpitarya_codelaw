@@ -4,6 +4,7 @@ title: "postMessage names its target origin"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the origin to trust is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/require-post-message-target-origin]
 since: 0.5.0

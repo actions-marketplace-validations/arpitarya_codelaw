@@ -4,6 +4,7 @@ title: "No unshift() or shift()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "switching ends changes the order the rest of the code reads"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-front-mutation]
 since: 0.5.0

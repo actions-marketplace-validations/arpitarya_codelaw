@@ -4,6 +4,7 @@ title: "A finally callback returns nothing"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the value belongs in a `.then()` before the `finally` or should be dropped is the author's call"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-promise/no-return-in-finally]
 since: 0.5.0

@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 severity: warn
 fix: manual
 fix_reason: "moving the call out of the promise needs a choice between `nodeify`-style wrappers, `setImmediate` or rewriting the caller"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-promise/no-callback-in-promise]
 since: 0.5.0

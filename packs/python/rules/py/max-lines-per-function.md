@@ -4,6 +4,7 @@ title: "A function stays under a maximum number of lines"
 languages: [python]
 fix: manual
 fix_reason: "extracting part of a function changes its structure; where to cut and what to call the piece is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 50, description: "the most lines one function may span" }

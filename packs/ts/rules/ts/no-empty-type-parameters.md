@@ -2,8 +2,7 @@
 id: ts/no-empty-type-parameters
 title: "No empty type parameter list"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "either a parameter is missing or the brackets should go; the author knows which"
+fix: auto
 stability: preview
 ported_from: [biome/complexity/noEmptyTypeParameters]
 since: 0.5.0
@@ -18,11 +17,9 @@ match:
   kind: type_parameters
   regex: '^<\s*>$'
 message: "Remove the empty type parameter list, or declare the parameter it was meant for"
+fix:
+  - remove
 ```
-
-## How to fix
-
-1. Delete `<>`, or add the type parameter it was meant to hold.
 
 ## Examples
 

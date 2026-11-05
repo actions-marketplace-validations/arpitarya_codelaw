@@ -4,6 +4,7 @@ title: "A sort comparator returns a number"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right comparator depends on the values compared (numbers, strings)"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-boolean-sort-comparator]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Every default prop is a declared prop"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: either the prop is declared, or the default is removed — which one is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/default-props-match-prop-types]
 since: 0.5.0

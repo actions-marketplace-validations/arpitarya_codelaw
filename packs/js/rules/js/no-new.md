@@ -4,6 +4,7 @@ title: "No new for side effects"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the object is either needed (assign it) or the constructor should be a function"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-new]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Plain decimal numbers as object keys"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the decimal form has to be computed from the literal, which codelaw's fix templates cannot do"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [biome/complexity/useSimpleNumberKeys]
 since: 0.5.0

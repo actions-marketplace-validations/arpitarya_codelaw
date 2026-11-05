@@ -4,6 +4,7 @@ title: "A variable that is read is also assigned"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the value the variable should hold is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-unassigned-vars]
 since: 0.1.0

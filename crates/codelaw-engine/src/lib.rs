@@ -461,17 +461,31 @@ impl Project {
     /// Fix one file's text in memory; nothing is written. A leading
     /// byte-order mark is kept, as `fix` keeps one on disk.
     pub fn fix_source(&self, rel_path: &str, language: Language, source: &str, unsafe_fixes: bool) -> FileFix {
-        self.fix_source_in(rel_path, language, source, unsafe_fixes, files::Tree::Disk)
+        self.fix_source_in(rel_path, language, source, unsafe_fixes, None, files::Tree::Disk)
+    }
+
+    /// `fix_source` with `--unsafe`, applying the choice labelled `choice`
+    /// where a finding has choices (SR-LAW-4 decisions 4 and 11).
+    pub fn fix_source_choice(&self, rel_path: &str, language: Language, source: &str, choice: &str) -> FileFix {
+        self.fix_source_in(rel_path, language, source, true, Some(choice), files::Tree::Disk)
     }
 
     /// `fix_source`, with native rules seeing the files of `tree`.
-    pub(crate) fn fix_source_in(&self, rel_path: &str, language: Language, source: &str, unsafe_fixes: bool, tree: files::Tree<'_>) -> FileFix {
+    pub(crate) fn fix_source_in(
+        &self,
+        rel_path: &str,
+        language: Language,
+        source: &str,
+        unsafe_fixes: bool,
+        choice: Option<&str>,
+        tree: files::Tree<'_>,
+    ) -> FileFix {
         let entry = FileEntry { abs: self.config.root_dir.join(rel_path), rel: rel_path.to_owned(), language };
         let (text, bom) = match source.strip_prefix('\u{feff}') {
             Some(t) => (t, true),
             None => (source, false),
         };
-        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false }, false, bom, tree);
+        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned) }, false, bom, tree);
         if bom {
             f.original.insert(0, '\u{feff}');
             f.fixed.insert(0, '\u{feff}');

@@ -4,6 +4,7 @@ title: "Media queries follow the grammar"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended query is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignoreFunctions: { type: "string[]", default: [], description: "functions to accept in queries, such as `theme`" }

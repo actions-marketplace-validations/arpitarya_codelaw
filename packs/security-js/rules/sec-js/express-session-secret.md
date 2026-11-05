@@ -4,6 +4,7 @@ title: "express-session has a secret from the environment and a secure cookie"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the secret comes from is a deployment decision"
+fix_exception: value
 stability: preview
 security: { cwe: [798, 614], owasp: ["A07:2025"], severity: high }
 since: 0.3.0

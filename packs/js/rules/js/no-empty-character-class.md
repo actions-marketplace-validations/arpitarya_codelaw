@@ -4,6 +4,7 @@ title: "No empty character classes in regular expressions"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which characters the class should hold needs the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-empty-character-class]
 since: 0.1.0

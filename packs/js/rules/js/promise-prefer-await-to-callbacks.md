@@ -4,6 +4,7 @@ title: "async and await, not callbacks"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "turning a callback API into a promise changes every caller"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-promise/prefer-await-to-callbacks]
 since: 0.5.0

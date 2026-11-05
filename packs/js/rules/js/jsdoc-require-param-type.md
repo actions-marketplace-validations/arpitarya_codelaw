@@ -4,6 +4,7 @@ title: "@param has a type"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the type is the author's to name; codelaw cannot infer it"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-param-type]
 since: 0.5.0

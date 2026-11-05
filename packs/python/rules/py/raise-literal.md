@@ -4,6 +4,7 @@ title: "Raise exceptions, not literals"
 languages: [python]
 fix: manual
 fix_reason: "the exception class to raise is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B016]
 since: 0.1.0

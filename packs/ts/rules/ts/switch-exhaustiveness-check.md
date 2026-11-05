@@ -4,6 +4,7 @@ title: "A `switch` on a union handles every member"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "what each missing member should do is the author's decision"
+fix_exception: value
 stability: preview
 ported_from: [typescript-eslint/switch-exhaustiveness-check]
 tags: [types]

@@ -7,6 +7,7 @@
 
 mod calls;
 mod engine_rules;
+mod fix_ladder;
 mod markdown;
 mod pack;
 mod rule;
@@ -14,7 +15,8 @@ mod ruleset;
 mod search;
 
 pub use calls::{CallItem, MODE_SUFFIX, is_replace, parse_call_items, resolve_calls};
-pub use engine_rules::{ENGINE_RULES, EngineRule, TEST_RULES, TESTS_PRESET, engine_rule};
+pub use fix_ladder::{FixStats, fix_stats_text, read_ceilings};
+pub use engine_rules::{ENGINE_RULES, EngineRule, TEST_RULES, TESTS_PRESET, engine_fix_exception, engine_rule};
 pub use pack::{ExtendsSpec, FIRST_PARTY_NAMESPACES, FIRST_PARTY_PACKS, FirstPartyPack, PackManifest, Preset, RulePack, first_party, first_party_npm, first_party_pypi, load_pack, load_pack_from, load_rules_dir, namespace_pack};
 pub use rule::{
     Block, BlockKind, Case, Example, ExampleKind, KNOWN_SKILLS, LanguageExamples, OptionSpec, RESERVED_NAMESPACES,

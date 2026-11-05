@@ -4,6 +4,7 @@ title: "`@import` comes first"
 languages: [css]
 fix: manual
 fix_reason: "moving the import makes its rules apply, which changes the page"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignoreAtRules: { type: "string[]", default: [], description: "at-rules that may come before `@import`" }

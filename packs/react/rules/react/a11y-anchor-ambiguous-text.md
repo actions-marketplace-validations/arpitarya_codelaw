@@ -4,6 +4,7 @@ title: "Link text says where it goes"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the descriptive text is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/anchor-ambiguous-text]
 since: 0.5.0

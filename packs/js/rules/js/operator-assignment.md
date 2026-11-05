@@ -4,6 +4,7 @@ title: "x += 1 rather than x = x + 1"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the operator token cannot be carried into a fix template"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/operator-assignment, eslint-plugin-unicorn/operator-assignment]
 since: 0.5.0

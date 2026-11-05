@@ -4,6 +4,7 @@ title: "Top-level await rather than an async IIFE"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the file must be a module, and a rejection now fails the import"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-top-level-await]
 since: 0.5.0

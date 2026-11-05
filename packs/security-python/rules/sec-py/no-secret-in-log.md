@@ -4,6 +4,7 @@ title: 'Secrets are not logged'
 languages: [python]
 fix: manual
 fix_reason: "whether to drop the value or mask it depends on what the log is for"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [532], owasp: ["A09:2025"], severity: medium }
 since: 0.2.0

@@ -2,7 +2,7 @@
 id: pandas/pandas-use-of-dot-values
 title: ".to_numpy, not .values"
 languages: [python]
-fix: manual
+fix: suggest
 fix_reason: "the receiver may be a dict-like whose `.values` is right; confirm before replacing"
 stability: preview
 ported_from: [ruff/PD011]
@@ -15,16 +15,12 @@ since: 0.5.0
 
 ```codelaw
 match:
-  kind: attribute
-  has: { field: attribute, regex: '^values$' }
+  pattern: $O.values
   not: { inside: { kind: call, field: function } }
   inside: { kind: module, stopBy: end, has: { any: [{kind: import_statement}, {kind: import_from_statement}], regex: '^(import|from)\s+pandas\b' } }
 message: "Use `.to_numpy()` instead of `.values`"
+fix: "$O.to_numpy()"
 ```
-
-## How to fix
-
-1. Replace `.values` with `.to_numpy()`.
 
 ## Examples
 

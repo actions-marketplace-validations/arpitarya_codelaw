@@ -207,7 +207,7 @@ impl Project {
     pub fn fix_snippet(&self, file: &Path, code: &str) -> Result<crate::FileFix, EngineError> {
         let (abs, rel, language) = self.locate(file)?;
         let entry = crate::FileEntry { abs, rel, language };
-        let options = crate::FixOptions { unsafe_fixes: false, dry_run: true, trace: false };
+        let options = crate::FixOptions { unsafe_fixes: false, dry_run: true, trace: false, ..Default::default() };
         Ok(crate::fix::fix_text(self, &entry, code, &options, self.formats(&entry), false, crate::files::Tree::Disk))
     }
 }

@@ -4,6 +4,7 @@ title: "No hostData()"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the attributes move into `render()` by hand"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stencil/host-data-deprecated]
 since: 0.1.0

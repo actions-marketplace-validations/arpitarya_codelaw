@@ -4,6 +4,7 @@ title: "A label labels one control"
 languages: [html]
 fix: manual
 fix_reason: "each control needs its own label text"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/multiple-labeled-controls]
 tags: [a11y]

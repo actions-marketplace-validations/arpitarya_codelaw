@@ -4,6 +4,7 @@ title: "Headings have text"
 languages: [html]
 fix: manual
 fix_reason: "the heading text needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/empty-heading]
 tags: [a11y]

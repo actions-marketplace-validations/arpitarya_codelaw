@@ -4,6 +4,7 @@ title: "A clickable element also answers the keyboard"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the right keys and behaviour depend on what the element does — usually a `<button>` is the better fix"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/click-events-have-key-events]
 since: 0.5.0

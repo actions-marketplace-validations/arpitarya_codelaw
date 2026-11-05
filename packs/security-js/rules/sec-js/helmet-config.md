@@ -4,6 +4,7 @@ title: "helmet is not given false for a header it sets"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the header's directives should be is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [693], owasp: ["A02:2025"], severity: medium }
 since: 0.3.0

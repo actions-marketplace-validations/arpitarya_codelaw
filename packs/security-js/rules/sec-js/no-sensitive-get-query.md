@@ -4,6 +4,7 @@ title: "No password, token or secret read from the query string"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the client has to change how it sends the value"
+fix_exception: restructure
 stability: preview
 security: { cwe: [598], owasp: ["A04:2025"], severity: medium }
 since: 0.3.0

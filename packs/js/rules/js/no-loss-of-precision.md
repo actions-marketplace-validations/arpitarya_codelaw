@@ -4,6 +4,7 @@ title: "Number literals keep their value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to use a BigInt, a string or a rounder value depends on how the number is used"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-loss-of-precision, eslint-plugin-unicorn/no-loss-of-precision]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No arguments.callee or arguments.caller"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "naming the function to refer to it changes its declaration"
+fix_pending: "auto-subset; needs scope-rename"
 stability: preview
 ported_from: [eslint/no-caller]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No label with a variable's name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new label name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-label-var]
 since: 0.5.0

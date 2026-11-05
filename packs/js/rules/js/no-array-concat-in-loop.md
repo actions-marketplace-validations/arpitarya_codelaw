@@ -4,6 +4,7 @@ title: "No concat() in a loop"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`push` mutates the array in place, which other holders of the old array would see"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-concat-in-loop]
 since: 0.5.0

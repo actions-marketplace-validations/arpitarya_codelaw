@@ -4,6 +4,7 @@ title: "No javascript: URLs"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement handler is code the author writes"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-javascript-url]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Character references exist and are terminated"
 languages: [html]
 fix: manual
 fix_reason: "the intended character is not always clear"
+fix_pending: "auto-subset"
 stability: preview
 options:
   ignoreCase: { type: "boolean", default: false, description: "compare names without case" }

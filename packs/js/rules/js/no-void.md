@@ -4,6 +4,7 @@ title: "No void operator"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement — `undefined`, or handling the promise — depends on the use"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-void]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Class components say when to skip a render"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: extending `PureComponent` or writing `shouldComponentUpdate` changes when the component renders, which the author has to confirm"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/require-optimization]
 since: 0.5.0

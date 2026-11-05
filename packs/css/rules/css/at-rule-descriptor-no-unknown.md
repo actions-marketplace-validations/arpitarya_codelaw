@@ -4,6 +4,7 @@ title: "No unknown descriptors inside at-rules"
 languages: [css, scss]
 fix: manual
 fix_reason: "whether to remove or move the declaration is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 ported_from: [stylelint/at-rule-descriptor-no-unknown]
 since: 0.1.0

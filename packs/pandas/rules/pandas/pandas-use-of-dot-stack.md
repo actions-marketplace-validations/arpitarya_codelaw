@@ -4,6 +4,7 @@ title: "melt, not stack"
 languages: [python]
 fix: manual
 fix_reason: "`melt` takes different arguments, chosen by the author"
+fix_exception: value
 stability: preview
 ported_from: [ruff/PD013]
 since: 0.5.0

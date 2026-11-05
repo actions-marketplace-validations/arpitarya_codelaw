@@ -4,6 +4,7 @@ title: "No empty stylesheets"
 languages: [css, scss]
 fix: manual
 fix_reason: "whether to delete the file or fill it is the author's call"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 ported_from: [stylelint/no-empty-source]
 since: 0.1.0

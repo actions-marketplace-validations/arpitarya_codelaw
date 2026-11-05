@@ -4,6 +4,7 @@ title: "No async callback in finally"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the cleanup must finish first decides the rewrite"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-async-promise-finally]
 since: 0.5.0

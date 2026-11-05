@@ -4,6 +4,7 @@ title: "Elements are closed, and in the order they were opened"
 languages: [html]
 fix: manual
 fix_reason: "where the missing end tag belongs depends on the intended structure"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [html-validate/close-order, htmlhint/tag-pair]
 since: 0.1.0

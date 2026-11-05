@@ -4,6 +4,7 @@ title: "require() at the top of the module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-n/global-require]
 since: 0.5.0

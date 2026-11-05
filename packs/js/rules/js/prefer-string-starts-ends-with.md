@@ -4,6 +4,7 @@ title: "startsWith() rather than a ^ regex test"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the string literal is the pattern without its anchor, which a template cannot strip"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-string-starts-ends-with]
 since: 0.5.0

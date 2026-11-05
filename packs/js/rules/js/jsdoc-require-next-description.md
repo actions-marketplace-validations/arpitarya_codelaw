@@ -4,6 +4,7 @@ title: "@next says what is sent in"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the description is the author's words"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-next-description]
 since: 0.5.0

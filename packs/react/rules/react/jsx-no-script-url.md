@@ -4,6 +4,7 @@ title: "No javascript: URLs in JSX"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "security: the code the URL runs has to become a real handler"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-script-url]
 since: 0.5.0

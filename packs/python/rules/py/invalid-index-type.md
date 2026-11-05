@@ -4,6 +4,7 @@ title: "Index with an int, not another literal"
 languages: [python]
 fix: manual
 fix_reason: "which index was meant is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF016]
 since: 0.5.0

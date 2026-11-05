@@ -4,6 +4,7 @@ title: "A loop variable doesn't replace what it iterates"
 languages: [python]
 fix: manual
 fix_reason: "the new name is the author's choice"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/B020]
 since: 0.1.0

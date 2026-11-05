@@ -4,6 +4,7 @@ title: "A class with only render is a function"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the class is rewritten as a function component"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/prefer-stateless-function]
 since: 0.5.0

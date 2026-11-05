@@ -4,6 +4,7 @@ title: "Read JSON files as text"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the file's encoding is not in the code"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/consistent-json-file-read]
 since: 0.5.0

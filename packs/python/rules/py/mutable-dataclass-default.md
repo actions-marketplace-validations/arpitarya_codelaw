@@ -4,6 +4,7 @@ title: "No mutable default in a dataclass field"
 languages: [python]
 fix: manual
 fix_reason: "the fix needs `field` imported, which the file may not do"
+fix_pending: "suggest; needs add-import"
 stability: preview
 ported_from: [ruff/RUF008]
 since: 0.5.0

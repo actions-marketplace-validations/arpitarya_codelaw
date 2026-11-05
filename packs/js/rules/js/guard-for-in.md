@@ -4,6 +4,7 @@ title: "for-in is filtered"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the filter (own keys, or a loop over `Object.keys`) is the author's choice"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/guard-for-in]
 since: 0.5.0

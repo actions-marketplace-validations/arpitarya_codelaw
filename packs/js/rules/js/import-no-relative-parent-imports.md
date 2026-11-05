@@ -4,6 +4,7 @@ title: "No imports from a parent folder"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the module has to move, or be published as a package, which reaches beyond this file"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/no-relative-parent-imports]
 since: 0.5.0

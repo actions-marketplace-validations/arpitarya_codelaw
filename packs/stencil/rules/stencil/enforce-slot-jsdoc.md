@@ -4,6 +4,7 @@ title: "Every slot a component renders has a @slot tag, and every @slot tag a sl
 languages: [tsx]
 fix: manual
 fix_reason: "the slot's description, or whether it should exist, needs the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [stencil/enforce-slot-jsdoc]
 since: 0.2.0

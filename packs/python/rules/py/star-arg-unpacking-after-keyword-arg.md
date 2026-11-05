@@ -4,6 +4,7 @@ title: "No `*args` after a keyword argument"
 languages: [python]
 fix: manual
 fix_reason: "reordering arguments can change which parameter each value binds to"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/B026]
 since: 0.1.0

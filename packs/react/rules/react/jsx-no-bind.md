@@ -4,6 +4,7 @@ title: "No new function in a JSX prop"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the function moves out of render, into a method or a `useCallback` with its dependencies"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-bind]
 since: 0.5.0

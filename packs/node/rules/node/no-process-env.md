@@ -4,6 +4,7 @@ title: "No process.env outside the config module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "reading the environment in one place means adding a config module and changing every reader to use it"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-n/no-process-env]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No nested conditional expressions"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the clearer form — `if`, `switch` or a lookup table — is the author's to choose"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-nested-ternary]
 since: 0.5.0

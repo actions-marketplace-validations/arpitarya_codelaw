@@ -4,6 +4,7 @@ title: "Keep a reference to every asyncio task"
 languages: [python]
 fix: manual
 fix_reason: "the name to keep the task under, and where it is awaited, are the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF006]
 since: 0.5.0

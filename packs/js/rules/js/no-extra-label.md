@@ -4,6 +4,7 @@ title: "No label that is not needed"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "removing the label token from the statement is not a template edit"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-extra-label]
 since: 0.5.0

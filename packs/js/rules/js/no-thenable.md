@@ -4,6 +4,7 @@ title: "No then property on an object or class"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-thenable]
 since: 0.5.0

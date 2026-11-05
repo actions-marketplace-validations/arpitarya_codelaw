@@ -4,6 +4,7 @@ title: "No selector declared twice"
 languages: [css, scss]
 fix: manual
 fix_reason: "merging the rules depends on cascade order"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stylelint/no-duplicate-selectors]
 since: 0.1.0

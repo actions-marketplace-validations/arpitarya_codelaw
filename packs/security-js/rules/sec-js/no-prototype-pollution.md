@@ -4,6 +4,7 @@ title: "No request value used as a key to write or merge"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which keys a client may set is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-security/detect-object-injection]
 security: { cwe: [1321], owasp: ["A08:2025"], severity: high }

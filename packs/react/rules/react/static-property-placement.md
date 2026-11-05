@@ -4,6 +4,7 @@ title: "Static component properties are assigned after the class"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the property moves out of the class body to an assignment after it"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/static-property-placement]
 since: 0.5.0

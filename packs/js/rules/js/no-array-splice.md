@@ -4,6 +4,7 @@ title: "toSpliced() rather than splice() for a copy"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`.toSpliced()` returns the new array rather than the removed items, so the surrounding code must change"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-splice]
 since: 0.5.0

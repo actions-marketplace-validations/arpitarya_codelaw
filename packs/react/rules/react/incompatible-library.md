@@ -5,6 +5,7 @@ languages: [javascript, jsx, tsx]
 severity: warn
 fix: manual
 fix_reason: "restructure: the component either opts out of compilation or reads the value through the library's memo-safe API"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/incompatible-library]
 since: 0.5.0

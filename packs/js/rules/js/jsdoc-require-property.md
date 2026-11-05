@@ -4,6 +4,7 @@ title: "An object @typedef lists its properties"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the property names and their descriptions are the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-property]
 since: 0.5.0

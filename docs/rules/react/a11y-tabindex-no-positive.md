@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended order usually means reordering the markup) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`tabIndex={0}` puts the element in document order, which moves it in the tab sequence; where the order mattered, the markup is reordered instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/tabindex-no-positive` |
@@ -118,10 +118,6 @@ codelaw explain react/a11y-tabindex-no-positive       # what it wants, why, how 
 codelaw check --rule react/a11y-tabindex-no-positive  # only this rule
 codelaw config --print --for <file>                   # the resolved setting, and where it came from
 ```
-
-## How to fix
-
-1. Use `tabIndex={0}` and put the element where it belongs in the markup.
 
 ## Examples
 

@@ -4,6 +4,7 @@ title: "No autoFocus"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "some dialogs need initial focus, set deliberately in code"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-autofocus]
 since: 0.5.0

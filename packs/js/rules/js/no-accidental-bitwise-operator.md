@@ -4,6 +4,7 @@ title: "No & or | in a condition"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`&&` short-circuits and yields an operand rather than a number"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-accidental-bitwise-operator]
 since: 0.5.0

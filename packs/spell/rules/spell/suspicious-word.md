@@ -4,6 +4,7 @@ title: "No accepted word hides a typo"
 languages: [toml]
 fix: manual
 fix_reason: "only the team knows whether an accepted word is a real name or a misspelling it waved through"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 since: 0.3.0
 ---

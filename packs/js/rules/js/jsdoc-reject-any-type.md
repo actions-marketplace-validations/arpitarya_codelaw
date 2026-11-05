@@ -4,6 +4,7 @@ title: "No any or * types in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the real type is the author's to name"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/reject-any-type]
 since: 0.5.0

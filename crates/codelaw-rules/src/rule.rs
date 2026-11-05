@@ -3,9 +3,9 @@
 use crate::LoadError;
 use crate::markdown::{Piece, scan};
 use codelaw_cache::{Key, hash_bytes};
-use codelaw_core::{FixClass, Language, Severity};
+use codelaw_core::{FixClass, FixException, Language, Severity};
 use serde::Deserialize;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 /// Namespaces reserved for the first-party packs and the engine
@@ -213,6 +213,8 @@ struct Frontmatter {
     fix: Option<String>,
     fix_reason: Option<String>,
     fix_skill: Option<String>,
+    fix_exception: Option<String>,
+    fix_pending: Option<String>,
     stability: Option<String>,
     host: Option<String>,
     invariant: Option<OneOrMany>,
@@ -239,6 +241,10 @@ pub enum BlockKind {
         /// `type:`, the type questions (decision 3f; SR-TYPES); boxed, as
         /// few rules have one.
         types: Option<Box<serde_json::Value>>,
+        /// `auto_when:`, an ast-grep rule on the matched node: an `auto`
+        /// rule's finding stays `auto` only where it holds, and is
+        /// `suggest` elsewhere (SR-LAW-4 decision 2).
+        auto_when: Option<Box<serde_json::Value>>,
     },
     Graph(serde_json::Value),
     Target { target: serde_json::Value, assert: serde_json::Value },
@@ -256,6 +262,13 @@ impl Block {
     /// An `external` fixer command, if the fix is one.
     pub fn external_fixer(&self) -> Option<&str> {
         self.fix.as_ref()?.get("external")?.as_str()
+    }
+
+    /// The labels of a `fix: { choices: [...] }`, in order (SR-LAW-4
+    /// decision 4); empty for any other fix.
+    pub fn choice_labels(&self) -> Vec<String> {
+        let Some(list) = self.fix.as_ref().and_then(|f| f.get("choices")).and_then(|c| c.as_array()) else { return Vec::new() };
+        list.iter().filter_map(|c| c.get("label").and_then(|l| l.as_str()).map(str::to_owned)).collect()
     }
 }
 
@@ -286,6 +299,9 @@ pub struct LanguageExamples {
     pub donts: Vec<Snippet>,
     pub dos: Vec<Snippet>,
     pub fixed: Vec<Snippet>,
+    /// `#### Fixed (<label>)` blocks: what each labelled choice gives
+    /// (SR-LAW-4 decision 11), in file order.
+    pub choices: Vec<(String, Snippet)>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -320,6 +336,12 @@ pub struct RuleFile {
     pub fix: FixClass,
     pub fix_reason: Option<String>,
     pub fix_skill: Option<String>,
+    /// A `manual` rule's named exception (SR-LAW-4 decision 5); a rule of
+    /// another class may carry one for its findings that drop to `manual`.
+    pub fix_exception: Option<FixException>,
+    /// A `manual` rule W-156 has not yet moved up the ladder: what it waits
+    /// for. Stands in for `fix_exception` until the move lands.
+    pub fix_pending: Option<String>,
     pub stability: Stability,
     pub host: Option<Language>,
     pub invariants: Vec<String>,
@@ -428,7 +450,8 @@ fn yaml_value(text: &str) -> Result<serde_json::Value, String> {
     yaml::<serde_json::Value>(text).map_err(|e| e.to_string())
 }
 
-const BLOCK_KEYS: &[&str] = &["match", "constraints", "utils", "where", "type", "graph", "target", "assert", "native", "message", "fix"];
+const BLOCK_KEYS: &[&str] =
+    &["match", "constraints", "utils", "where", "type", "auto_when", "graph", "target", "assert", "native", "message", "fix"];
 
 fn parse_block(code: &str) -> Result<Block, String> {
     let value = yaml_value(code)?;
@@ -458,6 +481,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
             utils: get("utils"),
             predicates: get("where"),
             types: get("type").map(Box::new),
+            auto_when: get("auto_when").map(Box::new),
         },
         "graph" => BlockKind::Graph(get("graph").unwrap()),
         "target" => BlockKind::Target {
@@ -469,7 +493,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
         ),
     };
     if !matches!(kind, BlockKind::Match { .. }) {
-        for k in ["constraints", "utils", "where", "type"] {
+        for k in ["constraints", "utils", "where", "type", "auto_when"] {
             if map.contains_key(k) {
                 return Err(format!("`{k}:` only goes with `match:`"));
             }
@@ -505,7 +529,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
             let msg = if msg.contains("unknown field") {
                 let valid = [
                     "id", "title", "languages", "scope", "files", "exclude", "severity", "fix", "fix_reason", "fix_skill",
-                    "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
+                    "fix_exception", "fix_pending", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
                 ];
                 let unknown = msg.split('`').nth(1).unwrap_or_default();
                 let near = codelaw_config::did_you_mean(unknown, valid).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -595,6 +619,28 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         && !KNOWN_SKILLS.contains(&skill.as_str())
     {
         err(&mut errors, 2, format!("`fix_skill: {skill}` ships in no codelaw package (L4 decision 10)"));
+    }
+    // L4 decision 5: a `manual` rule names its exception. `fix_pending:`
+    // stands in for it while W-156 moves the rule up the ladder.
+    let fix_exception = match fm.fix_exception.as_deref() {
+        None => None,
+        Some(s) => {
+            let parsed = FixException::parse(s);
+            if parsed.is_none() {
+                err(&mut errors, 2, format!("`fix_exception: {s}` must be `value`, `restructure`, `authored` or `security` (L4 decision 5)"));
+            }
+            parsed
+        }
+    };
+    let fix_pending = fm.fix_pending.filter(|p| !p.trim().is_empty());
+    if fix == Some(FixClass::Manual) && fm.fix_exception.is_none() && fix_pending.is_none() {
+        err(&mut errors, 2, "a `manual` rule needs `fix_exception:` — `value`, `restructure`, `authored` or `security` (L4 decision 5)".into());
+    }
+    if fix_pending.is_some() && fix != Some(FixClass::Manual) {
+        err(&mut errors, 2, "`fix_pending:` marks a `manual` rule waiting to move up the ladder; this rule is not `manual`".into());
+    }
+    if fix_pending.is_some() && fm.fix_exception.is_some() {
+        err(&mut errors, 2, "`fix_pending:` and `fix_exception:` exclude each other: a rule waiting to move up has no exception".into());
     }
 
     let stability = match fm.stability.as_deref() {
@@ -706,6 +752,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
     let mut examples: Vec<LanguageExamples> = Vec::new();
     let mut lang: Option<Language> = None;
     let mut kind: Option<ExampleKind> = None;
+    let mut choice: Option<String> = None;
 
     for located in &pieces {
         let line = line_of(body, located.offset, body_line);
@@ -737,13 +784,15 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
                     Some(l) if examples.iter().any(|e| e.language == l) => {
                         err(&mut errors, line, format!("`### {text}` appears twice"))
                     }
-                    Some(l) => examples.push(LanguageExamples { language: l, donts: vec![], dos: vec![], fixed: vec![] }),
+                    Some(l) => examples.push(LanguageExamples { language: l, donts: vec![], dos: vec![], fixed: vec![], choices: vec![] }),
                 }
             }
             Piece::Heading { level: 4, text } if h2.as_deref() == Some("Examples") => {
-                kind = normalise_kind(text);
+                // `#### Fixed (<label>)`: what one labelled choice gives.
+                choice = text.trim().strip_prefix("Fixed (").and_then(|r| r.strip_suffix(')')).map(|l| l.trim().to_owned()).filter(|l| !l.is_empty());
+                kind = if choice.is_some() { Some(ExampleKind::Fixed) } else { normalise_kind(text) };
                 if kind.is_none() {
-                    err(&mut errors, line, format!("`#### {text}` must be `Don't`, `Do` or `Fixed`"));
+                    err(&mut errors, line, format!("`#### {text}` must be `Don't`, `Do`, `Fixed` or `Fixed (<label>)`"));
                 }
             }
             Piece::Fence { info, code } => {
@@ -771,7 +820,10 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
                     match k {
                         ExampleKind::Dont => entry.donts.push(snippet),
                         ExampleKind::Do => entry.dos.push(snippet),
-                        ExampleKind::Fixed => entry.fixed.push(snippet),
+                        ExampleKind::Fixed => match &choice {
+                            Some(label) => entry.choices.push((label.clone(), snippet)),
+                            None => entry.fixed.push(snippet),
+                        },
                     }
                 }
             }
@@ -825,6 +877,32 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         err(&mut errors, block_line, format!("a `{class}` rule needs a `fix:` in its codelaw block (L4)"));
     }
 
+    // L4 decision 4: choices are `suggest`, labelled once each, at most
+    // one `default`; each labelled `Fixed` block names one of them.
+    let labels = block.choice_labels();
+    if block.fix.as_ref().is_some_and(|f| f.get("choices").is_some()) {
+        if fix != Some(FixClass::Suggest) {
+            err(&mut errors, block_line, "a fix with `choices:` is `fix: suggest`: the agent or person picks one (L4 decision 4)".into());
+        }
+        let mut seen = BTreeSet::new();
+        for l in &labels {
+            if !seen.insert(l) {
+                err(&mut errors, block_line, format!("the choice `{l}` is labelled twice"));
+            }
+        }
+    }
+    let native_choices = matches!(block.kind, BlockKind::Native(_)) && fix == Some(FixClass::Suggest);
+    for e in &examples {
+        for (label, s) in &e.choices {
+            if !labels.contains(label) && !native_choices {
+                err(&mut errors, s.line, format!("`#### Fixed ({label})` names no choice of this rule's fix"));
+            }
+        }
+    }
+    if matches!(block.kind, BlockKind::Match { auto_when: Some(_), .. }) && fix != Some(FixClass::Auto) {
+        err(&mut errors, block_line, "`auto_when:` says where an `auto` rule's findings stay `auto`; this rule is not `auto`".into());
+    }
+
     // L4 decision 3: manual rules carry their steps.
     if fix == Some(FixClass::Manual) && steps.is_empty() {
         let at = how_to_fix_at.unwrap_or(body_line);
@@ -870,6 +948,8 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         fix: fix.expect("checked above"),
         fix_reason: fm.fix_reason,
         fix_skill: fm.fix_skill,
+        fix_exception,
+        fix_pending,
         stability,
         host,
         invariants,
@@ -1043,7 +1123,7 @@ let a: number = 1;
     }
 
     fn errors(text: &str) -> Vec<String> {
-        parse_rule(Path::new("acme/no-var.md"), text, Some("acme/no-var")).unwrap_err().into_iter().map(|e| e.message).collect()
+        parse_rule(Path::new("acme/no-var.md"), text, Some("acme/no-var")).err().unwrap_or_default().into_iter().map(|e| e.message).collect()
     }
 
     #[test]
@@ -1054,6 +1134,21 @@ let a: number = 1;
         assert!(e.iter().any(|m| m.contains("needs `fix_reason:`")), "{e:?}");
         let e = errors(&GOOD.replace("fix: auto", "fix: manual\nfix_reason: x").replace("fix:\n  - replace: \"let\"\n", ""));
         assert!(e.iter().any(|m| m.contains("needs `## How to fix`")), "{e:?}");
+        // L4 decision 5: a `manual` rule names its exception, one of four.
+        assert!(e.iter().any(|m| m.contains("needs `fix_exception:`")), "{e:?}");
+        let manual = |extra: &str| {
+            GOOD.replace("fix: auto", &format!("fix: manual\nfix_reason: x{extra}"))
+                .replace("fix:\n  - replace: \"let\"\n", "")
+                .replace("## Examples", "## How to fix\n\n1. Do it.\n\n## Examples")
+        };
+        assert!(errors(&manual("\nfix_exception: authored")).is_empty());
+        assert!(errors(&manual("\nfix_pending: choices")).is_empty(), "a rule waiting to move up loads");
+        let e = errors(&manual("\nfix_exception: hard"));
+        assert!(e.iter().any(|m| m.contains("must be `value`, `restructure`, `authored` or `security`")), "{e:?}");
+        let e = errors(&manual("\nfix_exception: value\nfix_pending: choices"));
+        assert!(e.iter().any(|m| m.contains("exclude each other")), "{e:?}");
+        let e = errors(&GOOD.replace("fix: auto", "fix: auto\nfix_pending: choices"));
+        assert!(e.iter().any(|m| m.contains("this rule is not `manual`")), "{e:?}");
         let e = errors(&GOOD.replace("fix: auto", "fix: auto\nfix_skill: codelaw-nope"));
         assert!(e.iter().any(|m| m.contains("ships in no codelaw package")), "{e:?}");
     }
@@ -1071,7 +1166,7 @@ let a: number = 1;
         let e = errors(&GOOD.replace("message:", "mesage:"));
         assert!(e.iter().any(|m| m.contains("did you mean `message`")), "{e:?}");
         let e = errors(&GOOD.replace("#### Do\n\n```ts", "#### Done\n\n```ts"));
-        assert!(e.iter().any(|m| m.contains("must be `Don't`, `Do` or `Fixed`")), "{e:?}");
+        assert!(e.iter().any(|m| m.contains("must be `Don't`, `Do`, `Fixed` or `Fixed (<label>)`")), "{e:?}");
     }
 
     #[test]
@@ -1102,9 +1197,33 @@ let a: number = 1;
     }
 
     #[test]
+    fn choices_are_suggest_and_their_fixed_blocks_name_one() {
+        let choices = "fix:\n  choices:\n    - label: keep let\n      default: true\n      fix: \"let\"\n    - label: keep const\n      fix: \"const\"\n";
+        let text = GOOD.replace("fix: auto", "fix: suggest\nfix_reason: let or const is the author's call").replace("fix:\n  - replace: \"let\"\n", choices);
+        let r = parse_rule(Path::new("acme/no-var.md"), &text, Some("acme/no-var")).unwrap();
+        assert_eq!(r.block.choice_labels(), ["keep let", "keep const"]);
+        let e = errors(&text.replace("fix: suggest\n", "fix: auto\n"));
+        assert!(e.iter().any(|m| m.contains("a fix with `choices:` is `fix: suggest`")), "{e:?}");
+        let labelled = text.replacen("#### Do\n", "#### Fixed (keep const)\n\n```js\nconst a = 1;\n```\n\n#### Do\n", 1);
+        let r = parse_rule(Path::new("acme/no-var.md"), &labelled, Some("acme/no-var")).unwrap();
+        assert_eq!(r.examples[0].choices.len(), 1);
+        assert_eq!(r.examples[0].choices[0].0, "keep const");
+        let e = errors(&labelled.replace("Fixed (keep const)", "Fixed (keep var)"));
+        assert!(e.iter().any(|m| m.contains("`#### Fixed (keep var)` names no choice")), "{e:?}");
+    }
+
+    #[test]
+    fn auto_when_goes_with_an_auto_match_rule() {
+        let text = GOOD.replace("message:", "auto_when:\n  not: { has: { kind: identifier, regex: '^x$' } }\nmessage:");
+        assert!(errors(&text).is_empty(), "{:?}", errors(&text));
+        let e = errors(&text.replace("fix: auto", "fix: suggest\nfix_reason: x"));
+        assert!(e.iter().any(|m| m.contains("`auto_when:` says where")), "{e:?}");
+    }
+
+    #[test]
     fn manual_rule_with_steps() {
         let text = GOOD
-            .replace("fix: auto", "fix: manual\nfix_reason: needs a human")
+            .replace("fix: auto", "fix: manual\nfix_reason: needs a human\nfix_exception: authored")
             .replace("fix:\n  - replace: \"let\"\n", "")
             .replace("## Examples", "## How to fix\n\n1. Change `var` to `let`.\n2. Check closures.\n\n## Examples");
         let r = parse_rule(Path::new("acme/no-var.md"), &text, Some("acme/no-var")).unwrap();

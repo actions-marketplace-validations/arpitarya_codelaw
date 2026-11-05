@@ -4,6 +4,7 @@ title: "Functions don't rebind module variables with global"
 languages: [python]
 fix: manual
 fix_reason: "the state has to move into a parameter, a return value or an object; which one fits depends on the callers"
+fix_exception: value
 stability: preview
 ported_from: [pylint/global-statement]
 since: 0.4.0

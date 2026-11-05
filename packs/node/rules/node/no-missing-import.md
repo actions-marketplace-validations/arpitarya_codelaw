@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 scope: project
 fix: manual
 fix_reason: "the right path depends on where the module went"
+fix_pending: "suggest-choices; needs cross-file"
 stability: preview
 ported_from: [eslint-plugin-n/no-missing-import]
 since: 0.1.0

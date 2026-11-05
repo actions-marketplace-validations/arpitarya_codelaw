@@ -4,6 +4,7 @@ title: "Elements are inside the ancestor they need"
 languages: [html]
 fix: manual
 fix_reason: "whether to add the ancestor or use other elements depends on the intent"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/element-required-ancestor]
 since: 0.1.0

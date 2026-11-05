@@ -4,6 +4,7 @@ title: "No membership test on an empty literal"
 languages: [python]
 fix: manual
 fix_reason: "the test is always False (or always True for `not in`); what was meant is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF060]
 since: 0.5.0

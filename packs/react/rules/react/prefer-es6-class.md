@@ -4,6 +4,7 @@ title: "Class components, not createReactClass"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the component is rewritten as a class or function, with its mixins and autobinding replaced"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/prefer-es6-class]
 since: 0.5.0

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:pandas/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the receiver may not be a pandas object; confirm before renaming) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the receiver may not be a pandas object; confirm before renaming) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PD003` |
@@ -118,10 +118,6 @@ codelaw explain pandas/pandas-use-of-dot-is-null       # what it wants, why, how
 codelaw check --rule pandas/pandas-use-of-dot-is-null  # only this rule
 codelaw config --print --for <file>                    # the resolved setting, and where it came from
 ```
-
-## How to fix
-
-1. Rename the call to `.isna()`.
 
 ## Examples
 

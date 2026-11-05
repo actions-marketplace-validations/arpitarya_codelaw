@@ -4,6 +4,7 @@ title: "No this alias"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the functions reading the alias become arrow functions"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-this-assignment, eslint/consistent-this]
 since: 0.5.0

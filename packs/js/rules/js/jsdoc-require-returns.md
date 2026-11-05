@@ -4,6 +4,7 @@ title: "A function that returns a value documents @returns"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the return value means is the author's to describe"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-returns]
 since: 0.5.0

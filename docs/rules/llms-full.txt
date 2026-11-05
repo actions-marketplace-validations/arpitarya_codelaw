@@ -49509,7 +49509,7 @@ flat = (s.iloc[0] == s).all()
 ## `pandas/pandas-use-of-dot-at` — .loc, not .at
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (`.loc` returns more than one value where `.at` would fail; confirm the lookup)
+- **Fix:** `suggest` (`.loc` returns more than one value where `.at` would fail; confirm the lookup)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-at.md
 
@@ -49518,10 +49518,6 @@ flat = (s.iloc[0] == s).all()
 Values are read with `.loc`, not `.at`.
 
 **Why:** `.loc` does everything `.at` does and more; one accessor reads more consistently.
-
-### How to fix
-
-1. Replace `.at[...]` with `.loc[...]`.
 
 ### Examples
 
@@ -49544,7 +49540,7 @@ v = df.loc[0, 'a']
 ## `pandas/pandas-use-of-dot-iat` — .iloc, not .iat
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (`.iloc` returns more than one value where `.iat` would fail; confirm the lookup)
+- **Fix:** `suggest` (`.iloc` returns more than one value where `.iat` would fail; confirm the lookup)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-iat.md
 
@@ -49553,10 +49549,6 @@ v = df.loc[0, 'a']
 Values are read with `.iloc`, not `.iat`.
 
 **Why:** `.iloc` does everything `.iat` does; one accessor reads more consistently.
-
-### How to fix
-
-1. Replace `.iat[...]` with `.iloc[...]`.
 
 ### Examples
 
@@ -49579,7 +49571,7 @@ v = df.iloc[0, 1]
 ## `pandas/pandas-use-of-dot-is-null` — .isna, not .isnull
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the receiver may not be a pandas object; confirm before renaming)
+- **Fix:** `suggest` (the receiver may not be a pandas object; confirm before renaming)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-is-null.md
 
@@ -49588,10 +49580,6 @@ v = df.iloc[0, 1]
 `.isna()` is used instead of its alias `.isnull()`.
 
 **Why:** pandas documents `isna`; one name for one operation reads better.
-
-### How to fix
-
-1. Rename the call to `.isna()`.
 
 ### Examples
 
@@ -49614,7 +49602,7 @@ missing = df.isna()
 ## `pandas/pandas-use-of-dot-ix` — No .ix
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (`.loc` (labels) or `.iloc` (positions) depends on what the index holds)
+- **Fix:** `suggest` (`.loc` (labels) or `.iloc` (positions) depends on what the index holds: both are offered)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-ix.md
 
@@ -49623,10 +49611,6 @@ missing = df.isna()
 `.ix` is not used; it was removed from pandas.
 
 **Why:** `.ix` guessed between labels and positions and was removed in pandas 1.0.
-
-### How to fix
-
-1. Use `.loc` for labels or `.iloc` for positions.
 
 ### Examples
 
@@ -49639,6 +49623,20 @@ import pandas as pd
 row = df.ix[0]
 ```
 
+##### Fixed (by position)
+
+```python
+import pandas as pd
+row = df.iloc[0]
+```
+
+##### Fixed (by label)
+
+```python
+import pandas as pd
+row = df.loc[0]
+```
+
 ##### Do
 
 ```python
@@ -49649,7 +49647,7 @@ row = df.iloc[0]
 ## `pandas/pandas-use-of-dot-not-null` — .notna, not .notnull
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the receiver may not be a pandas object; confirm before renaming)
+- **Fix:** `suggest` (the receiver may not be a pandas object; confirm before renaming)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-not-null.md
 
@@ -49658,10 +49656,6 @@ row = df.iloc[0]
 `.notna()` is used instead of its alias `.notnull()`.
 
 **Why:** pandas documents `notna`; one name for one operation reads better.
-
-### How to fix
-
-1. Rename the call to `.notna()`.
 
 ### Examples
 
@@ -49789,7 +49783,7 @@ long = df.melt(id_vars=['d'])
 ## `pandas/pandas-use-of-dot-values` — .to_numpy, not .values
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the receiver may be a dict-like whose `.values` is right; confirm before replacing)
+- **Fix:** `suggest` (the receiver may be a dict-like whose `.values` is right; confirm before replacing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-values.md
 
@@ -49798,10 +49792,6 @@ long = df.melt(id_vars=['d'])
 `.to_numpy()` is used instead of the `.values` attribute.
 
 **Why:** `.values` returns different types depending on the data (an array or an extension array); `.to_numpy()` always returns an array.
-
-### How to fix
-
-1. Replace `.values` with `.to_numpy()`.
 
 ### Examples
 
@@ -49859,7 +49849,7 @@ df = df.dropna()
 ## `pandas/pandas-use-of-pd-merge` — df.merge, not pd.merge
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the first argument becomes the receiver)
+- **Fix:** `suggest` (`a.merge(b)` needs `a` to be a DataFrame, where `pd.merge` also takes a named Series; review the receiver)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-pd-merge.md
 
@@ -49868,10 +49858,6 @@ df = df.dropna()
 Frames are joined with the `.merge()` method, not `pd.merge()`.
 
 **Why:** The method form reads left to right and chains with the rest of the pipeline.
-
-### How to fix
-
-1. Rewrite `pd.merge(a, b, …)` as `a.merge(b, …)`.
 
 ### Examples
 
@@ -58288,7 +58274,7 @@ const c = <th scope="row">Total</th>;
 ## `react/a11y-tabindex-no-positive` — No positive tabIndex
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the intended order usually means reordering the markup)
+- **Fix:** `suggest` (`tabIndex={0}` puts the element in document order, which moves it in the tab sequence; where the order mattered, the markup is reordered instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-tabindex-no-positive.md
 
@@ -58297,10 +58283,6 @@ const c = <th scope="row">Total</th>;
 `tabIndex` is `0` or `-1`, never a positive number.
 
 **Why:** A positive `tabIndex` jumps the element ahead of the page's order, which no one expects and is hard to maintain.
-
-### How to fix
-
-1. Use `tabIndex={0}` and put the element where it belongs in the markup.
 
 ### Examples
 
@@ -83121,7 +83103,7 @@ type Anything = unknown;
 ## `ts/no-empty-type-parameters` — No empty type parameter list
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (either a parameter is missing or the brackets should go; the author knows which)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-empty-type-parameters.md
 
@@ -83130,10 +83112,6 @@ type Anything = unknown;
 A type parameter list `<>` is not left empty.
 
 **Why:** An empty list declares nothing and is a leftover of an edit.
-
-### How to fix
-
-1. Delete `<>`, or add the type parameter it was meant to hold.
 
 ### Examples
 
@@ -83553,7 +83531,7 @@ Variables only; the source also covers parameters and properties.
 ## `ts/no-invalid-void-type` — void only as a return type
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the intended type — `undefined`, or a return type — is the author's)
+- **Fix:** `suggest` (`undefined` is what `void` means outside a return type; where the author meant a return type, the diff is wrong)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-invalid-void-type.md
 
@@ -83562,10 +83540,6 @@ Variables only; the source also covers parameters and properties.
 `void` is used only as a return type or a generic argument, not as a variable, parameter or union member type.
 
 **Why:** Elsewhere `void` is confusing: it means "ignored", not `undefined`.
-
-### How to fix
-
-1. Use `undefined` (or remove the type).
 
 ### Examples
 

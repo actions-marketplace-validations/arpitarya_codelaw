@@ -4,6 +4,7 @@ title: "No URL checked with a substring test"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which hosts are allowed is a decision for the author"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [20], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

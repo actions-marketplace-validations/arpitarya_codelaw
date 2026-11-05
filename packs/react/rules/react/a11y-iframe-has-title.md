@@ -4,6 +4,7 @@ title: "An iframe has a title"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the frame's title is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/iframe-has-title]
 since: 0.5.0

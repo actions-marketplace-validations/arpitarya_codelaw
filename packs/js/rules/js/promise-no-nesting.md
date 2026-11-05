@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 severity: warn
 fix: manual
 fix_reason: "flattening a chain moves code between callbacks and may need values carried along"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-promise/no-nesting]
 since: 0.5.0

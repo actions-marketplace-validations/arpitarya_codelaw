@@ -4,6 +4,7 @@ title: "Images and image-like elements carry alternative text"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "only the author knows what the image shows"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/alt-text]
 since: 0.5.0

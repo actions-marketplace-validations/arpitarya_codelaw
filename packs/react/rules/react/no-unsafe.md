@@ -4,6 +4,7 @@ title: "No UNSAFE_ lifecycle methods"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: each legacy method has a different modern replacement"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-unsafe]
 since: 0.5.0

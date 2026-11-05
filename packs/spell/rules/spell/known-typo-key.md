@@ -4,6 +4,7 @@ title: "No known typos in keys, classes and ids"
 languages: [json, yaml, toml, css, scss, html]
 fix: manual
 fix_reason: "other files read the name — the code that reads a key, the markup that uses a class, the link to an id — so renaming it here alone breaks them"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 since: 0.3.0
 ---

@@ -4,6 +4,7 @@ title: "A link has content"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the link's text is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/anchor-has-content]
 since: 0.5.0

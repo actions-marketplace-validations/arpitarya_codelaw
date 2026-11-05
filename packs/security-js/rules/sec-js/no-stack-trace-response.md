@@ -4,6 +4,7 @@ title: "No error object or stack trace in a response"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the client should be told is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [209], owasp: ["A10:2025"], severity: medium }
 since: 0.3.0

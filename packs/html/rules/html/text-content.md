@@ -4,6 +4,7 @@ title: "Buttons have text"
 languages: [html]
 fix: manual
 fix_reason: "the button's name needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/text-content]
 tags: [a11y]

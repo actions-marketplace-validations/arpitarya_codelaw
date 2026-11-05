@@ -4,6 +4,7 @@ title: "In-page links point at a heading or anchor that exists"
 languages: [markdown]
 fix: manual
 fix_reason: "which section the link meant needs the author"
+fix_pending: "auto-subset"
 stability: preview
 options:
   ignore_case: { type: "boolean", default: false, description: "compare fragments with anchors ignoring case" }

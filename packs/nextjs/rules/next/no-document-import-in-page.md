@@ -4,6 +4,7 @@ title: "next/document only in _document"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement — `next/head` or the layout — depends on what was imported"
+fix_exception: restructure
 exclude: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-document-import-in-page"]

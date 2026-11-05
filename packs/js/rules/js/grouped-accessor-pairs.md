@@ -4,6 +4,7 @@ title: "A getter and its setter sit together"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving a method reorders the class body"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint/grouped-accessor-pairs]
 since: 0.5.0

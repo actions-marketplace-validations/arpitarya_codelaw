@@ -4,6 +4,7 @@ title: "Functions that call hooks are named use…"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "every caller of the function must be renamed too"
+fix_pending: "auto-subset; needs cross-file"
 stability: preview
 since: 0.1.0
 ---

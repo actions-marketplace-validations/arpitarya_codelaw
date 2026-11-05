@@ -4,6 +4,7 @@ title: "Meta refresh redirects at once"
 languages: [html]
 fix: manual
 fix_reason: "redirecting at once or removing the refresh changes the page's behaviour"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   allowLongDelay: { type: "boolean", default: false, description: "allow delays over 20 hours (72,000 seconds)" }

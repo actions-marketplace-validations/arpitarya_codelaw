@@ -4,6 +4,7 @@ title: "Audio and video have captions"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the captions file is the author's to provide"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/media-has-caption]
 since: 0.5.0

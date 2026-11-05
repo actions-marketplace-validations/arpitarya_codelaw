@@ -75,6 +75,8 @@ The decider made performance a law (L8) and asked for a caching record. Caches w
    - **The compiled rule set lives only here.** Compiled matchers hold parser state with no on-disk form, so the §1 table's first row is kept in memory, per process, keyed by the rule set's fingerprint (every rule file, its source and default, every pack's data tables), the config's, the grammars and the version, plus each rule's path, `enabled_by`, shadows and fixer permission (`codelaw-engine`'s `compile` module, W-15). A one-shot run compiles once; a warm process compiles once per distinct key, keeping the 8 most recent.
 9. **Off switch:** `--no-cache` and `[cache] enabled = false`. Correct either way, slower without.
 
+10. **A cached diagnostic carries its whole fix** (W-156, 2026-10-31). `Diagnostic` gained `choices` and `fix_exception`; JSON omits them when empty, but the positional codec always writes both, after `data`, as it does `data` (LESSONS 2026-10-26). The key's domain tag moved from `codelaw-cache-v1` to `v2`, so no entry written before them is read.
+
 ### Consequences
 
 - **Disk use grows with the repo**, bounded by `max_size`.

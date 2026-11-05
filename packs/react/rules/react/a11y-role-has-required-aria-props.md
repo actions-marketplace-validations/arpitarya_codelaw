@@ -4,6 +4,7 @@ title: "A role carries the ARIA attributes it requires"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the attribute's value is the element's state, which the author wires up"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/role-has-required-aria-props]
 since: 0.5.0

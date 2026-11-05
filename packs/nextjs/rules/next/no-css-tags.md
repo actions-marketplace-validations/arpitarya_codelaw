@@ -4,6 +4,7 @@ title: "No stylesheet link tags for local CSS"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "importing the CSS moves it into the module graph"
+fix_exception: restructure
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-css-tags"]
 since: 0.5.0

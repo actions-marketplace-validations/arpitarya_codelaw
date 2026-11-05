@@ -4,6 +4,7 @@ title: "A React component stays under a maximum number of lines"
 languages: [jsx, tsx]
 fix: manual
 fix_reason: "splitting a component means choosing which part becomes its own component and which props it takes; that is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 200, description: "the most lines one component may span" }

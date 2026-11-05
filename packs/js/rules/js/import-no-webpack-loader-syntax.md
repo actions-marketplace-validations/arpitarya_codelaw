@@ -4,6 +4,7 @@ title: "No webpack loaders in import paths"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the loaders move to the bundler config, which is another file"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/no-webpack-loader-syntax]
 since: 0.5.0

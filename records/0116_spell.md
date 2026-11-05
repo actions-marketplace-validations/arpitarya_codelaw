@@ -397,6 +397,8 @@ question its maintainers left open. The forks and the rulings are in
 - Debt: `cspell.json` migration and non-English word lists are in
   [`BACKLOG.md`](../work/BACKLOG.md) (B-054, B-055).
 
+- **The fix ladder (W-156, 2026-11-05).** The spell pack's two `manual` rules name their exception or wait on their move (`fix_exception:` / `fix_pending:`, [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5), and its README carries the generated fix-ladder table.
+
 ### Alternatives considered
 
 - **Wrap or ship CSpell** — rejected: an npm dependency tree (L11), mixed

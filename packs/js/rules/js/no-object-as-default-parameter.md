@@ -4,6 +4,7 @@ title: "No object literal as a parameter default"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "destructuring the parameter changes its name inside the function"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-object-as-default-parameter]
 since: 0.5.0

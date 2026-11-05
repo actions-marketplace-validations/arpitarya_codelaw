@@ -4,6 +4,7 @@ title: "A dataclass's unannotated attribute is not a field"
 languages: [python]
 fix: manual
 fix_reason: "the field's type, or a `ClassVar` annotation, is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF045]
 since: 0.5.0

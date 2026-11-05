@@ -4,6 +4,7 @@ title: "Default parameters come last"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "reordering parameters changes every call site"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/default-param-last]
 since: 0.5.0

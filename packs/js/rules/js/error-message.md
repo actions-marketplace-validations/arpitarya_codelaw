@@ -4,6 +4,7 @@ title: "Pass a message when creating an error"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the message is human-written text"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-unicorn/error-message]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No chained assignment"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the chain into statements is a change of the author's code shape"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-multi-assign]
 since: 0.5.0

@@ -5,6 +5,7 @@ languages: [python]
 files: ["**/__init__.py"]
 fix: manual
 fix_reason: "where the code moves (a submodule) is the author's"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/RUF067]
 since: 0.5.0

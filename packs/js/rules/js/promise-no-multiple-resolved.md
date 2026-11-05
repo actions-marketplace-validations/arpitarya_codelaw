@@ -4,6 +4,7 @@ title: "A promise executor settles once on each path"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the first or the second call is the right one is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-promise/no-multiple-resolved]
 since: 0.5.0

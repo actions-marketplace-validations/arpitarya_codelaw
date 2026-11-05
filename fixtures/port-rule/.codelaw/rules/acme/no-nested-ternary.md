@@ -4,6 +4,7 @@ title: "No conditional expression inside another one's branches"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "an if/else chain, a lookup table or a named helper each fit different code; choosing needs the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-nested-ternary]
 since: 0.4.0

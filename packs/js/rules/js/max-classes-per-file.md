@@ -4,6 +4,7 @@ title: "One class per file"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the class moves to another file and its users import it"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/max-classes-per-file]
 since: 0.5.0

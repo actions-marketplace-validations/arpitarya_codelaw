@@ -4,6 +4,7 @@ title: "No document.cookie"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement is async and its arguments come from parsing the string"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-document-cookie]
 since: 0.5.0

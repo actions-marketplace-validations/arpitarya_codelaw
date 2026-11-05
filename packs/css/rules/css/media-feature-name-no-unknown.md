@@ -4,6 +4,7 @@ title: "No unknown media features"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended feature is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignoreMediaFeatureNames: { type: "string[]", default: [], description: "features to accept; `/regex/` for a pattern" }

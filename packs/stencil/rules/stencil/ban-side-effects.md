@@ -4,6 +4,7 @@ title: "No calls at a module's top level"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "where the call should run instead — a function, a lifecycle method — needs the author"
+fix_exception: restructure
 stability: preview
 options:
   allow: { type: "string[]", default: ["describe", "test", "bind", "createStore"], description: "functions that may be called at the top level; setting it replaces the default list" }

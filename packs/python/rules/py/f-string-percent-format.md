@@ -4,6 +4,7 @@ title: "No % formatting of an f-string"
 languages: [python]
 fix: manual
 fix_reason: "which values belong in the string is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF073]
 since: 0.5.0

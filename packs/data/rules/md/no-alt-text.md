@@ -4,6 +4,7 @@ title: "Images have alt text"
 languages: [markdown]
 fix: manual
 fix_reason: "describing the image needs a person who can see it"
+fix_exception: authored
 stability: preview
 ported_from: [markdownlint/MD045]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No undefined identifier"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to omit the value or write `void 0` depends on the position"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-undefined]
 since: 0.5.0

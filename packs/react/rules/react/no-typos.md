@@ -4,6 +4,7 @@ title: "No miscased React class members"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the intended name is read off the message; there is no template that recases a name"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-react/no-typos]
 since: 0.5.0

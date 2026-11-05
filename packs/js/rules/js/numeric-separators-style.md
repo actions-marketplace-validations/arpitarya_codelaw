@@ -4,6 +4,7 @@ title: "Group digits of long numbers"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the grouped literal is a computed edit"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/numeric-separators-style]
 since: 0.5.0

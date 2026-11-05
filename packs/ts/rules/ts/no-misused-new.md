@@ -4,6 +4,7 @@ title: "No constructors declared in interfaces, and no `new` methods in classes"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the intended constructor signature needs the author"
+fix_pending: "suggest; needs type-info"
 stability: preview
 ported_from: [typescript-eslint/no-misused-new]
 since: 0.1.0

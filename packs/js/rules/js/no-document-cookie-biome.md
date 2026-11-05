@@ -4,6 +4,7 @@ title: "No direct writes to document.cookie"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving to the Cookie Store API makes the code asynchronous"
+fix_exception: restructure
 stability: preview
 ported_from: [biome/suspicious/noDocumentCookie]
 since: 0.5.0

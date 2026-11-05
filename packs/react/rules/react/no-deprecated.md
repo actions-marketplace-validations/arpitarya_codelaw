@@ -4,6 +4,7 @@ title: "No deprecated React APIs"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "each deprecated API has its own replacement"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-react/no-deprecated]
 since: 0.1.0

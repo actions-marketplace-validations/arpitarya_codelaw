@@ -4,6 +4,7 @@ title: "No unknown at-rules (SCSS)"
 languages: [scss]
 fix: manual
 fix_reason: "the intended at-rule is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   ignoreAtRules: { type: "string[]", default: [], description: "at-rules to accept, such as a framework's; `/regex/` for a pattern" }

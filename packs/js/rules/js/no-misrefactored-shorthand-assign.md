@@ -4,6 +4,7 @@ title: "No compound assignment that repeats its target"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the intended expression may have been `a += b` or `a = a + b`; only the author knows which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [biome/suspicious/noMisrefactoredShorthandAssign]
 since: 0.5.0

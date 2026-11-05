@@ -4,6 +4,7 @@ title: "typeof is compared with a type it can return"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which type was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/valid-typeof]
 since: 0.1.0

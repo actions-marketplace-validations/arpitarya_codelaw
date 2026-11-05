@@ -4,6 +4,7 @@ title: "A switch case does not fall through into the next by accident"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the fall-through is intended needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-fallthrough]
 since: 0.1.0

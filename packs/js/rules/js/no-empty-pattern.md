@@ -4,6 +4,7 @@ title: "No empty destructuring patterns"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the pattern was meant to bind needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-empty-pattern]
 since: 0.1.0

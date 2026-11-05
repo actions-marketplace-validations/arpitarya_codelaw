@@ -4,6 +4,7 @@ title: "A constructor returns no value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the returned value may belong in a factory function"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-constructor-return]
 since: 0.5.0

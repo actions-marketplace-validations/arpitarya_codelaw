@@ -4,6 +4,7 @@ title: "No effect that only copies a value into state"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the derived value is computed during render and the state and the effect are deleted"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/no-deriving-state-in-effects]
 since: 0.5.0

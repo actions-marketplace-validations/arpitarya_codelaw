@@ -4,6 +4,7 @@ title: "pytest.raises(match=) escapes regex characters"
 languages: [python]
 fix: manual
 fix_reason: "whether the pattern was meant as a regex or literal text is the author's"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/RUF043]
 since: 0.5.0

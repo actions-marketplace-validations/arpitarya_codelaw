@@ -4,6 +4,7 @@ title: "A query hook's result is not a React hook dependency"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the fields to list depend on what the effect, callback or memo reads"
+fix_pending: "suggest"
 stability: preview
 ported_from: ["@tanstack/eslint-plugin-query/no-unstable-deps"]
 since: 0.1.0

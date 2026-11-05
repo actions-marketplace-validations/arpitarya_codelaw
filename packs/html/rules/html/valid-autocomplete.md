@@ -4,6 +4,7 @@ title: "autocomplete values are valid"
 languages: [html]
 fix: manual
 fix_reason: "the right field name depends on what the field collects"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/valid-autocomplete]
 tags: [a11y]

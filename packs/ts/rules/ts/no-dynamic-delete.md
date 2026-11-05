@@ -4,6 +4,7 @@ title: "No delete with a computed key"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "a `Map` or a rest-destructure changes the data structure"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/no-dynamic-delete]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No duplicate `$variables`"
 languages: [scss]
 fix: manual
 fix_reason: "which declaration wins is the author's call"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stylelint-scss/no-duplicate-dollar-variables]
 since: 0.3.0

@@ -4,6 +4,7 @@ title: "No two enum members share a value"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "which value is right needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [typescript-eslint/no-duplicate-enum-values]
 since: 0.1.0

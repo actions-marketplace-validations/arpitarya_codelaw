@@ -4,6 +4,7 @@ title: "No new Array(n)"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether a length or a single element was meant decides the rewrite"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-new-array]
 since: 0.5.0

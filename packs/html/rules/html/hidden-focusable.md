@@ -4,6 +4,7 @@ title: "Focusable elements are not aria-hidden"
 languages: [html]
 fix: manual
 fix_reason: "whether to unhide it, take it out of the tab order or remove it depends on the design"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/hidden-focusable]
 tags: [a11y]

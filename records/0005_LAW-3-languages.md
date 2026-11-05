@@ -120,6 +120,8 @@ Real repos mix a JS/TS front end, Python services, config files and docs. A lint
 - **Plain-text config files (2026-10-30)** get findings from rules that read them, shown where an agent and a person look — `.nvmrc` beside `package.json` — and nothing else: no grammar, no formatter, no rule of their own. The rules that use it are W-128's (yarn classic `yarn.lock`), W-129's (runtime versions) and W-132's (`CODEOWNERS`).
 - **Checked on every CI run** by `crates/codelaw-cli/tests/laws.rs`: `l3_each_language_alone_and_together` (the fixture matrix and decision 5's isolation diff) and `l3_a_language_switched_off_costs_nothing`. The runtime fence runs in `scripts/smoke.sh` (W-18).
 
+- **The fix ladder over the L3 matrix (W-156, 2026-11-05).** The `fixtures/l3` rules that are `manual` name their exception (`fix_exception: value`), as [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5 now requires of every rule, and `crates/codelaw-cli/tests/laws.rs` checks decision 8's fields — a `suggest` finding's edits or choices, a `manual` one's steps and exception — over the matrix; the text-config tests' rules carry one too.
+
 ### Alternatives considered
 
 - **JS/TS only, with Python left to Ruff:** rejected. Two tools and two rule formats, and agents have to learn both.

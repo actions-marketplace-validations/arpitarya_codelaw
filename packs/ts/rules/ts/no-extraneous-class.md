@@ -4,6 +4,7 @@ title: "No class used as a namespace"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the members become module-level functions, which changes every caller"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/no-extraneous-class]
 since: 0.5.0

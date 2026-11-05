@@ -4,6 +4,7 @@ title: "No continue"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "inverting the condition restructures the loop body"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-continue]
 since: 0.5.0

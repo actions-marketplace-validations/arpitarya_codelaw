@@ -4,6 +4,7 @@ title: "querySelector rather than getElementById"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the selector string is built from the id, which a template cannot escape"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-query-selector]
 since: 0.5.0

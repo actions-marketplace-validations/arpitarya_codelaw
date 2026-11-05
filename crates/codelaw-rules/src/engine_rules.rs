@@ -1,7 +1,7 @@
 //! The engine's own diagnostics (SR-RULE-PACKS decision 1). They are not
 //! rule files, but every one still carries its fix class and steps (L4).
 
-use codelaw_core::{FixClass, Severity};
+use codelaw_core::{FixClass, FixException, Severity};
 
 pub struct EngineRule {
     pub id: &'static str,
@@ -246,4 +246,39 @@ pub const TEST_RULES: &[&str] = &["graph/untested-function", "graph/function-cov
 
 pub fn engine_rule(id: &str) -> Option<&'static EngineRule> {
     ENGINE_RULES.iter().find(|r| r.id == id)
+}
+
+/// Each `manual` engine rule's named exception (SR-LAW-4 decision 15), kept
+/// beside `ENGINE_RULES` so a rule added there without one fails the test
+/// below rather than another item's build.
+pub fn engine_fix_exception(id: &str) -> Option<FixException> {
+    use FixException::*;
+    Some(match id {
+        // The run, not the code: what to configure, re-encode or rerun is
+        // the project's choice.
+        "codelaw/no-rules" | "codelaw/not-utf8" | "codelaw/file-too-large" | "codelaw/file-changed-during-run" | "codelaw/write-failed" => Value,
+        "format/failed" | "graph/no-deprecated-usage" | "codelaw/stale-baseline" | "codelaw/unknown-suppression" => Value,
+        "codelaw/expiring-exception" | "codelaw/expired-exception" | "codelaw/exception-without-expiry" | "codelaw/exception-author" => Value,
+        "codelaw/incomplete-ignore" | "git/branch-name" => Value,
+        // The fix is somewhere else: the generator, the rule, the CI job,
+        // a second pull request.
+        "codelaw/generated" | "codelaw/internal-error" | "codelaw/stale-coverage" | "git/pr-size" => Restructure,
+        // Missing human-authored content: a reason, a test, a message.
+        "codelaw/suppression-needs-reason" | "graph/untested-function" | "graph/function-coverage" => Authored,
+        "git/commit-message" | "git/pr-description" => Authored,
+        _ => return None,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// SR-LAW-4 decision 15: every `manual` engine rule names its exception.
+    #[test]
+    fn every_manual_engine_rule_has_an_exception() {
+        let missing: Vec<&str> =
+            ENGINE_RULES.iter().filter(|r| r.fix == FixClass::Manual && engine_fix_exception(r.id).is_none()).map(|r| r.id).collect();
+        assert!(missing.is_empty(), "add these to `engine_fix_exception`: {missing:?}");
+    }
 }

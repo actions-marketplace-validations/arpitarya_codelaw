@@ -4,6 +4,7 @@ title: "No empty interfaces or {} types"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the right replacement — `object`, `unknown` or `Record<string, never>` — depends on intent"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [typescript-eslint/no-empty-object-type]
 since: 0.1.0

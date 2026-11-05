@@ -4,6 +4,7 @@ title: "No styled-jsx in _document"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the styles move to a global stylesheet or `_app`"
+fix_exception: restructure
 files: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-styled-jsx-in-document"]

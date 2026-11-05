@@ -4,6 +4,7 @@ title: "A setter has a getter"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the getter returns is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint/accessor-pairs]
 since: 0.5.0

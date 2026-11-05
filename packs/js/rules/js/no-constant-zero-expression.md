@@ -4,6 +4,7 @@ title: "No multiply by zero"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether 0 or another factor was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-constant-zero-expression]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Array.from with a mapper rather than fill()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`Array.from` may already have a mapper argument, and the fill value moves into a new arrow function"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-from-fill]
 since: 0.5.0

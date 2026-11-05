@@ -4,6 +4,7 @@ title: "A button has a label"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the label is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/control-has-associated-label]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No consecutive holes in array destructuring"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the index is the number of skipped places, computed from the pattern"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-unreadable-array-destructuring]
 since: 0.5.0

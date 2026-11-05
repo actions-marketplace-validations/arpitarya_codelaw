@@ -4,6 +4,7 @@ title: "No deprecated NumPy functions"
 languages: [python]
 fix: manual
 fix_reason: "each has its own replacement name"
+fix_pending: "auto"
 stability: preview
 ported_from: [ruff/NPY003]
 since: 0.5.0

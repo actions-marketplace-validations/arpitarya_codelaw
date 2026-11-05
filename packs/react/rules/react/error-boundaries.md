@@ -4,6 +4,7 @@ title: "Errors in children are caught by an Error Boundary, not try/catch"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "an Error Boundary is a component to add above this one, with its own fallback"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/error-boundaries, "@eslint-react/error-boundaries"]
 since: 0.3.0

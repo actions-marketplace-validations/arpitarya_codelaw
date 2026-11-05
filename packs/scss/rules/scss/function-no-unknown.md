@@ -4,6 +4,7 @@ title: "No unknown functions (SCSS)"
 languages: [scss]
 fix: manual
 fix_reason: "the intended function is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   ignoreFunctions: { type: "string[]", default: [], description: "functions to accept; `/regex/` for a pattern" }

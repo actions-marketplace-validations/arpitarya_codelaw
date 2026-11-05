@@ -4,6 +4,7 @@ title: "No className or style on a component"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the styling moves into the component, which then takes a narrower prop"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/forbid-component-props]
 since: 0.5.0

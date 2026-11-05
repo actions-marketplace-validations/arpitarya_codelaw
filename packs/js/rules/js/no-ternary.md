@@ -4,6 +4,7 @@ title: "No ternary"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the expression becomes statements"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-ternary]
 since: 0.5.0

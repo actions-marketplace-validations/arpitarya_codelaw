@@ -4,6 +4,7 @@ title: "A React component takes at most a maximum number of props"
 languages: [jsx, tsx]
 fix: manual
 fix_reason: "grouping props changes the component's interface and every place that renders it; which props belong together is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 8, description: "the most props one component may take" }

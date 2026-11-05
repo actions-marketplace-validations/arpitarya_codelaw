@@ -4,6 +4,7 @@ title: "No bitwise operators"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `&&` / `||` was meant, or the bit operation is intended, is the author's call"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-bitwise]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "<fieldset> has a legend"
 languages: [html]
 fix: manual
 fix_reason: "the group's name needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/wcag/h71]
 tags: [a11y]

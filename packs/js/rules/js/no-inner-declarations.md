@@ -4,6 +4,7 @@ title: "No function declaration in a nested block"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving the function changes what it can see"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-inner-declarations]
 since: 0.5.0

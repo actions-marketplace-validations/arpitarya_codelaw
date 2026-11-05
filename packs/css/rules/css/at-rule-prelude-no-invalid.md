@@ -4,6 +4,7 @@ title: "At-rule preludes follow their grammar"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended prelude is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignoreAtRules: { type: "string[]", default: ["media"], description: "at-rules not to check; `@media` is left to `css/media-query-no-invalid`" }

@@ -4,6 +4,7 @@ title: "No dangerouslySetInnerHTML together with children"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "which content the element should have needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-react/no-danger-with-children]
 since: 0.1.0

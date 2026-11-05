@@ -4,6 +4,7 @@ title: "ARIA attribute values have the right type"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the intended value is the author's"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-proptypes]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No this.isMounted()"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the callback has to be cancelled where it starts"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-react/no-is-mounted]
 since: 0.1.0

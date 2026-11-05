@@ -4,6 +4,7 @@ title: "A query function returns its data"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the query should return is the data the function fetches, which the author knows"
+fix_exception: value
 stability: preview
 ported_from: ["@tanstack/eslint-plugin-query/no-void-query-fn"]
 since: 0.1.0

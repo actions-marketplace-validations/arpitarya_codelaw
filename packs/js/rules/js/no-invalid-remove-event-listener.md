@@ -4,6 +4,7 @@ title: "removeEventListener takes a reference"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the listener must be stored where it was added, in other code"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-invalid-remove-event-listener]
 since: 0.5.0

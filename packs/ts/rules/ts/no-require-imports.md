@@ -4,6 +4,7 @@ title: "No require() calls"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "an import may need the module's default or named exports chosen by hand"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [typescript-eslint/no-require-imports]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No Function constructor"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the function the string held has to be written as code"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-new-func]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Component names are PascalCase"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the new name is the author's, and every import of the component follows it"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 ported_from: [eslint-plugin-react/jsx-pascal-case]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "EventTarget rather than EventEmitter"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`on`/`emit` become `addEventListener`/`dispatchEvent` for every user"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-event-target]
 since: 0.5.0

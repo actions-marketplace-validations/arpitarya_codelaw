@@ -4,6 +4,7 @@ title: "useMemo's callback computes and returns a value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the code belongs in useEffect, useCallback or plain render code is the author's call"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react-hooks/use-memo, eslint-plugin-react-hooks/void-use-memo, "@eslint-react/use-memo"]
 since: 0.3.0

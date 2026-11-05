@@ -4,6 +4,7 @@ title: "`except` names exception classes"
 languages: [python]
 fix: manual
 fix_reason: "the exception class to catch is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B030]
 since: 0.1.0

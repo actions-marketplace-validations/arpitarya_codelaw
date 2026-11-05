@@ -4,6 +4,7 @@ title: "useSelector selects one value per call"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the one call is split into one per value, and the destructuring goes"
+fix_pending: "suggest-choices"
 stability: preview
 since: 0.1.0
 ---

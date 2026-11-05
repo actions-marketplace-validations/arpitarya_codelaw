@@ -4,6 +4,7 @@ title: "pivot_table, not pivot or unstack"
 languages: [python]
 fix: manual
 fix_reason: "`pivot_table` needs an aggregation function the author chooses"
+fix_exception: value
 stability: preview
 ported_from: [ruff/PD010]
 since: 0.5.0

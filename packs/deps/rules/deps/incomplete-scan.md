@@ -6,6 +6,7 @@ files: ["package.json", "pyproject.toml"]
 severity: warn
 fix: manual
 fix_reason: "reading an advisory source again needs the network, which the engine never uses (L5); turning a source off is the team's decision"
+fix_exception: security
 stability: preview
 since: 0.5.0
 ---

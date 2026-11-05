@@ -4,6 +4,7 @@ title: "No Node.js built-in modules"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what replaces the built-in (a browser API, a package, an injected dependency) is a design choice"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/no-nodejs-modules]
 since: 0.5.0

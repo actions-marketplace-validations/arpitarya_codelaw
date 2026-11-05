@@ -12,8 +12,8 @@ use codelaw_baseline::exception::{Expiry, expiry};
 use codelaw_baseline::{AUTHOR_RULE, EXPIRED_RULE, EXPIRING_RULE, WITHOUT_EXPIRY_RULE};
 use codelaw_cache::KeyBuilder;
 use codelaw_config::{Layer, RuleConfig};
-use codelaw_core::{Diagnostic, FixClass, Language, LineIndex, Severity, Skipped, TextEdit};
-use codelaw_fix::{Candidate, DataFixContext, ExternalCall, FixContext, FixSpec, data_edits, edits_for, group_edits, run_external};
+use codelaw_core::{Diagnostic, FixChoice, FixClass, FixException, Language, LineIndex, Severity, Skipped, TextEdit};
+use codelaw_fix::{Candidate, DataFixContext, ExternalCall, FixContext, FixSpec, choice_edits, data_edits, edits_for, group_edits, run_external};
 use codelaw_lang::{Grammar, Region, RegionOptions, Root};
 use codelaw_match::{Match, interpolate};
 use codelaw_native::{Elsewhere, FileContext, NativeContext, NativeFinding};
@@ -39,11 +39,14 @@ pub(crate) struct RunMode<'a> {
     pub bom: bool,
     /// Where native rules see the files around this one.
     pub tree: Tree<'a>,
+    /// The label of the choice `fix` applies where a finding has choices;
+    /// `None` applies each finding's `default` one (L4 decision 4).
+    pub choice: Option<&'a str>,
 }
 
 impl RunMode<'static> {
     pub fn check() -> Self {
-        RunMode { external_fixers: false, refused: None, bom: false, tree: Tree::Disk }
+        RunMode { external_fixers: false, refused: None, bom: false, tree: Tree::Disk, choice: None }
     }
 }
 
@@ -86,6 +89,17 @@ struct Finding {
     /// The text config files it is shown in too (a native rule's
     /// `elsewhere`, decision 15d).
     also: Vec<Elsewhere>,
+    /// The highest rung this finding's own edit reaches, below its rule's
+    /// (SR-LAW-4 decision 2); `None` keeps the rule's.
+    rung: Option<FixClass>,
+    /// Labelled alternatives instead of one edit (SR-LAW-4 decision 4).
+    choices: Vec<FixChoice>,
+}
+
+/// The exception a `manual` finding reports (L4 decision 5): its rule's,
+/// or `value` for a finding that dropped from a rule with none.
+pub(crate) fn manual_exception(rule: &codelaw_rules::RuleFile) -> FixException {
+    rule.fix_exception.unwrap_or(FixException::Value)
 }
 
 const FALLBACK_STEP: &str = "Make the change by hand; `codelaw explain <rule>` shows what the rule requires.";
@@ -122,6 +136,8 @@ pub(crate) fn meta_diagnostic(entry_rel: &str, layers: &[Layer], id: &str, messa
         source: "engine".into(),
         note: None,
         data: None,
+        choices: Vec::new(),
+        fix_exception: if rule.fix == FixClass::Manual { codelaw_rules::engine_fix_exception(id) } else { None },
     })
 }
 
@@ -479,6 +495,23 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
                     None => f.note = Some("fix-outside-region".into()),
                 }
             }
+            // Each choice maps like an edit set; one that reaches outside
+            // the region is dropped, and none left is no fix.
+            if !f.choices.is_empty() {
+                let choices = std::mem::take(&mut f.choices);
+                f.choices = choices
+                    .into_iter()
+                    .filter_map(|mut c| {
+                        let mapped: Option<Vec<TextEdit>> =
+                            c.edits.into_iter().map(|ed| edit_span(ed.start, ed.end).map(|(s, e)| TextEdit::new(s, e, ed.text))).collect();
+                        c.edits = with_line_endings(mapped?, crlf);
+                        Some(c)
+                    })
+                    .collect();
+                if f.choices.is_empty() {
+                    f.note = Some("fix-outside-region".into());
+                }
+            }
             findings.push(f);
         }
     }
@@ -512,11 +545,26 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         }
         let cfg = active.iter().find(|(i, _, _)| *i == f.rule).map(|(_, _, c)| c).expect("an active rule");
         let declared = rule.loaded.rule.fix;
+        // The finding's own rung, never above its rule's (L4 decision 2).
+        let reach = f.rung.map_or(declared, |r| r.max(declared));
         let external = matches!(rule.fix, Some(FixSpec::External(_)));
         let mut note = f.note;
         let mut edits = Vec::new();
+        let mut choices = Vec::new();
+        let refused = |e: &[TextEdit]| mode.refused.is_some_and(|r| r.contains(&Candidate { rule: rule.id().to_owned(), edits: e.to_vec() }.key(text)));
         let class = match f.edits.filter(|e| !e.is_empty()) {
             _ if declared == FixClass::Manual => FixClass::Manual,
+            // Choices are `suggest` (L4 decision 4); a refused default
+            // choice drops the finding to `manual` like a refused edit.
+            _ if !f.choices.is_empty() => {
+                if f.choices.iter().any(|c| c.default && refused(&c.edits)) {
+                    note = note.or(Some("fix-refused".into()));
+                    FixClass::Manual
+                } else {
+                    choices = f.choices;
+                    reach.max(FixClass::Suggest)
+                }
+            }
             Some(e) => {
                 let key = Candidate { rule: rule.id().to_owned(), edits: e.clone() }.key(text);
                 if mode.refused.is_some_and(|r| r.contains(&key)) {
@@ -524,7 +572,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
                     FixClass::Manual
                 } else {
                     edits = e;
-                    declared
+                    reach
                 }
             }
             // An external fixer runs in `codelaw fix`; `check` names it.
@@ -542,6 +590,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         } else {
             Vec::new()
         };
+        let fix_exception = (class == FixClass::Manual).then(|| manual_exception(&rule.loaded.rule));
         diagnostics.push(Diagnostic {
             rule: rule.id().to_owned(),
             severity: f.severity.or(cfg.severity).expect("active"),
@@ -557,6 +606,8 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
             source: rule.loaded.source.label(),
             note,
             data: f.data,
+            choices,
+            fix_exception,
         });
         let primary = diagnostics.last().expect("just pushed");
         let mut refused = None;
@@ -583,11 +634,12 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         }
     }
     // A text config file is never written: its edits are for the editor.
+    // A finding with choices offers its default one, or the one `fix`
+    // was asked for (L4 decision 4).
     let candidates = diagnostics
         .iter()
-        .filter(|d| d.file == entry.rel)
-        .filter(|d| d.fix != FixClass::Manual && !d.edits.is_empty())
-        .map(|d| (Candidate { rule: d.rule.clone(), edits: d.edits.clone() }, d.fix))
+        .filter(|d| d.file == entry.rel && d.fix != FixClass::Manual)
+        .filter_map(|d| d.applicable_edits(mode.choice).map(|e| (Candidate { rule: d.rule.clone(), edits: e.to_vec() }, d.fix)))
         .collect();
     LintOutput { diagnostics, candidates, asked: file.asked() }
 }
@@ -747,6 +799,8 @@ fn mirror(file: &dyn FileContext, primary: &Diagnostic, declared: FixClass, step
         source: primary.source.clone(),
         note: None,
         data: Some(serde_json::Value::Object(data)),
+        choices: Vec::new(),
+        fix_exception: None,
     })
 }
 
@@ -754,7 +808,7 @@ fn mirror(file: &dyn FileContext, primary: &Diagnostic, declared: FixClass, step
 const INTERNAL_ERROR: &str = "internal-error";
 
 fn internal_error(rule: usize, start: usize, end: usize, id: &str, what: &str) -> Finding {
-    Finding { rule, start, end, message: format!("rule `{id}` failed on this file: {what}"), edits: None, note: Some(INTERNAL_ERROR.into()), data: None, severity: None, also: Vec::new() }
+    Finding { rule, start, end, message: format!("rule `{id}` failed on this file: {what}"), edits: None, note: Some(INTERNAL_ERROR.into()), data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new() }
 }
 
 fn panic_message(p: &(dyn std::any::Any + Send)) -> String {
@@ -898,8 +952,16 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                             Vec::new()
                         }
                     };
-                    let edits = (wants_fix && !f.edits.is_empty()).then_some(f.edits);
-                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also });
+                    let (rung, choices) = match catch_unwind(AssertUnwindSafe(|| (nr.rung_of(&f, &nctx), nr.choices_of(&f, &nctx)))) {
+                        Ok(r) => r,
+                        Err(p) => {
+                            out.push(internal_error(*index, 0, 0, rule.id(), &panic_message(p.as_ref())));
+                            (None, Vec::new())
+                        }
+                    };
+                    let choices = if wants_fix { choices } else { Vec::new() };
+                    let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then_some(f.edits);
+                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also, rung, choices });
                 }
             }
             Matcher::Match(_) => {
@@ -911,7 +973,17 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                 let message = codelaw_match::expand_options(message, &rule.loaded.rule.options, &cfg.options);
                 let message = message.as_str();
                 let mut per: Vec<(Option<Vec<TextEdit>>, Option<String>)> = vec![(None, None); ms.len()];
+                let mut per_choices: Vec<Vec<FixChoice>> = vec![Vec::new(); ms.len()];
                 match (&rule.fix, wants_fix) {
+                    (Some(spec @ FixSpec::Choices(_)), true) => {
+                        for (i, m) in ms.iter().enumerate() {
+                            match catch_unwind(AssertUnwindSafe(|| choice_edits(spec, m, &ctx))) {
+                                Ok(Ok(c)) => per_choices[i] = c,
+                                Ok(Err(e)) => per[i].1 = Some(format!("fix-unavailable: {e}")),
+                                Err(p) => per[i].1 = Some(format!("fix-unavailable: {}", panic_message(p.as_ref()))),
+                            }
+                        }
+                    }
                     (Some(spec @ FixSpec::Steps(_)), true) if spec.is_group() => {
                         let r = catch_unwind(AssertUnwindSafe(|| group_edits(spec, ms, &ctx)));
                         let res = match r {
@@ -956,8 +1028,22 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                     }
                     _ => {}
                 }
-                for (m, (edits, note)) in ms.iter().zip(per) {
-                    out.push(Finding { rule: *index, start: m.start, end: m.end, message: interpolate(message, m, &unit.text), edits, note, data: None, severity: None, also: Vec::new() });
+                for ((m, (edits, note)), choices) in ms.iter().zip(per).zip(per_choices) {
+                    // Outside `auto_when:` an `auto` rule's finding is `suggest`.
+                    let rung = (!m.auto).then_some(FixClass::Suggest);
+                    out.push(Finding {
+                        rule: *index,
+                        start: m.start,
+                        end: m.end,
+                        message: interpolate(message, m, &unit.text),
+                        edits,
+                        note,
+                        data: None,
+                        severity: None,
+                        also: Vec::new(),
+                        rung,
+                        choices,
+                    });
                 }
             }
             Matcher::Graph(_) => {}
@@ -995,7 +1081,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         _ => (None, None),
                     };
                     let text = codelaw_match::target::interpolate(message, tree, &f.slot, &unit.text, f.error.as_deref());
-                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: text, edits, note, data: None, severity: None, also: Vec::new() });
+                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: text, edits, note, data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new() });
                 }
             }
             Matcher::TypeErrors => {
@@ -1003,7 +1089,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                     // TypeScript's warnings stay warnings; its errors take
                     // the rule's severity.
                     let severity = (d.category == "warning").then_some(Severity::Warn);
-                    out.push(Finding { rule: *index, start: d.start, end: d.end, message: format!("TS{}: {}", d.code, d.message), edits: None, note: None, data: None, severity, also: Vec::new() });
+                    out.push(Finding { rule: *index, start: d.start, end: d.end, message: format!("TS{}: {}", d.code, d.message), edits: None, note: None, data: None, severity, also: Vec::new(), rung: None, choices: Vec::new() });
                 }
             }
             Matcher::Unsupported(_) => {}

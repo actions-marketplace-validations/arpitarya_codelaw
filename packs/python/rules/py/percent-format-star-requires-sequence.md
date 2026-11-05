@@ -4,6 +4,7 @@ title: "A `*` width in a `%` format takes a tuple"
 languages: [python]
 fix: manual
 fix_reason: "the order of the values has to be decided"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F508]
 since: 0.1.0

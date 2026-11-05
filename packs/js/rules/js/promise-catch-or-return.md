@@ -4,6 +4,7 @@ title: "A promise chain is returned, awaited or ends in catch"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the error should go — a `.catch()`, a `return` or an `await` — is the author's decision"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-promise/catch-or-return]
 since: 0.5.0

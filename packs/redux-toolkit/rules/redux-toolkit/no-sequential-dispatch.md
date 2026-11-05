@@ -4,6 +4,7 @@ title: "One event is one action, not a run of dispatches"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the actions have to be merged into one that the reducers all respond to"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 2, description: "how many `dispatch` statements in a row are accepted" }

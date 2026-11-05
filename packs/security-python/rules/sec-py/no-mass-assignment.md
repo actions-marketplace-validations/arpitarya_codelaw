@@ -4,6 +4,7 @@ title: 'A request is not splatted into a model'
 languages: [python]
 fix: manual
 fix_reason: "which fields a client may set is the author's decision"
+fix_exception: value
 stability: preview
 security: { cwe: [915], owasp: ["A01:2025"], severity: high }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "A bare `except:` is the last handler"
 languages: [python]
 fix: manual
 fix_reason: "reordering handlers changes which one runs"
+fix_pending: "auto"
 stability: preview
 ported_from: [ruff/F707]
 since: 0.1.0

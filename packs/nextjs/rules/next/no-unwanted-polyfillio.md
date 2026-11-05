@@ -4,6 +4,7 @@ title: "No polyfill.io"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "what to keep depends on which features the script was polyfilling"
+fix_pending: "suggest"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-unwanted-polyfillio"]
 since: 0.5.0

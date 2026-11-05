@@ -4,6 +4,7 @@ title: "pytest.raises as a context manager"
 languages: [python]
 fix: manual
 fix_reason: "the call moves into a `with` block"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [ruff/RUF061]
 since: 0.5.0

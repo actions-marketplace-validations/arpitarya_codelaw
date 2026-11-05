@@ -4,6 +4,7 @@ title: "No await inside a loop"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the iterations may depend on each other; only the author knows if they can run together"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-await-in-loop]
 since: 0.5.0

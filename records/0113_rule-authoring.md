@@ -124,6 +124,8 @@ The decider asked that rules can be written manually or by an AI agent with a sk
   - **The four security packs joined the corpus with empty snapshots (W-53, 2026-10-25):** `security-js` on `full-stack-fastapi-template`, `html5-boilerplate` and `bulletproof-react`; `security-ts` on `full-stack-fastapi-template`, `ionic-framework` and `bulletproof-react`; `security-html` on `flask`, `html5-boilerplate` and `djangoproject.com`; `security-python` on `flask`, `starlette`, `full-stack-fastapi-template` and `djangoproject.com`. A pack folder with no rules yet passes `codelaw test` with `0 rules · 0 checks · 0 failed`; a project or an id with none is still a usage error.
   - **`tanstack-query` joined the corpus (W-42, 2026-10-25):** `full-stack-fastapi-template`, `bulletproof-react` and TanStack Query's own repository (examples, docs and tests, MIT) run its rules, so the pack's new rules are counted before any enters `tanstack-query/recommended`. 13 repositories; `redux-toolkit` has no corpus yet.
 
+- **Choices in `codelaw test` (W-156, 2026-11-05; [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 11).** A rule with labelled choices is proved per choice: each `Don't` is fixed with that choice (`fix --unsafe` with `FixOptions::choice`) and compared with its `#### Fixed (<label>)` block, then checked as a fixpoint that parses; a choice with no such block fails. The port-rule fixture's `manual` rules name their exception.
+
 ### Alternatives considered
 
 - **Let the agent judge its own rule:** rejected by [L5](0007_LAW-5-no-model-in-the-engine.md).

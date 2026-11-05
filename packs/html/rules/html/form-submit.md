@@ -4,6 +4,7 @@ title: "Forms have a submit button"
 languages: [html]
 fix: manual
 fix_reason: "the button's label and placement need a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/wcag/h32]
 tags: [a11y]

@@ -5,6 +5,7 @@ languages: [toml]
 severity: error
 fix: manual
 fix_reason: "a ticket and a date are facts about the work that only the author knows; the engine can't invent them"
+fix_exception: value
 stability: preview
 since: 0.5.0
 ---

@@ -4,6 +4,7 @@ title: "No map(int, version.split('.'))"
 languages: [python]
 fix: manual
 fix_reason: "the right parser (packaging.version, or a tuple the library exposes) is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/RUF048]
 since: 0.5.0

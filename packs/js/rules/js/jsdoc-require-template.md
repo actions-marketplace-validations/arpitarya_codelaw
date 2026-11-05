@@ -4,6 +4,7 @@ title: "Type parameters are documented with @template"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "each type parameter needs its own @template line with the author's description"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-template]
 since: 0.5.0

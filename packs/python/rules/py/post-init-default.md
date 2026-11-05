@@ -4,6 +4,7 @@ title: "No defaults on __post_init__ parameters"
 languages: [python]
 fix: manual
 fix_reason: "the default belongs on the `InitVar` field, which moves it to the class body"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/RUF033]
 since: 0.5.0

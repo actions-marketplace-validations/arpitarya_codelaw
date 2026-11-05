@@ -4,6 +4,7 @@ title: 'No Mako templates'
 languages: [python]
 fix: manual
 fix_reason: "moving to another engine (or turning on `default_filters`) changes every template"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B702, ruff/S702]
 security: { cwe: [79], owasp: ["A05:2025"], severity: medium }

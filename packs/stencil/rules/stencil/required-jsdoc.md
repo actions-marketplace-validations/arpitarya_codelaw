@@ -4,6 +4,7 @@ title: "Public members have JSDoc"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the documentation text needs the author"
+fix_exception: authored
 stability: preview
 ported_from: [stencil/required-jsdoc]
 since: 0.1.0

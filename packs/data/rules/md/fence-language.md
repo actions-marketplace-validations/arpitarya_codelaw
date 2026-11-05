@@ -4,6 +4,7 @@ title: "Fenced code blocks name their language"
 languages: [markdown]
 fix: manual
 fix_reason: "which language the code is in can't always be told from the code"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [markdownlint/MD040]
 since: 0.1.0

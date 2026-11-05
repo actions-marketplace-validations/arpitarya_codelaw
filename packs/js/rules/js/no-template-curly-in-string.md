@@ -4,6 +4,7 @@ title: "No template placeholder in a plain string"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "switching to backticks is right only if interpolation was meant"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-template-curly-in-string]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "A then or catch callback returns the value, not Promise.resolve or Promi
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "turning `return Promise.reject(e)` into `throw e` changes the statement's shape inside code the author may want to restructure"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-promise/no-return-wrap]
 since: 0.5.0

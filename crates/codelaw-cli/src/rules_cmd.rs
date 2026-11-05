@@ -32,6 +32,19 @@ pub struct RulesArgs {
     /// Each OWASP Top 10:2025 category and the security rules that map to it.
     #[arg(long)]
     security_coverage: bool,
+    /// Each pack's rules per fix rung and per `manual` exception (SR-LAW-4
+    /// decision 7): the packs the project loads, or with `--packs`, every
+    /// pack folder in a directory.
+    #[arg(long)]
+    fix_stats: bool,
+    /// With `--fix-stats`: count every pack folder in this directory.
+    #[arg(long, value_name = "DIR", requires = "fix_stats")]
+    packs: Option<PathBuf>,
+    /// With `--fix-stats`: exit 1 when a pack ships more `manual` rules than
+    /// its ceiling in `<packs>/fix-ladder.toml`, or has no ceiling there
+    /// (SR-LAW-4 decision 6).
+    #[arg(long, requires = "packs")]
+    check: bool,
     /// text or json (the shape of the npm `rulesFor` and Python `rules_for`).
     #[arg(long, default_value = "text")]
     format: String,
@@ -150,6 +163,9 @@ pub fn rules(args: RulesArgs) -> ExitCode {
         Ok(_) => false,
         Err(e) => return fail(e),
     };
+    if args.fix_stats {
+        return fix_stats(args.packs.as_deref(), args.check, json);
+    }
     let mut project = match load(&args.for_path.iter().cloned().collect::<Vec<_>>(), EngineOptions::from_env()) {
         Ok(p) => p,
         Err(e) => return fail(e),
@@ -200,6 +216,61 @@ pub fn rules(args: RulesArgs) -> ExitCode {
     }
     print!("{}", codelaw_report::rules_text(&rows));
     ExitCode::SUCCESS
+}
+
+/// `codelaw rules --fix-stats [--packs <dir> [--check]]` (SR-LAW-4
+/// decisions 6 and 7).
+fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
+    let dirs: Vec<PathBuf> = match packs_dir {
+        Some(d) => {
+            let mut v: Vec<PathBuf> = match std::fs::read_dir(d) {
+                Ok(it) => it.flatten().map(|e| e.path()).filter(|p| p.join("codelaw-pack.toml").is_file()).collect(),
+                Err(e) => return fail(format!("{}: {e}", d.display())),
+            };
+            v.sort();
+            v
+        }
+        None => match load(&[], EngineOptions::from_env()) {
+            Ok(p) => p.rules.packs.iter().map(|(_, dir)| dir.clone()).collect(),
+            Err(e) => return fail(e),
+        },
+    };
+    let ceilings = match (check, packs_dir) {
+        (true, Some(d)) => match codelaw_rules::read_ceilings(&d.join("fix-ladder.toml")) {
+            Ok(c) => Some(c),
+            Err(e) => return fail(e),
+        },
+        _ => packs_dir.and_then(|d| codelaw_rules::read_ceilings(&d.join("fix-ladder.toml")).ok()),
+    };
+    let mut stats = Vec::new();
+    for dir in &dirs {
+        let pack = match load_pack(dir) {
+            Ok(p) => p,
+            Err(e) => return fail(errors_text(&e)),
+        };
+        let name = dir.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| pack.manifest.name.clone());
+        let mut s = codelaw_rules::FixStats::of(&name, &pack.rules);
+        s.ceiling = ceilings.as_ref().and_then(|c| c.get(&name).copied());
+        stats.push(s);
+    }
+    let mut problems: Vec<String> = Vec::new();
+    if check {
+        for s in &stats {
+            if s.ceiling.is_none() {
+                problems.push(format!("pack `{}` has no ceiling in fix-ladder.toml; add `{} = {}` (its count today) (SR-LAW-4 decision 6)", s.pack, s.pack, s.manual));
+            }
+            problems.extend(s.over_ceiling());
+        }
+    }
+    if json {
+        print_json(&serde_json::json!({ "packs": stats, "problems": problems }));
+    } else {
+        print!("{}", codelaw_rules::fix_stats_text(&stats));
+        for p in &problems {
+            eprintln!("error: {p}");
+        }
+    }
+    if problems.is_empty() { ExitCode::SUCCESS } else { ExitCode::from(1) }
 }
 
 fn print_json(v: &serde_json::Value) -> ExitCode {
@@ -314,6 +385,7 @@ pub fn template(id: &str, languages: &[Language], scope: &str, fix: FixClass) ->
             ("scope", part("new-rule/scope-project.md", project)),
             ("fix", &fix.to_string()),
             ("fix_reason", part("new-rule/fix-reason.md", fix != FixClass::Auto)),
+            ("fix_exception", part("new-rule/fix-exception.md", fix == FixClass::Manual)),
             ("since", codelaw_core::VERSION),
             ("matcher", tpl::text(if project { "new-rule/matcher-project.md" } else { "new-rule/matcher-file.md" })),
             ("fix_line", part("new-rule/fix-line.md", fix != FixClass::Manual)),

@@ -4,6 +4,7 @@ title: "Throw Error objects"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the error class and message are the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-throw-literal]
 since: 0.5.0

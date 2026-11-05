@@ -4,6 +4,7 @@ title: "A loop that always exits on its first pass"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the rewrite (an `if`, or moving the exit into a condition) depends on intent"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-unreachable-loop]
 since: 0.5.0

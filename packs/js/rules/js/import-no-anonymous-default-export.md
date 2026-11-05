@@ -4,6 +4,7 @@ title: "Default exports have a name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the name to give the value is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-import/no-anonymous-default-export]
 since: 0.5.0

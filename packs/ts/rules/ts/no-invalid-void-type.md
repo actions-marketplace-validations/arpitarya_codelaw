@@ -2,8 +2,8 @@
 id: ts/no-invalid-void-type
 title: "void only as a return type"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "the intended type — `undefined`, or a return type — is the author's"
+fix: suggest
+fix_reason: "`undefined` is what `void` means outside a return type; where the author meant a return type, the diff is wrong"
 stability: preview
 ported_from: [typescript-eslint/no-invalid-void-type]
 since: 0.5.0
@@ -21,11 +21,8 @@ match:
     - inside: { kind: union_type }
     - inside: { kind: type_annotation, inside: { any: [{kind: variable_declarator}, {kind: required_parameter}, {kind: optional_parameter}, {kind: public_field_definition}, {kind: property_signature}] } }
 message: "Use `undefined` here; `void` belongs in a return type"
+fix: "undefined"
 ```
-
-## How to fix
-
-1. Use `undefined` (or remove the type).
 
 ## Examples
 

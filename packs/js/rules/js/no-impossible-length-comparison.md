@@ -4,6 +4,7 @@ title: "No length < 0"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which comparison was meant (`=== 0`, `< 1`) is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-impossible-length-comparison]
 since: 0.5.0

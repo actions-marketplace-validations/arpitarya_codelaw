@@ -2,7 +2,7 @@
 //! SR-RULE-FORMAT decision 3). Each turns a match into LSP-style text
 //! edits; only the edited ranges change (L4 decision 6).
 
-use codelaw_core::{Language, TextEdit};
+use codelaw_core::{FixChoice, Language, TextEdit};
 use codelaw_lang::Root;
 use codelaw_match::{Match, interpolate};
 use codelaw_semantic::SemanticModel;
@@ -45,6 +45,17 @@ pub enum FixSpec {
     Steps(Vec<Primitive>),
     /// `{ external: "<command>" }` (SR-ARCHITECTURE decision 18).
     External(String),
+    /// `{ choices: [{ label, default?, fix }] }`: a `suggest` fix whose
+    /// right edit is one of a few the code determines (SR-LAW-4 decision 4).
+    Choices(Vec<ChoiceSpec>),
+}
+
+/// One labelled alternative of a `choices:` fix.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ChoiceSpec {
+    pub label: String,
+    pub default: bool,
+    pub steps: Vec<Primitive>,
 }
 
 impl FixSpec {
@@ -161,9 +172,51 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
     })
 }
 
+/// The steps of one fix value: a template, one primitive or a list.
+fn steps_of(v: &Value) -> Result<Vec<Primitive>, String> {
+    match parse_fix(v)? {
+        FixSpec::Steps(s) => Ok(s),
+        _ => Err("a choice's `fix:` is a template or a list of primitives".into()),
+    }
+}
+
+/// Parse `{ choices: [...] }` (SR-LAW-4 decision 4).
+fn parse_choices(v: &Value) -> Result<FixSpec, String> {
+    let Some(list) = v.as_array().filter(|l| l.len() >= 2) else {
+        return Err("`choices:` is a list of two or more `{ label, fix }`; one edit is a plain `fix:`".into());
+    };
+    let mut out = Vec::new();
+    for c in list {
+        let Value::Object(o) = c else { return Err("each choice is `{ label, default?, fix }`".into()) };
+        only_keys(o, &["label", "default", "fix"], "choices")?;
+        let label = string(field(o, "label", "choices")?, "label")?;
+        if label.trim().is_empty() || label.contains(')') {
+            return Err(format!("a choice's label is a few words, without `)`, not `{label}`"));
+        }
+        let default = match o.get("default") {
+            None => false,
+            Some(Value::Bool(b)) => *b,
+            Some(_) => return Err("a choice's `default` is `true` or `false`".into()),
+        };
+        let steps = steps_of(field(o, "fix", "choices")?)?;
+        if steps.iter().any(|p| matches!(p, Primitive::CollectIntoBlock { .. })) {
+            return Err("a choice can't `collect-into-block`".into());
+        }
+        out.push(ChoiceSpec { label, default, steps });
+    }
+    if out.iter().filter(|c| c.default).count() > 1 {
+        return Err("at most one choice is `default: true`".into());
+    }
+    Ok(FixSpec::Choices(out))
+}
+
 /// Parse a rule's `fix:` value.
 pub fn parse_fix(v: &Value) -> Result<FixSpec, String> {
     match v {
+        Value::Object(o) if o.contains_key("choices") => {
+            only_keys(o, &["choices"], "choices")?;
+            parse_choices(&o["choices"])
+        }
         Value::String(s) => Ok(FixSpec::Steps(vec![Primitive::Replace { target: Target::Match, with: s.clone() }])),
         Value::Object(o) if o.contains_key("external") => {
             only_keys(o, &["external"], "external")?;
@@ -354,6 +407,27 @@ pub fn edits_for(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<
         step_edits(p, m, ctx, &mut out)?;
     }
     Ok(sort_edits(out))
+}
+
+/// Each labelled choice's edits for one match (SR-LAW-4 decision 4). A
+/// choice whose edits can't be built is left out; none left is an error.
+pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<FixChoice>, String> {
+    let FixSpec::Choices(choices) = spec else { return Err("not a `choices:` fix".into()) };
+    let mut out = Vec::new();
+    let mut first_error = None;
+    for c in choices {
+        let mut edits = Vec::new();
+        match c.steps.iter().try_for_each(|p| step_edits(p, m, ctx, &mut edits)) {
+            Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits) }),
+            Err(e) => {
+                first_error.get_or_insert(e);
+            }
+        }
+    }
+    match (out.is_empty(), first_error) {
+        (true, Some(e)) => Err(e),
+        _ => Ok(out),
+    }
 }
 
 /// The edits for every match of a group fix together.

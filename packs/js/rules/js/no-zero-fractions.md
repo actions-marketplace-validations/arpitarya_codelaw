@@ -4,6 +4,7 @@ title: "No zero fraction on a number"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the fix strips characters from the literal, which a template cannot compute"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-zero-fractions]
 since: 0.5.0

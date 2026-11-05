@@ -4,6 +4,7 @@ title: "Arrow functions for callbacks"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the parameter list and body are re-joined around `=>`, which a template over this node cannot capture"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint/prefer-arrow-callback]
 since: 0.5.0

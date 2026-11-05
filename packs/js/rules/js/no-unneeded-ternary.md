@@ -4,6 +4,7 @@ title: "No x ? true : false"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-unneeded-ternary]
 since: 0.5.0

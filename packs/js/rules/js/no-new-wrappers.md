@@ -4,6 +4,7 @@ title: "No primitive wrapper objects"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "dropping `new` changes the value from an object to a primitive, which the author confirms"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-new-wrappers]
 since: 0.5.0

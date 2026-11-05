@@ -4,6 +4,7 @@ title: "@version, @since and @kind take valid values"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right version or kind is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/check-values]
 since: 0.5.0

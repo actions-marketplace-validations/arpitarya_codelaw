@@ -4,6 +4,7 @@ title: "Name capture groups"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the group name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint/prefer-named-capture-group]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No __iterator__"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving to `Symbol.iterator` rewrites the iterator"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-iterator]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Limit nesting depth"
 languages: [scss]
 fix: manual
 fix_reason: "flattening a selector is the author's call"
+fix_pending: "suggest"
 stability: preview
 options:
   max: { type: "number", default: 3, description: "the deepest nesting allowed" }

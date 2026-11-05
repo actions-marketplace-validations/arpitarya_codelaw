@@ -4,6 +4,7 @@ title: "Components read the store with hooks, not connect"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the component's props and its wrapper are rewritten as hook calls"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

@@ -4,6 +4,7 @@ title: "No synchronous *Sync calls"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the async form returns a promise or takes a callback, so the calling code has to become async"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-n/no-sync]
 since: 0.5.0

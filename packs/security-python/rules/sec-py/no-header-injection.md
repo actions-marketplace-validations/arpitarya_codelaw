@@ -4,6 +4,7 @@ title: 'A request value is not a response header'
 languages: [python]
 fix: manual
 fix_reason: "whether to reject, strip or encode the value depends on what the header is for"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [113], owasp: ["A05:2025"], severity: medium }
 since: 0.2.0

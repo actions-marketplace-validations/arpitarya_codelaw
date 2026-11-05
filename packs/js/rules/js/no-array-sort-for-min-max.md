@@ -4,6 +4,7 @@ title: "Math.min/max rather than sorting for one value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which of `Math.min` and `Math.max` the comparator means is read from the comparator, which a template cannot do"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-sort-for-min-max]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Regular expressions use the u or v flag"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/require-unicode-regexp]
 since: 0.5.0

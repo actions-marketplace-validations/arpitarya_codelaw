@@ -4,6 +4,7 @@ title: "No unknown pseudo-elements"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended pseudo-element is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignorePseudoElements: { type: "string[]", default: [], description: "pseudo-elements to accept; `/regex/` for a pattern" }

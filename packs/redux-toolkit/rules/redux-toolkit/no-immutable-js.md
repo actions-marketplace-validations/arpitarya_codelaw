@@ -4,6 +4,7 @@ title: "State is plain JavaScript, not Immutable.js"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "every read and update of the state is rewritten for plain objects"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---

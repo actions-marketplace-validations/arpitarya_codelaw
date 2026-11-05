@@ -4,6 +4,7 @@ title: 'A request value is not a format string'
 languages: [python]
 fix: manual
 fix_reason: "the template has to be a literal, which needs the format string moved out of the request"
+fix_exception: authored
 stability: preview
 security: { cwe: [134], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "No repeated literal in new Set([...])"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the repeat is a typo for another value is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-duplicate-set-values]
 since: 0.5.0

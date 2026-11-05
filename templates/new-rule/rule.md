@@ -3,7 +3,7 @@ id: {{id}}
 title: TODO one line on what the rule requires
 languages: [{{languages}}]
 {{scope}}fix: {{fix}}
-{{fix_reason}}stability: preview
+{{fix_reason}}{{fix_exception}}stability: preview
 since: {{since}}
 ---
 

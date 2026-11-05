@@ -4,6 +4,7 @@ title: "No String.raw without an escape"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "dropping the tag is safe only once the author confirms no escape was meant to be added"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [biome/complexity/noUselessStringRaw]
 since: 0.5.0

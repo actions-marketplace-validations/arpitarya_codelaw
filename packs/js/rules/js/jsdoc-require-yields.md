@@ -4,6 +4,7 @@ title: "A generator that yields documents @yields"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the yielded values mean is the author's to describe"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-yields]
 since: 0.5.0

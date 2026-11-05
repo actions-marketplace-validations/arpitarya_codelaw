@@ -4,6 +4,7 @@ title: "No two case labels in a switch are the same"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which label was meant is a decision"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-duplicate-case]
 since: 0.1.0

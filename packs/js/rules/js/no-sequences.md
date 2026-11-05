@@ -4,6 +4,7 @@ title: "No comma operator"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the expressions become separate statements, which changes the code shape"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-sequences]
 since: 0.5.0

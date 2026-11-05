@@ -4,6 +4,7 @@ title: "No response header value taken from a request"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "encoding or rejecting is a choice that depends on the header"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [113], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

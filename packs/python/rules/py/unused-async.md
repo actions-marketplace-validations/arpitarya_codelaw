@@ -4,6 +4,7 @@ title: "async def awaits something"
 languages: [python]
 fix: manual
 fix_reason: "dropping `async` changes every caller, which must stop awaiting it"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/RUF029]
 since: 0.5.0

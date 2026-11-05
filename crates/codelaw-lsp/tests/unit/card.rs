@@ -21,6 +21,8 @@ fn diag(rule: &str, message: &str, severity: Severity, fix: FixClass, data: Opti
         source: "test".into(),
         note: None,
         data,
+        choices: vec![],
+        fix_exception: None,
     }
 }
 

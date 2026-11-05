@@ -4,6 +4,7 @@ title: "event.key rather than keyCode"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the key name for a numeric code comes from a table"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-keyboard-event-key]
 since: 0.5.0

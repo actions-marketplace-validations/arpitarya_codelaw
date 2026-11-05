@@ -4,6 +4,7 @@ title: "No javascript: URL, no navigation to a URL taken from the address"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which targets a page may navigate to is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-script-url]
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }

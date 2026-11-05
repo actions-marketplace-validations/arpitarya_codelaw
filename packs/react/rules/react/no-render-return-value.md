@@ -4,6 +4,7 @@ title: "The return value of ReactDOM.render is not used"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "code that used the instance needs a ref instead"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-react/no-render-return-value]
 since: 0.1.0

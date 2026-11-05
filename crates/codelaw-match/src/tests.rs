@@ -6,7 +6,7 @@ fn rule(language: Language, block: &str) -> RuleFile {
     let ext = language.extension();
     let display = language.display();
     let text = format!(
-        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: manual\nfix_reason: test\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### {display}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
+        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: manual\nfix_reason: test\nfix_exception: value\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### {display}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
         language.name()
     );
     parse_rule_ok(&text)
@@ -188,7 +188,7 @@ fn call_rule(options: &str, language: Language, src: &str, opts: serde_json::Val
 
 fn predicate_rule(pattern: &str, predicate: &str, options: &str, language: Language, src: &str, opts: serde_json::Value) -> usize {
     let text = format!(
-        "---\nid: t/r\ntitle: \"t\"\nlanguages: [{lang}]\nfix: manual\nfix_reason: \"x\"\noptions:\n  ok:\n    type: \"call[]\"\n    default: {options}\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: {pattern}\nwhere:\n  $$MATCH: {{ {predicate}: ok }}\nmessage: \"m $OPTION.ok\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### {title}\n\n#### Don't\n\n```{lang}\nx\n```\n\n#### Do\n\n```{lang}\ny\n```\n",
+        "---\nid: t/r\ntitle: \"t\"\nlanguages: [{lang}]\nfix: manual\nfix_reason: \"x\"\nfix_exception: value\noptions:\n  ok:\n    type: \"call[]\"\n    default: {options}\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: {pattern}\nwhere:\n  $$MATCH: {{ {predicate}: ok }}\nmessage: \"m $OPTION.ok\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### {title}\n\n#### Don't\n\n```{lang}\nx\n```\n\n#### Do\n\n```{lang}\ny\n```\n",
         lang = language.name(),
         title = if language == Language::Python { "Python" } else { "JavaScript" }
     );
@@ -272,7 +272,7 @@ fn function_calls_looks_through_the_enclosing_functions() {
 
 #[test]
 fn calls_must_name_a_call_option() {
-    let text = "---\nid: t/r\ntitle: \"t\"\nlanguages: [javascript]\nfix: manual\nfix_reason: \"x\"\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: $F($$$A)\nwhere:\n  $$MATCH: { calls: nope }\nmessage: \"m\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n";
+    let text = "---\nid: t/r\ntitle: \"t\"\nlanguages: [javascript]\nfix: manual\nfix_reason: \"x\"\nfix_exception: value\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: $F($$$A)\nwhere:\n  $$MATCH: { calls: nope }\nmessage: \"m\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n";
     let r = parse_rule_ok(text);
     let err = compile(&r, Grammar::JavaScript, &BTreeMap::new()).err().expect("an error");
     assert!(err.contains("names no `call[]` option"), "{err}");

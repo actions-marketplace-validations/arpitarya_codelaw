@@ -4,6 +4,7 @@ title: "scope only on th"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the cell may need to become a `<th>`, which changes the table's markup"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/scope]
 since: 0.5.0

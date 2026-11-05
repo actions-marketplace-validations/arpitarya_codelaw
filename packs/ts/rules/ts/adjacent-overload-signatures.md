@@ -4,6 +4,7 @@ title: "Overloads of one name sit together"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "restructure: the overloads have to be moved next to each other, and the order between them is the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [typescript-eslint/adjacent-overload-signatures]
 since: 0.5.0

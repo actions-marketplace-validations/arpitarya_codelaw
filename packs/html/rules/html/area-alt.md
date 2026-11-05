@@ -4,6 +4,7 @@ title: "Image-map areas with a link have alt text"
 languages: [html]
 fix: manual
 fix_reason: "the text that describes the area needs a human"
+fix_exception: authored
 stability: preview
 options:
   accessible: { type: "boolean", default: true, description: "require `alt` on every linked area, not just one area per link target" }

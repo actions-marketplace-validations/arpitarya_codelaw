@@ -4,6 +4,7 @@ title: "A document starts with its title heading"
 languages: [markdown]
 fix: manual
 fix_reason: "the title text needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }

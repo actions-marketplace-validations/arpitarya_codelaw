@@ -4,6 +4,7 @@ title: "No class with only static members"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "callers of `MathUtil.double` become callers of `double`"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-static-only-class]
 since: 0.5.0

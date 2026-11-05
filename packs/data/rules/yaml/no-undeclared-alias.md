@@ -4,6 +4,7 @@ title: "Every alias refers to an anchor defined before it"
 languages: [yaml]
 fix: manual
 fix_reason: "whether the anchor is missing, misspelt or defined too late needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 since: 0.1.0
 ---

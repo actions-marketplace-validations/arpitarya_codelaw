@@ -480,7 +480,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
 | [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `manual` | — | `ts/recommended` |
-| [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `manual` | — | `ts/recommended` |
+| [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `auto` | — | `ts/recommended` |
 | [`ts/no-explicit-any`](ts/no-explicit-any.md) | No explicit any | `suggest` | — | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](ts/no-extra-non-null-assertion.md) | No repeated non-null assertions | `auto` | — | `ts/recommended` |
 | [`ts/no-extraneous-class`](ts/no-extraneous-class.md) | No class used as a namespace | `manual` | — | *[rules] only* |
@@ -488,7 +488,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-implicit-any-let`](ts/no-implicit-any-let.md) | A let without a value has a type | `manual` | — | `ts/recommended` |
 | [`ts/no-import-type-side-effects`](ts/no-import-type-side-effects.md) | An import of only types is import type | `auto` | — | *[rules] only* |
 | [`ts/no-inferrable-types`](ts/no-inferrable-types.md) | No annotation that the value already says | `auto` | — | *[rules] only* |
-| [`ts/no-invalid-void-type`](ts/no-invalid-void-type.md) | void only as a return type | `manual` | — | *[rules] only* |
+| [`ts/no-invalid-void-type`](ts/no-invalid-void-type.md) | void only as a return type | `suggest` | — | *[rules] only* |
 | [`ts/no-mergeable-namespace`](ts/no-mergeable-namespace.md) | A namespace is declared once per file | `manual` | — | *[rules] only* |
 | [`ts/no-misused-new`](ts/no-misused-new.md) | No constructors declared in interfaces, and no `new` methods in classes | `manual` | — | `ts/recommended` |
 | [`ts/no-misused-promises`](ts/no-misused-promises.md) | No async function where a `void` callback is expected | `manual` | — | `ts/type-checked` |
@@ -564,7 +564,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-tabindex-no-positive`](react/a11y-tabindex-no-positive.md) | No positive tabIndex | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-tabindex-no-positive`](react/a11y-tabindex-no-positive.md) | No positive tabIndex | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/boolean-prop-naming`](react/boolean-prop-naming.md) | Boolean props are named is… or has… | `manual` | — | *[rules] only* |
 | [`react/button-has-type`](react/button-has-type.md) | A <button> says its type | `suggest` | — | *[rules] only* |
 | [`react/capitalized-calls`](react/capitalized-calls.md) | Components are rendered with JSX, not called | `manual` | — | *[rules] only* |
@@ -1495,14 +1495,14 @@ Presets: `codelaw:pandas/recommended`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-at`](pandas/pandas-use-of-dot-at.md) | .loc, not .at | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-iat`](pandas/pandas-use-of-dot-iat.md) | .iloc, not .iat | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-is-null`](pandas/pandas-use-of-dot-is-null.md) | .isna, not .isnull | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-ix`](pandas/pandas-use-of-dot-ix.md) | No .ix | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-not-null`](pandas/pandas-use-of-dot-not-null.md) | .notna, not .notnull | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-at`](pandas/pandas-use-of-dot-at.md) | .loc, not .at | `suggest` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-iat`](pandas/pandas-use-of-dot-iat.md) | .iloc, not .iat | `suggest` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-is-null`](pandas/pandas-use-of-dot-is-null.md) | .isna, not .isnull | `suggest` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-ix`](pandas/pandas-use-of-dot-ix.md) | No .ix | `suggest` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-not-null`](pandas/pandas-use-of-dot-not-null.md) | .notna, not .notnull | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-pivot-or-unstack`](pandas/pandas-use-of-dot-pivot-or-unstack.md) | pivot_table, not pivot or unstack | `manual` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `manual` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-stack`](pandas/pandas-use-of-dot-stack.md) | melt, not stack | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-values`](pandas/pandas-use-of-dot-values.md) | .to_numpy, not .values | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-values`](pandas/pandas-use-of-dot-values.md) | .to_numpy, not .values | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-pd-merge`](pandas/pandas-use-of-pd-merge.md) | df.merge, not pd.merge | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-pd-merge`](pandas/pandas-use-of-pd-merge.md) | df.merge, not pd.merge | `suggest` | — | `pandas/recommended` |

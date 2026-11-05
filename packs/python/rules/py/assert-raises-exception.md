@@ -4,6 +4,7 @@ title: "Tests don't expect a bare `Exception`"
 languages: [python]
 fix: manual
 fix_reason: "the exception the test expects has to be named by its author"
+fix_exception: authored
 stability: preview
 ported_from: [ruff/B017]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "A `%` format string is complete"
 languages: [python]
 fix: manual
 fix_reason: "the intended placeholder can't be inferred"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F501]
 since: 0.1.0

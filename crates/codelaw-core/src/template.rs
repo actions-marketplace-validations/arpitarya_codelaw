@@ -46,6 +46,7 @@ pub const TEMPLATES: &[Template] = &[
     t!("migrate/lint.toml"),
     t!("migrate/preview.toml"),
     t!("new-rule/example.md"),
+    t!("new-rule/fix-exception.md"),
     t!("new-rule/fix-line.md"),
     t!("new-rule/fix-reason.md"),
     t!("new-rule/how-to-fix.md"),
@@ -173,7 +174,7 @@ mod tests {
         ("migrate/codelaw.toml", &[("tool", "eslint"), ("sources", ".eslintrc.json"), ("extends", ""), ("preview", ""), ("lint", ""), ("tables", "")]),
         ("migrate/lint.toml", &[("tool", "eslint"), ("aliases", "\"eslint\"")]),
         ("new-rule/example.md", &[("language", "Python"), ("ext", "py")]),
-        ("new-rule/rule.md", &[("id", "a/b"), ("languages", "python"), ("scope", ""), ("fix", "auto"), ("fix_reason", ""), ("since", "0.0.0"), ("matcher", ""), ("fix_line", ""), ("how_to_fix", ""), ("examples", "")]),
+        ("new-rule/rule.md", &[("id", "a/b"), ("languages", "python"), ("scope", ""), ("fix", "auto"), ("fix_reason", ""), ("fix_exception", ""), ("since", "0.0.0"), ("matcher", ""), ("fix_line", ""), ("how_to_fix", ""), ("examples", "")]),
     ];
 
     #[test]

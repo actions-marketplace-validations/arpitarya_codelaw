@@ -4,6 +4,7 @@ title: "`re.sub` count and flags by keyword"
 languages: [python]
 fix: manual
 fix_reason: "which parameter the value was meant for needs a person"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/B034]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No createCipher, no DES, RC4, Blowfish or ECB"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the key, the IV and the stored format have to change together"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B304, ruff/S304]
 security: { cwe: [327], owasp: ["A04:2025"], severity: high }

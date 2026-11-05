@@ -4,6 +4,7 @@ title: "No reading another component's propTypes"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the shape is exported from where it's defined and imported here"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/forbid-foreign-prop-types]
 since: 0.5.0

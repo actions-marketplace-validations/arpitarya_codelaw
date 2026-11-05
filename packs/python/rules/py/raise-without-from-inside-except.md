@@ -4,6 +4,7 @@ title: "Raising in `except` says `from`"
 languages: [python]
 fix: manual
 fix_reason: "whether to chain the original error or hide it is the author's choice"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B904]
 since: 0.1.0

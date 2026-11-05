@@ -4,6 +4,7 @@ title: "<title> has text"
 languages: [html]
 fix: manual
 fix_reason: "the page title needs a human"
+fix_pending: "suggest"
 stability: preview
 ported_from: [html-validate/empty-title]
 tags: [a11y]

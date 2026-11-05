@@ -4,6 +4,7 @@ title: "Table rows have as many cells as the header"
 languages: [markdown]
 fix: manual
 fix_reason: "which cell is missing or extra needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [markdownlint/MD056]
 since: 0.1.0

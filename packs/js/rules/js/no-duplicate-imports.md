@@ -4,6 +4,7 @@ title: "One import per module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "merging the specifier lists is a computed edit"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-duplicate-imports]
 since: 0.5.0

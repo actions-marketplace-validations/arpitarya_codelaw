@@ -4,6 +4,7 @@ title: "Hover handlers have focus twins"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the focus handler's behaviour is the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/mouse-events-have-key-events]
 since: 0.5.0

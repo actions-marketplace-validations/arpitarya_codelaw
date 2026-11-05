@@ -2,7 +2,7 @@
 id: pandas/pandas-use-of-dot-iat
 title: ".iloc, not .iat"
 languages: [python]
-fix: manual
+fix: suggest
 fix_reason: "`.iloc` returns more than one value where `.iat` would fail; confirm the lookup"
 stability: preview
 ported_from: [ruff/PD009]
@@ -17,7 +17,7 @@ Values are read with `.iloc`, not `.iat`.
 match:
   kind: attribute
   all:
-  - has: {field: attribute, regex: ^iat$}
+  - pattern: $O.iat
   - inside: {kind: subscript, field: value}
   - inside:
       kind: module
@@ -28,11 +28,8 @@ match:
         - {kind: import_from_statement}
         regex: ^(import|from)\s+pandas\b
 message: Use `.iloc` instead of `.iat`
+fix: "$O.iloc"
 ```
-
-## How to fix
-
-1. Replace `.iat[...]` with `.iloc[...]`.
 
 ## Examples
 

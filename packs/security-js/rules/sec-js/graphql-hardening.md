@@ -4,6 +4,7 @@ title: "A GraphQL server limits query depth and cost, and hides introspection"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the limits that fit the schema are a decision for the author"
+fix_exception: value
 stability: preview
 security: { cwe: [200, 770], owasp: ["A02:2025"], severity: medium }
 since: 0.3.0

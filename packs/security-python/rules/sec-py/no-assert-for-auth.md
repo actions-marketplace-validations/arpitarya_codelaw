@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
 fix_reason: "the replacement raises the right exception for the framework, which only the author knows"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B101, ruff/S101]
 security: { cwe: [703], owasp: ["A10:2025"], severity: medium }

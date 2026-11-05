@@ -4,6 +4,7 @@ title: "Name the rules a disable comment turns off"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which rules were meant is known only to the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-abusive-eslint-disable]
 since: 0.5.0

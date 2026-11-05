@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended type — `undefined`, or a return type — is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`undefined` is what `void` means outside a return type; where the author meant a return type, the diff is wrong) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `typescript-eslint/no-invalid-void-type` |
@@ -120,10 +120,6 @@ codelaw explain ts/no-invalid-void-type       # what it wants, why, how to fix
 codelaw check --rule ts/no-invalid-void-type  # only this rule
 codelaw config --print --for <file>           # the resolved setting, and where it came from
 ```
-
-## How to fix
-
-1. Use `undefined` (or remove the type).
 
 ## Examples
 

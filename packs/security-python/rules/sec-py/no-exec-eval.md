@@ -4,6 +4,7 @@ title: "`exec`, `eval` and `compile` of a non-literal"
 languages: [python]
 fix: manual
 fix_reason: "the safe replacement (`ast.literal_eval`, a lookup table, a parser) depends on what the string is for"
+fix_pending: "suggest; needs add-import"
 stability: preview
 ported_from: [bandit/B102, bandit/B307]
 security: { cwe: [94], owasp: ["A05:2025"], severity: high }

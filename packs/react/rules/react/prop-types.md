@@ -4,6 +4,7 @@ title: "Props are declared in propTypes"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "authored: the prop's type is the author's to declare"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-react/prop-types]
 since: 0.5.0

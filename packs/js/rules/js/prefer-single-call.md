@@ -4,6 +4,7 @@ title: "One push() with several items"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "merging two statements is a cross-statement edit"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-single-call]
 since: 0.5.0

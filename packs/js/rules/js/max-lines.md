@@ -4,6 +4,7 @@ title: "A file stays under a maximum number of lines"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting a file changes its structure; which exports belong together is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 300, description: "the most lines a file may have" }

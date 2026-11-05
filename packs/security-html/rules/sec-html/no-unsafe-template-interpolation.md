@@ -4,6 +4,7 @@ title: "No template syntax that turns escaping off"
 languages: [html]
 fix: manual
 fix_reason: "whether the value is trusted, and how to sanitise it, is the author's call"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

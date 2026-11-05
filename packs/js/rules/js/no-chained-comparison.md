@@ -4,6 +4,7 @@ title: "No a < b < c"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the middle operand is evaluated twice in the rewrite"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-chained-comparison]
 since: 0.5.0

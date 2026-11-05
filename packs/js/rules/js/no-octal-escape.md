@@ -4,6 +4,7 @@ title: "No octal escapes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the equivalent `\\u` or `\\x` escape is computed from the octal value"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-octal-escape]
 since: 0.5.0

@@ -210,9 +210,12 @@ a diff.
 ### Consequences
 
 - **Built: partly.** Decisions 1, 3, 9–14 were built under the 2026-10-18 law.
-  The per-finding drop to `suggest` (2), choices (4), `fix_exception` (5), the
-  ceiling (6), `--fix-stats` (7) and the project's lowering (16) are W-156; until it lands, the loader does
-  not yet refuse a `manual` rule without `fix_exception`.
+  W-156 built (2026-10-31) the per-finding rung (2: `auto_when:`, `NativeRule::rung_of`),
+  choices (4: `fix: { choices }`, `NativeRule::choices_of`, `Fixed (<label>)`),
+  `fix_exception` (5, refused at load; `fix_pending:` stands in on a rule
+  waiting to move up), the ceiling (6: `packs/fix-ladder.toml`), `--fix-stats`
+  (7) and the engine rules' exceptions (15). Not yet built: the project's
+  lowering (16).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
   `manual` would fall from 577 to 147, and `auto` (always or for a stated

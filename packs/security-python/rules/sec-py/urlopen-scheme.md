@@ -4,6 +4,7 @@ title: "`urlopen` of a value that may be `file://`"
 languages: [python]
 fix: manual
 fix_reason: "the allowed schemes and hosts are policy"
+fix_pending: "suggest; needs add-import"
 stability: preview
 ported_from: [bandit/B310, ruff/S310]
 security: { cwe: [22, 918], owasp: ["A01:2025"], severity: medium }

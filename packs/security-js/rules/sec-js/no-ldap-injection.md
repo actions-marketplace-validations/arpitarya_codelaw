@@ -4,6 +4,7 @@ title: "No LDAP filter built from a template or concatenation"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which filter classes or escape function the project uses is its own choice"
+fix_pending: "suggest; needs add-import"
 stability: preview
 security: { cwe: [90], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

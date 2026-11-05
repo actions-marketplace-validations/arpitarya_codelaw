@@ -4,6 +4,7 @@ title: "No next/head in _document"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the import is replaced by the document's own `Head`"
+fix_pending: "suggest"
 files: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-head-import-in-document"]

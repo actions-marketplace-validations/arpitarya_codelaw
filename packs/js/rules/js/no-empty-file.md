@@ -4,6 +4,7 @@ title: "No empty file"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to delete the file or fill it is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-empty-file]
 since: 0.5.0

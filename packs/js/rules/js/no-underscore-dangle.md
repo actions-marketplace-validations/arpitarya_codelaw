@@ -4,6 +4,7 @@ title: "No leading or trailing underscore in names"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new name is the author's choice and may collide"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-underscore-dangle]
 since: 0.5.0

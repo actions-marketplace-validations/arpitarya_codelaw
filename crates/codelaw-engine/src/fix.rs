@@ -18,7 +18,7 @@ use rayon::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct FixOptions {
     /// `--unsafe`: apply `suggest` fixes too.
     pub unsafe_fixes: bool,
@@ -26,6 +26,10 @@ pub struct FixOptions {
     pub dry_run: bool,
     /// `--trace`: record each pass of the loop in [`FileFix::trace`].
     pub trace: bool,
+    /// With `unsafe_fixes`: where a finding has labelled choices, apply the
+    /// one with this label (else its `default`). `codelaw test` proves each
+    /// choice this way (SR-LAW-4 decisions 4 and 11).
+    pub choice: Option<String>,
 }
 
 /// One file's `fix --trace` (SR-RULE-AUTHORING decision 3): the passes of
@@ -117,14 +121,15 @@ fn line_of(text: &str, offset: usize) -> u32 {
 }
 
 /// A lint pass of the fix loop.
-fn mode<'a>(external_fixers: bool, refused: &'a BTreeSet<String>, bom: bool, tree: Tree<'a>) -> RunMode<'a> {
-    RunMode { external_fixers, refused: Some(refused), bom, tree }
+fn mode<'a>(external_fixers: bool, refused: &'a BTreeSet<String>, bom: bool, tree: Tree<'a>, choice: Option<&'a str>) -> RunMode<'a> {
+    RunMode { external_fixers, refused: Some(refused), bom, tree, choice }
 }
 
 /// Fix one file's text, then, with `format`, format it (decision 4 of
 /// SR-FORMATTER; `fix_source` and the rule tester don't).
 pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options: &FixOptions, format: bool, bom: bool, tree: Tree<'_>) -> FileFix {
     let wanted = |class: FixClass| class == FixClass::Auto || (options.unsafe_fixes && class == FixClass::Suggest);
+    let choice = options.choice.as_deref();
     let mut before: Option<BTreeSet<String>> = None;
     // Each run records its own trace; the one kept is the run whose result
     // `fix` keeps.
@@ -134,7 +139,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
             text,
             |t| syntax_errors(project, entry, t),
             |current, refused| {
-                let out = lint_text(project, entry, current, &mode(true, refused, bom, tree));
+                let out = lint_text(project, entry, current, &mode(true, refused, bom, tree, choice));
                 if before.is_none() {
                     *before = Some(firing(&out.diagnostics));
                 }
@@ -157,7 +162,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
     let mut denied: BTreeSet<String> = BTreeSet::new();
     let mut trace = new_trace();
     let mut outcome = run(&denied, &mut before, &mut trace);
-    let mut remaining = lint_text(project, entry, &outcome.text, &mode(false, &outcome.refused, bom, tree)).diagnostics;
+    let mut remaining = lint_text(project, entry, &outcome.text, &mode(false, &outcome.refused, bom, tree, choice)).diagnostics;
     let before = before.unwrap_or_default();
     let new_rules = |remaining: &[Diagnostic]| firing(remaining).difference(&before).next().is_some();
     if new_rules(&remaining) {
@@ -168,7 +173,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
             d.insert(culprit.clone());
             let mut t = new_trace();
             let o = run(&d, &mut None, &mut t);
-            let r = lint_text(project, entry, &o.text, &mode(false, &o.refused, bom, tree)).diagnostics;
+            let r = lint_text(project, entry, &o.text, &mode(false, &o.refused, bom, tree, choice)).diagnostics;
             if !new_rules(&r) {
                 denied = d;
                 (outcome, remaining, trace) = (o, r, t);
@@ -180,7 +185,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
             denied.extend(applied);
             trace = new_trace();
             outcome = run(&denied, &mut None, &mut trace);
-            remaining = lint_text(project, entry, &outcome.text, &mode(false, &outcome.refused, bom, tree)).diagnostics;
+            remaining = lint_text(project, entry, &outcome.text, &mode(false, &outcome.refused, bom, tree, choice)).diagnostics;
         }
         for rule in &denied {
             outcome.failed.insert((rule.clone(), Failure::VerifyFailed));
@@ -195,7 +200,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
                 fixed = out;
                 formatted = true;
                 *applied.entry(crate::format::UNFORMATTED.to_owned()).or_default() += 1;
-                remaining = lint_text(project, entry, &fixed, &mode(false, &outcome.refused, bom, tree)).diagnostics;
+                remaining = lint_text(project, entry, &fixed, &mode(false, &outcome.refused, bom, tree, choice)).diagnostics;
             }
             Ok(_) => {}
             Err(e) => remaining.extend(crate::format::failed(project, entry, &e)),
@@ -210,7 +215,11 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
             // `manual` with the rule's steps, and the file keeps the rest.
             d.fix = FixClass::Manual;
             d.edits.clear();
+            d.choices.clear();
             d.note = Some(f.note().to_owned());
+            if let Some(c) = project.compiled.iter().find(|c| c.id() == d.rule) {
+                d.fix_exception = Some(crate::lint::manual_exception(&c.loaded.rule));
+            }
             if d.steps.is_empty() {
                 d.steps = project
                     .compiled

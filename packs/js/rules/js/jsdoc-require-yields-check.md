@@ -4,6 +4,7 @@ title: "@yields only where a value is yielded"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to yield the documented value or drop the tag is the author's call"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-yields-check]
 since: 0.5.0

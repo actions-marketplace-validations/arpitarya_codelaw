@@ -4,6 +4,7 @@ title: "Declarations don't use !important"
 languages: [css, scss]
 fix: manual
 fix_reason: "dropping !important changes which declaration wins the cascade; the selectors involved need the author"
+fix_exception: value
 stability: preview
 ported_from: [stylelint/declaration-no-important]
 since: 0.4.0

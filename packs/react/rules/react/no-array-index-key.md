@@ -4,6 +4,7 @@ title: "No array index as a key"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: a stable key comes from the item's data (an id), which only the author knows"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/no-array-index-key]
 since: 0.5.0

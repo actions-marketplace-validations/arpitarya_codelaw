@@ -4,6 +4,7 @@ title: "No TypeScript namespaces"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "moving a namespace's members into a module changes every import"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/no-namespace]
 since: 0.1.0

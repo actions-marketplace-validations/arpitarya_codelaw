@@ -4,6 +4,7 @@ title: "No AMD define or require"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "turning an AMD module into an ES module rewrites its whole body and every loader config that names it"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/no-amd]
 since: 0.5.0

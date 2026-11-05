@@ -4,6 +4,7 @@ title: "Variable.get inside a task"
 languages: [python]
 fix: manual
 fix_reason: "moving the read into the task or a template changes the DAG's code"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/AIR003]
 since: 0.5.0
