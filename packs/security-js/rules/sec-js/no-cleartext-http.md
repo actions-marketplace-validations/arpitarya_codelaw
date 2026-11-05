@@ -4,7 +4,7 @@ title: "No request made over http://"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the server must answer on HTTPS before the scheme is switched, and the text of a URL cannot be rewritten by an edit primitive"
-fix_pending: "suggest"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [bandit/B310, ruff/S310]
 security: { cwe: [319], owasp: ["A04:2025"], severity: medium }

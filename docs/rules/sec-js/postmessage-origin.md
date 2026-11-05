@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the origin to name is known only to the application) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (naming the page's own origin and wrapping a listener in a same-origin check is fail-closed, and a cross-origin partner needs its origin typed by the reviewer) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-346 · OWASP A01:2025 · security severity `high` |
@@ -138,6 +138,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+#### Fixed
+
+```js
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 #### Do
 
 ```js
@@ -157,6 +166,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+#### Fixed
+
+```jsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 #### Do
@@ -180,6 +198,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+#### Fixed
+
+```ts
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 #### Do
 
 ```ts
@@ -199,6 +226,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+#### Fixed
+
+```tsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 #### Do

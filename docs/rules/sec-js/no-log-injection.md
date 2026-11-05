@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/strict` at `warn` · `codelaw:sec-ts/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the value goes in the log line is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (stripping line breaks changes only log text that held them, and the reviewer confirms nothing downstream parses the line) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-117 · OWASP A09:2025 · security severity `medium` |
@@ -134,6 +134,12 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+#### Fixed
+
+```js
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 #### Do
 
 ```js
@@ -146,6 +152,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```jsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+#### Fixed
+
+```jsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 #### Do
@@ -162,6 +174,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+#### Fixed
+
+```ts
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 #### Do
 
 ```ts
@@ -174,6 +192,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```tsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+#### Fixed
+
+```tsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 #### Do

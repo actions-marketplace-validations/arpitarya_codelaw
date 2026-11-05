@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (encoding or rejecting is a choice that depends on the header) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (encoding or stripping line breaks keeps the value out of the header structure, and the reviewer picks the one the header tolerates) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-113 · OWASP A05:2025 · security severity `high` |
@@ -134,6 +134,18 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 res.setHeader("X-Name", req.query.name);
 ```
 
+#### Fixed (encode)
+
+```js
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```js
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 #### Do
 
 ```js
@@ -146,6 +158,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```jsx
 res.setHeader("X-Name", req.query.name);
+```
+
+#### Fixed (encode)
+
+```jsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```jsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 #### Do
@@ -162,6 +186,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 res.setHeader("X-Name", req.query.name);
 ```
 
+#### Fixed (encode)
+
+```ts
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```ts
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
+```
+
 #### Do
 
 ```ts
@@ -174,6 +210,18 @@ res.setHeader("X-Name", encodeURIComponent(req.query.name));
 
 ```tsx
 res.setHeader("X-Name", req.query.name);
+```
+
+#### Fixed (encode)
+
+```tsx
+res.setHeader("X-Name", encodeURIComponent(String(req.query.name)));
+```
+
+#### Fixed (strip line breaks)
+
+```tsx
+res.setHeader("X-Name", String(req.query.name).replace(/[\r\n]/g, ""));
 ```
 
 #### Do

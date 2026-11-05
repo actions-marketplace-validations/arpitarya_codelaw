@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the header's directives should be is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (deleting the `false` pair makes helmet fall back to its default for that header, which the reviewer checks against the app's inline scripts) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-693 · OWASP A02:2025 · security severity `medium` |
@@ -134,6 +134,12 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+#### Fixed
+
+```js
+app.use(helmet({  }));
+```
+
 #### Do
 
 ```js
@@ -146,6 +152,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 
 ```jsx
 app.use(helmet({ contentSecurityPolicy: false }));
+```
+
+#### Fixed
+
+```jsx
+app.use(helmet({  }));
 ```
 
 #### Do
@@ -162,6 +174,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 app.use(helmet({ contentSecurityPolicy: false }));
 ```
 
+#### Fixed
+
+```ts
+app.use(helmet({  }));
+```
+
 #### Do
 
 ```ts
@@ -174,6 +192,12 @@ app.use(helmet({ contentSecurityPolicy: { directives: { defaultSrc: ["'self'"] }
 
 ```tsx
 app.use(helmet({ contentSecurityPolicy: false }));
+```
+
+#### Fixed
+
+```tsx
+app.use(helmet({  }));
 ```
 
 #### Do

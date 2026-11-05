@@ -77641,8 +77641,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which sources the application loads from is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "switching `$sce` back on and narrowing the whitelist to `self` is fail-closed, but the reviewer adds the hosts the templates load from",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -78012,8 +78012,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the header's directives should be is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "deleting the `false` pair makes helmet fall back to its default for that header, which the reviewer checks against the app's inline scripts",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -78081,8 +78081,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the algorithm to name is the one the issuer signs with",
+   "fix": "suggest",
+   "fix_reason": "naming the algorithm is fail-closed, but the reviewer confirms it is the one the issuer signs with (RS256, HS256 or ES256)",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -78285,8 +78285,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which tags and attributes may stay is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "escaping shows the markup as text and a sanitizer keeps safe markup (the reviewer imports it); which one the page needs is the author's choice",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -79378,8 +79378,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "encoding or rejecting is a choice that depends on the header",
+   "fix": "suggest",
+   "fix_reason": "encoding or stripping line breaks keeps the value out of the header structure, and the reviewer picks the one the header tolerates",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -79513,8 +79513,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which hosts are allowed is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "the host literal is in the code, and the reviewer picks exact host or host with its subdomains (a prefix test becomes an origin comparison either way)",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -79653,8 +79653,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which targets a page may navigate to is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "a navigation target taken from the address is cut down to a same-origin path, and the reviewer confirms; a `javascript:` literal has no edit and must move into a handler",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -79678,16 +79678,16 @@
     }
    ],
    "options": {},
-   "dont": "window.location.href = \"javascript:\" + code;",
-   "do": "window.location.href = \"/next\";",
+   "dont": "window.location = location.hash.slice(1);",
+   "do": "window.location = new URL(location.hash.slice(1), location.origin).pathname;",
    "fix_steps": [
     "Link to a path or an `https:` URL; put script in an event handler, not in the URL.",
     "Parse the target with `new URL(value, location.origin)` and check `protocol` and `origin` against an allow-list before navigating."
    ],
    "example": {
     "language": "javascript",
-    "dont": "window.location.href = \"javascript:\" + code;\nwindow.location = location.hash.slice(1);",
-    "do": "window.location.href = \"/next\";\nwindow.location = new URL(location.hash.slice(1), location.origin).pathname;"
+    "dont": "window.location = location.hash.slice(1);",
+    "do": "window.location = new URL(location.hash.slice(1), location.origin).pathname;"
    },
    "ported_from": [
     "eslint/no-script-url"
@@ -79724,8 +79724,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is text or markup is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "`.text()` writes the value as text instead of markup, and the reviewer confirms no markup was meant; built markup strings have no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -79810,8 +79810,8 @@
    ],
    "example": {
     "language": "javascript",
-    "dont": "$(\"#out\").html(comment.body);\n$(\"#list\").append(\"<li>\" + name + \"</li>\");",
-    "do": "$(\"#out\").text(comment.body);\n$(\"#list\").append($(\"<li>\").text(name));"
+    "dont": "$(\"#out\").html(comment.body);",
+    "do": "$(\"#out\").text(comment.body);"
    },
    "ported_from": [],
    "security": {
@@ -79986,8 +79986,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "where the value goes in the log line is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "stripping line breaks changes only log text that held them, and the reviewer confirms nothing downstream parses the line",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -80393,8 +80393,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which targets are allowed is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "the target is cut down to a same-origin path with a fallback to `/`, and the reviewer confirms no cross-origin target was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -80605,8 +80605,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which keys a client may set is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "defining an own property cannot reach `Object.prototype` even for the key `__proto__`, and the reviewer confirms a plain assignment (setters, frozen objects) is not relied on",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -81093,8 +81093,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the client should be told is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "the client gets a generic message and the error is logged first, and the reviewer confirms the client needs nothing else (a JSON client may want an object)",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -81552,8 +81552,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which methods are allowed is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "an own-key check blocks prototype methods and keeps `this`, but the reviewer confirms the own keys are the ones meant to be callable",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -81757,8 +81757,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the digest length changes, so what stores or compares it has to change too",
+   "fix": "suggest",
+   "fix_reason": "SHA-256 replaces the broken hash, and the reviewer checks that no stored or protocol-fixed digest depends on the old length",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -82171,8 +82171,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the origin to name is known only to the application",
+   "fix": "suggest",
+   "fix_reason": "naming the page's own origin and wrapping a listener in a same-origin check is fail-closed, and a cross-origin partner needs its origin typed by the reviewer",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",

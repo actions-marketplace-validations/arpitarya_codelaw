@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `sanitizers` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value is text or markup is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`.text()` writes the value as text instead of markup, and the reviewer confirms no markup was meant; built markup strings have no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -297,14 +297,18 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```js
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```js
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```js
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### JSX
@@ -313,14 +317,18 @@ $("#list").append($("<li>").text(name));
 
 ```jsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```jsx
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```jsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### TypeScript
@@ -329,14 +337,18 @@ $("#list").append($("<li>").text(name));
 
 ```ts
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```ts
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```ts
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### TSX
@@ -345,14 +357,18 @@ $("#list").append($("<li>").text(name));
 
 ```tsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```tsx
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```tsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ---

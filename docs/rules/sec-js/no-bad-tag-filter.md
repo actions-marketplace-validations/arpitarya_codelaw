@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which tags and attributes may stay is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (escaping shows the markup as text and a sanitizer keeps safe markup (the reviewer imports it); which one the page needs is the author's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-116 · CWE-185 · OWASP A05:2025 · security severity `medium` |
@@ -134,6 +134,18 @@ codelaw config --print --for <file>            # the resolved setting, and where
 const clean = input.replace(/<script>/gi, "");
 ```
 
+#### Fixed (escape)
+
+```js
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```js
+const clean = DOMPurify.sanitize(input);
+```
+
 #### Do
 
 ```js
@@ -146,6 +158,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```jsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+#### Fixed (escape)
+
+```jsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```jsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 #### Do
@@ -162,6 +186,18 @@ const clean = DOMPurify.sanitize(input);
 const clean = input.replace(/<script>/gi, "");
 ```
 
+#### Fixed (escape)
+
+```ts
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```ts
+const clean = DOMPurify.sanitize(input);
+```
+
 #### Do
 
 ```ts
@@ -174,6 +210,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```tsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+#### Fixed (escape)
+
+```tsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```tsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 #### Do

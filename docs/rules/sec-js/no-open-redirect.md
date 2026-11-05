@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which targets are allowed is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the target is cut down to a same-origin path with a fallback to `/`, and the reviewer confirms no cross-origin target was meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-601 · OWASP A01:2025 · security severity `medium` |
@@ -135,6 +135,12 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 res.redirect(req.query.next);
 ```
 
+#### Fixed
+
+```js
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```jsx
 res.redirect(req.query.next);
+```
+
+#### Fixed
+
+```jsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 #### Do
@@ -165,6 +177,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 res.redirect(req.query.next);
 ```
 
+#### Fixed
+
+```ts
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 #### Do
 
 ```ts
@@ -178,6 +196,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```tsx
 res.redirect(req.query.next);
+```
+
+#### Fixed
+
+```tsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 #### Do

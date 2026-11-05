@@ -2,9 +2,8 @@
 id: sec-js/no-log-injection
 title: "No request data written to a log unchanged"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "where the value goes in the log line is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "stripping line breaks changes only log text that held them, and the reviewer confirms nothing downstream parses the line"
 stability: preview
 security: { cwe: [117], owasp: ["A09:2025"], severity: medium }
 since: 0.3.0
@@ -48,6 +47,8 @@ match:
 where:
   $V: { from_source: { tables: [sources/express, sources/koa, sources/nextjs] } }
 message: "`$V` comes from the request and is written to the log as it is"
+fix:
+  - replace: {target: $V, with: 'String($V).replace(/[\r\n]+/g, " ")'}
 ```
 
 ## How to fix
@@ -65,6 +66,12 @@ message: "`$V` comes from the request and is written to the log as it is"
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+#### Fixed
+
+```js
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 #### Do
 
 ```js
@@ -77,6 +84,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```jsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+#### Fixed
+
+```jsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 #### Do
@@ -93,6 +106,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 logger.info(`login failed for ${req.body.user}`);
 ```
 
+#### Fixed
+
+```ts
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
+```
+
 #### Do
 
 ```ts
@@ -105,6 +124,12 @@ logger.info("login failed for %s", JSON.stringify(req.body.user));
 
 ```tsx
 logger.info(`login failed for ${req.body.user}`);
+```
+
+#### Fixed
+
+```tsx
+logger.info(String(`login failed for ${req.body.user}`).replace(/[\r\n]+/g, " "));
 ```
 
 #### Do
