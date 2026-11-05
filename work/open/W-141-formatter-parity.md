@@ -5,9 +5,9 @@ description: "The formatter, closer to Prettier where it measurably differs (W-1
 item: W-141
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
+updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
-ball: agent
+ball: arpit
 ---
 
 # W-141 — The formatter, closer to Prettier (and Oxc's formatters)
