@@ -7,7 +7,7 @@ filed: 2026-10-29
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
-ball: agent
+ball: arpit
 ---
 
 # W-126 — A five-minute pipeline
@@ -26,6 +26,9 @@ ball: agent
 **Arpit, 2026-10-29 (voice):** *"I want the most optimized CI/CD pipeline. Can it be done under five minutes?"* — told publishing likely can, the eight Rust builds are the hard part — *"Yes, I want the overall, the whole CI/CD pipeline from start to end to be faster."* — then, in text, *"Research and file it."* Earlier the same call: *"We'll stick with it"* on keeping eight platform `.vsix` builds.
 
 **Model:** Opus.
+
+
+**2026-11-05 (Claude Code):** step 4's runs of the new `perf` matrix need `main` on GitHub; asked to push, Arpit said *"Not yet"*. Blocked on that call (OPEN-WORK inbox) — after the push, three runs and their times here.
 
 ## Measured, 2026-10-29 (GitHub Actions API, runs on `main`)
 
