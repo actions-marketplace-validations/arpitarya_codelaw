@@ -41,6 +41,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **Formatting closer to Prettier (W-141) — a formatting change:** JavaScript that only a script allows (an octal literal, `delete x`, a parameter named `eval`) is formatted instead of reported as a syntax error, as Prettier does — in `.js` files and in Markdown and HTML code (`.mjs` and TypeScript stay modules); in HTML, a `<script>` body is no longer broken two columns early, a `<script>` or `<style>` holding only whitespace is written `<script></script>`, an empty element keeps `></button>` on its line and breaks its attributes instead, and a legacy doctype keeps its `DOCTYPE` keyword on one line. On W-141's corpus Markdown goes from 94.7 % to 96.7 % identical to Prettier 3.9.10 and HTML from 69.4 % to 73.5 %; every difference left is named in SR-FORMATTER.
 - **The spell pack is complete (W-103):** `@codelaw/rules-spell` and `codelaw-rules-spell` hold the same files byte for byte, its word data included, and the `spell` operation's CI budget is 2,500 ms.
 - **css-modules: rules move up the fix ladder (W-156):** no-undefined-class kept, now naming cross-file (W-162) (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
 - **redux-toolkit: rules move up the fix ladder (W-156):** no-legacy-create-store and prefer-hooks-api kept, now naming computed edits (W-162) (redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7)).
