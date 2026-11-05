@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what to keep depends on which features the script was polyfilling) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the script drops its polyfills; the reviewer confirms Next.js already covers the features it served (offered for a self-closing script written as a child element)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/no-unwanted-polyfillio` |
@@ -129,13 +129,13 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 #### Don't
 
 ```js
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```js
-const s = null;
+const s = <div></div>;
 ```
 
 ### JSX
@@ -143,13 +143,13 @@ const s = null;
 #### Don't
 
 ```jsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```jsx
-const s = null;
+const s = <div></div>;
 ```
 
 ### TSX
@@ -157,13 +157,13 @@ const s = null;
 #### Don't
 
 ```tsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```tsx
-const s = null;
+const s = <div></div>;
 ```
 
 ## Differences from the source

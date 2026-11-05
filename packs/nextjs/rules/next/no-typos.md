@@ -2,9 +2,8 @@
 id: next/no-typos
 title: "Data-fetching functions are spelled right"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the intended name is almost always obvious, but renaming an export is confirmed by the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the name is mapped to the one data function it differs from only in case or a final `s`; the reviewer confirms the rename of the export"
 files: ["**/pages/**"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-typos"]
@@ -19,16 +18,44 @@ An exported `getStaticProps`, `getStaticPaths` or `getServerSideProps` in a page
 match:
   any:
     - kind: function_declaration
-      has: { field: name, pattern: $N }
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $P, regex: '^(?i:getstaticprops?)$' }
       inside: { kind: export_statement }
     - kind: variable_declarator
-      has: { field: name, pattern: $N }
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $P, regex: '^(?i:getstaticprops?)$' }
+      inside: { kind: lexical_declaration, inside: { kind: export_statement } }
+    - kind: function_declaration
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $T, regex: '^(?i:getstaticpaths?)$' }
+      inside: { kind: export_statement }
+    - kind: variable_declarator
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $T, regex: '^(?i:getstaticpaths?)$' }
+      inside: { kind: lexical_declaration, inside: { kind: export_statement } }
+    - kind: function_declaration
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $S, regex: '^(?i:getserversideprops?)$' }
+      inside: { kind: export_statement }
+    - kind: variable_declarator
+      all:
+        - has: { field: name, pattern: $N }
+        - has: { field: name, pattern: $S, regex: '^(?i:getserversideprops?)$' }
       inside: { kind: lexical_declaration, inside: { kind: export_statement } }
 constraints:
   N:
     regex: '^(?i:getstaticprops?|getstaticpaths?|getserversideprops?|getstaticprop|getserversideprop|getstaticpath)$'
     not: { regex: '^(getStaticProps|getStaticPaths|getServerSideProps)$' }
 message: "`$N` looks like a misspelled Next.js data function"
+fix:
+  - replace: { target: $P, with: "getStaticProps" }
+  - replace: { target: $T, with: "getStaticPaths" }
+  - replace: { target: $S, with: "getServerSideProps" }
 ```
 
 ## How to fix

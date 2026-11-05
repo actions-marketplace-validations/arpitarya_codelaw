@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the script moves to the page body) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the self-closing `<Script />` moves to a fragment beside `<Head>`; the reviewer confirms that is where it belongs (a `<Script>` with children carries no edit)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/no-script-component-in-head` |
@@ -132,6 +132,12 @@ codelaw config --print --for <file>                    # the resolved setting, a
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+#### Fixed
+
+```js
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 #### Do
 
 ```js
@@ -146,6 +152,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+#### Fixed
+
+```jsx
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 #### Do
 
 ```jsx
@@ -158,6 +170,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 
 ```tsx
 const p = <Head><Script src="/a.js" /></Head>;
+```
+
+#### Fixed
+
+```tsx
+const p = <><Head></Head><Script src="/a.js" /></>;
 ```
 
 #### Do

@@ -42882,8 +42882,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the link's purpose is the author's to confirm",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms the link is a preconnect hint and not, say, a stylesheet (offered only for a link with just an `href`)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43355,8 +43355,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the import is replaced by the document's own `Head`",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms `Head` in the document is the one `next/document` exports (offered only for a plain `import Head from`)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43591,8 +43591,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the script moves to the page body",
+   "fix": "suggest",
+   "fix_reason": "the self-closing `<Script />` moves to a fragment beside `<Head>`; the reviewer confirms that is where it belongs (a `<Script>` with children carries no edit)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43685,8 +43685,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "`async`, `defer` or `next/script` each change when the script runs",
+   "fix": "suggest",
+   "fix_reason": "`defer` and `async` change when the script runs; the reviewer picks one (moving to `next/script` stays by hand)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43780,8 +43780,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended name is almost always obvious, but renaming an export is confirmed by the author",
+   "fix": "suggest",
+   "fix_reason": "the name is mapped to the one data function it differs from only in case or a final `s`; the reviewer confirms the rename of the export",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43827,8 +43827,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what to keep depends on which features the script was polyfilling",
+   "fix": "suggest",
+   "fix_reason": "removing the script drops its polyfills; the reviewer confirms Next.js already covers the features it served (offered for a self-closing script written as a child element)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -43840,15 +43840,15 @@
     }
    ],
    "options": {},
-   "dont": "const s = <script src=\"https://cdn.polyfill.io/v3/polyfill.min.js\" />;",
-   "do": "const s = null;",
+   "dont": "const s = <div><script src=\"https://cdn.polyfill.io/v3/polyfill.min.js\" /></div>;",
+   "do": "const s = <div></div>;",
    "fix_steps": [
     "Remove the script; add a specific polyfill package only for a feature Next.js does not already cover."
    ],
    "example": {
     "language": "javascript",
-    "dont": "const s = <script src=\"https://cdn.polyfill.io/v3/polyfill.min.js\" />;",
-    "do": "const s = null;"
+    "dont": "const s = <div><script src=\"https://cdn.polyfill.io/v3/polyfill.min.js\" /></div>;",
+    "do": "const s = <div></div>;"
    },
    "ported_from": [
     "@next/eslint-plugin-next/no-unwanted-polyfillio"

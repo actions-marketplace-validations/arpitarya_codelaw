@@ -2,9 +2,8 @@
 id: next/no-head-import-in-document
 title: "No next/head in _document"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the import is replaced by the document's own `Head`"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the reviewer confirms `Head` in the document is the one `next/document` exports (offered only for a plain `import Head from`)"
 files: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-head-import-in-document"]
@@ -19,7 +18,15 @@ since: 0.5.0
 match:
   kind: import_statement
   regex: 'from\s*["'']next/head["'']'
+  any:
+    - all:
+      - has: {kind: import_clause, regex: '^Head$', pattern: $CLAUSE}
+      - has: {field: source, pattern: $SRC}
+    - kind: import_statement
 message: "Import `Head` from `next/document` in `_document`"
+fix:
+  - replace: { target: $CLAUSE, with: "{ Head }" }
+  - replace: { target: $SRC, with: '"next/document"' }
 ```
 
 ## How to fix

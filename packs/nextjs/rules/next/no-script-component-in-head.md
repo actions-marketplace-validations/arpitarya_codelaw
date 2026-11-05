@@ -2,9 +2,8 @@
 id: next/no-script-component-in-head
 title: "No next/script inside next/head"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the script moves to the page body"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the self-closing `<Script />` moves to a fragment beside `<Head>`; the reviewer confirms that is where it belongs (a `<Script>` with children carries no edit)"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-script-component-in-head"]
 since: 0.5.0
@@ -22,7 +21,12 @@ match:
     stopBy: end
     kind: jsx_element
     has: { field: open_tag, has: { field: name, regex: '^Head$' } }
+    pattern: $HEAD
 message: "Move `<Script>` out of `<Head>`"
+fix:
+  - insert-before: { target: $HEAD, text: "<>" }
+  - remove
+  - insert-after: { target: $HEAD, text: "$$MATCH</>" }
 ```
 
 ## How to fix
@@ -39,6 +43,12 @@ message: "Move `<Script>` out of `<Head>`"
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+#### Fixed
+
+```js
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 #### Do
 
 ```js
@@ -53,6 +63,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+#### Fixed
+
+```jsx
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 #### Do
 
 ```jsx
@@ -65,6 +81,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 
 ```tsx
 const p = <Head><Script src="/a.js" /></Head>;
+```
+
+#### Fixed
+
+```tsx
+const p = <><Head></Head><Script src="/a.js" /></>;
 ```
 
 #### Do

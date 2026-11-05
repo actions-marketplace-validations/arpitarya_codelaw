@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the import is replaced by the document's own `Head`) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms `Head` in the document is the one `next/document` exports (offered only for a plain `import Head from`)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/pages/_document.*` |

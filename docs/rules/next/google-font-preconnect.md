@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the link's purpose is the author's to confirm) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms the link is a preconnect hint and not, say, a stylesheet (offered only for a link with just an `href`)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/google-font-preconnect` |
