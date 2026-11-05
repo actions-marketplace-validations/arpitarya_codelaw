@@ -2,9 +2,9 @@
 
 <div align="center">
 
-**The linter and formatter for code written by people — and by AI.**
+**Your team's rules, enforced on every AI edit.**
 
-**Your rules, before, while and after the AI writes. The same rules with no AI at all.**
+**Deterministic: no AI in the engine — the same verdict in CI, the editor and pre-commit, with or without an agent.**
 
 JavaScript · TypeScript · React · Stencil · Python · JSON · YAML · TOML · Markdown · CSS · HTML
 
@@ -24,7 +24,7 @@ JavaScript · TypeScript · React · Stencil · Python · JSON · YAML · TOML �
 
 ## The story
 
-**It's Tuesday morning. An AI agent opened a pull request overnight.** It compiles, the tests pass, and it breaks four of your team's rules.
+**It's Tuesday morning. An AI agent opened a pull request overnight.** It compiles, the tests pass, and it breaks four of your team's rules. Nothing checked a single edit as the agent made it.
 
 - **It used `var` and `== None`.** Your linters flagged both in CI, twenty minutes later, and the agent went round again.
 - **It put an `export` in the middle of a file.** That is your team's convention. No linter knows it, so you write the same review comment for the fortieth time.
