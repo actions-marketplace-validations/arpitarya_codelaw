@@ -6,7 +6,7 @@ scope: project
 severity: error
 fix: manual
 fix_reason: "whether to add the class or fix the name is the author's call"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
 since: 0.3.0
 ported_from: [eslint-plugin-css-modules/no-undef-class]
