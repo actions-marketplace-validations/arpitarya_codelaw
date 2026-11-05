@@ -2320,7 +2320,7 @@ Presets: `codelaw:django/recommended`.
 | [`django/django-exclude-with-model-form`](django/django-exclude-with-model-form.md) | ModelForm lists fields, not exclude | `manual` | — | `django/recommended` |
 | [`django/django-locals-in-render-function`](django/django-locals-in-render-function.md) | No locals() as a template context | `manual` | — | `django/recommended` |
 | [`django/django-model-without-dunder-str`](django/django-model-without-dunder-str.md) | A model defines __str__ | `manual` | — | `django/recommended` |
-| [`django/django-non-leading-receiver-decorator`](django/django-non-leading-receiver-decorator.md) | @receiver is the first decorator | `manual` | — | `django/recommended` |
+| [`django/django-non-leading-receiver-decorator`](django/django-non-leading-receiver-decorator.md) | @receiver is the first decorator | `suggest` | — | `django/recommended` |
 | [`django/django-nullable-model-string-field`](django/django-nullable-model-string-field.md) | No null=True on string fields | `manual` | — | `django/recommended` |
 | [`django/django-unordered-body-content-in-model`](django/django-unordered-body-content-in-model.md) | A model's body follows Django's order | `manual` | — | `django/recommended` |
 

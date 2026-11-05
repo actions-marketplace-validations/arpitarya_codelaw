@@ -11298,7 +11298,7 @@ class Book(models.Model):
 ## `django/django-non-leading-receiver-decorator` — @receiver is the first decorator
 
 - **Pack:** `codelaw-rules-django` · **Languages:** Python
-- **Fix:** `manual` (reordering decorators changes which wrapper is connected)
+- **Fix:** `suggest` (swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:django/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/django/django-non-leading-receiver-decorator.md
 
