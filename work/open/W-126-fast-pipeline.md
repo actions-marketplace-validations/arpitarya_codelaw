@@ -5,7 +5,7 @@ description: "Arpit, 2026-10-29 (voice): the whole CI/CD pipeline, push to publi
 item: W-126
 filed: 2026-10-29
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
+updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
@@ -21,7 +21,7 @@ ball: agent
 | 3 | Cut `publish.yml`: verify attestations, trust and uploads in parallel, keeping npm's order (binaries → packs → `codelaw` last) | a release in ~3 min (9 min today) | ✅ built; the next release measures it |
 | 4 | Measure again on three runs of each kind; record the times beside L8's (context, not budgets) | proof, not hope | 🔄 cached 2 of 3 (4m25, 4m11 ✅); Rust/pack change 1 of 3 (10m33 — `perf` the tail, 4m12 without it); release 1 of 3 (3m50) |
 | 5 | Ruled 2026-10-30 (below): `perf` split across parallel jobs, and nothing waits on its verdict | a Rust/pack-change run near the other jobs' ~4 min | ✅ ruled |
-| 6 | Agent: `perf` as a matrix, one job per L8 operation (or a few groups), each on the release binary `build linux-x64-gnu` made (not its own `cargo build --release`, 3m09); the run's verdict, `publish.yml`'s gate and branch protection do not wait on it | `perf` off the critical path | ⏳ |
+| 6 | Agent: `perf` as a matrix, one job per L8 operation (or a few groups), each on the release binary `build linux-x64-gnu` made (not its own `cargo build --release`, 3m09); the run's verdict, `publish.yml`'s gate and branch protection do not wait on it | `perf` off the critical path | ✅ built 11-05 (below); measuring |
 
 **Arpit, 2026-10-29 (voice):** *"I want the most optimized CI/CD pipeline. Can it be done under five minutes?"* — told publishing likely can, the eight Rust builds are the hard part — *"Yes, I want the overall, the whole CI/CD pipeline from start to end to be faster."* — then, in text, *"Research and file it."* Earlier the same call: *"We'll stick with it"* on keeping eight platform `.vsix` builds.
 
@@ -90,6 +90,14 @@ Left: one more cached run; three clean Rust-change and pack-change runs once W-1
 | `publish` 41031729649 (v0.4.2) | release | **6m54** attempt 1 (npm 5m17, Sigstore 409s retried) + **3m51** PyPI re-run (Rekor 502 on attempt 1) | the first release with the Fux index set: 47 npm names, 26 wheels' projects |
 
 **Found:** the tail of a Rust- or pack-change run is now **`perf`**, not the builds or `corpus`: it runs whenever `crates`, `packs`, `perf` or `ci.yml` change (W-24's skip), builds its own release binary (3m09) and benches every L8 operation — `spell` among them since W-103 (1.3 s p95 per run). In the 10-29 cached runs it was skipped (6–8 s). Levers, none taken here: reuse `build linux-x64-gnu`'s binary as `corpus` does (−3 min; it can still run on `ubuntu-24.04`, but that binary is built through maturin with `--zig` for manylinux2014, not `cargo build --release`, so L8 would measure a different build — a ruling), or fewer bench iterations (L8's p95 needs them). **To put to Arpit with the next measurement.**
+
+## Built, 2026-11-05 — `perf` as a matrix (step 6, Claude Code)
+
+- **`perf-plan`** (no `needs`): the W-24 skip, then the groups, listed once in it — `cold` (`check_cold_10k`, `peak_memory_10k`), `warm` (`startup`, `check_warm_10k`, `format_warm_10k`, `lsp_after_edit`, `mcp_rules_for_path`, `check_warm_10k_no_daemon`), `hooks` (`fix_one_file`, `fix_one_file_cold`, `hook_pre`, `watch_*`), `types-cold`, `types-warm`, `spell`, `repos` (`check_*_repo`). Every operation in `perf/budgets.toml` must be in exactly one group, or the job fails. A group is **gated** when it holds a budget the decider set — today `cold` and `warm`.
+- **`perf <group>` ×7** (`needs: [perf-plan, build]`, `ubuntu-24.04`): `build linux-x64-gnu`'s binary from its artifact, `codelaw bench --only <group> --budgets perf/budgets.toml`, the same runs and method; the pinned repos only for `spell` and `repos`, Node and `fixtures/types` only for `types-*`; each uploads `perf-bench-<group>`. An ungated group is `continue-on-error`.
+- **`perf`**: merges the groups into one `perf-bench` artifact and one summary table; reports only.
+- **"Not waited on", within L8:** nothing `needs` any of them, and branch protection is off on `main` (no required checks). Seven budgets are set, so by the ruling's own limit (L8 decision 7) `cold` and `warm` still fail the run — and so `publish.yml`'s gate — on a breach; the five ungated groups hold neither. Written into SR-LAW-8 §How L8 is enforced, SR-PACKAGES and RELEASING.md. `publish.yml` unchanged: its gate reads the run's conclusion, which `continue-on-error` legs do not turn red.
+- **The binary:** the wheel's (maturin, zig, manylinux2014, `strip`), from the same `[profile.release]` — the 10-30 ruling chose it over a `cargo build --release` of perf's own; the measurement runs below show whether the set budgets' p95s moved.
 
 ## What cannot be bought
 

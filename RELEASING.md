@@ -135,6 +135,8 @@ After this, no release needs a token, a code or your machine.
 
 **A PyPI project that does not exist yet is skipped, not failed (W-116).** The `pypi` job uploads a wheel only if its project is on PyPI or holds a pending publisher the decider added — `PENDING` in its `exists` step: `codelaw` (`codelaw-rules-deps` and its Fux index until v0.4.2 and v0.4.3 created them; drop a name once its project exists) (W-134, ruled 2026-10-30: CI creates it, never a local upload); every skipped project is named in the job summary. For a new project: add its pending publisher on pypi.org (step 4's form), add it to `PENDING`, and the Release creates it — or, after the Release, `gh workflow run publish.yml -R arpitarya/codelaw --ref v<x> -f only=pypi -f package=<project>` uploads that one wheel from the tag's `dist`.
 
+**`perf` (L8) is split and only partly waited on (W-126, the decider 2026-10-30):** `ci.yml` runs it as `perf-plan`, seven `perf <group>` jobs on `build linux-x64-gnu`'s binary, and `perf`, the merged report; nothing `needs` them. A group with no budget the decider set is `continue-on-error`, so it never holds the run or this gate. A group holding a set budget fails the run on a breach — L8 decision 7 limits the ruling to unset budgets — and so this gate refuses that commit.
+
 **Cut the Release only on a commit whose `ci.yml` run has finished green on `main`.** `publish.yml`'s gate verifies every file's attestation against the release commit's sha; a Release created on a later commit fails there (v0.2.0's first run, 2026-10-28).
 
 ## The optional Fux index packages (W-34) — published by `publish.yml` since B-063
