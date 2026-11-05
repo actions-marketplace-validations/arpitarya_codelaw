@@ -6,7 +6,7 @@ item: W-141
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -20,7 +20,7 @@ ball: agent
 | 2 | HTML: void elements written as Prettier writes them (`<meta charset="utf-8" />`) | most of the HTML gap | ✅ 10-30 (HTML 18.4% → 68.7%) |
 | 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | 🟡 rerun done; what is left is inside Biome and markup_fmt — see § Built |
 | 4 | The corpus and the comparison kept as a repeatable check | the number cannot slip back unseen | ✅ 10-30 |
-| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ✅ oxfmt measured; Oxc's crates ratified 2026-11-05 (L11 D-52) · ⏳ agent — build them behind the formatter (§ W-148 step 1) |
+| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ✅ oxfmt measured; Oxc's crates ratified 2026-11-05 (L11 D-52); ✅ built behind the formatter 2026-11-05 (§ Built 2026-11-05) · 🟡 step 4 waits on W-139 |
 
 **Ruled 2026-11-05 — Oxc's formatter crates ratified under L11. Arpit (voice):** *"Approve it."*; then (text) *"file it."* `oxc_formatter_css`, `_markdown`, `_yaml`, their parsers, `oxc_formatter_core`, `oxc_allocator` (MIT, a pinned git revision) are [SR-LAW-11](../../records/0013_LAW-11-dependencies.md) D-52. **Next (agent):** § W-148 step 1 — pin a revision (write it, the transitive count and its `members`/`tree` ledger lines into D-52, which `tests/dependencies.rs` reads), build them behind `codelaw format` for CSS, SCSS, YAML and Markdown, rerun `format-corpus.py`, and measure L8, the layout check and the binary size; then [SR-FORMATTER](../../records/0105_formatter.md) records what was built.
 
@@ -73,6 +73,24 @@ Seen in the samples:
 
 **For Arpit (L11):** ratify Oxc's native formatter crates (`oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers and `oxc_formatter_core`, `oxc_allocator`; MIT; git rev, `publish = false`) for a measured build inside codelaw — CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3% on this corpus — or refuse, and W-141 closes with the engine gaps named in SR-FORMATTER.
 
+## Built 2026-11-05 (Claude Code, Opus 5.5) — Oxc behind the formatter
+
+`crates/codelaw-format/src/oxc.rs` formats CSS and SCSS with `oxc_formatter_css`, YAML with `oxc_formatter_yaml` and Markdown with `oxc_formatter_markdown`, at oxc-project/oxc git `7b933d5` ([SR-LAW-11](../../records/0013_LAW-11-dependencies.md) D-52: rev, 74-package tree and ledger lines written; `oxc_allocator` patched to the same rev so the crates.io parsers share one copy — named in [SR-PACKAGES](../../records/0107_packages.md) decision 4). Markdown's fenced blocks and front matter go to codelaw's own engine for their language through Oxc's dispatcher; the verifier's parse check uses Oxc's parsers; `prettier-ignore` is native to all three. Biome's CSS crates, `pretty_yaml` (D-07) and dprint (D-08) left the build. `oxc_formatter` for JS/TS is outside D-52 and was not built.
+
+| language | files | before (Biome / pretty_yaml / dprint) | Oxc | oxfmt 0.75.0 |
+|---|--:|--:|--:|--:|
+| CSS | 79 | 74.4 % (1 skipped) | **88.6 %** | 88.6 % |
+| SCSS | 150 | 80.7 % | **86.0 %** | 86.0 % |
+| YAML | 150 | 89.9 % (1 skipped) | **97.3 %** | 97.3 % |
+| Markdown | 150 | 93.3 % | **94.7 %** | 97.3 % |
+| HTML (`<style>` via CSS) | 147 | 68.7 % | 69.4 % | — |
+
+Markdown's gap to oxfmt is fenced JS: Biome keeps strict-mode-invalid examples (octal literals, `eval` as a parameter) as written where Prettier formats them; oxfmt uses Oxc's JS formatter. SCSS's identical lines dip (98.0 → 97.4 %) from one file, Bootstrap's `_utilities.scss` (Prettier's extra indent on nested maps after a comment).
+
+**Size and speed** (Apple M4, loaded by parallel agents; binaries run alternately): binary 37,958,944 → 35,668,816 bytes; `format --check` on the 529 CSS/SCSS/Markdown/YAML files 118 → 49 ms (0.43 → 0.19 s on one thread); `codelaw bench` p95 — `format_warm_10k` 917 / 743 → 715 / 708 ms (budget 2,379), `startup` 2.2 → 2.2 ms over three 30-run sessions (budget 3; one 10-run session read 3.6 ms under load, not reproduced), `fix_one_file` 246 / 216 → 218 / 210 ms (unset). **Layout check:** `codelaw test` on `css`, `scss`, `html`, `security-html`, `css-modules`, `tailwind`, `data`, `spell`, `deps` — 0 failed before and after (`css` advisory warnings 3 → 2).
+
+**Left:** DoD 3 (≥ 98 % or the difference named in SR-FORMATTER) — what remains is in Biome (JS/TS), markup_fmt (HTML) and Oxc (CSS/SCSS/Markdown); W-148 step 4 waits on W-139.
+
 ## Blockers
 
 None.
@@ -101,8 +119,8 @@ None.
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Build `oxc_formatter_css`, `_markdown`, `_yaml` (and `oxc_formatter` for JS/TS) behind codelaw's formatter on a branch; rerun W-141's corpus; measure size, speed (L8) and the layout check | a measured case, not a claim | ⏳ |
-| 2 | Write the L11 ratification entry (crates, pinned rev, licences, dependency tree, binary size) and put it to Arpit | his sign-off, or a no | ⏳ then 🔴 Arpit |
+| 1 | Build `oxc_formatter_css`, `_markdown`, `_yaml` (and `oxc_formatter` for JS/TS) behind codelaw's formatter on a branch; rerun W-141's corpus; measure size, speed (L8) and the layout check | a measured case, not a claim | ✅ 2026-11-05 — CSS, SCSS, YAML, Markdown adopted; JS/TS not (outside D-52) |
+| 2 | Write the L11 ratification entry (crates, pinned rev, licences, dependency tree, binary size) and put it to Arpit | his sign-off, or a no | ✅ ratified 2026-11-05 (D-52); rev and tree written at the build |
 | 3 | The 18 Oxlint-only rules (`oxlint.csv`, class `port`) built in W-139 | bugs no other tool catches | ✅ added to W-139's list 2026-10-30 |
 | 4 | The 38 tranche B/C ports Oxlint ranks `correctness` run on the corpus once W-139 has them; those with no false positives proposed for `recommended` | more bugs caught by default, safely | 🟡 waits on W-139 |
 
@@ -139,8 +157,8 @@ None.
 
 | DoD | what | state |
 |---|---|---|
-| 1 · measured | corpus table per language for codelaw-with-Oxc; L8 budgets and the layout check unchanged or explained; binary size before/after | ⏳ |
-| 2 · ruled | an L11 entry (D-nn) ratified or refused by Arpit; if ratified, SR-FORMATTER names which languages use which formatter and W-141 continues from there | ⏳ |
+| 1 · measured | corpus table per language for codelaw-with-Oxc; L8 budgets and the layout check unchanged or explained; binary size before/after | ✅ § Built 2026-11-05 |
+| 2 · ruled | an L11 entry (D-nn) ratified or refused by Arpit; if ratified, SR-FORMATTER names which languages use which formatter and W-141 continues from there | ✅ D-52; SR-FORMATTER decision 2 |
 | 3 · rules | the 18 in W-139's DoD 1 | ✅ |
 | 4 · defaults | the 38 corpus-run; promotions proposed with their finding counts | ⏳ |
 
