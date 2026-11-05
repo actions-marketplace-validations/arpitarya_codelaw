@@ -16,7 +16,7 @@ owns:
   - crates/codelaw-cli/tests/spell.rs
   - crates/codelaw-cli/src/spell_cmd.rs
 laws: [L2, L3, L4, L5, L6, L8, L10, L11]
-timestamp: 2026-10-29T00:00:00Z
+timestamp: 2026-11-05T00:00:00Z
 content_sha: ""
 ratifies: "Arpit, 2026-10-27 (Cowork, voice), on the CSpell research: the typo list — \"Let's go with B.\" (codelaw builds its own from SCOWL); SCOWL and VarCon — \"Approve both.\"; the software-terms dictionary — \"Approve it.\"; packaging — \"want it as a separate package.\"; defaults and where the data lives — \"Go with the recommendation.\"; writing it up — \"go ahead\". W-103."
 ---
@@ -107,6 +107,10 @@ question its maintainers left open. The forks and the rulings are in
      extended but runs nothing until `preview = true` or its rules graduate.
      `codelaw`, the word in the rules folder's README `init` writes, is
      learned on every first run.
+   - **Hooks only** (W-146, 2026-11-05): in a repo codelaw already configures,
+     `init --git-hooks …` (any of `pre-commit`, `post-commit`, `commit-msg`)
+     installs only the hooks — the spell pack, its preset and the words file
+     are neither added nor touched, `--no-spell` or not.
 2. **Presets.** `spell/recommended` turns on `spell/known-typo` and
    `spell/known-typo-identifier` — on as soon as a project extends it.
    `spell/strict` extends it and adds `spell/unknown-word`,
