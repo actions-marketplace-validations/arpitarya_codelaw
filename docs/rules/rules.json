@@ -19998,7 +19998,7 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "dropping `new` changes the value from an object to a primitive, which the author confirms",
    "severity": "error",
    "stability": "preview",
@@ -20013,9 +20013,7 @@
    "options": {},
    "dont": "const ok = new Boolean(flag);",
    "do": "const ok = Boolean(flag);",
-   "fix_steps": [
-    "Remove `new` to convert to the primitive, or use the literal."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "javascript",
     "dont": "const ok = new Boolean(flag);",
@@ -68889,8 +68887,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "where the known host keys come from is deployment-specific",
+   "fix": "suggest",
+   "fix_reason": "`RejectPolicy` refuses an unknown host, which breaks a connection that relied on accepting it; where the known keys come from (`load_system_host_keys`, a known_hosts file) is deployment-specific",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -68908,11 +68906,7 @@
    "options": {},
    "dont": "client.set_missing_host_key_policy(paramiko.AutoAddPolicy())",
    "do": "client.load_system_host_keys()",
-   "fix_steps": [
-    "Call `client.load_system_host_keys()` or `load_host_keys(path)`.",
-    "Use `client.set_missing_host_key_policy(paramiko.RejectPolicy())`.",
-    "Put the server's key in `known_hosts` ahead of time."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "client.set_missing_host_key_policy(paramiko.AutoAddPolicy())",

@@ -296,7 +296,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-new-buffer`](js/no-new-buffer.md) | Buffer.from rather than new Buffer | `auto` | — | `js/strict` |
 | [`js/no-new-func`](js/no-new-func.md) | No Function constructor | `manual` | — | *[rules] only* |
 | [`js/no-new-native-nonconstructor`](js/no-new-native-nonconstructor.md) | No new on Symbol or BigInt | `suggest` | — | `js/recommended` |
-| [`js/no-new-wrappers`](js/no-new-wrappers.md) | No primitive wrapper objects | `manual` | — | `js/sonarjs` |
+| [`js/no-new-wrappers`](js/no-new-wrappers.md) | No primitive wrapper objects | `suggest` | — | `js/sonarjs` |
 | [`js/no-nonoctal-decimal-escape`](js/no-nonoctal-decimal-escape.md) | No \8 or \9 escapes in strings | `manual` | — | `js/recommended` |
 | [`js/no-null`](js/no-null.md) | undefined rather than null | `suggest` | — | `js/strict` |
 | [`js/no-obj-calls`](js/no-obj-calls.md) | No calling Math, JSON, Reflect, Atomics or Intl as functions | `manual` | — | `js/recommended` |
@@ -1927,7 +1927,7 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | [`sec-py/no-xml-unsafe-parser`](sec-py/no-xml-unsafe-parser.md) | XML is parsed with `defusedxml` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xmlrpc`](sec-py/no-xmlrpc.md) | No `xmlrpc` without `defusedxml` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xpath-injection`](sec-py/no-xpath-injection.md) | XPath expressions are not built from strings | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/paramiko-host-key`](sec-py/paramiko-host-key.md) | SSH host keys are checked | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/paramiko-host-key`](sec-py/paramiko-host-key.md) | SSH host keys are checked | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/password-hash-effort`](sec-py/password-hash-effort.md) | Passwords are hashed with a slow function | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/requests-timeout`](sec-py/requests-timeout.md) | HTTP requests have a timeout | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/tarfile-filter`](sec-py/tarfile-filter.md) | Archive extraction uses `filter="data"` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
