@@ -4,6 +4,7 @@ title: "No secret written into the source"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the secret comes from instead is a deployment decision"
+fix_exception: value
 stability: preview
 ported_from: [bandit/B105, ruff/S105]
 security: { cwe: [798], owasp: ["A07:2025"], severity: high }

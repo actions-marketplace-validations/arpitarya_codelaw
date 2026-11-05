@@ -26,6 +26,18 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
+|---|---|---|---|---|---|---|---|---|
+| 25 | 28 | 180 | 20 | 20 | 24 | 1 | 115 | 180 |
+
+<!-- /rule-docs:fix-ladder -->
+
 Rules that typescript-eslint's `eslint-recommended` switches off for TypeScript
 (`no-undef`, `no-redeclare`, `no-dupe-class-members` and the rest, which the
 compiler checks) declare only `javascript` and `jsx` here. The four rules in

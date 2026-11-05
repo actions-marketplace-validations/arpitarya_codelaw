@@ -4,6 +4,7 @@ title: "A Promise executor is not an async function"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the rewrite depends on what the executor does"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-async-promise-executor]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "A promise executor names its parameters resolve and reject"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "renaming a parameter is safe only when every use in the executor is renamed with it; rename it by hand or with the editor"
+fix_pending: "auto-subset; needs scope-rename"
 stability: preview
 ported_from: [eslint-plugin-promise/param-names]
 since: 0.5.0

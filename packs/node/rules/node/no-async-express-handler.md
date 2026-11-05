@@ -4,6 +4,7 @@ title: "No async Express route handlers"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "forwarding the rejection needs the project's own wrapper or error middleware, whose name is not in this file"
+fix_exception: value
 stability: preview
 ported_from: [oxlint/no-async-endpoint-handlers]
 since: 0.5.0

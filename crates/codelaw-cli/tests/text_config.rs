@@ -21,7 +21,7 @@ fn repo(name: &str) -> PathBuf {
     write(&format!("{pack}/codelaw-pack.toml"), "name = \"@codelaw/rules-data\"\nversion = \"0.1.0\"\nmin_codelaw = \"0.1.0\"\nlanguages = [\"json\"]\npresets = [\"data/recommended\"]\n");
     write(
         &format!("{pack}/rules/data/test-node-version.md"),
-        "---\nid: data/test-node-version\ntitle: node versions agree\nlanguages: [json]\nfix: manual\nfix_reason: test\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/node-version\n```\n\n## How to fix\n\n1. Make them agree.\n\n## Examples\n\n### JSON\n\n#### Don't\n\n```json\n{}\n```\n\n#### Do\n\n```json\n{}\n```\n",
+        "---\nid: data/test-node-version\ntitle: node versions agree\nlanguages: [json]\nfix: manual\nfix_reason: test\nfix_exception: value\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/node-version\n```\n\n## How to fix\n\n1. Make them agree.\n\n## Examples\n\n### JSON\n\n#### Don't\n\n```json\n{}\n```\n\n#### Do\n\n```json\n{}\n```\n",
     );
     write(&format!("{pack}/presets/data/recommended.toml"), "[rules]\n\"data/test-node-version\" = \"warn\"\n");
     write("codelaw.toml", "extends = [\"codelaw:data/recommended\"]\n");

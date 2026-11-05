@@ -4,6 +4,7 @@ title: "Attributes have values HTML allows"
 languages: [html]
 fix: manual
 fix_reason: "the intended value can only be guessed"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/attribute-allowed-values, htmlhint/src-not-empty]
 since: 0.1.0

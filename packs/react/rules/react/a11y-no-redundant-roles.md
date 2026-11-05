@@ -4,6 +4,7 @@ title: "No role an element already has"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "removing the role is safe, but whether the element is the one meant is for the author to confirm"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-redundant-roles]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "`break` only inside a loop"
 languages: [python]
 fix: manual
 fix_reason: "what should happen instead (return, raise) is the author's choice"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F701]
 since: 0.1.0

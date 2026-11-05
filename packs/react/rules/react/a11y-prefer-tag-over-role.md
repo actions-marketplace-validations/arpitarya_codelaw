@@ -4,6 +4,7 @@ title: "The native element, not a role"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "swapping the element changes markup and styling"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/prefer-tag-over-role]
 since: 0.5.0

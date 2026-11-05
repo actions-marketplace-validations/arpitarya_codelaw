@@ -4,6 +4,7 @@ title: "No PropTypes.any, array or object"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the precise type — `arrayOf(…)`, `shape({…})` — is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/forbid-prop-types]
 since: 0.5.0

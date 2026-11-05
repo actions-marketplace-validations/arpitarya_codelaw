@@ -19,6 +19,8 @@ fn d(rule: &str, file: &str, line: usize) -> Diagnostic {
         source: "engine".into(),
         note: None,
         data: None,
+        choices: Vec::new(),
+        fix_exception: None,
     }
 }
 

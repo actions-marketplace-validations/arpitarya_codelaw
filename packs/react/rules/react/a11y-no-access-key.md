@@ -4,6 +4,7 @@ title: "No accessKey"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "removing the shortcut may need another way to reach the element"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-access-key]
 since: 0.5.0

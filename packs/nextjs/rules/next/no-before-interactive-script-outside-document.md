@@ -4,6 +4,7 @@ title: "beforeInteractive scripts live in the document"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving the script to the document is a structural change"
+fix_exception: restructure
 exclude: ["**/pages/_document.*", "**/app/layout.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-before-interactive-script-outside-document"]

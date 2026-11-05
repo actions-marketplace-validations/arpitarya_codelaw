@@ -4,6 +4,7 @@ title: "A context value is not rebuilt on every render"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the value is memoised with `useMemo` (or hoisted), and its dependencies are the author's"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-constructed-context-values]
 since: 0.5.0

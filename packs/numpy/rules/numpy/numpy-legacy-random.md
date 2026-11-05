@@ -4,6 +4,7 @@ title: "A Generator, not np.random's legacy functions"
 languages: [python]
 fix: manual
 fix_reason: "moving to a `Generator` means creating one and passing it where it is needed"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/NPY002]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No call of a value typed `any`"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the type the value should have comes from the author"
+fix_exception: value
 stability: preview
 ported_from: [typescript-eslint/no-unsafe-call]
 tags: [types]

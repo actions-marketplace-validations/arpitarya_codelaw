@@ -4,6 +4,7 @@ title: "DOM events are handled in render(), not with @Listen"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the handler moves into the rendered markup by hand"
+fix_pending: "suggest"
 stability: preview
 ported_from: [stencil/prefer-vdom-listener]
 since: 0.1.0

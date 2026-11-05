@@ -4,6 +4,7 @@ title: "Interactive elements keep an interactive role"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "use a non-interactive element instead, or drop the role; which is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-interactive-element-to-noninteractive-role]
 since: 0.5.0

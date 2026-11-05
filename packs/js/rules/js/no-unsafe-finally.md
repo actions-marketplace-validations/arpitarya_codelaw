@@ -4,6 +4,7 @@ title: "No return, throw, break or continue in finally"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what should happen to the try block's result is a decision"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-unsafe-finally]
 since: 0.1.0

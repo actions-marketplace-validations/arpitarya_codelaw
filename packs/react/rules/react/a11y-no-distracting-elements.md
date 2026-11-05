@@ -4,6 +4,7 @@ title: "No marquee or blink"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the replacement depends on what the element was for"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-distracting-elements]
 since: 0.5.0

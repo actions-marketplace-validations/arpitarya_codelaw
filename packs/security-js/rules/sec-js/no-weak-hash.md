@@ -4,6 +4,7 @@ title: "No MD5 or SHA-1"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the digest length changes, so what stores or compares it has to change too"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B324, ruff/S324]
 security: { cwe: [327], owasp: ["A04:2025"], severity: high }

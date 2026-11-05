@@ -4,6 +4,7 @@ title: "An element with an interactive role is focusable"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "whether to add `tabIndex` or switch to a native control is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/interactive-supports-focus]
 since: 0.5.0

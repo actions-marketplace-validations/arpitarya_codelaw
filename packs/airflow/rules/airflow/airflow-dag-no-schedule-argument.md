@@ -4,6 +4,7 @@ title: "A DAG names its schedule"
 languages: [python]
 fix: manual
 fix_reason: "the schedule is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/AIR002]
 since: 0.5.0

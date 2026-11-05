@@ -4,6 +4,7 @@ title: "router.push, not location for in-app paths"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the router comes from a hook or import the author adds"
+fix_exception: restructure
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-location-assign-relative-destination"]
 since: 0.5.0

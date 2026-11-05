@@ -4,6 +4,7 @@ title: "No bare Function type in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the function's signature is the author's to write"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/reject-function-type]
 since: 0.5.0

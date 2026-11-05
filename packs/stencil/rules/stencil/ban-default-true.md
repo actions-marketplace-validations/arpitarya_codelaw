@@ -4,6 +4,7 @@ title: "A boolean @Prop defaults to false"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "inverting the prop renames it for every user"
+fix_exception: value
 stability: preview
 ported_from: [stencil/ban-default-true]
 since: 0.1.0

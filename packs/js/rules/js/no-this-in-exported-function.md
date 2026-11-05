@@ -4,6 +4,7 @@ title: "No this in an exported function"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "replacing `this` with a parameter changes the function's signature and every caller"
+fix_exception: restructure
 stability: preview
 ported_from: [oxlint/no-this-in-exported-function]
 since: 0.5.0

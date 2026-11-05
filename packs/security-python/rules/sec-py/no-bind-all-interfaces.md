@@ -5,6 +5,7 @@ languages: [python]
 severity: warn
 fix: manual
 fix_reason: "the address belongs in configuration, with a loopback default"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B104, ruff/S104]
 security: { cwe: [605], owasp: ["A02:2025"], severity: low }

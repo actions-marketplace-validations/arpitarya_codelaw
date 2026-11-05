@@ -5,6 +5,7 @@ languages: [python]
 severity: warn
 fix: manual
 fix_reason: "what to do with the output instead (parse it against a schema, pick from a fixed list of actions) is a design choice"
+fix_exception: restructure
 stability: preview
 security: { cwe: [94], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

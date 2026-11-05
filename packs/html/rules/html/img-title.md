@@ -4,6 +4,7 @@ title: "Decorative images have no title"
 languages: [html]
 fix: manual
 fix_reason: "whether the image is decorative or informative is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/wcag/h67]
 tags: [a11y]

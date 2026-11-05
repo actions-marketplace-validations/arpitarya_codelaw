@@ -4,6 +4,7 @@ title: "Elements contain the children HTML requires"
 languages: [html]
 fix: manual
 fix_reason: "the content of the missing child needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/element-required-content, htmlhint/title-require]
 since: 0.1.0

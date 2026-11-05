@@ -4,6 +4,7 @@ title: "Every `.format` field has an argument"
 languages: [python]
 fix: manual
 fix_reason: "the missing value has to be supplied"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F524]
 since: 0.1.0

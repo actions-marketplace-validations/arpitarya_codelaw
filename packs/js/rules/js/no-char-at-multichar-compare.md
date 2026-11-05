@@ -4,6 +4,7 @@ title: "charAt() compared with a longer string"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the code meant `startsWith`, a `slice` or a one-character string is the author's; the code is wrong in each case differently"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [oxlint/bad-char-at-comparison]
 since: 0.5.0

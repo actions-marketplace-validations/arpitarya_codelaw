@@ -4,6 +4,7 @@ title: 'No DES, RC4, Blowfish or ECB'
 languages: [python]
 fix: manual
 fix_reason: "the new cipher changes key size, nonce handling and the stored format"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B304, bandit/B305, ruff/S304, ruff/S305]
 security: { cwe: [327], owasp: ["A04:2025"], severity: high }

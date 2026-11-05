@@ -4,6 +4,7 @@ title: 'CORS does not allow every origin with credentials'
 languages: [python]
 fix: manual
 fix_reason: "the list of trusted origins is the application's own"
+fix_exception: value
 stability: preview
 security: { cwe: [942], owasp: ["A02:2025"], severity: high }
 since: 0.2.0

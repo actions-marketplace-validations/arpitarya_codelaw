@@ -4,6 +4,7 @@ title: "An exception is caught by one handler only"
 languages: [python]
 fix: manual
 fix_reason: "which handler's code is meant to run needs a person"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/B025]
 since: 0.1.0

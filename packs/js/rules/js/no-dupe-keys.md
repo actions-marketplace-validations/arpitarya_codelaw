@@ -4,6 +4,7 @@ title: "No two keys in an object literal are the same"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "which value should win can't be known from the code"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-dupe-keys]
 since: 0.1.0

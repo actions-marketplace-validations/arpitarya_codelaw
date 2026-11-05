@@ -4,6 +4,7 @@ title: "connect's mapDispatch is an object of action creators"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "each wrapped dispatch call is replaced by the action creator it calls"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

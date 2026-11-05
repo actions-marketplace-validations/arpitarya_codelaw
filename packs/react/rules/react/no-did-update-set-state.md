@@ -4,6 +4,7 @@ title: "No setState in componentDidUpdate"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the state is derived in render, or the update moves to a handler"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-did-update-set-state]
 since: 0.5.0

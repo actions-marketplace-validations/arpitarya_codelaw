@@ -4,6 +4,7 @@ title: "Every name read is defined"
 languages: [python]
 fix: manual
 fix_reason: "whether to import, define or correct the name needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   builtins: { type: "string[]", default: [], description: "extra names to treat as builtins" }

@@ -4,6 +4,7 @@ title: "Ids are unique in the document"
 languages: [html]
 fix: manual
 fix_reason: "renaming an id breaks the CSS, scripts and links that use it"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/no-dup-id, htmlhint/id-unique]
 tags: [a11y]

@@ -1,0 +1,32 @@
+# The manual ceiling (SR-LAW-4 decision 6): the most `manual` rules each
+# first-party pack may ship. A change may lower a number freely; raising one
+# needs the decider's ruling, named in the commit message. Set 2026-10-30 at
+# each pack's count; `codelaw rules --fix-stats --check --packs packs` and
+# crates/codelaw-cli/tests/laws.rs hold every pack to it.
+
+[ceiling]
+airflow = 4
+css = 40
+css-modules = 4
+data = 28
+deps = 4
+django = 7
+fastapi = 0
+html = 53
+js = 180
+nextjs = 22
+node = 18
+numpy = 3
+pandas = 5
+python = 73
+react = 112
+redux-toolkit = 12
+scss = 10
+security-html = 12
+security-js = 49
+security-python = 44
+security-ts = 13
+spell = 2
+stencil = 14
+tanstack-query = 5
+ts = 33

@@ -4,6 +4,7 @@ title: "No concatenation of two literals"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the joined literal has to be written out"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-useless-concat]
 since: 0.5.0

@@ -52,7 +52,7 @@ here. Read that record before changing anything below it.
 🟢 **W-146** `agent` PR hygiene: the four `git/*` rules, `[commits]`/`[branches]`/`[pr]`, commit-msg hook, CI and Gate landed 2026-10-30; left: sharing the tables through a pack preset, other agents' shell tools. Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
 
 
-🟢 **W-156** `agent` Fix ladder (L4 rewritten 10-30): auto, else suggest for the agent, else manual by exception. Review of 717 rules: manual 577 → 147. Engine: per-finding rung, choices, `fix_exception`, ceiling. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine built 10-31: per-finding rung, choices, `fix_exception`, ceiling, `--fix-stats`. Next: lowering, then the moves pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-157** `agent` codelaw completes and checks its own `codelaw.toml`: schema registered + `#:schema` from `init` now; then the LSP offers real rule ids, presets, options and the down-only `fix`, and shows config errors as you type. Filed by Arpit (Claude app). [detail](open/W-157-config-completion.md)
 

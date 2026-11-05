@@ -70,6 +70,8 @@ codelaw writes a dozen kinds of files into a consumer's repo. Their text is the 
 - A slot-only renderer pushes formatting of lists into code; the template stays readable.
 - Moving `agents/` under `templates/agents/` changes paths other records cite; that move is W-60's, done 2026-10-26.
 
+- **`new-rule/fix-exception.md` (W-156, 2026-11-05).** `codelaw new-rule --fix manual` writes the `fix_exception:` line [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5 requires, from this template (`value`, with the four choices in a comment); `new-rule/rule.md` gains its `{{fix_exception}}` slot.
+
 ### Alternatives considered
 
 - **A template engine with logic** (Handlebars, Tera) — rejected: logic in templates is code nobody tests as code, and a dependency.

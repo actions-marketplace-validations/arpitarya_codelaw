@@ -6,6 +6,7 @@ files: ["package.json", "pyproject.toml"]
 severity: info
 fix: manual
 fix_reason: "refreshing the snapshot reads the registries, which needs the network; the engine never uses it (L5)"
+fix_exception: value
 stability: preview
 since: 0.3.0
 ---

@@ -4,6 +4,7 @@ title: "Imports stop at a module's entry point"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the module has to export the name from its entry point first, which is another file"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-import/no-internal-modules]
 since: 0.5.0

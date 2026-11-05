@@ -4,6 +4,7 @@ title: "Void elements have no children"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the children have to go somewhere else in the markup, which is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/void-dom-elements-no-children]
 since: 0.5.0

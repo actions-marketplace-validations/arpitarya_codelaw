@@ -4,6 +4,7 @@ title: "Props and state are destructured"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: a destructuring is written at the top of the component and every access is renamed, which a single edit cannot build"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/destructuring-assignment]
 since: 0.5.0

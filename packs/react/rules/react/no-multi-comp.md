@@ -4,6 +4,7 @@ title: "One component per file"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the component moves to its own file"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-multi-comp]
 since: 0.5.0

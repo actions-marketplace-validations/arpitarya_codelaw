@@ -4,6 +4,7 @@ title: "Ids are well-formed"
 languages: [html]
 fix: manual
 fix_reason: "renaming an id breaks the CSS, scripts and links that use it"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 options:
   relaxed: { type: "boolean", default: false, description: "only require a non-empty id without whitespace" }

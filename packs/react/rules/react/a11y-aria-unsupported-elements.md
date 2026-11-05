@@ -4,6 +4,7 @@ title: "No ARIA on elements that cannot carry it"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the attribute was meant for another element, and which one is the author's call"
+fix_pending: "auto"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-unsupported-elements]
 since: 0.5.0

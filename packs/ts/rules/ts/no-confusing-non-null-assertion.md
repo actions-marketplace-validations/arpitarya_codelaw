@@ -4,6 +4,7 @@ title: "No non-null assertion next to = or =="
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the `!` may have been meant as `!==`; the author decides which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [typescript-eslint/no-confusing-non-null-assertion]
 since: 0.5.0

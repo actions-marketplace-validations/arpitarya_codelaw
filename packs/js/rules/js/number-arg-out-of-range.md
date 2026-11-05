@@ -4,6 +4,7 @@ title: "Number method argument out of range"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the radix or digit count that was meant is not in the code"
+fix_exception: value
 stability: preview
 ported_from: [oxlint/number-arg-out-of-range]
 since: 0.5.0

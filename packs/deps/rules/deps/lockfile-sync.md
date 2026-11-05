@@ -5,6 +5,7 @@ languages: [json, toml]
 files: ["**/package.json", "**/pyproject.toml"]
 fix: manual
 fix_reason: "only the package manager can write its lockfile, and codelaw never runs installers"
+fix_exception: value
 stability: preview
 since: 0.5.0
 ---

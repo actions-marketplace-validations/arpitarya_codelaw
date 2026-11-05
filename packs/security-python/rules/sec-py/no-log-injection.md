@@ -5,6 +5,7 @@ languages: [python]
 severity: warn
 fix: manual
 fix_reason: "whether to strip, escape or reject the value depends on how the log is read"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [117], owasp: ["A09:2025"], severity: low }
 since: 0.2.0

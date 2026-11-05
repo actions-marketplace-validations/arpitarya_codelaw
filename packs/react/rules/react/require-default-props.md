@@ -4,6 +4,7 @@ title: "Every optional prop has a default"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the default value is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/require-default-props]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "The store is made with configureStore"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`configureStore` takes its options in another shape, and the middleware and enhancers move"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

@@ -4,6 +4,7 @@ title: "An inline next/script has an id"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the id is the author's to name"
+fix_exception: value
 stability: preview
 ported_from: ["@next/eslint-plugin-next/inline-script-id"]
 since: 0.5.0

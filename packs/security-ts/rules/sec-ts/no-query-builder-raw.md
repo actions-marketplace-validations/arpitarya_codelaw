@@ -4,6 +4,7 @@ title: "No raw SQL fragment from a value in Drizzle, Kysely or MikroORM"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the statement and its values have to be separated by hand"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [89], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

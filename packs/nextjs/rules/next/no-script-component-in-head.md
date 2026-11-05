@@ -4,6 +4,7 @@ title: "No next/script inside next/head"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the script moves to the page body"
+fix_pending: "suggest"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-script-component-in-head"]
 since: 0.5.0

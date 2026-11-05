@@ -4,6 +4,7 @@ title: "No method chosen by a request value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which methods are allowed is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-security/detect-object-injection]
 security: { cwe: [470], owasp: ["A05:2025"], severity: high }

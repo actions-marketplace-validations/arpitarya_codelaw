@@ -4,6 +4,7 @@ title: "A reducer has no side effects"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the side effect has to move to a thunk, a listener or a `prepare` callback"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

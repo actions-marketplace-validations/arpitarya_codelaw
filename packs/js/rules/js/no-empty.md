@@ -4,6 +4,7 @@ title: "No empty blocks"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to fill the block, remove it or document it needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-empty]
 since: 0.1.0

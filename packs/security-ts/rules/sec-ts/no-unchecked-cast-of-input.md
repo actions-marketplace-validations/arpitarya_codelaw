@@ -4,6 +4,7 @@ title: "No type assertion on input that nothing has checked"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the schema that describes the input is written by the author"
+fix_exception: authored
 stability: preview
 security: { cwe: [20], owasp: ["A08:2025"], severity: medium }
 since: 0.3.0

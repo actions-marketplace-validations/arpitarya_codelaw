@@ -4,6 +4,7 @@ title: "No await at the top level of a module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving the await into a function changes when the module finishes loading and what its importers see"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-n/no-top-level-await]
 since: 0.5.0

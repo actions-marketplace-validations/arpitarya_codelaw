@@ -4,6 +4,7 @@ title: "Relative links point at a file that exists"
 languages: [markdown]
 fix: manual
 fix_reason: "whether the file moved, was renamed or was never written needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 since: 0.1.0
 ---

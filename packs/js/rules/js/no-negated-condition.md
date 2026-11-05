@@ -4,6 +4,7 @@ title: "No negated condition with an else"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "swapping the branches moves code; the author confirms"
+fix_pending: "auto"
 stability: preview
 ported_from: [eslint/no-negated-condition]
 since: 0.5.0

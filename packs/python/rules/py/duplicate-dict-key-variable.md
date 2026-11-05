@@ -4,6 +4,7 @@ title: "A dict literal doesn't repeat a variable key"
 languages: [python]
 fix: manual
 fix_reason: "which value should win can't be known from the code"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/F602]
 since: 0.1.0

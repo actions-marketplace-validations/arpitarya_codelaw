@@ -197,7 +197,7 @@ mod tests {
 
     fn rule(block: &str) -> RuleFile {
         let text = format!(
-            "---\nid: t/r\ntitle: t\nlanguages: [javascript]\nfix: manual\nfix_reason: test\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n"
+            "---\nid: t/r\ntitle: t\nlanguages: [javascript]\nfix: manual\nfix_reason: test\nfix_exception: value\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n"
         );
         codelaw_rules::parse_rule(Path::new("t/r.md"), &text, Some("t/r")).unwrap_or_else(|e| panic!("{e:?}"))
     }

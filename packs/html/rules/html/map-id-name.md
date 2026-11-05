@@ -4,6 +4,7 @@ title: "A map's id and name match"
 languages: [html]
 fix: manual
 fix_reason: "which of the two names is right depends on what refers to the map"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/map-id-name]
 since: 0.1.0

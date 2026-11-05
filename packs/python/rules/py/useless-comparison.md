@@ -4,6 +4,7 @@ title: "No comparison whose result is thrown away"
 languages: [python]
 fix: manual
 fix_reason: "whether an assignment or an assertion was meant needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B015]
 since: 0.1.0

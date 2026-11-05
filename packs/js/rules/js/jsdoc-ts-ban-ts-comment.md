@@ -4,6 +4,7 @@ title: "No @ts-ignore or @ts-nocheck in JavaScript"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the reason the error is expected has to come from the author"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/ts-ban-ts-comment]
 since: 0.5.0

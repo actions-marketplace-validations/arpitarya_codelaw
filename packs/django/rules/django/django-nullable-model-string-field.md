@@ -4,6 +4,7 @@ title: "No null=True on string fields"
 languages: [python]
 fix: manual
 fix_reason: "removing `null=True` needs a migration and a default for the existing NULLs"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/DJ001]
 since: 0.5.0

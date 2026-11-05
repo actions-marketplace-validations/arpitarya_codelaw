@@ -4,6 +4,7 @@ title: "Every declared name is used"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "removing a declaration can drop the side effects of its initialiser"
+fix_pending: "auto-subset"
 stability: preview
 options:
   vars: { type: string, default: all }

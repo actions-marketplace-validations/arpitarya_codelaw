@@ -4,6 +4,7 @@ title: "No functions named `l`, `O` or `I`"
 languages: [python]
 fix: manual
 fix_reason: "the new name is the author's choice, and other modules may use the old one"
+fix_exception: value
 stability: preview
 ported_from: [ruff/E743]
 since: 0.1.0

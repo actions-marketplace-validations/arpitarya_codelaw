@@ -4,6 +4,7 @@ title: "Password fields say which password they want"
 languages: [html]
 fix: manual
 fix_reason: "whether the field asks for a new or the current password depends on the form"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   preferred: { type: "string", default: "", description: "one value every password field must use, such as `current-password`" }

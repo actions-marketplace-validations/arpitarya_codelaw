@@ -4,6 +4,7 @@ title: "task.output, not xcom_pull in a template"
 languages: [python]
 fix: manual
 fix_reason: "the operator's argument becomes a reference to the upstream task"
+fix_exception: value
 stability: preview
 ported_from: [ruff/AIR201]
 since: 0.5.0

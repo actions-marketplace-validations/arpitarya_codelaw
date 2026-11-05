@@ -4,6 +4,7 @@ title: "Font lists end with a generic family"
 languages: [css, scss]
 fix: manual
 fix_reason: "which generic family suits the fonts is a design call"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   ignoreFontFamilies: { type: "string[]", default: [], description: "families that need no generic fallback, such as icon fonts" }

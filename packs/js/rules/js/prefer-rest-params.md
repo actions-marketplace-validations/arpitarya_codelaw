@@ -4,6 +4,7 @@ title: "Rest parameters instead of arguments"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the parameter list has to be rewritten by hand"
+fix_pending: "auto-subset; needs scope-rename"
 stability: preview
 ported_from: [eslint/prefer-rest-params]
 since: 0.1.0

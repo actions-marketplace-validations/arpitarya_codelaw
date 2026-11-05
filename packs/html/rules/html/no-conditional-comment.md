@@ -4,6 +4,7 @@ title: "No Internet Explorer conditional comments"
 languages: [html]
 fix: manual
 fix_reason: "whether the markup inside is still needed is the author's call"
+fix_pending: "auto"
 stability: preview
 ported_from: [html-validate/no-conditional-comment]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "Test for NaN with Number.isNaN"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the comparison's operator decides whether to negate"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/use-isnan]
 since: 0.1.0

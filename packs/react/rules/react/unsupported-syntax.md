@@ -4,6 +4,7 @@ title: "No eval or with in components and hooks"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: what the evaluated code does is written as ordinary code"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/unsupported-syntax]
 since: 0.5.0

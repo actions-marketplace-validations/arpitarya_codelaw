@@ -2,7 +2,7 @@
 id: pandas/pandas-use-of-dot-is-null
 title: ".isna, not .isnull"
 languages: [python]
-fix: manual
+fix: suggest
 fix_reason: "the receiver may not be a pandas object; confirm before renaming"
 stability: preview
 ported_from: [ruff/PD003]
@@ -18,11 +18,8 @@ match:
   pattern: $X.isnull($$$A)
   inside: { kind: module, stopBy: end, has: { any: [{kind: import_statement}, {kind: import_from_statement}], regex: '^(import|from)\s+pandas\b' } }
 message: "Use `.isna()` instead of `.isnull()`"
+fix: "$X.isna($$$A)"
 ```
-
-## How to fix
-
-1. Rename the call to `.isna()`.
 
 ## Examples
 

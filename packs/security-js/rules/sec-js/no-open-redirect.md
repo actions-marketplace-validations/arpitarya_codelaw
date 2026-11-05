@@ -4,6 +4,7 @@ title: "No redirect to an address taken from a request"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which targets are allowed is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [601], owasp: ["A01:2025"], severity: medium }
 since: 0.3.0

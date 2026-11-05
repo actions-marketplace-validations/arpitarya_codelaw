@@ -4,6 +4,7 @@ title: 'A request value is not a file path'
 languages: [python]
 fix: manual
 fix_reason: "the safe form (a lookup by id, a resolved path checked against a base folder) depends on the storage layout"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [22], owasp: ["A01:2025"], severity: high }
 since: 0.2.0

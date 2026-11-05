@@ -4,6 +4,7 @@ title: 'No Telnet, FTP or SNMP v1/v2'
 languages: [python]
 fix: manual
 fix_reason: "the replacement (SSH or SFTP, FTPS, SNMPv3) needs the server to support it"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B312, bandit/B321, bandit/B401, bandit/B402, bandit/B508, bandit/B509, ruff/S401, ruff/S402, ruff/S312, ruff/S321, ruff/S508, ruff/S509]
 security: { cwe: [319], owasp: ["A04:2025"], severity: high }

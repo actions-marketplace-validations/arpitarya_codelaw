@@ -4,6 +4,7 @@ title: "default comes last"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving a clause can change fall-through behaviour"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/default-case-last]
 since: 0.5.0

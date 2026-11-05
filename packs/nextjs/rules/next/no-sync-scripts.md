@@ -4,6 +4,7 @@ title: "No synchronous scripts"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "`async`, `defer` or `next/script` each change when the script runs"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-sync-scripts"]
 since: 0.5.0

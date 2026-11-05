@@ -4,6 +4,7 @@ title: "An iframe's srcdoc holds no script"
 languages: [html]
 fix: manual
 fix_reason: "the framed document has to become a file or be sandboxed"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

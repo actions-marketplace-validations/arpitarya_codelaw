@@ -4,6 +4,7 @@ title: "A function declaration is not reassigned"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "what the assignment was for is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-func-assign]
 since: 0.1.0

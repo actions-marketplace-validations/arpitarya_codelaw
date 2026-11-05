@@ -4,6 +4,7 @@ title: "No variable is declared twice"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "whether to rename or to assign needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-redeclare]
 since: 0.1.0

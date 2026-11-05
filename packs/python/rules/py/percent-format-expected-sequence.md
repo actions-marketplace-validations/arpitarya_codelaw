@@ -4,6 +4,7 @@ title: "Positional `%` placeholders get a tuple"
 languages: [python]
 fix: manual
 fix_reason: "the order of the values isn't written anywhere"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F503]
 since: 0.1.0

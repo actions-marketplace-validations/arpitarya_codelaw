@@ -4,6 +4,7 @@ title: "No legacy octal literals"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether octal or decimal was meant needs the author"
+fix_pending: "auto; needs computed-edit"
 stability: preview
 ported_from: [eslint/no-octal]
 since: 0.1.0

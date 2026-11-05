@@ -4,6 +4,7 @@ title: "No changing values in a DAG's arguments"
 languages: [python]
 fix: manual
 fix_reason: "the fixed value is the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/AIR304]
 since: 0.5.0

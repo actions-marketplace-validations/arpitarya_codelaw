@@ -4,6 +4,7 @@ title: "Shorthands instead of complete sets of longhands"
 languages: [css, scss]
 fix: manual
 fix_reason: "combining longhands into a shorthand value needs the shorthand's grammar"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stylelint/declaration-block-no-redundant-longhand-properties]
 since: 0.1.0

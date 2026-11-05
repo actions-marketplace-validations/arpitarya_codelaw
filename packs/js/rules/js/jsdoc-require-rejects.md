@@ -4,6 +4,7 @@ title: "A function that rejects documents @rejects"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "when and why the promise rejects is the author's to describe"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-rejects]
 since: 0.5.0

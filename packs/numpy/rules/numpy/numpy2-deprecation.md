@@ -4,6 +4,7 @@ title: "No names NumPy 2 removed"
 languages: [python]
 fix: manual
 fix_reason: "each removed name has its own replacement, given in the NumPy 2 migration guide"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/NPY201]
 since: 0.5.0

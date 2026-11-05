@@ -4,6 +4,7 @@ title: "A `setQueryData` updater does not change the cached data in place"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the update has to be rewritten to build a new value"
+fix_pending: "suggest"
 stability: preview
 since: 0.3.0
 ---

@@ -67,7 +67,7 @@ mod useless_escape;
 mod use_instead;
 mod util;
 
-use codelaw_core::{Language, Severity, TextEdit};
+use codelaw_core::{FixChoice, FixClass, Language, Severity, TextEdit};
 use codelaw_lang::SyntaxNode;
 use codelaw_semantic::SemanticModel;
 use std::collections::BTreeMap;
@@ -224,6 +224,21 @@ pub trait NativeRule: Send + Sync {
     /// decision 15d). A path outside the list fails the rule on this file.
     /// Called once per finding, after `check`, with the same context.
     fn elsewhere(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<Elsewhere> {
+        Vec::new()
+    }
+    /// The highest rung one finding's edit reaches (SR-LAW-4 decision 2):
+    /// `Some(Suggest)` for a finding of an `auto` rule outside the subset its
+    /// `fix_reason:` states; `None` keeps the rule's. The finding never
+    /// rises above the rule's own class. Called once per finding, after
+    /// `check`, with the same context.
+    fn rung_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
+        None
+    }
+    /// A `suggest` finding's labelled alternatives (SR-LAW-4 decision 4),
+    /// when the right edit is one of a few the code determines; the
+    /// finding's own `edits` are then ignored. Called once per finding,
+    /// after `check`, with the same context.
+    fn choices_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<FixChoice> {
         Vec::new()
     }
 }

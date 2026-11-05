@@ -4,6 +4,7 @@ title: "No computed access on a namespace import"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "naming the exports used means the author choosing them"
+fix_exception: restructure
 stability: preview
 ported_from: [biome/performance/noDynamicNamespaceImportAccess]
 since: 0.5.0

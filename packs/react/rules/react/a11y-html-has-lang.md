@@ -4,6 +4,7 @@ title: "The html element has a lang"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the page's language is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/html-has-lang]
 since: 0.5.0

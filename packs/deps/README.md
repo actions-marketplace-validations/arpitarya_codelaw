@@ -30,6 +30,18 @@ codelaw deps refresh              # the one command that reads the network
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 4 | 4 | 3 | 0 | 0 | 1 | 0 | 4 |
+
+<!-- /rule-docs:fix-ladder -->
+
 ## Rules
 
 

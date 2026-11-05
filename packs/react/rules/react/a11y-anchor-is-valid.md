@@ -4,6 +4,7 @@ title: "A link goes somewhere"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the fix is a real URL or a `<button>`, and which one is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/anchor-is-valid]
 since: 0.5.0

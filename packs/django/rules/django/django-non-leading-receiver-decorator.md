@@ -4,6 +4,7 @@ title: "@receiver is the first decorator"
 languages: [python]
 fix: manual
 fix_reason: "reordering decorators changes which wrapper is connected"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/DJ013]
 since: 0.5.0

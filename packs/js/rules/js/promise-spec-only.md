@@ -4,6 +4,7 @@ title: "Only standard Promise methods"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the standard replacement depends on what the library method did"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-promise/spec-only]
 since: 0.5.0

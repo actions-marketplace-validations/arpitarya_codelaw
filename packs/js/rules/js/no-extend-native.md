@@ -4,6 +4,7 @@ title: "No changes to built-in prototypes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the method becomes a standalone function, which changes every call site"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-extend-native]
 since: 0.5.0

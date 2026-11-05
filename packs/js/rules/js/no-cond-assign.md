@@ -4,6 +4,7 @@ title: "No assignment in a condition, unless doubly parenthesised"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether a comparison or an assignment was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-cond-assign]
 since: 0.1.0

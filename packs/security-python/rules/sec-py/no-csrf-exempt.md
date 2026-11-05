@@ -4,6 +4,7 @@ title: 'No `@csrf_exempt`'
 languages: [python]
 fix: manual
 fix_reason: "an endpoint that needs to be exempt (a webhook) needs its own authentication, which only the author can choose"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [352], owasp: ["A01:2025"], severity: high }
 since: 0.2.0

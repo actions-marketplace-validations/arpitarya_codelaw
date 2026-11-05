@@ -4,6 +4,7 @@ title: "No HTML written to a native element or through Renderer2"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the value is text or markup is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

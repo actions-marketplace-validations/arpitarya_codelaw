@@ -4,6 +4,7 @@ title: "Use the promise API of dns"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a callback becomes an awaited promise, so the caller has to become async and handle errors with try/catch"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-n/prefer-promises/dns]
 since: 0.5.0

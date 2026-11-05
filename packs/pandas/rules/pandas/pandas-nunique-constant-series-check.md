@@ -4,6 +4,7 @@ title: "No nunique() to test a constant series"
 languages: [python]
 fix: manual
 fix_reason: "the faster check is written by hand"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/PD101]
 since: 0.5.0

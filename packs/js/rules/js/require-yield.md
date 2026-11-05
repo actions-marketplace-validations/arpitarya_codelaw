@@ -4,6 +4,7 @@ title: "A generator function yields"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to yield or to drop the `*` needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/require-yield]
 since: 0.1.0

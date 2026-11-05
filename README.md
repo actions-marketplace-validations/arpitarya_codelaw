@@ -260,9 +260,9 @@ Twenty-25 first-party packs: eighteen on npm as `@codelaw/rules-<pack>`, sevente
 
 | class | rules | what happens |
 |---|---|---|
-| `auto` | 120 | `codelaw fix` applies it. It's safe and meaning-preserving. |
-| `suggest` | 177 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
-| `manual` | 757 | The finding lists numbered steps, for a person or an agent to follow. |
+| `auto` | 121 | `codelaw fix` applies it. It's safe and meaning-preserving. |
+| `suggest` | 186 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
+| `manual` | 747 | The finding lists numbered steps, for a person or an agent to follow. |
 
 <!-- /docs-sync:fix-classes -->
 

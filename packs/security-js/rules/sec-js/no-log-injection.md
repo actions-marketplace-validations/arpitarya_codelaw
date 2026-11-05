@@ -4,6 +4,7 @@ title: "No request data written to a log unchanged"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the value goes in the log line is the author's choice"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [117], owasp: ["A09:2025"], severity: medium }
 since: 0.3.0

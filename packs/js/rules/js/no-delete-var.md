@@ -4,6 +4,7 @@ title: "No delete on a variable"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the code meant to clear is a decision"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-delete-var]
 since: 0.1.0

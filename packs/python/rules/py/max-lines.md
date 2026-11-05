@@ -4,6 +4,7 @@ title: "A module stays under a maximum number of lines"
 languages: [python]
 fix: manual
 fix_reason: "splitting a module changes its structure; which names belong together is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 1000, description: "the most lines a module may have" }

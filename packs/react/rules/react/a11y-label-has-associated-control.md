@@ -4,6 +4,7 @@ title: "A label is tied to a control"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "which control the label belongs to is the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/label-has-associated-control]
 since: 0.5.0

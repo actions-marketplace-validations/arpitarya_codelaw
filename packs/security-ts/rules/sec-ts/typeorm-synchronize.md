@@ -4,6 +4,7 @@ title: "TypeORM does not synchronize the schema on start"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "how the schema is changed instead (migrations) is a decision for the author"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [1188], owasp: ["A02:2025"], severity: medium }
 since: 0.3.0

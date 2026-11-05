@@ -4,6 +4,7 @@ title: "No bare text in JSX"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the text moves into the project's message catalogue under a key the author chooses"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-literals]
 since: 0.5.0

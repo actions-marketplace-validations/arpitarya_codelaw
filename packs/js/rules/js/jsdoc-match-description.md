@@ -4,6 +4,7 @@ title: "A function's description is a sentence"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "rewording the description is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/match-description]
 since: 0.5.0

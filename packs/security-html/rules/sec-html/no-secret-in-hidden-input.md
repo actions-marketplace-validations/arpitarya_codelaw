@@ -4,6 +4,7 @@ title: "No secret in a hidden input"
 languages: [html]
 fix: manual
 fix_reason: "where the secret should live is a design decision"
+fix_exception: restructure
 stability: preview
 security: { cwe: [798, 200], owasp: ["A07:2025"], severity: high }
 since: 0.2.0

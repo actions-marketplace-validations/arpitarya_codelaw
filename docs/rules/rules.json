@@ -24309,7 +24309,7 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "`.loc` returns more than one value where `.at` would fail; confirm the lookup",
    "severity": "error",
    "stability": "preview",
@@ -24324,9 +24324,7 @@
    "options": {},
    "dont": "v = df.at[0, 'a']",
    "do": "v = df.loc[0, 'a']",
-   "fix_steps": [
-    "Replace `.at[...]` with `.loc[...]`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nv = df.at[0, 'a']",
@@ -24354,7 +24352,7 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "`.iloc` returns more than one value where `.iat` would fail; confirm the lookup",
    "severity": "error",
    "stability": "preview",
@@ -24369,9 +24367,7 @@
    "options": {},
    "dont": "v = df.iat[0, 1]",
    "do": "v = df.iloc[0, 1]",
-   "fix_steps": [
-    "Replace `.iat[...]` with `.iloc[...]`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nv = df.iat[0, 1]",
@@ -24399,7 +24395,7 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "the receiver may not be a pandas object; confirm before renaming",
    "severity": "error",
    "stability": "preview",
@@ -24414,9 +24410,7 @@
    "options": {},
    "dont": "missing = df.isnull()",
    "do": "missing = df.isna()",
-   "fix_steps": [
-    "Rename the call to `.isna()`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nmissing = df.isnull()",
@@ -24444,8 +24438,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "`.loc` (labels) or `.iloc` (positions) depends on what the index holds",
+   "fix": "suggest",
+   "fix_reason": "`.loc` (labels) or `.iloc` (positions) depends on what the index holds: both are offered",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24459,9 +24453,7 @@
    "options": {},
    "dont": "row = df.ix[0]",
    "do": "row = df.iloc[0]",
-   "fix_steps": [
-    "Use `.loc` for labels or `.iloc` for positions."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nrow = df.ix[0]",
@@ -24489,7 +24481,7 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "the receiver may not be a pandas object; confirm before renaming",
    "severity": "error",
    "stability": "preview",
@@ -24504,9 +24496,7 @@
    "options": {},
    "dont": "ok = df.notnull()",
    "do": "ok = df.notna()",
-   "fix_steps": [
-    "Rename the call to `.notna()`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nok = df.notnull()",
@@ -24669,7 +24659,7 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
+   "fix": "suggest",
    "fix_reason": "the receiver may be a dict-like whose `.values` is right; confirm before replacing",
    "severity": "error",
    "stability": "preview",
@@ -24684,9 +24674,7 @@
    "options": {},
    "dont": "arr = df['a'].values",
    "do": "arr = df['a'].to_numpy()",
-   "fix_steps": [
-    "Replace `.values` with `.to_numpy()`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\narr = df['a'].values",
@@ -24759,8 +24747,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the first argument becomes the receiver",
+   "fix": "suggest",
+   "fix_reason": "`a.merge(b)` needs `a` to be a DataFrame, where `pd.merge` also takes a named Series; review the receiver",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24774,9 +24762,7 @@
    "options": {},
    "dont": "out = pd.merge(a, b, on='id')",
    "do": "out = a.merge(b, on='id')",
-   "fix_steps": [
-    "Rewrite `pd.merge(a, b, …)` as `a.merge(b, …)`."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "python",
     "dont": "import pandas as pd\nout = pd.merge(a, b, on='id')",
@@ -31635,8 +31621,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended order usually means reordering the markup",
+   "fix": "suggest",
+   "fix_reason": "`tabIndex={0}` puts the element in document order, which moves it in the tab sequence; where the order mattered, the markup is reordered instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31654,9 +31640,7 @@
    "options": {},
    "dont": "const s = <span tabIndex={2}>x</span>;",
    "do": "const s = <span tabIndex={0}>x</span>;",
-   "fix_steps": [
-    "Use `tabIndex={0}` and put the element where it belongs in the markup."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "javascript",
     "dont": "const s = <span tabIndex={2}>x</span>;",
@@ -51068,8 +51052,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "either a parameter is missing or the brackets should go; the author knows which",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51083,9 +51067,7 @@
    "options": {},
    "dont": "interface Box<> {",
    "do": "interface Box {",
-   "fix_steps": [
-    "Delete `<>`, or add the type parameter it was meant to hold."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "typescript",
     "dont": "interface Box<> {\n  value: string;\n}",
@@ -51411,8 +51393,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended type — `undefined`, or a return type — is the author's",
+   "fix": "suggest",
+   "fix_reason": "`undefined` is what `void` means outside a return type; where the author meant a return type, the diff is wrong",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51421,9 +51403,7 @@
    "options": {},
    "dont": "let result: string | void;",
    "do": "let result: string | undefined;",
-   "fix_steps": [
-    "Use `undefined` (or remove the type)."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "typescript",
     "dont": "let result: string | void;",

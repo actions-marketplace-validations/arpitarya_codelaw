@@ -4,6 +4,7 @@ title: "Keyframes names are kebab-case"
 languages: [css, scss]
 fix: manual
 fix_reason: "renaming must update every `animation` that uses the name"
+fix_pending: "suggest; needs cross-file"
 stability: stable
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$", description: "a regular expression names must match" }

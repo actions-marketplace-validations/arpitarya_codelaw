@@ -4,6 +4,7 @@ title: "No shorthand after a longhand it resets"
 languages: [css, scss]
 fix: manual
 fix_reason: "which value is meant can't be known from the code"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [stylelint/declaration-block-no-shorthand-property-overrides]
 since: 0.1.0

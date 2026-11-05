@@ -4,6 +4,7 @@ title: "An element with aria-activedescendant is focusable"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "whether the element joins the tab order (`0`) or not (`-1`) is the author's choice"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-activedescendant-has-tabindex]
 since: 0.5.0

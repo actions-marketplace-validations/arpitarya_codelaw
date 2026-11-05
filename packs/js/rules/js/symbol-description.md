@@ -4,6 +4,7 @@ title: "A Symbol has a description"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the description is the author's"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/symbol-description]
 since: 0.5.0

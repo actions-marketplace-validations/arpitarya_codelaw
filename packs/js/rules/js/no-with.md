@@ -4,6 +4,7 @@ title: "No with statements"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "each name inside needs to be qualified by hand"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-with]
 since: 0.1.0

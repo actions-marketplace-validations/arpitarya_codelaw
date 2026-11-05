@@ -4,6 +4,7 @@ title: "One Head in _document"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the two heads' contents have to be merged by hand"
+fix_pending: "suggest; needs computed-edit"
 files: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-duplicate-head"]

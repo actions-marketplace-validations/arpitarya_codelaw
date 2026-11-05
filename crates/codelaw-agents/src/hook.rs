@@ -136,7 +136,7 @@ pub fn run(paths: Vec<PathBuf>, payload: Option<&str>, profile: Option<String>) 
     let mut report = if paths.is_empty() {
         codelaw_engine::FixReport::default()
     } else {
-        project.fix(&paths, &FixOptions { unsafe_fixes: false, dry_run: false, trace: false }).map_err(|e| e.to_string())?
+        project.fix(&paths, &FixOptions { unsafe_fixes: false, dry_run: false, trace: false, ..Default::default() }).map_err(|e| e.to_string())?
     };
     // An edited text config file: what its L3 files report into it
     // (SR-ARCHITECTURE decision 15d), fixed nowhere.

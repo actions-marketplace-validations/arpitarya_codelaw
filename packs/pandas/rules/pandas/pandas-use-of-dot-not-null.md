@@ -2,7 +2,7 @@
 id: pandas/pandas-use-of-dot-not-null
 title: ".notna, not .notnull"
 languages: [python]
-fix: manual
+fix: suggest
 fix_reason: "the receiver may not be a pandas object; confirm before renaming"
 stability: preview
 ported_from: [ruff/PD004]
@@ -18,11 +18,8 @@ match:
   pattern: $X.notnull($$$A)
   inside: { kind: module, stopBy: end, has: { any: [{kind: import_statement}, {kind: import_from_statement}], regex: '^(import|from)\s+pandas\b' } }
 message: "Use `.notna()` instead of `.notnull()`"
+fix: "$X.notna($$$A)"
 ```
-
-## How to fix
-
-1. Rename the call to `.notna()`.
 
 ## Examples
 

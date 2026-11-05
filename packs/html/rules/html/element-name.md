@@ -4,6 +4,7 @@ title: "Element names are HTML elements or valid custom elements"
 languages: [html]
 fix: manual
 fix_reason: "renaming an element changes its CSS and script hooks"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   allow: { type: "string[]", default: [], description: "more element names to accept" }

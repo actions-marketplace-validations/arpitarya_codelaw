@@ -4,6 +4,7 @@ title: "read_csv, not read_table"
 languages: [python]
 fix: manual
 fix_reason: "the separator argument has to be added"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/PD012]
 since: 0.5.0

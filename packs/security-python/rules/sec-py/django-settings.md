@@ -6,6 +6,7 @@ files: ["**/settings.py", "**/settings/**/*.py", "**/*_settings.py", "**/setting
 exclude: ["**/*dev*.py", "**/*local*.py", "**/*test*.py"]
 fix: manual
 fix_reason: "the production value comes from the deployment (environment variables, a secret manager)"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/S105]
 security: { cwe: [489, 798, 614], owasp: ["A02:2025"], severity: high }

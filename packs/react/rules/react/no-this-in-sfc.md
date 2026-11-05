@@ -4,6 +4,7 @@ title: "No this in a function component"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: what `this` was meant to reach — props, state, a ref — is passed in or held in a hook"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-this-in-sfc]
 since: 0.5.0

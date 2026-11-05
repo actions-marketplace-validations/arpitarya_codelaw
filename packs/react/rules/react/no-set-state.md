@@ -4,6 +4,7 @@ title: "No this.setState"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the state moves to a store or to a parent, which is an architecture choice"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-set-state]
 since: 0.5.0

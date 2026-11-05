@@ -473,7 +473,7 @@ fn fix(args: FixArgs, ctx: &Ctx) -> Option<Output> {
     }
     // One run: `--trace` records the loop `fix` runs, and writes what it
     // writes (nothing with `--dry-run`).
-    let report = match project.fix(&args.paths, &FixOptions { unsafe_fixes: args.unsafe_fixes, dry_run: args.dry_run, trace: args.trace }) {
+    let report = match project.fix(&args.paths, &FixOptions { unsafe_fixes: args.unsafe_fixes, dry_run: args.dry_run, trace: args.trace, ..Default::default() }) {
         Ok(r) => r,
         Err(e) => return Some(Output::fail(e)),
     };

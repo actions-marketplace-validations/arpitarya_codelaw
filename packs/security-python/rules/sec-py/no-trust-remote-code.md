@@ -4,6 +4,7 @@ title: 'No `trust_remote_code=True`'
 languages: [python]
 fix: manual
 fix_reason: "using a model that needs custom code means reviewing and vendoring that code, which is the author's call"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [94], owasp: ["A03:2025"], severity: high }
 since: 0.2.0

@@ -5,6 +5,7 @@ languages: [javascript]
 files: ["**/*.js"]
 fix: manual
 fix_reason: "restructure: the file is renamed, and every import of it follows"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/jsx-filename-extension]
 since: 0.5.0

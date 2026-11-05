@@ -4,6 +4,7 @@ title: "No empty functions"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the function's code, or the comment explaining why it is empty, is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint/no-empty-function]
 since: 0.5.0

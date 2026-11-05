@@ -2,8 +2,8 @@
 id: react/a11y-tabindex-no-positive
 title: "No positive tabIndex"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the intended order usually means reordering the markup"
+fix: suggest
+fix_reason: "`tabIndex={0}` puts the element in document order, which moves it in the tab sequence; where the order mattered, the markup is reordered instead"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/tabindex-no-positive]
 since: 0.5.0
@@ -18,11 +18,8 @@ match:
   kind: jsx_attribute
   regex: '^tabIndex=(["'']|\{\s*)\+?0*[1-9]'
 message: "Use `tabIndex` 0 or -1; a positive value breaks the page's tab order"
+fix: "tabIndex={0}"
 ```
-
-## How to fix
-
-1. Use `tabIndex={0}` and put the element where it belongs in the markup.
 
 ## Examples
 

@@ -76,6 +76,7 @@ what consumers receive, edit the template here — the diff is the change.
 | `migrate/lint.toml` | the `[lint]` section of that codelaw.toml: the tool's line suppressions as aliases (eslint, biome, ruff) | `migrate <tool>` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decision 15 |
 | `migrate/preview.toml` | the `preview = true` lines of that codelaw.toml, when a mapped rule is `preview` | `migrate <tool>` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decision 15 |
 | `new-rule/example.md` | .codelaw/rules/<namespace>/<name>.md — one language's Don't/Do pair | `new-rule` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
+| `new-rule/fix-exception.md` | .codelaw/rules/<namespace>/<name>.md — the `fix_exception:` line of a `manual` rule | `new-rule` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `new-rule/fix-line.md` | .codelaw/rules/<namespace>/<name>.md — the `fix:` line of the rule block | `new-rule` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `new-rule/fix-reason.md` | .codelaw/rules/<namespace>/<name>.md — the `fix_reason:` line | `new-rule` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |
 | `new-rule/how-to-fix.md` | .codelaw/rules/<namespace>/<name>.md — the `## How to fix` section of a `manual` rule | `new-rule` | [SR-CLI-MCP](../records/0115_cli-and-mcp.md) |

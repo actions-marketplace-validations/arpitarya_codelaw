@@ -4,6 +4,7 @@ title: "A page stays under a line limit"
 languages: [html]
 fix: manual
 fix_reason: "splitting a page into partials or components changes its structure"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 400, description: "the most lines a page or template may have" }

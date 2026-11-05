@@ -4,6 +4,7 @@ title: "Children come in the order HTML requires"
 languages: [html]
 fix: manual
 fix_reason: "moving markup may change how it is styled"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [html-validate/element-permitted-order]
 since: 0.1.0

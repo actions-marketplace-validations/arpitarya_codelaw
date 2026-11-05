@@ -4,6 +4,7 @@ title: "A function's JSDoc has a description"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the description is the author's to write"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-description]
 since: 0.5.0

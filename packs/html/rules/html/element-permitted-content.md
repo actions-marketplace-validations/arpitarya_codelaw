@@ -4,6 +4,7 @@ title: "Elements contain only content HTML allows there"
 languages: [html]
 fix: manual
 fix_reason: "the right structure depends on what the markup is for"
+fix_pending: "suggest"
 stability: preview
 ported_from: [html-validate/element-permitted-content]
 since: 0.1.0

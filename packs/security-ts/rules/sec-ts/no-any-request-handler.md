@@ -4,6 +4,7 @@ title: "No request typed any"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the real shape of the request is known only to the author"
+fix_exception: authored
 stability: preview
 security: { cwe: [20], owasp: ["A06:2025"], severity: medium }
 since: 0.3.0

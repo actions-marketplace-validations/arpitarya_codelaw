@@ -2,7 +2,7 @@
 id: pandas/pandas-use-of-dot-at
 title: ".loc, not .at"
 languages: [python]
-fix: manual
+fix: suggest
 fix_reason: "`.loc` returns more than one value where `.at` would fail; confirm the lookup"
 stability: preview
 ported_from: [ruff/PD008]
@@ -17,7 +17,7 @@ Values are read with `.loc`, not `.at`.
 match:
   kind: attribute
   all:
-  - has: {field: attribute, regex: ^at$}
+  - pattern: $O.at
   - inside: {kind: subscript, field: value}
   - inside:
       kind: module
@@ -28,11 +28,8 @@ match:
         - {kind: import_from_statement}
         regex: ^(import|from)\s+pandas\b
 message: Use `.loc` instead of `.at`
+fix: "$O.loc"
 ```
-
-## How to fix
-
-1. Replace `.at[...]` with `.loc[...]`.
 
 ## Examples
 

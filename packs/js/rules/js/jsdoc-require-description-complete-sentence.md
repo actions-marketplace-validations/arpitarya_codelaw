@@ -4,6 +4,7 @@ title: "A JSDoc description is complete sentences"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the sentence is the author's to finish"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-description-complete-sentence]
 since: 0.5.0

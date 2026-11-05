@@ -4,6 +4,7 @@ title: "A then callback returns or throws"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the callback should return is the author's to decide"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-promise/always-return]
 since: 0.5.0

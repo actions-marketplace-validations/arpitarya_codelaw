@@ -4,6 +4,7 @@ title: "A function that throws documents @throws"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "when and why the function throws is the author's to describe"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-throws]
 since: 0.5.0

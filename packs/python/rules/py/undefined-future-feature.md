@@ -4,6 +4,7 @@ title: "`from __future__` names only real features"
 languages: [python]
 fix: manual
 fix_reason: "the intended feature can't be guessed from a misspelling"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F407]
 since: 0.1.0

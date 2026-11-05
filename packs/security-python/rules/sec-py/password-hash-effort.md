@@ -4,6 +4,7 @@ title: 'Passwords are hashed with a slow function'
 languages: [python]
 fix: manual
 fix_reason: "moving to Argon2 or bcrypt means rehashing at the next login and changing the stored format"
+fix_exception: restructure
 stability: preview
 security: { cwe: [916], owasp: ["A04:2025"], severity: high }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "Native elements instead of ARIA roles"
 languages: [html]
 fix: manual
 fix_reason: "swapping the element changes its styles and scripts"
+fix_pending: "suggest"
 stability: preview
 ported_from: [html-validate/prefer-native-element]
 tags: [a11y]

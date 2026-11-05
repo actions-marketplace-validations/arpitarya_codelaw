@@ -4,6 +4,7 @@ title: "Page titles are short"
 languages: [html]
 fix: manual
 fix_reason: "shortening a title needs a human"
+fix_exception: authored
 stability: preview
 options:
   maxlength: { type: "integer", default: 70, description: "the longest title allowed, in characters" }

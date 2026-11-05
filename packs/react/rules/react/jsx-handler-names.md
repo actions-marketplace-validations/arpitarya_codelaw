@@ -4,6 +4,7 @@ title: "Handlers are named handle…, handler props on…"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the new method name is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/jsx-handler-names]
 since: 0.5.0

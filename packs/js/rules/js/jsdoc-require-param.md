@@ -4,6 +4,7 @@ title: "A documented function documents its parameters"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "each parameter needs its own @param line with the author's description"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-param]
 since: 0.5.0

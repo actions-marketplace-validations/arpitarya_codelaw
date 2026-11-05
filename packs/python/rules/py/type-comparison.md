@@ -4,6 +4,7 @@ title: "Don't compare types with `==`"
 languages: [python]
 fix: manual
 fix_reason: "`isinstance` accepts subclasses, which may or may not be intended"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/E721]
 since: 0.1.0

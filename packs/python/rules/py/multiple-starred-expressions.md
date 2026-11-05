@@ -4,6 +4,7 @@ title: "One starred target per assignment"
 languages: [python]
 fix: manual
 fix_reason: "which target should collect the rest has to be chosen"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F622]
 since: 0.1.0

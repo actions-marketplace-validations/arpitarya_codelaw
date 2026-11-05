@@ -4,6 +4,7 @@ title: "No aria-hidden on a focusable element"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "either the element should be hidden from everyone or not hidden at all; the author decides"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-aria-hidden-on-focusable]
 since: 0.5.0

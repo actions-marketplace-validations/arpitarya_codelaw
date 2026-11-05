@@ -4,6 +4,7 @@ title: "A promise executor returns nothing"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the value may have been meant for `resolve`; the author decides"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-promise-executor-return]
 since: 0.5.0

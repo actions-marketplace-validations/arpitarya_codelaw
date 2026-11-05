@@ -4,6 +4,7 @@ title: "No assigning to this.state outside the constructor"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the update has to be rewritten as a `setState` call"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react/no-direct-mutation-state]
 since: 0.1.0

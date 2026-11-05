@@ -4,6 +4,7 @@ title: "Each file starts with an @file block"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the file overview is the author's to write"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-file-overview]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: 'A shell wildcard after `tar`, `chown`, `chmod` or `rsync`'
 languages: [python]
 fix: manual
 fix_reason: "the files have to be listed (`glob`) and passed after `--`, which changes the call"
+fix_pending: "suggest; needs add-import"
 stability: preview
 ported_from: [bandit/B609, ruff/S609]
 security: { cwe: [155], owasp: ["A05:2025"], severity: medium }

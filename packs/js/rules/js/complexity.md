@@ -4,6 +4,7 @@ title: "A function's cyclomatic complexity stays under a maximum"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting a function changes its structure; where to cut and what to call each piece is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 20, description: "the highest cyclomatic complexity a function may have" }

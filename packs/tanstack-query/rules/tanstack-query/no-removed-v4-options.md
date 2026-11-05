@@ -4,6 +4,7 @@ title: "A query takes no option TanStack Query v5 removed"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument"
+fix_pending: "suggest"
 stability: preview
 since: 0.3.0
 ---

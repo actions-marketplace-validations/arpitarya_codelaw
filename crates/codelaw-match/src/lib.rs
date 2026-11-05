@@ -56,6 +56,9 @@ pub struct Match {
     pub kind: String,
     pub single: BTreeMap<String, Captured>,
     pub multi: BTreeMap<String, Vec<Captured>>,
+    /// The rule's `auto_when:` holds on the matched node (true when it has
+    /// none): an `auto` rule's finding stays `auto` (SR-LAW-4 decision 2).
+    pub auto: bool,
 }
 
 impl Match {
@@ -69,6 +72,8 @@ impl Match {
 /// A `match:` rule compiled for one grammar.
 pub struct CompiledMatch {
     core: RuleCore,
+    /// `auto_when:`, compiled like `match:` with the same utils.
+    auto_when: Option<RuleCore>,
     predicates: Vec<(String, Predicate)>,
     /// `type:` (SR-RULE-FORMAT decision 3f): answered after matching, by
     /// the engine's type helper.
@@ -182,10 +187,14 @@ pub(crate) fn rule_core(
 /// Compile a rule's `match:` block for one grammar. `data` is the rule's
 /// pack's tables, for predicates that name one.
 pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<serde_json::Value>>) -> Result<CompiledMatch, String> {
-    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types } = &rule.block.kind else {
+    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when } = &rule.block.kind else {
         return Err("not a `match:` rule".into());
     };
     let core = rule_core(matcher, constraints.as_ref(), utils.as_ref(), grammar)?;
+    let auto_when = match auto_when {
+        Some(a) => Some(rule_core(a, None, utils.as_ref(), grammar).map_err(|e| e.replace("`match:`", "`auto_when:`"))?),
+        None => None,
+    };
     let types = match types {
         Some(t) => parse_types(t)?,
         None => Vec::new(),
@@ -218,7 +227,7 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
             return Err(format!("`where:` names `{var}`, but `$$${name}` captures a list of nodes; a predicate applies to one node (`$NAME`)"));
         }
     }
-    Ok(CompiledMatch { core, predicates, types })
+    Ok(CompiledMatch { core, auto_when, predicates, types })
 }
 
 impl CompiledMatch {
@@ -256,6 +265,7 @@ impl CompiledMatch {
     /// Match one node under the rule's resolved options (`calls:` reads
     /// them; an option missing from `options` is the rule's default).
     pub fn try_match_with(&self, node: SyntaxNode<'_>, semantic: Option<&SemanticModel>, options: &BTreeMap<String, serde_json::Value>) -> Option<Match> {
+        let auto = self.auto_when.as_ref().is_none_or(|a| a.match_node(node.clone()).is_some());
         let m = self.core.match_node(node)?;
         let env = m.get_env();
         let mut single = BTreeMap::new();
@@ -285,7 +295,7 @@ impl CompiledMatch {
                 return None;
             }
         }
-        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi })
+        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi, auto })
     }
 }
 

@@ -4,6 +4,7 @@ title: "Props and state are never mutated"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the change becomes a new value — a copy passed to the state setter, or a callback to the parent that owns the prop"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/immutability]
 since: 0.5.0

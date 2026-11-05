@@ -4,6 +4,7 @@ title: "Image maps have unique names"
 languages: [html]
 fix: manual
 fix_reason: "renaming a map means updating the `usemap` that points at it"
+fix_pending: "suggest"
 stability: preview
 ported_from: [html-validate/map-dup-name]
 since: 0.1.0

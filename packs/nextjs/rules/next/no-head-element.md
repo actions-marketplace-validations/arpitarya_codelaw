@@ -4,6 +4,7 @@ title: "next/head, not head"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving the tags into `next/head` changes the imports"
+fix_pending: "suggest; needs add-import"
 files: ["**/pages/**"]
 exclude: ["**/pages/_document.*"]
 stability: preview

@@ -4,6 +4,7 @@ title: "No obsolete attributes"
 languages: [html]
 fix: manual
 fix_reason: "the replacement is usually CSS, which needs a class and a rule"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [html-validate/no-deprecated-attr]
 since: 0.1.0

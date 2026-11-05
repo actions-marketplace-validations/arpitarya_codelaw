@@ -4,6 +4,7 @@ title: "No __proto__"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement depends on whether it was read or written"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-proto]
 since: 0.5.0

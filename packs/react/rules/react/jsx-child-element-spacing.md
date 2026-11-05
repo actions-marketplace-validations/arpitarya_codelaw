@@ -4,6 +4,7 @@ title: "No inline element glued to text across a line break"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: whether the words were meant to run together is the author's; a `{\" \"}` changes the rendered text"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/jsx-child-element-spacing]
 since: 0.5.0

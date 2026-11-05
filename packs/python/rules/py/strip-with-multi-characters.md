@@ -4,6 +4,7 @@ title: "`.strip()` isn't given a word"
 languages: [python]
 fix: manual
 fix_reason: "whether a character set or a suffix was meant needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B005]
 since: 0.1.0

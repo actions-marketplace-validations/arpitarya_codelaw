@@ -4,6 +4,7 @@ title: "No expression statements that do nothing"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether a call, an assignment or nothing was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [typescript-eslint/no-unused-expressions, eslint/no-unused-expressions]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "A function's JSDoc has an @example"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the example is the author's to write"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-example]
 since: 0.5.0

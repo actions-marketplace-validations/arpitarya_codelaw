@@ -4,6 +4,7 @@ title: "No title in _document's Head"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "each page's title is the author's"
+fix_exception: restructure
 files: ["**/pages/_document.*"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-title-in-document-head"]

@@ -597,6 +597,8 @@ fn finding(rule: &str, severity: Severity, file: String, message: String, data: 
         source: "engine".into(),
         note: None,
         data: Some(data),
+        choices: Vec::new(),
+        fix_exception: None,
     }
 }
 

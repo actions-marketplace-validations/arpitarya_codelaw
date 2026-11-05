@@ -4,6 +4,7 @@ title: "next/image, not img"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "`<Image>` needs a width and height or `fill`, which the author supplies"
+fix_exception: value
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-img-element"]
 since: 0.5.0

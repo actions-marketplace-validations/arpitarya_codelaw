@@ -4,6 +4,7 @@ title: "Named grid areas are rectangles"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended layout is the author's call"
+fix_pending: "suggest"
 stability: stable
 ported_from: [stylelint/named-grid-areas-no-invalid]
 since: 0.1.0

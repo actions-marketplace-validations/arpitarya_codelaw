@@ -4,6 +4,7 @@ title: "No React context: no createContext, no useContext"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what replaces the context — props, a store, a module — is the team's design choice"
+fix_exception: restructure
 stability: preview
 options:
   use_instead: { type: "string", default: "props or the app's state store", description: "what the codebase uses instead of context, named in the message" }

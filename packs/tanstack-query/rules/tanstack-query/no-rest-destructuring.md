@@ -4,6 +4,7 @@ title: "No rest destructuring of a query result"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which fields the component needs is a choice only its author can make"
+fix_pending: "suggest"
 stability: preview
 ported_from: ["@tanstack/eslint-plugin-query/no-rest-destructuring"]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "@template says what the type parameter is"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the description is the author's words"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-template-description]
 since: 0.5.0

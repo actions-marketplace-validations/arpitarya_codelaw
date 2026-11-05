@@ -4,6 +4,7 @@ title: "No CORS that allows every origin together with credentials"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which origins may call the API is a decision for the author"
+fix_exception: value
 stability: preview
 security: { cwe: [942], owasp: ["A02:2025"], severity: high }
 since: 0.3.0

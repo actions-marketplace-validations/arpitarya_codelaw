@@ -4,6 +4,7 @@ title: "No unknown keyword values for at-rule descriptors"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended value is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 ported_from: [stylelint/at-rule-descriptor-value-no-unknown]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "A model defines __str__"
 languages: [python]
 fix: manual
 fix_reason: "what represents the object is the author's to choose"
+fix_exception: authored
 stability: preview
 ported_from: [ruff/DJ008]
 since: 0.5.0

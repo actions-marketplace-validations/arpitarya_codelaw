@@ -4,6 +4,7 @@ title: "fonts.gstatic.com is preconnected"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the link's purpose is the author's to confirm"
+fix_pending: "suggest"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/google-font-preconnect"]
 since: 0.5.0

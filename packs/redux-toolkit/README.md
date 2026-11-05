@@ -23,6 +23,18 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 12 | 0 | 5 | 0 | 0 | 7 | 12 |
+
+<!-- /rule-docs:fix-ladder -->
+
 There is no official Redux Toolkit ESLint plugin, so **these rules are
 codelaw's own** (the decider's ruling of 2026-10-24, option (a)): each is
 written fresh from one or more rules of the official

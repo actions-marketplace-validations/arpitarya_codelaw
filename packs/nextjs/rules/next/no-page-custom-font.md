@@ -4,6 +4,7 @@ title: "Custom fonts in the document, not a page"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving the font changes the app's font setup"
+fix_exception: restructure
 files: ["**/pages/**"]
 exclude: ["**/pages/_document.*"]
 stability: preview

@@ -4,6 +4,7 @@ title: "rel holds only valid link types"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: which link type was meant is the author's"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/no-invalid-html-attribute]
 since: 0.5.0

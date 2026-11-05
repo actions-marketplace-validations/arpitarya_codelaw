@@ -4,6 +4,7 @@ title: "Components are rendered with JSX, not called"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: a component call becomes a JSX element, and a capitalised helper that is not a component is renamed"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/capitalized-calls]
 since: 0.5.0

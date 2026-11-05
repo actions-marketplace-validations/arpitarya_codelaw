@@ -4,6 +4,7 @@ title: "Defaults in the signature, not in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's"
+fix_pending: "suggest; needs computed-edit"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/no-defaults]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No /// <reference path> directives"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the matching import needs the module path and what it provides"
+fix_pending: "suggest; needs type-info"
 stability: preview
 ported_from: [typescript-eslint/triple-slash-reference]
 since: 0.1.0

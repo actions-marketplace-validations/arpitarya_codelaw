@@ -229,6 +229,8 @@ impl Project {
                     source: rule.loaded.source.label(),
                     note,
                     data: None,
+                    choices: Vec::new(),
+                    fix_exception: None,
                 });
             }
         }
@@ -364,8 +366,16 @@ impl Project {
 
     /// Fix an in-memory set of files; nothing is written.
     pub fn fix_files(&self, files: &[(String, Language, String)], unsafe_fixes: bool) -> Vec<(String, String)> {
-        let mut texts: Vec<(String, Language, String)> =
-            files.iter().map(|(rel, l, t)| (rel.clone(), *l, self.fix_source_in(rel, *l, t, unsafe_fixes, crate::files::Tree::Memory(files)).fixed)).collect();
+        self.fix_files_choice(files, unsafe_fixes, None)
+    }
+
+    /// `fix_files`, applying the choice labelled `choice` where a finding
+    /// has choices (SR-LAW-4 decisions 4 and 11).
+    pub fn fix_files_choice(&self, files: &[(String, Language, String)], unsafe_fixes: bool, choice: Option<&str>) -> Vec<(String, String)> {
+        let mut texts: Vec<(String, Language, String)> = files
+            .iter()
+            .map(|(rel, l, t)| (rel.clone(), *l, self.fix_source_in(rel, *l, t, unsafe_fixes, choice, crate::files::Tree::Memory(files)).fixed))
+            .collect();
         let mut sources = self.virtual_sources(&texts);
         self.fix_graph(&mut sources, &self.graph_config().unwrap_or_default(), unsafe_fixes, 10);
         for (rel, _, text) in texts.iter_mut() {

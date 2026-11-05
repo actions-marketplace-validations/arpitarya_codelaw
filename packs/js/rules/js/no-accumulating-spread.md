@@ -4,6 +4,7 @@ title: "No spread of the accumulator in reduce"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "pushing onto the accumulator changes the callback's shape; the author rewrites it"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [biome/performance/noAccumulatingSpread]
 since: 0.5.0

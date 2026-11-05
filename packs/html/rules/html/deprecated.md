@@ -4,6 +4,7 @@ title: "No obsolete elements"
 languages: [html]
 fix: manual
 fix_reason: "the replacement — CSS, a semantic element, or nothing — depends on the intent"
+fix_pending: "auto-subset; needs cross-file"
 stability: preview
 ported_from: [html-validate/deprecated, htmlhint/tag-no-obsolete]
 since: 0.1.0

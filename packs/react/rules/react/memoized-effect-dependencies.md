@@ -4,6 +4,7 @@ title: "Effect dependencies are stable values"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the value is wrapped in `useMemo` or `useCallback`, or moved inside the effect, with its own dependencies"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/memoized-effect-dependencies]
 since: 0.5.0

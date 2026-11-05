@@ -4,6 +4,7 @@ title: "Handle the err argument"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what to do with the error (pass it on, log it, retry) is the author's decision"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-n/handle-callback-err]
 since: 0.5.0

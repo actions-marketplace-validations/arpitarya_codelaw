@@ -4,6 +4,7 @@ title: "No file path that is not a literal"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether a computed path is safe depends on where it comes from"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-security/detect-non-literal-fs-filename]
 security: { cwe: [22], owasp: ["A01:2025"], severity: low }

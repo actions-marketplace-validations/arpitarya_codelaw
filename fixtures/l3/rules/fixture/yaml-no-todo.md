@@ -4,6 +4,7 @@ title: L3 fixture rule
 languages: [yaml]
 fix: manual
 fix_reason: "fixture rule: a human picks the change"
+fix_exception: value
 stability: stable
 ---
 

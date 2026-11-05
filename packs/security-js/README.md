@@ -26,6 +26,18 @@ files; the TypeScript-only rules (Angular, NestJS, Prisma, typed casts) are in
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 17 | 49 | 12 | 10 | 0 | 0 | 27 | 49 |
+
+<!-- /rule-docs:fix-ladder -->
+
 `recommended` holds the 55 high-confidence rules, at `error`; `strict` adds the 11 heuristic ones, at `warn`, so a team can
 start without noise. 17 rules offer a mechanical fix (`auto` 0, `suggest` 17); the other
 49 are `manual`, and each names the safe API in its `How to fix` steps, which the `codelaw-fix` skill walks through.

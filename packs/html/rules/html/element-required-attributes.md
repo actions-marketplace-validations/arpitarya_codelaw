@@ -4,6 +4,7 @@ title: "Elements have the attributes HTML requires"
 languages: [html]
 fix: manual
 fix_reason: "the value can only come from the author"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/element-required-attributes, htmlhint/html-lang-require]
 since: 0.1.0

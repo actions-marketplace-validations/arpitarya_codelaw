@@ -4,6 +4,7 @@ title: "No assigning to exports"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `module.exports` or a property was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-n/no-exports-assign]
 since: 0.1.0

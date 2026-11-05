@@ -120,6 +120,11 @@ pub fn exit_code(report: &CheckReport, max_warnings: Option<usize>) -> i32 {
     }
 }
 
+/// A finding's choices as `a | b (default)` (L4 decision 4).
+pub fn choice_labels(d: &Diagnostic) -> String {
+    d.choices.iter().map(|c| if c.default { format!("{} (default)", c.label) } else { c.label.clone() }).collect::<Vec<_>>().join(" | ")
+}
+
 /// One diagnostic as `--format json` writes it.
 pub fn diagnostic_json(d: &Diagnostic) -> Value {
     let mut v = json!({
@@ -139,6 +144,25 @@ pub fn diagnostic_json(d: &Diagnostic) -> Value {
         },
         "source": d.source,
     });
+    // Labelled alternatives (L4 decision 4) and a manual finding's exception
+    // (decision 5), only when there are some.
+    if !d.choices.is_empty() {
+        v["fix"]["choices"] = d
+            .choices
+            .iter()
+            .map(|c| {
+                json!({
+                    "label": c.label,
+                    "default": c.default,
+                    "edits": c.edits.iter().map(|e| json!({ "range": { "start": e.start, "end": e.end }, "text": e.text })).collect::<Vec<_>>(),
+                })
+            })
+            .collect::<Vec<_>>()
+            .into();
+    }
+    if let Some(x) = d.fix_exception {
+        v["fix"]["exception"] = json!(x.name());
+    }
     // A size rule's measured value and its limit (`{ "lines": 412, "max": 300 }`).
     if let Some(data) = &d.data {
         v["data"] = data.clone();
@@ -350,7 +374,12 @@ fn text(report: &CheckReport, color: bool, fixed: Option<usize>, labels: &Labels
         for d in ds {
             let fix = match d.fix {
                 FixClass::Auto if !d.edits.is_empty() => "auto".to_owned(),
+                FixClass::Suggest if !d.choices.is_empty() => format!("suggest: {}", choice_labels(d)),
                 FixClass::Suggest if !d.edits.is_empty() => "suggest".to_owned(),
+                FixClass::Manual => match d.fix_exception {
+                    Some(x) => format!("manual: {x}"),
+                    None => "manual".to_owned(),
+                },
                 class => class.name().to_owned(),
             };
             let note = d.note.as_deref().map(|n| format!(" ({n})")).unwrap_or_default();
@@ -402,8 +431,12 @@ pub fn check_agent_with(report: &CheckReport, labels: &Labels) -> String {
     for d in &report.diagnostics {
         let next = match d.fix {
             FixClass::Auto if !d.edits.is_empty() => "fix: auto (`codelaw fix`)".to_owned(),
+            FixClass::Suggest if !d.choices.is_empty() => format!("fix: suggest, pick one: {} (diffs in --format json)", choice_labels(d)),
             FixClass::Suggest if !d.edits.is_empty() => "fix: suggest (diff in --format json)".to_owned(),
-            _ => format!("fix: manual — {}", d.steps.join(" ")),
+            _ => match d.fix_exception {
+                Some(x) => format!("fix: manual ({x}) — {}", d.steps.join(" ")),
+                None => format!("fix: manual — {}", d.steps.join(" ")),
+            },
         };
         out.push_str(&format!("{}:{}:{} {} {} — {next}\n", d.file, d.start.line, d.start.column, labelled(&d.rule, labels), d.message));
     }
@@ -440,6 +473,8 @@ mod tests {
             source: "local".into(),
             note: None,
             data: None,
+            choices: Vec::new(),
+            fix_exception: None,
         }
     }
 

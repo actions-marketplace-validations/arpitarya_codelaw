@@ -4,6 +4,7 @@ title: "Headings are headings, not bold lines"
 languages: [markdown]
 fix: manual
 fix_reason: "which heading level the line should become depends on the outline"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   punctuation: { type: "string", default: ".,;:!?。，；：！？", description: "a line ending in one of these is a sentence, not a heading" }

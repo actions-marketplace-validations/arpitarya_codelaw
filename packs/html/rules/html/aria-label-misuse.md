@@ -4,6 +4,7 @@ title: "aria-label is used only where it names something"
 languages: [html]
 fix: manual
 fix_reason: "whether to move the label, add a role or use another element is a design decision"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   allowAnyNamable: { type: "boolean", default: false, description: "accept the label on any element ARIA lets be named, even where support is poor" }

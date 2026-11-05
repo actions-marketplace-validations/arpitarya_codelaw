@@ -4,6 +4,7 @@ title: "A switch has a default"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the default should do is the author's"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/default-case]
 since: 0.5.0

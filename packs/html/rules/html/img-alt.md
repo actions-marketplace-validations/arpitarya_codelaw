@@ -4,6 +4,7 @@ title: "<img> has alt text"
 languages: [html]
 fix: manual
 fix_reason: "only a human can describe the image, or decide it is decorative"
+fix_exception: authored
 stability: preview
 options:
   allowEmpty: { type: "boolean", default: true, description: "accept `alt=\"\"` for decorative images" }

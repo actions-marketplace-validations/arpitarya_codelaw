@@ -4,6 +4,7 @@ title: "A namespace is declared once per file"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "restructure: the two bodies are merged into one, and their order and exports are the author's"
+fix_exception: restructure
 stability: preview
 ported_from: [tslint/no-mergeable-namespace]
 since: 0.5.0

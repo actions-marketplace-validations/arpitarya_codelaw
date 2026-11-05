@@ -4,6 +4,7 @@ title: "Client components are not async"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the data loading moves to a server component or an effect, which restructures the code"
+fix_exception: restructure
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-async-client-component"]
 since: 0.5.0

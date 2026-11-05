@@ -4,6 +4,7 @@ title: "A JWT is verified with a named algorithm, never `none`"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the algorithm to name is the one the issuer signs with"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [347], owasp: ["A07:2025"], severity: high }
 since: 0.3.0

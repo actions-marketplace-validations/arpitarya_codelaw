@@ -4,6 +4,7 @@ title: "No needless nested blocks"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the block may be a lost `if`; the author decides"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-lone-blocks]
 since: 0.5.0

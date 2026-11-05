@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30: every rule fixes automatically first, suggests 
 item: W-156
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Arpit (Claude app, Opus 5.5)"
+updated: 2026-11-05
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -18,7 +18,7 @@ ball: agent
 |---|---|---|---|
 | 1 | Count every rule's fix class and review the 717 that aren't automatic | a proposed rung for each rule | ✅ 2026-10-30 |
 | 2 | Rewrite L4 as the ladder: automatic, then suggested, then manual by a named exception | the rule every future rule follows | ✅ 2026-10-30 |
-| 3 | Teach the engine per-finding fallback, choices, `fix_exception`, the manual ceiling and `--fix-stats` | the law becomes checkable | ⏳ |
+| 3 | Teach the engine per-finding fallback, choices, `fix_exception`, the manual ceiling and `--fix-stats` | the law becomes checkable | ✅ 2026-10-31 (lowering, A6, open) |
 | 4 | Move the rules up, pack by pack, choices first: 577 manual → 147 | agents get diffs, not prose | ⏳ |
 | 5 | The decider rules on save vs `fix`, and on two new config inputs | the last 21 moves and safe saves | 🔴 decider decides |
 
@@ -34,13 +34,13 @@ Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 
 
 | DoD | what | state |
 |---|---|---|
-| A1 · per-finding rung | a finding drops below its rule's class when its own edit can't be proved safe (decision 2); `Diagnostic` reports the finding's rung | ⏳ |
-| A2 · choices | `Diagnostic` holds several labelled edit sets; text, JSON, SARIF, MCP, LSP quick fixes and the agent hook show all; `fix --unsafe` applies only a `default` choice; `codelaw test` proves each against `Fixed (<label>)` (decisions 4, 11) | ⏳ |
-| A3 · `fix_exception` | the rule schema gains it; the loader refuses a `manual` rule without one of `value`, `restructure`, `authored`, `security` (decision 5); `ENGINE_RULES` carry one (decision 15). Lands with B0, so nothing fails to load | ⏳ |
-| A4 · ceiling | `packs/fix-ladder.toml` at today's counts; a `laws.rs` test fails a pack over its ceiling (decision 6) | ⏳ |
-| A5 · `--fix-stats` | `codelaw rules --fix-stats [--check]`, text and JSON; `scripts/rule-docs.py` writes each pack README's table (decision 7) | ⏳ |
+| A1 · per-finding rung | a finding drops below its rule's class when its own edit can't be proved safe (decision 2); `Diagnostic` reports the finding's rung | ✅ `auto_when:` on a `match:` block; `NativeRule::rung_of`; `Diagnostic.fix` is the finding's rung |
+| A2 · choices | `Diagnostic` holds several labelled edit sets; text, JSON, SARIF, MCP, LSP quick fixes and the agent hook show all; `fix --unsafe` applies only a `default` choice; `codelaw test` proves each against `Fixed (<label>)` (decisions 4, 11) | ✅ `fix: { choices }`, `NativeRule::choices_of`, `Diagnostic.choices`; text, JSON/MCP, SARIF, LSP (one quick fix each), agent hook; `fix --unsafe` takes the default; `codelaw test` proves each against `Fixed (<label>)` |
+| A3 · `fix_exception` | the rule schema gains it; the loader refuses a `manual` rule without one of `value`, `restructure`, `authored`, `security` (decision 5); `ENGINE_RULES` carry one (decision 15). Lands with B0, so nothing fails to load | ✅ refused at load without one; `fix_pending:` stands in on a rule awaiting its move; `engine_fix_exception` for `ENGINE_RULES` |
+| A4 · ceiling | `packs/fix-ladder.toml` at today's counts; a `laws.rs` test fails a pack over its ceiling (decision 6) | ✅ `packs/fix-ladder.toml` at the 2026-10-31 counts; `laws.rs` `l4_every_pack_is_under_its_manual_ceiling` |
+| A5 · `--fix-stats` | `codelaw rules --fix-stats [--check]`, text and JSON; `scripts/rule-docs.py` writes each pack README's table (decision 7) | ✅ `rules --fix-stats [--packs <dir> [--check]] [--format json]`; each pack README's table from `rule-docs.py` |
 | A6 · lowering | a rule entry's `fix` key in `[rules]`, scopes and profiles: lower only, raising is exit 2 naming the rule's rung; `config --print` and `rules --why` show it; schema updated (decision 16; SR-CONFIG) | ⏳ |
-| B0 · exceptions | the 147 rules staying `manual` get their `fix_exception` from the CSV | ⏳ |
+| B0 · exceptions | the 147 rules staying `manual` get their `fix_exception` from the CSV | ✅ 223 `fix_exception` (147 from the CSV, the rest judged for rules W-139 added since) and 489 `fix_pending` on the manual rules proposed to move (see Log) |
 | B1 · choices rules | the 155 `suggest-choices` rows, pack by pack, each with its `Fixed (<label>)` examples | ⏳ |
 | B2 · subset `auto` | the 142 `auto+` rows: the subset condition in `fix_reason`, a `Don't` example on each side | ⏳ |
 | B3 · the rest | 16 + 3 → `auto`; 181 → `suggest`; ceilings lowered as each pack lands | ⏳ |
@@ -72,3 +72,8 @@ SR-LAW-4 (rewritten 2026-10-30; decision 16, lowering, the same day); SR-CONFIG 
 - [`work/proposals/fix-ladder.md`](../proposals/fix-ladder.md) and [`fix-ladder/rules.csv`](../proposals/fix-ladder/rules.csv)
 - `crates/codelaw-core/src/diagnostic.rs` `FixClass`, `Diagnostic`
 - `crates/codelaw-rules/src/rule.rs`: the frontmatter keys
+
+## Log
+
+- **2026-10-31 (Claude Code):** the engine (A1–A5) and B0 landed together. Rules W-139 added after the review were judged under decisions 3–5 and given an exception or a `fix_pending:` (the judgments are in the commit's `b0` table; 10 `ts`, 71 `js`/`node`/`ts` from strand slices 9 and later, 54 from slices 6–7). `fix_pending: "<rung>[; needs <capability>]"` is the transition marker the law's "until W-156 lands" allows; W-156 closes when none is left. **Left:** A6 (lowering, in `codelaw-config`), B1–B4 (the moves themselves, pack by pack), C.
+- **2026-11-05 (Claude Code):** merged main; W-139's react rules (45, each `fix_reason:` already opening with its exception) marked; records SR-LAW-3, SR-LAW-10, SR-RULE-AUTHORING, SR-SPELL and SR-WORK-REGISTRY describe the ladder as built. First moves (B1/B3): 7 `pandas`, 2 `ts`, 1 `react`, proven by `codelaw test`; ceilings lowered. **484 rules still carry `fix_pending:`** — about 190 `match:` rules whose edit is a template, the rest native rules (Rust per rule) or rules waiting on a capability (cross-file, type info, computed edits, add-import, scope rename). The item stays open until none is left.

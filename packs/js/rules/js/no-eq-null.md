@@ -4,6 +4,7 @@ title: "No == null"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `undefined` should match too decides between `=== null` and an explicit two-way check"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-eq-null]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No regular expression that filters HTML tags"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which tags and attributes may stay is a decision for the author"
+fix_pending: "suggest-choices"
 stability: preview
 security: { cwe: [116, 185], owasp: ["A05:2025"], severity: medium }
 since: 0.3.0

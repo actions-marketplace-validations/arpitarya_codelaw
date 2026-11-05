@@ -4,6 +4,7 @@ title: "A string annotation is valid Python"
 languages: [python]
 fix: manual
 fix_reason: "the intended type can't be inferred from broken text"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F722]
 since: 0.1.0

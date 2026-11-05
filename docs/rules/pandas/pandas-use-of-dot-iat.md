@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:pandas/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`.iloc` returns more than one value where `.iat` would fail; confirm the lookup) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`.iloc` returns more than one value where `.iat` would fail; confirm the lookup) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PD009` |
@@ -118,10 +118,6 @@ codelaw explain pandas/pandas-use-of-dot-iat       # what it wants, why, how to 
 codelaw check --rule pandas/pandas-use-of-dot-iat  # only this rule
 codelaw config --print --for <file>                # the resolved setting, and where it came from
 ```
-
-## How to fix
-
-1. Replace `.iat[...]` with `.iloc[...]`.
 
 ## Examples
 

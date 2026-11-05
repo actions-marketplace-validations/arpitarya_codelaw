@@ -4,6 +4,7 @@ title: "Non-interactive elements have no handlers"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the fix is a native control or an interactive role with focus, and that is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-noninteractive-element-interactions]
 since: 0.5.0

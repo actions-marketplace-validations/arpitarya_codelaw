@@ -4,6 +4,7 @@ title: "No object or function literal as a prop default"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the default is hoisted to a module-level constant, whose name is the author's"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-object-type-as-default-prop]
 since: 0.5.0

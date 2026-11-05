@@ -4,6 +4,7 @@ title: "A function takes at most a maximum number of parameters"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "grouping parameters changes the function's signature and every call to it; which belong together is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 3, description: "the most parameters a function may take" }

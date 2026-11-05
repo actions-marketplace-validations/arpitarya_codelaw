@@ -4,6 +4,7 @@ title: "No alert, confirm or prompt"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the replacement is the app's own dialog or a log line, chosen by the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-alert]
 since: 0.5.0

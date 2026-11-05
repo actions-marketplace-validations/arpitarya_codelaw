@@ -4,6 +4,7 @@ title: "No comparing a value with itself"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the intended comparison is the author's"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-self-compare]
 since: 0.5.0

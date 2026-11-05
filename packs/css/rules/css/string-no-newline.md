@@ -4,6 +4,7 @@ title: "No line breaks inside selector strings"
 languages: [css, scss]
 fix: manual
 fix_reason: "whether the line break was meant is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignore: { type: "string[]", default: ["at-rule-preludes", "declaration-values"], description: "contexts not to check: `at-rule-preludes`, `declaration-values`" }

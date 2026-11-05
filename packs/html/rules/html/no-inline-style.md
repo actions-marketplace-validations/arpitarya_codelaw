@@ -4,6 +4,7 @@ title: "No inline styles"
 languages: [html]
 fix: manual
 fix_reason: "the styles need a class and a stylesheet rule"
+fix_exception: restructure
 stability: preview
 options:
   allowedProperties: { type: "string[]", default: ["display"], description: "properties an inline style may set" }

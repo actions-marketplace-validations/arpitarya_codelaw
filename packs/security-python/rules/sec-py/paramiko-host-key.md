@@ -4,6 +4,7 @@ title: 'SSH host keys are checked'
 languages: [python]
 fix: manual
 fix_reason: "where the known host keys come from is deployment-specific"
+fix_pending: "suggest"
 stability: preview
 ported_from: [bandit/B507, ruff/S507]
 security: { cwe: [295], owasp: ["A07:2025"], severity: high }

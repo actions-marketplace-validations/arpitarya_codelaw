@@ -4,6 +4,7 @@ title: "Functions declare their return type"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the return type is the author's to write"
+fix_pending: "suggest; needs type-info"
 stability: preview
 ported_from: [typescript-eslint/explicit-function-return-type]
 since: 0.5.0

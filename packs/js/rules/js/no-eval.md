@@ -4,6 +4,7 @@ title: "No eval"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what replaces it depends on what the string held"
+fix_exception: security
 stability: preview
 ported_from: [eslint/no-eval]
 since: 0.5.0

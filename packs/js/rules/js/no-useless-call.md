@@ -4,6 +4,7 @@ title: "No needless call or apply"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the plain call is equivalent only when `this` is as written; the author confirms"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-useless-call]
 since: 0.5.0

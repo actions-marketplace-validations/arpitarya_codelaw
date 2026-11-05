@@ -4,6 +4,7 @@ title: "Link, not a, for internal pages"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "switching to `<Link>` adds an import"
+fix_pending: "suggest; needs add-import"
 files: ["**/pages/**", "**/app/**", "**/src/**", "**/components/**"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-html-link-for-pages"]

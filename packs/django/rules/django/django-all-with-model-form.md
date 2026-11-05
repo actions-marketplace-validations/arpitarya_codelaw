@@ -4,6 +4,7 @@ title: "ModelForm does not use fields = '__all__'"
 languages: [python]
 fix: manual
 fix_reason: "the fields to list are the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/DJ007]
 since: 0.5.0

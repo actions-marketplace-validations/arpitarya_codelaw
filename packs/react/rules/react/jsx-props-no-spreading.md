@@ -4,6 +4,7 @@ title: "No spread props in JSX"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: each prop the spread carried is named, which needs the set the author means to pass"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/jsx-props-no-spreading]
 since: 0.5.0

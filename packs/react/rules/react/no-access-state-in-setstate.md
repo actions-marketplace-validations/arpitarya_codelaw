@@ -4,6 +4,7 @@ title: "setState does not read this.state"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the update becomes an updater function, `setState((state) => …)`, which reads its own state"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/no-access-state-in-setstate]
 since: 0.5.0

@@ -188,6 +188,8 @@ reason      = "Replaced by the new tax engine"
   1. appends the registry entry, leaving the rest of the file as written;
   2. runs `baseline add` for every current use of that symbol, copying its `expires`, `warn_from`, `warn_days`, `on_touch` and `added_by` into the entries so the ratchet guards them.
 
+**Their exceptions (W-156, 2026-10-31; [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 15).** The engine rules of this record are `manual` and name why in `engine_fix_exception`: `graph/no-deprecated-usage`, `codelaw/stale-baseline`, the four dated-exception rules and `codelaw/incomplete-ignore` are `value` (a replacement, a date, an author or a reason the code does not hold).
+
 #### 7. Running it
 
 ```

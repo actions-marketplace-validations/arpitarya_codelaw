@@ -4,6 +4,7 @@ title: "ModelForm lists fields, not exclude"
 languages: [python]
 fix: manual
 fix_reason: "the fields to list are the author's"
+fix_exception: value
 stability: preview
 ported_from: [ruff/DJ006]
 since: 0.5.0

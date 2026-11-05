@@ -4,6 +4,7 @@ title: "No {} type in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `object`, `unknown` or a real shape is meant is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/ts-no-empty-object-type]
 since: 0.5.0

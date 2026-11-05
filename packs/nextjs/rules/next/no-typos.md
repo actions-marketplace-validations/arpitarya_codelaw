@@ -4,6 +4,7 @@ title: "Data-fetching functions are spelled right"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the intended name is almost always obvious, but renaming an export is confirmed by the author"
+fix_pending: "suggest"
 files: ["**/pages/**"]
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-typos"]

@@ -4,6 +4,7 @@ title: "A line break doesn't silently join two lines into one expression"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the lines were meant to join can only be known from intent"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-unexpected-multiline]
 since: 0.1.0

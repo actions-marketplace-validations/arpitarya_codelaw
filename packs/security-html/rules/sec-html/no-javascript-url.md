@@ -4,6 +4,7 @@ title: "No javascript: URLs"
 languages: [html]
 fix: manual
 fix_reason: "the script has to move out of the URL into a listener or a real link"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "Children are passed as children, not as a prop"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving the children changes the element's shape by hand"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-react/no-children-prop]
 since: 0.1.0

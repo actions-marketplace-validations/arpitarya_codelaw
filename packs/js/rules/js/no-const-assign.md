@@ -4,6 +4,7 @@ title: "A const is not reassigned"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "whether the variable should be `let` or the assignment should go is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-const-assign]
 since: 0.1.0

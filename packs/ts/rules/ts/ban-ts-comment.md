@@ -4,6 +4,7 @@ title: "No @ts-ignore or @ts-nocheck; @ts-expect-error says why"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the reason the error is expected has to come from the author"
+fix_pending: "auto-subset; needs type-info"
 stability: preview
 ported_from: [typescript-eslint/ban-ts-comment]
 since: 0.1.0

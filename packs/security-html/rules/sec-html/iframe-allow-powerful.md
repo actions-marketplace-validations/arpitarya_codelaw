@@ -4,6 +4,7 @@ title: "A cross-origin iframe is not given a powerful feature"
 languages: [html]
 fix: manual
 fix_reason: "which framed sites deserve the permission is the owner's decision"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [250], owasp: ["A02:2025"], severity: low }
 since: 0.2.0

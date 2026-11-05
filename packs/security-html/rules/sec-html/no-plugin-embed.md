@@ -4,6 +4,7 @@ title: "No <object>, <embed> or <applet>"
 languages: [html]
 fix: manual
 fix_reason: "what replaces the plugin depends on what it showed"
+fix_pending: "suggest"
 stability: preview
 security: { owasp: ["A02:2025"], severity: low }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "Link text says where the link goes"
 languages: [markdown]
 fix: manual
 fix_reason: "describing the target needs the author"
+fix_exception: authored
 stability: preview
 options:
   prohibited_texts: { type: "string[]", default: ["click here", "here", "link", "more"], description: "link texts that say nothing about the target, compared ignoring case and punctuation" }

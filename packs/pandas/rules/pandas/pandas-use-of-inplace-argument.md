@@ -4,6 +4,7 @@ title: "No inplace=True"
 languages: [python]
 fix: manual
 fix_reason: "the call must become an assignment of its result, which changes the statement"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/PD002]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "Links have text"
 languages: [html]
 fix: manual
 fix_reason: "the link text needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/wcag/h30]
 tags: [a11y]

@@ -666,17 +666,35 @@ impl<'c> Server<'c> {
         let mut out = Vec::new();
         if wanted(CodeActionKind::QUICKFIX.as_str()) {
             for d in doc.diagnostics.iter().filter(own) {
-                let fixable = matches!(d.fix, FixClass::Auto | FixClass::Suggest) && !d.edits.is_empty();
+                let fixable = matches!(d.fix, FixClass::Auto | FixClass::Suggest) && (!d.edits.is_empty() || !d.choices.is_empty());
                 if !fixable || d.start_byte > end || d.end_byte < start {
                     continue;
                 }
-                let edits = d.edits.iter().map(|e| TextEdit { range: idx.range(e.start + shift, e.end + shift), new_text: e.text.clone() }).collect();
+                let lsp_edits = |edits: &[codelaw_core::TextEdit]| -> Vec<TextEdit> {
+                    edits.iter().map(|e| TextEdit { range: idx.range(e.start + shift, e.end + shift), new_text: e.text.clone() }).collect()
+                };
+                let diagnostics = Some(vec![lsp_diagnostic(d, idx.range(d.start_byte + shift, d.end_byte + shift))]);
+                if d.edits.is_empty() {
+                    // One quick fix per labelled choice; the default one is
+                    // preferred (SR-LAW-4 decision 4).
+                    for c in &d.choices {
+                        out.push(CodeActionOrCommand::CodeAction(CodeAction {
+                            title: format!("Fix {}: {} (suggested; check the result)", d.rule, c.label),
+                            kind: Some(CodeActionKind::QUICKFIX),
+                            diagnostics: diagnostics.clone(),
+                            edit: Some(workspace_edit(&doc.uri, lsp_edits(&c.edits))),
+                            is_preferred: Some(c.default),
+                            ..Default::default()
+                        }));
+                    }
+                    continue;
+                }
                 let unsafe_note = if d.fix == FixClass::Suggest { " (suggested; check the result)" } else { "" };
                 out.push(CodeActionOrCommand::CodeAction(CodeAction {
                     title: format!("Fix {}{unsafe_note}", d.rule),
                     kind: Some(CodeActionKind::QUICKFIX),
-                    diagnostics: Some(vec![lsp_diagnostic(d, idx.range(d.start_byte + shift, d.end_byte + shift))]),
-                    edit: Some(workspace_edit(&doc.uri, edits)),
+                    diagnostics,
+                    edit: Some(workspace_edit(&doc.uri, lsp_edits(&d.edits))),
                     is_preferred: Some(d.fix == FixClass::Auto),
                     ..Default::default()
                 }));

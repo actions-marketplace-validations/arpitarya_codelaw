@@ -4,6 +4,7 @@ title: "A stylesheet stays under a line limit"
 languages: [css, scss]
 fix: manual
 fix_reason: "splitting a stylesheet changes its structure and the order of the cascade"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 300, description: "the most lines a stylesheet may have" }

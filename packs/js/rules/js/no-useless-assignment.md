@@ -4,6 +4,7 @@ title: "No value is stored that nothing reads"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the store is dead or the read is missing needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint/no-useless-assignment]
 since: 0.1.0

@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 severity: warn
 fix: manual
 fix_reason: "converting the callback API to promises (for example with `util.promisify`) is a refactor of the caller"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-promise/no-promise-in-callback]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "ARIA attributes fit the element's role"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "either the role or the attribute is wrong, and only the author knows which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/role-supports-aria-props]
 since: 0.5.0

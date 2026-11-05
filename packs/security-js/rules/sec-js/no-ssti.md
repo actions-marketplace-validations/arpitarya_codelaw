@@ -4,6 +4,7 @@ title: "No template compiled from a request, no template data taken whole from a
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which fields the template needs is a decision for the author"
+fix_exception: restructure
 stability: preview
 security: { cwe: [1336, 73], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

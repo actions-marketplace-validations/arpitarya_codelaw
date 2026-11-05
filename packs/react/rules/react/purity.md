@@ -4,6 +4,7 @@ title: "Render doesn't call Math.random(), Date.now() or other impure functions"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the value should come from instead — state, an effect, an event — depends on what it is for"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react-hooks/purity, "@eslint-react/purity"]
 since: 0.3.0

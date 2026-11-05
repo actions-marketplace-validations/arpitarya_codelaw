@@ -307,7 +307,7 @@ pub fn call_tool(name: &str, args: &Map<String, Value>) -> Result<Value, String>
         "fix_paths" => {
             let paths = a.paths()?;
             let mut p = project(&paths, a.run_options()?)?;
-            let options = FixOptions { unsafe_fixes: a.flag("unsafe")?, dry_run: a.flag("dry_run")?, trace: false };
+            let options = FixOptions { unsafe_fixes: a.flag("unsafe")?, dry_run: a.flag("dry_run")?, trace: false, ..Default::default() };
             Ok(codelaw_report::fix_json(&p.fix(&paths, &options).map_err(err)?))
         }
         "format_snippet" => {

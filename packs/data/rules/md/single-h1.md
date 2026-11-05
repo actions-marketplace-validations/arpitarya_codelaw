@@ -4,6 +4,7 @@ title: "One level-1 heading per document"
 languages: [markdown]
 fix: manual
 fix_reason: "which heading is the title, and what level the others become, needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }

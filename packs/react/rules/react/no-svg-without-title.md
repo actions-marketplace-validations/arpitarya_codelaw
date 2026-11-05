@@ -4,6 +4,7 @@ title: "An SVG has a title or is hidden"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the title is the author's, or the SVG is decorative and should be hidden — the author decides which"
+fix_pending: "suggest"
 stability: preview
 ported_from: [biome/a11y/noSvgWithoutTitle]
 since: 0.5.0

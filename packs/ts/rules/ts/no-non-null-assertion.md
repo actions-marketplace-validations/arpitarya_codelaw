@@ -4,6 +4,7 @@ title: "No non-null assertions"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "handling the null — a check, optional chaining or a default — is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [typescript-eslint/no-non-null-assertion]
 since: 0.5.0

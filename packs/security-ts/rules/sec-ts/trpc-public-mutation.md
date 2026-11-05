@@ -4,6 +4,7 @@ title: "A tRPC mutation is not public"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "which procedure carries the auth middleware is named by the author"
+fix_pending: "suggest; needs cross-file"
 stability: preview
 security: { cwe: [862], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

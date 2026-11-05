@@ -4,6 +4,7 @@ title: "No labels"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "replacing a labelled jump means restructuring the loops, often into a function with a `return`"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-labels]
 since: 0.5.0

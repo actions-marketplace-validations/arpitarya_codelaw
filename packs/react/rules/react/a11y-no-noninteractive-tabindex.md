@@ -4,6 +4,7 @@ title: "Non-interactive elements are not in the tab order"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the element either needs an interactive role and behaviour, or no `tabIndex`"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-noninteractive-tabindex]
 since: 0.5.0

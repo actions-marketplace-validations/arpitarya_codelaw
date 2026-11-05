@@ -4,6 +4,7 @@ title: "Empty methods in an abstract base class are abstract"
 languages: [python]
 fix: manual
 fix_reason: "whether the method is a required hook or an optional no-op is a design decision"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B027]
 since: 0.1.0

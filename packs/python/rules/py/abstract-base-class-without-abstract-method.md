@@ -4,6 +4,7 @@ title: "An abstract base class has an abstract method"
 languages: [python]
 fix: manual
 fix_reason: "which methods subclasses must provide is a design decision"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B024]
 since: 0.1.0

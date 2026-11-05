@@ -4,6 +4,7 @@ title: "<base> stays on this origin"
 languages: [html]
 fix: manual
 fix_reason: "which origin the page may use is a decision for its owner"
+fix_pending: "suggest"
 stability: preview
 security: { owasp: ["A05:2025"], severity: medium }
 since: 0.2.0

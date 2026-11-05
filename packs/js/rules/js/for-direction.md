@@ -4,6 +4,7 @@ title: "A for loop's counter moves toward its end condition"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the condition or the update is wrong needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/for-direction]
 since: 0.1.0

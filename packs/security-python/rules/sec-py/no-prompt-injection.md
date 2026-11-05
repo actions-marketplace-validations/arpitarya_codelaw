@@ -4,6 +4,7 @@ title: 'A request value is not written into a system prompt'
 languages: [python]
 fix: manual
 fix_reason: "what goes in the system role and what goes in the user role is a design decision"
+fix_exception: restructure
 stability: preview
 security: { cwe: [1427], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

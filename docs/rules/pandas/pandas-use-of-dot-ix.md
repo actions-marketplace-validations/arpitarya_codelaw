@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:pandas/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`.loc` (labels) or `.iloc` (positions) depends on what the index holds) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`.loc` (labels) or `.iloc` (positions) depends on what the index holds: both are offered) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PD007` |
@@ -119,10 +119,6 @@ codelaw check --rule pandas/pandas-use-of-dot-ix  # only this rule
 codelaw config --print --for <file>               # the resolved setting, and where it came from
 ```
 
-## How to fix
-
-1. Use `.loc` for labels or `.iloc` for positions.
-
 ## Examples
 
 ### Python
@@ -132,6 +128,20 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 ```python
 import pandas as pd
 row = df.ix[0]
+```
+
+#### Fixed (by position)
+
+```python
+import pandas as pd
+row = df.iloc[0]
+```
+
+#### Fixed (by label)
+
+```python
+import pandas as pd
+row = df.loc[0]
 ```
 
 #### Do

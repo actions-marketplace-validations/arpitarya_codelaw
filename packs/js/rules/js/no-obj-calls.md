@@ -4,6 +4,7 @@ title: "No calling Math, JSON, Reflect, Atomics or Intl as functions"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "which method was meant needs the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-obj-calls]
 since: 0.1.0
