@@ -249,7 +249,7 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 - **Reimplemented, not wrapped.** Each rule is written fresh in codelaw's format, and its `ported_from:` field names the original. You don't need ESLint, Ruff or stylelint installed.
 - **Differences are written down.** Each pack's README lists where a port behaves differently from the original, and which rules weren't ported and why.
 - **Layout rules are left out on purpose.** Indentation, spacing and quotes are the formatter's job (`codelaw format`).
-- **6,974 example checks, all green.** `codelaw test packs/<pack>` runs them.
+- **32,284 example checks, all green.** `codelaw test packs/<pack>` runs them.
 - **`*/conventions` presets are opt-in**: house-style rules such as `js/exports-at-end` and `py/no-print`.
 - **`*/size` presets are opt-in too**: `js/size` and `py/size` turn on max lines per file, max lines per function and max parameters for JavaScript, TypeScript and Python; `html/size` and `css/size` a line limit per file. Each rule has options for the limit and for what counts.
 - **`*/project` presets are opt-in too**: the rules that read the whole repo, `graph/no-unused-exports` (`js/project`, `py/project`) and `graph/no-unused-css-classes` (`css/project`). `codelaw graph why-unused <symbol>` says why a finding held.
@@ -262,9 +262,9 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 
 | class | rules | what happens |
 |---|---|---|
-| `auto` | 494 | `codelaw fix` applies it. It's safe and meaning-preserving. |
+| `auto` | 495 | `codelaw fix` applies it. It's safe and meaning-preserving. |
 | `suggest` | 607 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
-| `manual` | 1021 | The finding lists numbered steps, for a person or an agent to follow. |
+| `manual` | 1020 | The finding lists numbered steps, for a person or an agent to follow. |
 
 <!-- /docs-sync:fix-classes -->
 

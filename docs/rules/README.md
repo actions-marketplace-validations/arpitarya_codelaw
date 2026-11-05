@@ -896,7 +896,7 @@ Presets: `codelaw:node/recommended`.
 | [`node/hashbang`](node/hashbang.md) | Commands start with a Node.js hashbang, and nothing else has one | `suggest` | — | `node/recommended` |
 | [`node/no-async-express-handler`](node/no-async-express-handler.md) | No async Express route handlers | `manual` | — | *[rules] only* |
 | [`node/no-callback-literal`](node/no-callback-literal.md) | Pass an Error, not a string, to the callback | `suggest` | — | *[rules] only* |
-| [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `manual` | — | `node/recommended` |
+| [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `auto` | — | `node/recommended` |
 | [`node/no-exports-assign`](node/no-exports-assign.md) | No assigning to exports | `suggest` | — | `node/recommended` |
 | [`node/no-extraneous-import`](node/no-extraneous-import.md) | Imported packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-extraneous-require`](node/no-extraneous-require.md) | Required packages must be declared | `manual` | — | `node/recommended` |

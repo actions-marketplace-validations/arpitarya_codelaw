@@ -69345,7 +69345,7 @@ function find(id, cb) {
 ## `node/no-deprecated-api` — No deprecated Node.js APIs
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each deprecated API has its own replacement)
+- **Fix:** `auto` (auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-deprecated-api.md
 
@@ -69360,6 +69360,8 @@ Code doesn't use Node.js APIs the documentation deprecates — `new Buffer()`, `
 ### How to fix
 
 1. Replace the call with the API the message names.
+
+`codelaw fix` renames the aliases itself, and drops an import nothing else reads.
 
 ### Examples
 
