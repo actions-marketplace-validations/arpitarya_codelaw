@@ -88912,8 +88912,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten to build a new value",
+   "fix": "suggest",
+   "fix_reason": "an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -88959,8 +88959,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument",
+   "fix": "suggest",
+   "fix_reason": "suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -89054,8 +89054,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which fields the component needs is a choice only its author can make",
+   "fix": "suggest",
+   "fix_reason": "when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -89075,7 +89075,7 @@
    ],
    "example": {
     "language": "javascript",
-    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest];\n}",
+    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest.isPending];\n}",
     "do": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, isPending } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, isPending];\n}"
    },
    "ported_from": [
@@ -89103,8 +89103,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fields to list depend on what the effect, callback or memo reads",
+   "fix": "suggest",
+   "fix_reason": "when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

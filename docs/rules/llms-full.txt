@@ -118015,7 +118015,7 @@ option's value is a function, a method or a name.
 ## `tanstack-query/no-mutating-set-query-data` — A `setQueryData` updater does not change the cached data in place
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the update has to be rewritten to build a new value)
+- **Fix:** `suggest` (an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-mutating-set-query-data.md
 
@@ -118052,6 +118052,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```js
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```js
@@ -118071,6 +118077,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+##### Fixed
+
+```jsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 ##### Do
@@ -118094,6 +118106,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```ts
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```ts
@@ -118115,6 +118133,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```tsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```tsx
@@ -118134,7 +118158,7 @@ is recognised by its name, on any object.
 ## `tanstack-query/no-removed-v4-options` — A query takes no option TanStack Query v5 removed
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument)
+- **Fix:** `suggest` (suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-removed-v4-options.md
 
@@ -118445,7 +118469,7 @@ recognised only when it is imported from a `@tanstack/*-query` package; a QueryC
 ## `tanstack-query/no-rest-destructuring` — No rest destructuring of a query result
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which fields the component needs is a choice only its author can make)
+- **Fix:** `suggest` (when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-rest-destructuring.md
 
@@ -118473,7 +118497,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118497,7 +118521,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118521,7 +118545,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118545,7 +118569,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118568,7 +118592,7 @@ also finds a query result by its type when typed linting is on; codelaw has no t
 ## `tanstack-query/no-unstable-deps` — A query hook's result is not a React hook dependency
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fields to list depend on what the effect, callback or memo reads)
+- **Fix:** `suggest` (when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-unstable-deps.md
 

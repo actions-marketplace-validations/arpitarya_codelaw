@@ -1329,11 +1329,11 @@ Presets: `codelaw:tanstack-query/recommended`.
 | [`tanstack-query/exhaustive-deps`](tanstack-query/exhaustive-deps.md) | A query key names every value its query function reads | `suggest` | `allowlist` | `tanstack-query/recommended` |
 | [`tanstack-query/infinite-query-property-order`](tanstack-query/infinite-query-property-order.md) | An infinite query's `queryFn` comes before its page-param callbacks | `auto` | — | `tanstack-query/recommended` |
 | [`tanstack-query/mutation-property-order`](tanstack-query/mutation-property-order.md) | A mutation's `onMutate` comes before `onError` and `onSettled` | `auto` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-mutating-set-query-data`](tanstack-query/no-mutating-set-query-data.md) | A `setQueryData` updater does not change the cached data in place | `manual` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-removed-v4-options`](tanstack-query/no-removed-v4-options.md) | A query takes no option TanStack Query v5 removed | `manual` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-mutating-set-query-data`](tanstack-query/no-mutating-set-query-data.md) | A `setQueryData` updater does not change the cached data in place | `suggest` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-removed-v4-options`](tanstack-query/no-removed-v4-options.md) | A query takes no option TanStack Query v5 removed | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-renamed-v4-options`](tanstack-query/no-renamed-v4-options.md) | An option uses its TanStack Query v5 name | `auto` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-rest-destructuring`](tanstack-query/no-rest-destructuring.md) | No rest destructuring of a query result | `manual` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-unstable-deps`](tanstack-query/no-unstable-deps.md) | A query hook's result is not a React hook dependency | `manual` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-rest-destructuring`](tanstack-query/no-rest-destructuring.md) | No rest destructuring of a query result | `suggest` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-unstable-deps`](tanstack-query/no-unstable-deps.md) | A query hook's result is not a React hook dependency | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-unsupported-suspense-options`](tanstack-query/no-unsupported-suspense-options.md) | A suspense query takes no `enabled`, `placeholderData` or `throwOnError` | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-void-query-fn`](tanstack-query/no-void-query-fn.md) | A query function returns its data | `manual` | — | `tanstack-query/recommended` |
 | [`tanstack-query/object-syntax`](tanstack-query/object-syntax.md) | A TanStack Query call takes one options object | `suggest` | — | `tanstack-query/recommended` |
