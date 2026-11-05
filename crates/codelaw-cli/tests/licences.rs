@@ -222,6 +222,17 @@ const BUILD_TOOLS: &[BuildTool] = &[
     BuildTool { registry: "pypi", name: "fux-core", licence: "MIT", requires: &[], extras: &[], source: "SR-LAW-11 list, D-34 (fux-engine's pinned dependency)" },
     BuildTool { registry: "pypi", name: "fux-reader", licence: "MIT", requires: &[], extras: &[], source: "SR-LAW-11 list, D-34 (fux-engine's pinned dependency)" },
     BuildTool { registry: "pypi", name: "fux-writer", licence: "MIT", requires: &[], extras: &[], source: "SR-LAW-11 list, D-34 (fux-engine's pinned dependency)" },
+    // The TypeScript version watch (W-105): ci.yml reruns the type rules on the
+    // newest 7.1 release and, nightly, on `typescript@next`. L11's list D-45.
+    BuildTool {
+        registry: "npm",
+        name: "typescript",
+        licence: "Apache-2.0",
+        // Its per-platform binaries are optional packages of the same release (D-45).
+        requires: &[],
+        extras: &[],
+        source: "SR-LAW-11 list, D-45 (Apache-2.0; no dependencies of its own)",
+    },
     BuildTool {
         registry: "npm",
         name: "npm",
@@ -251,7 +262,11 @@ fn build_files() -> Vec<std::path::PathBuf> {
     while let Some(d) = stack.pop() {
         for e in std::fs::read_dir(&d).into_iter().flatten().flatten() {
             let p = e.path();
-            if p.is_dir() {
+            // An installed `node_modules` (gitignored, e.g. packaging/vscode's)
+            // holds other packages' files, not codelaw's build.
+            if p.is_dir() && p.file_name().is_some_and(|n| n == "node_modules") {
+                continue;
+            } else if p.is_dir() {
                 stack.push(p);
             } else if p.extension().is_some_and(|x| ["yml", "yaml", "sh", "py", "toml", "json"].iter().any(|y| x == *y)) {
                 out.push(p);
@@ -296,7 +311,7 @@ fn package_of(registry: &str, arg: &str) -> Option<Install> {
         return None;
     }
     let (name, extras) = if registry == "npm" {
-        let end = a[1..].find('@').map(|i| i + 1).unwrap_or(a.len());
+        let end = a.char_indices().skip(1).find(|&(_, c)| c == '@').map(|(i, _)| i).unwrap_or(a.len());
         (a[..end].to_owned(), Vec::new())
     } else {
         let end = a.find(|c: char| "[=<>!~;@ ".contains(c)).unwrap_or(a.len());
