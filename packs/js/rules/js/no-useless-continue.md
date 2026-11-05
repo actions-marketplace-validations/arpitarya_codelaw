@@ -4,7 +4,7 @@ title: "No continue at the end of a loop"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
-ported_from: [eslint-plugin-unicorn/no-useless-continue]
+ported_from: [eslint-plugin-unicorn/no-useless-continue, eslint-plugin-sonarjs/no-redundant-jump]
 since: 0.5.0
 ---
 

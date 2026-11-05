@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the clearer form — `if`, `switch` or a lookup table — is the author's to choose"
 fix_pending: "auto-subset"
 stability: preview
-ported_from: [eslint/no-nested-ternary]
+ported_from: [eslint/no-nested-ternary, eslint-plugin-sonarjs/no-nested-conditional, eslint-plugin-unicorn/no-nested-ternary]
 since: 0.5.0
 ---
 

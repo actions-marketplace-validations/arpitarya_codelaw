@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "moving the function changes what it can see"
 fix_exception: restructure
 stability: preview
-ported_from: [eslint/no-inner-declarations]
+ported_from: [eslint/no-inner-declarations, eslint-plugin-sonarjs/no-function-declaration-in-block]
 since: 0.5.0
 ---
 

@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving a chain to `await` needs an `async` function and may restructure the error handling) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-promise/prefer-await-to-then` |
+| **Ported from** | `eslint-plugin-promise/prefer-await-to-then`, `eslint-plugin-unicorn/prefer-await` |
 
 ## What it checks
 
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:js/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:js/strict` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/recommended"]
-
-[rules]
-"js/promise-prefer-await-to-then" = "error"
+extends = ["codelaw:js/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

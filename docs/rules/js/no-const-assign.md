@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the variable should be `let` or the assignment should go is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-const-assign` |
+| **Ported from** | `eslint/no-const-assign`, `eslint-plugin-sonarjs/updated-const-var` |
 
 ## What it checks
 

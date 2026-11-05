@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the new name is the author's choice"
 fix_pending: "auto-subset; needs scope-rename"
 stability: preview
-ported_from: [eslint/no-shadow-restricted-names]
+ported_from: [eslint/no-shadow-restricted-names, eslint-plugin-sonarjs/no-globals-shadowing]
 since: 0.1.0
 ---
 

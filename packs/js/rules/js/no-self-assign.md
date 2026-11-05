@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "assigning a property to itself can run a setter, so removing it may change behaviour"
 fix_pending: "suggest"
 stability: preview
-ported_from: [eslint/no-self-assign]
+ported_from: [eslint/no-self-assign, eslint-plugin-sonarjs/no-redundant-assignments]
 since: 0.1.0
 ---
 

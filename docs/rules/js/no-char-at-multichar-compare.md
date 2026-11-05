@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the code meant `startsWith`, a `slice` or a one-character string is the author's; the code is wrong in each case differently) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `oxlint/bad-char-at-comparison` |
+| **Ported from** | `oxlint/bad-char-at-comparison`, `eslint-plugin-unicorn/no-invalid-character-comparison` |
 
 ## What it checks
 
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:js/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:js/strict` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/recommended"]
-
-[rules]
-"js/no-char-at-multichar-compare" = "error"
+extends = ["codelaw:js/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).
