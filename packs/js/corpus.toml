@@ -4,6 +4,7 @@
 [findings]
 "graph/no-unused-exports" = 117
 "js/accessor-pairs" = 0
+"js/branches-sharing-code" = 0
 "js/catch-error-name" = 27
 "js/complexity" = 1
 "js/consistent-assert" = 1
@@ -138,6 +139,7 @@
 "js/no-const-assign" = 0
 "js/no-constant-binary-expression" = 0
 "js/no-constant-condition" = 0
+"js/no-constant-math-min-max-clamp" = 0
 "js/no-constant-zero-expression" = 6
 "js/no-constructor-return" = 0
 "js/no-continue" = 12
