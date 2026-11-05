@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-167 and W-168 filed: graph architecture design, graph measured at 10k–1M files  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"how does the graph work in code law?"*, *"is it performant for very large repo??"*, then *"add few work items — 1. architecture design for graph generation 2. measurement for very large repos 10k, 50k, 100k, 500k, 1million"*.
+- **Done:** found that `codelaw bench`'s workload extends only `recommended` presets, so no L8 number includes the graph, and its files import only siblings. Filed W-167 (`research`, `cowork`) and W-168 (`reporting and benchmarks`, `agent`) with their rows; `check-work-system.py` and the inbox check green.
+- **Decided / left open:** which sizes get an L8 budget (W-168 step 6) and which design (W-167 step 5) are the decider's.
+- **Mistakes:** none.
+- **Next:** W-168 step 1 — the graph workload in `bench/workload.rs`.
+
 ## 2026-11-05 — Inbox emptied: spell budget 2,500 ms; SR-MULTI-FILE-FIXES; L6 data packages  ·  Cowork (Opus 5.5)
 
 - **Asked:** the three blockers, one by one (voice), then *"file it."*

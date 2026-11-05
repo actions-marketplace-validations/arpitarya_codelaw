@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (13)
+## Open items (15)
 
 ### build (8)
 
@@ -60,7 +60,9 @@ here. Read that record before changing anything below it.
 
 ### testing (0)
 
-### reporting and benchmarks (2)
+### reporting and benchmarks (3)
+
+🟢 **W-168** `agent` Measure the project graph at 10k, 50k, 100k, 500k and 1M files — cold, warm, one-file hook, memory, per stage; today's bench never builds the graph (`recommended` presets only). L9 disk care for 500k/1M. Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
 
 🟢 **W-103** `agent` Spell pack done; its L8 budget set 11-05 at 2,500 ms (Arpit; the method gave 2,152). Left: DoD 5 (byte-identical packaging) and SR-SPELL `built: yes`. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
@@ -68,7 +70,9 @@ here. Read that record before changing anything below it.
 
 ### record update (0)
 
-### research (0)
+### research (1)
+
+🟢 **W-167** `cowork` Architecture design for graph generation at 100k–1M files: today's pipeline, prior art (Glean, Kythe, SCIP, salsa, Knip, Nx), 2–3 options as a proposal; step 3 reads W-168's numbers. Filed by Arpit (Cowork). [detail](open/W-167-graph-architecture-design.md)
 
 
 ---
