@@ -110,7 +110,7 @@ Start from `TEMPLATE.md`.
 | [0005](0005_LAW-3-languages.md) | **SR-LAW-3** | **L3** — nine languages — JS, TS, Python, JSON, YAML, TOML, Markdown, CSS (with its dialect SCSS), HTML — each alone or in any combination; a closed list of plain-text config files carries findings, never lint or format | accepted | partly |
 | [0006](0006_LAW-4-every-rule-has-a-fix.md) | **SR-LAW-4** | **L4** — every rule has a fix, automatic first — `auto`, else `suggest` (a diff an agent accepts), else `manual` only by one of four named exceptions | accepted | partly |
 | [0007](0007_LAW-5-no-model-in-the-engine.md) | **SR-LAW-5** | **L5** — no model in the engine; works the same with or without an agent | accepted | partly |
-| [0008](0008_LAW-6-python-and-node-packages.md) | **SR-LAW-6** | **L6** — one release — `codelaw` on PyPI and on npm — each a complete engine, identical output; rules as twenty-seven packs, twenty on npm (`@codelaw/rules-*`) and eighteen on PyPI (`codelaw-rules-*`); a pack's table may come from its own npm-only provider (`@codelaw/provider-*`); npm sub-packages only as `@codelaw/*` | accepted | partly |
+| [0008](0008_LAW-6-python-and-node-packages.md) | **SR-LAW-6** | **L6** — one release — `codelaw` on PyPI and on npm — each a complete engine, identical output; rules as twenty-seven packs, twenty on npm (`@codelaw/rules-*`) and eighteen on PyPI (`codelaw-rules-*`); a pack's table may come from its own npm-only provider (`@codelaw/provider-*`); data as `@codelaw/data-*` / `codelaw-data-*`; npm sub-packages only as `@codelaw/*` | accepted | partly |
 | [0009](0009_LAW-7-linter-and-formatter.md) | **SR-LAW-7** | **L7** — always both a linter and a formatter, for every L3 language | accepted | yes |
 | [0010](0010_LAW-8-performance-budgets.md) | **SR-LAW-8** | **L8** — performance budgets — set from measurement, never exceeded, never loosened | accepted | partly |
 | [0011](0011_LAW-9-machine-budget.md) | **SR-LAW-9** | **L9** — `work/MACHINE.md`'s budget section is always followed — 5 GB of disk per project, all agents combined; every GB past it approved first | accepted | yes |
@@ -146,6 +146,7 @@ Start from `TEMPLATE.md`.
 | [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | partly |
 | [0117](0117_types.md) | **SR-TYPES** | Type-aware TypeScript rules — the project's own TypeScript ≥ 7.1, asked through codelaw's Node helper a fixed vocabulary of type questions; `ts/type-error`; preview until 7.1 is GA | accepted | partly |
 | [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | yes |
+| [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | no |
 
 ---
 

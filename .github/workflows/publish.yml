@@ -347,10 +347,10 @@ jobs:
           skip-existing: true
 
   vscode:
-    # W-95: the eight .vsix ci.yml built (artifact `vscode`) to the Visual Studio Marketplace (trusted
-    # publishing: no token) and Open VSX (OVSX_PAT, skipped while unset), once npm trusts the workflow —
-    # beside the npm and PyPI uploads, not after them: each .vsix carries its own binary (W-126). Plain curl:
-    # @vscode/vsce and ovsx are not ratified (L2, L11). continue-on-error: a listing problem never fails,
+    # W-95: the eight .vsix ci.yml built (artifact `vscode`) to the Visual Studio Marketplace and Open VSX,
+    # both by trusted publishing (the job's GitHub OIDC token; no token stored), once npm trusts the workflow —
+    # beside the npm and PyPI uploads, not after them: each .vsix carries its own binary (W-126). Plain curl,
+    # no vsce or ovsx (L2 decision 8 allows them here; nothing needs them). continue-on-error: a listing problem never fails,
     # or withdraws, the engine's release; read the job summary. A version already listed is skipped.
     needs: [gate, trust]
     if: ${{ !cancelled() && needs.gate.result == 'success' && (github.event_name == 'release' && needs.trust.result == 'success' || inputs.only == 'vscode') }}
@@ -358,10 +358,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      id-token: write # the OIDC token the Marketplace exchanges for a short-lived credential
+      id-token: write # the OIDC token the Marketplace and Open VSX each exchange for a short-lived credential
       actions: read
     environment:
-      name: vscode # tag rule v*; the Marketplace's trusted-publishing policy names this environment
+      name: vscode # tag rule v*; the Marketplace's trusted-publishing policy and Open VSX's trusted publisher both name it
       url: https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -404,16 +404,26 @@ jobs:
             else echo "- ✗ $(basename "$f") HTTP $code: $(head -c 600 "$RUNNER_TEMP/m.out")" | tee -a "$GITHUB_STEP_SUMMARY"; bad=1; fi
           done
           [ "$bad" = 0 ]
-      - name: Open VSX — skipped while OVSX_PAT is not set (W-117)
+      - name: Open VSX — GitHub OIDC token (audience https://open-vsx.org) → a token for codelaw.codelaw-vscode → one upload per platform
         if: always()
-        env:
-          OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
+          # The exchange is Open VSX's POST /api/-/trusted-publishing/token, body {namespace, extension, token}; it
+          # answers {value, expiresTimestamp} — a token scoped to this extension for minutes (what `ovsx publish
+          # --trusted-publishing` does; the audience is /api/version's trustedPublishingAudience). The trusted
+          # publisher is arpitarya/codelaw · publish.yml · environment vscode (registered 2026-11-05).
           echo "### Open VSX" >> "$GITHUB_STEP_SUMMARY"
-          [ -n "$OVSX_PAT" ] || { echo "- ⏭ skipped: no OVSX_PAT in the vscode environment (W-117)" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; }
+          idt="$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https%3A%2F%2Fopen-vsx.org" | python3 -c 'import json,sys; print(json.load(sys.stdin)["value"])')"
+          echo "::add-mask::$idt"
+          body="$(IDT="$idt" python3 -c 'import json,os; print(json.dumps({"namespace":"codelaw","extension":"codelaw-vscode","token":os.environ["IDT"]}))')"
+          code="$(curl -sS -o "$RUNNER_TEMP/t.out" -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d "$body" 'https://open-vsx.org/api/-/trusted-publishing/token')"
+          tok="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("value") or "")' "$RUNNER_TEMP/t.out" 2>/dev/null || true)"
+          if [ "${code:0:1}" != 2 ] || [ -z "$tok" ]; then
+            echo "- ✗ token exchange HTTP $code: $(head -c 400 "$RUNNER_TEMP/t.out")" | tee -a "$GITHUB_STEP_SUMMARY"; exit 1
+          fi
+          echo "::add-mask::$tok"
           bad=0
           for f in dist/vscode/*.vsix; do
-            code="$(curl -sS -o "$RUNNER_TEMP/o.out" -w '%{http_code}' -X POST -H "Authorization: Bearer $OVSX_PAT" -H 'Content-Type: application/octet-stream' \
+            code="$(curl -sS -o "$RUNNER_TEMP/o.out" -w '%{http_code}' -X POST -H "Authorization: Bearer $tok" -H 'Content-Type: application/octet-stream' \
                       --data-binary "@$f" 'https://open-vsx.org/api/-/publish')"
             if [ "${code:0:1}" = 2 ]; then echo "- ✓ $(basename "$f")" | tee -a "$GITHUB_STEP_SUMMARY"
             elif grep -qi 'already published' "$RUNNER_TEMP/o.out"; then echo "- ⏭ $(basename "$f") already listed" | tee -a "$GITHUB_STEP_SUMMARY"

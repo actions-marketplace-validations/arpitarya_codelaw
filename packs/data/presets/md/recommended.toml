@@ -21,3 +21,5 @@ description = "The non-layout rules of markdownlint 0.42.0's default set, reimpl
 "md/no-blanks-blockquote" = "warn"
 "md/no-trailing-punctuation" = "warn"
 "md/proper-names" = "warn"
+"md/required-headings" = "warn"
+"md/link-image-style" = "warn"

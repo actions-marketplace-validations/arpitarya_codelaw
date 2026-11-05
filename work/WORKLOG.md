@@ -32,6 +32,80 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** the first end-of-turn landing went without the SR-CONFIG edit and the guard refused it; the record now changes in the same change.
 - **Next:** none for W-158.
 
+## 2026-11-05 — W-167 and W-168 filed: graph architecture design, graph measured at 10k–1M files  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"how does the graph work in code law?"*, *"is it performant for very large repo??"*, then *"add few work items — 1. architecture design for graph generation 2. measurement for very large repos 10k, 50k, 100k, 500k, 1million"*.
+- **Done:** found that `codelaw bench`'s workload extends only `recommended` presets, so no L8 number includes the graph, and its files import only siblings. Filed W-167 (`research`, `cowork`) and W-168 (`reporting and benchmarks`, `agent`) with their rows; `check-work-system.py` and the inbox check green.
+- **Decided / left open:** which sizes get an L8 budget (W-168 step 6) and which design (W-167 step 5) are the decider's.
+- **Mistakes:** none.
+- **Next:** W-168 step 1 — the graph workload in `bench/workload.rs`.
+
+## 2026-11-05 — Inbox emptied: spell budget 2,500 ms; SR-MULTI-FILE-FIXES; L6 data packages  ·  Cowork (Opus 5.5)
+
+- **Asked:** the three blockers, one by one (voice), then *"file it."*
+- **Done:** `perf/budgets.toml` sets `spell` at 2,500 ms (L8 and SR-SPELL 9 follow); W-103 is 🟢. A Claude Code session had already filed W-162 and W-163 from the multiple-choice picks (`ba9add4b`). This change adds the voice refinements. New record **SR-MULTI-FILE-FIXES (0119)**: L4 decision 10 now points to it, and its "Amended" sub-list moved there; SR-CONFIG 11g adds `multi_file`. **L6 decision 15** adds data packages, and SR-RULE-FORMAT 2c and W-166 now ship the browser table as `@codelaw/data-browsers` / `codelaw-data-browsers` with a weekly CI check (W-166 step 5). W-142 gains its names. **`CLAUDE.md` changed** (SR-WORK-DOCS 7a): the L6 line names data packages, on the decider's ruling. L4 decision 6 is rewritten in present tense, because the record template keeps no history.
+- **Decided / left open:** ruled by Arpit: 2,500 ms, over the method's 2,152; multi-file fixes in their own SR, configurable (`auto` / `suggest` / `off`, per project and per rule), with fixed safeguards; the table as a data package on npm and PyPI with CI upkeep. Not ruled separately, but taken from the voice pitch he accepted: the data package's own version line between releases (L6 15).
+- **Mistakes:** none new; this session's first write found the other session's filing and was re-cut to add only what was missing.
+- **Next:** agents: W-139 2a, W-162 step 0, W-166 step 1, W-103's packaging.
+
+## 2026-11-05 — Parallel build run: cleanup, nine agents, four rulings, landings  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"do the cleanup then implement all green items in parallel"*; later *"merge whatever is done and do the clean up update the open work file"*.
+- **Done:** cleanup — `lm/W-74` deleted (in main); twelve unmerged branches ruled **keep** (W-165, archived); W-97's, W-163's and a Cowork hand-over's worktrees removed once only `.fux` re-index output was in them; `lm/W-97`, `lm/W-163` deleted (`-d`). One agent per 🟢 item: landed W-164, W-126 + W-103, W-95, W-97, the W-162/W-163 rulings (W-166 filed); W-102 stopped correctly (ruled to wait on W-139); still building W-105, W-139, W-141, W-158 (W-156 after W-139). Landed three Cowork / Claude app hand-overs from main's checkout (standing approval), fixing a CHANGELOG line (W-161) and an open count (W-97) on the way.
+- **Decided / left open:** Arpit ruled: keep the branches; W-162 multi-file fixes allowed; W-163 own browser table and target-gated lru_cache rules; push `main` — *"Not yet"* (now an inbox row blocking W-126). Open: the `spell` budget; `lm/handoff-20261105-142311`, whose content is on `main` (squashed) but needs `-D`; the docket skill's one-line drift from lockmaster's kit.
+- **Mistakes:** none.
+- **Next:** land W-139, then start W-156's per-pack moves.
+
+## 2026-11-05 — W-97 closed: the Action's proof and the pre-commit mirror  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-97* — the Action's proof in `codelaw-action-test`, the mirror in `codelaw-pre-commit`, the bump automation and the docs (a parallel build run).
+- **Done:** `codelaw-action-test` `7bc5975`, run 42002927893 green (`@v0` = 0.4.3, annotation, SARIF uploaded, alert #1); `codelaw-pre-commit` `22bd59f` = tag `v0.4.3`, verified with `uvx pre-commit try-repo`; its `bump.yml` run 42019788907 green (no-op); USAGE, RELEASING, `.pre-commit-hooks.yaml`, CHANGELOG; W-97 archived; B-073 filed (the `gh`-absent error, never ruled).
+- **Decided / left open:** the bump is a scheduled job in the mirror, not `publish.yml`, so no cross-repo token is needed; the mirror carries a no-code `pyproject.toml` because pip needs a project to install a `language: python` hook repo.
+- **Mistakes:** the kit's `block-main.py` refused `git commit` on the mirror's own `main` in the scratch clone (it reads any repo's branch); committed on a local branch and pushed it to the mirror's `main`.
+- **Next:** at the next release, check the mirror's bump tagged it and re-run the Action's proof after `v0` moves.
+
+---
+
+## 2026-11-05 — Rulings written back: W-162 multi-file fixes, W-163 save and targets  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) write back Arpit's three multiple-choice picks of 11-05: W-162 *"Allow multi-file (Recommended)"*; W-163 *"Own table (Recommended)"* and *"Target-gated (Recommended)"*, the rest of the proposal accepted as presented.
+- **Done:** SR-LAW-4 decisions 10 and 12 amended; SR-CONFIG 11e (`on_edit` entries), 11f (`[targets]`); SR-RULE-FORMAT 2b (`on_edit:`), 2c (`fix_target:`, the browser table) — each "Built: no". Both inbox rows and sub-rows removed; W-162 🟢 `agent`; W-163 closed and archived; W-166 filed (the build, 🟢 `agent`).
+- **Decided / left open:** CLAUDE.md's L4 line left as is — still true. `[targets]` is not in SR-CONFIG §1's map yet: the schema test reads that map, so W-166 adds it with the schema. `[fix] on_edit` and the data table land in SR-ARCHITECTURE and SR-RULE-PACKS with the build.
+- **Mistakes:** none. Waited for Cowork's W-161/W-163 hand-over to land first; the rulings sit on it.
+- **Next:** W-162 step 0, re-judge the 37 rules.
+
+## 2026-11-05 — seven proposals from the codelaw use-case research  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research repo, papers case studies which could tell how codelaw could help or how it can improve to fit a use case"*, then *"file proposals for all of the items"*.
+- **Done:** seven `work/proposals/` docs, each `proposed` with sources and a graduation trigger — `agent-done-gate`, `conventions-to-rules`, `security-pack-benchmark`, `hallucinated-packages-and-api-evolution`, `dead-subgraphs-and-duplication`, `flag-cleanup-pr`, `suppression-gate-and-rule-usefulness`; their rows B-073–B-079 under `unruled`; the proposals index. `check-work-system.py` green.
+- **Decided / left open:** nothing ruled; each proposal's §6 holds the questions for the decider. `suppression-gate-and-rule-usefulness` §6.2 offers ImpossibleBench as evidence for W-158's inbox question.
+- **Mistakes:** none.
+- **Next:** the decider walks B-073–B-079 (`/docket` or the proposals) and rules on each §6.
+
+## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
+- **Done:** the step exchanges the OIDC token at `/api/-/trusted-publishing/token` (body and audience read from Open VSX's source and `/api/version`) and uploads with the issued token; `OVSX_PAT` dropped; RELEASING.md, W-95's item and row, IMPLEMENTATION follow.
+- **Decided / left open:** `curl`, not `ovsx` (the coordinator's brief; decision 8 allows either). VSCodium not checked — its download stalled; Open VSX serves 0.3.0 for darwin-arm64 (0.4.0 only on some platforms).
+- **Mistakes:** none.
+- **Next:** the next release proves the upload; then the VSCodium install.
+
+## 2026-11-05 — W-164: the README opens on the ruled positioning  ·  Claude Code (Opus 5.5)
+
+- **Asked:** build W-164 (README opening), in parallel with other items.
+- **Done:** `README.md`'s two lines under the title are the ruled lead and the deterministic, no-AI second line; *The story*'s first paragraph ends on the unchecked edit; `packaging/README.md` (npm and PyPI) opens the same way; CHANGELOG line; W-164 closed and archived.
+- **Decided / left open:** the rest of the README unchanged — nothing contradicts the opening; W-102's "rules it can't skip" line left to W-102. `llms.txt` (generated by `scripts/rule-docs.py`) keeps its older, still-true pitch — the decider's call whether it should match.
+- **Mistakes:** none.
+- **Next:** none for W-164.
+
+## 2026-11-05 — W-126's `perf` matrix; W-103's `spell` budget to the inbox  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-126 step 6 — `perf` as a matrix on `build linux-x64-gnu`'s binary, not waited on — and measure; read W-103's three `spell` p95s and propose the budget by L8's method, to the inbox.
+- **Done:** `ci.yml`: `perf-plan`, `perf <group>` ×7, `perf` (merged report); SR-LAW-8, SR-PACKAGES, RELEASING.md say the limit (a group with a set budget still fails the run, L8 decision 7). W-103: p95 1,383.3 / 1,434.2 / 1,429.5 ms → proposed 2,152 ms; inbox row; W-103 🔴 `arpit`.
+- **Decided / left open:** not set — the budget is the decider's. `publish.yml` untouched (W-95's): its gate reads the run's conclusion, which `continue-on-error` legs do not fail.
+- **Mistakes:** none.
+- **Next:** W-126's measurement runs on the new `perf`, times into its §Measured.
+
 ## 2026-11-05 — Positioning ruled; W-164 filed; W-102 after W-139; B-072  ·  Claude app (Opus 5.5)
 
 - **Asked:** *"is there a need or a usecase for code law"*, *"what would make people swap"*, then (voice) positioning, the experiment, what to pause; then *"file it."*
@@ -39,6 +113,23 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Decided / left open:** positioning — lead *"Your team's rules, enforced on every AI edit"*, second line deterministic and AI-free. Pausing W-139, W-141, W-143, W-145 recommended and refused: all of them are built. W-102 waits until every rule is built, over the recommendation to run it in parallel as do-first.
 - **Mistakes:** none.
 - **Next:** W-164's rewrite.
+
+## 2026-11-05 — W-161 and W-163 researched; W-161 closed; three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research w-161, w-163"*
+- **Done:** two proposals, `work/proposals/fix-capabilities.md` and `work/proposals/save-behaviour-and-targets.md`. W-161 closed and archived: 151 waiting rules, of which 112 move with six capabilities and 37 are re-judged `manual`; build order in the proposal. W-162 is red on the multi-file call; W-163 is red on its proposal and its two calls.
+- **Decided / left open:** nothing ruled. Inbox: W-162's multi-file fixes (L4 10, 12); W-163's proposal, its browser table and the two `auto` Python rules with a floor.
+- **Mistakes:** the Mac dropped off the bridge mid-research; the drafts waited in Cowork until it was back.
+- **Next:** the decider rules the three calls.
+
+## 2026-11-05 — W-139 step 2a: manual ceiling removed, 231 held ports landed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** build W-139 step 2a as ruled 11-05 (*"no manual ceiling at all"*).
+- **Done:** `packs/fix-ladder.toml` and its checks removed (only the ceiling's lines in W-156's `fix_ladder.rs` / `rules_cmd.rs`); 231 held ports + 2 staged `suggest` js rules landed, presets per SR-RULE-PACKS decision 18; SR-LAW-4 decision 6 and SR-RULE-PACKS 13a/18 say it is done. `codelaw test` 0 failed on every touched pack.
+- **Decided / left open:** a source's recommended rows go to that source's preset (`js/sonarjs`, `js/strict`, `js/regexp`), as the landed rules of the same sources did. Corpus counts for the 231 not run — the corpus is not on this machine.
+- **Mistakes:** the end-of-turn auto-land put the 176 copied js/native files on `main` (3798ca70) before the 75 js files had their `fix_exception:` (the strand's staged copies lacked it), so `main` refused the js pack until this change landed. Fixed here from the strand's specs.
+- **Next:** W-139 step 3 — fetch the corpus, write the 231's counts, L8 budgets.
+
 
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 

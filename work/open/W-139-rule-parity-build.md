@@ -6,7 +6,7 @@ item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5), step 2a"
 ball: agent
 ---
 
@@ -18,7 +18,7 @@ ball: agent
 |---|---|---|---|
 | 1 | W-138's research and Arpit's ruling | a decided list | ✅ 2026-10-30 — build all: 1,690 + 16 taste + 39 framework = **1,745**; round 2 (W-144) ruled the same day — **2,572 in all** |
 | 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | 🔄 slice by slice — see *Progress* |
-| 2a | Remove L4's manual ceiling — `packs/fix-ladder.toml`, its check in `--fix-stats --check` and `laws.rs`, the ceiling column in the pack READMEs — and land the 231 held ports from `~/my_programs/codelaw-w139-held/` | every written, green rule ships | ⏳ agent — ruled 2026-11-05 |
+| 2a | Remove L4's manual ceiling — `packs/fix-ladder.toml`, its check in `--fix-stats --check` and `laws.rs`, the ceiling column in the pack READMEs — and land the 231 held ports from `~/my_programs/codelaw-w139-held/` | every written, green rule ships | ✅ 2026-11-05 — ceiling removed; 233 rules landed (see *Step 2a*) |
 | 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ⏳ |
 | 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ⏳ |
 
@@ -153,6 +153,14 @@ Rows of the Python strand a declarative matcher cannot express; each waits for a
 | `TC001`–`TC004`, `TC007`, `TC008`, `TID252`–`TID255`, `I002`, `CPY001` | where an import is used (runtime or typing), the module's own path, or configuration empty by default |
 | Pylint `cyclic-import`, `duplicate-code`, `import-error`, `no-name-in-module`, `relative-beyond-top-level`, `arguments-differ`, `signature-differs`, `abstract-method`, `inconsistent-mro`, `invalid-overridden-method`, the `using-*-in-unsupported-version` set, `used-before-assignment` and the other flow checks; the pylintrc checks (`bad-configuration-section`, `unknown-option-value`, …) have no Python source to match | cross-file resolution, class hierarchies, the target version, data flow |
 | `py/incorrect-decorator-order`, `py/fallible-context-manager` (RUF074, RUF075) | not built: Ruff-preview rules whose exact behaviour could not be confirmed offline |
+
+## Step 2a — done 2026-11-05 (Claude Code)
+
+- **Ceiling removed:** `packs/fix-ladder.toml` deleted; `FixStats::ceiling`, `over_ceiling` and `read_ceilings` out of `fix_ladder.rs`, the ceiling column out of `--fix-stats`; `rules_cmd.rs`'s ceiling lines out (`--check` stays for W-156's `fix_pending:` check); `laws.rs`'s test is now `l4_fix_stats_counts_every_pack`; `scripts/rule-docs.py` and the 27 pack READMEs drop the column. Only the ceiling's lines in W-156's files were touched.
+- **Landed:** the 231 held ports below — js 75 (their `fix_exception:` added from the strand's specs: the staged files had been generated without it), py 57 (generated from `specs/*.hold.yaml` with `--fix-exception`), native 99 — and the two staged `suggest` rules, `js/consistent-return` and `js/import-no-empty-named-blocks`, green.
+- **Presets (SR-RULE-PACKS decision 18):** a source's recommended rows join that source's preset — SonarJS 51 → `js/sonarjs`, unicorn 15 → `js/strict`, regexp 6 → `js/regexp` (so `js/recommended`; `no-potentially-useless-backreference` at `warn`), MD043 and MD054 → `md/recommended` at `warn`, `scss/declaration-nested-properties-no-divided-groups` → `scss/recommended`; the other 158 `preview`, in no preset.
+- **Checks:** `codelaw test` 0 failed — js 582, python 506, css 146, scss 51, react 151, html 85, data 47, ts 65; `rules lint` 0 problems on each touched pack (data's 5 and security-js/-python's 11 each are pre-existing provider-table lookups); `rules --fix-stats --check --packs packs` exit 0 — manual counts now js 342, python 150, css 94, react 123, html 62, scss 23, data 30, ts 34 (2,122 rules, 1,158 manual).
+- **Not done:** corpus counts for the 231 — `target/corpus` is not on this machine (`scripts/corpus.py fetch` re-clones it); that is step 3's.
 
 ## Held — W-139-js rules that are written and green but `manual` (js is at its ceiling, 259)
 

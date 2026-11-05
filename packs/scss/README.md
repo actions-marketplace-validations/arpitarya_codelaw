@@ -22,21 +22,21 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `scss/recommended` | 11 | correctness: at-rule-no-unknown, duplicate definitions, `@extend` placeholders, null tests, empty comments, partial names |
-| `scss/strict` | 19 | the additions to `scss/recommended` (it extends it): Dart Sass's module migrations (no `@import`, no global function names, no slash division), unknown functions, naming patterns and a nesting limit |
+| `scss/recommended` | 12 | correctness: at-rule-no-unknown, duplicate definitions, `@extend` placeholders, null tests, empty comments, partial names |
+| `scss/strict` | 20 | the additions to `scss/recommended` (it extends it): Dart Sass's module migrations (no `@import`, no global function names, no slash division), unknown functions, naming patterns and a nesting limit |
 | `scss/markers` | 1 | TODO comments with a ticket (and a date when asked); opt in (SR-CONFIG decision 11a) |
 
 <!-- /docs-sync:presets -->
 
 ## The fix ladder
 
-Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
 
 <!-- rule-docs:fix-ladder -->
 
-| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
-|---|---|---|---|---|---|---|---|---|
-| 18 | 10 | 10 | 1 | 0 | 0 | 0 | 9 | 10 |
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 18 | 10 | 23 | 6 | 8 | 0 | 0 | 9 |
 
 <!-- /rule-docs:fix-ladder -->
 
