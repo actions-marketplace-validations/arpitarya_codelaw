@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the closest known name is a guess at what was meant) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
-| **Ported from** | `stylelint/property-no-unknown` |
+| **Ported from** | `stylelint/property-no-unknown`, `stylelint-scss/property-no-unknown` |
 
 ## What it checks
 

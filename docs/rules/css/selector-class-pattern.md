@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update the markup and scripts that use the class) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `stylelint/selector-class-pattern` |
+| **Ported from** | `stylelint/selector-class-pattern`, `stylelint-scss/selector-class-pattern` |
 
 ## What it checks
 

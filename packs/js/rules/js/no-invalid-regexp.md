@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the intended pattern needs the author"
 fix_exception: value
 stability: preview
-ported_from: [eslint/no-invalid-regexp]
+ported_from: [eslint/no-invalid-regexp, eslint-plugin-regexp/no-invalid-regexp]
 since: 0.1.0
 ---
 

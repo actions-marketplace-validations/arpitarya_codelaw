@@ -67,7 +67,7 @@ This record was rewritten to that ruling and then accepted ("go with the recomme
 | Pack | npm | PyPI | Languages | Presets |
 |---|---|---|---|---|
 | engine | `codelaw` | `codelaw` | none: this is the engine. It ships only the `codelaw/*` meta diagnostics, the formatter's `format/unformatted` and `format/failed`, and `graph/no-deprecated-usage` | — |
-| `js` | `@codelaw/rules-js` | `codelaw-rules-js` | JS, JSX; its core rules also run on TS and TSX | `js/recommended`, `js/typescript`, `js/conventions`, `js/project`, `js/size`, `js/markers`, `js/jsdoc`, `js/strict`, `js/taste` |
+| `js` | `@codelaw/rules-js` | `codelaw-rules-js` | JS, JSX; its core rules also run on TS and TSX | `js/recommended`, `js/typescript`, `js/conventions`, `js/project`, `js/size`, `js/markers`, `js/jsdoc`, `js/strict`, `js/taste`, `js/regexp` (decision 18, W-139; `js/recommended` extends it) |
 | `ts` | `@codelaw/rules-ts` | — | TS, TSX | `ts/recommended`, `ts/conventions`, `ts/type-checked` (the type-aware rules — nine `preview` rules and `ts/type-error` as of W-105, 2026-10-30 — [SR-TYPES](0117_types.md)) |
 | `react` | `@codelaw/rules-react` | `codelaw-rules-react` | JSX, TSX, and React in JS and TS | `react/recommended`, `react/a11y` (decision 18, W-139), `react/conventions`, `react/size` (decision 15, W-132) |
 | `node` | `@codelaw/rules-node` | — | JS, JSX, TS, TSX run on Node.js | `node/recommended` |

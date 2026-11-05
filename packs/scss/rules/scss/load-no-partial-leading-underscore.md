@@ -4,7 +4,7 @@ title: "No leading underscore in a loaded partial"
 languages: [scss]
 fix: auto
 stability: preview
-ported_from: [stylelint-scss/at-import-no-partial-leading-underscore]
+ported_from: [stylelint-scss/at-import-no-partial-leading-underscore, stylelint-scss/load-no-partial-leading-underscore]
 since: 0.3.0
 ---
 

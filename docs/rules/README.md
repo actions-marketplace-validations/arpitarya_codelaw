@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1269 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1492 rules in 25 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,16 +35,16 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 385 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 62 | 1 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 134 | 4 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 464 | 12 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
-| [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 74 | 18 |
-| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 73 | 33 |
-| [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 16 | 6 |
+| [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
+| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 146 | 83 |
+| [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
-| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 42 | 13 |
+| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 47 | 17 |
 | [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 13 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 66 | 4 |
@@ -64,12 +64,13 @@ remap = { error = "warn" }
 
 ## js
 
-Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers` · `codelaw:js/jsdoc` · `codelaw:js/strict` · `codelaw:js/taste`.
+Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers` · `codelaw:js/jsdoc` · `codelaw:js/strict` · `codelaw:js/taste` · `codelaw:js/regexp`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`graph/no-unused-exports`](graph/no-unused-exports.md) | Exported symbols must be used somewhere | `suggest` | — | `js/project`, `py/project` |
 | [`js/accessor-pairs`](js/accessor-pairs.md) | A setter has a getter | `manual` | — | *[rules] only* |
+| [`js/branches-sharing-code`](js/branches-sharing-code.md) | No statement repeated at the start or end of both branches | `suggest` | — | *[rules] only* |
 | [`js/catch-error-name`](js/catch-error-name.md) | Name the caught error `error` | `suggest` | — | `js/strict` |
 | [`js/complexity`](js/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `count_optional_chain`, `ignore_names` | `js/size` |
 | [`js/consistent-assert`](js/consistent-assert.md) | Call assert.ok rather than assert | `auto` | — | `js/strict` |
@@ -204,6 +205,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-const-assign`](js/no-const-assign.md) | A const is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-constant-binary-expression`](js/no-constant-binary-expression.md) | No binary expression whose result is fixed | `manual` | — | `js/recommended` |
 | [`js/no-constant-condition`](js/no-constant-condition.md) | No conditions that are always true or always false | `manual` | — | `js/recommended` |
+| [`js/no-constant-math-min-max-clamp`](js/no-constant-math-min-max-clamp.md) | No clamp with its bounds swapped | `suggest` | — | `js/recommended` |
 | [`js/no-constant-zero-expression`](js/no-constant-zero-expression.md) | No multiply by zero | `manual` | — | `js/strict` |
 | [`js/no-constructor-return`](js/no-constructor-return.md) | A constructor returns no value | `manual` | — | *[rules] only* |
 | [`js/no-continue`](js/no-continue.md) | No continue | `manual` | — | `js/taste` |
@@ -434,6 +436,83 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/promise-spec-only`](js/promise-spec-only.md) | Only standard Promise methods | `manual` | — | *[rules] only* |
 | [`js/promise-valid-params`](js/promise-valid-params.md) | Promise methods get the number of arguments they take | `manual` | — | `js/recommended` |
 | [`js/radix`](js/radix.md) | parseInt gets a radix | `suggest` | — | *[rules] only* |
+| [`js/regexp-confusing-quantifier`](js/regexp-confusing-quantifier.md) | No quantifier whose minimum is misleading | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-control-character-escape`](js/regexp-control-character-escape.md) | Control characters are written with their control escape | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-grapheme-string-literal`](js/regexp-grapheme-string-literal.md) | String literals in a class hold one character each | `manual` | — | *[rules] only* |
+| [`js/regexp-hexadecimal-escape`](js/regexp-hexadecimal-escape.md) | Characters up to U+00FF are written as hexadecimal escapes | `auto` | — | *[rules] only* |
+| [`js/regexp-match-any`](js/regexp-match-any.md) | Any character is matched with `[\s\S]` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-negation`](js/regexp-negation.md) | A negated class of one escape is the negated escape | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-contradiction-with-assertion`](js/regexp-no-contradiction-with-assertion.md) | No element the assertion before it contradicts | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-dupe-characters-character-class`](js/regexp-no-dupe-characters-character-class.md) | No character listed twice in a class | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-dupe-disjunctions`](js/regexp-no-dupe-disjunctions.md) | No alternative that repeats or is covered by an earlier one | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-alternative`](js/regexp-no-empty-alternative.md) | No empty alternative | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-capturing-group`](js/regexp-no-empty-capturing-group.md) | No capturing group that captures nothing | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-character-class`](js/regexp-no-empty-character-class.md) | No character class that matches no character | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-group`](js/regexp-no-empty-group.md) | No empty group | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-lookarounds-assertion`](js/regexp-no-empty-lookarounds-assertion.md) | No lookaround that can match the empty string | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-empty-string-literal`](js/regexp-no-empty-string-literal.md) | No empty string literal in a class | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-escape-backspace`](js/regexp-no-escape-backspace.md) | No `[\b]` for a backspace | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-extra-lookaround-assertions`](js/regexp-no-extra-lookaround-assertions.md) | No lookaround nested at the edge of another of its kind | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-invisible-character`](js/regexp-no-invisible-character.md) | No invisible character written raw | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-lazy-ends`](js/regexp-no-lazy-ends.md) | No lazy quantifier at the end of the pattern | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-legacy-features`](js/regexp-no-legacy-features.md) | No legacy `RegExp` static properties | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-misleading-capturing-group`](js/regexp-no-misleading-capturing-group.md) | No capturing group whose start the quantifier before it always takes | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-misleading-unicode-character`](js/regexp-no-misleading-unicode-character.md) | No quantifier on part of a character | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-missing-g-flag`](js/regexp-no-missing-g-flag.md) | `replaceAll` and `matchAll` get a regular expression with the `g` flag | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-non-standard-flag`](js/regexp-no-non-standard-flag.md) | Only standard regular expression flags | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-obscure-range`](js/regexp-no-obscure-range.md) | No obscure character range | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-octal`](js/regexp-no-octal.md) | No octal escape | `suggest` | — | *[rules] only* |
+| [`js/regexp-no-optional-assertion`](js/regexp-no-optional-assertion.md) | No optional assertion | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-potentially-useless-backreference`](js/regexp-no-potentially-useless-backreference.md) | No backreference to a group that may not take part | `manual` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-standalone-backslash`](js/regexp-no-standalone-backslash.md) | No backslash that stands for itself | `auto` | — | *[rules] only* |
+| [`js/regexp-no-super-linear-backtracking`](js/regexp-no-super-linear-backtracking.md) | No exponential backtracking | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-super-linear-move`](js/regexp-no-super-linear-move.md) | No unanchored pattern that starts with an unbounded quantifier | `manual` | — | *[rules] only* |
+| [`js/regexp-no-trivially-nested-assertion`](js/regexp-no-trivially-nested-assertion.md) | No lookaround around a single assertion | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-trivially-nested-quantifier`](js/regexp-no-trivially-nested-quantifier.md) | No quantifier nested trivially in another | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-unused-capturing-group`](js/regexp-no-unused-capturing-group.md) | No capturing group whose capture is never read | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-assertions`](js/regexp-no-useless-assertions.md) | No assertion that always succeeds or always fails | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-character-class`](js/regexp-no-useless-character-class.md) | No character class of one | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-dollar-replacements`](js/regexp-no-useless-dollar-replacements.md) | No replacement reference to a group that doesn't exist | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-escape`](js/regexp-no-useless-escape.md) | No useless escape in a regular expression | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-flag`](js/regexp-no-useless-flag.md) | No flag that changes nothing | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-lazy`](js/regexp-no-useless-lazy.md) | No lazy quantifier that can't be lazy | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-non-capturing-group`](js/regexp-no-useless-non-capturing-group.md) | No non-capturing group that groups nothing | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-quantifier`](js/regexp-no-useless-quantifier.md) | No quantifier that does nothing | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-range`](js/regexp-no-useless-range.md) | No range of one or two characters | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-set-operand`](js/regexp-no-useless-set-operand.md) | No set operand that changes nothing | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-string-literal`](js/regexp-no-useless-string-literal.md) | No string literal of single characters | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-useless-two-nums-quantifier`](js/regexp-no-useless-two-nums-quantifier.md) | No `{n,n}` quantifier | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-no-zero-quantifier`](js/regexp-no-zero-quantifier.md) | No quantifier that repeats zero times | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-optimal-lookaround-quantifier`](js/regexp-optimal-lookaround-quantifier.md) | No ranged quantifier at the edge of a lookaround | `suggest` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-optimal-quantifier-concatenation`](js/regexp-optimal-quantifier-concatenation.md) | No adjacent quantifiers that one quantifier covers | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-character-class`](js/regexp-prefer-character-class.md) | Single-character alternatives are a character class | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-d`](js/regexp-prefer-d.md) | Digits are matched with `\d` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-escape-replacement-dollar-char`](js/regexp-prefer-escape-replacement-dollar-char.md) | A dollar sign in a replacement is written `$$` | `auto` | — | *[rules] only* |
+| [`js/regexp-prefer-lookaround`](js/regexp-prefer-lookaround.md) | A captured text put back unchanged is matched with a lookaround | `suggest` | — | *[rules] only* |
+| [`js/regexp-prefer-named-backreference`](js/regexp-prefer-named-backreference.md) | A named group is referred to by name | `auto` | — | *[rules] only* |
+| [`js/regexp-prefer-named-capture-group`](js/regexp-prefer-named-capture-group.md) | Capturing groups are named | `manual` | — | *[rules] only* |
+| [`js/regexp-prefer-named-replacement`](js/regexp-prefer-named-replacement.md) | A named group is put in a replacement by name | `auto` | — | *[rules] only* |
+| [`js/regexp-prefer-plus-quantifier`](js/regexp-prefer-plus-quantifier.md) | `{1,}` is written `+` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-predefined-assertion`](js/regexp-prefer-predefined-assertion.md) | A lookaround that is a predefined assertion is written as one | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-quantifier`](js/regexp-prefer-quantifier.md) | A repeated element is written with a quantifier | `auto` | — | *[rules] only* |
+| [`js/regexp-prefer-question-quantifier`](js/regexp-prefer-question-quantifier.md) | `{0,1}` is written `?` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-range`](js/regexp-prefer-range.md) | Consecutive letters or digits are a range | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-regexp-exec`](js/regexp-prefer-regexp-exec.md) | `RegExp#exec` over `String#match` without `g` | `suggest` | — | *[rules] only* |
+| [`js/regexp-prefer-regexp-test`](js/regexp-prefer-regexp-test.md) | `RegExp#test` when only whether it matches is used | `suggest` | — | *[rules] only* |
+| [`js/regexp-prefer-result-array-groups`](js/regexp-prefer-result-array-groups.md) | A named group is read from `groups` | `auto` | — | *[rules] only* |
+| [`js/regexp-prefer-set-operation`](js/regexp-prefer-set-operation.md) | A negative lookahead before a class is a set subtraction | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-star-quantifier`](js/regexp-prefer-star-quantifier.md) | `{0,}` is written `*` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-unicode-codepoint-escapes`](js/regexp-prefer-unicode-codepoint-escapes.md) | An astral character is one code point escape | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-prefer-w`](js/regexp-prefer-w.md) | Word characters are matched with `\w` | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-require-unicode-regexp`](js/regexp-require-unicode-regexp.md) | Regular expressions use the `u` flag | `auto` | — | *[rules] only* |
+| [`js/regexp-require-unicode-sets-regexp`](js/regexp-require-unicode-sets-regexp.md) | Regular expressions use the `v` flag | `auto` | — | *[rules] only* |
+| [`js/regexp-simplify-set-operations`](js/regexp-simplify-set-operations.md) | Set operations in their simplest form | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-sort-alternatives`](js/regexp-sort-alternatives.md) | Alternatives whose order doesn't matter are sorted | `auto` | — | *[rules] only* |
+| [`js/regexp-sort-flags`](js/regexp-sort-flags.md) | Flags are in order | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-strict`](js/regexp-strict.md) | Regular expressions use strict syntax | `auto` | — | `js/recommended`, `js/regexp` |
+| [`js/regexp-unicode-escape`](js/regexp-unicode-escape.md) | Unicode escapes use the code point form | `auto` | — | *[rules] only* |
+| [`js/regexp-unicode-property`](js/regexp-unicode-property.md) | Unicode properties in their usual form | `auto` | — | *[rules] only* |
+| [`js/regexp-use-ignore-case`](js/regexp-use-ignore-case.md) | Both cases of every letter means the `i` flag | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/require-array-join-separator`](js/require-array-join-separator.md) | join() names its separator | `auto` | — | `js/strict` |
 | [`js/require-await`](js/require-await.md) | An async function awaits something | `manual` | — | *[rules] only* |
@@ -473,6 +552,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/explicit-function-return-type`](ts/explicit-function-return-type.md) | Functions declare their return type | `manual` | — | *[rules] only* |
 | [`ts/explicit-member-accessibility`](ts/explicit-member-accessibility.md) | Class members say public, protected or private | `auto` | — | *[rules] only* |
 | [`ts/explicit-module-boundary-types`](ts/explicit-module-boundary-types.md) | Exported functions declare their types | `manual` | — | *[rules] only* |
+| [`ts/member-ordering`](ts/member-ordering.md) | Class members are in a set order | `manual` | — | *[rules] only* |
 | [`ts/method-signature-style`](ts/method-signature-style.md) | Property signatures for methods | `auto` | — | *[rules] only* |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
 | [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `manual` | — | *[rules] only* |
@@ -497,6 +577,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-non-null-asserted-optional-chain`](ts/no-non-null-asserted-optional-chain.md) | No non-null assertion after an optional chain | `suggest` | — | `ts/recommended` |
 | [`ts/no-non-null-assertion`](ts/no-non-null-assertion.md) | No non-null assertions | `manual` | — | *[rules] only* |
 | [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `manual` | — | `ts/recommended` |
+| [`ts/no-restricted-types`](ts/no-restricted-types.md) | No type the project restricts | `suggest` | `types` | *[rules] only* |
 | [`ts/no-this-alias`](ts/no-this-alias.md) | No aliasing this to a variable | `manual` | — | `ts/recommended` |
 | [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `manual` | — | *[rules] only* |
 | [`ts/no-unnecessary-type-constraint`](ts/no-unnecessary-type-constraint.md) | No extends any or extends unknown on a type parameter | `suggest` | — | `ts/recommended` |
@@ -522,6 +603,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/triple-slash-reference`](ts/triple-slash-reference.md) | No /// <reference path> directives | `manual` | — | `ts/recommended` |
 | [`ts/type-error`](ts/type-error.md) | TypeScript's own errors | `manual` | — | `ts/type-checked` |
 | [`ts/type-only-imports`](ts/type-only-imports.md) | Names used only as types are imported with type | `suggest` | — | `ts/conventions` |
+| [`ts/unified-signatures`](ts/unified-signatures.md) | Overloads that one signature can say are one signature | `suggest` | — | *[rules] only* |
 
 ## react
 
@@ -576,6 +658,8 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/error-boundaries`](react/error-boundaries.md) | Errors in children are caught by an Error Boundary, not try/catch | `manual` | — | `react/recommended` |
 | [`react/exhaustive-deps`](react/exhaustive-deps.md) | Effect and memo dependency lists name every value they read | `suggest` | — | `react/recommended` |
 | [`react/forbid-component-props`](react/forbid-component-props.md) | No className or style on a component | `manual` | — | *[rules] only* |
+| [`react/forbid-dom-props`](react/forbid-dom-props.md) | No prop the project forbids on DOM elements | `manual` | `forbid` | *[rules] only* |
+| [`react/forbid-elements`](react/forbid-elements.md) | No element the project forbids | `manual` | `forbid` | *[rules] only* |
 | [`react/forbid-foreign-prop-types`](react/forbid-foreign-prop-types.md) | No reading another component's propTypes | `manual` | — | *[rules] only* |
 | [`react/forbid-prop-types`](react/forbid-prop-types.md) | No PropTypes.any, array or object | `manual` | — | *[rules] only* |
 | [`react/forward-ref-uses-ref`](react/forward-ref-uses-ref.md) | A forwardRef callback takes the ref | `suggest` | — | *[rules] only* |
@@ -597,8 +681,11 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-no-comment-textnodes`](react/jsx-no-comment-textnodes.md) | No comment syntax as text inside JSX | `manual` | — | `react/recommended` |
 | [`react/jsx-no-constructed-context-values`](react/jsx-no-constructed-context-values.md) | A context value is not rebuilt on every render | `manual` | — | *[rules] only* |
 | [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `manual` | — | `react/recommended` |
+| [`react/jsx-no-jsx-as-prop`](react/jsx-no-jsx-as-prop.md) | No JSX element built in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-leaked-render`](react/jsx-no-leaked-render.md) | No && that can render 0 or "" | `suggest` | — | *[rules] only* |
 | [`react/jsx-no-literals`](react/jsx-no-literals.md) | No bare text in JSX | `manual` | — | *[rules] only* |
+| [`react/jsx-no-new-array-as-prop`](react/jsx-no-new-array-as-prop.md) | No array literal in a component's prop | `manual` | — | *[rules] only* |
+| [`react/jsx-no-new-object-as-prop`](react/jsx-no-new-object-as-prop.md) | No object literal in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-script-url`](react/jsx-no-script-url.md) | No javascript: URLs in JSX | `manual` | — | *[rules] only* |
 | [`react/jsx-no-target-blank`](react/jsx-no-target-blank.md) | Links that open a new tab set rel="noreferrer" | `auto` | — | `react/recommended` |
 | [`react/jsx-no-undef`](react/jsx-no-undef.md) | Components used in JSX are declared | `manual` | — | `react/recommended` |
@@ -606,13 +693,16 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-pascal-case`](react/jsx-pascal-case.md) | Component names are PascalCase | `manual` | — | *[rules] only* |
 | [`react/jsx-props-no-spread-multi`](react/jsx-props-no-spread-multi.md) | One object is not spread twice into a JSX element | `suggest` | — | *[rules] only* |
 | [`react/jsx-props-no-spreading`](react/jsx-props-no-spreading.md) | No spread props in JSX | `manual` | — | *[rules] only* |
+| [`react/jsx-sort-props`](react/jsx-sort-props.md) | JSX props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
 | [`react/max-jsx-depth`](react/max-jsx-depth.md) | JSX elements nest no deeper than a maximum | `manual` | `max` | `react/size` |
 | [`react/max-props`](react/max-props.md) | A React component takes at most a maximum number of props | `manual` | `max`, `ignore_names` | `react/size` |
 | [`react/memoized-effect-dependencies`](react/memoized-effect-dependencies.md) | Effect dependencies are stable values | `manual` | — | *[rules] only* |
 | [`react/no-access-state-in-setstate`](react/no-access-state-in-setstate.md) | setState does not read this.state | `manual` | — | *[rules] only* |
+| [`react/no-adjacent-inline-elements`](react/no-adjacent-inline-elements.md) | No inline elements that touch | `suggest` | — | *[rules] only* |
 | [`react/no-array-index-key`](react/no-array-index-key.md) | No array index as a key | `manual` | — | *[rules] only* |
 | [`react/no-arrow-function-lifecycle`](react/no-arrow-function-lifecycle.md) | Lifecycle methods are methods, not arrow fields | `auto` | — | *[rules] only* |
 | [`react/no-children-prop`](react/no-children-prop.md) | Children are passed as children, not as a prop | `manual` | — | `react/recommended` |
+| [`react/no-clone-element`](react/no-clone-element.md) | No `cloneElement` | `manual` | — | *[rules] only* |
 | [`react/no-context`](react/no-context.md) | No React context: no createContext, no useContext | `manual` | `use_instead` | *[rules] only* |
 | [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `manual` | — | `react/recommended` |
 | [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `manual` | — | `react/recommended` |
@@ -627,6 +717,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
 | [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
 | [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
+| [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
 | [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `manual` | — | `react/recommended` |
@@ -643,8 +734,13 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `manual` | — | `react/recommended` |
 | [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | *[rules] only* |
 | [`react/no-unused-class-component-methods`](react/no-unused-class-component-methods.md) | Every class component method is used | `suggest` | — | *[rules] only* |
+| [`react/no-unused-prop-types`](react/no-unused-prop-types.md) | No prop type a component never reads | `suggest` | — | *[rules] only* |
+| [`react/no-unused-state`](react/no-unused-state.md) | No state field a component never reads | `manual` | — | *[rules] only* |
 | [`react/no-will-update-set-state`](react/no-will-update-set-state.md) | No setState in componentWillUpdate | `manual` | — | *[rules] only* |
+| [`react/only-export-components`](react/only-export-components.md) | A module that exports components exports only components | `manual` | — | *[rules] only* |
 | [`react/prefer-es6-class`](react/prefer-es6-class.md) | Class components, not createReactClass | `manual` | — | *[rules] only* |
+| [`react/prefer-exact-props`](react/prefer-exact-props.md) | Prop types are exact | `auto` | `exact_wrappers` | *[rules] only* |
+| [`react/prefer-function-component`](react/prefer-function-component.md) | Components are functions | `manual` | — | *[rules] only* |
 | [`react/prefer-lazy-state-init`](react/prefer-lazy-state-init.md) | useState's initial value is not computed on every render | `suggest` | — | `react/recommended` |
 | [`react/prefer-read-only-props`](react/prefer-read-only-props.md) | Props types are readonly | `auto` | — | *[rules] only* |
 | [`react/prefer-stateless-function`](react/prefer-stateless-function.md) | A class with only render is a function | `manual` | — | *[rules] only* |
@@ -657,6 +753,9 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/rule-suppression`](react/rule-suppression.md) | The hooks rules are not switched off | `auto` | — | *[rules] only* |
 | [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `manual` | — | `react/recommended` |
 | [`react/self-closing-comp`](react/self-closing-comp.md) | An element with no children closes itself | `auto` | — | *[rules] only* |
+| [`react/sort-comp`](react/sort-comp.md) | Component class members are in a set order | `manual` | — | *[rules] only* |
+| [`react/sort-default-props`](react/sort-default-props.md) | Default props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
+| [`react/sort-prop-types`](react/sort-prop-types.md) | Prop types are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
 | [`react/state-in-constructor`](react/state-in-constructor.md) | State is set in the constructor | `manual` | — | *[rules] only* |
 | [`react/static-property-placement`](react/static-property-placement.md) | Static component properties are assigned after the class | `manual` | — | *[rules] only* |
 | [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `manual` | — | *[rules] only* |
@@ -737,16 +836,20 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
+| [`html/allowed-links`](html/allowed-links.md) | Only the kinds of link the project allows | `manual` | `allow_external`, `allow_relative`, `allow_absolute` | *[rules] only* |
 | [`html/area-alt`](html/area-alt.md) | Image-map areas with a link have alt text | `manual` | `accessible` | `html/recommended`, `html/a11y` |
 | [`html/aria-hidden-body`](html/aria-hidden-body.md) | <body> is not aria-hidden | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/aria-label-misuse`](html/aria-label-misuse.md) | aria-label is used only where it names something | `manual` | `allowAnyNamable` | `html/recommended`, `html/a11y` |
+| [`html/attr-pattern`](html/attr-pattern.md) | Attribute names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/attribute-allowed-values`](html/attribute-allowed-values.md) | Attributes have values HTML allows | `manual` | — | `html/recommended` |
 | [`html/attribute-misuse`](html/attribute-misuse.md) | Attributes are used only where they take effect | `manual` | — | `html/recommended` |
 | [`html/autocomplete-password`](html/autocomplete-password.md) | Password fields say which password they want | `manual` | `preferred` | `html/recommended`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/button-type`](html/button-type.md) | <button> says what type it is | `suggest` | — | `html/recommended`, `html/a11y` |
+| [`html/class-pattern`](html/class-pattern.md) | Class names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/close-attr`](html/close-attr.md) | End tags have no attributes | `auto` | — | `html/recommended` |
 | [`html/close-order`](html/close-order.md) | Elements are closed, and in the order they were opened | `manual` | — | `html/recommended` |
 | [`html/deprecated`](html/deprecated.md) | No obsolete elements | `manual` | — | `html/recommended` |
+| [`html/deprecated-class`](html/deprecated-class.md) | No class the project has deprecated | `auto` | `classes` | *[rules] only* |
 | [`html/doctype-html`](html/doctype-html.md) | The doctype is the HTML5 one | `suggest` | — | `html/recommended` |
 | [`html/element-name`](html/element-name.md) | Element names are HTML elements or valid custom elements | `manual` | `allow` | `html/recommended` |
 | [`html/element-permitted-content`](html/element-permitted-content.md) | Elements contain only content HTML allows there | `manual` | — | `html/recommended` |
@@ -763,6 +866,7 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/form-submit`](html/form-submit.md) | Forms have a submit button | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/heading-level`](html/heading-level.md) | Headings start at <h1> and go down one level at a time | `manual` | `allowMultipleH1`, `minInitialRank`, `sectioningRoots` | `html/document` |
 | [`html/hidden-focusable`](html/hidden-focusable.md) | Focusable elements are not aria-hidden | `manual` | — | `html/recommended`, `html/a11y` |
+| [`html/id-pattern`](html/id-pattern.md) | Ids follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/img-alt`](html/img-alt.md) | <img> has alt text | `manual` | `allowEmpty`, `alias` | `html/recommended`, `html/a11y` |
 | [`html/img-title`](html/img-title.md) | Decorative images have no title | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/input-attributes`](html/input-attributes.md) | Input attributes fit the input type | `suggest` | — | `html/recommended` |
@@ -776,6 +880,7 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/meta-refresh`](html/meta-refresh.md) | Meta refresh redirects at once | `manual` | `allowLongDelay` | `html/recommended`, `html/a11y`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/missing-doctype`](html/missing-doctype.md) | The document has a doctype | `suggest` | — | `html/document` |
 | [`html/multiple-labeled-controls`](html/multiple-labeled-controls.md) | A label labels one control | `manual` | — | `html/recommended`, `html/a11y` |
+| [`html/name-pattern`](html/name-pattern.md) | Form field names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/no-abstract-role`](html/no-abstract-role.md) | No abstract ARIA roles | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/no-autoplay`](html/no-autoplay.md) | Media does not play by itself | `suggest` | `include` | `html/recommended`, `html/a11y` |
 | [`html/no-conditional-comment`](html/no-conditional-comment.md) | No Internet Explorer conditional comments | `manual` | — | `html/recommended` |
@@ -793,13 +898,18 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/no-redundant-aria-label`](html/no-redundant-aria-label.md) | aria-label doesn't repeat the label | `auto` | — | `html/recommended`, `html/a11y` |
 | [`html/no-redundant-for`](html/no-redundant-for.md) | A wrapping label has no for | `auto` | — | `html/recommended`, `html/a11y` |
 | [`html/no-redundant-role`](html/no-redundant-role.md) | No role the element already has | `auto` | — | `html/recommended`, `html/a11y` |
+| [`html/no-style-tag`](html/no-style-tag.md) | No `<style>` element | `manual` | — | *[rules] only* |
+| [`html/no-unknown-attributes`](html/no-unknown-attributes.md) | No attribute the element doesn't have | `manual` | — | *[rules] only* |
+| [`html/no-unknown-elements`](html/no-unknown-elements.md) | No element HTML doesn't define | `manual` | — | *[rules] only* |
 | [`html/no-utf8-bom`](html/no-utf8-bom.md) | No UTF-8 byte-order mark | `manual` | — | `html/recommended` |
 | [`html/prefer-button`](html/prefer-button.md) | Buttons are <button> elements | `manual` | — | `html/recommended` |
 | [`html/prefer-native-element`](html/prefer-native-element.md) | Native elements instead of ARIA roles | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/prefer-tbody`](html/prefer-tbody.md) | Table rows are in <tbody> | `auto` | — | `html/recommended` |
+| [`html/require-csp-nonce`](html/require-csp-nonce.md) | Inline scripts and styles carry a nonce | `manual` | — | *[rules] only* |
 | [`html/require-sri`](html/require-sri.md) | Scripts and stylesheets carry an integrity hash | `manual` | `target` | `html/document`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/script-element`](html/script-element.md) | <script> has an end tag | `suggest` | — | `html/recommended` |
 | [`html/script-type`](html/script-type.md) | No type on JavaScript scripts | `auto` | — | `html/recommended` |
+| [`html/svg-focusable`](html/svg-focusable.md) | `<svg>` says it isn't focusable | `auto` | — | *[rules] only* |
 | [`html/target-blank-rel`](html/target-blank-rel.md) | Links that open a new tab set rel="noopener" | `auto` | — | `html/conventions`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/tel-non-breaking`](html/tel-non-breaking.md) | Phone numbers don't wrap | `suggest` | `ignoreClasses`, `ignoreStyle` | `html/recommended` |
 | [`html/text-content`](html/text-content.md) | Buttons have text | `manual` | — | `html/recommended`, `html/a11y` |
@@ -820,17 +930,27 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 |---|---|---|---|---|
 | [`css/alpha-value-notation`](css/alpha-value-notation.md) | Alpha values are percentages | `suggest` | `exceptProperties` | `css/standard` |
 | [`css/annotation-no-unknown`](css/annotation-no-unknown.md) | No unknown `!` annotations | `manual` | `ignoreAnnotations` | `css/recommended` |
+| [`css/at-rule-allowed-list`](css/at-rule-allowed-list.md) | Only at-rules the project allows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-descriptor-no-unknown`](css/at-rule-descriptor-no-unknown.md) | No unknown descriptors inside at-rules | `manual` | — | `css/recommended` |
 | [`css/at-rule-descriptor-value-no-unknown`](css/at-rule-descriptor-value-no-unknown.md) | No unknown keyword values for at-rule descriptors | `manual` | — | `css/recommended` |
+| [`css/at-rule-disallowed-list`](css/at-rule-disallowed-list.md) | No at-rule the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-no-deprecated`](css/at-rule-no-deprecated.md) | No deprecated at-rules | `auto` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `suggest` | `ignoreAtRules` | `css/standard` |
 | [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `manual` | `ignoreAtRules` | `css/recommended` |
+| [`css/at-rule-property-required-list`](css/at-rule-property-required-list.md) | At-rules hold the descriptors the project requires | `manual` | `list` | *[rules] only* |
 | [`css/block-no-redundant-nested-style-rules`](css/block-no-redundant-nested-style-rules.md) | No `& { … }` wrapper | `suggest` | — | `css/standard` |
 | [`css/color-function-alias-notation`](css/color-function-alias-notation.md) | `rgb()` and `hsl()`, not `rgba()` and `hsla()` | `suggest` | — | `css/standard` |
 | [`css/color-function-notation`](css/color-function-notation.md) | Space-separated colour functions | `suggest` | — | `css/standard` |
+| [`css/color-hex-alpha`](css/color-hex-alpha.md) | Hex colours with or without an alpha channel, as set | `auto` | `mode` | *[rules] only* |
 | [`css/color-hex-length`](css/color-hex-length.md) | Short hex colours | `auto` | — | `css/standard` |
+| [`css/color-named`](css/color-named.md) | No named colours | `auto` | — | *[rules] only* |
+| [`css/color-no-hex`](css/color-no-hex.md) | No hex colours | `auto` | — | *[rules] only* |
+| [`css/color-no-invalid-hex`](css/color-no-invalid-hex.md) | No invalid hex colour | `manual` | — | *[rules] only* |
 | [`css/comment-no-empty`](css/comment-no-empty.md) | No empty comments | `auto` | — | `css/recommended` |
+| [`css/comment-pattern`](css/comment-pattern.md) | Comments follow the project's pattern | `manual` | `pattern` | *[rules] only* |
+| [`css/comment-whitespace-inside`](css/comment-whitespace-inside.md) | A space inside comment delimiters | `auto` | — | *[rules] only* |
+| [`css/comment-word-disallowed-list`](css/comment-word-disallowed-list.md) | No word the project disallows in comments | `manual` | `list` | *[rules] only* |
 | [`css/container-name-pattern`](css/container-name-pattern.md) | Container names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/custom-media-pattern`](css/custom-media-pattern.md) | Custom media names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/custom-property-no-missing-var-function`](css/custom-property-no-missing-var-function.md) | Custom properties are read with `var()` | `suggest` | — | `css/recommended` |
@@ -839,11 +959,28 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
 | [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
 | [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `manual` | — | `css/recommended` |
+| [`css/declaration-property-max-values`](css/declaration-property-max-values.md) | No declaration with more values than the project allows | `manual` | `max` | *[rules] only* |
+| [`css/declaration-property-unit-allowed-list`](css/declaration-property-unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
+| [`css/declaration-property-unit-disallowed-list`](css/declaration-property-unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/declaration-property-value-allowed-list`](css/declaration-property-value-allowed-list.md) | Only values the project allows | `manual` | `list` | *[rules] only* |
+| [`css/declaration-property-value-disallowed-list`](css/declaration-property-value-disallowed-list.md) | No value the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-value-keyword-no-deprecated`](css/declaration-property-value-keyword-no-deprecated.md) | No deprecated keywords in property values | `suggest` | `ignoreKeywords` | `css/recommended` |
 | [`css/declaration-property-value-no-unknown`](css/declaration-property-value-no-unknown.md) | Keyword-valued properties use a known keyword | `manual` | — | `css/recommended` |
+| [`css/display-notation`](css/display-notation.md) | `display` in its short form | `auto` | — | *[rules] only* |
+| [`css/font-family-name-quotes`](css/font-family-name-quotes.md) | Font family names are quoted where they should be | `auto` | — | *[rules] only* |
 | [`css/font-family-no-duplicate-names`](css/font-family-no-duplicate-names.md) | No font family listed twice | `auto` | — | `css/recommended` |
 | [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `manual` | `ignoreFontFamilies` | `css/recommended` |
+| [`css/font-weight-notation`](css/font-weight-notation.md) | Font weights are numeric | `auto` | `mode` | *[rules] only* |
+| [`css/function-allowed-list`](css/function-allowed-list.md) | Only functions the project allows | `manual` | `list` | *[rules] only* |
 | [`css/function-calc-no-unspaced-operator`](css/function-calc-no-unspaced-operator.md) | Spaces around `+` and `-` in math functions | `suggest` | — | `css/recommended` |
+| [`css/function-disallowed-list`](css/function-disallowed-list.md) | No function the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/function-linear-gradient-no-nonstandard-direction`](css/function-linear-gradient-no-nonstandard-direction.md) | Gradient directions in the standard syntax | `auto` | — | *[rules] only* |
+| [`css/function-name-case`](css/function-name-case.md) | Function names in lower case | `auto` | — | *[rules] only* |
+| [`css/function-no-unknown`](css/function-no-unknown.md) | No unknown functions | `manual` | `ignore` | *[rules] only* |
+| [`css/function-url-no-scheme-relative`](css/function-url-no-scheme-relative.md) | No scheme-relative URLs | `manual` | — | *[rules] only* |
+| [`css/function-url-quotes`](css/function-url-quotes.md) | URLs are quoted | `auto` | `mode` | *[rules] only* |
+| [`css/function-url-scheme-allowed-list`](css/function-url-scheme-allowed-list.md) | Only URL schemes the project allows | `manual` | `list` | *[rules] only* |
+| [`css/function-url-scheme-disallowed-list`](css/function-url-scheme-disallowed-list.md) | No URL scheme the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/hue-degree-notation`](css/hue-degree-notation.md) | Hues are angles | `auto` | — | `css/standard` |
 | [`css/import-notation`](css/import-notation.md) | `@import` with `url()` | `auto` | — | `css/standard` |
 | [`css/keyframe-block-no-duplicate-selectors`](css/keyframe-block-no-duplicate-selectors.md) | No keyframe selector twice in one `@keyframes` | `manual` | — | `css/recommended` |
@@ -854,8 +991,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/length-zero-no-unit`](css/length-zero-no-unit.md) | No units on zero lengths | `auto` | `ignore` | `css/standard` |
 | [`css/lightness-notation`](css/lightness-notation.md) | Lightness is a percentage | `auto` | — | `css/standard` |
 | [`css/max-lines`](css/max-lines.md) | A stylesheet stays under a line limit | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `css/size` |
+| [`css/media-feature-name-allowed-list`](css/media-feature-name-allowed-list.md) | Only media features the project allows | `manual` | `list` | *[rules] only* |
+| [`css/media-feature-name-disallowed-list`](css/media-feature-name-disallowed-list.md) | No media feature the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-no-unknown`](css/media-feature-name-no-unknown.md) | No unknown media features | `manual` | `ignoreMediaFeatureNames` | `css/recommended` |
 | [`css/media-feature-name-no-vendor-prefix`](css/media-feature-name-no-vendor-prefix.md) | No vendor-prefixed media features | `manual` | — | `css/standard` |
+| [`css/media-feature-name-unit-allowed-list`](css/media-feature-name-unit-allowed-list.md) | Media features use the units the project allows | `manual` | `list` | *[rules] only* |
+| [`css/media-feature-name-value-allowed-list`](css/media-feature-name-value-allowed-list.md) | Media features use the values the project allows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-value-no-unknown`](css/media-feature-name-value-no-unknown.md) | Media features have valid values | `manual` | — | `css/recommended` |
 | [`css/media-feature-range-notation`](css/media-feature-range-notation.md) | Range syntax for media features | `auto` | — | `css/standard` |
 | [`css/media-query-no-invalid`](css/media-query-no-invalid.md) | Media queries follow the grammar | `manual` | `ignoreFunctions` | `css/recommended` |
@@ -872,23 +1013,65 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `manual` | — | `css/recommended` |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
+| [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |
+| [`css/no-unknown-custom-media`](css/no-unknown-custom-media.md) | No custom media that isn't defined | `manual` | — | *[rules] only* |
+| [`css/no-unknown-custom-properties`](css/no-unknown-custom-properties.md) | No custom property that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-property`](css/no-unknown-property.md) | No unknown properties | `suggest` | `ignoreProperties`, `checkPrefixed` | `css/recommended` |
 | [`css/number-max-precision`](css/number-max-precision.md) | At most four decimal places | `suggest` | `precision`, `ignoreUnits` | `css/standard` |
+| [`css/property-allowed-list`](css/property-allowed-list.md) | Only propertys the project allows | `manual` | `list` | *[rules] only* |
+| [`css/property-disallowed-list`](css/property-disallowed-list.md) | No property the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/property-layout-mappings`](css/property-layout-mappings.md) | Flow-relative properties, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/property-no-deprecated`](css/property-no-deprecated.md) | No deprecated properties | `suggest` | `ignoreProperties` | `css/recommended` |
 | [`css/property-no-vendor-prefix`](css/property-no-vendor-prefix.md) | No vendor-prefixed properties | `suggest` | `ignoreProperties` | `css/standard` |
+| [`css/relative-selector-nesting-notation`](css/relative-selector-nesting-notation.md) | Nested relative selectors start with `&` | `auto` | — | *[rules] only* |
+| [`css/rule-nesting-at-rule-required-list`](css/rule-nesting-at-rule-required-list.md) | Nested rules sit inside the at-rules the project requires | `manual` | `list` | *[rules] only* |
+| [`css/rule-selector-property-disallowed-list`](css/rule-selector-property-disallowed-list.md) | No property the project disallows for a selector | `manual` | `list` | *[rules] only* |
 | [`css/selector-anb-no-unmatchable`](css/selector-anb-no-unmatchable.md) | No An+B selector that matches nothing | `manual` | — | `css/recommended` |
+| [`css/selector-attribute-name-disallowed-list`](css/selector-attribute-name-disallowed-list.md) | No attribute selector the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/selector-attribute-operator-allowed-list`](css/selector-attribute-operator-allowed-list.md) | Only attribute operators the project allows | `manual` | `list` | *[rules] only* |
+| [`css/selector-attribute-operator-disallowed-list`](css/selector-attribute-operator-disallowed-list.md) | No attribute operator the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/selector-attribute-quotes`](css/selector-attribute-quotes.md) | Attribute selector values are quoted | `auto` | — | *[rules] only* |
 | [`css/selector-class-pattern`](css/selector-class-pattern.md) | Class selectors are kebab-case | `manual` | `pattern` | `css/standard` |
+| [`css/selector-combinator-allowed-list`](css/selector-combinator-allowed-list.md) | Only combinators the project allows | `manual` | `list` | *[rules] only* |
+| [`css/selector-combinator-disallowed-list`](css/selector-combinator-disallowed-list.md) | No combinator the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/selector-disallowed-list`](css/selector-disallowed-list.md) | No selector the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-id-pattern`](css/selector-id-pattern.md) | Id selectors are kebab-case | `manual` | `pattern` | `css/standard` |
+| [`css/selector-max-attribute`](css/selector-max-attribute.md) | No selector with too many attribute selectors | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-class`](css/selector-max-class.md) | No selector with too many classes | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-combinators`](css/selector-max-combinators.md) | No selector with too many combinators | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-compound-selectors`](css/selector-max-compound-selectors.md) | No selector with too many compound selectors | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-id`](css/selector-max-id.md) | No selector with too many id selectors | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-pseudo-class`](css/selector-max-pseudo-class.md) | No selector with too many pseudo-classes | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-specificity`](css/selector-max-specificity.md) | No selector more specific than allowed | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-type`](css/selector-max-type.md) | No selector with too many type selectors | `manual` | `max` | *[rules] only* |
+| [`css/selector-max-universal`](css/selector-max-universal.md) | No selector with too many universal selectors | `manual` | `max` | *[rules] only* |
+| [`css/selector-nested-pattern`](css/selector-nested-pattern.md) | Nested selectors follow the project's pattern | `manual` | `pattern` | *[rules] only* |
+| [`css/selector-no-deprecated`](css/selector-no-deprecated.md) | No deprecated selectors | `auto` | — | *[rules] only* |
+| [`css/selector-no-invalid`](css/selector-no-invalid.md) | No invalid selector | `manual` | — | *[rules] only* |
+| [`css/selector-no-qualifying-type`](css/selector-no-qualifying-type.md) | No class, id or attribute qualified by a type | `suggest` | — | *[rules] only* |
+| [`css/selector-no-unmatchable`](css/selector-no-unmatchable.md) | No selector that can never match | `manual` | — | *[rules] only* |
 | [`css/selector-no-vendor-prefix`](css/selector-no-vendor-prefix.md) | No vendor-prefixed selectors | `suggest` | `ignoreSelectors` | `css/standard` |
 | [`css/selector-not-notation`](css/selector-not-notation.md) | One `:not()` with a list | `suggest` | — | `css/standard` |
+| [`css/selector-pseudo-class-allowed-list`](css/selector-pseudo-class-allowed-list.md) | Only pseudo-classs the project allows | `manual` | `list` | *[rules] only* |
+| [`css/selector-pseudo-class-disallowed-list`](css/selector-pseudo-class-disallowed-list.md) | No pseudo-class the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-class-no-unknown`](css/selector-pseudo-class-no-unknown.md) | No unknown pseudo-classes | `manual` | `ignorePseudoClasses` | `css/recommended` |
+| [`css/selector-pseudo-element-allowed-list`](css/selector-pseudo-element-allowed-list.md) | Only pseudo-elements the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-element-colon-notation`](css/selector-pseudo-element-colon-notation.md) | Pseudo-elements with `::` | `auto` | — | `css/standard` |
+| [`css/selector-pseudo-element-disallowed-list`](css/selector-pseudo-element-disallowed-list.md) | No pseudo-element the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-element-no-unknown`](css/selector-pseudo-element-no-unknown.md) | No unknown pseudo-elements | `manual` | `ignorePseudoElements` | `css/recommended` |
+| [`css/selector-type-case`](css/selector-type-case.md) | Type selectors in lower case | `auto` | — | *[rules] only* |
 | [`css/selector-type-no-unknown`](css/selector-type-no-unknown.md) | No unknown type selectors | `manual` | `ignore`, `ignoreTypes` | `css/recommended` |
 | [`css/shorthand-property-no-redundant-values`](css/shorthand-property-no-redundant-values.md) | No repeated values in shorthands | `auto` | — | `css/standard` |
 | [`css/string-no-newline`](css/string-no-newline.md) | No line breaks inside selector strings | `manual` | `ignore` | `css/recommended` |
 | [`css/syntax-string-no-invalid`](css/syntax-string-no-invalid.md) | `@property` syntax strings are valid | `manual` | — | `css/recommended` |
+| [`css/time-min-milliseconds`](css/time-min-milliseconds.md) | No transition or animation too short to see | `manual` | `min` | *[rules] only* |
 | [`css/todo-marker`](css/todo-marker.md) | CSS TODO comments carry a ticket and, when asked, a date | `manual` | — | `css/markers` |
+| [`css/unit-allowed-list`](css/unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
+| [`css/unit-disallowed-list`](css/unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
+| [`css/unit-layout-mappings`](css/unit-layout-mappings.md) | Flow-relative units, not physical ones | `suggest` | — | *[rules] only* |
+| [`css/unit-no-unknown`](css/unit-no-unknown.md) | No unknown units | `manual` | `ignore` | *[rules] only* |
+| [`css/value-keyword-case`](css/value-keyword-case.md) | Keywords in lower case | `auto` | — | *[rules] only* |
+| [`css/value-keyword-layout-mappings`](css/value-keyword-layout-mappings.md) | Flow-relative keywords, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/value-no-vendor-prefix`](css/value-no-vendor-prefix.md) | No vendor-prefixed values | `suggest` | `ignoreValues` | `css/standard` |
 | [`graph/no-unused-css-classes`](graph/no-unused-css-classes.md) | CSS classes must be used somewhere | `suggest` | — | `css/project` |
 
@@ -899,20 +1082,55 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`scss/at-extend-no-missing-placeholder`](scss/at-extend-no-missing-placeholder.md) | `@extend` targets a placeholder | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/at-function-named-arguments`](scss/at-function-named-arguments.md) | Function arguments are passed by name | `auto` | — | *[rules] only* |
+| [`scss/at-function-pattern`](scss/at-function-pattern.md) | Function names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`scss/at-if-no-null`](scss/at-if-no-null.md) | No comparing to `null` in `@if` | `auto` | — | `scss/recommended`, `scss/strict` |
+| [`scss/at-import-partial-extension-allowed-list`](scss/at-import-partial-extension-allowed-list.md) | `@import` extensions the project allows | `manual` | `list` | *[rules] only* |
+| [`scss/at-import-partial-extension-disallowed-list`](scss/at-import-partial-extension-disallowed-list.md) | No `@import` extension the project disallows | `manual` | `list` | *[rules] only* |
+| [`scss/at-mixin-argumentless-call-parentheses`](scss/at-mixin-argumentless-call-parentheses.md) | No parentheses on a mixin call without arguments | `auto` | — | *[rules] only* |
+| [`scss/at-mixin-named-arguments`](scss/at-mixin-named-arguments.md) | Mixin arguments are passed by name | `auto` | — | *[rules] only* |
+| [`scss/at-mixin-no-risky-nesting-selector`](scss/at-mixin-no-risky-nesting-selector.md) | No `&` after another selector inside a mixin | `manual` | — | *[rules] only* |
 | [`scss/at-mixin-pattern`](scss/at-mixin-pattern.md) | Mixin names are kebab-case | `manual` | `pattern` | `scss/strict` |
+| [`scss/at-root-no-redundant`](scss/at-root-no-redundant.md) | No redundant `@at-root` | `auto` | — | *[rules] only* |
+| [`scss/at-rule-conditional-no-parentheses`](scss/at-rule-conditional-no-parentheses.md) | No parentheses around `@if` and `@while` conditions | `auto` | — | *[rules] only* |
 | [`scss/at-rule-no-unknown`](scss/at-rule-no-unknown.md) | No unknown at-rules (SCSS) | `manual` | `ignoreAtRules` | `scss/recommended`, `scss/strict` |
+| [`scss/at-use-no-redundant-alias`](scss/at-use-no-redundant-alias.md) | No `@use` alias that repeats the module's name | `auto` | — | *[rules] only* |
+| [`scss/block-no-redundant-nesting`](scss/block-no-redundant-nesting.md) | No block that only holds one nested block | `auto` | — | *[rules] only* |
+| [`scss/comment-no-loud`](scss/comment-no-loud.md) | Silent comments, not loud ones | `suggest` | — | *[rules] only* |
+| [`scss/declaration-nested-properties`](scss/declaration-nested-properties.md) | No nested properties | `manual` | — | *[rules] only* |
+| [`scss/declaration-nested-properties-no-divided-groups`](scss/declaration-nested-properties-no-divided-groups.md) | Nested properties of one prefix are in one group | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/dimension-no-non-numeric-values`](scss/dimension-no-non-numeric-values.md) | No dimension built from interpolated text | `suggest` | — | *[rules] only* |
+| [`scss/dollar-variable-default`](scss/dollar-variable-default.md) | Top-level variables are `!default` | `suggest` | — | *[rules] only* |
+| [`scss/dollar-variable-first-in-block`](scss/dollar-variable-first-in-block.md) | Variables are declared first in their block | `manual` | — | *[rules] only* |
+| [`scss/dollar-variable-no-missing-interpolation`](scss/dollar-variable-no-missing-interpolation.md) | Variables in at-rule names are interpolated | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/dollar-variable-pattern`](scss/dollar-variable-pattern.md) | `$variables` are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/double-slash-comment-empty`](scss/double-slash-comment-empty.md) | No empty `//` comments | `auto` | — | `scss/recommended`, `scss/strict` |
+| [`scss/double-slash-comment-inline`](scss/double-slash-comment-inline.md) | `//` comments on their own line | `auto` | — | *[rules] only* |
+| [`scss/function-calculation-no-interpolation`](scss/function-calculation-no-interpolation.md) | No interpolation in CSS math functions | `auto` | — | *[rules] only* |
+| [`scss/function-color-channel`](scss/function-color-channel.md) | Colour channels are read with `color.channel()` | `suggest` | — | *[rules] only* |
+| [`scss/function-color-relative`](scss/function-color-relative.md) | No legacy relative colour functions | `suggest` | — | *[rules] only* |
+| [`scss/function-disallowed-list`](scss/function-disallowed-list.md) | No Sass function the project disallows | `manual` | `list` | *[rules] only* |
 | [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `manual` | `ignoreFunctions` | `scss/strict` |
+| [`scss/function-quote-no-quoted-strings-inside`](scss/function-quote-no-quoted-strings-inside.md) | No `quote()` of a quoted string | `auto` | — | `scss/recommended`, `scss/strict` |
+| [`scss/function-unquote-no-unquoted-strings-inside`](scss/function-unquote-no-unquoted-strings-inside.md) | No `unquote()` of an unquoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/load-no-partial-leading-underscore`](scss/load-no-partial-leading-underscore.md) | No leading underscore in a loaded partial | `auto` | — | `scss/recommended`, `scss/strict` |
+| [`scss/load-partial-extension`](scss/load-partial-extension.md) | No file extension when loading a partial | `auto` | — | `scss/recommended`, `scss/strict` |
+| [`scss/map-keys-quotes`](scss/map-keys-quotes.md) | Map keys are quoted | `suggest` | — | *[rules] only* |
 | [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `manual` | `max` | `scss/strict` |
+| [`scss/media-feature-value-dollar-variable`](scss/media-feature-value-dollar-variable.md) | Media query values are variables | `manual` | — | *[rules] only* |
+| [`scss/no-dollar-variables`](scss/no-dollar-variables.md) | No Sass variables | `manual` | — | *[rules] only* |
 | [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/no-duplicate-load-rules`](scss/no-duplicate-load-rules.md) | No module loaded twice | `suggest` | — | *[rules] only* |
 | [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `manual` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-global-function-names`](scss/no-global-function-names.md) | No global function names | `auto` | — | `scss/strict` |
 | [`scss/no-import`](scss/no-import.md) | No `@import` | `suggest` | — | `scss/strict` |
 | [`scss/no-slash-division`](scss/no-slash-division.md) | No `/` as division | `suggest` | — | `scss/strict` |
+| [`scss/no-unused-private-members`](scss/no-unused-private-members.md) | No private member that is never used | `manual` | — | *[rules] only* |
+| [`scss/partial-no-import`](scss/partial-no-import.md) | No `@import` in a partial | `manual` | — | *[rules] only* |
 | [`scss/percent-placeholder-pattern`](scss/percent-placeholder-pattern.md) | `%placeholder` names are kebab-case | `manual` | `pattern` | `scss/strict` |
+| [`scss/selector-nest-combinators`](scss/selector-nest-combinators.md) | Combinators are written by nesting | `suggest` | — | *[rules] only* |
+| [`scss/selector-no-redundant-nesting-selector`](scss/selector-no-redundant-nesting-selector.md) | No redundant `&` | `auto` | — | *[rules] only* |
+| [`scss/selector-no-union-class-name`](scss/selector-no-union-class-name.md) | No class names built with `&` | `manual` | — | *[rules] only* |
 | [`scss/todo-marker`](scss/todo-marker.md) | SCSS TODO comments carry a ticket and, when asked, a date | `manual` | — | `scss/markers` |
 
 ## css-modules
@@ -949,15 +1167,20 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/heading-increment`](md/heading-increment.md) | Heading levels go down one at a time | `suggest` | — | `md/recommended` |
 | [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `manual` | `ignore_case` | `md/recommended` |
 | [`md/link-image-reference-definitions`](md/link-image-reference-definitions.md) | Every reference definition is used, and defined once | `auto` | `ignored_definitions` | `md/recommended` |
+| [`md/link-image-style`](md/link-image-style.md) | Links and images in the styles the project allows | `manual` | `autolink`, `inline`, `full`, `collapsed`, `shortcut`, `url_inline` | `md/recommended` |
 | [`md/no-alt-text`](md/no-alt-text.md) | Images have alt text | `manual` | — | `md/recommended` |
 | [`md/no-bare-urls`](md/no-bare-urls.md) | URLs are links, not bare text | `auto` | — | `md/recommended` |
+| [`md/no-blanks-blockquote`](md/no-blanks-blockquote.md) | No blank line inside a blockquote | `suggest` | — | `md/recommended` |
 | [`md/no-duplicate-heading`](md/no-duplicate-heading.md) | No two sibling headings with the same text | `manual` | `siblings_only` | `md/recommended` |
 | [`md/no-emphasis-as-heading`](md/no-emphasis-as-heading.md) | Headings are headings, not bold lines | `manual` | `punctuation` | `md/recommended` |
 | [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `manual` | — | `md/recommended` |
 | [`md/no-inline-html`](md/no-inline-html.md) | No raw HTML in Markdown | `manual` | `allowed_elements` | `data/conventions` |
 | [`md/no-reversed-links`](md/no-reversed-links.md) | Links are written \[text\](url), not (text)\[url\] | `auto` | — | `md/recommended` |
+| [`md/no-trailing-punctuation`](md/no-trailing-punctuation.md) | No punctuation at the end of a heading | `auto` | `punctuation` | `md/recommended` |
+| [`md/proper-names`](md/proper-names.md) | Proper names are spelled as the project spells them | `auto` | `names`, `code_blocks` | `md/recommended` |
 | [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `manual` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
 | [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `manual` | — | `md/recommended` |
+| [`md/required-headings`](md/required-headings.md) | Documents follow the required outline | `manual` | `headings` | `md/recommended` |
 | [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `manual` | `level` | `md/recommended` |
 | [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `manual` | — | `md/recommended` |
 | [`md/todo-marker`](md/todo-marker.md) | Markdown TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |

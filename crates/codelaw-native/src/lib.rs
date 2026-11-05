@@ -59,6 +59,15 @@ mod redux_toolkit;
 mod size_lines;
 pub mod spell;
 mod regexp;
+pub mod regex_ast;
+mod regexp_rules;
+mod react_ts_extra;
+mod css_lists;
+mod css_style;
+mod scss_extra;
+mod html_extra;
+mod md_extra;
+mod oxlint_extra;
 mod stencil;
 mod typescript;
 mod unused_vars;
@@ -760,15 +769,18 @@ static REGISTRY: &[&dyn NativeRule] = &[
 
 /// Every registered native rule.
 pub fn registry() -> &'static [&'static dyn NativeRule] {
-    REGISTRY
+    &ALL
 }
+
+/// `REGISTRY` and the rule families kept in their own lists.
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]
     if let Some(r) = fault::lookup(id) {
         return Some(r);
     }
-    REGISTRY.iter().copied().find(|r| r.id() == id)
+    ALL.iter().copied().find(|r| r.id() == id)
 }
 
 /// A file and a fixed set of neighbours, for the tests of rules that read
