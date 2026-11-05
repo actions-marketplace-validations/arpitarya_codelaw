@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the string literal is the pattern without its anchor, which a template cannot strip) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/prefer-string-starts-ends-with` |

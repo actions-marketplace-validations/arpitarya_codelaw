@@ -311,6 +311,7 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 | `crates/codelaw-match/src/data.rs` | SR-RULE-FORMAT | decision 3e: the data tree a `target:` rule reads |
 | `crates/codelaw-match/src/target.rs` | SR-RULE-FORMAT | decision 3e: `target:` paths and `assert:` checks |
 | `crates/codelaw-match/src/schema.rs` | SR-RULE-FORMAT | decision 3e: the `schema:` check and its departures from draft-07 |
+| `crates/codelaw-match/src/filters.rs` | SR-RULE-FORMAT | decision 3b: the template filters (map, number, escape, …) and their refusals (W-162) |
 | `crates/codelaw-fix/src/structured.rs` | SR-RULE-FORMAT | decisions 3c and 3e: a `target:` rule's fix steps and their verification |
 | `crates/codelaw-adapters` | SR-ARCHITECTURE | decision 19: the adapter contract (lookup, versions, process handling, cache key) the crate implements |
 | `crates/codelaw-engine/src/adapters.rs` | SR-LINTER | decision 2: which adapters run, the per-tool mapping and the ported-rule dedupe |

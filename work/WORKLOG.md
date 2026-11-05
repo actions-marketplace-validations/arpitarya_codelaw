@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-162 change 1: computed edits, tiers 1–2  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-162 — build the fix capabilities W-161 designed, computed edits first, moving the rules waiting on each; land each capability as its own change.
+- **Done:** ast-grep's `transform:` beside `match:`; the template filters (`map`, `number`, `escape`, `unescape-octal`, `count`, `upper`, `lower`, `upper-first`) with a strict `try_interpolate` so a refusing filter offers no fix; operator tokens captured with `$$OP`. 19 `js/*` rules moved (SR-RULE-FORMAT 3b's Built note lists them). `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `prefer-template` and `no-useless-concat` wait on native fixes (a chain of any length; mixed quotes); `prefer-keyboard-event-key` needs an edit outside its match. Tier 3 (`edit-text`, `unwrap-block`, `move`) next.
+- **Mistakes:** a binary copied over an existing one in place was SIGKILLed by macOS (code signature cache); copy to a removed path instead.
+- **Next:** W-162 change 2 — tier 3 primitives, starting with `edit-text` for the eleven `jsdoc-*` rules.
+
+---
+
 ## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.

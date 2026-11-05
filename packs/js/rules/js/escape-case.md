@@ -2,9 +2,7 @@
 id: js/escape-case
 title: "Upper-case hex digits in escapes"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the fix upper-cases the digits, which a fix template cannot compute"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-unicorn/escape-case]
 since: 0.5.0
@@ -18,8 +16,13 @@ Hexadecimal digits in `\x`, `\u` and `\u{…}` escapes are upper case.
 
 match:
   kind: escape_sequence
+  pattern: $E
   regex: '^\\(x[0-9A-Fa-f]*[a-f][0-9A-Fa-f]*|u[0-9A-Fa-f]*[a-f][0-9A-Fa-f]*|u\{[0-9A-Fa-f]*[a-f][0-9A-Fa-f]*\})$'
+transform:
+  P: { substring: { source: $E, endChar: 2 } }
+  D: { substring: { source: $E, startChar: 2 } }
 message: "Write the hex digits of `$$MATCH` in upper case"
+fix: "$P$D|upper"
 ```
 
 ## How to fix

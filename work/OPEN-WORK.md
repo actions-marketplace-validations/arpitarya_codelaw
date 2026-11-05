@@ -41,7 +41,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done (11-05); 186 native rules (Rust per rule) left to move. Next: their fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. 37 re-judged by W-156. Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits tiers 1–2 built (19 `js/*` moved; 84 still wait). Next: tier 3 (`edit-text`, `unwrap-block`, `move`), then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 
 

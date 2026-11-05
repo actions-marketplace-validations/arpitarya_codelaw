@@ -59,6 +59,10 @@ pub struct Match {
     /// The rule's `auto_when:` holds on the matched node (true when it has
     /// none): an `auto` rule's finding stays `auto` (SR-LAW-4 decision 2).
     pub auto: bool,
+    /// The captures `transform:` computed (ast-grep's own `replace`,
+    /// `substring`, `convert`): text with no span, for templates only
+    /// (SR-RULE-FORMAT decision 3b; W-162).
+    pub transformed: BTreeMap<String, String>,
 }
 
 impl Match {
@@ -78,6 +82,8 @@ pub struct CompiledMatch {
     /// `type:` (SR-RULE-FORMAT decision 3f): answered after matching, by
     /// the engine's type helper.
     types: Vec<(String, TypeExpr)>,
+    /// The names `transform:` defines.
+    transform_vars: Vec<String>,
 }
 
 pub(crate) fn captured(n: &SyntaxNode<'_>) -> Captured {
@@ -163,6 +169,17 @@ pub(crate) fn rule_core(
     utils: Option<&serde_json::Value>,
     grammar: Grammar,
 ) -> Result<RuleCore, String> {
+    rule_core_with(matcher, constraints, utils, None, grammar)
+}
+
+/// [`rule_core`] with ast-grep's `transform:` (SR-RULE-FORMAT decision 3b).
+pub(crate) fn rule_core_with(
+    matcher: &serde_json::Value,
+    constraints: Option<&serde_json::Value>,
+    utils: Option<&serde_json::Value>,
+    transform: Option<&serde_json::Value>,
+    grammar: Grammar,
+) -> Result<RuleCore, String> {
     use ast_grep_core::tree_sitter::LanguageExt;
     let root_kind = grammar.ast_grep("").root().kind().to_string();
     let never = serde_json::json!({ "all": [{ "kind": root_kind }, { "not": { "kind": root_kind } }] });
@@ -179,6 +196,9 @@ pub(crate) fn rule_core(
     if let Some(u) = utils {
         core.insert("utils".into(), pruned(u));
     }
+    if let Some(t) = transform {
+        core.insert("transform".into(), t.clone());
+    }
     let serial: SerializableRuleCore =
         serde_json::from_value(serde_json::Value::Object(core)).map_err(|e| format!("invalid `match:`: {e}"))?;
     serial.get_matcher(DeserializeEnv::new(grammar)).map_err(|e| format!("invalid `match:` for {grammar:?}: {e}"))
@@ -187,10 +207,16 @@ pub(crate) fn rule_core(
 /// Compile a rule's `match:` block for one grammar. `data` is the rule's
 /// pack's tables, for predicates that name one.
 pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<serde_json::Value>>) -> Result<CompiledMatch, String> {
-    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when } = &rule.block.kind else {
+    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when, transform } = &rule.block.kind else {
         return Err("not a `match:` rule".into());
     };
-    let core = rule_core(matcher, constraints.as_ref(), utils.as_ref(), grammar)?;
+    let transform_vars: Vec<String> = match transform.as_deref() {
+        None => Vec::new(),
+        Some(serde_json::Value::Object(o)) => o.keys().cloned().collect(),
+        Some(_) => return Err("`transform:` maps a new capture's name to an ast-grep transformation".into()),
+    };
+    let core = rule_core_with(matcher, constraints.as_ref(), utils.as_ref(), transform.as_deref(), grammar)
+        .map_err(|e| if transform.is_some() && e.contains("transform") { e.replace("`match:`", "`transform:`") } else { e })?;
     let auto_when = match auto_when {
         Some(a) => Some(rule_core(a, None, utils.as_ref(), grammar).map_err(|e| e.replace("`match:`", "`auto_when:`"))?),
         None => None,
@@ -227,7 +253,7 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
             return Err(format!("`where:` names `{var}`, but `$$${name}` captures a list of nodes; a predicate applies to one node (`$NAME`)"));
         }
     }
-    Ok(CompiledMatch { core, auto_when, predicates, types })
+    Ok(CompiledMatch { core, auto_when, predicates, types, transform_vars })
 }
 
 impl CompiledMatch {
@@ -270,7 +296,16 @@ impl CompiledMatch {
         let env = m.get_env();
         let mut single = BTreeMap::new();
         let mut multi = BTreeMap::new();
+        let mut transformed = BTreeMap::new();
+        for var in &self.transform_vars {
+            if let Some(t) = env.get_transformed(var) {
+                transformed.insert(var.clone(), String::from_utf8_lossy(t).into_owned());
+            }
+        }
         for var in self.core.defined_vars() {
+            if self.transform_vars.iter().any(|t| t == var) {
+                continue;
+            }
             if let Some(n) = env.get_match(var) {
                 single.insert(var.to_owned(), captured(n));
             } else {
@@ -295,7 +330,7 @@ impl CompiledMatch {
                 return None;
             }
         }
-        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi, auto })
+        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi, auto, transformed })
     }
 }
 
@@ -344,42 +379,40 @@ pub fn expand_options(template: &str, specs: &BTreeMap<String, codelaw_rules::Op
     out
 }
 
+mod filters;
+pub use filters::apply_filter;
+
 /// Replace `$NAME`, `$$$NAME` and `$$MATCH` (the whole matched text) in a
-/// message or template with what the match captured. An unknown name is
-/// left as written.
-/// The text filters a capture may carry in a template, written right after
-/// it: `$NAME|trim` (no leading or trailing whitespace) and
-/// `$NAME|lower-first` (its first character in lower case) (SR-RULE-FORMAT
-/// decision 3b). Returns the filtered text and the bytes of filter consumed.
-fn text_filter(rest: &str, value: String) -> (String, usize) {
-    let mut v = value;
+/// message with what the match captured. An unknown name is left as
+/// written; a filter that can't produce a value leaves the capture as it
+/// was (a message still reads; [`try_interpolate`] is the strict form a
+/// fix uses).
+pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
+    interpolate_with(template, m, source, false).unwrap_or_else(|_| template.to_owned())
+}
+
+/// [`interpolate`] for a fix template: a filter that can't produce a value
+/// (`|map` with no entry for the text, `|number` on a non-number) is an
+/// error, so the fix is not offered rather than half-written
+/// (SR-RULE-FORMAT decision 3b; W-162).
+pub fn try_interpolate(template: &str, m: &Match, source: &str) -> Result<String, String> {
+    interpolate_with(template, m, source, true)
+}
+
+/// The text filters a capture may carry, written right after it
+/// (SR-RULE-FORMAT decision 3b). Returns the filtered text (or the first
+/// filter's refusal) and the bytes of filter consumed.
+fn text_filter(rest: &str, value: String) -> (Result<String, String>, usize) {
+    let mut v = Ok(value);
     let mut used = 0;
-    loop {
-        let r = &rest[used..];
-        if let Some(after) = r.strip_prefix("|trim") {
-            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
-                break;
-            }
-            v = v.trim().to_owned();
-            used += "|trim".len();
-        } else if let Some(after) = r.strip_prefix("|lower-first") {
-            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
-                break;
-            }
-            let mut cs = v.chars();
-            v = match cs.next() {
-                Some(c) => c.to_lowercase().chain(cs).collect(),
-                None => v,
-            };
-            used += "|lower-first".len();
-        } else {
-            break;
-        }
+    while let Some((name, arg, len)) = filters::next_filter(&rest[used..]) {
+        v = v.and_then(|x| apply_filter(name, arg, &x));
+        used += len;
     }
     (v, used)
 }
 
-pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
+fn interpolate_with(template: &str, m: &Match, source: &str, strict: bool) -> Result<String, String> {
     let mut out = String::with_capacity(template.len());
     let bytes = template.as_bytes();
     let mut i = 0;
@@ -388,29 +421,30 @@ pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
             let dollars = bytes[i..].iter().take_while(|b| **b == b'$').count();
             let name_start = i + dollars;
             let name_len = bytes[name_start..].iter().take_while(|b| b.is_ascii_uppercase() || b.is_ascii_digit() || **b == b'_').count();
-            if dollars == 2 && &template[name_start..name_start + name_len] == "MATCH" {
-                out.push_str(&source[m.start..m.end]);
+            let name = &template[name_start..name_start + name_len];
+            let value = if dollars == 2 && name == "MATCH" {
+                Some(source[m.start..m.end].to_owned())
+            } else if name_len > 0 && dollars == 3 {
+                m.multi_span(name).map(|(s, e)| source[s..e].to_owned()).or_else(|| m.single.get(name).map(|c| c.text.clone()))
+            } else if name_len > 0 && dollars == 1 {
+                m.single.get(name).map(|c| c.text.clone()).or_else(|| m.transformed.get(name).cloned())
+            } else {
+                None
+            };
+            if let Some(v) = value {
                 i = name_start + name_len;
+                let (filtered, used) = text_filter(&template[i..], v.clone());
+                match filtered {
+                    Ok(f) => out.push_str(&f),
+                    Err(e) if strict => return Err(format!("`${name}`: {e}")),
+                    Err(_) => out.push_str(&v),
+                }
+                i += used;
                 continue;
             }
-            if name_len > 0 && (dollars == 1 || dollars == 3) {
-                let name = &template[name_start..name_start + name_len];
-                let value = if dollars == 3 {
-                    m.multi_span(name).map(|(s, e)| source[s..e].to_owned()).or_else(|| m.single.get(name).map(|c| c.text.clone()))
-                } else {
-                    m.single.get(name).map(|c| c.text.clone())
-                };
-                if let Some(v) = value {
-                    i = name_start + name_len;
-                    let (v, used) = text_filter(&template[i..], v);
-                    out.push_str(&v);
-                    i += used;
-                    continue;
-                }
-                if dollars == 3 && m.multi.contains_key(name) {
-                    i = name_start + name_len;
-                    continue;
-                }
+            if name_len > 0 && dollars == 3 && m.multi.contains_key(name) {
+                i = name_start + name_len;
+                continue;
             }
             out.push_str(&template[i..name_start]);
             i = name_start;
@@ -420,7 +454,7 @@ pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
         out.push(ch);
         i += ch.len_utf8();
     }
-    out
+    Ok(out)
 }
 
 #[cfg(test)]
