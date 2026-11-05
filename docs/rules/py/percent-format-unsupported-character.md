@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended conversion can't be inferred) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F509` |
+| **Ported from** | `ruff/F509`, `pylint/bad-format-character` |
 
 ## What it checks
 

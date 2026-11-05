@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the value for the missing key has to be supplied) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F505` |
+| **Ported from** | `ruff/F505`, `pylint/missing-format-string-key` |
 
 ## What it checks
 

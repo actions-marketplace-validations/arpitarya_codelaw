@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the exception class to catch is the author's choice"
 fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/B030]
+ported_from: [ruff/B030, pylint/catching-non-exception]
 since: 0.1.0
 ---
 

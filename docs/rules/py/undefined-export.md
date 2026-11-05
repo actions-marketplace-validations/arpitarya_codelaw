@@ -15,7 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Files** | never `**/__init__.py` |
-| **Ported from** | `ruff/F822` |
+| **Ported from** | `ruff/F822`, `pylint/undefined-all-variable` |
 
 ## What it checks
 

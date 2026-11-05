@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which target should collect the rest has to be chosen) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F622` |
+| **Ported from** | `ruff/F622`, `pylint/star-needs-assignment-target` |
 
 ## What it checks
 

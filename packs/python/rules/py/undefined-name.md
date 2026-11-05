@@ -8,7 +8,7 @@ fix_pending: "suggest-choices"
 stability: preview
 options:
   builtins: { type: "string[]", default: [], description: "extra names to treat as builtins" }
-ported_from: [ruff/F821]
+ported_from: [ruff/F821, pylint/undefined-variable]
 since: 0.1.0
 ---
 

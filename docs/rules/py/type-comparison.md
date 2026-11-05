@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`isinstance` accepts subclasses, which may or may not be intended) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/E721` |
+| **Ported from** | `ruff/E721`, `pylint/unidiomatic-typecheck` |
 
 ## What it checks
 

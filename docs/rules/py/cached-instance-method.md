@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the cache should live is a design choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B019` |
+| **Ported from** | `ruff/B019`, `pylint/method-cache-max-size-none` |
 
 ## What it checks
 

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to chain the original error or hide it is the author's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B904` |
+| **Ported from** | `ruff/B904`, `pylint/raise-missing-from` |
 
 ## What it checks
 

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value should win can't be known from the code) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F601` |
+| **Ported from** | `ruff/F601`, `pylint/duplicate-key` |
 
 ## What it checks
 
