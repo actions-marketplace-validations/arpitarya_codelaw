@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`&&` short-circuits and yields an operand rather than a number) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`&&` short-circuits and yields an operand, while the bitwise test stays as is with an explicit nonzero check; the author picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-accidental-bitwise-operator` |
@@ -135,6 +135,22 @@ if (ready & visible) {
 }
 ```
 
+#### Fixed (logical operator)
+
+```js
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```js
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 #### Do
 
 ```js
@@ -149,6 +165,22 @@ if (ready && visible) {
 
 ```jsx
 if (ready & visible) {
+  show();
+}
+```
+
+#### Fixed (logical operator)
+
+```jsx
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```jsx
+if ((ready & visible) !== 0) {
   show();
 }
 ```
@@ -171,6 +203,22 @@ if (ready & visible) {
 }
 ```
 
+#### Fixed (logical operator)
+
+```ts
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```ts
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 #### Do
 
 ```ts
@@ -185,6 +233,22 @@ if (ready && visible) {
 
 ```tsx
 if (ready & visible) {
+  show();
+}
+```
+
+#### Fixed (logical operator)
+
+```tsx
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```tsx
+if ((ready & visible) !== 0) {
   show();
 }
 ```

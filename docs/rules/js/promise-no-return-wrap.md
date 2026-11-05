@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (turning `return Promise.reject(e)` into `throw e` changes the statement's shape inside code the author may want to restructure) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`return Promise.resolve(x)` is `return x` and `return Promise.reject(e)` is `throw e`; only a callback with a try around the return, where the new throw would be caught, stays a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/no-return-wrap` |
@@ -121,8 +121,7 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ## How to fix
 
-1. Replace `return Promise.resolve(x)` with `return x`.
-2. Replace `return Promise.reject(e)` with `throw e`.
+1. Replace `return Promise.resolve(x)` with `return x`, and `return Promise.reject(e)` with `throw e`; the fix does both, and reports a suggestion where a `try` in the callback would catch the new `throw`.
 
 ## Examples
 
@@ -133,6 +132,14 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 ```js
 fetchUser().then((user) => {
   return Promise.resolve(user.name);
+});
+```
+
+#### Fixed
+
+```js
+fetchUser().then((user) => {
+  return user.name;
 });
 ```
 
@@ -154,6 +161,14 @@ fetchUser().then((user) => {
 });
 ```
 
+#### Fixed
+
+```jsx
+fetchUser().then((user) => {
+  return user.name;
+});
+```
+
 #### Do
 
 ```jsx
@@ -172,6 +187,14 @@ fetchUser().then((user) => {
 });
 ```
 
+#### Fixed
+
+```ts
+fetchUser().then((user) => {
+  return user.name;
+});
+```
+
 #### Do
 
 ```ts
@@ -187,6 +210,14 @@ fetchUser().then((user) => {
 ```tsx
 fetchUser().then((user) => {
   return Promise.resolve(user.name);
+});
+```
+
+#### Fixed
+
+```tsx
+fetchUser().then((user) => {
+  return user.name;
 });
 ```
 

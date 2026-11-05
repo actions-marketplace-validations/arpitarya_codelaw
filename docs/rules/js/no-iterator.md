@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving to `Symbol.iterator` rewrites the iterator) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the edit activates the standard iteration protocol in place of the dead SpiderMonkey one, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-iterator` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+#### Fixed
+
+```js
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```jsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+#### Fixed
+
+```jsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 #### Do
@@ -164,6 +176,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+#### Fixed
+
+```ts
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```tsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+#### Fixed
+
+```tsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 #### Do

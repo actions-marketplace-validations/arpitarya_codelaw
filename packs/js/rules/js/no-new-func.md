@@ -2,9 +2,8 @@
 id: js/no-new-func
 title: "No Function constructor"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the function the string held has to be written as code"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a function expression with the literal parameters and body is the closest equivalent; it closes over local scope instead of global scope, which the reviewer confirms (calls with computed or escaped strings carry no edit)"
 stability: preview
 ported_from: [eslint/no-new-func]
 since: 0.5.0
@@ -17,6 +16,57 @@ Functions are not built from strings with `Function` or `new Function`.
 ```codelaw
 match:
   any:
+    - all:
+        - any: [{ pattern: "new $F($S1)" }, { pattern: "$F($S1)" }]
+        - pattern: $M1
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 1
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F11 }
+    - all:
+        - any: [{ pattern: "new $F($S1, $S2)" }, { pattern: "$F($S1, $S2)" }]
+        - pattern: $M2
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 1
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F21 }
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 2
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F22 }
+    - all:
+        - any: [{ pattern: "new $F($S1, $S2, $S3)" }, { pattern: "$F($S1, $S2, $S3)" }]
+        - pattern: $M3
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 1
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F31 }
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 2
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F32 }
+        - has:
+            field: arguments
+            has:
+              kind: string
+              nthChild: 3
+              not: { has: { kind: escape_sequence } }
+              has: { kind: string_fragment, pattern: $F33 }
     - pattern: new $F($$$A)
     - pattern: $F($$$A)
     - pattern: $F.call($$$A)
@@ -27,6 +77,10 @@ constraints:
 where:
   $F: builtin
 message: "Do not build functions with the `Function` constructor"
+fix:
+  - replace: { target: $M1, with: "function () { $F11 }" }
+  - replace: { target: $M2, with: "function ($F21) { $F22 }" }
+  - replace: { target: $M3, with: "function ($F31, $F32) { $F33 }" }
 ```
 
 ## How to fix
@@ -43,6 +97,12 @@ message: "Do not build functions with the `Function` constructor"
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+#### Fixed
+
+```js
+const add = function (a, b) { return a + b };
+```
+
 #### Do
 
 ```js
@@ -55,6 +115,12 @@ const add = (a, b) => a + b;
 
 ```jsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+#### Fixed
+
+```jsx
+const add = function (a, b) { return a + b };
 ```
 
 #### Do
@@ -71,6 +137,12 @@ const add = (a, b) => a + b;
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+#### Fixed
+
+```ts
+const add = function (a, b) { return a + b };
+```
+
 #### Do
 
 ```ts
@@ -83,6 +155,12 @@ const add = (a, b) => a + b;
 
 ```tsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+#### Fixed
+
+```tsx
+const add = function (a, b) { return a + b };
 ```
 
 #### Do

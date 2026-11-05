@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `warn` |
 | **Severity when named without one** | `warn` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (flattening a chain moves code between callbacks and may need values carried along) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (hoisting the inner `.then` onto the outer chain is only equivalent when its callback uses nothing the outer callback declared, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/no-nesting` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ## How to fix
 
-1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain.
+1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain; the fix does this for a single-argument `.then` that is the arrow callback's whole body, and the reviewer checks the moved callback uses nothing the outer callback declared.
 
 ## Examples
 
@@ -133,6 +133,14 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+#### Fixed
+
+```js
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 #### Do
@@ -153,6 +161,14 @@ getUser().then((user) =>
 );
 ```
 
+#### Fixed
+
+```jsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 #### Do
 
 ```jsx
@@ -171,6 +187,14 @@ getUser().then((user) =>
 );
 ```
 
+#### Fixed
+
+```ts
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 #### Do
 
 ```ts
@@ -187,6 +211,14 @@ getUser()
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+#### Fixed
+
+```tsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 #### Do

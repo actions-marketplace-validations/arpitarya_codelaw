@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the error should go — a `.catch()`, a `return` or an `await` — is the author's decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (returning or awaiting the chain changes the function's result and timing, and a `.catch()` is a decision about the error; the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/catch-or-return` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ## How to fix
 
-1. Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does.
+1. Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does; the fix offers the last two.
 
 ## Examples
 
@@ -130,15 +130,35 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 #### Don't
 
 ```js
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+#### Fixed (return the chain)
+
+```js
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+#### Fixed (await the chain)
+
+```js
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 #### Do
 
 ```js
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 ### JSX
@@ -146,15 +166,35 @@ save(doc)
 #### Don't
 
 ```jsx
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+#### Fixed (return the chain)
+
+```jsx
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+#### Fixed (await the chain)
+
+```jsx
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 #### Do
 
 ```jsx
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 ### TypeScript
@@ -162,15 +202,35 @@ save(doc)
 #### Don't
 
 ```ts
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+#### Fixed (return the chain)
+
+```ts
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+#### Fixed (await the chain)
+
+```ts
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 #### Do
 
 ```ts
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 ### TSX
@@ -178,15 +238,35 @@ save(doc)
 #### Don't
 
 ```tsx
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+#### Fixed (return the chain)
+
+```tsx
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+#### Fixed (await the chain)
+
+```tsx
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 #### Do
 
 ```tsx
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 ---

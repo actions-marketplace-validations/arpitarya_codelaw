@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the standard replacement depends on what the library method did) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (library methods differ in concurrency and callback arguments from the standard ones, so the reviewer confirms the rewrite; a method with no standard equivalent has no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/spec-only` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 
 ## How to fix
 
-1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`) or import the library explicitly.
+1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`, a `setTimeout` promise for `Promise.delay`) or import the library explicitly; the fix writes those two.
 
 ## Examples
 

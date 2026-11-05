@@ -2,9 +2,8 @@
 id: js/no-self-compare
 title: "No comparing a value with itself"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the intended comparison is the author's"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "an identifier compared with itself by equality is a NaN test, so `x !== x` becomes `Number.isNaN(x)` and `x === x` becomes `!Number.isNaN(x)` with the same result; member operands and relational forms carry no edit"
 stability: preview
 ported_from: [eslint/no-self-compare]
 since: 0.5.0
@@ -17,6 +16,26 @@ An expression is not compared with itself.
 ```codelaw
 match:
   any:
+    - kind: binary_expression
+      all:
+        - pattern: "$A1 !== $A1"
+        - pattern: $M1
+        - has: { field: left, kind: identifier }
+    - kind: binary_expression
+      all:
+        - pattern: "$A2 != $A2"
+        - pattern: $M2
+        - has: { field: left, kind: identifier }
+    - kind: binary_expression
+      all:
+        - pattern: "$A3 === $A3"
+        - pattern: $M3
+        - has: { field: left, kind: identifier }
+    - kind: binary_expression
+      all:
+        - pattern: "$A4 == $A4"
+        - pattern: $M4
+        - has: { field: left, kind: identifier }
     - pattern: $A === $A
     - pattern: $A == $A
     - pattern: $A !== $A
@@ -26,6 +45,11 @@ match:
     - pattern: $A <= $A
     - pattern: $A >= $A
 message: "Comparing `$A` with itself"
+fix:
+  - replace: { target: $M1, with: "Number.isNaN($A1)" }
+  - replace: { target: $M2, with: "Number.isNaN($A2)" }
+  - replace: { target: $M3, with: "!Number.isNaN($A3)" }
+  - replace: { target: $M4, with: "!Number.isNaN($A4)" }
 ```
 
 ## How to fix

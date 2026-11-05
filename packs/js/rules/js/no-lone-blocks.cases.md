@@ -24,3 +24,21 @@ if (a) {
 ```expect
 
 ```
+
+### case: two statements are unwrapped (layout is the formatter's)
+
+```js
+{
+  a();
+  b();
+}
+```
+
+```expect
+1:1 js/no-lone-blocks
+```
+
+```fixed
+a();
+  b();
+```

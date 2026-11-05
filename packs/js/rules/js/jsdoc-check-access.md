@@ -4,7 +4,7 @@ title: "@access takes a known level, once"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which access level was meant is the author's choice"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/check-access]
 since: 0.5.0

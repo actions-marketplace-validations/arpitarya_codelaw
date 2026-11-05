@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error; the reviewer confirms the pattern still compiles) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/require-unicode-regexp` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ## How to fix
 
-1. Add `u` after the closing slash and check that the pattern still compiles.
+1. Check the pattern still compiles with the `u` flag.
 
 ## Examples
 
@@ -134,6 +134,12 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ```js
 const word = /\w+/g;
+```
+
+#### Fixed
+
+```js
+const word = /\w+/gu;
 ```
 
 #### Do
@@ -150,6 +156,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+#### Fixed
+
+```jsx
+const word = /\w+/gu;
+```
+
 #### Do
 
 ```jsx
@@ -164,6 +176,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+#### Fixed
+
+```ts
+const word = /\w+/gu;
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const word = /\w+/gu;
 
 ```tsx
 const word = /\w+/g;
+```
+
+#### Fixed
+
+```tsx
+const word = /\w+/gu;
 ```
 
 #### Do

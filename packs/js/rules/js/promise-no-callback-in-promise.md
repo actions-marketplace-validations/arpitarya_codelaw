@@ -4,8 +4,8 @@ title: "No node-style callback is called inside a then or catch"
 languages: [javascript, jsx, typescript, tsx]
 severity: warn
 fix: manual
-fix_reason: "moving the call out of the promise needs a choice between `nodeify`-style wrappers, `setImmediate` or rewriting the caller"
-fix_pending: "suggest"
+fix_reason: "any edit leaves the callback call inside the promise chain; the call has to move out, which restructures the caller"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-promise/no-callback-in-promise]
 since: 0.5.0

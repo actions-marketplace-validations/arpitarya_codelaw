@@ -2,9 +2,8 @@
 id: js/promise-always-return
 title: "A then callback returns or throws"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the callback should return is the author's to decide"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "returning the last expression passes a new value downstream and `return undefined;` only silences the rule, so the reviewer picks"
 stability: preview
 ported_from: [eslint-plugin-promise/always-return]
 since: 0.5.0
@@ -18,6 +17,13 @@ A `.then()` callback with a block body returns a value or throws.
 match:
   any: [{kind: arrow_function}, {kind: function_expression}]
   nthChild: 1
+  all:
+    - any:
+        - has: { field: body, has: { kind: expression_statement, pattern: $LAST, nthChild: { position: 1, reverse: true } } }
+        - any: [{ kind: arrow_function }, { kind: function_expression }]
+    - any:
+        - has: { field: body, has: { pattern: $END, nthChild: { position: 1, reverse: true } } }
+        - any: [{ kind: arrow_function }, { kind: function_expression }]
   has:
     field: body
     kind: statement_block
@@ -31,11 +37,19 @@ match:
       kind: call_expression
       has: { field: function, kind: member_expression, has: { field: property, regex: '^then$' } }
 message: "Return a value or throw from this `.then()` callback"
+fix:
+  choices:
+    - label: return the value
+      fix:
+        - replace: { target: $LAST, with: "return $LAST" }
+    - label: return undefined
+      fix:
+        - insert-after: { target: $END, text: " return undefined;" }
 ```
 
 ## How to fix
 
-1. Return the value the next step needs — often the inner promise the callback started — or throw if the callback found an error.
+1. Return the value the next step needs, or throw if the callback found an error; the fix offers `return` of the last expression, or `return undefined;` when nothing is meant to pass on.
 
 ## Examples
 
@@ -46,6 +60,22 @@ message: "Return a value or throw from this `.then()` callback"
 ```js
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+#### Fixed (return the value)
+
+```js
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```js
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 
@@ -67,6 +97,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+#### Fixed (return the value)
+
+```jsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```jsx
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 #### Do
 
 ```jsx
@@ -85,6 +131,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+#### Fixed (return the value)
+
+```ts
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```ts
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 #### Do
 
 ```ts
@@ -100,6 +162,22 @@ load().then((data) => {
 ```tsx
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+#### Fixed (return the value)
+
+```tsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+#### Fixed (return undefined)
+
+```tsx
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 

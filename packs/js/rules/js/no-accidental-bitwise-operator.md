@@ -2,9 +2,8 @@
 id: js/no-accidental-bitwise-operator
 title: "No & or | in a condition"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "`&&` short-circuits and yields an operand rather than a number"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "`&&` short-circuits and yields an operand, while the bitwise test stays as is with an explicit nonzero check; the author picks"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-accidental-bitwise-operator]
 since: 0.5.0
@@ -15,14 +14,28 @@ The whole condition of an `if`, `while` or `do … while` is not a bitwise `&` o
 **Why:** In a condition `&` and `|` are almost always a typo for `&&` and `||`; they evaluate both sides and give a number.
 
 ```codelaw
-
 match:
   kind: binary_expression
-  has: { field: operator, regex: '^(&|\|)$' }
-  inside:
-    kind: parenthesized_expression
-    inside: { any: [{kind: if_statement}, {kind: while_statement}, {kind: do_statement}], field: condition }
+  all:
+    - has: { field: operator, regex: '^(&|\|)$' }
+    - inside:
+        kind: parenthesized_expression
+        inside: { any: [{kind: if_statement}, {kind: while_statement}, {kind: do_statement}], field: condition }
+    - any:
+        - { pattern: $A & $B, all: [{ pattern: $AND }] }
+        - { pattern: $A | $B, all: [{ pattern: $OR }] }
 message: "`&` and `|` are bitwise; use `&&` or `||` in a condition"
+fix:
+  choices:
+    - label: logical operator
+      default: true
+      fix:
+        - replace: { target: $AND, with: "$A && $B" }
+        - replace: { target: $OR, with: "$A || $B" }
+    - label: test the bits against zero
+      fix:
+        - replace: { target: $AND, with: "($A & $B) !== 0" }
+        - replace: { target: $OR, with: "($A | $B) !== 0" }
 ```
 
 ## How to fix
@@ -37,6 +50,22 @@ message: "`&` and `|` are bitwise; use `&&` or `||` in a condition"
 
 ```js
 if (ready & visible) {
+  show();
+}
+```
+
+#### Fixed (logical operator)
+
+```js
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```js
+if ((ready & visible) !== 0) {
   show();
 }
 ```
@@ -59,6 +88,22 @@ if (ready & visible) {
 }
 ```
 
+#### Fixed (logical operator)
+
+```jsx
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```jsx
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 #### Do
 
 ```jsx
@@ -77,6 +122,22 @@ if (ready & visible) {
 }
 ```
 
+#### Fixed (logical operator)
+
+```ts
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```ts
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 #### Do
 
 ```ts
@@ -91,6 +152,22 @@ if (ready && visible) {
 
 ```tsx
 if (ready & visible) {
+  show();
+}
+```
+
+#### Fixed (logical operator)
+
+```tsx
+if (ready && visible) {
+  show();
+}
+```
+
+#### Fixed (test the bits against zero)
+
+```tsx
+if ((ready & visible) !== 0) {
   show();
 }
 ```

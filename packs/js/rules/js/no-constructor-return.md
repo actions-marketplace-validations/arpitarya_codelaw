@@ -2,9 +2,8 @@
 id: js/no-constructor-return
 title: "A constructor returns no value"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the returned value may belong in a factory function"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "`return this;` and a primitive return in a class with no `extends` are ignored by the runtime, so dropping the value changes nothing; a primitive in a derived class is a suggestion and an object return has no edit"
 stability: preview
 ported_from: [eslint/no-constructor-return]
 since: 0.5.0
@@ -22,7 +21,22 @@ match:
     stopBy: { any: [{kind: function_declaration}, {kind: function_expression}, {kind: method_definition}] }
     kind: method_definition
     has: { field: name, regex: '^constructor$' }
+  any:
+    - all: [{ pattern: $THIS }, { pattern: "return this;" }]
+    - all:
+        - { pattern: $PRIM }
+        - has: { any: [{ kind: number }, { kind: string }, { kind: "true" }, { kind: "false" }, { kind: "null" }] }
+    - { kind: return_statement }
+auto_when:
+  any:
+    - pattern: "return this;"
+    - all:
+        - has: { any: [{ kind: number }, { kind: string }, { kind: "true" }, { kind: "false" }, { kind: "null" }] }
+        - not: { inside: { stopBy: end, any: [{kind: class_declaration}, {kind: class}], has: { kind: class_heritage } } }
 message: "Do not return a value from a constructor"
+fix:
+  - replace: { target: $THIS, with: "return;" }
+  - replace: { target: $PRIM, with: "return;" }
 ```
 
 ## How to fix
@@ -38,7 +52,17 @@ message: "Do not return a value from a constructor"
 ```js
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```js
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -60,7 +84,17 @@ class A {
 ```jsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -82,7 +116,17 @@ class A {
 ```ts
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```ts
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -104,7 +148,17 @@ class A {
 ```tsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```

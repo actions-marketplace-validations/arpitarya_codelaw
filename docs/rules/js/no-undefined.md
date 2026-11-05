@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/taste` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to omit the value or write `void 0` depends on the position) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`void 0` stands wherever `undefined` does, but leaving the value out may read better; the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-undefined` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>   # the resolved setting, and where it came 
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Leave the value out where the position allows it, as the message says; otherwise `void 0` is what the fix writes.
 
 ## Examples
 
@@ -131,6 +131,12 @@ codelaw config --print --for <file>   # the resolved setting, and where it came 
 
 ```js
 let value = undefined;
+```
+
+#### Fixed
+
+```js
+let value = void 0;
 ```
 
 #### Do
@@ -147,6 +153,12 @@ let value;
 let value = undefined;
 ```
 
+#### Fixed
+
+```jsx
+let value = void 0;
+```
+
 #### Do
 
 ```jsx
@@ -161,6 +173,12 @@ let value;
 let value = undefined;
 ```
 
+#### Fixed
+
+```ts
+let value = void 0;
+```
+
 #### Do
 
 ```ts
@@ -173,6 +191,12 @@ let value;
 
 ```tsx
 let value = undefined;
+```
+
+#### Fixed
+
+```tsx
+let value = void 0;
 ```
 
 #### Do

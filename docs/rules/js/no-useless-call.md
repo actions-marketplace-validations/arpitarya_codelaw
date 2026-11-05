@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the plain call is equivalent only when `this` is as written; the author confirms) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a call on a plain identifier with `undefined`, or on `o.m` with `o` as the receiver, is the plain call exactly; a `null` this or a complex callee stays a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-useless-call` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 
 ## How to fix
 
-1. Call the function directly.
+1. Call the function directly. The fix does it for a plain identifier called with `undefined`, and for `o.m.call(o, ...)`; any other callee is offered for a reviewer to confirm.
 
 ## Examples
 
@@ -134,6 +134,12 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 
 ```js
 greet.call(undefined, 'Ada');
+```
+
+#### Fixed
+
+```js
+greet('Ada');
 ```
 
 #### Do
@@ -150,6 +156,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+#### Fixed
+
+```jsx
+greet('Ada');
+```
+
 #### Do
 
 ```jsx
@@ -164,6 +176,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+#### Fixed
+
+```ts
+greet('Ada');
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ greet('Ada');
 
 ```tsx
 greet.call(undefined, 'Ada');
+```
+
+#### Fixed
+
+```tsx
+greet('Ada');
 ```
 
 #### Do

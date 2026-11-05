@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether `undefined` should match too decides between `=== null` and an explicit two-way check) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a plain identifier compared with `null` through `==` or `!=`: the explicit two-way check is exact; other operands are reported as suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-eq-null` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 if (value == null) reset();
 ```
 
+#### Fixed
+
+```js
+if ((value === null || value === undefined)) reset();
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ if (value === null) reset();
 
 ```jsx
 if (value == null) reset();
+```
+
+#### Fixed
+
+```jsx
+if ((value === null || value === undefined)) reset();
 ```
 
 #### Do
@@ -164,6 +176,12 @@ if (value === null) reset();
 if (value == null) reset();
 ```
 
+#### Fixed
+
+```ts
+if ((value === null || value === undefined)) reset();
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ if (value === null) reset();
 
 ```tsx
 if (value == null) reset();
+```
+
+#### Fixed
+
+```tsx
+if ((value === null || value === undefined)) reset();
 ```
 
 #### Do

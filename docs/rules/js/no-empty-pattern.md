@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the pattern was meant to bind needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (both edits change behaviour (the empty pattern throws on null today): the reviewer picks a default or the bare name; an empty pattern that is not a property's value has no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-empty-pattern` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>       # the resolved setting, and where it c
 const { a: {} } = options;
 ```
 
+#### Fixed (default to an empty object)
+
+```js
+const { a = {} } = options;
+```
+
+#### Fixed (bind the value by name)
+
+```js
+const { a } = options;
+```
+
 #### Do
 
 ```js
@@ -145,6 +157,18 @@ const { a = {} } = options;
 
 ```jsx
 const { a: {} } = options;
+```
+
+#### Fixed (default to an empty object)
+
+```jsx
+const { a = {} } = options;
+```
+
+#### Fixed (bind the value by name)
+
+```jsx
+const { a } = options;
 ```
 
 #### Do
@@ -161,6 +185,18 @@ const { a = {} } = options;
 const { a: {} } = options;
 ```
 
+#### Fixed (default to an empty object)
+
+```ts
+const { a = {} } = options;
+```
+
+#### Fixed (bind the value by name)
+
+```ts
+const { a } = options;
+```
+
 #### Do
 
 ```ts
@@ -173,6 +209,18 @@ const { a = {} } = options;
 
 ```tsx
 const { a: {} } = options;
+```
+
+#### Fixed (default to an empty object)
+
+```tsx
+const { a = {} } = options;
+```
+
+#### Fixed (bind the value by name)
+
+```tsx
+const { a } = options;
 ```
 
 #### Do

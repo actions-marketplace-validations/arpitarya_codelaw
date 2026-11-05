@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the name to give the value is the author's choice) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the name to give the value is the author's choice, and no code holds it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-import/no-anonymous-default-export` |

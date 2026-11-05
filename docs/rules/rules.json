@@ -14671,8 +14671,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the default should do is the author's",
+   "fix": "suggest",
+   "fix_reason": "what the default does with an unmatched value is chosen: a quiet `break` or a thrown error",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -15514,8 +15514,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the condition or the update is wrong needs the author",
+   "fix": "suggest",
+   "fix_reason": "whether the update or the comparison is the wrong half needs the author; both flips are offered",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -15852,8 +15852,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the filter (own keys, or a loop over `Object.keys`) is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "looping over the own keys or guarding with `Object.hasOwn` both drop inherited keys; the author picks the form",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -16322,7 +16322,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "the name to give the value is the author's choice",
+   "fix_reason": "the name to give the value is the author's choice, and no code holds it",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -18191,7 +18191,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "which property the tag is for is the author's to say",
+   "fix_reason": "the property name the tag documents is in no code to copy; the author supplies it",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -19731,8 +19731,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "`&&` short-circuits and yields an operand rather than a number",
+   "fix": "suggest",
+   "fix_reason": "`&&` short-circuits and yields an operand, while the bitwise test stays as is with an explicit nonzero check; the author picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -19781,8 +19781,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "pushing onto the accumulator changes the callback's shape; the author rewrites it",
+   "fix": "auto",
+   "fix_reason": "a push onto an array-literal start value nothing else holds is auto; any other start value, a nested function in the elements, or the object form is a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -20072,8 +20072,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "`push` mutates the array in place, which other holders of the old array would see",
+   "fix": "suggest",
+   "fix_reason": "`push` mutates the array in place, which other holders of the old array would see, and `concat` of a non-array adds the value while a spread throws",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -20604,8 +20604,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the rewrite depends on what the executor does",
+   "fix": "suggest",
+   "fix_reason": "dropping `async` sends a thrown error to the promise instead of an unhandled rejection, which the author confirms; offered only when the executor has no `await`",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -20625,7 +20625,7 @@
    ],
    "example": {
     "language": "javascript",
-    "dont": "const data = new Promise(async (resolve) => {\n  resolve(await load());\n});",
+    "dont": "const data = new Promise(async (resolve) => {\n  resolve(load());\n});",
     "do": "const data = load();"
    },
    "ported_from": [
@@ -20755,8 +20755,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the iterations may depend on each other; only the author knows if they can run together",
+   "fix": "suggest",
+   "fix_reason": "`Promise.all` runs the iterations together, which changes ordering and failure handling; the reviewer confirms they are independent",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -20893,8 +20893,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `&&` / `||` was meant, or the bit operation is intended, is the author's call",
+   "fix": "suggest",
+   "fix_reason": "`&&` / `||` differ from `&` / `|` in value and short-circuiting; the reviewer confirms a boolean test was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -20938,8 +20938,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the right comparator depends on the values compared (numbers, strings)",
+   "fix": "suggest",
+   "fix_reason": "a numeric difference or a string comparison suits different values; the author picks by what is sorted",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -21184,8 +21184,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the code meant `startsWith`, a `slice` or a one-character string is the author's; the code is wrong in each case differently",
+   "fix": "suggest",
+   "fix_reason": "`startsWith` is one reading of the comparison; a `slice` or a one-character string is another, so the author confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -21377,8 +21377,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `0` or `-0` was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "`0` keeps what the code does today, `Object.is` tests for -0 as the code seems to intend; the author picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -21428,8 +21428,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a comparison or an assignment was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "a mistyped `=` or an intended assignment look alike; the author picks `===` or the doubled parentheses",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -21843,22 +21843,22 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the returned value may belong in a factory function",
+   "fix": "auto",
+   "fix_reason": "`return this;` and a primitive return in a class with no `extends` are ignored by the runtime, so dropping the value changes nothing; a primitive in a derived class is a suggestion and an object return has no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
    "presets": [],
    "options": {},
-   "dont": "return {};",
+   "dont": "return this;",
    "do": "this.x = 1;",
    "fix_steps": [
     "Remove the value, or move the logic into a static factory method."
    ],
    "example": {
     "language": "javascript",
-    "dont": "class A {\n  constructor() {\n    return {};\n  }\n}",
+    "dont": "class A {\n  constructor() {\n    return this;\n  }\n}",
     "do": "class A {\n  constructor() {\n    this.x = 1;\n  }\n}"
    },
    "ported_from": [
@@ -21888,8 +21888,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "inverting the condition restructures the loop body",
+   "fix": "auto",
+   "fix_reason": "an unlabelled `continue` guarding the rest of a loop body is rewritten to a negated `if` around that rest; a body that declares a function, or any other `continue`, is not auto",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22135,8 +22135,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the code meant to clear is a decision",
+   "fix": "suggest",
+   "fix_reason": "`delete x` does nothing on a binding; resetting it to `undefined` is the closest live meaning, which the reviewer confirms (the author may have meant another value or to drop the line)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22874,8 +22874,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to fill the block, remove it or document it needs the author",
+   "fix": "auto",
+   "fix_reason": "an empty block standing alone as a statement has no effect and is removed; an empty catch, if, loop or switch body carries no edit (it needs a reason or a body)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22887,16 +22887,16 @@
     }
    ],
    "options": {},
-   "dont": "} catch (e) {}",
-   "do": "} catch (e) {",
+   "dont": "{",
+   "do": null,
    "fix_steps": [
     "If the block is unfinished, write its code.",
     "If it's meant to be empty, put a comment in it saying why."
    ],
    "example": {
     "language": "javascript",
-    "dont": "try {\n  load();\n} catch (e) {}",
-    "do": "try {\n  load();\n} catch (e) {\n  // The cache is optional: a failed load is not an error.\n}"
+    "dont": "function f() {\n  {\n  }\n  run();\n}",
+    "do": "function f() {\n  run();\n}"
    },
    "ported_from": [
     "eslint/no-empty"
@@ -23071,8 +23071,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the pattern was meant to bind needs the author",
+   "fix": "suggest",
+   "fix_reason": "both edits change behaviour (the empty pattern throws on null today): the reviewer picks a default or the bare name; an empty pattern that is not a property's value has no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -23219,8 +23219,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `undefined` should match too decides between `=== null` and an explicit two-way check",
+   "fix": "auto",
+   "fix_reason": "a plain identifier compared with `null` through `==` or `!=`: the explicit two-way check is exact; other operands are reported as suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25071,8 +25071,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving to `Symbol.iterator` rewrites the iterator",
+   "fix": "suggest",
+   "fix_reason": "the edit activates the standard iteration protocol in place of the dead SpiderMonkey one, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25346,8 +25346,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the block may be a lost `if`; the author decides",
+   "fix": "auto",
+   "fix_reason": "the match already excludes blocks that declare a let, const, class or function, so unwrapping a bare block and keeping its statements is exact",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25684,8 +25684,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended expression may have been `a += b` or `a = a + b`; only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the target is repeated on the right, so either the compound form or the long form was meant: both are offered and the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25734,8 +25734,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "splitting the chain into statements is a change of the author's code shape",
+   "fix": "auto",
+   "fix_reason": "a chain of identifier targets written as a whole expression statement splits right to left with the same evaluation order; member targets, declarators and chains inside larger expressions carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25872,8 +25872,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "swapping the branches moves code; the author confirms",
+   "fix": "auto",
+   "fix_reason": "`!a` and `a` are exact complements, so dropping the negation (or flipping `!==` and `!=`) and swapping the two branches keeps the behaviour",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26163,8 +26163,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the clearer form — `if`, `switch` or a lookup table — is the author's to choose",
+   "fix": "auto",
+   "fix_reason": "a nested conditional that is the whole value of a `return` or an arrow's concise body becomes an exact if/return chain; nesting elsewhere (declarations, arguments, parentheses) carries no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26180,14 +26180,14 @@
     }
    ],
    "options": {},
-   "dont": "const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';",
-   "do": "function size(n) {",
+   "dont": "return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';",
+   "do": "if (n > 100) return 'large';",
    "fix_steps": [
     "Rewrite as an `if`/`else` chain or a lookup."
    ],
    "example": {
     "language": "javascript",
-    "dont": "const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';",
+    "dont": "function size(n) {\n  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';\n}",
     "do": "function size(n) {\n  if (n > 100) return 'large';\n  if (n > 10) return 'medium';\n  return 'small';\n}"
    },
    "ported_from": [
@@ -26264,8 +26264,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a length or a single element was meant decides the rewrite",
+   "fix": "suggest",
+   "fix_reason": "a length and a single element give different arrays: both rewrites are offered and the reviewer picks the one that was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26362,8 +26362,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the function the string held has to be written as code",
+   "fix": "suggest",
+   "fix_reason": "a function expression with the literal parameters and body is the closest equivalent; it closes over local scope instead of global scope, which the reviewer confirms (calls with computed or escaped strings carry no edit)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26502,8 +26502,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the digit or a literal backslash was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the escape means just the digit today, but a literal backslash may have been meant: both are offered and the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -27032,8 +27032,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the value may have been meant for `resolve`; the author decides",
+   "fix": "auto",
+   "fix_reason": "dropping an ignored return value is exact; a call to `resolve` or `reject`, or a call taking one of them, is auto, and any other returned value (it may have been meant for `resolve`) reports suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27077,8 +27077,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement depends on whether it was read or written",
+   "fix": "suggest",
+   "fix_reason": "`Object.getPrototypeOf` and `Object.setPrototypeOf` differ from `__proto__` for null-prototype objects and own `__proto__` properties, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27168,8 +27168,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to rename or to assign needs the author",
+   "fix": "auto",
+   "fix_reason": "a `var` redeclaration of a name already declared in the scope is just an assignment, so `var x = e;` becomes `x = e;` and a bare `var x;` is dropped; other redeclarations (let, function, destructured, multi-declarator) carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -27413,8 +27413,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the statement is rewritten as `export default`",
+   "fix": "suggest",
+   "fix_reason": "the statement is rewritten as `export default`; the reviewer confirms (a clause with several specifiers or a `from` source carries no edit)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27508,8 +27508,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "it may be a comparison or an assignment; the author decides",
+   "fix": "auto",
+   "fix_reason": "re-reading a plain identifier after assigning it gives the assigned value, so `return x = e` becomes `x = e; return x;` with the same behaviour; member targets (a getter may run) report suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27603,8 +27603,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "assigning a property to itself can run a setter, so removing it may change behaviour",
+   "fix": "suggest",
+   "fix_reason": "removing the statement is exact for a local identifier but hides what was meant to be assigned, which the reviewer confirms; a property or other target carries no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -27659,8 +27659,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended comparison is the author's",
+   "fix": "auto",
+   "fix_reason": "an identifier compared with itself by equality is a NaN test, so `x !== x` becomes `Number.isNaN(x)` and `x === x` becomes `!Number.isNaN(x)` with the same result; member operands and relational forms carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27704,8 +27704,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the expressions become separate statements, which changes the code shape",
+   "fix": "auto",
+   "fix_reason": "a comma sequence that is a whole expression statement or a return value splits into statements with the same evaluation order (two expressions); longer sequences and sequences elsewhere carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -28195,8 +28195,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "switching to backticks is right only if interpolation was meant",
+   "fix": "suggest",
+   "fix_reason": "switching to backticks is right only if interpolation was meant, which the reviewer confirms; a string holding a backtick or an escape carries no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -28534,8 +28534,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the error class and message are the author's",
+   "fix": "suggest",
+   "fix_reason": "the literal is wrapped in a new Error, which catchers testing `typeof` or the value will see as a different object; the reviewer picks the error class and message",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -28789,8 +28789,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to omit the value or write `void 0` depends on the position",
+   "fix": "suggest",
+   "fix_reason": "`void 0` stands wherever `undefined` does, but leaving the value out may read better; the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -28805,7 +28805,7 @@
    "dont": "let value = undefined;",
    "do": "let value;",
    "fix_steps": [
-    "Rewrite the code as the message says."
+    "Leave the value out where the position allows it, as the message says; otherwise `void 0` is what the fix writes."
    ],
    "example": {
     "language": "javascript",
@@ -29447,8 +29447,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what should happen to the try block's result is a decision",
+   "fix": "suggest",
+   "fix_reason": "removing the control statement lets the try or catch result through, and a value it carried is dropped; the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -29463,7 +29463,7 @@
    "dont": "return null;",
    "do": "cleanup();",
    "fix_steps": [
-    "Move the `return` or `throw` out of `finally` into the `try` or `catch` block."
+    "Check the statement removed was not carrying a value the function needs; if it was, move it into the `try` or `catch` block."
    ],
    "example": {
     "language": "javascript",
@@ -30073,8 +30073,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the plain call is equivalent only when `this` is as written; the author confirms",
+   "fix": "auto",
+   "fix_reason": "a call on a plain identifier with `undefined`, or on `o.m` with `o` as the receiver, is the plain call exactly; a `null` this or a complex callee stays a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -30084,7 +30084,7 @@
    "dont": "greet.call(undefined, 'Ada');",
    "do": "greet('Ada');",
    "fix_steps": [
-    "Call the function directly."
+    "Call the function directly. The fix does it for a plain identifier called with `undefined`, and for `o.m.call(o, ...)`; any other callee is offered for a reviewer to confirm."
    ],
    "example": {
     "language": "javascript",
@@ -30118,8 +30118,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the try block changes the scope of declarations inside it",
+   "fix": "auto",
+   "fix_reason": "the try block stays as a block, keeping its declarations scoped, and the same error rethrows; with a `finally` only the catch clause goes",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -30134,7 +30134,7 @@
    "dont": "try {",
    "do": null,
    "fix_steps": [
-    "If there is no `finally`, replace the `try` statement with the statements of its block.",
+    "If there is no `finally`, replace the `try` statement with the statements of its block (the fix keeps them in a block).",
     "If there is a `finally`, remove only the `catch` clause."
    ],
    "example": {
@@ -30928,8 +30928,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "dropping the tag is safe only once the author confirms no escape was meant to be added",
+   "fix": "auto",
+   "fix_reason": "without a backslash the cooked and raw strings are identical, so dropping the tag changes nothing",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31172,8 +31172,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement — `undefined`, or handling the promise — depends on the use",
+   "fix": "auto",
+   "fix_reason": "`void <literal>` is `undefined` exactly; `void e;` as a statement stays a suggestion, as the `void` may mark a promise left unhandled on purpose",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31183,7 +31183,7 @@
    "dont": "const nothing = void 0;",
    "do": "const nothing = undefined;",
    "fix_steps": [
-    "Write `undefined`, or handle the promise with `await` or `.catch()`."
+    "Write `undefined`, or handle the promise with `await` or `.catch()`; the fix writes `undefined` for `void` of a literal and offers the bare expression for a `void e;` statement."
    ],
    "example": {
     "language": "javascript",
@@ -33839,8 +33839,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the error class and message are the author's",
+   "fix": "suggest",
+   "fix_reason": "the error class and message are the author's, so the reviewer confirms the `new Error(...)` the value is wrapped in",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -34995,8 +34995,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the callback should return is the author's to decide",
+   "fix": "suggest",
+   "fix_reason": "returning the last expression passes a new value downstream and `return undefined;` only silences the rule, so the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35011,7 +35011,7 @@
    "dont": "store(data);",
    "do": "return store(data);",
    "fix_steps": [
-    "Return the value the next step needs — often the inner promise the callback started — or throw if the callback found an error."
+    "Return the value the next step needs, or throw if the callback found an error; the fix offers `return` of the last expression, or `return undefined;` when nothing is meant to pass on."
    ],
    "example": {
     "language": "javascript",
@@ -35090,8 +35090,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "where the error should go — a `.catch()`, a `return` or an `await` — is the author's decision",
+   "fix": "suggest",
+   "fix_reason": "returning or awaiting the chain changes the function's result and timing, and a `.catch()` is a decision about the error; the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35106,12 +35106,12 @@
    "dont": "save(doc).then(() => notify());",
    "do": "save(doc)",
    "fix_steps": [
-    "Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does."
+    "Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does; the fix offers the last two."
    ],
    "example": {
     "language": "javascript",
-    "dont": "save(doc).then(() => notify());",
-    "do": "save(doc)\n  .then(() => notify())\n  .catch((err) => report(err));"
+    "dont": "async function run(doc) {\n  save(doc).then(() => notify());\n}",
+    "do": "async function run(doc) {\n  save(doc)\n    .then(() => notify())\n    .catch((err) => report(err));\n}"
    },
    "ported_from": [
     "eslint-plugin-promise/catch-or-return"
@@ -35141,7 +35141,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "moving the call out of the promise needs a choice between `nodeify`-style wrappers, `setImmediate` or rewriting the caller",
+   "fix_reason": "any edit leaves the callback call inside the promise chain; the call has to move out, which restructures the caller",
    "severity": "warn",
    "stability": "preview",
    "since": "0.5.0",
@@ -35190,8 +35190,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the first or the second call is the right one is the author's call",
+   "fix": "suggest",
+   "fix_reason": "early `return` also skips the later statements and deleting the late call hides the bug; the reviewer picks which call is the right one",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35201,7 +35201,7 @@
    "dont": "if (bad) reject(err);",
    "do": "if (bad) return reject(err);",
    "fix_steps": [
-    "Add the missing `return` after the first call, or delete the call that should not run."
+    "Add the missing `return` after the first call, or delete the call that should not run; the fix offers both."
    ],
    "example": {
     "language": "javascript",
@@ -35280,8 +35280,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "flattening a chain moves code between callbacks and may need values carried along",
+   "fix": "suggest",
+   "fix_reason": "hoisting the inner `.then` onto the outer chain is only equivalent when its callback uses nothing the outer callback declared, which the reviewer confirms",
    "severity": "warn",
    "stability": "preview",
    "since": "0.5.0",
@@ -35296,7 +35296,7 @@
    "dont": "getUser().then((user) =>",
    "do": "getUser()",
    "fix_steps": [
-    "Return the inner promise from the outer callback and move its `.then()` up to the outer chain."
+    "Return the inner promise from the outer callback and move its `.then()` up to the outer chain; the fix does this for a single-argument `.then` that is the arrow callback's whole body, and the reviewer checks the moved callback uses nothing the outer callback declared."
    ],
    "example": {
     "language": "javascript",
@@ -35428,8 +35428,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value belongs in a `.then()` before the `finally` or should be dropped is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the returned value is dropped from the result either way; the reviewer confirms it should not move to a `.then()`",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35478,8 +35478,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "turning `return Promise.reject(e)` into `throw e` changes the statement's shape inside code the author may want to restructure",
+   "fix": "auto",
+   "fix_reason": "`return Promise.resolve(x)` is `return x` and `return Promise.reject(e)` is `throw e`; only a callback with a try around the return, where the new throw would be caught, stays a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35494,8 +35494,7 @@
    "dont": "return Promise.resolve(user.name);",
    "do": "return user.name;",
    "fix_steps": [
-    "Replace `return Promise.resolve(x)` with `return x`.",
-    "Replace `return Promise.reject(e)` with `throw e`."
+    "Replace `return Promise.resolve(x)` with `return x`, and `return Promise.reject(e)` with `throw e`; the fix does both, and reports a suggestion where a `try` in the callback would catch the new `throw`."
    ],
    "example": {
     "language": "javascript",
@@ -35718,8 +35717,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the standard replacement depends on what the library method did",
+   "fix": "suggest",
+   "fix_reason": "library methods differ in concurrency and callback arguments from the standard ones, so the reviewer confirms the rewrite; a method with no standard equivalent has no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -35729,7 +35728,7 @@
    "dont": "const out = Promise.map(items, load);",
    "do": "const out = Promise.all(items.map(load));",
    "fix_steps": [
-    "Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`) or import the library explicitly."
+    "Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`, a `setTimeout` promise for `Promise.delay`) or import the library explicitly; the fix writes those two."
    ],
    "example": {
     "language": "javascript",
@@ -39981,8 +39980,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `async` or an `await` is missing is the author's call",
+   "fix": "suggest",
+   "fix_reason": "dropping `async` changes the function to return its value directly, which callers may not expect; the reviewer confirms, since an `await` the author forgot is the other fix",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -39992,7 +39991,7 @@
    "dont": "async function load() {",
    "do": "function load() {",
    "fix_steps": [
-    "If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise."
+    "If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise; the fix removes `async`."
    ],
    "example": {
     "language": "javascript",
@@ -40265,8 +40264,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error",
+   "fix": "suggest",
+   "fix_reason": "the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error; the reviewer confirms the pattern still compiles",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -40276,7 +40275,7 @@
    "dont": "const word = /\\w+/g;",
    "do": "const word = /\\w+/gu;",
    "fix_steps": [
-    "Add `u` after the closing slash and check that the pattern still compiles."
+    "Check the pattern still compiles with the `u` flag."
    ],
    "example": {
     "language": "javascript",
@@ -40310,8 +40309,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to yield or to drop the `*` needs the author",
+   "fix": "suggest",
+   "fix_reason": "dropping the `*` makes a plain function, right only if the generator was never meant to yield; the reviewer confirms, since adding the missing `yield` is the author's",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -40326,7 +40325,7 @@
    "dont": "return 1;",
    "do": "yield 1;",
    "fix_steps": [
-    "Add the `yield` the generator was meant to have, or remove the `*`."
+    "Add the `yield` the generator was meant to have, or remove the `*`; the fix removes the `*`."
    ],
    "example": {
     "language": "javascript",
@@ -40558,8 +40557,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the description is the author's",
+   "fix": "suggest",
+   "fix_reason": "the description is the author's; the fix offers the binding or property name and the reviewer confirms it",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -40971,8 +40970,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the comparison's operator decides whether to negate",
+   "fix": "suggest",
+   "fix_reason": "the comparison is constant today, so the fix changes behaviour by design; the operator picks the negation and the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -40987,8 +40986,7 @@
    "dont": "if (price === NaN) {",
    "do": "if (Number.isNaN(price)) {",
    "fix_steps": [
-    "Replace `x === NaN` or `x == NaN` with `Number.isNaN(x)`.",
-    "Replace `x !== NaN` or `x != NaN` with `!Number.isNaN(x)`."
+    "Check the branch that ran on a comparison with `NaN` (always false) is the one meant, then keep the `Number.isNaN` form."
    ],
    "example": {
     "language": "javascript",

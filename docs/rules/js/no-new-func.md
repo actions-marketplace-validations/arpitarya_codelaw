@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the function the string held has to be written as code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a function expression with the literal parameters and body is the closest equivalent; it closes over local scope instead of global scope, which the reviewer confirms (calls with computed or escaped strings carry no edit)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-new-func` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+#### Fixed
+
+```js
+const add = function (a, b) { return a + b };
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ const add = (a, b) => a + b;
 
 ```jsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+#### Fixed
+
+```jsx
+const add = function (a, b) { return a + b };
 ```
 
 #### Do
@@ -164,6 +176,12 @@ const add = (a, b) => a + b;
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+#### Fixed
+
+```ts
+const add = function (a, b) { return a + b };
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const add = (a, b) => a + b;
 
 ```tsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+#### Fixed
+
+```tsx
+const add = function (a, b) { return a + b };
 ```
 
 #### Do

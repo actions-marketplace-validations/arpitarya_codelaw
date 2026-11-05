@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the description is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the description is the author's; the fix offers the binding or property name and the reviewer confirms it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/symbol-description` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 const key = Symbol();
 ```
 
+#### Fixed
+
+```js
+const key = Symbol('key');
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ const key = Symbol('key');
 
 ```jsx
 const key = Symbol();
+```
+
+#### Fixed
+
+```jsx
+const key = Symbol('key');
 ```
 
 #### Do
@@ -164,6 +176,12 @@ const key = Symbol('key');
 const key = Symbol();
 ```
 
+#### Fixed
+
+```ts
+const key = Symbol('key');
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const key = Symbol('key');
 
 ```tsx
 const key = Symbol();
+```
+
+#### Fixed
+
+```tsx
+const key = Symbol('key');
 ```
 
 #### Do

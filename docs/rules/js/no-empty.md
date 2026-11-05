@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to fill the block, remove it or document it needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an empty block standing alone as a statement has no effect and is removed; an empty catch, if, loop or switch body carries no edit (it needs a reason or a body)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-empty` |
@@ -132,18 +132,18 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 #### Don't
 
 ```js
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```js
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -152,18 +152,18 @@ try {
 #### Don't
 
 ```jsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```jsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -172,18 +172,18 @@ try {
 #### Don't
 
 ```ts
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```ts
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -192,18 +192,18 @@ try {
 #### Don't
 
 ```tsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 #### Do
 
 ```tsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 

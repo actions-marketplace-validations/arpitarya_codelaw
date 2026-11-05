@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the default should do is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (what the default does with an unmatched value is chosen: a quiet `break` or a thrown error) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/default-case` |
@@ -139,6 +139,28 @@ switch (x) {
 }
 ```
 
+#### Fixed (break)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 #### Do
 
 ```js
@@ -159,6 +181,28 @@ switch (x) {
 switch (x) {
   case 1:
     a();
+}
+```
+
+#### Fixed (break)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 
@@ -185,6 +229,28 @@ switch (x) {
 }
 ```
 
+#### Fixed (break)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 #### Do
 
 ```ts
@@ -205,6 +271,28 @@ switch (x) {
 switch (x) {
   case 1:
     a();
+}
+```
+
+#### Fixed (break)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+#### Fixed (throw)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 

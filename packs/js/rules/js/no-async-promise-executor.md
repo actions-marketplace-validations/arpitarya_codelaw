@@ -2,9 +2,8 @@
 id: js/no-async-promise-executor
 title: "A Promise executor is not an async function"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the rewrite depends on what the executor does"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "dropping `async` sends a thrown error to the promise instead of an unhandled rejection, which the author confirms; offered only when the executor has no `await`"
 stability: preview
 ported_from: [eslint/no-async-promise-executor]
 since: 0.1.0
@@ -18,10 +17,26 @@ The function passed to `new Promise(...)` is not `async`.
 ```codelaw
 match:
   any:
+    - all:
+        - { pattern: $W1 }
+        - pattern: new Promise(async ($$$P1) => $$$B1)
+        - not: { regex: '\bawait\b' }
+    - all:
+        - { pattern: $W2 }
+        - pattern: new Promise(async function ($$$P2) { $$$B2 })
+        - not: { regex: '\bawait\b' }
+    - all:
+        - { pattern: $W3 }
+        - pattern: new Promise(async $P3 => $$$B3)
+        - not: { regex: '\bawait\b' }
     - pattern: new Promise(async ($$$P) => $$$B)
     - pattern: new Promise(async function ($$$P) { $$$B })
     - pattern: new Promise(async $P => $$$B)
 message: "An async Promise executor loses its errors; await inside a plain async function instead"
+fix:
+  - replace: { target: $W1, with: "new Promise(($$$P1) => $$$B1)" }
+  - replace: { target: $W2, with: "new Promise(function ($$$P2) { $$$B2 })" }
+  - replace: { target: $W3, with: "new Promise($P3 => $$$B3)" }
 ```
 
 ## How to fix
@@ -37,7 +52,15 @@ message: "An async Promise executor loses its errors; await inside a plain async
 
 ```js
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```js
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -53,7 +76,15 @@ const data = load();
 
 ```jsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```jsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -69,7 +100,15 @@ const data = load();
 
 ```ts
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```ts
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -85,7 +124,15 @@ const data = load();
 
 ```tsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```tsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 

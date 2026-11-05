@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the expressions become separate statements, which changes the code shape) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a comma sequence that is a whole expression statement or a return value splits into statements with the same evaluation order (two expressions); longer sequences and sequences elsewhere carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-sequences` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>   # the resolved setting, and where it came 
 a = 1, b = 2;
 ```
 
+#### Fixed
+
+```js
+a = 1; b = 2;
+```
+
 #### Do
 
 ```js
@@ -149,6 +155,12 @@ b = 2;
 
 ```jsx
 a = 1, b = 2;
+```
+
+#### Fixed
+
+```jsx
+a = 1; b = 2;
 ```
 
 #### Do
@@ -166,6 +178,12 @@ b = 2;
 a = 1, b = 2;
 ```
 
+#### Fixed
+
+```ts
+a = 1; b = 2;
+```
+
 #### Do
 
 ```ts
@@ -179,6 +197,12 @@ b = 2;
 
 ```tsx
 a = 1, b = 2;
+```
+
+#### Fixed
+
+```tsx
+a = 1; b = 2;
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the rewrite depends on what the executor does) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (dropping `async` sends a thrown error to the promise instead of an unhandled rejection, which the author confirms; offered only when the executor has no `await`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-async-promise-executor` |
@@ -133,7 +133,15 @@ codelaw config --print --for <file>                # the resolved setting, and w
 
 ```js
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```js
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -149,7 +157,15 @@ const data = load();
 
 ```jsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```jsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -165,7 +181,15 @@ const data = load();
 
 ```ts
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```ts
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -181,7 +205,15 @@ const data = load();
 
 ```tsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+#### Fixed
+
+```tsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 

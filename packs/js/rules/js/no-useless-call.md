@@ -2,9 +2,8 @@
 id: js/no-useless-call
 title: "No needless call or apply"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the plain call is equivalent only when `this` is as written; the author confirms"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a call on a plain identifier with `undefined`, or on `o.m` with `o` as the receiver, is the plain call exactly; a `null` this or a complex callee stays a suggestion"
 stability: preview
 ported_from: [eslint/no-useless-call]
 since: 0.5.0
@@ -18,14 +17,23 @@ since: 0.5.0
 match:
   any:
     - pattern: $F.call(undefined, $$$A)
+      all: [{ pattern: $CU }]
     - pattern: $F.call(null, $$$A)
+      all: [{ pattern: $CN }]
     - pattern: $O.$M.call($O, $$$A)
+      all: [{ pattern: $CM }]
 message: "This `.call()` is not needed; call the function directly"
+auto_when:
+  regex: '^([A-Za-z_$][\w$]*\.call\(\s*undefined\b|[A-Za-z_$][\w$]*\.[A-Za-z_$][\w$]*\.call\()'
+fix:
+  - replace: { target: $CU, with: "$F($$$A)" }
+  - replace: { target: $CN, with: "$F($$$A)" }
+  - replace: { target: $CM, with: "$O.$M($$$A)" }
 ```
 
 ## How to fix
 
-1. Call the function directly.
+1. Call the function directly. The fix does it for a plain identifier called with `undefined`, and for `o.m.call(o, ...)`; any other callee is offered for a reviewer to confirm.
 
 ## Examples
 
@@ -35,6 +43,12 @@ message: "This `.call()` is not needed; call the function directly"
 
 ```js
 greet.call(undefined, 'Ada');
+```
+
+#### Fixed
+
+```js
+greet('Ada');
 ```
 
 #### Do
@@ -51,6 +65,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+#### Fixed
+
+```jsx
+greet('Ada');
+```
+
 #### Do
 
 ```jsx
@@ -65,6 +85,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+#### Fixed
+
+```ts
+greet('Ada');
+```
+
 #### Do
 
 ```ts
@@ -77,6 +103,12 @@ greet('Ada');
 
 ```tsx
 greet.call(undefined, 'Ada');
+```
+
+#### Fixed
+
+```tsx
+greet('Ada');
 ```
 
 #### Do

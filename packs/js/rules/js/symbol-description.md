@@ -2,9 +2,8 @@
 id: js/symbol-description
 title: "A Symbol has a description"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the description is the author's"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the description is the author's; the fix offers the binding or property name and the reviewer confirms it"
 stability: preview
 ported_from: [eslint/symbol-description]
 since: 0.5.0
@@ -17,7 +16,15 @@ since: 0.5.0
 ```codelaw
 match:
   pattern: Symbol()
+  any:
+    - inside: { kind: variable_declarator, has: { field: name, kind: identifier, pattern: $N } }
+      has: { field: arguments, pattern: $ARGS }
+    - inside: { kind: pair, has: { field: key, kind: property_identifier, pattern: $N } }
+      has: { field: arguments, pattern: $ARGS }
+    - kind: call_expression
 message: "Give the symbol a description"
+fix:
+  - replace: { target: $ARGS, with: "('$N')" }
 ```
 
 ## How to fix
@@ -34,6 +41,12 @@ message: "Give the symbol a description"
 const key = Symbol();
 ```
 
+#### Fixed
+
+```js
+const key = Symbol('key');
+```
+
 #### Do
 
 ```js
@@ -46,6 +59,12 @@ const key = Symbol('key');
 
 ```jsx
 const key = Symbol();
+```
+
+#### Fixed
+
+```jsx
+const key = Symbol('key');
 ```
 
 #### Do
@@ -62,6 +81,12 @@ const key = Symbol('key');
 const key = Symbol();
 ```
 
+#### Fixed
+
+```ts
+const key = Symbol('key');
+```
+
 #### Do
 
 ```ts
@@ -74,6 +99,12 @@ const key = Symbol('key');
 
 ```tsx
 const key = Symbol();
+```
+
+#### Fixed
+
+```tsx
+const key = Symbol('key');
 ```
 
 #### Do

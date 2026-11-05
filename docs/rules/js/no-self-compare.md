@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended comparison is the author's) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an identifier compared with itself by equality is a NaN test, so `x !== x` becomes `Number.isNaN(x)` and `x === x` becomes `!Number.isNaN(x)` with the same result; member operands and relational forms carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-self-compare` |

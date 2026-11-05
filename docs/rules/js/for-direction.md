@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the condition or the update is wrong needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether the update or the comparison is the wrong half needs the author; both flips are offered) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/for-direction` |
@@ -136,6 +136,22 @@ for (let i = 0; i < 10; i--) {
 }
 ```
 
+#### Fixed (flip the update)
+
+```js
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the comparison)
+
+```js
+for (let i = 0; i > 10; i--) {
+  draw(i);
+}
+```
+
 #### Do
 
 ```js
@@ -150,6 +166,22 @@ for (let i = 0; i < 10; i++) {
 
 ```jsx
 for (let i = 0; i < 10; i--) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the update)
+
+```jsx
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the comparison)
+
+```jsx
+for (let i = 0; i > 10; i--) {
   draw(i);
 }
 ```
@@ -172,6 +204,22 @@ for (let i = 0; i < 10; i--) {
 }
 ```
 
+#### Fixed (flip the update)
+
+```ts
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the comparison)
+
+```ts
+for (let i = 0; i > 10; i--) {
+  draw(i);
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +234,22 @@ for (let i = 0; i < 10; i++) {
 
 ```tsx
 for (let i = 0; i < 10; i--) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the update)
+
+```tsx
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+#### Fixed (flip the comparison)
+
+```tsx
+for (let i = 0; i > 10; i--) {
   draw(i);
 }
 ```

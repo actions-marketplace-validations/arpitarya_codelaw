@@ -2,9 +2,8 @@
 id: js/prefer-promise-reject-errors
 title: "Reject with an Error"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the error class and message are the author's"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the error class and message are the author's, so the reviewer confirms the `new Error(...)` the value is wrapped in"
 stability: preview
 ported_from: [eslint/prefer-promise-reject-errors]
 since: 0.5.0
@@ -25,6 +24,8 @@ constraints:
   R: { regex: '^reject$' }
   L: { any: [{kind: string}, {kind: number}, {kind: template_string}, {kind: 'null'}, {kind: 'true'}, {kind: 'false'}, {kind: object}, {kind: undefined}] }
 message: "Reject with an `Error`"
+fix:
+  - replace: { target: $L, with: "new Error($L)" }
 ```
 
 ## How to fix
@@ -41,6 +42,12 @@ message: "Reject with an `Error`"
 return Promise.reject('timeout');
 ```
 
+#### Fixed
+
+```js
+return Promise.reject(new Error('timeout'));
+```
+
 #### Do
 
 ```js
@@ -53,6 +60,12 @@ return Promise.reject(new Error('timeout'));
 
 ```jsx
 return Promise.reject('timeout');
+```
+
+#### Fixed
+
+```jsx
+return Promise.reject(new Error('timeout'));
 ```
 
 #### Do
@@ -69,6 +82,12 @@ return Promise.reject(new Error('timeout'));
 return Promise.reject('timeout');
 ```
 
+#### Fixed
+
+```ts
+return Promise.reject(new Error('timeout'));
+```
+
 #### Do
 
 ```ts
@@ -81,6 +100,12 @@ return Promise.reject(new Error('timeout'));
 
 ```tsx
 return Promise.reject('timeout');
+```
+
+#### Fixed
+
+```tsx
+return Promise.reject(new Error('timeout'));
 ```
 
 #### Do

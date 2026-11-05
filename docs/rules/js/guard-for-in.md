@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the filter (own keys, or a loop over `Object.keys`) is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (looping over the own keys or guarding with `Object.hasOwn` both drop inherited keys; the author picks the form) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/guard-for-in` |
@@ -138,6 +138,24 @@ for (const key in obj) {
 }
 ```
 
+#### Fixed (loop over the own keys)
+
+```js
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+#### Fixed (guard with hasOwn)
+
+```js
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
+}
+```
+
 #### Do
 
 ```js
@@ -153,6 +171,24 @@ for (const key of Object.keys(obj)) {
 ```jsx
 for (const key in obj) {
   use(obj[key]);
+}
+```
+
+#### Fixed (loop over the own keys)
+
+```jsx
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+#### Fixed (guard with hasOwn)
+
+```jsx
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
 }
 ```
 
@@ -174,6 +210,24 @@ for (const key in obj) {
 }
 ```
 
+#### Fixed (loop over the own keys)
+
+```ts
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+#### Fixed (guard with hasOwn)
+
+```ts
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
+}
+```
+
 #### Do
 
 ```ts
@@ -189,6 +243,24 @@ for (const key of Object.keys(obj)) {
 ```tsx
 for (const key in obj) {
   use(obj[key]);
+}
+```
+
+#### Fixed (loop over the own keys)
+
+```tsx
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+#### Fixed (guard with hasOwn)
+
+```tsx
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
 }
 ```
 

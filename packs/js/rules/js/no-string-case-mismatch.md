@@ -4,7 +4,7 @@ title: "No comparison that case conversion makes impossible"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the literal's intended case is the author's to confirm"
-fix_pending: "suggest"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [biome/correctness/noStringCaseMismatch]
 since: 0.5.0

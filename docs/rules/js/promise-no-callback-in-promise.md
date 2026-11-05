@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `warn` |
 | **Severity when named without one** | `warn` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the call out of the promise needs a choice between `nodeify`-style wrappers, `setImmediate` or rewriting the caller) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (any edit leaves the callback call inside the promise chain; the call has to move out, which restructures the caller) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/no-callback-in-promise` |

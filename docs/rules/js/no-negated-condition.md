@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (swapping the branches moves code; the author confirms) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`!a` and `a` are exact complements, so dropping the negation (or flipping `!==` and `!=`) and swapping the two branches keeps the behaviour) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-negated-condition`, `eslint-plugin-unicorn/no-negated-condition` |
@@ -137,6 +137,16 @@ if (!ok) {
 }
 ```
 
+#### Fixed
+
+```js
+if (ok) {
+  pass();
+} else {
+  fail();
+}
+```
+
 #### Do
 
 ```js
@@ -156,6 +166,16 @@ if (!ok) {
   fail();
 } else {
   pass();
+}
+```
+
+#### Fixed
+
+```jsx
+if (ok) {
+  pass();
+} else {
+  fail();
 }
 ```
 
@@ -181,6 +201,16 @@ if (!ok) {
 }
 ```
 
+#### Fixed
+
+```ts
+if (ok) {
+  pass();
+} else {
+  fail();
+}
+```
+
 #### Do
 
 ```ts
@@ -200,6 +230,16 @@ if (!ok) {
   fail();
 } else {
   pass();
+}
+```
+
+#### Fixed
+
+```tsx
+if (ok) {
+  pass();
+} else {
+  fail();
 }
 ```
 

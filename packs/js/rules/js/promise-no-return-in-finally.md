@@ -2,9 +2,8 @@
 id: js/promise-no-return-in-finally
 title: "A finally callback returns nothing"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the value belongs in a `.then()` before the `finally` or should be dropped is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the returned value is dropped from the result either way; the reviewer confirms it should not move to a `.then()`"
 stability: preview
 ported_from: [eslint-plugin-promise/no-return-in-finally]
 since: 0.5.0
@@ -18,6 +17,7 @@ The callback passed to `.finally()` does not `return` a value.
 match:
   kind: return_statement
   regex: '^return\s*[^\s;]'
+  has: { pattern: $E }
   inside:
     any: [{kind: arrow_function}, {kind: function_expression}]
     stopBy:
@@ -28,6 +28,7 @@ match:
         kind: call_expression
         has: { field: function, kind: member_expression, has: { field: property, regex: '^finally$' } }
 message: "A value returned from `.finally()` is ignored; move it to a `.then()` or drop it"
+fix: "$E;"
 ```
 
 ## How to fix
@@ -43,6 +44,14 @@ message: "A value returned from `.finally()` is ignored; move it to a `.then()` 
 ```js
 load().finally(() => {
   return cleanup();
+});
+```
+
+#### Fixed
+
+```js
+load().finally(() => {
+  cleanup();
 });
 ```
 
@@ -64,6 +73,14 @@ load().finally(() => {
 });
 ```
 
+#### Fixed
+
+```jsx
+load().finally(() => {
+  cleanup();
+});
+```
+
 #### Do
 
 ```jsx
@@ -82,6 +99,14 @@ load().finally(() => {
 });
 ```
 
+#### Fixed
+
+```ts
+load().finally(() => {
+  cleanup();
+});
+```
+
 #### Do
 
 ```ts
@@ -97,6 +122,14 @@ load().finally(() => {
 ```tsx
 load().finally(() => {
   return cleanup();
+});
+```
+
+#### Fixed
+
+```tsx
+load().finally(() => {
+  cleanup();
 });
 ```
 

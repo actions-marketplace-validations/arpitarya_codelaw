@@ -2,9 +2,8 @@
 id: js/no-redeclare
 title: "No variable is declared twice"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "whether to rename or to assign needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a `var` redeclaration of a name already declared in the scope is just an assignment, so `var x = e;` becomes `x = e;` and a bare `var x;` is dropped; other redeclarations (let, function, destructured, multi-declarator) carry no edit"
 stability: preview
 ported_from: [eslint/no-redeclare]
 since: 0.1.0
@@ -17,9 +16,33 @@ A name is declared once per scope: a second `var` or `function` with the same na
 ```codelaw
 match:
   kind: identifier
+  any:
+    - inside:
+        kind: variable_declarator
+        stopBy: neighbor
+        pattern: $D1
+        has: { field: value, pattern: $V1 }
+        inside:
+          kind: variable_declaration
+          stopBy: neighbor
+          pattern: $DECL1
+          not: { has: { kind: variable_declarator, nthChild: 2 } }
+    - inside:
+        kind: variable_declarator
+        stopBy: neighbor
+        not: { has: { field: value, pattern: $V2 } }
+        inside:
+          kind: variable_declaration
+          stopBy: neighbor
+          pattern: $DECL2
+          not: { has: { kind: variable_declarator, nthChild: 2 } }
+    - kind: identifier
 where:
   $$MATCH: [declaration, redeclared]
 message: "`$$MATCH` is already declared in this scope"
+fix:
+  - replace: { target: $DECL1, with: "$D1;" }
+  - remove: $DECL2
 ```
 
 ## How to fix

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to rename or to assign needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a `var` redeclaration of a name already declared in the scope is just an assignment, so `var x = e;` becomes `x = e;` and a bare `var x;` is dropped; other redeclarations (let, function, destructured, multi-declarator) carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-redeclare` |

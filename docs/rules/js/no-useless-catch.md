@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the try block changes the scope of declarations inside it) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the try block stays as a block, keeping its declarations scoped, and the same error rethrows; with a `finally` only the catch clause goes) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-useless-catch` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>       # the resolved setting, and where it c
 
 ## How to fix
 
-1. If there is no `finally`, replace the `try` statement with the statements of its block.
+1. If there is no `finally`, replace the `try` statement with the statements of its block (the fix keeps them in a block).
 2. If there is a `finally`, remove only the `catch` clause.
 
 ## Examples
@@ -135,6 +135,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+#### Fixed
+
+```js
+{
+  load();
 }
 ```
 
@@ -156,6 +164,14 @@ try {
 }
 ```
 
+#### Fixed
+
+```jsx
+{
+  load();
+}
+```
+
 #### Do
 
 ```jsx
@@ -174,6 +190,14 @@ try {
 }
 ```
 
+#### Fixed
+
+```ts
+{
+  load();
+}
+```
+
 #### Do
 
 ```ts
@@ -189,6 +213,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+#### Fixed
+
+```tsx
+{
+  load();
 }
 ```
 

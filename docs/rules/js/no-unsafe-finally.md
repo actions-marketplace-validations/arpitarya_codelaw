@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what should happen to the try block's result is a decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the control statement lets the try or catch result through, and a value it carried is dropped; the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-unsafe-finally` |
@@ -122,7 +122,7 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 
 ## How to fix
 
-1. Move the `return` or `throw` out of `finally` into the `try` or `catch` block.
+1. Check the statement removed was not carrying a value the function needs; if it was, move it into the `try` or `catch` block.
 
 ## Examples
 
@@ -136,6 +136,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+#### Fixed
+
+```js
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```
@@ -166,6 +177,17 @@ function load() {
 }
 ```
 
+#### Fixed
+
+```jsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 #### Do
 
 ```jsx
@@ -192,6 +214,17 @@ function load() {
 }
 ```
 
+#### Fixed
+
+```ts
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -214,6 +247,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```

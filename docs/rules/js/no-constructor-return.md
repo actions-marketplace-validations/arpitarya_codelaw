@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the returned value may belong in a factory function) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`return this;` and a primitive return in a class with no `extends` are ignored by the runtime, so dropping the value changes nothing; a primitive in a derived class is a suggestion and an object return has no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-constructor-return` |
@@ -135,7 +135,17 @@ codelaw config --print --for <file>            # the resolved setting, and where
 ```js
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```js
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -157,7 +167,17 @@ class A {
 ```jsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -179,7 +199,17 @@ class A {
 ```ts
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```ts
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -201,7 +231,17 @@ class A {
 ```tsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```

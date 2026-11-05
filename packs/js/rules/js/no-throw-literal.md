@@ -2,9 +2,8 @@
 id: js/no-throw-literal
 title: "Throw Error objects"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the error class and message are the author's"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the literal is wrapped in a new Error, which catchers testing `typeof` or the value will see as a different object; the reviewer picks the error class and message"
 stability: preview
 ported_from: [eslint/no-throw-literal]
 since: 0.5.0
@@ -17,18 +16,26 @@ since: 0.5.0
 ```codelaw
 match:
   kind: throw_statement
-  has:
-    any:
-      - kind: string
-      - kind: number
-      - kind: template_string
-      - kind: 'null'
-      - kind: 'true'
-      - kind: 'false'
-      - { kind: identifier, regex: '^undefined$' }
-      - kind: binary_expression
-        has: { any: [{kind: string}, {kind: template_string}] }
+  any:
+    - has:
+        pattern: $S
+        any:
+          - kind: string
+          - kind: template_string
+          - kind: binary_expression
+            has: { any: [{kind: string}, {kind: template_string}] }
+    - has:
+        pattern: $O
+        any:
+          - kind: number
+          - kind: 'null'
+          - kind: 'true'
+          - kind: 'false'
+          - { kind: identifier, regex: '^undefined$' }
 message: "Throw an `Error`, not a literal"
+fix:
+  - replace: { target: $S, with: "new Error($S)" }
+  - replace: { target: $O, with: "new Error(String($O))" }
 ```
 
 ## How to fix
@@ -45,6 +52,12 @@ message: "Throw an `Error`, not a literal"
 throw 'not found';
 ```
 
+#### Fixed
+
+```js
+throw new Error('not found');
+```
+
 #### Do
 
 ```js
@@ -57,6 +70,12 @@ throw new Error('not found');
 
 ```jsx
 throw 'not found';
+```
+
+#### Fixed
+
+```jsx
+throw new Error('not found');
 ```
 
 #### Do
@@ -73,6 +92,12 @@ throw new Error('not found');
 throw 'not found';
 ```
 
+#### Fixed
+
+```ts
+throw new Error('not found');
+```
+
 #### Do
 
 ```ts
@@ -85,6 +110,12 @@ throw new Error('not found');
 
 ```tsx
 throw 'not found';
+```
+
+#### Fixed
+
+```tsx
+throw new Error('not found');
 ```
 
 #### Do

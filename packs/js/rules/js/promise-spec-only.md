@@ -2,9 +2,8 @@
 id: js/promise-spec-only
 title: "Only standard Promise methods"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the standard replacement depends on what the library method did"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "library methods differ in concurrency and callback arguments from the standard ones, so the reviewer confirms the rewrite; a method with no standard equivalent has no edit"
 stability: preview
 ported_from: [eslint-plugin-promise/spec-only]
 since: 0.5.0
@@ -17,14 +16,21 @@ Only the static methods the language defines are called on `Promise`.
 ```codelaw
 match:
   pattern: Promise.$M
+  any:
+    - inside: { all: [{ pattern: $CMAP }, { pattern: 'Promise.map($XS, $FN)' }] }
+    - inside: { all: [{ pattern: $CDELAY }, { pattern: Promise.delay($MS) }] }
+    - kind: member_expression
 constraints:
   M: { not: { regex: '^(resolve|reject|all|allSettled|race|any|withResolvers|try|prototype)$' } }
 message: "`Promise.$M` is not a standard method"
+fix:
+  - replace: { target: $CMAP, with: "Promise.all($XS.map($FN))" }
+  - replace: { target: $CDELAY, with: "new Promise((resolve) => setTimeout(resolve, $MS))" }
 ```
 
 ## How to fix
 
-1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`) or import the library explicitly.
+1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`, a `setTimeout` promise for `Promise.delay`) or import the library explicitly; the fix writes those two.
 
 ## Examples
 

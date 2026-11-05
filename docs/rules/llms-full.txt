@@ -18187,7 +18187,7 @@ export const config = load();
 ## `js/default-case` — A switch has a default
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the default should do is the author's)
+- **Fix:** `suggest` (what the default does with an unmatched value is chosen: a quiet `break` or a thrown error)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/default-case.md
 
@@ -18214,6 +18214,28 @@ switch (x) {
 }
 ```
 
+##### Fixed (break)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+##### Fixed (throw)
+
+```js
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 ##### Do
 
 ```js
@@ -18234,6 +18256,28 @@ switch (x) {
 switch (x) {
   case 1:
     a();
+}
+```
+
+##### Fixed (break)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+##### Fixed (throw)
+
+```jsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 
@@ -18260,6 +18304,28 @@ switch (x) {
 }
 ```
 
+##### Fixed (break)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+##### Fixed (throw)
+
+```ts
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
+}
+```
+
 ##### Do
 
 ```ts
@@ -18280,6 +18346,28 @@ switch (x) {
 switch (x) {
   case 1:
     a();
+}
+```
+
+##### Fixed (break)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    break;
+}
+```
+
+##### Fixed (throw)
+
+```tsx
+switch (x) {
+  case 1:
+    a();
+  default:
+    throw new Error(`Unexpected ${x}`);
 }
 ```
 
@@ -19891,7 +19979,7 @@ export const Beta = () => (isFeatureOn("beta") ? <New /> : null);
 ## `js/for-direction` — A for loop's counter moves toward its end condition
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the condition or the update is wrong needs the author)
+- **Fix:** `suggest` (whether the update or the comparison is the wrong half needs the author; both flips are offered)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/for-direction.md
 
@@ -19918,6 +20006,22 @@ for (let i = 0; i < 10; i--) {
 }
 ```
 
+##### Fixed (flip the update)
+
+```js
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the comparison)
+
+```js
+for (let i = 0; i > 10; i--) {
+  draw(i);
+}
+```
+
 ##### Do
 
 ```js
@@ -19932,6 +20036,22 @@ for (let i = 0; i < 10; i++) {
 
 ```jsx
 for (let i = 0; i < 10; i--) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the update)
+
+```jsx
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the comparison)
+
+```jsx
+for (let i = 0; i > 10; i--) {
   draw(i);
 }
 ```
@@ -19954,6 +20074,22 @@ for (let i = 0; i < 10; i--) {
 }
 ```
 
+##### Fixed (flip the update)
+
+```ts
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the comparison)
+
+```ts
+for (let i = 0; i > 10; i--) {
+  draw(i);
+}
+```
+
 ##### Do
 
 ```ts
@@ -19968,6 +20104,22 @@ for (let i = 0; i < 10; i++) {
 
 ```tsx
 for (let i = 0; i < 10; i--) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the update)
+
+```tsx
+for (let i = 0; i < 10; i++) {
+  draw(i);
+}
+```
+
+##### Fixed (flip the comparison)
+
+```tsx
+for (let i = 0; i > 10; i--) {
   draw(i);
 }
 ```
@@ -20499,7 +20651,7 @@ class User {
 ## `js/guard-for-in` — for-in is filtered
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the filter (own keys, or a loop over `Object.keys`) is the author's choice)
+- **Fix:** `suggest` (looping over the own keys or guarding with `Object.hasOwn` both drop inherited keys; the author picks the form)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/guard-for-in.md
 
@@ -20525,6 +20677,24 @@ for (const key in obj) {
 }
 ```
 
+##### Fixed (loop over the own keys)
+
+```js
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+##### Fixed (guard with hasOwn)
+
+```js
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
+}
+```
+
 ##### Do
 
 ```js
@@ -20540,6 +20710,24 @@ for (const key of Object.keys(obj)) {
 ```jsx
 for (const key in obj) {
   use(obj[key]);
+}
+```
+
+##### Fixed (loop over the own keys)
+
+```jsx
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+##### Fixed (guard with hasOwn)
+
+```jsx
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
 }
 ```
 
@@ -20561,6 +20749,24 @@ for (const key in obj) {
 }
 ```
 
+##### Fixed (loop over the own keys)
+
+```ts
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+##### Fixed (guard with hasOwn)
+
+```ts
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
+}
+```
+
 ##### Do
 
 ```ts
@@ -20576,6 +20782,24 @@ for (const key of Object.keys(obj)) {
 ```tsx
 for (const key in obj) {
   use(obj[key]);
+}
+```
+
+##### Fixed (loop over the own keys)
+
+```tsx
+for (const key of Object.keys(obj)) {
+  use(obj[key]);
+}
+```
+
+##### Fixed (guard with hasOwn)
+
+```tsx
+for (const key in obj) {
+  if (Object.hasOwn(obj, key)) {
+  use(obj[key]);
+}
 }
 ```
 
@@ -21451,7 +21675,7 @@ export default dep.make();
 ## `js/import-no-anonymous-default-export` — Default exports have a name
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the name to give the value is the author's choice)
+- **Fix:** `manual` (the name to give the value is the author's choice, and no code holds it)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/import-no-anonymous-default-export.md
 
@@ -25308,7 +25532,7 @@ A JSDoc `@property` tag carries a description after the property name.
 ## `js/jsdoc-require-property-name` — @property names its property
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which property the tag is for is the author's to say)
+- **Fix:** `manual` (the property name the tag documents is in no code to copy; the author supplies it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-require-property-name.md
 
@@ -28498,7 +28722,7 @@ class User {
 ## `js/no-accidental-bitwise-operator` — No & or | in a condition
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (`&&` short-circuits and yields an operand rather than a number)
+- **Fix:** `suggest` (`&&` short-circuits and yields an operand, while the bitwise test stays as is with an explicit nonzero check; the author picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-accidental-bitwise-operator.md
 
@@ -28524,6 +28748,22 @@ if (ready & visible) {
 }
 ```
 
+##### Fixed (logical operator)
+
+```js
+if (ready && visible) {
+  show();
+}
+```
+
+##### Fixed (test the bits against zero)
+
+```js
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 ##### Do
 
 ```js
@@ -28538,6 +28778,22 @@ if (ready && visible) {
 
 ```jsx
 if (ready & visible) {
+  show();
+}
+```
+
+##### Fixed (logical operator)
+
+```jsx
+if (ready && visible) {
+  show();
+}
+```
+
+##### Fixed (test the bits against zero)
+
+```jsx
+if ((ready & visible) !== 0) {
   show();
 }
 ```
@@ -28560,6 +28816,22 @@ if (ready & visible) {
 }
 ```
 
+##### Fixed (logical operator)
+
+```ts
+if (ready && visible) {
+  show();
+}
+```
+
+##### Fixed (test the bits against zero)
+
+```ts
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 ##### Do
 
 ```ts
@@ -28578,6 +28850,22 @@ if (ready & visible) {
 }
 ```
 
+##### Fixed (logical operator)
+
+```tsx
+if (ready && visible) {
+  show();
+}
+```
+
+##### Fixed (test the bits against zero)
+
+```tsx
+if ((ready & visible) !== 0) {
+  show();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -28589,7 +28877,7 @@ if (ready && visible) {
 ## `js/no-accumulating-spread` — No spread of the accumulator in reduce
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (pushing onto the accumulator changes the callback's shape; the author rewrites it)
+- **Fix:** `auto` (a push onto an array-literal start value nothing else holds is auto; any other start value, a nested function in the elements, or the object form is a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-accumulating-spread.md
 
@@ -28613,6 +28901,15 @@ A `reduce` callback does not build a new array or object by spreading its accumu
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+##### Fixed
+
+```js
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 ##### Do
 
 ```js
@@ -28628,6 +28925,15 @@ const ids = rows.reduce((acc, r) => {
 
 ```jsx
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+##### Fixed
+
+```jsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 ##### Do
@@ -28647,6 +28953,15 @@ const ids = rows.reduce((acc, r) => {
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
 ```
 
+##### Fixed
+
+```ts
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
+```
+
 ##### Do
 
 ```ts
@@ -28662,6 +28977,15 @@ const ids = rows.reduce((acc, r) => {
 
 ```tsx
 const ids = rows.reduce((acc, r) => [...acc, r.id], []);
+```
+
+##### Fixed
+
+```tsx
+const ids = rows.reduce((acc, r) => {
+  acc.push(r.id);
+  return acc;
+}, []);
 ```
 
 ##### Do
@@ -29035,7 +29359,7 @@ const n = inputs.map((x) => parseInt(x));
 ## `js/no-array-concat-in-loop` — No concat() in a loop
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (`push` mutates the array in place, which other holders of the old array would see)
+- **Fix:** `suggest` (`push` mutates the array in place, which other holders of the old array would see, and `concat` of a non-array adds the value while a spread throws)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-array-concat-in-loop.md
 
@@ -29061,6 +29385,14 @@ for (const page of pages) {
 }
 ```
 
+##### Fixed
+
+```js
+for (const page of pages) {
+  rows.push(...page.rows);
+}
+```
+
 ##### Do
 
 ```js
@@ -29076,6 +29408,14 @@ for (const page of pages) {
 ```jsx
 for (const page of pages) {
   rows = rows.concat(page.rows);
+}
+```
+
+##### Fixed
+
+```jsx
+for (const page of pages) {
+  rows.push(...page.rows);
 }
 ```
 
@@ -29097,6 +29437,14 @@ for (const page of pages) {
 }
 ```
 
+##### Fixed
+
+```ts
+for (const page of pages) {
+  rows.push(...page.rows);
+}
+```
+
 ##### Do
 
 ```ts
@@ -29112,6 +29460,14 @@ for (const page of pages) {
 ```tsx
 for (const page of pages) {
   rows = rows.concat(page.rows);
+}
+```
+
+##### Fixed
+
+```tsx
+for (const page of pages) {
+  rows.push(...page.rows);
 }
 ```
 
@@ -29896,7 +30252,7 @@ items = items.toSpliced(index, 1);
 ## `js/no-async-promise-executor` — A Promise executor is not an async function
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the rewrite depends on what the executor does)
+- **Fix:** `suggest` (dropping `async` sends a thrown error to the promise instead of an unhandled rejection, which the author confirms; offered only when the executor has no `await`)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-async-promise-executor.md
 
@@ -29920,7 +30276,15 @@ The function passed to `new Promise(...)` is not `async`.
 
 ```js
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+##### Fixed
+
+```js
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -29936,7 +30300,15 @@ const data = load();
 
 ```jsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+##### Fixed
+
+```jsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -29952,7 +30324,15 @@ const data = load();
 
 ```ts
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+##### Fixed
+
+```ts
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -29968,7 +30348,15 @@ const data = load();
 
 ```tsx
 const data = new Promise(async (resolve) => {
-  resolve(await load());
+  resolve(load());
+});
+```
+
+##### Fixed
+
+```tsx
+const data = new Promise((resolve) => {
+  resolve(load());
 });
 ```
 
@@ -30147,7 +30535,7 @@ const { name } = await getUser();
 ## `js/no-await-in-loop` — No await inside a loop
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the iterations may depend on each other; only the author knows if they can run together)
+- **Fix:** `suggest` (`Promise.all` runs the iterations together, which changes ordering and failure handling; the reviewer confirms they are independent)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-await-in-loop.md
 
@@ -30175,6 +30563,14 @@ async function f(ids) {
 }
 ```
 
+##### Fixed
+
+```js
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
+}
+```
+
 ##### Do
 
 ```js
@@ -30192,6 +30588,14 @@ async function f(ids) {
   for (const id of ids) {
     await load(id);
   }
+}
+```
+
+##### Fixed
+
+```jsx
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
 }
 ```
 
@@ -30215,6 +30619,14 @@ async function f(ids) {
 }
 ```
 
+##### Fixed
+
+```ts
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
+}
+```
+
 ##### Do
 
 ```ts
@@ -30232,6 +30644,14 @@ async function f(ids) {
   for (const id of ids) {
     await load(id);
   }
+}
+```
+
+##### Fixed
+
+```tsx
+async function f(ids) {
+  await Promise.all(ids.map((id) => load(id)));
 }
 ```
 
@@ -30396,7 +30816,7 @@ export const c = 1;
 ## `js/no-bitwise` — No bitwise operators
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `&&` / `||` was meant, or the bit operation is intended, is the author's call)
+- **Fix:** `suggest` (`&&` / `||` differ from `&` / `|` in value and short-circuiting; the reviewer confirms a boolean test was meant)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-bitwise.md
 
@@ -30420,6 +30840,12 @@ The bitwise operators `&`, `|`, `^`, `~`, `<<`, `>>` and `>>>` are not used.
 if (a | b) run();
 ```
 
+##### Fixed
+
+```js
+if (a || b) run();
+```
+
 ##### Do
 
 ```js
@@ -30432,6 +30858,12 @@ if (a || b) run();
 
 ```jsx
 if (a | b) run();
+```
+
+##### Fixed
+
+```jsx
+if (a || b) run();
 ```
 
 ##### Do
@@ -30448,6 +30880,12 @@ if (a || b) run();
 if (a | b) run();
 ```
 
+##### Fixed
+
+```ts
+if (a || b) run();
+```
+
 ##### Do
 
 ```ts
@@ -30462,6 +30900,12 @@ if (a || b) run();
 if (a | b) run();
 ```
 
+##### Fixed
+
+```tsx
+if (a || b) run();
+```
+
 ##### Do
 
 ```tsx
@@ -30471,7 +30915,7 @@ if (a || b) run();
 ## `js/no-boolean-sort-comparator` — A sort comparator returns a number
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the right comparator depends on the values compared (numbers, strings))
+- **Fix:** `suggest` (a numeric difference or a string comparison suits different values; the author picks by what is sorted)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-boolean-sort-comparator.md
 
@@ -30495,6 +30939,18 @@ The comparator given to `sort` or `toSorted` does not return the result of a com
 items.sort((a, b) => a > b);
 ```
 
+##### Fixed (numeric difference)
+
+```js
+items.sort((a, b) => a - b);
+```
+
+##### Fixed (string comparison)
+
+```js
+items.sort((a, b) => a.localeCompare(b));
+```
+
 ##### Do
 
 ```js
@@ -30507,6 +30963,18 @@ items.sort((a, b) => a - b);
 
 ```jsx
 items.sort((a, b) => a > b);
+```
+
+##### Fixed (numeric difference)
+
+```jsx
+items.sort((a, b) => a - b);
+```
+
+##### Fixed (string comparison)
+
+```jsx
+items.sort((a, b) => a.localeCompare(b));
 ```
 
 ##### Do
@@ -30523,6 +30991,18 @@ items.sort((a, b) => a - b);
 items.sort((a, b) => a > b);
 ```
 
+##### Fixed (numeric difference)
+
+```ts
+items.sort((a, b) => a - b);
+```
+
+##### Fixed (string comparison)
+
+```ts
+items.sort((a, b) => a.localeCompare(b));
+```
+
 ##### Do
 
 ```ts
@@ -30535,6 +31015,18 @@ items.sort((a, b) => a - b);
 
 ```tsx
 items.sort((a, b) => a > b);
+```
+
+##### Fixed (numeric difference)
+
+```tsx
+items.sort((a, b) => a - b);
+```
+
+##### Fixed (string comparison)
+
+```tsx
+items.sort((a, b) => a.localeCompare(b));
 ```
 
 ##### Do
@@ -30940,7 +31432,7 @@ if (0 <= x && x <= 10) {
 ## `js/no-char-at-multichar-compare` — charAt() compared with a longer string
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the code meant `startsWith`, a `slice` or a one-character string is the author's; the code is wrong in each case differently)
+- **Fix:** `suggest` (`startsWith` is one reading of the comparison; a `slice` or a one-character string is another, so the author confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-char-at-multichar-compare.md
 
@@ -30967,6 +31459,14 @@ if (line.charAt(0) === "//") {
 }
 ```
 
+##### Fixed
+
+```js
+if (line.startsWith("//", 0)) {
+  skip();
+}
+```
+
 ##### Do
 
 ```js
@@ -30981,6 +31481,14 @@ if (line.startsWith("//", 0)) {
 
 ```jsx
 if (line.charAt(0) === "//") {
+  skip();
+}
+```
+
+##### Fixed
+
+```jsx
+if (line.startsWith("//", 0)) {
   skip();
 }
 ```
@@ -31003,6 +31511,14 @@ if (line.charAt(0) === "//") {
 }
 ```
 
+##### Fixed
+
+```ts
+if (line.startsWith("//", 0)) {
+  skip();
+}
+```
+
 ##### Do
 
 ```ts
@@ -31017,6 +31533,14 @@ if (line.startsWith("//", 0)) {
 
 ```tsx
 if (line.charAt(0) === "//") {
+  skip();
+}
+```
+
+##### Fixed
+
+```tsx
+if (line.startsWith("//", 0)) {
   skip();
 }
 ```
@@ -31254,7 +31778,7 @@ if ((user) && (user.admin)) {
 ## `js/no-compare-neg-zero` — No comparisons against -0
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `0` or `-0` was meant needs the author)
+- **Fix:** `suggest` (`0` keeps what the code does today, `Object.is` tests for -0 as the code seems to intend; the author picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-compare-neg-zero.md
 
@@ -31281,6 +31805,22 @@ if (x === -0) {
 }
 ```
 
+##### Fixed (compare with 0)
+
+```js
+if (x === 0) {
+  flip();
+}
+```
+
+##### Fixed (use Object.is)
+
+```js
+if (Object.is(x, -0)) {
+  flip();
+}
+```
+
 ##### Do
 
 ```js
@@ -31295,6 +31835,22 @@ if (Object.is(x, -0)) {
 
 ```jsx
 if (x === -0) {
+  flip();
+}
+```
+
+##### Fixed (compare with 0)
+
+```jsx
+if (x === 0) {
+  flip();
+}
+```
+
+##### Fixed (use Object.is)
+
+```jsx
+if (Object.is(x, -0)) {
   flip();
 }
 ```
@@ -31317,6 +31873,22 @@ if (x === -0) {
 }
 ```
 
+##### Fixed (compare with 0)
+
+```ts
+if (x === 0) {
+  flip();
+}
+```
+
+##### Fixed (use Object.is)
+
+```ts
+if (Object.is(x, -0)) {
+  flip();
+}
+```
+
 ##### Do
 
 ```ts
@@ -31335,6 +31907,22 @@ if (x === -0) {
 }
 ```
 
+##### Fixed (compare with 0)
+
+```tsx
+if (x === 0) {
+  flip();
+}
+```
+
+##### Fixed (use Object.is)
+
+```tsx
+if (Object.is(x, -0)) {
+  flip();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -31346,7 +31934,7 @@ if (Object.is(x, -0)) {
 ## `js/no-cond-assign` — No assignment in a condition, unless doubly parenthesised
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether a comparison or an assignment was meant needs the author)
+- **Fix:** `suggest` (a mistyped `=` or an intended assignment look alike; the author picks `===` or the doubled parentheses)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-cond-assign.md
 
@@ -31374,6 +31962,22 @@ if (user = admin) {
 }
 ```
 
+##### Fixed (compare)
+
+```js
+if (user === admin) {
+  grant();
+}
+```
+
+##### Fixed (mark the assignment intended)
+
+```js
+if ((user = admin)) {
+  grant();
+}
+```
+
 ##### Do
 
 ```js
@@ -31394,6 +31998,22 @@ while ((node = node.next)) {
 
 ```jsx
 if (user = admin) {
+  grant();
+}
+```
+
+##### Fixed (compare)
+
+```jsx
+if (user === admin) {
+  grant();
+}
+```
+
+##### Fixed (mark the assignment intended)
+
+```jsx
+if ((user = admin)) {
   grant();
 }
 ```
@@ -31422,6 +32042,22 @@ if (user = admin) {
 }
 ```
 
+##### Fixed (compare)
+
+```ts
+if (user === admin) {
+  grant();
+}
+```
+
+##### Fixed (mark the assignment intended)
+
+```ts
+if ((user = admin)) {
+  grant();
+}
+```
+
 ##### Do
 
 ```ts
@@ -31442,6 +32078,22 @@ while ((node = node.next)) {
 
 ```tsx
 if (user = admin) {
+  grant();
+}
+```
+
+##### Fixed (compare)
+
+```tsx
+if (user === admin) {
+  grant();
+}
+```
+
+##### Fixed (mark the assignment intended)
+
+```tsx
+if ((user = admin)) {
   grant();
 }
 ```
@@ -32045,7 +32697,7 @@ const offset = 0;
 ## `js/no-constructor-return` — A constructor returns no value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the returned value may belong in a factory function)
+- **Fix:** `auto` (`return this;` and a primitive return in a class with no `extends` are ignored by the runtime, so dropping the value changes nothing; a primitive in a derived class is a suggestion and an object return has no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-constructor-return.md
 
@@ -32068,7 +32720,17 @@ A class constructor does not `return` a value.
 ```js
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+##### Fixed
+
+```js
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -32090,7 +32752,17 @@ class A {
 ```jsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -32112,7 +32784,17 @@ class A {
 ```ts
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+##### Fixed
+
+```ts
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -32134,7 +32816,17 @@ class A {
 ```tsx
 class A {
   constructor() {
-    return {};
+    return this;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+class A {
+  constructor() {
+    return;
   }
 }
 ```
@@ -32152,7 +32844,7 @@ class A {
 ## `js/no-continue` — No continue
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (inverting the condition restructures the loop body)
+- **Fix:** `auto` (an unlabelled `continue` guarding the rest of a loop body is rewritten to a negated `if` around that rest; a body that declares a function, or any other `continue`, is not auto)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/taste` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-continue.md
 
@@ -32179,6 +32871,16 @@ for (const x of xs) {
 }
 ```
 
+##### Fixed
+
+```js
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -32195,6 +32897,16 @@ for (const x of xs) {
 for (const x of xs) {
   if (!x) continue;
   use(x);
+}
+```
+
+##### Fixed
+
+```jsx
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
 }
 ```
 
@@ -32217,6 +32929,16 @@ for (const x of xs) {
 }
 ```
 
+##### Fixed
+
+```ts
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -32233,6 +32955,16 @@ for (const x of xs) {
 for (const x of xs) {
   if (!x) continue;
   use(x);
+}
+```
+
+##### Fixed
+
+```tsx
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
 }
 ```
 
@@ -32572,7 +33304,7 @@ import { parse } from "./parse";
 ## `js/no-delete-var` — No delete on a variable
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the code meant to clear is a decision)
+- **Fix:** `suggest` (`delete x` does nothing on a binding; resetting it to `undefined` is the closest live meaning, which the reviewer confirms (the author may have meant another value or to drop the line))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-delete-var.md
 
@@ -32598,6 +33330,13 @@ let cache = {};
 delete cache;
 ```
 
+##### Fixed
+
+```js
+let cache = {};
+cache = undefined;
+```
+
 ##### Do
 
 ```js
@@ -32612,6 +33351,13 @@ cache = {};
 ```jsx
 let cache = {};
 delete cache;
+```
+
+##### Fixed
+
+```jsx
+let cache = {};
+cache = undefined;
 ```
 
 ##### Do
@@ -32630,6 +33376,13 @@ let cache = {};
 delete cache;
 ```
 
+##### Fixed
+
+```ts
+let cache = {};
+cache = undefined;
+```
+
 ##### Do
 
 ```ts
@@ -32644,6 +33397,13 @@ cache = {};
 ```tsx
 let cache = {};
 delete cache;
+```
+
+##### Fixed
+
+```tsx
+let cache = {};
+cache = undefined;
 ```
 
 ##### Do
@@ -33853,7 +34613,7 @@ function sign(n) {
 ## `js/no-empty` — No empty blocks
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to fill the block, remove it or document it needs the author)
+- **Fix:** `auto` (an empty block standing alone as a statement has no effect and is removed; an empty catch, if, loop or switch body carries no edit (it needs a reason or a body))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-empty.md
 
@@ -33876,18 +34636,18 @@ may be empty.
 ##### Don't
 
 ```js
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 ##### Do
 
 ```js
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -33896,18 +34656,18 @@ try {
 ##### Don't
 
 ```jsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 ##### Do
 
 ```jsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -33916,18 +34676,18 @@ try {
 ##### Don't
 
 ```ts
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 ##### Do
 
 ```ts
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -33936,18 +34696,18 @@ try {
 ##### Don't
 
 ```tsx
-try {
-  load();
-} catch (e) {}
+function f() {
+  {
+  }
+  run();
+}
 ```
 
 ##### Do
 
 ```tsx
-try {
-  load();
-} catch (e) {
-  // The cache is optional: a failed load is not an error.
+function f() {
+  run();
 }
 ```
 
@@ -34205,7 +34965,7 @@ function noop() {
 ## `js/no-empty-pattern` — No empty destructuring patterns
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the pattern was meant to bind needs the author)
+- **Fix:** `suggest` (both edits change behaviour (the empty pattern throws on null today): the reviewer picks a default or the bare name; an empty pattern that is not a property's value has no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-empty-pattern.md
 
@@ -34229,6 +34989,18 @@ A destructuring pattern names at least one binding.
 const { a: {} } = options;
 ```
 
+##### Fixed (default to an empty object)
+
+```js
+const { a = {} } = options;
+```
+
+##### Fixed (bind the value by name)
+
+```js
+const { a } = options;
+```
+
 ##### Do
 
 ```js
@@ -34241,6 +35013,18 @@ const { a = {} } = options;
 
 ```jsx
 const { a: {} } = options;
+```
+
+##### Fixed (default to an empty object)
+
+```jsx
+const { a = {} } = options;
+```
+
+##### Fixed (bind the value by name)
+
+```jsx
+const { a } = options;
 ```
 
 ##### Do
@@ -34257,6 +35041,18 @@ const { a = {} } = options;
 const { a: {} } = options;
 ```
 
+##### Fixed (default to an empty object)
+
+```ts
+const { a = {} } = options;
+```
+
+##### Fixed (bind the value by name)
+
+```ts
+const { a } = options;
+```
+
 ##### Do
 
 ```ts
@@ -34269,6 +35065,18 @@ const { a = {} } = options;
 
 ```tsx
 const { a: {} } = options;
+```
+
+##### Fixed (default to an empty object)
+
+```tsx
+const { a = {} } = options;
+```
+
+##### Fixed (bind the value by name)
+
+```tsx
+const { a } = options;
 ```
 
 ##### Do
@@ -34462,7 +35270,7 @@ it("rejects an empty name", () => {
 ## `js/no-eq-null` — No == null
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `undefined` should match too decides between `=== null` and an explicit two-way check)
+- **Fix:** `auto` (a plain identifier compared with `null` through `==` or `!=`: the explicit two-way check is exact; other operands are reported as suggest)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-eq-null.md
 
@@ -34486,6 +35294,12 @@ Comparisons with `null` use `===` or `!==`.
 if (value == null) reset();
 ```
 
+##### Fixed
+
+```js
+if ((value === null || value === undefined)) reset();
+```
+
 ##### Do
 
 ```js
@@ -34498,6 +35312,12 @@ if (value === null) reset();
 
 ```jsx
 if (value == null) reset();
+```
+
+##### Fixed
+
+```jsx
+if ((value === null || value === undefined)) reset();
 ```
 
 ##### Do
@@ -34514,6 +35334,12 @@ if (value === null) reset();
 if (value == null) reset();
 ```
 
+##### Fixed
+
+```ts
+if ((value === null || value === undefined)) reset();
+```
+
 ##### Do
 
 ```ts
@@ -34526,6 +35352,12 @@ if (value === null) reset();
 
 ```tsx
 if (value == null) reset();
+```
+
+##### Fixed
+
+```tsx
+if ((value === null || value === undefined)) reset();
 ```
 
 ##### Do
@@ -37636,7 +38468,7 @@ const label = <p>Total:&#x00A0;1</p>;
 ## `js/no-iterator` — No __iterator__
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving to `Symbol.iterator` rewrites the iterator)
+- **Fix:** `suggest` (the edit activates the standard iteration protocol in place of the dead SpiderMonkey one, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-iterator.md
 
@@ -37660,6 +38492,12 @@ The obsolete `__iterator__` property is not used.
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+##### Fixed
+
+```js
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 ##### Do
 
 ```js
@@ -37672,6 +38510,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```jsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+##### Fixed
+
+```jsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 ##### Do
@@ -37688,6 +38532,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 Foo.prototype.__iterator__ = function () { return items(this); };
 ```
 
+##### Fixed
+
+```ts
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
+```
+
 ##### Do
 
 ```ts
@@ -37700,6 +38550,12 @@ Foo.prototype[Symbol.iterator] = function () { return items(this); };
 
 ```tsx
 Foo.prototype.__iterator__ = function () { return items(this); };
+```
+
+##### Fixed
+
+```tsx
+Foo.prototype[Symbol.iterator] = function () { return items(this); };
 ```
 
 ##### Do
@@ -38150,7 +39006,7 @@ const x = ready();
 ## `js/no-lone-blocks` — No needless nested blocks
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the block may be a lost `if`; the author decides)
+- **Fix:** `auto` (the match already excludes blocks that declare a let, const, class or function, so unwrapping a bare block and keeping its statements is exact)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-lone-blocks.md
 
@@ -38178,6 +39034,14 @@ function f() {
 }
 ```
 
+##### Fixed
+
+```js
+function f() {
+  run();
+}
+```
+
 ##### Do
 
 ```js
@@ -38195,6 +39059,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+##### Fixed
+
+```jsx
+function f() {
+  run();
 }
 ```
 
@@ -38218,6 +39090,14 @@ function f() {
 }
 ```
 
+##### Fixed
+
+```ts
+function f() {
+  run();
+}
+```
+
 ##### Do
 
 ```ts
@@ -38235,6 +39115,14 @@ function f() {
   {
     run();
   }
+}
+```
+
+##### Fixed
+
+```tsx
+function f() {
+  run();
 }
 ```
 
@@ -38796,7 +39684,7 @@ const re = /^(?:❤️)$/u;
 ## `js/no-misrefactored-shorthand-assign` — No compound assignment that repeats its target
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the intended expression may have been `a += b` or `a = a + b`; only the author knows which)
+- **Fix:** `suggest` (the target is repeated on the right, so either the compound form or the long form was meant: both are offered and the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-misrefactored-shorthand-assign.md
 
@@ -38820,6 +39708,18 @@ A compound assignment does not repeat its target on the right: `a += a + b` is `
 total += total + step;
 ```
 
+##### Fixed (compound assignment)
+
+```js
+total += step;
+```
+
+##### Fixed (long form)
+
+```js
+total = total + step;
+```
+
 ##### Do
 
 ```js
@@ -38832,6 +39732,18 @@ total += step;
 
 ```jsx
 total += total + step;
+```
+
+##### Fixed (compound assignment)
+
+```jsx
+total += step;
+```
+
+##### Fixed (long form)
+
+```jsx
+total = total + step;
 ```
 
 ##### Do
@@ -38848,6 +39760,18 @@ total += step;
 total += total + step;
 ```
 
+##### Fixed (compound assignment)
+
+```ts
+total += step;
+```
+
+##### Fixed (long form)
+
+```ts
+total = total + step;
+```
+
 ##### Do
 
 ```ts
@@ -38862,6 +39786,18 @@ total += step;
 total += total + step;
 ```
 
+##### Fixed (compound assignment)
+
+```tsx
+total += step;
+```
+
+##### Fixed (long form)
+
+```tsx
+total = total + step;
+```
+
 ##### Do
 
 ```tsx
@@ -38871,7 +39807,7 @@ total += step;
 ## `js/no-multi-assign` — No chained assignment
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (splitting the chain into statements is a change of the author's code shape)
+- **Fix:** `auto` (a chain of identifier targets written as a whole expression statement splits right to left with the same evaluation order; member targets, declarators and chains inside larger expressions carry no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-multi-assign.md
 
@@ -38895,6 +39831,13 @@ An assignment's value is not itself an assignment (`a = b = c`).
 a = b = 0;
 ```
 
+##### Fixed
+
+```js
+b = 0;
+a = b;
+```
+
 ##### Do
 
 ```js
@@ -38908,6 +39851,13 @@ b = 0;
 
 ```jsx
 a = b = 0;
+```
+
+##### Fixed
+
+```jsx
+b = 0;
+a = b;
 ```
 
 ##### Do
@@ -38925,6 +39875,13 @@ b = 0;
 a = b = 0;
 ```
 
+##### Fixed
+
+```ts
+b = 0;
+a = b;
+```
+
 ##### Do
 
 ```ts
@@ -38938,6 +39895,13 @@ b = 0;
 
 ```tsx
 a = b = 0;
+```
+
+##### Fixed
+
+```tsx
+b = 0;
+a = b;
 ```
 
 ##### Do
@@ -39104,7 +40068,7 @@ import React from "react";
 ## `js/no-negated-condition` — No negated condition with an else
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (swapping the branches moves code; the author confirms)
+- **Fix:** `auto` (`!a` and `a` are exact complements, so dropping the negation (or flipping `!==` and `!=`) and swapping the two branches keeps the behaviour)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-negated-condition.md
 
@@ -39132,6 +40096,16 @@ if (!ok) {
 }
 ```
 
+##### Fixed
+
+```js
+if (ok) {
+  pass();
+} else {
+  fail();
+}
+```
+
 ##### Do
 
 ```js
@@ -39151,6 +40125,16 @@ if (!ok) {
   fail();
 } else {
   pass();
+}
+```
+
+##### Fixed
+
+```jsx
+if (ok) {
+  pass();
+} else {
+  fail();
 }
 ```
 
@@ -39176,6 +40160,16 @@ if (!ok) {
 }
 ```
 
+##### Fixed
+
+```ts
+if (ok) {
+  pass();
+} else {
+  fail();
+}
+```
+
 ##### Do
 
 ```ts
@@ -39195,6 +40189,16 @@ if (!ok) {
   fail();
 } else {
   pass();
+}
+```
+
+##### Fixed
+
+```tsx
+if (ok) {
+  pass();
+} else {
+  fail();
 }
 ```
 
@@ -39650,7 +40654,7 @@ const s = `a ${inner}`;
 ## `js/no-nested-ternary` — No nested conditional expressions
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the clearer form — `if`, `switch` or a lookup table — is the author's to choose)
+- **Fix:** `auto` (a nested conditional that is the whole value of a `return` or an arrow's concise body becomes an exact if/return chain; nesting elsewhere (declarations, arguments, parentheses) carries no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error` · `codelaw:js/sonarjs` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-nested-ternary.md
 
@@ -39671,7 +40675,17 @@ A conditional expression does not contain another one.
 ##### Don't
 
 ```js
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+##### Fixed
+
+```js
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 ##### Do
@@ -39689,7 +40703,17 @@ function size(n) {
 ##### Don't
 
 ```jsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+##### Fixed
+
+```jsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 ##### Do
@@ -39707,7 +40731,17 @@ function size(n) {
 ##### Don't
 
 ```ts
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+##### Fixed
+
+```ts
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 ##### Do
@@ -39725,7 +40759,17 @@ function size(n) {
 ##### Don't
 
 ```tsx
-const size = n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+function size(n) {
+  return n > 100 ? 'large' : n > 10 ? 'medium' : 'small';
+}
+```
+
+##### Fixed
+
+```tsx
+function size(n) {
+  if (n > 100) return 'large'; if (n > 10) return 'medium'; return 'small';
+}
 ```
 
 ##### Do
@@ -39816,7 +40860,7 @@ const server = new Server(port);
 ## `js/no-new-array` — No new Array(n)
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether a length or a single element was meant decides the rewrite)
+- **Fix:** `suggest` (a length and a single element give different arrays: both rewrites are offered and the reviewer picks the one that was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-new-array.md
 
@@ -39840,6 +40884,18 @@ const server = new Server(port);
 const slots = new Array(size);
 ```
 
+##### Fixed (a length)
+
+```js
+const slots = Array.from({ length: size });
+```
+
+##### Fixed (one element)
+
+```js
+const slots = [size];
+```
+
 ##### Do
 
 ```js
@@ -39852,6 +40908,18 @@ const slots = Array.from({ length: size });
 
 ```jsx
 const slots = new Array(size);
+```
+
+##### Fixed (a length)
+
+```jsx
+const slots = Array.from({ length: size });
+```
+
+##### Fixed (one element)
+
+```jsx
+const slots = [size];
 ```
 
 ##### Do
@@ -39868,6 +40936,18 @@ const slots = Array.from({ length: size });
 const slots = new Array(size);
 ```
 
+##### Fixed (a length)
+
+```ts
+const slots = Array.from({ length: size });
+```
+
+##### Fixed (one element)
+
+```ts
+const slots = [size];
+```
+
 ##### Do
 
 ```ts
@@ -39880,6 +40960,18 @@ const slots = Array.from({ length: size });
 
 ```tsx
 const slots = new Array(size);
+```
+
+##### Fixed (a length)
+
+```tsx
+const slots = Array.from({ length: size });
+```
+
+##### Fixed (one element)
+
+```tsx
+const slots = [size];
 ```
 
 ##### Do
@@ -39962,7 +41054,7 @@ const b = Buffer.from("hi");
 ## `js/no-new-func` — No Function constructor
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the function the string held has to be written as code)
+- **Fix:** `suggest` (a function expression with the literal parameters and body is the closest equivalent; it closes over local scope instead of global scope, which the reviewer confirms (calls with computed or escaped strings carry no edit))
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-new-func.md
 
@@ -39986,6 +41078,12 @@ Functions are not built from strings with `Function` or `new Function`.
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+##### Fixed
+
+```js
+const add = function (a, b) { return a + b };
+```
+
 ##### Do
 
 ```js
@@ -39998,6 +41096,12 @@ const add = (a, b) => a + b;
 
 ```jsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+##### Fixed
+
+```jsx
+const add = function (a, b) { return a + b };
 ```
 
 ##### Do
@@ -40014,6 +41118,12 @@ const add = (a, b) => a + b;
 const add = new Function('a', 'b', 'return a + b');
 ```
 
+##### Fixed
+
+```ts
+const add = function (a, b) { return a + b };
+```
+
 ##### Do
 
 ```ts
@@ -40026,6 +41136,12 @@ const add = (a, b) => a + b;
 
 ```tsx
 const add = new Function('a', 'b', 'return a + b');
+```
+
+##### Fixed
+
+```tsx
+const add = function (a, b) { return a + b };
 ```
 
 ##### Do
@@ -40151,7 +41267,7 @@ const ok = Boolean(flag);
 ## `js/no-nonoctal-decimal-escape` — No \8 or \9 escapes in strings
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the digit or a literal backslash was meant needs the author)
+- **Fix:** `suggest` (the escape means just the digit today, but a literal backslash may have been meant: both are offered and the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-nonoctal-decimal-escape.md
 
@@ -40176,6 +41292,18 @@ literals and strict code.
 const msg = "version \8";
 ```
 
+##### Fixed (the digit)
+
+```js
+const msg = "version 8";
+```
+
+##### Fixed (a literal backslash)
+
+```js
+const msg = "version \\8";
+```
+
 ##### Do
 
 ```js
@@ -40188,6 +41316,18 @@ const msg = "version 8";
 
 ```jsx
 const msg = "version \8";
+```
+
+##### Fixed (the digit)
+
+```jsx
+const msg = "version 8";
+```
+
+##### Fixed (a literal backslash)
+
+```jsx
+const msg = "version \\8";
 ```
 
 ##### Do
@@ -40204,6 +41344,18 @@ const msg = "version 8";
 const msg = "version \8";
 ```
 
+##### Fixed (the digit)
+
+```ts
+const msg = "version 8";
+```
+
+##### Fixed (a literal backslash)
+
+```ts
+const msg = "version \\8";
+```
+
 ##### Do
 
 ```ts
@@ -40216,6 +41368,18 @@ const msg = "version 8";
 
 ```tsx
 const msg = "version \8";
+```
+
+##### Fixed (the digit)
+
+```tsx
+const msg = "version 8";
+```
+
+##### Fixed (a literal backslash)
+
+```tsx
+const msg = "version \\8";
 ```
 
 ##### Do
@@ -40991,7 +42155,7 @@ count += 1;
 ## `js/no-promise-executor-return` — A promise executor returns nothing
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the value may have been meant for `resolve`; the author decides)
+- **Fix:** `auto` (dropping an ignored return value is exact; a call to `resolve` or `reject`, or a call taking one of them, is auto, and any other returned value (it may have been meant for `resolve`) reports suggest)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-promise-executor-return.md
 
@@ -41015,6 +42179,12 @@ The function passed to `new Promise` does not return a value.
 new Promise((resolve) => setTimeout(resolve, 10));
 ```
 
+##### Fixed
+
+```js
+new Promise((resolve) => { setTimeout(resolve, 10); });
+```
+
 ##### Do
 
 ```js
@@ -41029,6 +42199,12 @@ new Promise((resolve) => {
 
 ```jsx
 new Promise((resolve) => setTimeout(resolve, 10));
+```
+
+##### Fixed
+
+```jsx
+new Promise((resolve) => { setTimeout(resolve, 10); });
 ```
 
 ##### Do
@@ -41047,6 +42223,12 @@ new Promise((resolve) => {
 new Promise((resolve) => setTimeout(resolve, 10));
 ```
 
+##### Fixed
+
+```ts
+new Promise((resolve) => { setTimeout(resolve, 10); });
+```
+
 ##### Do
 
 ```ts
@@ -41063,6 +42245,12 @@ new Promise((resolve) => {
 new Promise((resolve) => setTimeout(resolve, 10));
 ```
 
+##### Fixed
+
+```tsx
+new Promise((resolve) => { setTimeout(resolve, 10); });
+```
+
 ##### Do
 
 ```tsx
@@ -41074,7 +42262,7 @@ new Promise((resolve) => {
 ## `js/no-proto` — No __proto__
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the replacement depends on whether it was read or written)
+- **Fix:** `suggest` (`Object.getPrototypeOf` and `Object.setPrototypeOf` differ from `__proto__` for null-prototype objects and own `__proto__` properties, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-proto.md
 
@@ -41098,6 +42286,12 @@ new Promise((resolve) => {
 const p = obj.__proto__;
 ```
 
+##### Fixed
+
+```js
+const p = Object.getPrototypeOf(obj);
+```
+
 ##### Do
 
 ```js
@@ -41110,6 +42304,12 @@ const p = Object.getPrototypeOf(obj);
 
 ```jsx
 const p = obj.__proto__;
+```
+
+##### Fixed
+
+```jsx
+const p = Object.getPrototypeOf(obj);
 ```
 
 ##### Do
@@ -41126,6 +42326,12 @@ const p = Object.getPrototypeOf(obj);
 const p = obj.__proto__;
 ```
 
+##### Fixed
+
+```ts
+const p = Object.getPrototypeOf(obj);
+```
+
 ##### Do
 
 ```ts
@@ -41138,6 +42344,12 @@ const p = Object.getPrototypeOf(obj);
 
 ```tsx
 const p = obj.__proto__;
+```
+
+##### Fixed
+
+```tsx
+const p = Object.getPrototypeOf(obj);
 ```
 
 ##### Do
@@ -41238,7 +42450,7 @@ if (Object.prototype.hasOwnProperty.call(options, "debug")) {
 ## `js/no-redeclare` — No variable is declared twice
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (whether to rename or to assign needs the author)
+- **Fix:** `auto` (a `var` redeclaration of a name already declared in the scope is just an assignment, so `var x = e;` becomes `x = e;` and a bare `var x;` is dropped; other redeclarations (let, function, destructured, multi-declarator) carry no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-redeclare.md
 
@@ -41658,7 +42870,7 @@ const re = /a {3}b/;
 ## `js/no-restricted-exports` — No export named default
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the statement is rewritten as `export default`)
+- **Fix:** `suggest` (the statement is rewritten as `export default`; the reviewer confirms (a clause with several specifiers or a `from` source carries no edit))
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-restricted-exports.md
 
@@ -41828,7 +43040,7 @@ function add(list, x) {
 ## `js/no-return-assign` — No assignment in a return
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (it may be a comparison or an assignment; the author decides)
+- **Fix:** `auto` (re-reading a plain identifier after assigning it gives the assigned value, so `return x = e` becomes `x = e; return x;` with the same behaviour; member targets (a getter may run) report suggest)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-return-assign.md
 
@@ -41854,6 +43066,14 @@ function set(v) {
 }
 ```
 
+##### Fixed
+
+```js
+function set(v) {
+  value = v; return value;
+}
+```
+
 ##### Do
 
 ```js
@@ -41870,6 +43090,14 @@ function set(v) {
 ```jsx
 function set(v) {
   return value = v;
+}
+```
+
+##### Fixed
+
+```jsx
+function set(v) {
+  value = v; return value;
 }
 ```
 
@@ -41892,6 +43120,14 @@ function set(v) {
 }
 ```
 
+##### Fixed
+
+```ts
+function set(v) {
+  value = v; return value;
+}
+```
+
 ##### Do
 
 ```ts
@@ -41908,6 +43144,14 @@ function set(v) {
 ```tsx
 function set(v) {
   return value = v;
+}
+```
+
+##### Fixed
+
+```tsx
+function set(v) {
+  value = v; return value;
 }
 ```
 
@@ -41998,7 +43242,7 @@ assert.equal(result, expected);
 ## `js/no-self-assign` — No assigning a variable to itself
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (assigning a property to itself can run a setter, so removing it may change behaviour)
+- **Fix:** `suggest` (removing the statement is exact for a local identifier but hides what was meant to be assigned, which the reviewer confirms; a property or other target carries no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-self-assign.md
 
@@ -42024,6 +43268,12 @@ let x = 1;
 x = x;
 ```
 
+##### Fixed
+
+```js
+let x = 1;
+```
+
 ##### Do
 
 ```js
@@ -42038,6 +43288,12 @@ x = y;
 ```jsx
 let x = 1;
 x = x;
+```
+
+##### Fixed
+
+```jsx
+let x = 1;
 ```
 
 ##### Do
@@ -42056,6 +43312,12 @@ let x = 1;
 x = x;
 ```
 
+##### Fixed
+
+```ts
+let x = 1;
+```
+
 ##### Do
 
 ```ts
@@ -42072,6 +43334,12 @@ let x = 1;
 x = x;
 ```
 
+##### Fixed
+
+```tsx
+let x = 1;
+```
+
 ##### Do
 
 ```tsx
@@ -42082,7 +43350,7 @@ x = y;
 ## `js/no-self-compare` — No comparing a value with itself
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the intended comparison is the author's)
+- **Fix:** `auto` (an identifier compared with itself by equality is a NaN test, so `x !== x` becomes `Number.isNaN(x)` and `x === x` becomes `!Number.isNaN(x)` with the same result; member operands and relational forms carry no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-self-compare.md
 
@@ -42157,7 +43425,7 @@ if (Number.isNaN(x)) skip();
 ## `js/no-sequences` — No comma operator
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the expressions become separate statements, which changes the code shape)
+- **Fix:** `auto` (a comma sequence that is a whole expression statement or a return value splits into statements with the same evaluation order (two expressions); longer sequences and sequences elsewhere carry no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-sequences.md
 
@@ -42181,6 +43449,12 @@ The comma operator is used only in a `for` loop's header or inside its own paren
 a = 1, b = 2;
 ```
 
+##### Fixed
+
+```js
+a = 1; b = 2;
+```
+
 ##### Do
 
 ```js
@@ -42194,6 +43468,12 @@ b = 2;
 
 ```jsx
 a = 1, b = 2;
+```
+
+##### Fixed
+
+```jsx
+a = 1; b = 2;
 ```
 
 ##### Do
@@ -42211,6 +43491,12 @@ b = 2;
 a = 1, b = 2;
 ```
 
+##### Fixed
+
+```ts
+a = 1; b = 2;
+```
+
 ##### Do
 
 ```ts
@@ -42224,6 +43510,12 @@ b = 2;
 
 ```tsx
 a = 1, b = 2;
+```
+
+##### Fixed
+
+```tsx
+a = 1; b = 2;
 ```
 
 ##### Do
@@ -42927,7 +44219,7 @@ const v = <div className="grid">a</div>;
 ## `js/no-template-curly-in-string` — No template placeholder in a plain string
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (switching to backticks is right only if interpolation was meant)
+- **Fix:** `suggest` (switching to backticks is right only if interpolation was meant, which the reviewer confirms; a string holding a backtick or an escape carries no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-template-curly-in-string.md
 
@@ -43555,7 +44847,7 @@ class Config {
 ## `js/no-throw-literal` — Throw Error objects
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the error class and message are the author's)
+- **Fix:** `suggest` (the literal is wrapped in a new Error, which catchers testing `typeof` or the value will see as a different object; the reviewer picks the error class and message)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-throw-literal.md
 
@@ -43579,6 +44871,12 @@ class Config {
 throw 'not found';
 ```
 
+##### Fixed
+
+```js
+throw new Error('not found');
+```
+
 ##### Do
 
 ```js
@@ -43591,6 +44889,12 @@ throw new Error('not found');
 
 ```jsx
 throw 'not found';
+```
+
+##### Fixed
+
+```jsx
+throw new Error('not found');
 ```
 
 ##### Do
@@ -43607,6 +44911,12 @@ throw new Error('not found');
 throw 'not found';
 ```
 
+##### Fixed
+
+```ts
+throw new Error('not found');
+```
+
 ##### Do
 
 ```ts
@@ -43619,6 +44929,12 @@ throw new Error('not found');
 
 ```tsx
 throw 'not found';
+```
+
+##### Fixed
+
+```tsx
+throw new Error('not found');
 ```
 
 ##### Do
@@ -43988,7 +45304,7 @@ let x;
 ## `js/no-undefined` — No undefined identifier
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to omit the value or write `void 0` depends on the position)
+- **Fix:** `suggest` (`void 0` stands wherever `undefined` does, but leaving the value out may read better; the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/taste` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-undefined.md
 
@@ -44000,7 +45316,7 @@ The identifier `undefined` is not used (taste preset).
 
 ### How to fix
 
-1. Rewrite the code as the message says.
+1. Leave the value out where the position allows it, as the message says; otherwise `void 0` is what the fix writes.
 
 ### Examples
 
@@ -44010,6 +45326,12 @@ The identifier `undefined` is not used (taste preset).
 
 ```js
 let value = undefined;
+```
+
+##### Fixed
+
+```js
+let value = void 0;
 ```
 
 ##### Do
@@ -44026,6 +45348,12 @@ let value;
 let value = undefined;
 ```
 
+##### Fixed
+
+```jsx
+let value = void 0;
+```
+
 ##### Do
 
 ```jsx
@@ -44040,6 +45368,12 @@ let value;
 let value = undefined;
 ```
 
+##### Fixed
+
+```ts
+let value = void 0;
+```
+
 ##### Do
 
 ```ts
@@ -44052,6 +45386,12 @@ let value;
 
 ```tsx
 let value = undefined;
+```
+
+##### Fixed
+
+```tsx
+let value = void 0;
 ```
 
 ##### Do
@@ -45008,7 +46348,7 @@ const third = parts[2];
 ## `js/no-unsafe-finally` — No return, throw, break or continue in finally
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what should happen to the try block's result is a decision)
+- **Fix:** `suggest` (removing the control statement lets the try or catch result through, and a value it carried is dropped; the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unsafe-finally.md
 
@@ -45021,7 +46361,7 @@ threw.
 
 ### How to fix
 
-1. Move the `return` or `throw` out of `finally` into the `try` or `catch` block.
+1. Check the statement removed was not carrying a value the function needs; if it was, move it into the `try` or `catch` block.
 
 ### Examples
 
@@ -45035,6 +46375,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+##### Fixed
+
+```js
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```
@@ -45065,6 +46416,17 @@ function load() {
 }
 ```
 
+##### Fixed
+
+```jsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 ##### Do
 
 ```jsx
@@ -45091,6 +46453,17 @@ function load() {
 }
 ```
 
+##### Fixed
+
+```ts
+function load() {
+  try {
+    return fetchAll();
+  } finally {
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -45113,6 +46486,17 @@ function load() {
     return fetchAll();
   } finally {
     return null;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+function load() {
+  try {
+    return fetchAll();
+  } finally {
   }
 }
 ```
@@ -46063,7 +47447,7 @@ const re = /(a)\1/;
 ## `js/no-useless-call` — No needless call or apply
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the plain call is equivalent only when `this` is as written; the author confirms)
+- **Fix:** `auto` (a call on a plain identifier with `undefined`, or on `o.m` with `o` as the receiver, is the plain call exactly; a `null` this or a complex callee stays a suggestion)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-call.md
 
@@ -46075,7 +47459,7 @@ const re = /(a)\1/;
 
 ### How to fix
 
-1. Call the function directly.
+1. Call the function directly. The fix does it for a plain identifier called with `undefined`, and for `o.m.call(o, ...)`; any other callee is offered for a reviewer to confirm.
 
 ### Examples
 
@@ -46085,6 +47469,12 @@ const re = /(a)\1/;
 
 ```js
 greet.call(undefined, 'Ada');
+```
+
+##### Fixed
+
+```js
+greet('Ada');
 ```
 
 ##### Do
@@ -46101,6 +47491,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+##### Fixed
+
+```jsx
+greet('Ada');
+```
+
 ##### Do
 
 ```jsx
@@ -46113,6 +47509,12 @@ greet('Ada');
 
 ```ts
 greet.call(undefined, 'Ada');
+```
+
+##### Fixed
+
+```ts
+greet('Ada');
 ```
 
 ##### Do
@@ -46129,6 +47531,12 @@ greet('Ada');
 greet.call(undefined, 'Ada');
 ```
 
+##### Fixed
+
+```tsx
+greet('Ada');
+```
+
 ##### Do
 
 ```tsx
@@ -46138,7 +47546,7 @@ greet('Ada');
 ## `js/no-useless-catch` — No catch that only rethrows
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the try block changes the scope of declarations inside it)
+- **Fix:** `auto` (the try block stays as a block, keeping its declarations scoped, and the same error rethrows; with a `finally` only the catch clause goes)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-catch.md
 
@@ -46150,7 +47558,7 @@ A `catch` clause does more than rethrow the error it caught.
 
 ### How to fix
 
-1. If there is no `finally`, replace the `try` statement with the statements of its block.
+1. If there is no `finally`, replace the `try` statement with the statements of its block (the fix keeps them in a block).
 2. If there is a `finally`, remove only the `catch` clause.
 
 ### Examples
@@ -46167,6 +47575,14 @@ try {
 }
 ```
 
+##### Fixed
+
+```js
+{
+  load();
+}
+```
+
 ##### Do
 
 ```js
@@ -46182,6 +47598,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+##### Fixed
+
+```jsx
+{
+  load();
 }
 ```
 
@@ -46203,6 +47627,14 @@ try {
 }
 ```
 
+##### Fixed
+
+```ts
+{
+  load();
+}
+```
+
 ##### Do
 
 ```ts
@@ -46218,6 +47650,14 @@ try {
   load();
 } catch (e) {
   throw e;
+}
+```
+
+##### Fixed
+
+```tsx
+{
+  load();
 }
 ```
 
@@ -47598,7 +49038,7 @@ const all = [a, b, c];
 ## `js/no-useless-string-raw` — No String.raw without an escape
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (dropping the tag is safe only once the author confirms no escape was meant to be added)
+- **Fix:** `auto` (without a backslash the cooked and raw strings are identical, so dropping the tag changes nothing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-string-raw.md
 
@@ -47622,6 +49062,12 @@ const all = [a, b, c];
 const p = String.raw`/usr/local`;
 ```
 
+##### Fixed
+
+```js
+const p = `/usr/local`;
+```
+
 ##### Do
 
 ```js
@@ -47634,6 +49080,12 @@ const p = `/usr/local`;
 
 ```jsx
 const p = String.raw`/usr/local`;
+```
+
+##### Fixed
+
+```jsx
+const p = `/usr/local`;
 ```
 
 ##### Do
@@ -47650,6 +49102,12 @@ const p = `/usr/local`;
 const p = String.raw`/usr/local`;
 ```
 
+##### Fixed
+
+```ts
+const p = `/usr/local`;
+```
+
 ##### Do
 
 ```ts
@@ -47662,6 +49120,12 @@ const p = `/usr/local`;
 
 ```tsx
 const p = String.raw`/usr/local`;
+```
+
+##### Fixed
+
+```tsx
+const p = `/usr/local`;
 ```
 
 ##### Do
@@ -48029,7 +49493,7 @@ let total = 0;
 ## `js/no-void` — No void operator
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the replacement — `undefined`, or handling the promise — depends on the use)
+- **Fix:** `auto` (`void <literal>` is `undefined` exactly; `void e;` as a statement stays a suggestion, as the `void` may mark a promise left unhandled on purpose)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-void.md
 
@@ -48041,7 +49505,7 @@ The `void` operator is not used.
 
 ### How to fix
 
-1. Write `undefined`, or handle the promise with `await` or `.catch()`.
+1. Write `undefined`, or handle the promise with `await` or `.catch()`; the fix writes `undefined` for `void` of a literal and offers the bare expression for a `void e;` statement.
 
 ### Examples
 
@@ -48051,6 +49515,12 @@ The `void` operator is not used.
 
 ```js
 const nothing = void 0;
+```
+
+##### Fixed
+
+```js
+const nothing = undefined;
 ```
 
 ##### Do
@@ -48067,6 +49537,12 @@ const nothing = undefined;
 const nothing = void 0;
 ```
 
+##### Fixed
+
+```jsx
+const nothing = undefined;
+```
+
 ##### Do
 
 ```jsx
@@ -48081,6 +49557,12 @@ const nothing = undefined;
 const nothing = void 0;
 ```
 
+##### Fixed
+
+```ts
+const nothing = undefined;
+```
+
 ##### Do
 
 ```ts
@@ -48093,6 +49575,12 @@ const nothing = undefined;
 
 ```tsx
 const nothing = void 0;
+```
+
+##### Fixed
+
+```tsx
+const nothing = undefined;
 ```
 
 ##### Do
@@ -52227,7 +53715,7 @@ class Counter {
 ## `js/prefer-promise-reject-errors` — Reject with an Error
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the error class and message are the author's)
+- **Fix:** `suggest` (the error class and message are the author's, so the reviewer confirms the `new Error(...)` the value is wrapped in)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-promise-reject-errors.md
 
@@ -52251,6 +53739,12 @@ class Counter {
 return Promise.reject('timeout');
 ```
 
+##### Fixed
+
+```js
+return Promise.reject(new Error('timeout'));
+```
+
 ##### Do
 
 ```js
@@ -52263,6 +53757,12 @@ return Promise.reject(new Error('timeout'));
 
 ```jsx
 return Promise.reject('timeout');
+```
+
+##### Fixed
+
+```jsx
+return Promise.reject(new Error('timeout'));
 ```
 
 ##### Do
@@ -52279,6 +53779,12 @@ return Promise.reject(new Error('timeout'));
 return Promise.reject('timeout');
 ```
 
+##### Fixed
+
+```ts
+return Promise.reject(new Error('timeout'));
+```
+
 ##### Do
 
 ```ts
@@ -52291,6 +53797,12 @@ return Promise.reject(new Error('timeout'));
 
 ```tsx
 return Promise.reject('timeout');
+```
+
+##### Fixed
+
+```tsx
+return Promise.reject(new Error('timeout'));
 ```
 
 ##### Do
@@ -54123,7 +55635,7 @@ try {
 ## `js/promise-always-return` — A then callback returns or throws
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the callback should return is the author's to decide)
+- **Fix:** `suggest` (returning the last expression passes a new value downstream and `return undefined;` only silences the rule, so the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-always-return.md
 
@@ -54135,7 +55647,7 @@ A `.then()` callback with a block body returns a value or throws.
 
 ### How to fix
 
-1. Return the value the next step needs — often the inner promise the callback started — or throw if the callback found an error.
+1. Return the value the next step needs, or throw if the callback found an error; the fix offers `return` of the last expression, or `return undefined;` when nothing is meant to pass on.
 
 ### Examples
 
@@ -54146,6 +55658,22 @@ A `.then()` callback with a block body returns a value or throws.
 ```js
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+##### Fixed (return the value)
+
+```js
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+##### Fixed (return undefined)
+
+```js
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 
@@ -54167,6 +55695,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+##### Fixed (return the value)
+
+```jsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+##### Fixed (return undefined)
+
+```jsx
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 ##### Do
 
 ```jsx
@@ -54185,6 +55729,22 @@ load().then((data) => {
 }).catch(report);
 ```
 
+##### Fixed (return the value)
+
+```ts
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+##### Fixed (return undefined)
+
+```ts
+load().then((data) => {
+  store(data); return undefined;
+}).catch(report);
+```
+
 ##### Do
 
 ```ts
@@ -54200,6 +55760,22 @@ load().then((data) => {
 ```tsx
 load().then((data) => {
   store(data);
+}).catch(report);
+```
+
+##### Fixed (return the value)
+
+```tsx
+load().then((data) => {
+  return store(data);
+}).catch(report);
+```
+
+##### Fixed (return undefined)
+
+```tsx
+load().then((data) => {
+  store(data); return undefined;
 }).catch(report);
 ```
 
@@ -54293,7 +55869,7 @@ const wait = promisify(setTimeout);
 ## `js/promise-catch-or-return` — A promise chain is returned, awaited or ends in catch
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the error should go — a `.catch()`, a `return` or an `await` — is the author's decision)
+- **Fix:** `suggest` (returning or awaiting the chain changes the function's result and timing, and a `.catch()` is a decision about the error; the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-catch-or-return.md
 
@@ -54305,7 +55881,7 @@ A promise chain used as a statement on its own ends with `.catch()`; otherwise i
 
 ### How to fix
 
-1. Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does.
+1. Add a `.catch()` at the end of the chain that handles or reports the error, or `return` / `await` the chain so the caller does; the fix offers the last two.
 
 ### Examples
 
@@ -54314,15 +55890,35 @@ A promise chain used as a statement on its own ends with `.catch()`; otherwise i
 ##### Don't
 
 ```js
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+##### Fixed (return the chain)
+
+```js
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+##### Fixed (await the chain)
+
+```js
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 ##### Do
 
 ```js
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 #### JSX
@@ -54330,15 +55926,35 @@ save(doc)
 ##### Don't
 
 ```jsx
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+##### Fixed (return the chain)
+
+```jsx
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+##### Fixed (await the chain)
+
+```jsx
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 ##### Do
 
 ```jsx
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 #### TypeScript
@@ -54346,15 +55962,35 @@ save(doc)
 ##### Don't
 
 ```ts
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+##### Fixed (return the chain)
+
+```ts
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+##### Fixed (await the chain)
+
+```ts
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 ##### Do
 
 ```ts
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 #### TSX
@@ -54362,21 +55998,41 @@ save(doc)
 ##### Don't
 
 ```tsx
-save(doc).then(() => notify());
+async function run(doc) {
+  save(doc).then(() => notify());
+}
+```
+
+##### Fixed (return the chain)
+
+```tsx
+async function run(doc) {
+  return save(doc).then(() => notify());
+}
+```
+
+##### Fixed (await the chain)
+
+```tsx
+async function run(doc) {
+  await save(doc).then(() => notify());
+}
 ```
 
 ##### Do
 
 ```tsx
-save(doc)
-  .then(() => notify())
-  .catch((err) => report(err));
+async function run(doc) {
+  save(doc)
+    .then(() => notify())
+    .catch((err) => report(err));
+}
 ```
 
 ## `js/promise-no-callback-in-promise` — No node-style callback is called inside a then or catch
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the call out of the promise needs a choice between `nodeify`-style wrappers, `setImmediate` or rewriting the caller)
+- **Fix:** `manual` (any edit leaves the callback call inside the promise chain; the call has to move out, which restructures the caller)
 - **Severity when named:** `warn` · **Turned on by:** `codelaw:js/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-no-callback-in-promise.md
 
@@ -54467,7 +56123,7 @@ function load() {
 ## `js/promise-no-multiple-resolved` — A promise executor settles once on each path
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the first or the second call is the right one is the author's call)
+- **Fix:** `suggest` (early `return` also skips the later statements and deleting the late call hides the bug; the reviewer picks which call is the right one)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-no-multiple-resolved.md
 
@@ -54479,7 +56135,7 @@ A promise executor does not call `resolve` or `reject` twice in a row in the sam
 
 ### How to fix
 
-1. Add the missing `return` after the first call, or delete the call that should not run.
+1. Add the missing `return` after the first call, or delete the call that should not run; the fix offers both.
 
 ### Examples
 
@@ -54492,6 +56148,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+##### Fixed (return from the earlier call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+##### Fixed (drop the later call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 
@@ -54516,6 +56191,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+##### Fixed (return from the earlier call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+##### Fixed (drop the later call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 ##### Do
 
 ```jsx
@@ -54537,6 +56231,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+##### Fixed (return from the earlier call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+##### Fixed (drop the later call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 ##### Do
 
 ```ts
@@ -54555,6 +56268,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+##### Fixed (return from the earlier call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+##### Fixed (drop the later call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 
@@ -54653,7 +56385,7 @@ const p = Promise.resolve(1);
 ## `js/promise-no-nesting` — Promise chains are flattened, not nested
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (flattening a chain moves code between callbacks and may need values carried along)
+- **Fix:** `suggest` (hoisting the inner `.then` onto the outer chain is only equivalent when its callback uses nothing the outer callback declared, which the reviewer confirms)
 - **Severity when named:** `warn` · **Turned on by:** `codelaw:js/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-no-nesting.md
 
@@ -54665,7 +56397,7 @@ A `.then()` or `.catch()` is not called inside another `.then()` or `.catch()` c
 
 ### How to fix
 
-1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain.
+1. Return the inner promise from the outer callback and move its `.then()` up to the outer chain; the fix does this for a single-argument `.then` that is the arrow callback's whole body, and the reviewer checks the moved callback uses nothing the outer callback declared.
 
 ### Examples
 
@@ -54677,6 +56409,14 @@ A `.then()` or `.catch()` is not called inside another `.then()` or `.catch()` c
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+##### Fixed
+
+```js
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 ##### Do
@@ -54697,6 +56437,14 @@ getUser().then((user) =>
 );
 ```
 
+##### Fixed
+
+```jsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 ##### Do
 
 ```jsx
@@ -54715,6 +56463,14 @@ getUser().then((user) =>
 );
 ```
 
+##### Fixed
+
+```ts
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
+```
+
 ##### Do
 
 ```ts
@@ -54731,6 +56487,14 @@ getUser()
 getUser().then((user) =>
   getPosts(user).then((posts) => show(posts)),
 );
+```
+
+##### Fixed
+
+```tsx
+getUser().then((user) =>
+  getPosts(user),
+).then((posts) => show(posts));
 ```
 
 ##### Do
@@ -54906,7 +56670,7 @@ show(await parse(text));
 ## `js/promise-no-return-in-finally` — A finally callback returns nothing
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the value belongs in a `.then()` before the `finally` or should be dropped is the author's call)
+- **Fix:** `suggest` (the returned value is dropped from the result either way; the reviewer confirms it should not move to a `.then()`)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-no-return-in-finally.md
 
@@ -54932,6 +56696,14 @@ load().finally(() => {
 });
 ```
 
+##### Fixed
+
+```js
+load().finally(() => {
+  cleanup();
+});
+```
+
 ##### Do
 
 ```js
@@ -54947,6 +56719,14 @@ load().finally(() => {
 ```jsx
 load().finally(() => {
   return cleanup();
+});
+```
+
+##### Fixed
+
+```jsx
+load().finally(() => {
+  cleanup();
 });
 ```
 
@@ -54968,6 +56748,14 @@ load().finally(() => {
 });
 ```
 
+##### Fixed
+
+```ts
+load().finally(() => {
+  cleanup();
+});
+```
+
 ##### Do
 
 ```ts
@@ -54983,6 +56771,14 @@ load().finally(() => {
 ```tsx
 load().finally(() => {
   return cleanup();
+});
+```
+
+##### Fixed
+
+```tsx
+load().finally(() => {
+  cleanup();
 });
 ```
 
@@ -54997,7 +56793,7 @@ load().finally(() => {
 ## `js/promise-no-return-wrap` — A then or catch callback returns the value, not Promise.resolve or Promise.reject
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (turning `return Promise.reject(e)` into `throw e` changes the statement's shape inside code the author may want to restructure)
+- **Fix:** `auto` (`return Promise.resolve(x)` is `return x` and `return Promise.reject(e)` is `throw e`; only a callback with a try around the return, where the new throw would be caught, stays a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-no-return-wrap.md
 
@@ -55009,8 +56805,7 @@ Inside a `.then()` or `.catch()` callback, return the value itself rather than `
 
 ### How to fix
 
-1. Replace `return Promise.resolve(x)` with `return x`.
-2. Replace `return Promise.reject(e)` with `throw e`.
+1. Replace `return Promise.resolve(x)` with `return x`, and `return Promise.reject(e)` with `throw e`; the fix does both, and reports a suggestion where a `try` in the callback would catch the new `throw`.
 
 ### Examples
 
@@ -55021,6 +56816,14 @@ Inside a `.then()` or `.catch()` callback, return the value itself rather than `
 ```js
 fetchUser().then((user) => {
   return Promise.resolve(user.name);
+});
+```
+
+##### Fixed
+
+```js
+fetchUser().then((user) => {
+  return user.name;
 });
 ```
 
@@ -55042,6 +56845,14 @@ fetchUser().then((user) => {
 });
 ```
 
+##### Fixed
+
+```jsx
+fetchUser().then((user) => {
+  return user.name;
+});
+```
+
 ##### Do
 
 ```jsx
@@ -55060,6 +56871,14 @@ fetchUser().then((user) => {
 });
 ```
 
+##### Fixed
+
+```ts
+fetchUser().then((user) => {
+  return user.name;
+});
+```
+
 ##### Do
 
 ```ts
@@ -55075,6 +56894,14 @@ fetchUser().then((user) => {
 ```tsx
 fetchUser().then((user) => {
   return Promise.resolve(user.name);
+});
+```
+
+##### Fixed
+
+```tsx
+fetchUser().then((user) => {
+  return user.name;
 });
 ```
 
@@ -55421,7 +57248,7 @@ load().catch(report).then(show);
 ## `js/promise-spec-only` — Only standard Promise methods
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the standard replacement depends on what the library method did)
+- **Fix:** `suggest` (library methods differ in concurrency and callback arguments from the standard ones, so the reviewer confirms the rewrite; a method with no standard equivalent has no edit)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-spec-only.md
 
@@ -55433,7 +57260,7 @@ Only the static methods the language defines are called on `Promise`.
 
 ### How to fix
 
-1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`) or import the library explicitly.
+1. Replace the library method with the standard ones (`Promise.all(items.map(f))` for `Promise.map`, a `setTimeout` promise for `Promise.delay`) or import the library explicitly; the fix writes those two.
 
 ### Examples
 
@@ -61557,7 +63384,7 @@ const csv = cells.join(",");
 ## `js/require-await` — An async function awaits something
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `async` or an `await` is missing is the author's call)
+- **Fix:** `suggest` (dropping `async` changes the function to return its value directly, which callers may not expect; the reviewer confirms, since an `await` the author forgot is the other fix)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/require-await.md
 
@@ -61569,7 +63396,7 @@ An `async` function with a non-empty body contains an `await` or a `for await` l
 
 ### How to fix
 
-1. If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise.
+1. If the function does wait on something, add the `await`; otherwise remove `async` and check its callers do not rely on a promise; the fix removes `async`.
 
 ### Examples
 
@@ -61579,6 +63406,14 @@ An `async` function with a non-empty body contains an `await` or a `for await` l
 
 ```js
 async function load() {
+  return fetch(url);
+}
+```
+
+##### Fixed
+
+```js
+ function load() {
   return fetch(url);
 }
 ```
@@ -61601,6 +63436,14 @@ async function load() {
 }
 ```
 
+##### Fixed
+
+```jsx
+ function load() {
+  return fetch(url);
+}
+```
+
 ##### Do
 
 ```jsx
@@ -61619,6 +63462,14 @@ async function load() {
 }
 ```
 
+##### Fixed
+
+```ts
+ function load() {
+  return fetch(url);
+}
+```
+
 ##### Do
 
 ```ts
@@ -61633,6 +63484,14 @@ function load() {
 
 ```tsx
 async function load() {
+  return fetch(url);
+}
+```
+
+##### Fixed
+
+```tsx
+ function load() {
   return fetch(url);
 }
 ```
@@ -62011,7 +63870,7 @@ window.postMessage(data, location.origin);
 ## `js/require-unicode-regexp` — Regular expressions use the u or v flag
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error)
+- **Fix:** `suggest` (the flag makes the pattern stricter, so an escape that was ignored becomes a syntax error; the reviewer confirms the pattern still compiles)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/require-unicode-regexp.md
 
@@ -62023,7 +63882,7 @@ A regular-expression literal has the `u` or `v` flag.
 
 ### How to fix
 
-1. Add `u` after the closing slash and check that the pattern still compiles.
+1. Check the pattern still compiles with the `u` flag.
 
 ### Examples
 
@@ -62033,6 +63892,12 @@ A regular-expression literal has the `u` or `v` flag.
 
 ```js
 const word = /\w+/g;
+```
+
+##### Fixed
+
+```js
+const word = /\w+/gu;
 ```
 
 ##### Do
@@ -62049,6 +63914,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+##### Fixed
+
+```jsx
+const word = /\w+/gu;
+```
+
 ##### Do
 
 ```jsx
@@ -62063,6 +63934,12 @@ const word = /\w+/gu;
 const word = /\w+/g;
 ```
 
+##### Fixed
+
+```ts
+const word = /\w+/gu;
+```
+
 ##### Do
 
 ```ts
@@ -62075,6 +63952,12 @@ const word = /\w+/gu;
 
 ```tsx
 const word = /\w+/g;
+```
+
+##### Fixed
+
+```tsx
+const word = /\w+/gu;
 ```
 
 ##### Do
@@ -62086,7 +63969,7 @@ const word = /\w+/gu;
 ## `js/require-yield` — A generator function yields
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to yield or to drop the `*` needs the author)
+- **Fix:** `suggest` (dropping the `*` makes a plain function, right only if the generator was never meant to yield; the reviewer confirms, since adding the missing `yield` is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/require-yield.md
 
@@ -62098,7 +63981,7 @@ A non-empty generator function contains at least one `yield`.
 
 ### How to fix
 
-1. Add the `yield` the generator was meant to have, or remove the `*`.
+1. Add the `yield` the generator was meant to have, or remove the `*`; the fix removes the `*`.
 
 ### Examples
 
@@ -62108,6 +63991,14 @@ A non-empty generator function contains at least one `yield`.
 
 ```js
 function* ids() {
+  return 1;
+}
+```
+
+##### Fixed
+
+```js
+function ids() {
   return 1;
 }
 ```
@@ -62130,6 +64021,14 @@ function* ids() {
 }
 ```
 
+##### Fixed
+
+```jsx
+function ids() {
+  return 1;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -62148,6 +64047,14 @@ function* ids() {
 }
 ```
 
+##### Fixed
+
+```ts
+function ids() {
+  return 1;
+}
+```
+
 ##### Do
 
 ```ts
@@ -62162,6 +64069,14 @@ function* ids() {
 
 ```tsx
 function* ids() {
+  return 1;
+}
+```
+
+##### Fixed
+
+```tsx
+function ids() {
   return 1;
 }
 ```
@@ -62580,7 +64495,7 @@ switch (mode) {
 ## `js/symbol-description` — A Symbol has a description
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the description is the author's)
+- **Fix:** `suggest` (the description is the author's; the fix offers the binding or property name and the reviewer confirms it)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/symbol-description.md
 
@@ -62604,6 +64519,12 @@ switch (mode) {
 const key = Symbol();
 ```
 
+##### Fixed
+
+```js
+const key = Symbol('key');
+```
+
 ##### Do
 
 ```js
@@ -62616,6 +64537,12 @@ const key = Symbol('key');
 
 ```jsx
 const key = Symbol();
+```
+
+##### Fixed
+
+```jsx
+const key = Symbol('key');
 ```
 
 ##### Do
@@ -62632,6 +64559,12 @@ const key = Symbol('key');
 const key = Symbol();
 ```
 
+##### Fixed
+
+```ts
+const key = Symbol('key');
+```
+
 ##### Do
 
 ```ts
@@ -62644,6 +64577,12 @@ const key = Symbol('key');
 
 ```tsx
 const key = Symbol();
+```
+
+##### Fixed
+
+```tsx
+const key = Symbol('key');
 ```
 
 ##### Do
@@ -63251,7 +65190,7 @@ const Orders = () => <button onClick={() => apiFetch("/api/orders")}>load</butto
 ## `js/use-isnan` — Test for NaN with Number.isNaN
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the comparison's operator decides whether to negate)
+- **Fix:** `suggest` (the comparison is constant today, so the fix changes behaviour by design; the operator picks the negation and the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/use-isnan.md
 
@@ -63263,8 +65202,7 @@ Code tests for `NaN` with `Number.isNaN(x)`, never by comparing with `NaN`.
 
 ### How to fix
 
-1. Replace `x === NaN` or `x == NaN` with `Number.isNaN(x)`.
-2. Replace `x !== NaN` or `x != NaN` with `!Number.isNaN(x)`.
+1. Check the branch that ran on a comparison with `NaN` (always false) is the one meant, then keep the `Number.isNaN` form.
 
 ### Examples
 
@@ -63274,6 +65212,14 @@ Code tests for `NaN` with `Number.isNaN(x)`, never by comparing with `NaN`.
 
 ```js
 if (price === NaN) {
+  reset();
+}
+```
+
+##### Fixed
+
+```js
+if (Number.isNaN(price)) {
   reset();
 }
 ```
@@ -63296,6 +65242,14 @@ if (price === NaN) {
 }
 ```
 
+##### Fixed
+
+```jsx
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 ##### Do
 
 ```jsx
@@ -63314,6 +65268,14 @@ if (price === NaN) {
 }
 ```
 
+##### Fixed
+
+```ts
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 ##### Do
 
 ```ts
@@ -63328,6 +65290,14 @@ if (Number.isNaN(price)) {
 
 ```tsx
 if (price === NaN) {
+  reset();
+}
+```
+
+##### Fixed
+
+```tsx
+if (Number.isNaN(price)) {
   reset();
 }
 ```

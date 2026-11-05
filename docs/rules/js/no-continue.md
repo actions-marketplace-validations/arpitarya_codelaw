@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/taste` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (inverting the condition restructures the loop body) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an unlabelled `continue` guarding the rest of a loop body is rewritten to a negated `if` around that rest; a body that declares a function, or any other `continue`, is not auto) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-continue` |
@@ -136,6 +136,16 @@ for (const x of xs) {
 }
 ```
 
+#### Fixed
+
+```js
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -152,6 +162,16 @@ for (const x of xs) {
 for (const x of xs) {
   if (!x) continue;
   use(x);
+}
+```
+
+#### Fixed
+
+```jsx
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
 }
 ```
 
@@ -174,6 +194,16 @@ for (const x of xs) {
 }
 ```
 
+#### Fixed
+
+```ts
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -190,6 +220,16 @@ for (const x of xs) {
 for (const x of xs) {
   if (!x) continue;
   use(x);
+}
+```
+
+#### Fixed
+
+```tsx
+for (const x of xs) {
+  if (!(!x)) {
+    use(x);
+  }
 }
 ```
 

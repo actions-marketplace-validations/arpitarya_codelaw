@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/jsdoc` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which property the tag is for is the author's to say) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the property name the tag documents is in no code to copy; the author supplies it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/require-property-name` |

@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the first or the second call is the right one is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (early `return` also skips the later statements and deleting the late call hides the bug; the reviewer picks which call is the right one) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/no-multiple-resolved` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>                   # the resolved setting, an
 
 ## How to fix
 
-1. Add the missing `return` after the first call, or delete the call that should not run.
+1. Add the missing `return` after the first call, or delete the call that should not run; the fix offers both.
 
 ## Examples
 
@@ -137,6 +137,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+#### Fixed (return from the earlier call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```js
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 
@@ -161,6 +180,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+#### Fixed (return from the earlier call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```jsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 #### Do
 
 ```jsx
@@ -182,6 +220,25 @@ new Promise((resolve, reject) => {
 });
 ```
 
+#### Fixed (return from the earlier call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```ts
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
+});
+```
+
 #### Do
 
 ```ts
@@ -200,6 +257,25 @@ new Promise((resolve, reject) => {
   if (bad) reject(err);
   resolve(value);
   reject(late);
+});
+```
+
+#### Fixed (return from the earlier call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  return resolve(value);
+  reject(late);
+});
+```
+
+#### Fixed (drop the later call)
+
+```tsx
+new Promise((resolve, reject) => {
+  if (bad) reject(err);
+  resolve(value);
 });
 ```
 
