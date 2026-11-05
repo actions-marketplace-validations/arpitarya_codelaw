@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what should happen instead (return, raise) is the author's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F701` |
+| **Ported from** | `ruff/F701`, `pylint/not-in-loop` |
 
 ## What it checks
 

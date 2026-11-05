@@ -7,7 +7,7 @@ stability: preview
 options:
   known_first_party: { type: "string[]", default: [], description: "top-level modules that belong to this project" }
   line_length: { type: integer, default: 88, description: "the width a from-import may reach before it is wrapped" }
-ported_from: [ruff/I001]
+ported_from: [ruff/I001, pylint/wrong-import-order]
 since: 0.1.0
 ---
 

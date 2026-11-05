@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how errors should propagate has to be decided) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B012` |
+| **Ported from** | `ruff/B012`, `pylint/lost-exception`, `pylint/return-in-finally`, `pylint/break-in-finally` |
 
 ## What it checks
 

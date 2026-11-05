@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which names the module needs can only be found by reading its uses) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F403` |
+| **Ported from** | `ruff/F403`, `pylint/wildcard-import` |
 
 ## What it checks
 

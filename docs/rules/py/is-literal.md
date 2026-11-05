@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`==` calls the object's `__eq__`, which can behave differently from identity) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F632` |
+| **Ported from** | `ruff/F632`, `pylint/literal-comparison` |
 
 ## What it checks
 

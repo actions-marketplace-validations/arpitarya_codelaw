@@ -4,7 +4,7 @@ title: "No exception listed twice in one handler"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/B014]
+ported_from: [ruff/B014, pylint/duplicate-except]
 since: 0.1.0
 ---
 

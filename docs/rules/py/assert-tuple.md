@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the parentheses turns a no-op into a check that can now fail) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F631` |
+| **Ported from** | `ruff/F631`, `pylint/assert-on-tuple` |
 
 ## What it checks
 

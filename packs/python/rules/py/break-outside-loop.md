@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "what should happen instead (return, raise) is the author's choice"
 fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/F701]
+ported_from: [ruff/F701, pylint/not-in-loop]
 since: 0.1.0
 ---
 

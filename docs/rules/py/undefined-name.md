@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to import, define or correct the name needs a person) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F821` |
+| **Ported from** | `ruff/F821`, `pylint/undefined-variable` |
 
 ## What it checks
 

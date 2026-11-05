@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether an increment or a plain value was meant needs a person) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B002` |
+| **Ported from** | `ruff/B002`, `pylint/nonexistent-operator` |
 
 ## What it checks
 
