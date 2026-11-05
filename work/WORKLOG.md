@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
+- **Done:** the step exchanges the OIDC token at `/api/-/trusted-publishing/token` (body and audience read from Open VSX's source and `/api/version`) and uploads with the issued token; `OVSX_PAT` dropped; RELEASING.md, W-95's item and row, IMPLEMENTATION follow.
+- **Decided / left open:** `curl`, not `ovsx` (the coordinator's brief; decision 8 allows either). VSCodium not checked — its download stalled; Open VSX serves 0.3.0 for darwin-arm64 (0.4.0 only on some platforms).
+- **Mistakes:** none.
+- **Next:** the next release proves the upload; then the VSCodium install.
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*

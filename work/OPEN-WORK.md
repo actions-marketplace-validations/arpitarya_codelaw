@@ -49,7 +49,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. Next: the `perf` matrix, then the measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
-🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
+🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified; `publish.yml` publishes there by trusted publishing (OIDC, env `vscode`, no token) since 11-05 — the next release proves it. Left: the VSCodium install check after that release (Open VSX holds 0.4.0 for some platforms only; darwin-arm64 is 0.3.0). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
 🟢 **W-97** `agent` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64): both public repos created 11-05 — next the Action's proof in `codelaw-action-test`, then the mirror. Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
 
