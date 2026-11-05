@@ -2,9 +2,8 @@
 id: react/a11y-no-autofocus
 title: "No autoFocus"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "some dialogs need initial focus, set deliberately in code"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing autoFocus drops initial focus, so the reviewer confirms the element needs none or moves focus from the open handler"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-autofocus]
 since: 0.5.0
@@ -20,6 +19,7 @@ match:
   regex: '^autoFocus\b'
   not: { regex: '^autoFocus=\{\s*false\s*\}$' }
 message: "Remove `autoFocus`; focus moved on load disorients keyboard and screen-reader users"
+fix: [remove]
 ```
 
 ## How to fix
@@ -36,6 +36,12 @@ message: "Remove `autoFocus`; focus moved on load disorients keyboard and screen
 const q = <input autoFocus />;
 ```
 
+#### Fixed
+
+```js
+const q = <input  />;
+```
+
 #### Do
 
 ```js
@@ -50,6 +56,12 @@ const q = <input />;
 const q = <input autoFocus />;
 ```
 
+#### Fixed
+
+```jsx
+const q = <input  />;
+```
+
 #### Do
 
 ```jsx
@@ -62,6 +74,12 @@ const q = <input />;
 
 ```tsx
 const q = <input autoFocus />;
+```
+
+#### Fixed
+
+```tsx
+const q = <input  />;
 ```
 
 #### Do

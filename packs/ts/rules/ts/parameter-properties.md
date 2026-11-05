@@ -4,7 +4,7 @@ title: "No parameter properties"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "moving the property into the class body adds a field and an assignment"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [typescript-eslint/parameter-properties]
 since: 0.5.0

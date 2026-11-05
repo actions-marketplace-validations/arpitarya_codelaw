@@ -1,12 +1,11 @@
-//! The fix ladder, counted (SR-LAW-4 decisions 6 and 7): each pack's rules
-//! per rung and per exception, and the manual ceilings of
-//! `packs/fix-ladder.toml` they are held to.
+//! The fix ladder, counted (SR-LAW-4 decision 7): each pack's rules per
+//! rung and per exception. No count limits them (decision 6, retired
+//! 2026-11-05).
 
 use crate::{BlockKind, RuleFile};
 use codelaw_core::{FixClass, FixException};
 use serde::Serialize;
 use std::collections::BTreeMap;
-use std::path::Path;
 
 /// One pack's rules by rung (SR-LAW-4 decision 7).
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize)]
@@ -23,9 +22,6 @@ pub struct FixStats {
     pub exceptions: BTreeMap<String, usize>,
     /// `manual` rules still waiting to move up the ladder (`fix_pending:`).
     pub pending: usize,
-    /// The pack's ceiling, when a ceiling file names it.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ceiling: Option<usize>,
 }
 
 impl FixStats {
@@ -55,38 +51,16 @@ impl FixStats {
         }
         s
     }
-
-    /// Over its ceiling (SR-LAW-4 decision 6): the reason, or `None`.
-    pub fn over_ceiling(&self) -> Option<String> {
-        let c = self.ceiling?;
-        (self.manual > c).then(|| {
-            format!(
-                "pack `{}` ships {} `manual` rules, over its ceiling of {c} in fix-ladder.toml; move a rule up the ladder, or raising the ceiling needs the decider's ruling (SR-LAW-4 decision 6)",
-                self.pack, self.manual
-            )
-        })
-    }
-}
-
-/// The ceilings of a `fix-ladder.toml`: `[ceiling] <pack> = <n>`.
-pub fn read_ceilings(path: &Path) -> Result<BTreeMap<String, usize>, String> {
-    #[derive(serde::Deserialize)]
-    #[serde(deny_unknown_fields)]
-    struct File {
-        ceiling: BTreeMap<String, usize>,
-    }
-    let text = std::fs::read_to_string(path).map_err(|e| format!("{}: {e}", path.display()))?;
-    toml::from_str::<File>(&text).map(|f| f.ceiling).map_err(|e| format!("{}: {e}", path.display()))
 }
 
 /// The fix-stats table as text, one row per pack and a total.
 pub fn fix_stats_text(stats: &[FixStats]) -> String {
-    let mut out = String::from("pack                 rules  auto  suggest (choices)  manual  value  restructure  authored  security  pending  ceiling\n");
+    let mut out = String::from("pack                 rules  auto  suggest (choices)  manual  value  restructure  authored  security  pending\n");
     let mut total = FixStats { pack: "total".into(), ..Default::default() };
     let row = |s: &FixStats| {
         let x = |k: &str| s.exceptions.get(k).copied().unwrap_or(0);
         format!(
-            "{:<20} {:>5}  {:>4}  {:>7} {:>9}  {:>6}  {:>5}  {:>11}  {:>8}  {:>8}  {:>7}  {:>7}\n",
+            "{:<20} {:>5}  {:>4}  {:>7} {:>9}  {:>6}  {:>5}  {:>11}  {:>8}  {:>8}  {:>7}\n",
             s.pack,
             s.rules,
             s.auto,
@@ -98,7 +72,6 @@ pub fn fix_stats_text(stats: &[FixStats]) -> String {
             x("authored"),
             x("security"),
             s.pending,
-            s.ceiling.map(|c| c.to_string()).unwrap_or_else(|| "-".into()),
         )
     };
     for s in stats {

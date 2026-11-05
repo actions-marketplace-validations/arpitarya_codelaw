@@ -200,10 +200,11 @@ fn l4_the_loader_refuses_a_manual_rule_without_an_exception() {
     let _ = fs::remove_dir_all(&repo);
 }
 
-/// SR-LAW-4 decision 6: no first-party pack ships more `manual` rules than
-/// its ceiling in `packs/fix-ladder.toml`, and every pack has one.
+/// SR-LAW-4 decisions 5 and 7: `--fix-stats --check` passes on every
+/// first-party pack, and counts each `manual` rule under its exception or as
+/// pending. No count limits a pack's `manual` rules (decision 6, retired).
 #[test]
-fn l4_every_pack_is_under_its_manual_ceiling() {
+fn l4_fix_stats_counts_every_pack() {
     let root = repo_root();
     let (code, out, err) = codelaw(&root, &["rules", "--fix-stats", "--packs", "packs", "--check"]);
     assert_eq!(code, 0, "{out}{err}");

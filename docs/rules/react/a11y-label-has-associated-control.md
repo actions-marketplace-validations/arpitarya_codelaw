@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which control the label belongs to is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (htmlFor ties the label to the next sibling control that has a static id, which the reviewer confirms is the intended one; a label with no such sibling gets no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/label-has-associated-control` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                           # the resolved set
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+#### Fixed
+
+```js
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+#### Fixed
+
+```jsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 
 ```tsx
 const f = <><label>Name</label><input id="name" /></>;
+```
+
+#### Fixed
+
+```tsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 ```
 
 #### Do

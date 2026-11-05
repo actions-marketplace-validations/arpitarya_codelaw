@@ -2,9 +2,8 @@
 id: sec-js/angularjs-sce-disabled
 title: "No AngularJS strict contextual escaping switched off"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which sources the application loads from is a decision for the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "switching `$sce` back on and narrowing the whitelist to `self` is fail-closed, but the reviewer adds the hosts the templates load from"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0
@@ -34,7 +33,7 @@ AngularJS's `$sce` stays on, `resourceUrlWhitelist` has no `"**"`, the href and 
 ```codelaw
 match:
   any:
-    - pattern: $sceProvider.enabled(false)
+    - pattern: $SP.enabled($OFF)
     - all:
         - pattern: $SD.resourceUrlWhitelist($A)
         - regex: '["'']\*\*["'']'
@@ -46,10 +45,14 @@ match:
     - pattern: $SCE.trustAsUrl($V)
     - pattern: $SCE.trustAsResourceUrl($V)
 constraints:
+  OFF: { regex: '^false$' }
   V: { not: { any: [ { kind: string }, { regex: '^`[^`$]*`$' } ] } }
 where:
   $V: { not: { calls: sanitizers } }
 message: "AngularJS's strict contextual escaping is weakened here"
+fix:
+  - replace: {target: $OFF, with: "true"}
+  - replace: {target: $A, with: '["self"]'}
 ```
 
 ## How to fix

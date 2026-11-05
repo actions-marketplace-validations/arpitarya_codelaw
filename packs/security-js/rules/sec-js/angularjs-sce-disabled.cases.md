@@ -127,3 +127,31 @@ $sce.trustAsHtml(sanitizeHtml(x));
 ```expect
 (none)
 ```
+
+### case: fix: strict contextual escaping on
+
+```js
+$sceProvider.enabled(false);
+```
+
+```expect
+1:1 sec-js/angularjs-sce-disabled
+```
+
+```fixed
+$sceProvider.enabled(true);
+```
+
+### case: fix: resource whitelist narrowed to self
+
+```js
+$sceDelegateProvider.resourceUrlWhitelist(["**"]);
+```
+
+```expect
+1:1 sec-js/angularjs-sce-disabled
+```
+
+```fixed
+$sceDelegateProvider.resourceUrlWhitelist(["self"]);
+```

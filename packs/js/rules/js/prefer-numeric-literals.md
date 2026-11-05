@@ -4,7 +4,7 @@ title: "0b101 rather than parseInt(\"101\", 2)"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the literal's prefix depends on the radix, which a template cannot choose"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/prefer-numeric-literals]
 since: 0.5.0

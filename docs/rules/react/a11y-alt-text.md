@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (only the author knows what the image shows) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an `<img>` hidden with aria-hidden is decorative, so an empty `alt` changes nothing for assistive technology; any other image needs an `alt` that says what it shows, so the reviewer confirms it is decorative) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/alt-text` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>       # the resolved setting, and where it c
 const logo = <img src="logo.png" />;
 ```
 
+#### Fixed
+
+```js
+const logo = <img alt="" src="logo.png" />;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 const logo = <img src="logo.png" />;
 ```
 
+#### Fixed
+
+```jsx
+const logo = <img alt="" src="logo.png" />;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 
 ```tsx
 const logo = <img src="logo.png" />;
+```
+
+#### Fixed
+
+```tsx
+const logo = <img alt="" src="logo.png" />;
 ```
 
 #### Do

@@ -222,6 +222,18 @@ Every rule has a fix class: `auto` (applied by `codelaw fix`, on save and by the
 
 `fix = "auto"` on a `suggest` rule is a config error naming the rule's own class. `codelaw rules --why <id>` and `codelaw config --print` show the lowered class and the line that set it.
 
+### Saying why a rule is off
+
+A rule entry that sets `severity = "off"`, in `[rules]` or a scope, may say why. `require_reason = true` makes the reason mandatory:
+
+```toml
+[rules]
+require_reason = true                                   # default false
+"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }
+```
+
+With it on, an `"off"` that has no reason is a `codelaw/off-without-reason` error on its line in `codelaw.toml`. A `reason` on an entry that isn't `"off"` is a config error. `codelaw config --print` shows each reason and the line that set it ([SR-CONFIG](records/0110_config.md) decision 11c).
+
 ### Size limits
 
 Six rules cap how big a file, a function and a parameter list may grow, for JavaScript, TypeScript and Python. They are in no default preset; `codelaw:js/size` and `codelaw:py/size` turn all three of a language on at `warn`.
@@ -528,16 +540,19 @@ flowchart LR
   - **`pre-commit` blocks:** it runs `codelaw fix --staged` on the files that are fully staged and re-stages them, then `codelaw check --staged` on every staged file. A partly staged file is checked but never fixed, so your unstaged hunks stay yours. Add flags to both with `CODELAW_HOOK_ARGS` (for example `--profile ci`); skip once with `git commit --no-verify`.
   - **`post-commit` never blocks:** it reminds you of your exceptions that expire within 7 days (`codelaw exceptions --mine --expiring 7d`) and the baseline's 30-day burn-down in one line, then prints what the scripts in `.codelaw/hooks/post-commit.d/` print, and always exits 0.
   - **By hand:** `codelaw check --staged`.
-  - **The pre-commit framework** — `codelaw` must be on `PATH`:
+  - **The pre-commit framework** — [`codelaw-pre-commit`](https://github.com/arpitarya/codelaw-pre-commit) installs codelaw from PyPI at the tag's version into the framework's own virtualenv; nothing to build, nothing on `PATH`. Hooks `codelaw-fix`, `codelaw-format` and `codelaw-check`; a new release reaches it as a tag within a day, and `pre-commit autoupdate` moves your `rev`:
 
     ```yaml
     repos:
-      - repo: https://github.com/arpitarya/codelaw
-        rev: v0.3.0
+      - repo: https://github.com/arpitarya/codelaw-pre-commit
+        rev: v0.4.3
         hooks:
           - id: codelaw-fix
+          - id: codelaw-format
           - id: codelaw-check
     ```
+
+    If codelaw is already installed (npm or pip), the main repository's `language: system` hooks run that copy instead — `repo: https://github.com/arpitarya/codelaw`, the same `rev`, hooks `codelaw-fix` and `codelaw-check`.
 
   - **husky** (`.husky/pre-commit`) and **lefthook** (`lefthook.yml`):
 

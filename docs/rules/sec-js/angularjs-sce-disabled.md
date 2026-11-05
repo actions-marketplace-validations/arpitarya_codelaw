@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/strict` at `warn` · `codelaw:sec-ts/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `sanitizers` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which sources the application loads from is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (switching `$sce` back on and narrowing the whitelist to `self` is fail-closed, but the reviewer adds the hosts the templates load from) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |

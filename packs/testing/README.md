@@ -31,13 +31,13 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 ## The fix ladder
 
-Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception, and the most this pack may ship (`packs/fix-ladder.toml`). `codelaw rules --fix-stats` prints the same table.
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
 
 <!-- rule-docs:fix-ladder -->
 
-| auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
-|---|---|---|---|---|---|---|---|---|
-| 53 | 34 | 82 | 20 | 54 | 8 | 0 | 0 | 82 |
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 53 | 34 | 82 | 20 | 54 | 8 | 0 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

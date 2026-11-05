@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the fix is the native control, which changes the markup) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (for role button the role is dropped and the onClick moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; other roles get no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-noninteractive-element-to-interactive-role` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                                            #
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
 ```
 
+#### Fixed
+
+```js
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const b = <h3><button type="button" onClick={toggle}>Details</button></h3>;
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
 ```
 
+#### Fixed
+
+```jsx
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const b = <h3><button type="button" onClick={toggle}>Details</button></h3>;
 
 ```tsx
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
+```
+
+#### Fixed
+
+```tsx
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
 ```
 
 #### Do

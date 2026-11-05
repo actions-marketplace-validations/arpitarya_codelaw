@@ -4,7 +4,7 @@ title: "No else after return"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "unwrapping the block re-indents its statements, and a declaration in it could clash with one outside"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/no-else-return, eslint-plugin-unicorn/no-useless-else]
 since: 0.5.0

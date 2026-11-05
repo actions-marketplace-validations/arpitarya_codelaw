@@ -4,7 +4,7 @@ title: "style is an object"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the CSS text has to be rewritten as an object with camel-cased keys"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/style-prop-object]
 since: 0.5.0

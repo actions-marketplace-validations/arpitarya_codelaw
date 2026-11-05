@@ -39,3 +39,17 @@ frame.postMessage(msg, '*');
 ```expect
 1:1 sec-js/postmessage-origin
 ```
+
+### case: fix: target origin is the page's own
+
+```js
+win.postMessage(msg, "*");
+```
+
+```expect
+1:1 sec-js/postmessage-origin
+```
+
+```fixed
+win.postMessage(msg, window.location.origin);
+```

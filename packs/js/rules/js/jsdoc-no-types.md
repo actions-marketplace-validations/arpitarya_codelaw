@@ -4,7 +4,7 @@ title: "No JSDoc types in TypeScript"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed)"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/no-types]
 since: 0.5.0

@@ -4,7 +4,7 @@ title: "No Function type"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the right signature needs the author"
-fix_pending: "auto-subset; needs type-info"
+fix_exception: value
 stability: preview
 ported_from: [typescript-eslint/no-unsafe-function-type]
 since: 0.1.0

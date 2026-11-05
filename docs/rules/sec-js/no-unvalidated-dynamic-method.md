@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which methods are allowed is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an own-key check blocks prototype methods and keeps `this`, but the reviewer confirms the own keys are the ones meant to be callable) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-470 · OWASP A05:2025 · security severity `high` |
@@ -135,6 +135,12 @@ codelaw config --print --for <file>                        # the resolved settin
 handlers[req.query.action](req, res);
 ```
 
+#### Fixed
+
+```js
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 #### Do
 
 ```js
@@ -149,6 +155,12 @@ if (req.query.action === "list") {
 
 ```jsx
 handlers[req.query.action](req, res);
+```
+
+#### Fixed
+
+```jsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 #### Do
@@ -167,6 +179,12 @@ if (req.query.action === "list") {
 handlers[req.query.action](req, res);
 ```
 
+#### Fixed
+
+```ts
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
+```
+
 #### Do
 
 ```ts
@@ -181,6 +199,12 @@ if (req.query.action === "list") {
 
 ```tsx
 handlers[req.query.action](req, res);
+```
+
+#### Fixed
+
+```tsx
+(Object.hasOwn(handlers, req.query.action) ? handlers[req.query.action] : null).call(handlers, req, res);
 ```
 
 #### Do

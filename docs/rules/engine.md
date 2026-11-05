@@ -32,6 +32,7 @@
 | [`codelaw/stale-coverage`](#codelawstale-coverage) | The coverage report does not match this file, so its coverage is not judged | `warn` | `manual` |
 | [`codelaw/stale-ignore`](#codelawstale-ignore) | A `.codelawignore` line matches no file or function | `warn` | `auto` |
 | [`codelaw/incomplete-ignore`](#codelawincomplete-ignore) | A `.codelawignore` line is missing a field or contradicts itself, so it exempts nothing | `error` | `manual` |
+| [`codelaw/off-without-reason`](#codelawoff-without-reason) | A rule is turned `"off"` in the config without a `reason` while `[rules] require_reason` is on | `error` | `manual` |
 | [`git/commit-message`](#gitcommit-message) | A commit message does not follow `[commits]` (Conventional Commits by default) | `error` | `manual` |
 | [`git/branch-name`](#gitbranch-name) | The branch name does not follow `[branches]` | `error` | `manual` |
 | [`git/pr-size`](#gitpr-size) | The pull request changes more lines than `[pr] max_lines` | `warn` | `manual` |
@@ -177,6 +178,12 @@
 
 1. Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).
 2. `forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule.
+
+## `codelaw/off-without-reason`
+
+**A rule is turned `"off"` in the config without a `reason` while `[rules] require_reason` is on** · severity `error` · fix `manual`
+
+1. Write the entry as a table with a reason: `"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }` (SR-CONFIG decision 11c).
 
 ## `git/commit-message`
 

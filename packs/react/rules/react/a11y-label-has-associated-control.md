@@ -2,9 +2,8 @@
 id: react/a11y-label-has-associated-control
 title: "A label is tied to a control"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "which control the label belongs to is the author's"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "htmlFor ties the label to the next sibling control that has a static id, which the reviewer confirms is the intended one; a label with no such sibling gets no edit"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/label-has-associated-control]
 since: 0.5.0
@@ -16,32 +15,42 @@ A `<label>` has an `htmlFor`, or wraps the `<input>`, `<select>`, `<textarea>` o
 
 ```codelaw
 match:
-  any:
-  - kind: jsx_self_closing_element
-    all:
-    - has: {field: name, regex: ^label$}
-    - not:
-        has: {kind: jsx_attribute, regex: ^htmlFor\b}
-    - not:
-        has: {kind: jsx_expression}
-  - kind: jsx_element
-    has:
-      field: open_tag
-      has: {field: name, regex: ^label$}
-      not:
-        any:
-        - has: {kind: jsx_attribute, regex: ^htmlFor\b}
-        - has: {kind: jsx_expression}
-    not:
+  all:
+  - any:
+    - kind: jsx_self_closing_element
+      all:
+      - has: {field: name, regex: ^label$, pattern: $N}
+      - not:
+          has: {kind: jsx_attribute, regex: ^htmlFor\b}
+      - not:
+          has: {kind: jsx_expression}
+    - kind: jsx_element
       has:
-        stopBy: end
+        field: open_tag
+        has: {field: name, regex: ^label$, pattern: $N}
+        not:
+          any:
+          - has: {kind: jsx_attribute, regex: ^htmlFor\b}
+          - has: {kind: jsx_expression}
+      not:
+        has:
+          stopBy: end
+          any:
+          - {kind: jsx_expression}
+          - any:
+            - {kind: jsx_opening_element}
+            - {kind: jsx_self_closing_element}
+            has: {field: name, regex: '^(input|select|textarea|meter|output|progress|[A-Z].*|.*\..*)$'}
+  - any:
+    - precedes:
         any:
-        - {kind: jsx_expression}
-        - any:
-          - {kind: jsx_opening_element}
-          - {kind: jsx_self_closing_element}
-          has: {field: name, regex: '^(input|select|textarea|meter|output|progress|[A-Z].*|.*\..*)$'}
+        - {kind: jsx_self_closing_element}
+        - {kind: jsx_opening_element}
+        has: {kind: jsx_attribute, regex: '^id=["'']', has: {kind: string, pattern: $ID}}
+    - {regex: '.'}
 message: Tie this label to its control with `htmlFor`, or put the control inside it
+fix:
+  - insert-after: { target: $N, text: " htmlFor=$ID" }
 ```
 
 ## How to fix
@@ -58,6 +67,12 @@ message: Tie this label to its control with `htmlFor`, or put the control inside
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+#### Fixed
+
+```js
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 #### Do
 
 ```js
@@ -72,6 +87,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+#### Fixed
+
+```jsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 #### Do
 
 ```jsx
@@ -84,6 +105,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 
 ```tsx
 const f = <><label>Name</label><input id="name" /></>;
+```
+
+#### Fixed
+
+```tsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 ```
 
 #### Do

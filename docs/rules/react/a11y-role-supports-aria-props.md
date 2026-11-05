@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (either the role or the attribute is wrong, and only the author knows which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (either the role or the attribute is wrong; the reviewer picks removing the attribute or changing the role to one that supports it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/role-supports-aria-props` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                       # the resolved setting
 const b = <div role="button" aria-checked="true" />;
 ```
 
+#### Fixed (remove the attribute)
+
+```js
+const b = <div role="button"  />;
+```
+
+#### Fixed (change the role)
+
+```js
+const b = <div role="checkbox" aria-checked="true" />;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const b = <div role="button" aria-pressed="true" />;
 const b = <div role="button" aria-checked="true" />;
 ```
 
+#### Fixed (remove the attribute)
+
+```jsx
+const b = <div role="button"  />;
+```
+
+#### Fixed (change the role)
+
+```jsx
+const b = <div role="checkbox" aria-checked="true" />;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const b = <div role="button" aria-pressed="true" />;
 
 ```tsx
 const b = <div role="button" aria-checked="true" />;
+```
+
+#### Fixed (remove the attribute)
+
+```tsx
+const b = <div role="button"  />;
+```
+
+#### Fixed (change the role)
+
+```tsx
+const b = <div role="checkbox" aria-checked="true" />;
 ```
 
 #### Do

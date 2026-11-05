@@ -4,7 +4,7 @@ title: "A model's body follows Django's order"
 languages: [python]
 fix: manual
 fix_reason: "moving members reorders the class by hand"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [ruff/DJ012]
 since: 0.5.0

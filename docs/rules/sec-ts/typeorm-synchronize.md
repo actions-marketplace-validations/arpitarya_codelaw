@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how the schema is changed instead (migrations) is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the edit fails closed, but the schema then changes only through migrations, so the reviewer confirms the project has them or writes them) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-1188 · OWASP A02:2025 · security severity `medium` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
 ```
 
+#### Fixed
+
+```ts
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
+```
+
 #### Do
 
 ```ts
@@ -145,6 +151,12 @@ export const db = new DataSource({ type: "postgres", url, migrations: ["dist/mig
 
 ```tsx
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
+```
+
+#### Fixed
+
+```tsx
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
 ```
 
 #### Do

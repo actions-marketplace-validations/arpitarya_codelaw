@@ -4,7 +4,7 @@ title: "No conditions that are always true or always false"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to remove the branch or fix the condition needs the author"
-fix_pending: "suggest; needs purity"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-constant-condition]
 since: 0.1.0

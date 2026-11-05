@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the production values come from the deployment (environment variables, a secret manager)) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms each flag turned on suits the deployment; a literal SECRET_KEY gets no edit (the value comes from the deployment)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Files** | never `**/tests/**`, `**/test/**`, `**/test_*.py`, `**/*_test.py`, `**/*_tests.py`, `**/tests.py`, `**/conftest.py` |
@@ -132,15 +132,13 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 #### Don't
 
 ```py
-app.config["SECRET_KEY"] = "dev-secret-key"
+app.config["SESSION_COOKIE_SECURE"] = False
 ```
 
 #### Do
 
 ```py
-import os
-
-app.config["SECRET_KEY"] = os.environ["FLASK_SECRET_KEY"]
+app.config["SESSION_COOKIE_SECURE"] = True
 ```
 
 ---

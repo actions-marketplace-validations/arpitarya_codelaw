@@ -2,9 +2,8 @@
 id: react/a11y-no-redundant-roles
 title: "No role an element already has"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "removing the role is safe, but whether the element is the one meant is for the author to confirm"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "removing a role the element already has is exact for every role but img, whose element role depends on alt, so img findings stay suggest"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-redundant-roles]
 since: 0.5.0
@@ -51,11 +50,11 @@ match:
     - regex: '^role=["'']option["'']$'
       inside: { any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}], has: { field: name, regex: '^option$' } }
 message: "`$$MATCH` is the element's own role; remove it"
+fix:
+  - remove
+auto_when:
+  not: { regex: '^role=["'']img["'']$' }
 ```
-
-## How to fix
-
-1. Remove the `role` attribute.
 
 ## Examples
 
@@ -65,6 +64,12 @@ message: "`$$MATCH` is the element's own role; remove it"
 
 ```js
 const b = <button role="button">Save</button>;
+```
+
+#### Fixed
+
+```js
+const b = <button >Save</button>;
 ```
 
 #### Do
@@ -81,6 +86,12 @@ const b = <button>Save</button>;
 const b = <button role="button">Save</button>;
 ```
 
+#### Fixed
+
+```jsx
+const b = <button >Save</button>;
+```
+
 #### Do
 
 ```jsx
@@ -93,6 +104,12 @@ const b = <button>Save</button>;
 
 ```tsx
 const b = <button role="button">Save</button>;
+```
+
+#### Fixed
+
+```tsx
+const b = <button >Save</button>;
 ```
 
 #### Do

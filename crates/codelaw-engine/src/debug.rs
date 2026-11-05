@@ -47,13 +47,21 @@ impl Project {
             let severity = crate::severity_name(&effective);
             let value = match effective.filter(|e| !e.options.is_empty()) {
                 Some(e) => json!({ "severity": severity, "options": e.options }),
-                None => Value::String(severity),
+                None => Value::String(severity.clone()),
             };
             out.push(Traced { key: format!("rules.{}", serde_json::to_string(id).expect("a string")), value, source });
             // A lowered fix and the entry that lowered it (SR-LAW-4 decision 16).
             if let Some(f) = lowered {
                 let at = sources.iter().rev().find(|(_, s)| s.fix().is_some()).map(|(s, _)| s.clone()).unwrap_or_default();
                 out.push(Traced { key: format!("rules.{}.fix", serde_json::to_string(id).expect("a string")), value: json!(f.name()), source: at });
+            }
+            // Why the rule is off, from the entry that turned it off
+            // (SR-CONFIG decision 11c).
+            if severity == "off"
+                && let Some((at, s)) = sources.iter().rev().find(|(_, s)| s.severity().is_some())
+                && let Some(reason) = s.reason()
+            {
+                out.push(Traced { key: format!("rules.{}.reason", serde_json::to_string(id).expect("a string")), value: json!(reason), source: at.clone() });
             }
         }
         out

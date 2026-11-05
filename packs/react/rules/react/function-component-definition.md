@@ -4,7 +4,7 @@ title: "Named components are function declarations"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "restructure: the arrow is rewritten as a declaration, with its body, its type annotation and its export"
-fix_pending: "suggest; needs computed-edit"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react/function-component-definition]
 since: 0.5.0

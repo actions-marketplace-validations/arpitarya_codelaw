@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the attribute was meant for another element, and which one is the author's call) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the element is never rendered or has no role, so removing the attribute changes nothing for assistive technology) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/aria-unsupported-elements` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                        # the resolved settin
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+#### Fixed
+
+```js
+const m = <meta charset="utf-8"  />;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const m = <meta charset="utf-8" />;
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+#### Fixed
+
+```jsx
+const m = <meta charset="utf-8"  />;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const m = <meta charset="utf-8" />;
 
 ```tsx
 const m = <meta charset="utf-8" aria-hidden="true" />;
+```
+
+#### Fixed
+
+```tsx
+const m = <meta charset="utf-8"  />;
 ```
 
 #### Do

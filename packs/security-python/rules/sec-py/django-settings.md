@@ -4,9 +4,8 @@ title: 'Django settings are safe'
 languages: [python]
 files: ["**/settings.py", "**/settings/**/*.py", "**/*_settings.py", "**/settings_*.py"]
 exclude: ["**/*dev*.py", "**/*local*.py", "**/*test*.py"]
-fix: manual
-fix_reason: "the production value comes from the deployment (environment variables, a secret manager)"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the reviewer confirms each cookie or redirect flag turned on suits the deployment; DEBUG, SECRET_KEY and ALLOWED_HOSTS get no edit (the value comes from the deployment)"
 stability: preview
 ported_from: [ruff/S105]
 security: { cwe: [489, 798, 614], owasp: ["A02:2025"], severity: high }
@@ -37,8 +36,10 @@ match:
             - has:
                 field: left
                 regex: '^(SESSION_COOKIE_SECURE|CSRF_COOKIE_SECURE|SECURE_SSL_REDIRECT|SESSION_COOKIE_HTTPONLY)$'
-            - { has: { field: right, kind: 'false' } }
+            - { has: { field: right, kind: 'false', pattern: $B } }
 message: 'This Django setting is unsafe outside development'
+fix:
+  - replace: { target: $B, with: 'True' }
 ```
 
 ## How to fix
@@ -55,15 +56,11 @@ message: 'This Django setting is unsafe outside development'
 #### Don't
 
 ```py path=settings.py
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+SESSION_COOKIE_SECURE = False
 ```
 
 #### Do
 
 ```py path=settings.py
-import os
-
-DEBUG = os.environ.get("DJANGO_DEBUG") == "1"
-ALLOWED_HOSTS = ["app.example.com"]
+SESSION_COOKIE_SECURE = True
 ```

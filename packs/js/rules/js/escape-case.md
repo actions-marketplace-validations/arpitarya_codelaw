@@ -4,7 +4,7 @@ title: "Upper-case hex digits in escapes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the fix upper-cases the digits, which a fix template cannot compute"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/escape-case]
 since: 0.5.0

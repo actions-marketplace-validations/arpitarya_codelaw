@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement format (`safetensors`, `.npy` without pickle, Parquet) means converting the stored files) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms the arrays are not object arrays, which stop loading once allow_pickle is dropped; the pickle loaders (joblib, read_pickle) and safe_mode=False get no edit (the files must be converted)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-502 · OWASP A08:2025 · security severity `high` |

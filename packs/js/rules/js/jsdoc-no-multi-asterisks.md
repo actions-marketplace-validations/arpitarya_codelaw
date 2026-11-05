@@ -4,7 +4,7 @@ title: "One asterisk per JSDoc line"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed)"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/no-multi-asterisks]
 since: 0.5.0

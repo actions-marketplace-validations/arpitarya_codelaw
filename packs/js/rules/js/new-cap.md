@@ -4,7 +4,7 @@ title: "Constructors are capitalised"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "renaming the constructor changes its declaration and every use"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 ported_from: [eslint/new-cap]
 since: 0.5.0

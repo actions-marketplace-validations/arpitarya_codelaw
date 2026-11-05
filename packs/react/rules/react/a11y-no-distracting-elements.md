@@ -2,9 +2,8 @@
 id: react/a11y-no-distracting-elements
 title: "No marquee or blink"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the replacement depends on what the element was for"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "`<blink>` is unsupported by current browsers and renders as an inline span, so `span` changes nothing; `<marquee>` still scrolls, so its `div` replacement is only suggested"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-distracting-elements]
 since: 0.5.0
@@ -16,9 +15,31 @@ Neither `<marquee>` nor `<blink>` is used.
 
 ```codelaw
 match:
-  any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}]
-  has: { field: name, regex: '^(marquee|blink)$' }
+  any:
+  - all:
+    - any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}]
+    - has: { field: name, regex: '^blink$', pattern: $B }
+    - any:
+      - {kind: jsx_self_closing_element}
+      - inside:
+          kind: jsx_element
+          has: {field: close_tag, has: {field: name, regex: '^blink$', pattern: $BC}}
+  - all:
+    - any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}]
+    - has: { field: name, regex: '^marquee$', pattern: $M }
+    - any:
+      - {kind: jsx_self_closing_element}
+      - inside:
+          kind: jsx_element
+          has: {field: close_tag, has: {field: name, regex: '^marquee$', pattern: $MC}}
+auto_when:
+  has: { field: name, regex: '^blink$' }
 message: "Do not use `<marquee>` or `<blink>`"
+fix:
+  - replace: { target: $B, with: "span" }
+  - replace: { target: $BC, with: "span" }
+  - replace: { target: $M, with: "div" }
+  - replace: { target: $MC, with: "div" }
 ```
 
 ## How to fix
@@ -35,6 +56,12 @@ message: "Do not use `<marquee>` or `<blink>`"
 const m = <marquee>Sale!</marquee>;
 ```
 
+#### Fixed
+
+```js
+const m = <div>Sale!</div>;
+```
+
 #### Do
 
 ```js
@@ -49,6 +76,12 @@ const m = <p>Sale!</p>;
 const m = <marquee>Sale!</marquee>;
 ```
 
+#### Fixed
+
+```jsx
+const m = <div>Sale!</div>;
+```
+
 #### Do
 
 ```jsx
@@ -61,6 +94,12 @@ const m = <p>Sale!</p>;
 
 ```tsx
 const m = <marquee>Sale!</marquee>;
+```
+
+#### Fixed
+
+```tsx
+const m = <div>Sale!</div>;
 ```
 
 #### Do

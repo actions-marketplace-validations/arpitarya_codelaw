@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the title is the author's, or the SVG is decorative and should be hidden — the author decides which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (adds aria-hidden="true", which is right only when the SVG is decorative; the reviewer confirms that, or writes a title instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `biome/a11y/noSvgWithoutTitle` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
+#### Fixed
+
+```js
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const icon = <svg viewBox="0 0 8 8"><title>Stop</title><path d="M0 0h8v8H0z" /><
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
+#### Fixed
+
+```jsx
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const icon = <svg viewBox="0 0 8 8"><title>Stop</title><path d="M0 0h8v8H0z" /><
 
 ```tsx
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
+#### Fixed
+
+```tsx
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
 #### Do

@@ -124,9 +124,13 @@ pub struct RawConfig {
     /// in the engine reads it. Root config only.
     #[serde(default)]
     pub reviews: RawReviews,
+    /// SR-CONFIG decision 11c (W-158): `[rules] require_reason`, read out
+    /// of the `[rules]` table when the file loads. Root config only.
+    #[serde(skip)]
+    pub require_reason: Option<bool>,
 }
 
-/// A rule's severity, or its severity, options and lowered fix.
+/// A rule's severity, or its severity, options, lowered fix and reason.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum RuleSetting {
@@ -139,7 +143,14 @@ pub enum RuleSetting {
         /// `suggest` or `manual` lowers it; raising is a load error.
         #[serde(default)]
         fix: Option<String>,
+        /// Why the rule is `"off"` (SR-CONFIG decision 11c); only an entry
+        /// that sets `severity = "off"` takes one.
+        #[serde(default)]
+        reason: Option<String>,
     },
+    /// Not a rule's setting: `[rules] require_reason`, which the loader
+    /// takes out of `[rules]`. Anywhere else it is a load error.
+    Flag(bool),
 }
 
 impl RuleSetting {
@@ -147,12 +158,13 @@ impl RuleSetting {
         match self {
             RuleSetting::Severity(s) => Some(s),
             RuleSetting::Full { severity, .. } => severity.as_deref(),
+            RuleSetting::Flag(_) => None,
         }
     }
 
     pub fn options(&self) -> Option<&BTreeMap<String, serde_json::Value>> {
         match self {
-            RuleSetting::Severity(_) => None,
+            RuleSetting::Severity(_) | RuleSetting::Flag(_) => None,
             RuleSetting::Full { options, .. } => Some(options),
         }
     }
@@ -160,8 +172,16 @@ impl RuleSetting {
     /// The fix rung this entry lowers the rule to, as written.
     pub fn fix(&self) -> Option<&str> {
         match self {
-            RuleSetting::Severity(_) => None,
+            RuleSetting::Severity(_) | RuleSetting::Flag(_) => None,
             RuleSetting::Full { fix, .. } => fix.as_deref(),
+        }
+    }
+
+    /// Why the rule is `"off"`, as written; an empty reason is none.
+    pub fn reason(&self) -> Option<&str> {
+        match self {
+            RuleSetting::Full { reason, .. } => reason.as_deref().map(str::trim).filter(|r| !r.is_empty()),
+            _ => None,
         }
     }
 }
@@ -259,6 +279,23 @@ pub struct RawCache {
 #[serde(deny_unknown_fields)]
 pub struct RawFix {
     pub external_timeout: Option<Duration>,
+    /// SR-CONFIG decision 11e (W-166): whether every rule's `auto` fix runs
+    /// on save and from the agent hook, below the per-rule entries.
+    pub on_edit: Option<bool>,
+    /// SR-MULTI-FILE-FIXES decision 3 (SR-CONFIG decision 11g): whether a
+    /// fix may edit several files. Loaded and validated; W-162 builds what
+    /// it does.
+    pub multi_file: Option<MultiFile>,
+}
+
+/// `[fix] multi_file` and a rule entry's `multi_file`: SR-MULTI-FILE-FIXES
+/// decision 3.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MultiFile {
+    Auto,
+    Suggest,
+    Off,
 }
 
 /// `[adapters]`: SR-LINTER decision 2.

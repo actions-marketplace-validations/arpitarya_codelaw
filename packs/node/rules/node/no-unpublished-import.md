@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 scope: project
 fix: manual
 fix_reason: "whether to publish the file, move the dependency or move the code is the package owner's choice"
-fix_pending: "suggest-choices; needs cross-file"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-n/no-unpublished-import]
 since: 0.1.0

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which keys a client may set is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (defining an own property cannot reach `Object.prototype` even for the key `__proto__`, and the reviewer confirms a plain assignment (setters, frozen objects) is not relied on) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-1321 · OWASP A08:2025 · security severity `high` |
@@ -137,6 +137,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+#### Fixed
+
+```js
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 #### Do
 
 ```js
@@ -151,6 +158,13 @@ settings.set(key, value);
 ```jsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+#### Fixed
+
+```jsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 #### Do
@@ -169,6 +183,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+#### Fixed
+
+```ts
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 #### Do
 
 ```ts
@@ -183,6 +204,13 @@ settings.set(key, value);
 ```tsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+#### Fixed
+
+```tsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 #### Do

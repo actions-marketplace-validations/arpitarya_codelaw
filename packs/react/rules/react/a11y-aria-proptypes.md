@@ -2,9 +2,8 @@
 id: react/a11y-aria-proptypes
 title: "ARIA attribute values have the right type"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the intended value is the author's"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "for the true/false-typed attributes the reviewer picks `true` or `false`; attributes that take other tokens or numbers get no edit"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-proptypes]
 since: 0.5.0
@@ -19,10 +18,13 @@ match:
   kind: jsx_attribute
   any:
     - regex: '^aria-(atomic|busy|disabled|modal|multiline|multiselectable|readonly|required)=["'']'
+      has: {kind: string, pattern: $V}
       not: { regex: '^aria-[a-z]+=(["''])(true|false)["'']$' }
     - regex: '^aria-(checked|pressed)=["'']'
+      has: {kind: string, pattern: $V}
       not: { regex: '^aria-[a-z]+=(["''])(true|false|mixed|undefined)["'']$' }
     - regex: '^aria-(expanded|grabbed|hidden|selected)=["'']'
+      has: {kind: string, pattern: $V}
       not: { regex: '^aria-[a-z]+=(["''])(true|false|undefined)["'']$' }
     - regex: '^aria-autocomplete=["'']'
       not: { regex: '^aria-[a-z]+=(["''])(inline|list|both|none)["'']$' }
@@ -41,6 +43,14 @@ match:
     - regex: '^aria-(level|posinset|setsize|colcount|colindex|colspan|rowcount|rowindex|rowspan)=["'']'
       not: { regex: '^aria-[a-z]+=(["''])-?[0-9]+["'']$' }
 message: "`$$MATCH` is not a value this ARIA attribute takes"
+fix:
+  choices:
+    - label: "true"
+      fix:
+        - replace: { target: $V, with: '"true"' }
+    - label: "false"
+      fix:
+        - replace: { target: $V, with: '"false"' }
 ```
 
 ## How to fix
@@ -57,6 +67,18 @@ message: "`$$MATCH` is not a value this ARIA attribute takes"
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+#### Fixed (true)
+
+```js
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```js
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 #### Do
 
 ```js
@@ -71,6 +93,18 @@ const b = <button aria-pressed="true">Bold</button>;
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+#### Fixed (true)
+
+```jsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```jsx
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 #### Do
 
 ```jsx
@@ -83,6 +117,18 @@ const b = <button aria-pressed="true">Bold</button>;
 
 ```tsx
 const b = <button aria-pressed="yes">Bold</button>;
+```
+
+#### Fixed (true)
+
+```tsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```tsx
+const b = <button aria-pressed="false">Bold</button>;
 ```
 
 #### Do

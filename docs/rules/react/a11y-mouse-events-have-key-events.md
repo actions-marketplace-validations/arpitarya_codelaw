@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the focus handler's behaviour is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the focus handler receives a FocusEvent, so the reviewer confirms the copied mouse handler does not read mouse coordinates) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/mouse-events-have-key-events` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                           # the resolved set
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+#### Fixed
+
+```js
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+#### Fixed
+
+```jsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 
 ```tsx
 const t = <span onMouseOver={show}>?</span>;
+```
+
+#### Fixed
+
+```tsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
 ```
 
 #### Do

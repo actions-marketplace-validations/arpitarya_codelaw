@@ -39,3 +39,17 @@ res.status(500).json({ stack: err.stack });
 ```expect
 1:1 sec-js/no-stack-trace-response
 ```
+
+### case: fix: generic message, error logged
+
+```js
+res.status(500).send(err.stack);
+```
+
+```expect
+1:1 sec-js/no-stack-trace-response
+```
+
+```fixed
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```

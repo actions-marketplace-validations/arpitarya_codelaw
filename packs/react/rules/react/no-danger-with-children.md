@@ -2,9 +2,8 @@
 id: react/no-danger-with-children
 title: "No dangerouslySetInnerHTML together with children"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "which content the element should have needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the element keeps either its children or its injected HTML; the reviewer picks which to drop"
 stability: preview
 ported_from: [eslint-plugin-react/no-danger-with-children]
 since: 0.1.0
@@ -19,7 +18,8 @@ match:
   any:
     - kind: jsx_element
       all:
-        - has: { field: open_tag, has: { stopBy: neighbor, kind: jsx_attribute, regex: ^dangerouslySetInnerHTML } }
+        - pattern: '<$N $$$A>$$$K</$N>'
+        - has: { field: open_tag, has: { stopBy: neighbor, kind: jsx_attribute, regex: ^dangerouslySetInnerHTML, pattern: $D } }
         - has:
             stopBy: neighbor
             any:
@@ -30,14 +30,23 @@ match:
                 regex: \S
     - kind: jsx_self_closing_element
       all:
-        - has: { stopBy: neighbor, kind: jsx_attribute, regex: ^dangerouslySetInnerHTML }
-        - has: { stopBy: neighbor, kind: jsx_attribute, regex: ^children\b }
+        - has: { stopBy: neighbor, kind: jsx_attribute, regex: ^dangerouslySetInnerHTML, pattern: $D }
+        - has: { stopBy: neighbor, kind: jsx_attribute, regex: ^children\b, pattern: $CH }
 message: "An element can't have both `dangerouslySetInnerHTML` and children"
+fix:
+  choices:
+    - label: remove the children
+      fix:
+        - replace: '<$N $$$A />'
+        - remove: $CH
+    - label: remove the HTML
+      fix:
+        - remove: $D
 ```
 
 ## How to fix
 
-1. Keep either the HTML or the children, not both.
+1. Keep either the HTML or the children, not both: drop the children, or drop `dangerouslySetInnerHTML`.
 
 ## Examples
 
@@ -47,6 +56,18 @@ message: "An element can't have both `dangerouslySetInnerHTML` and children"
 
 ```js
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
+```
+
+#### Fixed (remove the children)
+
+```js
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```js
+const a = <div >Fallback</div>;
 ```
 
 #### Do
@@ -63,6 +84,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
 ```
 
+#### Fixed (remove the children)
+
+```jsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```jsx
+const a = <div >Fallback</div>;
+```
+
 #### Do
 
 ```jsx
@@ -75,6 +108,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 
 ```tsx
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
+```
+
+#### Fixed (remove the children)
+
+```tsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```tsx
+const a = <div >Fallback</div>;
 ```
 
 #### Do

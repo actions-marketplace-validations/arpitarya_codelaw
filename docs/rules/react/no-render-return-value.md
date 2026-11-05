@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (code that used the instance needs a ref instead) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a `const x = ReactDOM.render(…)` statement drops the binding and keeps the call; the reviewer confirms the binding is never read (otherwise a ref must be threaded in); other uses carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-render-return-value` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                # the resolved setting, and w
 const app = ReactDOM.render(<App />, root);
 ```
 
+#### Fixed
+
+```js
+ReactDOM.render(<App />, root);
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 const app = ReactDOM.render(<App />, root);
 ```
 
+#### Fixed
+
+```jsx
+ReactDOM.render(<App />, root);
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 
 ```tsx
 const app = ReactDOM.render(<App />, root);
+```
+
+#### Fixed
+
+```tsx
+ReactDOM.render(<App />, root);
 ```
 
 #### Do

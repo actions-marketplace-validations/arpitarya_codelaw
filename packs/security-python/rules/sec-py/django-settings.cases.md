@@ -59,3 +59,17 @@ CSRF_COOKIE_SECURE = True
 ```expect
 (none)
 ```
+
+### case: the insecure cookie is turned on
+
+```py path=settings.py
+SESSION_COOKIE_SECURE = False
+```
+
+```expect
+1:1 sec-py/django-settings
+```
+
+```fixed
+SESSION_COOKIE_SECURE = True
+```

@@ -2,9 +2,8 @@
 id: sec-py/ml-unsafe-load
 title: 'Model and array files are not unpickled'
 languages: [python]
-fix: manual
-fix_reason: "the replacement format (`safetensors`, `.npy` without pickle, Parquet) means converting the stored files"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the reviewer confirms the arrays are not object arrays, which stop loading once allow_pickle is dropped; the pickle loaders (joblib, read_pickle) and safe_mode=False get no edit (the files must be converted)"
 stability: preview
 security: { cwe: [502], owasp: ["A08:2025"], severity: high }
 since: 0.2.0
@@ -24,6 +23,7 @@ match:
             field: arguments
             has:
               kind: keyword_argument
+              pattern: $K
               all:
                 - { has: { field: name, regex: '^allow_pickle$' } }
                 - { has: { field: value, kind: 'true' } }
@@ -40,6 +40,8 @@ match:
               kind: keyword_argument
               all: [{ has: { field: name, regex: '^safe_mode$' } }, { has: { field: value, kind: 'false' } }]
 message: 'This loads a pickle, which can run code; use `safetensors` or a data-only format'
+fix:
+  - remove: $K
 ```
 
 ## How to fix

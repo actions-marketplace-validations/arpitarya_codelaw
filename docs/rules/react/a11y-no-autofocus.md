@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (some dialogs need initial focus, set deliberately in code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing autoFocus drops initial focus, so the reviewer confirms the element needs none or moves focus from the open handler) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-autofocus` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 const q = <input autoFocus />;
 ```
 
+#### Fixed
+
+```js
+const q = <input  />;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const q = <input />;
 const q = <input autoFocus />;
 ```
 
+#### Fixed
+
+```jsx
+const q = <input  />;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const q = <input />;
 
 ```tsx
 const q = <input autoFocus />;
+```
+
+#### Fixed
+
+```tsx
+const q = <input  />;
 ```
 
 #### Do

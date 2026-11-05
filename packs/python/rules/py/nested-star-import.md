@@ -4,7 +4,7 @@ title: "`import *` only at module level"
 languages: [python]
 fix: manual
 fix_reason: "the names to import must be chosen by reading the function"
-fix_pending: "auto-subset; needs cross-file"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 ported_from: [ruff/F406]
 since: 0.1.0

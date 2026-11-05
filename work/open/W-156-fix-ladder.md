@@ -6,7 +6,7 @@ item: W-156
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -49,7 +49,7 @@ Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 
 | B1 · choices rules | the 155 `suggest-choices` rows, pack by pack, each with its `Fixed (<label>)` examples | ⏳ |
 | B2 · subset `auto` | the 142 `auto+` rows: the subset condition in `fix_reason`, a `Don't` example on each side | ⏳ |
 | B3 · the rest | 16 + 3 → `auto`; 181 → `suggest`; ceilings lowered as each pack lands | ⏳ |
-| B4 · needs | cross-file (69), type info (17), add-import (16), scope rename (6), computed edits (6), purity (5): each row whose capability is missing stays at its current rung until that capability lands; its `fix_pending:` names W-162 (ruled 2026-11-05), and W-156 closes when only these are left | ⏳ |
+| B4 · needs | each row whose capability is missing stays at its current rung until that capability lands; its `fix_pending:` names W-162 (ruled 2026-11-05), and W-156 closes when only these are left | ✅ 2026-11-05 — 114 marked: computed-edit 57, cross-file 34, add-import 7, scope-rename 7, type-info 4, purity 2, action-tag SHAs 1 (all W-162), browser-targets (W-166), TS code fixes (W-105); W-161 §3's 37 re-judged `manual` with their exception |
 | C · ports | W-139's ports are judged against decisions 3–5 when built; none is `manual` only because its upstream has no fix | ⏳ |
 
 ## Open questions — the decider
@@ -83,3 +83,8 @@ SR-LAW-4 (rewritten 2026-10-30; decision 16, lowering, the same day); SR-CONFIG 
 - **2026-11-05 (Claude Code):** merged main; W-139's react rules (45, each `fix_reason:` already opening with its exception) marked; records SR-LAW-3, SR-LAW-10, SR-RULE-AUTHORING, SR-SPELL and SR-WORK-REGISTRY describe the ladder as built. First moves (B1/B3): 7 `pandas`, 2 `ts`, 1 `react`, proven by `codelaw test`; ceilings lowered. A second merge brought 100 more W-139 `js`/`py` rules (judged and marked: 48 exceptions, 52 pending). **535 rules still carry `fix_pending:`** — about 190 `match:` rules whose edit is a template, the rest native rules (Rust per rule) or rules waiting on a capability (cross-file, type info, computed edits, add-import, scope rename). The item stays open until none is left.
 - **2026-11-05 (Claude Code), later:** the `spell` test's `format/unformatted` reproduced on main — the fixture's `<img …>` predates the formatter's ` />` for void elements (SR-FORMATTER as built, W-141); the fixture was wrong and is reformatted (`54a6bef7`). **A6 built:** a rule entry's `fix` lowers the rung (SR-CONFIG decision 11d), raising is exit 2.
 - **2026-11-05 (Claude Code), wind-down:** `js/no-new-wrappers` and `sec-py/paramiko-host-key` moved to `suggest`. Stopped on the decider's wind-down. **What remains:** B1–B3, the moves: every rule still marked `fix_pending:` (`grep -rl '^fix_pending:' packs`, about 530). Most need more than a template — a native rule's Rust, or a fix that differs per matched pattern. B4: rows marked `fix_pending: "…; needs <capability>"` wait on cross-file edits, type info, computed edits, add-an-import or scope rename; Arpit decides whether those close the item. C: W-139's ports now carry an exception or `fix_pending:` as they land.
+- **2026-11-05 (Claude Code), step 4:** B4 marked — the 114 capability-blocked rules name their item, the 37 of W-161 §3 take their exception (`security` 17, `value` 17, `restructure` 3). `fix_pending:` 533 → 496; **382 left to move** (B1–B3). Before the moves: auto 456, suggest 508, manual 1158.
+- **2026-11-05 (Claude Code), step 4, security-js:** security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8). 15 moved to suggest (4 with labelled choices: jwt-verify, no-bad-tag-filter, no-header-injection, no-incomplete-url-check), 8 kept as needing computed edits. Left to move: 359; capability-blocked: 122.
+- **2026-11-05 (Claude Code), step 4, security-python:** security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4). 11 moved to suggest (no-header-injection with labelled choices); 4 kept as needing computed edits, 1 an import (W-162); no-insecure-protocol takes restructure and no-path-traversal value; no-mako skips a call already passing default_filters. Left to move: 342; capability-blocked: 126.
+- **2026-11-05 (Claude Code), step 4, security-ts:** security-ts: auto 0 → 0, suggest 3 → 6, manual 13 → 10 (pending 4 → 1). 3 moved to suggest (angular-native-element-html, no-query-builder-raw, typeorm-synchronize); no-typeorm-string-query kept as needing computed edits (W-162). Left to move: 338; capability-blocked: 127.
+- **2026-11-05 (Claude Code), step 4, react:** react: auto 11 → 18, suggest 17 → 39, manual 123 → 94 (pending 56 → 27). 29 moved — 6 to auto with an auto_when subset (a11y-alt-text, a11y-aria-unsupported-elements, a11y-no-distracting-elements, a11y-no-redundant-roles, a11y-role-has-required-aria-props, a11y-scope, no-children-prop), the rest to suggest, choices where the review proposed them; no-deprecated, no-is-mounted and no-render-return-value to suggest, not auto (the subset isn't provable, or the edit drops a guard); 14 kept as needing computed edits or scope rename (W-162). Left to move: 295; capability-blocked: 141.

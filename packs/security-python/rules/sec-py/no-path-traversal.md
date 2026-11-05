@@ -3,8 +3,8 @@ id: sec-py/no-path-traversal
 title: 'A request value is not a file path'
 languages: [python]
 fix: manual
-fix_reason: "the safe form (a lookup by id, a resolved path checked against a base folder) depends on the storage layout"
-fix_pending: "suggest"
+fix_reason: "the base folder the path must stay inside, or the id to look the file up by, is not in the code"
+fix_exception: value
 stability: preview
 security: { cwe: [22], owasp: ["A01:2025"], severity: high }
 since: 0.2.0

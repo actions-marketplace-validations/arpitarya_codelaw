@@ -2,9 +2,8 @@
 id: react/a11y-mouse-events-have-key-events
 title: "Hover handlers have focus twins"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the focus handler's behaviour is the author's"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the focus handler receives a FocusEvent, so the reviewer confirms the copied mouse handler does not read mouse coordinates"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/mouse-events-have-key-events]
 since: 0.5.0
@@ -24,13 +23,16 @@ match:
   - not:
       has: {kind: jsx_expression}
   - any:
-    - has: {kind: jsx_attribute, regex: ^onMouseOver\b}
+    - has: {kind: jsx_attribute, regex: ^onMouseOver\b, pattern: $MO, has: {kind: jsx_expression, pattern: $OE}}
       not:
         has: {kind: jsx_attribute, regex: ^onFocus\b}
-    - has: {kind: jsx_attribute, regex: ^onMouseOut\b}
+    - has: {kind: jsx_attribute, regex: ^onMouseOut\b, pattern: $MT, has: {kind: jsx_expression, pattern: $TE}}
       not:
         has: {kind: jsx_attribute, regex: ^onBlur\b}
 message: Pair `onMouseOver` with `onFocus` and `onMouseOut` with `onBlur`
+fix:
+  - insert-after: { target: $MO, text: " onFocus=$OE" }
+  - insert-after: { target: $MT, text: " onBlur=$TE" }
 ```
 
 ## How to fix
@@ -47,6 +49,12 @@ message: Pair `onMouseOver` with `onFocus` and `onMouseOut` with `onBlur`
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+#### Fixed
+
+```js
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 #### Do
 
 ```js
@@ -61,6 +69,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+#### Fixed
+
+```jsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 #### Do
 
 ```jsx
@@ -73,6 +87,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 
 ```tsx
 const t = <span onMouseOver={show}>?</span>;
+```
+
+#### Fixed
+
+```tsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
 ```
 
 #### Do

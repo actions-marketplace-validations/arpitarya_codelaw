@@ -4,7 +4,7 @@ title: "Every private class member is read"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "removing a member may also remove writes that matter, so it's a reader's call"
-fix_pending: "auto-subset; needs purity"
+fix_pending: "auto-subset; needs purity (W-162)"
 stability: preview
 ported_from: [eslint/no-unused-private-class-members]
 since: 0.1.0

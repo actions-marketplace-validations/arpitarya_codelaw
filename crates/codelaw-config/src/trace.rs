@@ -190,6 +190,9 @@ impl Config {
         let (v, s) = root_key(&["allow_pack_fixers"], |r| (!r.allow_pack_fixers.is_empty()).then(|| json!(r.allow_pack_fixers)), json!([]));
         push("allow_pack_fixers", v, s);
 
+        let (v, s) = root_key(&["rules", "require_reason"], |r| r.require_reason.map(|x| json!(x)), json!(false));
+        push("rules.require_reason", v, s);
+
         let (v, s) = root_key(&["files", "follow_symlinks"], |r| r.files.follow_symlinks.map(|x| json!(x)), json!(false));
         push("files.follow_symlinks", v, s);
         let (_, s) = root_key(&["files", "generated_markers"], |r| r.files.generated_markers.as_ref().map(|x| json!(x)), Value::Null);

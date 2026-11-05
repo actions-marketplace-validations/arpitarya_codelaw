@@ -43,3 +43,19 @@ def v(request):
 ```expect
 (none)
 ```
+
+### case: the default choice strips line breaks
+
+```py
+def v(request):
+    resp.headers["X-A"] = request.args["a"]
+```
+
+```expect
+2:5 sec-py/no-header-injection
+```
+
+```fixed
+def v(request):
+    resp.headers["X-A"] = str(request.args["a"]).replace("\r", "").replace("\n", "")
+```

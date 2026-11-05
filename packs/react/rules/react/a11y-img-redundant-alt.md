@@ -4,7 +4,7 @@ title: "Alt text does not say \"image\""
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the better description is the author's"
-fix_pending: "suggest"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/img-redundant-alt]
 since: 0.5.0

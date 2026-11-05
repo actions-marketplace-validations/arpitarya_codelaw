@@ -4,7 +4,7 @@ title: "useState is destructured as [value, setValue]"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "value: the names are the author's; a template cannot recase the value's name into the setter's"
-fix_pending: "suggest; needs computed-edit"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/hook-use-state]
 since: 0.5.0

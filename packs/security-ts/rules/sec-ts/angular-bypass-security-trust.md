@@ -4,7 +4,7 @@ title: "No bypassSecurityTrust call on a value that is not a literal"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the value needs to be trusted at all is a decision for the author"
-fix_pending: "suggest; needs type-info"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

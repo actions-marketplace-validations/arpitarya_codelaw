@@ -2,9 +2,8 @@
 id: react/a11y-no-noninteractive-tabindex
 title: "Non-interactive elements are not in the tab order"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the element either needs an interactive role and behaviour, or no `tabIndex`"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "removing tabIndex takes the element out of the tab order, while -1 keeps it focusable from code only; the reviewer picks, or gives the element an interactive role instead"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-noninteractive-tabindex]
 since: 0.5.0
@@ -23,10 +22,18 @@ match:
   - has: {field: name, regex: '^[a-z]'}
   - not:
       has: {field: name, regex: ^(a|area|button|input|select|textarea|option|summary|details|iframe|embed|audio|video)$}
-  - has: {kind: jsx_attribute, regex: '^tabIndex=(["'']|\{\s*)[0-9]'}
+  - has: {kind: jsx_attribute, regex: '^tabIndex=(["'']|\{\s*)[0-9]', pattern: $T}
   - not:
       has: {kind: jsx_attribute, regex: '^role=["''](button|checkbox|combobox|gridcell|link|listbox|menu|menubar|menuitem|menuitemcheckbox|menuitemradio|option|radio|radiogroup|scrollbar|searchbox|slider|spinbutton|switch|tab|tablist|textbox|tree|treegrid|treeitem|tabpanel)["'']|^role=\{'}
 message: Remove `tabIndex` from a non-interactive element
+fix:
+  choices:
+    - label: remove tabIndex
+      fix:
+        - remove: $T
+    - label: focus from code only
+      fix:
+        - replace: { target: $T, with: "tabIndex={-1}" }
 ```
 
 ## How to fix
@@ -43,6 +50,18 @@ message: Remove `tabIndex` from a non-interactive element
 const a = <article tabIndex={0}>…</article>;
 ```
 
+#### Fixed (remove tabIndex)
+
+```js
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```js
+const a = <article tabIndex={-1}>…</article>;
+```
+
 #### Do
 
 ```js
@@ -57,6 +76,18 @@ const a = <article>…</article>;
 const a = <article tabIndex={0}>…</article>;
 ```
 
+#### Fixed (remove tabIndex)
+
+```jsx
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```jsx
+const a = <article tabIndex={-1}>…</article>;
+```
+
 #### Do
 
 ```jsx
@@ -69,6 +100,18 @@ const a = <article>…</article>;
 
 ```tsx
 const a = <article tabIndex={0}>…</article>;
+```
+
+#### Fixed (remove tabIndex)
+
+```tsx
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```tsx
+const a = <article tabIndex={-1}>…</article>;
 ```
 
 #### Do

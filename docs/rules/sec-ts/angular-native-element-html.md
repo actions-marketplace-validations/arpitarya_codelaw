@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `sanitizers` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value is text or markup is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (writing text instead of markup changes what the page shows, so the reviewer confirms the value is meant to be text; outerHTML and insertAdjacentHTML get no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -302,6 +302,16 @@ class Box {
 }
 ```
 
+#### Fixed
+
+```ts
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -320,6 +330,16 @@ class Box {
 class Box {
   show(html: string) {
     this.el.nativeElement.innerHTML = html;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
   }
 }
 ```

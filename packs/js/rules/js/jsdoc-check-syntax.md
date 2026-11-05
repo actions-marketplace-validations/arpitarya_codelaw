@@ -4,7 +4,7 @@ title: "No Closure optional syntax in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`)"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/check-syntax]
 since: 0.5.0

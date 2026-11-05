@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 severity: warn
 fix: manual
 fix_reason: "which argument is the intended one cannot be known from the call"
-fix_pending: "auto-subset; needs purity"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-promise/valid-params]
 since: 0.5.0

@@ -2,9 +2,8 @@
 id: sec-js/no-incomplete-url-check
 title: "No URL checked with a substring test"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which hosts are allowed is a decision for the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the host literal is in the code, and the reviewer picks exact host or host with its subdomains (a prefix test becomes an origin comparison either way)"
 stability: preview
 security: { cwe: [20], owasp: ["A01:2025"], severity: high }
 since: 0.3.0
@@ -19,23 +18,44 @@ match:
   any:
     - all:
         - pattern: $U.includes($H)
+        - pattern: $W1
         - regex: 'includes\(\s*["''`][A-Za-z0-9.-]+\.(com|org|net|io|dev|app|co|edu|gov|ai|cloud|xyz|info|me|us|uk|de|in)["''`]\s*\)$'
     - all:
         - pattern: $U.startsWith($H)
+        - pattern: $W2
         - regex: 'startsWith\(\s*["'']https?://[A-Za-z0-9.-]+["'']\s*\)$'
     - all:
         - pattern: $U.endsWith($H)
+        - pattern: $W3
         - regex: 'endsWith\(\s*["''][A-Za-z0-9][A-Za-z0-9-]*\.(com|org|net|io|dev|app|co|edu|gov|ai|cloud|xyz|info|me|us|uk|de|in)["'']\s*\)$'
     - all:
         - pattern: $U.indexOf($H) !== -1
+        - pattern: $W4
         - regex: 'indexOf\(\s*["''`][A-Za-z0-9.-]+\.(com|org|net|io|dev|app|co|edu|gov|ai|cloud|xyz|info|me|us|uk|de|in)["''`]\s*\)'
     - all:
         - pattern: $U.indexOf($H) > -1
+        - pattern: $W5
         - regex: 'indexOf\(\s*["''`][A-Za-z0-9.-]+\.(com|org|net|io|dev|app|co|edu|gov|ai|cloud|xyz|info|me|us|uk|de|in)["''`]\s*\)'
     - all:
         - pattern: $RE.test($U)
         - regex: '^/[^^/][^/]*\\\.(com|org|net|io|dev|app|co|edu|gov|ai|cloud|xyz|info|me|us|uk|de|in)[^$]*/[gimsuy]*\.test\('
 message: "A substring test on a URL passes for hosts the author did not mean, such as `example.com.evil.com`"
+fix:
+  choices:
+    - label: exact host
+      fix:
+        - replace: {target: $W1, with: 'URL.canParse($U) && new URL($U).hostname === $H'}
+        - replace: {target: $W3, with: 'URL.canParse($U) && new URL($U).hostname === $H'}
+        - replace: {target: $W4, with: 'URL.canParse($U) && new URL($U).hostname === $H'}
+        - replace: {target: $W5, with: 'URL.canParse($U) && new URL($U).hostname === $H'}
+        - replace: {target: $W2, with: 'URL.canParse($U) && new URL($U).origin === $H'}
+    - label: host or subdomain
+      fix:
+        - replace: {target: $W1, with: '(h => h === $H || h.endsWith("." + $H))(URL.canParse($U) ? new URL($U).hostname : "")'}
+        - replace: {target: $W3, with: '(h => h === $H || h.endsWith("." + $H))(URL.canParse($U) ? new URL($U).hostname : "")'}
+        - replace: {target: $W4, with: '(h => h === $H || h.endsWith("." + $H))(URL.canParse($U) ? new URL($U).hostname : "")'}
+        - replace: {target: $W5, with: '(h => h === $H || h.endsWith("." + $H))(URL.canParse($U) ? new URL($U).hostname : "")'}
+        - replace: {target: $W2, with: 'URL.canParse($U) && new URL($U).origin === $H'}
 ```
 
 ## How to fix
@@ -52,6 +72,22 @@ message: "A substring test on a URL passes for hosts the author did not mean, su
 
 ```js
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+#### Fixed (exact host)
+
+```js
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```js
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```
@@ -74,6 +110,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+#### Fixed (exact host)
+
+```jsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```jsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 #### Do
 
 ```jsx
@@ -92,6 +144,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+#### Fixed (exact host)
+
+```ts
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```ts
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 #### Do
 
 ```ts
@@ -106,6 +174,22 @@ if (new URL(url).hostname === "example.com") {
 
 ```tsx
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+#### Fixed (exact host)
+
+```tsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```tsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```
