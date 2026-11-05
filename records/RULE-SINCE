@@ -94,4 +94,12 @@
 #   pushed or pushed-under, so they are not reworded; ad870dc (W-141) is the
 #   first commit on main's first-parent line that holds all thirty-three, and
 #   every commit after it passes.
-ad870dc54dcc2ff1f54167b5a6594bd7488f659e
+# - 2026-11-05, the same evening's landings (W-166, W-145, W-139-fallout):
+#   ad870dc -> a965a49. Eight commits since ad870dc fail the replay: the kit's
+#   end-of-turn auto-land of half-built changes (c697d2a, 094d403, 8f8e94d,
+#   50fe8c6 for W-166; ec40665 W-145 tailwind.rs; 2a4c62b W-139-fallout
+#   licences.rs) and two W-166 commits completing them (da148d4, ba287eb);
+#   every owning record is current on main. Not reworded; a965a49 (W-166
+#   closed) is the first commit on main's first-parent line that holds all
+#   eight, and every commit after it passes.
+a965a499bc82fb7f94c89bc36e6b7320dee7ba57
