@@ -205,6 +205,8 @@ Configuration keys were scattered across six records. The decider asked for one 
    - **Unknown target:** a target-gated fix is `suggest`, never `auto` ([SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) decision 3), and the finding names the line that would make it `auto`.
    - `config --print` and `rules --why` show each resolved target and its source. Built: no (W-166).
 
+11g. **`multi_file`: whether a fix may edit several files, and how** (W-162, the decider, 2026-11-05). `[fix] multi_file` and a rule entry's `multi_file` (in `[rules]`, a scope or a profile, as decision 11d) take `"auto"` (the default), `"suggest"` or `"off"`; the rule entry wins. What each value does, and the five safeguards no setting changes, are [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) decision 3. Built: no (W-162).
+
 ### Consequences
 
 - **Three homes mean three parsers,** and one well-tested resolution order.

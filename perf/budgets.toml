@@ -1,7 +1,7 @@
 # L8's performance budgets (SR-LAW-8). The gate is `codelaw bench --budgets
 # perf/budgets.toml`, run by ci.yml's `perf` job.
 #
-# SEVEN OF ELEVEN ARE SET (2026-10-25, W-19; hook_pre added unset 2026-10-27, W-93, and left unset by the decider the same day; check_types_cold and check_types_warm added unset 2026-10-28, W-105), by the method the decider ruled
+# EIGHT OF TWELVE ARE SET (2026-10-25, W-19; spell set 2026-11-05 by the decider at 2,500 ms, over the method's 2,152, W-103; hook_pre added unset 2026-10-27, W-93, and left unset by the decider the same day; check_types_cold and check_types_warm added unset 2026-10-28, W-105), by the method the decider ruled
 # (L8 decision 4). A set `budget` fails CI when a p95 goes over it; it is
 # never raised (decision 5). `fix_one_file` stays "unset", reported and not
 # gated: the method's guard held it back and the decider ruled (2026-10-25)
@@ -123,4 +123,7 @@ proposed = 4755 # local p95 3169.8 x 1.5 = 4754.7
 
 [operation.spell]
 unit = "ms"
-budget = "unset" # not measured on the reference machine yet
+budget = 2500 # p95 1383.3 / 1434.2 / 1429.5 (perf runs 41005346138, 41006814384, 41007205048); worst 1434.2 x 1.5 = 2151.3 -> the method's 2152; the decider set 2500
+set_by = "Arpit, ruled 2026-11-05 (voice): 2,500 ms, above decision 4's method (2,152) (SR-LAW-8 decision 4, W-103)"
+set_on = 2026-11-05
+measured_p95 = 1434.2

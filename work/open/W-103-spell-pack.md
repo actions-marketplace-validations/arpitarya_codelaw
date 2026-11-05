@@ -6,8 +6,8 @@ item: W-103
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-103 — the spell pack: codelaw's own spell checker, better than CSpell
@@ -21,13 +21,15 @@ ball: arpit
 | 3 | Measure: entries in the generated typo list, and the bytes the data adds to the npm tarball and the PyPI wheel; if JSON is too large, put a compact format to the decider (SR-RULE-PACKS decision 3) | the size question answered with numbers | 🟡 typo list: 188,151 entries, 3.53 MB JSON, pack 625 KB tgz / 636 KB wheel, +9 ms to load (SR-SPELL decision 9); one JSON string searched in place, so no new format; with the dictionary (868 KB) and locale table (489 KB) the pack is 1.03 MB tgz / 1.04 MB wheel and loads in +1 ms more, so no split and no new format (SR-SPELL decision 9, 2026-10-28) |
 | 4 | The engine side: per-language selection queries, the word splitter, the token skips, the six `native:` rules and their fixes, the `[spell]` config section | the check itself | ✅ selection, splitter, skips, `[spell]` and six `native:` rules (2026-10-28); `spell/inconsistent-term` a `scope: project` rule on the graph stage, `graph: { terms: inconsistent }` (SR-PROJECT-GRAPH decision 10, 2026-10-28) |
 | 5 | The pack: `packs/spell/` with `spell/recommended` and `spell/strict`, rule files with cases, README; L6, SR-RULE-PACKS and SR-PACKAGES amended to eighteen packs | installable as `@codelaw/rules-spell` / `codelaw-rules-spell` | ✅ the pack, both presets, seven rules with cases; L6, SR-RULE-PACKS, SR-PACKAGES, SR-RULE-FORMAT and every count at eighteen (2026-10-28) |
-| 6 | Measure the speed: three CI `perf` runs on `main` with the pack on; put the budget to the decider by L8's method | the L8 budget | 🟡 the `spell` operation built (2026-10-30): `codelaw bench` times `check` with `spell/recommended` alone on the three pinned repos as one project, cold; `perf/budgets.toml` `unset`; one local run at load 23: median 538 ms, p95 584 ms, 1,004 files, 12 findings. ⏳ three `perf` runs on `main`, then the budget to the decider — **2026-10-30: three exist** (`ci` 41005346138, 41006814384, 41007205048, each benching `spell`; W-126): read their `spell` p95s, then the budget to Arpit. **2026-11-05: read — p95 1,383.3 / 1,434.2 / 1,429.5 ms; proposed 2,152 ms (below), in the inbox** |
+| 6 | Measure the speed: three CI `perf` runs on `main` with the pack on; put the budget to the decider by L8's method | the L8 budget | ✅ 2026-11-05 — set at **2,500 ms** by the decider (the method gave 2,152): `perf/budgets.toml`, L8, SR-SPELL decision 9 |
 
 **Arpit, 2026-10-29 (voice docket; written on *"file it."*):** recommended measuring the pack as its own `spell` operation so the ruled budgets do not move: *"We can, but add an item in the backlog so that we can have a shared benchmark."* — its own operation now; B-062 holds the shared benchmark.
 
 **Arpit, 2026-10-27 (voice):** *"There is a tool called C-Spell. Research it and tell me if that can be built into CodeLaw. A similar feature, a better feature, would be even better."* Then, ruling the forks: *"Let's go with B."* · *"Approve both."* · *"Approve it."* · *"want it as a separate package."* · *"Go with the recommendation."* · *"go ahead"*. The forks: [the compare doc](../compare/spell-checking.compare.md).
 
 **Model:** Opus: it amends a law (L6's pack count) and the generated typo list's quality is judged by people, not caught by a test; close to Sonnet, because SR-SPELL fixes the rules and their fix classes.
+
+**Ruled 2026-11-05 — the `spell` budget is 2,500 ms. Arpit (voice):** *"Let's set it."* → *"Let's set it as 2500 milliseconds."*; then (text) *"file it."* Above L8's method (2,152 ms), and recorded as his number, not the formula's. A `spell` p95 over 2,500 ms now fails CI, and W-126's `perf spell` job is gated.
 
 **Arpit, 2026-11-05 (voice docket):** *"Go with the recommendation."* — (1) the next agent session reads the `spell` p95s from the three `perf` runs (their job summaries need a GitHub sign-in; the desktop app's browser pane is signed in) and puts the budget to him by L8's method; (2) **`typos` deferred:** its L11 ratification (item 8) waits — not needed to finish the pack.
 
@@ -75,7 +77,7 @@ Spelling in comments, docs, prose strings, Markdown, keys and declared names, in
 
 ## Blockers
 
-Steps 1–5 done. Step 6: the `spell` operation built (2026-10-30, as ruled 2026-10-29); its three `perf` runs read and the budget proposed (2026-11-05: 2,152 ms) — **🔴 the decider sets it or not** (the inbox); the `typos` comparison (item 8) needs his L11 ratification.
+None. Step 6 is done (the budget, 2026-11-05). Left: DoD 5 (byte-identical packaging) and DoD 7 (SR-SPELL `built: yes`). The `typos` comparison (item 8) is outside the DoD.
 
 ## Record affected
 

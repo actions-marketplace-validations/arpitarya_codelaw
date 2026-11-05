@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **`spell`'s L8 budget: 2,152 ms?** ([W-103](open/W-103-spell-pack.md)): the `spell` operation's p95 on the three `perf` runs on `main` is 1,383.3 / 1,434.2 / 1,429.5 ms (`ci` 41005346138, 41006814384, 41007205048; 1,004 files, 12 findings each). Your method (L8 decision 4): 1.5 × the worst, 1,434.2 → **2,152 ms**; no design target, so no guard. **Set it** (then a `spell` p95 over 2,152 ms fails CI) **or leave it unset** (reported only). | 2026-11-05 |
-| ↳ **blocks:** W-103 | |
+
+*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
@@ -43,7 +43,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. Next: re-judge the 37. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
-🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule (14 default `false`), `[targets]`, codelaw's own browser table, the lru_cache rules target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
+🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
@@ -54,7 +54,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147) and Tailwind's, with Fux indexes; before their release. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
+🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
 ### cleanup (0)
 
@@ -62,7 +62,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🔴 **W-103** `arpit` Spell pack done; the `spell` p95s read from the three `perf` runs (1,383–1,434 ms); blocked on Arpit's ruling on the budget, 2,152 ms by L8's method (inbox). Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
+🟢 **W-103** `agent` Spell pack done; its L8 budget set 11-05 at 2,500 ms (Arpit; the method gave 2,152). Left: DoD 5 (byte-identical packaging) and SR-SPELL `built: yes`. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
