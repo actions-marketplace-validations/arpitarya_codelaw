@@ -3,6 +3,8 @@ id: py/format-unused-positional-argument
 title: "Every positional argument to `.format` is used"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/F523, pylint/unused-format-string-argument]
 since: 0.1.0

@@ -139,6 +139,7 @@ pub fn why_json(w: &RuleWhy) -> Value {
         "preview": w.preview,
         "fix": w.fix,
         "fix_lowered": w.fix_lowered.as_ref().map(|(rung, source)| json!({ "fix": rung, "source": source })),
+        "on_edit": json!({ "value": w.on_edit.0, "source": w.on_edit.1 }),
         "for": for_file,
     }))
 }
@@ -159,6 +160,7 @@ pub fn why_text(w: &RuleWhy) -> String {
         Some((rung, source)) => out.push_str(&format!("  fix:        {rung} (lowered from {} by {source})\n", w.fix)),
         None => out.push_str(&format!("  fix:        {}\n", w.fix)),
     }
+    out.push_str(&format!("  on edit:    {} ({})\n", if w.on_edit.0 { "yes — save and the agent hook apply its `auto` fix" } else { "no — its `auto` fix waits for `codelaw fix`" }, w.on_edit.1));
     if w.preview {
         out.push_str("  preview:    yes — runs only with `preview = true`\n");
     }

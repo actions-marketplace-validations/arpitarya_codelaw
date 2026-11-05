@@ -3,6 +3,8 @@ id: py/format-unused-named-argument
 title: "Every keyword passed to `.format` is used"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/F522]
 since: 0.1.0

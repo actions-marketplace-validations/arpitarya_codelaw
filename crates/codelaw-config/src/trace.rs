@@ -219,7 +219,7 @@ impl Config {
         push("cache.max_size", size(self.cache_max_size()), s);
         let (_, s) = root_key(&["fix", "external_timeout"], |r| r.fix.external_timeout.map(|_| Value::Null), Value::Null);
         push("fix.external_timeout", duration(self.external_timeout()), s);
-        let (v, s) = root_key(&["fix", "on_edit"], |r| r.fix.on_edit.map(|x| json!(x)), Value::String("each rule's own".into()));
+        let (v, s) = root_key(&["fix", "on_edit"], |r| r.fix.on_edit.map(|x| json!(x)), Value::Null);
         push("fix.on_edit", v, s);
         let (v, s) = root_key(&["adapters", "enabled"], |r| r.adapters.enabled.as_ref().map(|x| json!(x)), Value::Null);
         push("adapters.enabled", v, s);
