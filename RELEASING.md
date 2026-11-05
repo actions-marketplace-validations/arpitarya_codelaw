@@ -61,6 +61,17 @@ then tick *Publish this Action to the GitHub Marketplace* when creating the
 release (`gh release create` cannot tick it; use the web form or edit the
 release after).
 
+**After each release (W-97):** move the Action's moving tag — `git tag -f v0
+v<x> && git push -f origin v0`, so `uses: arpitarya/codelaw@v0` installs the
+newest codelaw (a tag push runs no workflow). The pre-commit mirror,
+[`codelaw-pre-commit`](https://github.com/arpitarya/codelaw-pre-commit),
+follows by itself: its `bump.yml` runs daily (and by hand, `gh workflow run
+bump.yml -R arpitarya/codelaw-pre-commit`), reads codelaw's latest version
+from PyPI, rewrites the `codelaw==<x>` pin, commits and pushes tag `v<x>`. The
+Action's proof is `arpitarya/codelaw-action-test` (`uses: …@v0` on one known
+finding); re-run it after moving `v0`: `gh workflow run codelaw.yml -R
+arpitarya/codelaw-action-test`.
+
 ## One time, by hand (the decider)
 
 In this order. npm binds a trusted publisher only to a package that already

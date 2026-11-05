@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (16)
+## Open items (15)
 
 ### build (8)
 
@@ -47,13 +47,11 @@ here. Read that record before changing anything below it.
 
 🟢 **W-164** `agent` README opening, ruled 11-05: lead *"Your team's rules, enforced on every AI edit"*; second line: deterministic, no AI in the engine, same result with or without an agent. Nothing written. Filed by Arpit (Claude app). [detail](open/W-164-readme-opening.md)
 
-### ci/cd (4)
+### ci/cd (3)
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. Next: the `perf` matrix, then the measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
-
-🟢 **W-97** `agent` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64): both public repos created 11-05 — next the Action's proof in `codelaw-action-test`, then the mirror. Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147) and Tailwind's, with Fux indexes; before their release. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
