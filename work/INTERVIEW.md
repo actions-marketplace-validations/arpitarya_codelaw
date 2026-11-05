@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (a demo, three `keep/` Fux-index branches, eight stale `lm/` handoff and save branches; listed in the item). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)
+
 **Built and closed 2026-10-30 (Claude Code): W-129** — `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` (SR-RULE-PACKS decision 15). Found on the way: the engine keeps one finding per rule and span, so `deps/vulnerable`'s transitive findings (all on the manifest's first line) collapse to the first — `deps/licence` reports its transitive ones as one listing finding; `deps/vulnerable` is unchanged and needs the same treatment.
 
 **Ruled 2026-10-30 (voice): W-145 — providers.** No copy of Tailwind's class order in codelaw: `@codelaw/provider-tailwind` (npm only, the release's version, peer dependency `tailwindcss`) builds the table from the project's installed Tailwind; the engine runs it with Node and caches it by Tailwind version and config hash. The `tailwind` pack depends on its provider (exact pin) and names it in `codelaw-pack.toml`; L6 is amended when it is built. `[providers] on_missing` is `skip` (default) or `error`. Then all three L11 asks ratified (D-48 `tailwindcss` in fixtures only, D-49 the Prettier-plugin parity instrument, leave for Claude Code to run them) — W-145 is 🟢 `agent`: records and the provider first, the pack's registration after W-139.
