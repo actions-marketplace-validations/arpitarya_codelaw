@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
 ### build (7)
 
@@ -58,11 +58,9 @@ here. Read that record before changing anything below it.
 
 ### testing (0)
 
-### reporting and benchmarks (3)
+### reporting and benchmarks (2)
 
 🟢 **W-168** `agent` Measure the project graph at 10k, 50k, 100k, 500k and 1M files — cold, warm, one-file hook, memory, per stage; today's bench never builds the graph (`recommended` presets only). L9 disk care for 500k/1M. Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
-
-🟢 **W-103** `agent` Spell pack done; its L8 budget set 11-05 at 2,500 ms (Arpit; the method gave 2,152). Left: DoD 5 (byte-identical packaging) and SR-SPELL `built: yes`. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 

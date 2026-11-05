@@ -6,8 +6,8 @@ item: W-103
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
-ball: agent
+updated_by: "Claude Code (Opus 5.5)"
+ball: done
 ---
 
 # W-103 — the spell pack: codelaw's own spell checker, better than CSpell
@@ -25,7 +25,7 @@ ball: agent
 
 **Arpit, 2026-10-29 (voice docket; written on *"file it."*):** recommended measuring the pack as its own `spell` operation so the ruled budgets do not move: *"We can, but add an item in the backlog so that we can have a shared benchmark."* — its own operation now; B-062 holds the shared benchmark.
 
-**Arpit, 2026-10-27 (voice):** *"There is a tool called C-Spell. Research it and tell me if that can be built into CodeLaw. A similar feature, a better feature, would be even better."* Then, ruling the forks: *"Let's go with B."* · *"Approve both."* · *"Approve it."* · *"want it as a separate package."* · *"Go with the recommendation."* · *"go ahead"*. The forks: [the compare doc](../compare/spell-checking.compare.md).
+**Arpit, 2026-10-27 (voice):** *"There is a tool called C-Spell. Research it and tell me if that can be built into CodeLaw. A similar feature, a better feature, would be even better."* Then, ruling the forks: *"Let's go with B."* · *"Approve both."* · *"Approve it."* · *"want it as a separate package."* · *"Go with the recommendation."* · *"go ahead"*. The forks: [the compare doc](../../work/compare/spell-checking.compare.md).
 
 **Model:** Opus: it amends a law (L6's pack count) and the generated typo list's quality is judged by people, not caught by a test; close to Sonnet, because SR-SPELL fixes the rules and their fix classes.
 
@@ -60,9 +60,9 @@ Spelling in comments, docs, prose strings, Markdown, keys and declared names, in
 | 2 · rules | the six rules of SR-SPELL decision 5, each with its fix class, cases and a `codelaw test` pass; every `manual` fix carried by a skill (L4) | ✅ `spell/known-typo` (107 `codelaw test` checks), `spell/known-typo-identifier` (48) and `spell/known-typo-key` (28), `spell/unknown-word` (90), `spell/locale-variant` (94), `spell/suspicious-word` (6), `spell/inconsistent-term` (`suggest`, 94): 467 checks (2026-10-28) |
 | 3 · scope | a fixture repo per L3 language: a typo in a comment, a string, a declared name and a key is reported once; the same word in a URL, a hash, a JSON value that is an id, or at a name's uses is not | ✅ 2026-10-28: `fixtures/spell/repo` (twelve files, nine languages); `crates/codelaw-cli/tests/spell.rs` asserts the 38 findings, each once, and none on a URL, a hash, an id value, a code span, a link target, an HTML class or a name's uses |
 | 4 · fixes | `codelaw fix` on the fixtures fixes the one-correction known typos in prose and file-local names, and changes nothing exported | ✅ 2026-10-28: the same test runs `codelaw fix`: prose and file-local names fixed (29 findings), the 9 left are exported or module-level names, a member, keys, a class and an id, all untouched; a second `fix` changes nothing |
-| 5 · packaging | `@codelaw/rules-spell` and `codelaw-rules-spell` build in CI byte-identical; `init` does not add the pack; a missing pack names both install commands | 🟡 `build-packs.py --verify` builds both and compares output byte-identical locally; `init` adds no spell pack; the missing-pack message names both installs (`pack.rs` test); CI proves it on the landing commit |
-| 6 · measured | the typo list's entry count, the data's bytes per package, and the spell pass's time on the pinned corpus are written into SR-SPELL decision 9; the budget is the decider's ruling | 🟡 entry count, bytes per package and the corpus timing (2026-10-28, a loaded machine: `spell/recommended` 6–10 s of rule time summed, 3.3–6.0 s wall on 2,500 files) in SR-SPELL decision 9; the budget left (step 7) |
-| 7 · records | SR-SPELL `built: yes`; L6, SR-RULE-PACKS §1 and decision 4, SR-PACKAGES at eighteen packs, sixteen on npm and eleven on PyPI; README, CHANGELOG, GLOSSARY, `docs/rules/` regenerated | 🟡 all at eighteen; every rule built and `docs/rules/` regenerated (2026-10-28); SR-SPELL built: partly until the budget (DoD 6) |
+| 5 · packaging | `@codelaw/rules-spell` and `codelaw-rules-spell` build in CI byte-identical; `init` does not add the pack; a missing pack names both install commands | ✅ 2026-11-05: `build-packs.py --verify target/release/codelaw` (0.4.3) builds `codelaw-rules-spell-0.4.3.tgz` (1,033,879 B) and `codelaw_rules_spell-0.4.3-py3-none-any.whl` (1,052,102 B); the same 27 files in both; SHA-256 of `typos.json` `a01c9084…`, `words.json` `041b89ee…`, `locale.json` `148305ec…` equal in the tarball, the wheel and the tree; `check` output on `fixtures/l3` byte-identical from either install. The check that keeps it so already exists: `build-packs.py`'s `check_parity` and `package.py check` (pack parity) in CI's `package` job, green on `main` in `ci` 41945322410 (`9ae07264`). `init` *adds* the pack since W-112 (SR-SPELL decision 1, reversed by the decider 2026-10-28), so that clause is superseded; the missing-pack message names both installs (`pack.rs` test) |
+| 6 · measured | the typo list's entry count, the data's bytes per package, and the spell pass's time on the pinned corpus are written into SR-SPELL decision 9; the budget is the decider's ruling | ✅ the budget 2,500 ms (decider, 2026-11-05); before it: entry count, bytes per package and the corpus timing (2026-10-28, a loaded machine: `spell/recommended` 6–10 s of rule time summed, 3.3–6.0 s wall on 2,500 files) in SR-SPELL decision 9; the budget left (step 7) |
+| 7 · records | SR-SPELL `built: yes`; L6, SR-RULE-PACKS §1 and decision 4, SR-PACKAGES at eighteen packs, sixteen on npm and eleven on PyPI; README, CHANGELOG, GLOSSARY, `docs/rules/` regenerated | ✅ all at eighteen (now counted by later items); `docs/rules/` regenerated (2026-10-28); SR-SPELL `built: yes` in the register 2026-11-05, decision 1 gains *Packaging, as built* |
 
 ## Left (exact, after the sixth increment of 2026-10-28)
 
@@ -77,7 +77,7 @@ Spelling in comments, docs, prose strings, Markdown, keys and declared names, in
 
 ## Blockers
 
-None. Step 6 is done (the budget, 2026-11-05). Left: DoD 5 (byte-identical packaging) and DoD 7 (SR-SPELL `built: yes`). The `typos` comparison (item 8) is outside the DoD.
+None. **Closed 2026-11-05 (Claude Code):** every DoD row met; archived. Outside the DoD and not lost: the `typos` count comparison (item 8, needs `typos` ratified in L11 — the decider's) and `known-typo-identifier`'s `suggest` tier naming other files (needs the project graph's names), both in SR-SPELL's *as built* text.
 
 ## Record affected
 
@@ -93,5 +93,5 @@ None. Step 6 is done (the budget, 2026-11-05). Left: DoD 5 (byte-identical packa
 
 ## Reference
 
-- [SR-SPELL](../../records/0116_spell.md) · [the compare doc](../compare/spell-checking.compare.md) · [L11 §3](../../records/0013_LAW-11-dependencies.md#3--the-list)
+- [SR-SPELL](../../records/0116_spell.md) · [the compare doc](../../work/compare/spell-checking.compare.md) · [L11 §3](../../records/0013_LAW-11-dependencies.md#3--the-list)
 - SCOWL and VarCon: <http://wordlist.aspell.net/> · software terms: <https://www.npmjs.com/package/@cspell/dict-software-terms>

@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-103 closed: the spell pack byte-identical on npm and PyPI  ·  Claude Code (Opus 5.5)
+
+- **Asked:** finish W-103 — prove DoD 5 locally, mark SR-SPELL built, close the item.
+- **Done:** `build-packs.py --verify` with the shared release binary (output in the scratchpad, deleted): the spell tarball and wheel hold the same 27 files, the three data tables the same SHA-256 as the tree; SR-SPELL `built: yes`; W-103 archived, links repointed.
+- **Decided / left open:** no new check — `check_parity` and `package.py check` (CI `package` job) already fail on a difference. DoD 5's "`init` does not add the pack" is superseded by W-112. Outside the DoD: the `typos` comparison (L11, the decider's) and the cross-file `suggest` tier.
+- **Mistakes:** none.
+- **Next:** none for W-103.
+
 ## 2026-11-05 — W-166 step 0: main green on `[fix] on_edit`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-166; first fix main — `every_record_defined_key_is_in_the_schema` failed on `[fix] on_edit`.

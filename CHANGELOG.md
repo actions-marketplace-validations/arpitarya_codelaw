@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **The spell pack is complete (W-103):** `@codelaw/rules-spell` and `codelaw-rules-spell` hold the same files byte for byte, its word data included, and the `spell` operation's CI budget is 2,500 ms.
 - **numpy: rules move up the fix ladder (W-156):** 2 moved to auto (numpy-deprecated-function; numpy2-deprecation with an auto_when on the plain aliases) (numpy: auto 0 → 2, suggest 1 → 1, manual 3 → 1 (pending 2 → 0)).
 - **node: rules move up the fix ladder (W-156):** 3 moved (no-process-exit with labelled choices; global-require hoisted with move-to after-imports; no-exports-assign to suggest) (node: auto 2 → 2, suggest 15 → 18, manual 18 → 15 (pending 9 → 6)).
 - **nextjs: rules move up the fix ladder (W-156):** 6 moved to suggest (no-sync-scripts with labelled choices; google-font-preconnect, no-head-import-in-document, no-script-component-in-head, no-typos, no-unwanted-polyfillio); google-font-display kept as needing computed edits (W-162) (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)).

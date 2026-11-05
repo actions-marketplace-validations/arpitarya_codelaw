@@ -227,6 +227,6 @@ flowchart LR
 
 **Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-PACKAGES](0107_packages.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-SPELL](0116_spell.md) · [SR-TYPES](0117_types.md)
 
-**Work items** — [W-103](../work/open/W-103-spell-pack.md) · [W-77](../work/open/W-77-skills-package.md) · [W-34](../work/open/W-34-fux-index-packages.md) · [W-31](../archive/open/W-31-registry-pack-split.md) · [W-32](../archive/open/W-32-redux-and-query-packs.md) · [W-53](../work/open/W-53-security-packs-groundwork.md)
+**Work items** — [W-103](../archive/open/W-103-spell-pack.md) · [W-77](../work/open/W-77-skills-package.md) · [W-34](../work/open/W-34-fux-index-packages.md) · [W-31](../archive/open/W-31-registry-pack-split.md) · [W-32](../archive/open/W-32-redux-and-query-packs.md) · [W-53](../work/open/W-53-security-packs-groundwork.md)
 
 **Project docs** — [`docs/DESIGN.md`](../docs/DESIGN.md)
