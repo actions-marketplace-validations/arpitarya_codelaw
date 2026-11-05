@@ -239,6 +239,7 @@ pub fn ancestor<'t>(n: Node<'t>, kinds: &[&str]) -> Option<Node<'t>> {
 }
 
 /// Levenshtein distance, for nearest-name choices.
+#[allow(dead_code)]
 pub fn edit_distance(a: &str, b: &str) -> usize {
     let a: Vec<char> = a.chars().collect();
     let b: Vec<char> = b.chars().collect();
@@ -256,6 +257,7 @@ pub fn edit_distance(a: &str, b: &str) -> usize {
 
 /// The names of `candidates` nearest to `name` — within `max` edits, at
 /// most three, nearest first, ties in the candidates' order.
+#[allow(dead_code)]
 pub fn nearest<'c>(name: &str, candidates: impl IntoIterator<Item = &'c str>, max: usize) -> Vec<&'c str> {
     let mut scored: Vec<(usize, usize, &str)> = candidates
         .into_iter()
@@ -272,6 +274,7 @@ pub fn nearest<'c>(name: &str, candidates: impl IntoIterator<Item = &'c str>, ma
 /// One labelled choice per name in `names`, each replacing `start..end`
 /// with it (the first the default), as [`crate::choice_edits`] carries
 /// them.
+#[allow(dead_code)]
 pub fn name_choices(names: &[&str], start: usize, end: usize, fmt: &dyn Fn(&str) -> String) -> Vec<TextEdit> {
     crate::choice_edits(names.iter().enumerate().map(|(i, n)| crate::choice(*n, i == 0, vec![TextEdit::new(start, end, fmt(n))])).collect())
 }

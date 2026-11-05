@@ -41,6 +41,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **tanstack-query: native rules move up the fix ladder (W-156):** keepPreviousData: true becomes placeholderData: keepPreviousData with the import added; an updater that only sets keys of or pushes onto its value returns a copy; a rest object read only as rest.field, and a result in a dependency array read only through its fields, are destructured by name. The rest stay manual (restructure). (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)).
 - **node: native rules move up the fix ladder (W-156):** node/no-deprecated-api to auto for the APIs that are the same function under another name (util.isArray, util.isBuffer, os.tmpDir, os.getNetworkInterfaces, path._makeLong, crypto's randomBytes aliases), dropping an import nothing else reads; every other API manual (restructure). (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)).
 - **The spell pack is complete (W-103):** `@codelaw/rules-spell` and `codelaw-rules-spell` hold the same files byte for byte, its word data included, and the `spell` operation's CI budget is 2,500 ms.
 - **css-modules: rules move up the fix ladder (W-156):** no-undefined-class kept, now naming cross-file (W-162) (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
