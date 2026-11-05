@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **css-modules: rules move up the fix ladder (W-156):** no-undefined-class kept, now naming cross-file (W-162) (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
 - **redux-toolkit: rules move up the fix ladder (W-156):** no-legacy-create-store and prefer-hooks-api kept, now naming computed edits (W-162) (redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7)).
 - **python: rules move up the fix ladder (W-156):** py/no-tunable-literals and py/pytest-raises-ambiguous-pattern kept, now naming computed edits and add-import (W-162) (python: auto 159 → 159, suggest 197 → 197, manual 150 → 150 (pending 66 → 66)).
 - **data: rules move up the fix ladder (W-156):** md/fence-language moved with labelled choices (text, sh, json), reported at the opening fence; md/no-empty-links to suggest (unwrap to the text); the five schema rules kept as needing computed edits (W-162) (data: auto 11 → 11, suggest 6 → 8, manual 30 → 28 (pending 22 → 20)).
