@@ -2,9 +2,8 @@
 id: ts/no-non-null-assertion
 title: "No non-null assertions"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "handling the null — a check, optional chaining or a default — is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "optional chaining turns a null into `undefined` instead of failing; the reviewer confirms that is the handling wanted (offered where the `!` is followed by `.name`)"
 stability: preview
 ported_from: [typescript-eslint/no-non-null-assertion]
 since: 0.5.0
@@ -19,7 +18,14 @@ match:
   kind: non_null_expression
   not: { inside: { kind: assignment_expression, field: left } }
   has: { pattern: $E }
+  any:
+    - all:
+        - pattern: $W
+        - inside: { kind: member_expression, stopBy: neighbor }
+    - kind: non_null_expression
 message: "Handle the null instead of asserting it away"
+fix:
+  - replace: { target: $W, with: "$E?" }
 ```
 
 ## How to fix

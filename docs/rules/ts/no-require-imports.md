@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (an import may need the module's default or named exports chosen by hand) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (default import, namespace import and `import x = require()` differ in interop and hoisting, so the reviewer picks one (offered for a top-level `const x = require('m')`)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-require-imports` |
@@ -132,6 +132,24 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 const fs = require("node:fs");
 ```
 
+#### Fixed (default import)
+
+```ts
+import fs from "node:fs";
+```
+
+#### Fixed (namespace import)
+
+```ts
+import * as fs from "node:fs";
+```
+
+#### Fixed (import equals)
+
+```ts
+import fs = require("node:fs");
+```
+
 #### Do
 
 ```ts
@@ -144,6 +162,24 @@ import fs from "node:fs";
 
 ```tsx
 const fs = require("node:fs");
+```
+
+#### Fixed (default import)
+
+```tsx
+import fs from "node:fs";
+```
+
+#### Fixed (namespace import)
+
+```tsx
+import * as fs from "node:fs";
+```
+
+#### Fixed (import equals)
+
+```tsx
+import fs = require("node:fs");
 ```
 
 #### Do

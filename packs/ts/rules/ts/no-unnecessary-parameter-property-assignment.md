@@ -2,9 +2,8 @@
 id: ts/no-unnecessary-parameter-property-assignment
 title: "No assignment a parameter property already makes"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "removing the assignment is safe only if nothing changes the value in between"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the assignment is the constructor's first statement, so nothing can change the value before it; a later one is reported as a suggestion"
 stability: preview
 ported_from: [typescript-eslint/no-unnecessary-parameter-property-assignment]
 since: 0.5.0
@@ -32,6 +31,9 @@ match:
             - has: {kind: accessibility_modifier}
             - has: {field: pattern, pattern: $X}
 message: '`this.$X = $X` repeats what the parameter property does'
+auto_when: { nthChild: 1 }
+fix:
+  - remove: $$MATCH
 ```
 
 ## How to fix
@@ -52,6 +54,15 @@ class A {
 }
 ```
 
+#### Fixed
+
+```ts
+class A {
+  constructor(private x: number) {
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -68,6 +79,15 @@ class A {
 class A {
   constructor(private x: number) {
     this.x = x;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A {
+  constructor(private x: number) {
   }
 }
 ```

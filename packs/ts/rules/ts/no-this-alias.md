@@ -4,7 +4,7 @@ title: "No aliasing this to a variable"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the callbacks that use the alias must become arrow functions by hand"
-fix_pending: "auto-subset"
+fix_pending: "auto-subset; needs scope-rename (W-162)"
 stability: preview
 ported_from: [typescript-eslint/no-this-alias]
 since: 0.1.0

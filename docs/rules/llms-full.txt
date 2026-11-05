@@ -135812,7 +135812,7 @@ const xs = [1, 2, 3];
 ## `ts/no-confusing-non-null-assertion` — No non-null assertion next to = or ==
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the `!` may have been meant as `!==`; the author decides which)
+- **Fix:** `suggest` (the `!` may have been meant as the start of `!=`/`!==` or as a stray assertion; the reviewer picks which)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-confusing-non-null-assertion.md
 
@@ -135836,6 +135836,18 @@ A non-null assertion is not written directly before `=`, `==` or `===`.
 if (user! === other) run();
 ```
 
+##### Fixed (drop the !)
+
+```ts
+if (user === other) run();
+```
+
+##### Fixed (not equal)
+
+```ts
+if (user !== other) run();
+```
+
 ##### Do
 
 ```ts
@@ -135848,6 +135860,18 @@ if (user === other) run();
 
 ```tsx
 if (user! === other) run();
+```
+
+##### Fixed (drop the !)
+
+```tsx
+if (user === other) run();
+```
+
+##### Fixed (not equal)
+
+```tsx
+if (user !== other) run();
 ```
 
 ##### Do
@@ -136035,7 +136059,7 @@ cache.delete(key);
 ## `ts/no-empty-object-type` — No empty interfaces or {} types
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the right replacement — `object`, `unknown` or `Record<string, never>` — depends on intent)
+- **Fix:** `suggest` (the right replacement — `object`, `unknown`, `Record<string, never>` or `NonNullable<unknown>` — depends on intent, so each is offered (an interface with a generic or `extends` clause carries no edit))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-empty-object-type.md
 
@@ -136063,6 +136087,34 @@ interface Options {}
 type Empty = {};
 ```
 
+##### Fixed (object)
+
+```ts
+type Options = object;
+type Empty = object;
+```
+
+##### Fixed (unknown)
+
+```ts
+type Options = unknown;
+type Empty = unknown;
+```
+
+##### Fixed (no keys)
+
+```ts
+type Options = Record<string, never>;
+type Empty = Record<string, never>;
+```
+
+##### Fixed (any non-null value)
+
+```ts
+type Options = NonNullable<unknown>;
+type Empty = NonNullable<unknown>;
+```
+
 ##### Do
 
 ```ts
@@ -136077,6 +136129,34 @@ type Anything = unknown;
 ```tsx
 interface Options {}
 type Empty = {};
+```
+
+##### Fixed (object)
+
+```tsx
+type Options = object;
+type Empty = object;
+```
+
+##### Fixed (unknown)
+
+```tsx
+type Options = unknown;
+type Empty = unknown;
+```
+
+##### Fixed (no keys)
+
+```tsx
+type Options = Record<string, never>;
+type Empty = Record<string, never>;
+```
+
+##### Fixed (any non-null value)
+
+```tsx
+type Options = NonNullable<unknown>;
+type Empty = NonNullable<unknown>;
 ```
 
 ##### Do
@@ -136882,7 +136962,7 @@ const name = user?.name;
 ## `ts/no-non-null-assertion` — No non-null assertions
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (handling the null — a check, optional chaining or a default — is the author's choice)
+- **Fix:** `suggest` (optional chaining turns a null into `undefined` instead of failing; the reviewer confirms that is the handling wanted (offered where the `!` is followed by `.name`))
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-non-null-assertion.md
 
@@ -136929,7 +137009,7 @@ const n = user?.name;
 ## `ts/no-require-imports` — No require() calls
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (an import may need the module's default or named exports chosen by hand)
+- **Fix:** `suggest` (default import, namespace import and `import x = require()` differ in interop and hoisting, so the reviewer picks one (offered for a top-level `const x = require('m')`))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-require-imports.md
 
@@ -136953,6 +137033,24 @@ Modules are loaded with `import`, not `require()`.
 const fs = require("node:fs");
 ```
 
+##### Fixed (default import)
+
+```ts
+import fs from "node:fs";
+```
+
+##### Fixed (namespace import)
+
+```ts
+import * as fs from "node:fs";
+```
+
+##### Fixed (import equals)
+
+```ts
+import fs = require("node:fs");
+```
+
 ##### Do
 
 ```ts
@@ -136965,6 +137063,24 @@ import fs from "node:fs";
 
 ```tsx
 const fs = require("node:fs");
+```
+
+##### Fixed (default import)
+
+```tsx
+import fs from "node:fs";
+```
+
+##### Fixed (namespace import)
+
+```tsx
+import * as fs from "node:fs";
+```
+
+##### Fixed (import equals)
+
+```tsx
+import fs = require("node:fs");
 ```
 
 ##### Do
@@ -137095,7 +137211,7 @@ button.onclick = () => {
 ## `ts/no-unnecessary-parameter-property-assignment` — No assignment a parameter property already makes
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (removing the assignment is safe only if nothing changes the value in between)
+- **Fix:** `auto` (auto when the assignment is the constructor's first statement, so nothing can change the value before it; a later one is reported as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unnecessary-parameter-property-assignment.md
 
@@ -137123,6 +137239,15 @@ class A {
 }
 ```
 
+##### Fixed
+
+```ts
+class A {
+  constructor(private x: number) {
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -137139,6 +137264,15 @@ class A {
 class A {
   constructor(private x: number) {
     this.x = x;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+class A {
+  constructor(private x: number) {
   }
 }
 ```

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right replacement — `object`, `unknown` or `Record<string, never>` — depends on intent) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the right replacement — `object`, `unknown`, `Record<string, never>` or `NonNullable<unknown>` — depends on intent, so each is offered (an interface with a generic or `extends` clause carries no edit)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-empty-object-type` |
@@ -136,6 +136,34 @@ interface Options {}
 type Empty = {};
 ```
 
+#### Fixed (object)
+
+```ts
+type Options = object;
+type Empty = object;
+```
+
+#### Fixed (unknown)
+
+```ts
+type Options = unknown;
+type Empty = unknown;
+```
+
+#### Fixed (no keys)
+
+```ts
+type Options = Record<string, never>;
+type Empty = Record<string, never>;
+```
+
+#### Fixed (any non-null value)
+
+```ts
+type Options = NonNullable<unknown>;
+type Empty = NonNullable<unknown>;
+```
+
 #### Do
 
 ```ts
@@ -150,6 +178,34 @@ type Anything = unknown;
 ```tsx
 interface Options {}
 type Empty = {};
+```
+
+#### Fixed (object)
+
+```tsx
+type Options = object;
+type Empty = object;
+```
+
+#### Fixed (unknown)
+
+```tsx
+type Options = unknown;
+type Empty = unknown;
+```
+
+#### Fixed (no keys)
+
+```tsx
+type Options = Record<string, never>;
+type Empty = Record<string, never>;
+```
+
+#### Fixed (any non-null value)
+
+```tsx
+type Options = NonNullable<unknown>;
+type Empty = NonNullable<unknown>;
 ```
 
 #### Do
