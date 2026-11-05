@@ -2,9 +2,8 @@
 id: md/no-empty-links
 title: "Links have a destination"
 languages: [markdown]
-fix: manual
-fix_reason: "where the link should go needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead"
 stability: preview
 ported_from: [markdownlint/MD042]
 since: 0.1.0
@@ -18,9 +17,14 @@ A link has a destination: not `()`, `(<>)` or a bare `(#)`.
 match:
   kind: inline_link
   any:
+    - pattern: "[$T]()"
+    - pattern: "[$T](#)"
+    - pattern: "[$T](<>)"
+    - pattern: "[$T](<#>)"
     - not: { has: { kind: link_destination } }
     - has: { kind: link_destination, regex: '^(#|<>|<#>)$' }
 message: "This link goes nowhere; give it a destination"
+fix: "$T"
 ```
 
 ## How to fix
@@ -38,10 +42,22 @@ message: "This link goes nowhere; give it a destination"
 See [the changelog]().
 ````
 
+#### Fixed
+
+````md
+See the changelog.
+````
+
 #### Don't
 
 ````md
 See [the changelog](#).
+````
+
+#### Fixed
+
+````md
+See the changelog.
 ````
 
 #### Do

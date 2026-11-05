@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the link should go needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD042` |
@@ -135,10 +135,22 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 See [the changelog]().
 ````
 
+#### Fixed
+
+````md
+See the changelog.
+````
+
 #### Don't
 
 ````md
 See [the changelog](#).
+````
+
+#### Fixed
+
+````md
+See the changelog.
 ````
 
 #### Do
