@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **python: rules move up the fix ladder (W-156):** py/no-tunable-literals and py/pytest-raises-ambiguous-pattern kept, now naming computed edits and add-import (W-162) (python: auto 159 → 159, suggest 197 → 197, manual 150 → 150 (pending 66 → 66)).
 - **data: rules move up the fix ladder (W-156):** md/fence-language moved with labelled choices (text, sh, json), reported at the opening fence; md/no-empty-links to suggest (unwrap to the text); the five schema rules kept as needing computed edits (W-162) (data: auto 11 → 11, suggest 6 → 8, manual 30 → 28 (pending 22 → 20)).
 - **django: rules move up the fix ladder (W-156):** django-non-leading-receiver-decorator to suggest: the two decorators swap when @receiver is second of two (django: auto 0 → 0, suggest 0 → 1, manual 7 → 6 (pending 2 → 1)).
 - **pandas: rules move up the fix ladder (W-156):** 3 moved (pandas-use-of-dot-read-table to auto with auto_when — no sep, delimiter or second positional; nunique-constant-series-check and use-of-inplace-argument to suggest) (pandas: auto 0 → 1, suggest 7 → 9, manual 5 → 2 (pending 3 → 0)).
