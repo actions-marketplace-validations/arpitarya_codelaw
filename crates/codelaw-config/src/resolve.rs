@@ -177,6 +177,18 @@ pub struct RuleConfig {
 }
 
 fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(), ConfigError> {
+    if let RuleSetting::Flag(_) = setting {
+        let what = if id == "require_reason" { "`require_reason` is set in the top-level `[rules]` only".to_owned() } else { format!("rule `{id}`: a setting is a severity or a table, not true or false") };
+        return Err(ConfigError::new(Some(file.to_owned()), what));
+    }
+    if let RuleSetting::Full { reason: Some(_), .. } = setting
+        && setting.severity() != Some("off")
+    {
+        return Err(ConfigError::new(
+            Some(file.to_owned()),
+            format!("rule `{id}`: `reason` says why a rule is off, so it goes with `severity = \"off\"` (SR-CONFIG decision 11c)"),
+        ));
+    }
     if let Some(s) = setting.severity()
         && !matches!(s, "error" | "warn" | "info" | "off")
     {
@@ -289,6 +301,11 @@ impl ConfigFile {
     fn new(path: PathBuf, home: Home, raw: RawConfig, text: String) -> Result<ConfigFile, ConfigError> {
         let dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         let mut raw = raw;
+        match raw.rules.remove("require_reason") {
+            Some(RuleSetting::Flag(b)) => raw.require_reason = Some(b),
+            Some(_) => return Err(ConfigError::new(Some(path), "`[rules] require_reason` is true or false".to_owned())),
+            None => {}
+        }
         order_scopes(&mut raw, home, &text);
         let renamed = rename_all_rules(&mut raw);
         if let Some(langs) = &raw.languages {
@@ -726,6 +743,7 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
     "[deps]", "[css]", "[coverage]", "[codelawignore]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]", "[packs]",
+    "[rules] require_reason",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -756,6 +774,7 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.branches != Default::default(),
         raw.pr != Default::default(),
         raw.packs != Default::default(),
+        raw.require_reason.is_some(),
     ];
     ROOT_ONLY.iter().zip(set).filter(|(_, s)| *s).map(|(k, _)| *k).collect()
 }
