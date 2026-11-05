@@ -6,7 +6,7 @@ item: W-102
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
+updated_by: "Arpit (Claude app, Opus 5.5)"
 ball: agent
 ---
 
@@ -22,6 +22,10 @@ Rewritten 2026-10-30 to W-118's redesign, as ruled (R1–R3 below).
 | 2 | Six arms — 0 (no codelaw), A (guidance only, codelaw off `PATH`), A+ (the pilot's A), B (+ MCP and rule pages), C (+ Fux), D (A + `hook --pre`) — and the screen: arm 0 alone, 5 runs per candidate, keep 12 at ≥ 40% | the population and the arms | ✅ built, `harness.py dry-run` green (756 scripted runs, screen included); ✅ **screened 2026-10-30: 7 of 38 tempting — the null outcome** ($19.45); ✅ ruled 2026-11-05: run the 7 (below) |
 | 3 | `PREREG.md` amended to the ruling (7 tasks × 9 runs, 63 per arm) and landed, then 6 arms × 7 tasks × 9 runs (+ P2 at 2 runs); `codelaw check` on each diff; Wilson intervals, task-paired differences, task-cluster bootstrap | the data | ⏳ |
 | 4 | Arm C adds no new error in ≥ 60 runs (bound 5%) → the README's "rules it can't skip" line goes; otherwise it stays with the measured rate | a README line backed by data | ⏳ |
+
+## Ruled 2026-11-05 (later) — after every rule is built
+
+**Arpit, 2026-11-05 (voice, Claude app):** asked to run it in parallel with the rule build and mark it do-first, he said *"I want to do it once all the rules are built"*; told it pushes the pitch back by weeks — *"Yes."* So W-102 **waits on W-139**; the run and design above are unchanged. Measuring rework (extra turns, tokens, cost) is a follow-up, not this run: *"Maybe put it in the backlog for the rework."* — B-072.
 
 ## Ruled 2026-11-05 — run the 7
 
@@ -159,6 +163,10 @@ step 4's README line (W-35's rule); (4) on close, the Ownership row passes to a 
 
 - The 180 runs, their inputs and the per-arm counts written up; the README line kept or removed per step 4.
 
+## Blockers
+
+- **W-139** — ruled 2026-11-05: the run waits until every rule is built.
+
 ## Record affected
 
 No SR affected — an experiment. README by W-35's rule.
@@ -167,3 +175,7 @@ No SR affected — an experiment. README by W-35's rule.
 
 - Agent runs cost tokens and time; budget them before starting (L9's disk budget applies to the fixture repos).
 - Non-determinism: report rates with the run count, never a single run.
+
+## Later — rework
+
+Not measured in this run: extra agent turns, tokens and cost per arm, the second headline (*"and it saves you X in tokens"*). Backlog: B-072.

@@ -138,6 +138,8 @@ checkout.
 
 ## 2 · In flight, and the immediate next step
 
+**Ruled 2026-11-05 (Claude app, voice; filed on *"file it."*):** positioning — lead *"Your team's rules, enforced on every AI edit"*, then deterministic and the same with no AI (W-164). Every pack is still built (W-139, W-141, W-143, W-145), pausing refused; **W-102 runs only after W-139**; rework measurement is B-072.
+
 **Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. **W-139** — no manual ceiling at all: L4 decision 6 retired; W-139 removes `packs/fix-ladder.toml` and lands its 231 held ports. **W-141** — Oxc's formatter crates ratified (L11 D-52); W-141 builds them. **W-156** — closes once only the ~119 capability-blocked rules are left, their `fix_pending:` naming W-162 (L4 decision 5 amended); **W-161** researches the six capabilities, **W-162** builds them (🟡 on W-161); **W-163** researches per-rule save/agent-hook behaviour and target versions, configurable, with defaults. **Next for an agent (🟢):** W-139 step 2a, W-141's Oxc build, W-156's moves.
 
 **W-119 step 1 built 2026-10-29 (Claude Code):** Arpit ruled *"Admit main in pypi"* — over a v0.3.1 tag or a W-119-only rule — so `publish.yml -f only=pypi-new` runs from `main` and uploads one new project from v0.3.0's attested build. **Next:** the loop, one name at a time from `codelaw-rules-scss` (the inbox row); the first run is the test of the new mode.
