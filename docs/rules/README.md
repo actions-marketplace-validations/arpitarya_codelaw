@@ -1438,7 +1438,7 @@ Presets: `codelaw:sec-ts/recommended` · `codelaw:sec-ts/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`sec-ts/angular-bypass-security-trust`](sec-ts/angular-bypass-security-trust.md) | No bypassSecurityTrust call on a value that is not a literal | `manual` | — | `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-ts/angular-native-element-html`](sec-ts/angular-native-element-html.md) | No HTML written to a native element or through Renderer2 | `manual` | `sanitizers` | `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-ts/angular-native-element-html`](sec-ts/angular-native-element-html.md) | No HTML written to a native element or through Renderer2 | `suggest` | `sanitizers` | `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-ts/nest-cors`](sec-ts/nest-cors.md) | NestJS CORS names its origins | `manual` | — | `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-ts/nest-missing-guard`](sec-ts/nest-missing-guard.md) | A NestJS controller has a guard | `manual` | — | `sec-ts/strict` |
 | [`sec-ts/nest-throttler`](sec-ts/nest-throttler.md) | A NestJS sign-in controller is rate limited | `manual` | — | `sec-ts/strict` |
@@ -1447,12 +1447,12 @@ Presets: `codelaw:sec-ts/recommended` · `codelaw:sec-ts/strict`.
 | [`sec-ts/no-any-request-handler`](sec-ts/no-any-request-handler.md) | No request typed any | `manual` | — | `sec-ts/strict` |
 | [`sec-ts/no-permissive-schema`](sec-ts/no-permissive-schema.md) | No request schema that lets anything through | `suggest` | — | `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-ts/no-prisma-raw-unsafe`](sec-ts/no-prisma-raw-unsafe.md) | No $queryRawUnsafe or $executeRawUnsafe with a value that is not a literal | `suggest` | — | `sec-ts/recommended`, `sec-ts/strict` |
-| [`sec-ts/no-query-builder-raw`](sec-ts/no-query-builder-raw.md) | No raw SQL fragment from a value in Drizzle, Kysely or MikroORM | `manual` | — | `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-ts/no-query-builder-raw`](sec-ts/no-query-builder-raw.md) | No raw SQL fragment from a value in Drizzle, Kysely or MikroORM | `suggest` | — | `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-ts/no-ts-ignore-on-sink`](sec-ts/no-ts-ignore-on-sink.md) | No type error silenced on a line that holds a security sink | `manual` | — | `sec-ts/strict` |
 | [`sec-ts/no-typeorm-string-query`](sec-ts/no-typeorm-string-query.md) | No TypeORM query built from a template or concatenation | `manual` | — | `sec-ts/recommended`, `sec-ts/strict` |
 | [`sec-ts/no-unchecked-cast-of-input`](sec-ts/no-unchecked-cast-of-input.md) | No type assertion on input that nothing has checked | `manual` | `validators` | `sec-ts/strict` |
 | [`sec-ts/trpc-public-mutation`](sec-ts/trpc-public-mutation.md) | A tRPC mutation is not public | `manual` | — | `sec-ts/strict` |
-| [`sec-ts/typeorm-synchronize`](sec-ts/typeorm-synchronize.md) | TypeORM does not synchronize the schema on start | `manual` | — | `sec-ts/recommended`, `sec-ts/strict` |
+| [`sec-ts/typeorm-synchronize`](sec-ts/typeorm-synchronize.md) | TypeORM does not synchronize the schema on start | `suggest` | — | `sec-ts/recommended`, `sec-ts/strict` |
 
 ## security-html
 

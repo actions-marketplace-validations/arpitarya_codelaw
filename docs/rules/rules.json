@@ -86015,8 +86015,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is text or markup is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "writing text instead of markup changes what the page shows, so the reviewer confirms the value is meant to be text; outerHTML and insertAdjacentHTML get no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -86647,8 +86647,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the statement and its values have to be separated by hand",
+   "fix": "suggest",
+   "fix_reason": "a template argument becomes a parameterised `sql` template, which turns each ${value} into a bound parameter, so the reviewer confirms none of them is an identifier or a fragment of the statement; a non-template argument gets no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -86664,7 +86664,7 @@
     }
    ],
    "options": {},
-   "dont": "await db.execute(sql.raw(query));",
+   "dont": "await db.execute(sql.raw(`select * from users where id = ${id}`));",
    "do": "await db.execute(sql`select * from users where id = ${id}`);",
    "fix_steps": [
     "Use the `sql` tagged template: each `${value}` becomes a parameter. `sql.raw` is for a fixed fragment you wrote, as a literal.",
@@ -86672,7 +86672,7 @@
    ],
    "example": {
     "language": "typescript",
-    "dont": "await db.execute(sql.raw(query));",
+    "dont": "await db.execute(sql.raw(`select * from users where id = ${id}`));",
     "do": "await db.execute(sql`select * from users where id = ${id}`);"
    },
    "ported_from": [],
@@ -87008,8 +87008,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "how the schema is changed instead (migrations) is a decision for the author",
+   "fix": "suggest",
+   "fix_reason": "the edit fails closed, but the schema then changes only through migrations, so the reviewer confirms the project has them or writes them",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",

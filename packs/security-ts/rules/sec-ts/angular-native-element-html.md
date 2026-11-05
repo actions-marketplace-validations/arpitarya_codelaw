@@ -2,9 +2,8 @@
 id: sec-ts/angular-native-element-html
 title: "No HTML written to a native element or through Renderer2"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "whether the value is text or markup is a decision for the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "writing text instead of markup changes what the page shows, so the reviewer confirms the value is meant to be text; outerHTML and insertAdjacentHTML get no edit"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0
@@ -36,16 +35,25 @@ match:
   any:
     - all:
         - pattern: $E.$P = $V
-        - regex: '^[^=]*\.nativeElement[\w$.]*\.(inner|outer)HTML\s*=[^=]'
+        - regex: '^[^=]*\.nativeElement[\w$.]*\.innerHTML\s*=[^=]'
+    - all:
+        - pattern: $E1.$Q = $V
+        - regex: '^[^=]*\.nativeElement[\w$.]*\.outerHTML\s*=[^=]'
     - pattern: $E2.nativeElement.insertAdjacentHTML($POS, $V)
     - all:
         - pattern: $R.setProperty($EL, $NAME, $V)
-        - regex: '\.setProperty\(\s*[^,]+,\s*["''](inner|outer)HTML["'']'
+        - regex: '\.setProperty\(\s*[^,]+,\s*["'']innerHTML["'']'
+    - all:
+        - pattern: $R1.setProperty($EL1, $NAME1, $V)
+        - regex: '\.setProperty\(\s*[^,]+,\s*["'']outerHTML["'']'
 constraints:
   V: { not: { any: [ { kind: string }, { regex: '^`[^`$]*`$' } ] } }
 where:
   $V: { not: { calls: sanitizers } }
 message: "`$V` is written to the page as HTML without Angular's sanitizer or one of: $OPTION.sanitizers (add yours to `sanitizers`)"
+fix:
+  - replace: { target: $P, with: 'textContent' }
+  - replace: { target: $NAME, with: '"textContent"' }
 ```
 
 ## How to fix
@@ -68,6 +76,16 @@ class Box {
 }
 ```
 
+#### Fixed
+
+```ts
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -86,6 +104,16 @@ class Box {
 class Box {
   show(html: string) {
     this.el.nativeElement.innerHTML = html;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
   }
 }
 ```

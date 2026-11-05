@@ -38,6 +38,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **security-ts: rules move up the fix ladder (W-156):** 3 moved to suggest (angular-native-element-html, no-query-builder-raw, typeorm-synchronize); no-typeorm-string-query kept as needing computed edits (W-162) (security-ts: auto 0 → 0, suggest 3 → 6, manual 13 → 10 (pending 4 → 1)).
 - **security-python: rules move up the fix ladder (W-156):** 11 moved to suggest (no-header-injection with labelled choices); 4 kept as needing computed edits, 1 an import (W-162); no-insecure-protocol takes restructure and no-path-traversal value; no-mako skips a call already passing default_filters (security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4)).
 - **security-js: rules move up the fix ladder (W-156):** 15 moved to suggest (4 with labelled choices: jwt-verify, no-bad-tag-filter, no-header-injection, no-incomplete-url-check), 8 kept as needing computed edits (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)).
 - **37 rules name why they stay manual, and the rest name what they wait for (W-156):** the 37 rules W-161 found no capability would move now carry their exception (`security` 17, `value` 17, `restructure` 3), and each of the 114 rules waiting on an engine capability names it and the item building it — `fix_pending: "suggest; needs computed-edit (W-162)"`.
