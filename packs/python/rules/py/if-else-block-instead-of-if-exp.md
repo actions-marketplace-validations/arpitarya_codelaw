@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "the statement form becomes an expression; review long branches"
 stability: preview
-ported_from: [ruff/SIM108]
+ported_from: [ruff/SIM108, pylint/consider-ternary-expression]
 since: 0.5.0
 ---
 
