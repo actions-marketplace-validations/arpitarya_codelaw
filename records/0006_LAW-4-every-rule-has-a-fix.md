@@ -9,7 +9,7 @@ date: 2026-10-30
 feature: "the fix every rule carries, and the order the fix classes are tried in"
 owns: []
 laws: [L0, L3, L4, L5]
-timestamp: 2026-10-30T15:30:00Z
+timestamp: 2026-11-05T20:00:00Z
 content_sha: ""
 ---
 
@@ -169,6 +169,25 @@ a diff.
    (decision 2) and leaves the file untouched.
 10. **Fixes touch only their own range.** Comments, formatting and code
     outside the edit are byte-identical before and after.
+    - **Amended 2026-11-05 — a fix may edit several files** (W-162; the
+      decider, picking *"Allow multi-file (Recommended)"* on
+      [`fix-capabilities.md`](../work/proposals/fix-capabilities.md) §5). A
+      rename across files (CSS classes, ids, custom properties, SCSS members,
+      exports and their importers) or a dependency added to `package.json` is
+      one fix whose ranges lie in several files; each range is still bound by
+      this decision.
+      - **Verified per file and over the graph:** decision 9 holds for every
+        file the fix edits, and the project graph gains no unresolved
+        reference ([SR-PROJECT-GRAPH](0103_project-graph.md)).
+      - **All or nothing:** every file is written, or none is; a failed check
+        on any file drops the finding a rung (decision 2) and leaves every file
+        untouched.
+      - **`auto` only when every reference resolves statically;** a reference
+        the graph cannot resolve makes the finding `suggest`.
+      - **Never on save or from the per-edit hook** (decision 12): only
+        `codelaw fix`, a pre-commit run of it and an accepted suggestion apply
+        it.
+      - Built: no (W-162, the cross-file write).
 11. **Fixes are proven by the rule's own examples.** `codelaw test` applies
     each `auto` and `suggest` fix, and each choice, to every `Don't` example.
     The result must pass the rule, equal the paired `Do` example (or a `Fixed`
@@ -180,6 +199,16 @@ a diff.
     reject; `manual` goes back with its steps, its exception and its skill. An
     agent may never "fix" a finding by suppressing it; suppression is its own
     path ([SR-AGENT-SURFACES](0102_agent-surfaces.md), `codelaw-suppress`).
+    - **Amended 2026-11-05 — what the hook and save apply** (W-162, W-163;
+      the decider, 2026-11-05). Save in the editor and the per-edit hook apply
+      an `auto` fix silently **only when it edits one file and its `on_edit`
+      is `true`**. A multi-file fix (decision 10) is never applied by either.
+      A rule whose edit deletes work in progress (an unused binding, a
+      debugging aid, a placeholder being filled in) sets `on_edit: false`
+      ([SR-RULE-FORMAT](0112_rule-format.md) decision 2b), and a project may
+      turn it either way ([SR-CONFIG](0110_config.md) decision 11e); its fix
+      is still `auto` for `codelaw fix`, pre-commit and CI's `fix --check`,
+      and the hook returns it as what is left. Built: no (W-166, W-162).
 13. **A skill serves every `manual` fix.** `codelaw-fix`
     ([SR-AGENT-SURFACES](0102_agent-surfaces.md)) reads the rule's
     `## How to fix` steps and walks the person or agent through them; a rule
@@ -228,6 +257,8 @@ a diff.
   waiting to move up), the ceiling (6: `packs/fix-ladder.toml`; retired 2026-11-05, its removal is W-139's), `--fix-stats`
   (7) and the engine rules' exceptions (15). The project's lowering (16)
   was built 2026-11-05 ([SR-CONFIG](0110_config.md) decision 11d).
+  Decisions 10 and 12 were amended 2026-11-05 (multi-file fixes; `on_edit`):
+  ruled, not built (W-162, W-166).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
   `manual` would fall from 577 to 147, and `auto` (always or for a stated
@@ -284,7 +315,7 @@ lists the `manual` rules still without one.
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-LAWS](0001_LAWS.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md)
+**Records** — [SR-LAWS](0001_LAWS.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-RULE-FORMAT](0112_rule-format.md) · [SR-CONFIG](0110_config.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md)
 
 **Code** — `crates/codelaw-core/src/diagnostic.rs` · `crates/codelaw-rules/src/rule.rs` · `crates/codelaw-cli/tests/laws.rs`
 
