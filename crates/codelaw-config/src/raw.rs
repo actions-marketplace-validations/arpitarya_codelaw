@@ -124,6 +124,10 @@ pub struct RawConfig {
     /// in the engine reads it. Root config only.
     #[serde(default)]
     pub reviews: RawReviews,
+    /// SR-CONFIG decision 11f (W-166): the versions the project supports,
+    /// an input to target-gated fixes. The nearest config naming each key
+    /// wins.
+    pub targets: Option<RawTargets>,
     /// SR-CONFIG decision 11c (W-158): `[rules] require_reason`, read out
     /// of the `[rules]` table when the file loads. Root config only.
     #[serde(skip)]
@@ -151,6 +155,10 @@ pub enum RuleSetting {
         /// hook (SR-CONFIG decision 11e); either direction.
         #[serde(default)]
         on_edit: Option<bool>,
+        /// The rule's own targets, over a scope's and `[targets]` (SR-CONFIG
+        /// decision 11f).
+        #[serde(default)]
+        targets: Option<RawTargets>,
     },
     /// Not a rule's setting: `[rules] require_reason`, which the loader
     /// takes out of `[rules]`. Anywhere else it is a load error.
@@ -190,6 +198,14 @@ impl RuleSetting {
         }
     }
 
+    /// The rule entry's `targets`, as written (SR-CONFIG decision 11f).
+    pub fn targets(&self) -> Option<&RawTargets> {
+        match self {
+            RuleSetting::Full { targets, .. } => targets.as_ref(),
+            _ => None,
+        }
+    }
+
     /// Why the rule is `"off"`, as written; an empty reason is none.
     pub fn reason(&self) -> Option<&str> {
         match self {
@@ -210,6 +226,36 @@ pub struct RawScope {
     pub rules: BTreeMap<String, RuleSetting>,
     /// SR-CONFIG decision 11.
     pub remap: Option<BTreeMap<String, String>>,
+    /// SR-CONFIG decision 11f: the scope's targets, over `[targets]`.
+    pub targets: Option<RawTargets>,
+}
+
+/// `[targets]`, a scope's `targets` and a rule entry's (SR-CONFIG decision
+/// 11f): the oldest Python and the oldest browsers the project supports.
+#[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawTargets {
+    /// `"3.10"`: major and minor.
+    pub python: Option<String>,
+    /// `["chrome >= 111", "safari >= 16.4"]`, names from [`TARGET_BROWSERS`].
+    pub browsers: Option<Vec<String>>,
+}
+
+/// The browsers `[targets] browsers` may name (SR-CONFIG decision 11f).
+pub const TARGET_BROWSERS: &[&str] = &["chrome", "edge", "firefox", "safari", "ios_saf", "samsung"];
+
+/// `"3.10"` as `[3, 10]`: two or three dot-separated numbers.
+pub fn parse_python_target(s: &str) -> Option<Vec<u64>> {
+    let parts: Vec<u64> = s.trim().split('.').map(|p| p.parse().ok()).collect::<Option<_>>()?;
+    (2..=3).contains(&parts.len()).then_some(parts)
+}
+
+/// `"chrome >= 111"` as `("chrome", [111])`; `None` for any other query.
+pub fn parse_browser_target(s: &str) -> Option<(String, Vec<u64>)> {
+    let (name, version) = s.split_once(">=")?;
+    let name = name.trim().to_ascii_lowercase();
+    let version: Vec<u64> = version.trim().split('.').map(|p| p.parse().ok()).collect::<Option<_>>()?;
+    (TARGET_BROWSERS.contains(&name.as_str()) && !version.is_empty()).then_some((name, version))
 }
 
 /// The `scope` table in the order the file wrote it: a later scope wins

@@ -210,7 +210,30 @@ pub struct RuleConfig {
     pub on_edit: Option<bool>,
 }
 
+/// `targets.python` is `"<major>.<minor>"`; each `targets.browsers` entry is
+/// `<browser> >= <version>` with a browser of the closed set (SR-CONFIG
+/// decision 11f).
+fn validate_targets(file: &Path, what: &str, t: &crate::raw::RawTargets) -> Result<(), ConfigError> {
+    if let Some(p) = &t.python
+        && crate::raw::parse_python_target(p).is_none()
+    {
+        return Err(ConfigError::new(Some(file.to_owned()), format!("{what}: `python = \"{p}\"` is not a version; write it as `\"3.10\"` (SR-CONFIG decision 11f)")));
+    }
+    for b in t.browsers.iter().flatten() {
+        if crate::raw::parse_browser_target(b).is_none() {
+            return Err(ConfigError::new(
+                Some(file.to_owned()),
+                format!("{what}: `\"{b}\"` is not `<browser> >= <version>` with a browser of {} (SR-CONFIG decision 11f)", crate::raw::TARGET_BROWSERS.join(", ")),
+            ));
+        }
+    }
+    Ok(())
+}
+
 fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(), ConfigError> {
+    if let Some(t) = setting.targets() {
+        validate_targets(file, &format!("rule `{id}`'s `targets`"), t)?;
+    }
     if let RuleSetting::Flag(_) = setting {
         let what = if id == "require_reason" { "`require_reason` is set in the top-level `[rules]` only".to_owned() } else { format!("rule `{id}`: a setting is a severity or a table, not true or false") };
         return Err(ConfigError::new(Some(file.to_owned()), what));
@@ -366,8 +389,14 @@ impl ConfigFile {
         for (id, s) in &raw.rules {
             validate_severity(&path, id, s)?;
         }
+        if let Some(t) = &raw.targets {
+            validate_targets(&path, "`[targets]`", t)?;
+        }
         for (name, sc) in &raw.scope.0 {
             validate_scope(&path, &format!("scope `{name}`"), &sc.rules, sc.remap.as_ref())?;
+            if let Some(t) = &sc.targets {
+                validate_targets(&path, &format!("scope `{name}`'s `targets`"), t)?;
+            }
         }
         for (i, o) in raw.overrides.iter().enumerate() {
             validate_scope(&path, &format!("override #{}", i + 1), &o.rules, o.remap.as_ref())?;
@@ -390,6 +419,9 @@ impl ConfigFile {
             }
             for (sname, sc) in &p.scope.0 {
                 validate_scope(&path, &format!("profile `{name}` scope `{sname}`"), &sc.rules, sc.remap.as_ref())?;
+                if let Some(t) = &sc.targets {
+                    validate_targets(&path, &format!("profile `{name}` scope `{sname}`'s `targets`"), t)?;
+                }
             }
             for (i, o) in p.overrides.iter().enumerate() {
                 validate_scope(&path, &format!("profile `{name}` override #{}", i + 1), &o.rules, o.remap.as_ref())?;
