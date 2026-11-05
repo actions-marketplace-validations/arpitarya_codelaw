@@ -5,9 +5,9 @@ description: "Arpit, 2026-10-27 (W-36 gap G3): codelaw installed into other peop
 item: W-97
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated: 2026-11-05
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-97 — codelaw in other people's pipelines: the Action and pre-commit
@@ -20,7 +20,9 @@ ball: arpit
 | 2 | Only ratified actions inside (D-30); pinned by SHA (W-18) | L11 | ✅ 2026-10-27 — it uses **no** action; the SARIF upload is the REST API via `gh` (ruled 2026-10-27: keep `gh`) |
 | 3 | `init --ci github` writes a workflow that uses it; docs in USAGE | adoption | ✅ 2026-10-27 |
 | W-64 | `codelaw-pre-commit`: the pre-commit framework installs codelaw by version — merged in; its steps under [§ W-64](#merged-in-w-64) | one item, not two | ⏳ — see § |
-| 🔴 | **Arpit:** allow Claude Code to run `gh repo create --public` (or create the repos yourself and name them): `arpitarya/codelaw-action-test` for the Action's proof, `arpitarya/codelaw-pre-commit` for the mirror (was W-64) | both halves can move | 🔴 Arpit |
+| ✅ 2026-11-05 | **Arpit:** allow Claude Code to run `gh repo create --public` (or create the repos yourself and name them): `arpitarya/codelaw-action-test` for the Action's proof, `arpitarya/codelaw-pre-commit` for the mirror (was W-64) | both halves can move | 🔴 Arpit |
+
+**Repos created, 2026-11-05 (Cowork, built-in browser, signed in as `arpitarya`):** `arpitarya/codelaw-action-test` and `arpitarya/codelaw-pre-commit` — public, empty (no README, licence or description). **Arpit, 2026-11-05 (docket):** chose *"A · You create them now (Recommended)"*; the write-back *"Yes, write it (Recommended)"*, then *"file it."* **Next (agent):** the Action's proof in `codelaw-action-test` (Left, step 2), then the mirror's contents in `codelaw-pre-commit` (§ W-64).
 
 **Merged 2026-10-30 (Arpit, text):** *"There are too many work items. See if we can review all the work items and merge them into few of them."* → *"go ahead, merge them."* Merged in: W-64.
 

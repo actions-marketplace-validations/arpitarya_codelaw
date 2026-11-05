@@ -5,9 +5,9 @@ description: "Arpit, 2026-10-30: one file for every rule's exceptions — .codel
 item: W-158
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
-updated: 2026-10-31
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated: 2026-11-05
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-158 — `.codelawignore` holds the exceptions for every rule, not just test coverage
@@ -18,7 +18,10 @@ ball: arpit
 |---|---|---|---|
 | 1 | Let each `.codelawignore` line name the rules it exempts | one file lists every exception in the repo | ✅ 2026-10-31 |
 | 2 | Keep today's checks for every line: a reason, `expires=` or `forever`, `on_touch`, stale and incomplete lines flagged | no silent, endless exception | ✅ 2026-10-31 |
-| 3 | The decider rules on reasons for `"off"` and scope exceptions in `codelaw.toml` | the config's exceptions held to the same bar | 🔴 decider decides |
+| 3 | The decider rules on reasons for `"off"` and scope exceptions in `codelaw.toml` | the config's exceptions held to the same bar | ✅ ruled 2026-11-05 — A (below) |
+| 4 | Build the ruling: `reason` on a rule entry set to `"off"` (in `[rules]` or a scope), `[rules] require_reason` (default `false`); SR-CONFIG decision 11c | an `"off"` that says why | ⏳ agent |
+
+**Ruled 2026-11-05 — option A. Arpit (voice):** *"Go with the recommendation."*; then (text) *"file it."* A rule entry that sets `severity = "off"` — in `[rules]` or in a `[scope.<name>]` — may carry `reason = "<text>"` (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`); `[rules] require_reason` (default `false`, so no config breaks) makes it mandatory. Recorded as [SR-CONFIG](../../records/0110_config.md) decision 11c. **Next (agent):** build it — the schema, the loader, the finding when `require_reason` is on, `config --print` showing the reason.
 
 **Arpit, 2026-10-30 (voice):** *"There could be one file where we can list all of these down."* After hearing the 10-26 design: *"Perfect, then we are good."*
 
