@@ -23,7 +23,7 @@ here. Read that record before changing anything below it.
 | what the decider decides | filed |
 |---|---|
 | 🔴 **Push `main` to GitHub?** Local `main` is 181 commits ahead of `origin/main`. W-126's three measurement runs of the new `perf` matrix need it on GitHub, and so does every landed change's CI. Asked 2026-11-05 in Claude Code: *"Not yet"*. **Push** (`git push origin main`; CI runs on everything since the last push) **or hold**. | 2026-11-05 |
-| ↳ **blocks:** W-126 | |
+| ↳ **blocks:** W-126, W-105 | |
 
 ---
 
@@ -31,7 +31,7 @@ here. Read that record before changing anything below it.
 
 ### build (8)
 
-🟢 **W-105** `agent` Type-aware TypeScript: nine rules, the version watch; helper batched 11-05 (~2–3× faster). Dispatch proof and `check_types_*` re-measure wait on `main` pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🔴 **W-105** `arpit` Type-aware TypeScript: nine rules, the version watch; helper batched 11-05 (~2–3× faster). Dispatch proof and `check_types_*` re-measure wait on `main` pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-05: manual ceiling removed, the 231 held ports landed. Next: step 3 — corpus counts, L8 budgets. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
