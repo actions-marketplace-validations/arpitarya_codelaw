@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the update has to be rewritten as a `setState` call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a plain `this.state.k = e` becomes `this.setState({ k: e })`, which is batched; the reviewer confirms nothing reads the value on the next line; updater-form and nested writes carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-direct-mutation-state` |
@@ -131,9 +131,9 @@ codelaw config --print --for <file>                  # the resolved setting, and
 #### Don't
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -141,9 +141,9 @@ class Counter extends React.Component {
 #### Do
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -153,9 +153,9 @@ class Counter extends React.Component {
 #### Don't
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -163,9 +163,9 @@ class Counter extends React.Component {
 #### Do
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -175,9 +175,9 @@ class Counter extends React.Component {
 #### Don't
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -185,9 +185,9 @@ class Counter extends React.Component {
 #### Do
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```

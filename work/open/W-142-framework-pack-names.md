@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-05
+updated_by: "Claude Code (Opus 5.5), W-145"
 ball: arpit
 ---
 
@@ -26,6 +26,8 @@ ball: arpit
 
 **Model:** Cowork with Claude in Chrome; Arpit submits.
 
+**Arpit, 2026-11-05 (voice docket):** *"Go with the recommendation."* — nothing now; the pending publishers, the four npm first publishes and their trusted publishers are done just before the release that carries the packs, once W-139 is ready.
+
 ## The names (all free on PyPI, checked 2026-10-30 08:30)
 
 | pack | PyPI | its Fux index (L6 decision 12) |
@@ -37,6 +39,22 @@ ball: arpit
 | pandas | `codelaw-rules-pandas` | `codelaw-rules-pandas-fux-index` |
 
 Form values for each: owner `arpitarya` · repository `codelaw` · workflow `publish.yml` · environment `pypi`.
+
+**Added 2026-11-05 by W-145 (closed):** the `tailwind` pack and its provider need their names too, before the release that carries them —
+
+| package | registry | its Fux index |
+|---|---|---|
+| `codelaw-rules-tailwind` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | `codelaw-rules-tailwind-fux-index` |
+| `@codelaw/rules-tailwind` | npm (first publish by hand, as `nextjs`'s in § W-147) | `@codelaw/rules-tailwind-fux-index` |
+| `@codelaw/provider-tailwind` | npm (first publish by hand; `publish.yml` uploads it in the binaries' tier, before the packs) | — (holds no rules) |
+
+**Added 2026-11-05 by W-166:** the browser-support data package (L6 decision 15) needs its names before the release that first carries it —
+
+| package | registry | its Fux index |
+|---|---|---|
+| `codelaw-data-browsers` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
+| `@codelaw/data-browsers` | npm (first publish by hand) | — (holds no rules) |
+
 
 **PyPI only:** L6 ships `python` and `security-python` on PyPI alone (*"each registry carries only the packs its users install"*); these five follow them. Said by voice as also on npm (`@codelaw/rules-django` …) — not filed; say so if npm is wanted, and L6's table changes with it.
 

@@ -4,6 +4,7 @@ title: "No deprecated Node.js APIs"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "each deprecated API has its own replacement"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-n/no-deprecated-api]
 since: 0.1.0

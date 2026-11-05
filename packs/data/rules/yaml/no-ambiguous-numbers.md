@@ -4,6 +4,7 @@ title: "No numbers that YAML 1.1 and 1.2 read differently"
 languages: [yaml]
 fix: manual
 fix_reason: "whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 since: 0.1.0
 ---

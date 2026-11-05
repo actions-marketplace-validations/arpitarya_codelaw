@@ -4,8 +4,9 @@ title: "`from __future__` imports come first"
 languages: [python]
 fix: manual
 fix_reason: "moving statements above it can change the order the module runs in"
+fix_pending: "auto"
 stability: preview
-ported_from: [ruff/F404]
+ported_from: [ruff/F404, pylint/misplaced-future]
 since: 0.1.0
 ---
 

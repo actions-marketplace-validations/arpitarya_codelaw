@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
-| **Ported from** | `stylelint-scss/at-import-no-partial-leading-underscore` |
+| **Ported from** | `stylelint-scss/at-import-no-partial-leading-underscore`, `stylelint-scss/load-no-partial-leading-underscore` |
 
 ## What it checks
 

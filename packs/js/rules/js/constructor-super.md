@@ -4,6 +4,7 @@ title: "A derived class's constructor calls super(); a base class's does not"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "what `super()` must receive depends on the base class"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/constructor-super]
 since: 0.1.0

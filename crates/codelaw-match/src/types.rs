@@ -138,7 +138,7 @@ mod tests {
     fn a_match_holds_only_when_every_answer_is_known_and_true() {
         let clauses = parse_types(&json!({ "$X": { "not": "thenable" } })).unwrap();
         let x = crate::Captured { start: 6, end: 7, text: "x".into(), kind: "identifier".into() };
-        let m = Match { start: 0, end: 7, kind: "await_expression".into(), single: BTreeMap::from([("X".to_owned(), x)]), multi: BTreeMap::new() };
+        let m = Match { start: 0, end: 7, kind: "await_expression".into(), single: BTreeMap::from([("X".to_owned(), x)]), multi: BTreeMap::new(), auto: true };
         assert_eq!(questions_of(&clauses, &m), vec![(6, 7, "thenable")]);
         assert!(types_hold(&clauses, &m, &|_, _, _| Some(false)));
         assert!(!types_hold(&clauses, &m, &|_, _, _| Some(true)));

@@ -4,8 +4,9 @@ title: "Named `%` placeholders get a mapping"
 languages: [python]
 fix: manual
 fix_reason: "the key each value belongs to isn't written anywhere"
+fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/F502]
+ported_from: [ruff/F502, pylint/format-needs-mapping]
 since: 0.1.0
 ---
 

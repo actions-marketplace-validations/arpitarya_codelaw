@@ -107,9 +107,12 @@ fn merge_setting(base: &RuleSetting, over: &RuleSetting) -> RuleSetting {
     if let Some(o) = over.options() {
         options.extend(o.iter().map(|(k, v)| (k.clone(), v.clone())));
     }
+    let fix = over.fix().or(base.fix()).map(str::to_owned);
+    // A reason belongs to the entry that turned the rule off.
+    let reason = if over.severity().is_some() { over.reason() } else { over.reason().or(base.reason()) }.map(str::to_owned);
     match severity {
-        Some(s) if options.is_empty() => RuleSetting::Severity(s),
-        severity => RuleSetting::Full { severity, options },
+        Some(s) if options.is_empty() && fix.is_none() && reason.is_none() => RuleSetting::Severity(s),
+        severity => RuleSetting::Full { severity, options, fix, reason },
     }
 }
 

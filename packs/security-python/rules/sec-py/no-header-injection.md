@@ -2,8 +2,8 @@
 id: sec-py/no-header-injection
 title: 'A request value is not a response header'
 languages: [python]
-fix: manual
-fix_reason: "whether to reject, strip or encode the value depends on what the header is for"
+fix: suggest
+fix_reason: "stripping the line breaks is one of two safe forms; the reviewer picks between them, or rejects the value or encodes it, and confirms the value is meant to be one header line"
 stability: preview
 security: { cwe: [113], owasp: ["A05:2025"], severity: medium }
 since: 0.2.0
@@ -24,6 +24,15 @@ match:
 constraints: { R: { regex: '^(resp|response|res|r|rv|rsp|self\.response|make_response\(.*\))$' } }
 where: { $V: { from_source: { tables: [sources/django, sources/flask, sources/fastapi] } } }
 message: '`$V` comes from the request and is written into a header'
+fix:
+  choices:
+    - label: strip line breaks
+      default: true
+      fix:
+        - replace: { target: $V, with: 'str($V).replace("\r", "").replace("\n", "")' }
+    - label: join lines with a space
+      fix:
+        - replace: { target: $V, with: '" ".join(str($V).splitlines())' }
 ```
 
 ## How to fix
@@ -42,6 +51,24 @@ message: '`$V` comes from the request and is written into a header'
 def view(request):
     resp = make_response("ok")
     resp.headers["X-Name"] = request.args["name"]
+    return resp
+```
+
+#### Fixed (strip line breaks)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = str(request.args["name"]).replace("\r", "").replace("\n", "")
+    return resp
+```
+
+#### Fixed (join lines with a space)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = " ".join(str(request.args["name"]).splitlines())
     return resp
 ```
 

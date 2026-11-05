@@ -4,6 +4,7 @@ title: "Docstrings aren't f-strings"
 languages: [python]
 fix: manual
 fix_reason: "the docstring's wording has to change to drop the placeholder"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B021]
 since: 0.1.0

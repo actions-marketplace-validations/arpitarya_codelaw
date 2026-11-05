@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 scope: project
 fix: manual
 fix_reason: "which dependency field and version to add is the package owner's choice"
+fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
 ported_from: [eslint-plugin-n/no-extraneous-import]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "`$variables` are kebab-case"
 languages: [scss]
 fix: manual
 fix_reason: "renaming must update every use of the variable"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 options:
   pattern: { type: "string", default: "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", description: "a regular expression the name, without its `$`, must match" }

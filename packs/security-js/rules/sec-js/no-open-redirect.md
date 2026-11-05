@@ -2,8 +2,8 @@
 id: sec-js/no-open-redirect
 title: "No redirect to an address taken from a request"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which targets are allowed is a decision for the author"
+fix: suggest
+fix_reason: "the target is cut down to a same-origin path with a fallback to `/`, and the reviewer confirms no cross-origin target was meant"
 stability: preview
 security: { cwe: [601], owasp: ["A01:2025"], severity: medium }
 since: 0.3.0
@@ -35,6 +35,8 @@ match:
 where:
   $U: { from_source: { tables: [sources/express, sources/koa, sources/nextjs] } }
 message: "`$U` comes from the request and chooses where the visitor is sent"
+fix:
+  - replace: {target: $U, with: '(u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String($U), "http://x.invalid"))'}
 ```
 
 ## How to fix
@@ -53,6 +55,12 @@ message: "`$U` comes from the request and chooses where the visitor is sent"
 res.redirect(req.query.next);
 ```
 
+#### Fixed
+
+```js
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 #### Do
 
 ```js
@@ -66,6 +74,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```jsx
 res.redirect(req.query.next);
+```
+
+#### Fixed
+
+```jsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 #### Do
@@ -83,6 +97,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 res.redirect(req.query.next);
 ```
 
+#### Fixed
+
+```ts
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
+```
+
 #### Do
 
 ```ts
@@ -96,6 +116,12 @@ res.redirect(next.origin === "https://app.example.com" ? next.pathname : "/");
 
 ```tsx
 res.redirect(req.query.next);
+```
+
+#### Fixed
+
+```tsx
+res.redirect((u => u.origin === "http://x.invalid" ? u.pathname + u.search : "/")(new URL(String(req.query.next), "http://x.invalid")));
 ```
 
 #### Do

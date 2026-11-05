@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the key each value belongs to isn't written anywhere) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F502` |
+| **Ported from** | `ruff/F502`, `pylint/format-needs-mapping` |
 
 ## What it checks
 

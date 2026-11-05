@@ -1,4 +1,5 @@
 src/a.js:1 biome/noVar js/no-var
 src/a.js:2 biome/noSparseArray js/no-sparse-arrays
 src/a.js:3 biome/noConsole js/no-console
+src/a.js:4 biome/noDoubleEquals js/eqeqeq
 src/a.js:5 biome/noDebugger js/no-debugger

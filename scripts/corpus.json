@@ -55,7 +55,7 @@
       "commit": "b1125d8839482cb7bbae603ddc6d0081bf87532e",
       "licence": "MIT",
       "licence_file": "LICENSE",
-      "packs": ["js", "python", "data", "ts", "react", "node", "tanstack-query", "security-python", "security-js", "security-ts", "spell", "deps"]
+      "packs": ["js", "python", "data", "ts", "react", "node", "tanstack-query", "security-python", "security-js", "security-ts", "spell", "deps", "fastapi"]
     },
     {
       "name": "html5-boilerplate",
@@ -87,7 +87,7 @@
       "commit": "c78c1306b3135809a109b207ac40a5916ef9f1c0",
       "licence": "BSD-3-Clause",
       "licence_file": "LICENSE",
-      "packs": ["python", "html", "css", "security-python", "security-html", "scss", "spell"]
+      "packs": ["python", "html", "css", "security-python", "security-html", "scss", "spell", "django"]
     },
     {
       "name": "ionic-framework",

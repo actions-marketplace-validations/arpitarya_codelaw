@@ -1,0 +1,24 @@
+#!/bin/sh
+# codelaw-hook: commit-msg
+# Installed by `codelaw init --git-hooks commit-msg` (SR-CLI-MCP decision 7).
+# It checks the message against `[commits]` in codelaw.toml — Conventional
+# Commits unless that says otherwise — and refuses the commit on an error;
+# the message is never rewritten. Delete this file to uninstall; a hook that
+# was here before is kept beside it as `commit-msg.pre-codelaw` and runs
+# first. Skip once with `git commit --no-verify`.
+#
+# Extra flags, e.g. CODELAW_HOOK_ARGS="--profile ci".
+
+here=$(dirname "$0")
+if [ -f "$here/commit-msg.pre-codelaw" ]; then
+  "$here/commit-msg.pre-codelaw" "$@" || exit $?
+fi
+
+if ! command -v codelaw >/dev/null 2>&1; then
+  echo "codelaw: not on PATH, so the commit-msg check was skipped" >&2
+  exit 0
+fi
+
+# shellcheck disable=SC2086
+codelaw check --commit-msg "$1" $CODELAW_HOOK_ARGS
+exit $?

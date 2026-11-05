@@ -26,9 +26,21 @@ codelaw deps refresh              # the one command that reads the network
 
 | preset | rules | what it holds |
 |---|---|---|
-| `deps/recommended` | 4 | Vulnerable and outdated dependencies of package.json and pyproject.toml, from the committed snapshot `codelaw deps refresh` writes |
+| `deps/recommended` | 8 | Vulnerable and outdated dependencies of package.json and pyproject.toml, from the committed snapshot `codelaw deps refresh` writes |
 
 <!-- /docs-sync:presets -->
+
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 0 | 4 | 4 | 3 | 0 | 0 | 1 | 0 |
+
+<!-- /rule-docs:fix-ladder -->
 
 ## Rules
 
@@ -40,6 +52,10 @@ codelaw deps refresh              # the one command that reads the network
 | `deps/incomplete-scan` | manual | an enabled advisory source the last refresh could not read |
 | `deps/outdated` | suggest | a dependency behind its latest version, or a deprecated or yanked one (was `data/outdated-dependency`) |
 | `deps/stale-snapshot` | manual | a snapshot older than `[deps] max_snapshot_age`, or one that cannot be read (was `data/stale-deps-snapshot`) |
+| `deps/licence` | manual | a dependency, direct or transitive, whose licence `[deps.licence]` denies or does not know (SPDX expressions; copyleft denied by default) |
+| `deps/lockfile-sync` | manual | a manifest its lockfile no longer matches (package-lock, pnpm, yarn, uv, Poetry's content-hash), with the lock command to run |
+| `deps/version-drift` | suggest | one dependency declared with different ranges across a monorepo's workspaces (npm, pnpm, yarn, uv) |
+| `deps/runtime-agreement` | suggest (manual in `.nvmrc`, `Dockerfile` and the other text files) | a Node or Python version pin outside `engines.node` / `requires-python`, or not agreeing with the others |
 
 
 

@@ -59,3 +59,17 @@ location.href = document.referrer;
 ```expect
 1:1 sec-js/no-javascript-url
 ```
+
+### case: fix: navigation cut to a same-origin path
+
+```js
+location.replace(location.hash);
+```
+
+```expect
+1:1 sec-js/no-javascript-url
+```
+
+```fixed
+location.replace(new URL(location.hash, location.origin).pathname);
+```

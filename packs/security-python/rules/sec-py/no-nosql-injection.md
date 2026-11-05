@@ -4,6 +4,7 @@ title: 'A request is not a MongoDB query'
 languages: [python]
 fix: manual
 fix_reason: "which fields the client may filter on, and their types, are the author's decision"
+fix_exception: value
 stability: preview
 security: { cwe: [943], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

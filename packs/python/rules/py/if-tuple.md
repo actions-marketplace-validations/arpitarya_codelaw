@@ -4,6 +4,7 @@ title: "`if` doesn't test a tuple"
 languages: [python]
 fix: manual
 fix_reason: "the intended condition can't be inferred from the tuple"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F634]
 since: 0.1.0

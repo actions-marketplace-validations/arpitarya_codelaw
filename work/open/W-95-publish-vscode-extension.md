@@ -1,13 +1,13 @@
 ---
 type: Handoff
 name: W-95
-description: "Arpit, 2026-10-27 (W-36 gap G2): the VS Code extension on the Visual Studio Marketplace (done) and Open VSX (was W-117: uploaded, inactive until the namespace claim is approved). Merged 2026-10-30."
+description: "Arpit, 2026-10-27 (W-36 gap G2): the VS Code extension on the Visual Studio Marketplace (done) and Open VSX (was W-117: live and verified, trusted publisher registered 2026-11-05; publish.yml's Open VSX step moved to trusted publishing 2026-11-05, proven by the next release; left: a VSCodium check). Merged 2026-10-30."
 item: W-95
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
+updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+ball: agent
 ---
 
 # W-95 — The editor extension on both stores
@@ -141,6 +141,22 @@ SR-EDITOR · SR-PACKAGES (a new published artifact) · RELEASING.md.
 - Marketplace tokens are long-lived secrets; scope them to the `vscode` environment with a `v*` tag rule, as `npm`/`pypi` are.
 - Zed and JetBrains are later items, not this one.
 
+## Open VSX approved; trusted publisher registered — 2026-11-05 (Cowork, built-in browser)
+
+- **Claim granted:** [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) closed with the label `granted`. `GET open-vsx.org/api/codelaw/codelaw-vscode` answers `version 0.4.0`, `verified: true`, 550 downloads; the page no longer says *"Namespace not verified"*.
+- **Found:** a trusted publisher already existed — `arpitarya/codelaw` · workflow `publish.yml`, **no environment**, created about 2026-10-31 (not recorded here). With no environment, any job in `publish.yml` could publish.
+- **Arpit, 2026-11-05:** *"for w-95 you have the access to browser add it as trusted publisher"*; asked whether to replace the entry with one naming the environment: *"Re-add with vscode (Recommended)"*.
+- **Done:** the old entry deleted and **`codelaw-vscode` → GitHub · `arpitarya` / `codelaw` · `publish.yml` · environment `vscode`** registered (Settings → Trusted Publishers, "Created: now"). Arpit signed in himself.
+- **Left (agent):** `publish.yml`'s Open VSX step still reads `OVSX_PAT` and skips without it — move it to trusted publishing (`ovsx publish --trusted-publishing`, ratified for this extension only: L2 decision 8, D-47), in the `vscode` environment with `id-token: write`; the next release proves it. Then the DoD's VSCodium install. Open: whether the 10-30 hand-upload token was revoked (Arpit, *Settings → Access Tokens*).
+
+## Built 2026-11-05 (Claude Code) — Open VSX by trusted publishing
+
+- **`publish.yml`'s Open VSX step** no longer reads `OVSX_PAT`: it asks GitHub for the job's OIDC token with audience **`https://open-vsx.org`** (what `GET open-vsx.org/api/version` reports as `trustedPublishingAudience`), `POST`s `{"namespace":"codelaw","extension":"codelaw-vscode","token":<id token>}` to **`/api/-/trusted-publishing/token`**, and uploads each `.vsix` to `/api/-/publish` with `Authorization: Bearer <value>` from the answer. A failed exchange is a ✗ line in the job summary; "already published" is skipped, as before. Still `curl`, no `ovsx` — the exchange is read from Open VSX's own source (`server/…/TrustedPublishingAPI.java`, `TrustedPublisherTokenRequestJson`, `AccessTokenJson.value`; `cli/src/trusted-publishing.ts`), since the wiki leaves the body undocumented. The job already had `id-token: write` and environment `vscode` (the Marketplace step uses them).
+- **Verified:** `actionlint` (no new finding; its three `SC2016` infos are on `main` already), the step's shell parses; the live endpoint answers a bogus token with HTTP 400 *"Failed to pre-parse token."* and an empty body with *"The fields namespace, extension and token are mandatory."* — the shape the step expects. **Not run:** nothing was published; the next release proves it.
+- **RELEASING.md** says Open VSX is trusted publishing too and that the decider's one-time steps are done.
+- **Found — Open VSX holds 0.4.0 for some platforms only:** `GET /api/codelaw/codelaw-vscode/darwin-arm64` answers **0.3.0**, and `/darwin-arm64/0.4.0` *"Extension not found"*; `alpine-arm64` has 0.4.0 and 0.3.0. The hand upload of 2026-10-30 recorded all eight at both versions; a Mac VSCodium today gets 0.3.0. The next release's CI upload lists every platform at its version, which settles it.
+- **VSCodium check — not done:** VSCodium is not installed here, and fetching its zip (`VSCodium-darwin-arm64-1.143.17232.zip`, GitHub releases) into a scratch folder stalled twice at 2.3 MB (the network was crawling: Open VSX API calls took minutes too). **Left, exactly:** after the next release, `codium --user-data-dir <tmp> --extensions-dir <tmp> --install-extension codelaw.codelaw-vscode` (VSCodium's default gallery is Open VSX) → expect the release version for `darwin-arm64`; its `bin/codelaw --version` and a run on the GitHub Action fixture, as the 10-30 VS Code check did; then diagnostics and fix-on-save at the window (a person).
+
 ## Merged in: W-117
 
 <a id="merged-in-w-117"></a>
@@ -154,8 +170,8 @@ SR-EDITOR · SR-PACKAGES (a new published artifact) · RELEASING.md.
 | 1 | GitHub environment `vscode`, tag rule `v*` (as `npm`, `pypi`) | a place for the token that only release tags reach | ✅ 2026-10-29 — the environment `vscode` exists |
 | 2 | open-vsx.org → log in with GitHub → link an Eclipse account → sign the Publisher Agreement | the right to publish | ✅ 2026-10-29 — logged in; agreement signed |
 | 3 | An access token `codelaw-publish` → `gh secret set OVSX_PAT --env vscode -R arpitarya/codelaw` | CI can upload | ~~🔴~~ dropped — ruled 2026-10-30: trusted publishing, no token (below) |
-| 4 | Create the namespace `codelaw`; claim its ownership (a public GitHub issue) — required for trusted publishing | `codelaw.codelaw` on Open VSX | 🔄 created 2026-10-29; ⏳ claim [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) still **open**, no reply from Open VSX (checked 2026-10-30 10:30 IST) |
-| 5 | Agent: `publish.yml`'s Open VSX upload with `curl` (W-95's drafted job, its Open VSX half) | every release lands there | ⏳ after the claim is approved and Arpit adds the trusted publisher |
+| 4 | Create the namespace `codelaw`; claim its ownership (a public GitHub issue) — required for trusted publishing | `codelaw.codelaw` on Open VSX | ✅ claim [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) **closed, label `granted`**; the listing is `verified: true` (checked 2026-11-05 10:30 IST) |
+| 5 | Agent: `publish.yml`'s Open VSX upload with `curl` (W-95's drafted job, its Open VSX half) | every release lands there | 🟢 agent — the trusted publisher is registered (2026-11-05, below) |
 
 **Arpit, 2026-10-29 (voice docket):** on W-95, Open VSX now and the Marketplace by hand on release day: *"Yes."* Asked what Open VSX is (the Eclipse Foundation's store, used by Cursor, VSCodium, Windsurf and Gitpod) — then *"You have the access to the browser. We will go ahead and implement Open VSX You can go ahead and create the ID and everything."* and, the browser being out of reach of the voice call, *"That's okay. Let's put it as a work item and we'll work on it."*
 

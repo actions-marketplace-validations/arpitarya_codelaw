@@ -4,6 +4,7 @@ title: "`@extend` targets a placeholder"
 languages: [scss]
 fix: manual
 fix_reason: "turning a class into a placeholder changes the stylesheet's output"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 ported_from: [stylelint-scss/at-extend-no-missing-placeholder]
 since: 0.3.0

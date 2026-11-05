@@ -73,7 +73,36 @@ function replaceBase(next) {
     if (next !== base) {
         base.dispose();
         base = next;
+        owners = undefined;
     }
+}
+
+/**
+ * Each file of the base snapshot's programs and the one project that holds
+ * it (`null` when several do), built once per snapshot: asking TypeScript
+ * for a file's default project costs a round trip per file, a fifth of a
+ * cold run in W-105's profiling.
+ */
+let owners;
+
+function slash(path) {
+    return path.replaceAll("\\", "/");
+}
+
+/** The one loaded project that holds `file` under its `tsconfig.json`'s folder, else `undefined`. */
+function soleOwner(file) {
+    if (!owners) {
+        owners = new Map();
+        for (const p of base.getProjects()) {
+            if (!p.configFileName) continue;
+            for (const f of p.program.getSourceFileNames()) owners.set(f, owners.has(f) ? null : p);
+        }
+    }
+    const key = slash(file);
+    const p = owners.get(key);
+    if (!p) return undefined;
+    const dir = slash(p.configFileName).replace(/[^/]*$/, "");
+    return key.startsWith(dir) ? p : undefined;
 }
 
 /** Each file of a loaded program and its modification time, for `refresh`. */
@@ -98,7 +127,7 @@ function stampProject(project) {
 
 /** The project that holds `file` in the base snapshot, opening it there. */
 function projectFor(file) {
-    let project = base.getDefaultProjectForFile(file);
+    let project = soleOwner(file) ?? base.getDefaultProjectForFile(file);
     if (!project) {
         replaceBase(base.update({ openFiles: [file], ensurePrograms: true }));
         project = base.getDefaultProjectForFile(file);
@@ -171,54 +200,122 @@ function nodeAt(sf, start, end) {
     return exact ?? around;
 }
 
-function parts(type) {
-    return type.isUnionType() ? type.getTypes() ?? [type] : [type];
+// Every type question is a generator over the API's `.gen` calls, so one
+// file's questions run together through `api.batch`: each round of calls
+// is one message to TypeScript, not one per call (W-105's profiling: one
+// call per question was nine tenths of a cold run).
+
+function* parts(type) {
+    return type.isUnionType() ? ((yield* type.getTypes.gen()) ?? [type]) : [type];
 }
 
-function callable(checker, type) {
-    return parts(type).some((p) => p.getCallSignatures().length > 0);
+function* callable(type) {
+    for (const p of yield* parts(type)) if ((yield* p.getCallSignatures.gen()).length > 0) return true;
+    return false;
 }
 
 /** A part whose `then` is callable, and, for `promise-like`, takes a callback first (the shape of `Promise`). */
-function thenable(checker, type, promiseShape) {
-    for (const part of parts(checker.getApparentType(type))) {
-        const then = part.getProperty("then");
+function* thenable(checker, type, promiseShape) {
+    for (const part of yield* parts(yield* checker.getApparentType.gen(type))) {
+        const then = yield* part.getProperty.gen("then");
         if (!then) continue;
-        for (const sig of parts(checker.getTypeOfSymbol(then)).flatMap((t) => t.getCallSignatures())) {
-            if (!promiseShape) return true;
-            const first = sig.getParameters()[0];
-            if (first && callable(checker, checker.getNonNullableType(checker.getTypeOfSymbol(first)))) return true;
+        for (const t of yield* parts(yield* checker.getTypeOfSymbol.gen(then))) {
+            for (const sig of yield* t.getCallSignatures.gen()) {
+                if (!promiseShape) return true;
+                const first = (yield* sig.getParameters.gen())[0];
+                if (first && (yield* callable(yield* checker.getNonNullableType.gen(yield* checker.getTypeOfSymbol.gen(first))))) return true;
+            }
         }
     }
     return false;
 }
 
+/** The type a node is expected to have where it stands (an argument's parameter, an annotated target), or `undefined`. */
+function* expected(checker, node) {
+    try {
+        return yield* checker.getContextualType.gen(node);
+    } catch {
+        // Not an expression: nothing is expected of it.
+        return undefined;
+    }
+}
+
+/** A unit type's identity: the regular type of a fresh literal, else its own. */
+function unitKey(t) {
+    return t.regularType || t.id;
+}
+
+/** `switch` (decision 4, `non-exhaustive`): no `default`, a discriminant made only of unit types, and one of them in no `case`. */
+function* nonExhaustive(checker, node) {
+    let sw = node;
+    while (sw && sw.kind !== SyntaxKind.SwitchStatement) sw = sw.parent;
+    if (!sw || !sw.caseBlock) return false;
+    const clauses = sw.caseBlock.clauses;
+    if (clauses.some((c) => c.kind === SyntaxKind.DefaultClause)) return false;
+    const members = yield* parts(yield* checker.getTypeAtLocation.gen(sw.expression));
+    if (!members.length || !members.every((m) => (m.flags & ts.TypeFlags.Unit) !== 0)) return false;
+    const covered = new Set();
+    for (const c of clauses) for (const t of yield* parts(yield* checker.getTypeAtLocation.gen(c.expression))) covered.add(unitKey(t));
+    return members.some((m) => !covered.has(unitKey(m)));
+}
+
+/** `promise-to-void`: a function returning a thenable where every expected call signature returns `void`. */
+function* promiseToVoid(checker, node, type) {
+    let returnsThenable = false;
+    for (const p of yield* parts(type)) {
+        for (const s of yield* p.getCallSignatures.gen()) {
+            if (yield* thenable(checker, yield* s.getReturnType.gen(), false)) returnsThenable = true;
+            if (returnsThenable) break;
+        }
+        if (returnsThenable) break;
+    }
+    if (!returnsThenable) return false;
+    const want = yield* expected(checker, node);
+    if (!want) return false;
+    const sigs = [];
+    for (const p of yield* parts(want)) sigs.push(...(yield* p.getCallSignatures.gen()));
+    if (sigs.length === 0) return false;
+    for (const s of sigs) if (((yield* s.getReturnType.gen()).flags & ts.TypeFlags.Void) === 0) return false;
+    return true;
+}
+
 /** SR-TYPES decision 4's vocabulary. A question outside it is an error. */
-function holds(checker, node, q) {
+function* holds(checker, node, q) {
     const F = ts.TypeFlags;
     if (q === "deprecated") {
-        let sym = checker.getSymbolAtLocation(node);
-        if (sym && sym.flags & ts.SymbolFlags.Alias) sym = checker.getAliasedSymbol(sym);
-        return !!sym && sym.getJsDocTags(checker).some((t) => t.name === "deprecated");
+        let sym = yield* checker.getSymbolAtLocation.gen(node);
+        if (sym && sym.flags & ts.SymbolFlags.Alias) sym = yield* checker.getAliasedSymbol.gen(sym);
+        return !!sym && (yield* sym.getJsDocTags.gen(checker)).some((t) => t.name === "deprecated");
     }
-    const type = checker.getTypeAtLocation(node);
+    if (q === "non-exhaustive") return yield* nonExhaustive(checker, node);
+    if (q === "typed-target") {
+        const want = yield* expected(checker, node);
+        return !!want && !want.isErrorType() && (want.flags & (F.AnyOrUnknown | F.TypeParameter)) === 0;
+    }
+    if (!QUESTIONS.has(q)) throw new Error(`unknown type question \`${q}\``);
+    const type = yield* checker.getTypeAtLocation.gen(node);
     switch (q) {
         case "any":
             return (type.flags & F.Any) !== 0;
         case "never":
             return (type.flags & F.Never) !== 0;
+        case "unknown":
+            return (type.flags & F.Unknown) !== 0;
+        case "promise-to-void":
+            return yield* promiseToVoid(checker, node, type);
         case "nullable":
-            return parts(type).some((p) => (p.flags & (F.Null | F.Undefined | F.Void)) !== 0);
+            return (yield* parts(type)).some((p) => (p.flags & (F.Null | F.Undefined | F.Void)) !== 0);
         case "union":
             return type.isUnionType();
         case "thenable":
-            return thenable(checker, type, false);
+            return yield* thenable(checker, type, false);
         case "promise-like":
-            return thenable(checker, type, true);
-        default:
-            throw new Error(`unknown type question \`${q}\``);
+            return yield* thenable(checker, type, true);
     }
 }
+
+/** The questions `holds` answers from the node's own type. */
+const QUESTIONS = new Set(["any", "never", "unknown", "promise-to-void", "nullable", "union", "thenable", "promise-like"]);
 
 const CATEGORY = ["warning", "error", "suggestion", "message"];
 
@@ -246,18 +343,25 @@ function check(req) {
         if (!project || !sf) throw new Error("no TypeScript program holds this file");
         const checker = project.checker;
         const toUnits = byteToUtf16(sf.text);
-        const answers = (req.questions ?? []).map(({ start, end, q }) => {
+        const asks = (req.questions ?? []).map(function* ({ start, end, q }) {
             const s = toUnits.get(start);
             const e = toUnits.get(end);
             if (s === undefined || e === undefined) return null;
             const node = nodeAt(sf, s, e);
-            return node ? holds(checker, node, q) : null;
+            return node ? yield* holds(checker, node, q) : null;
         });
-        const out = { answers };
+        // One batch: the file's questions, and its diagnostics when asked,
+        // advance together, each round of their calls sent as one request.
+        const program = project.program;
+        const want = req.diagnostics ? [program.getSyntacticDiagnostics.gen(file), program.getSemanticDiagnostics.gen(file)] : [];
+        const all = asks.length || want.length ? api.batch(...asks, ...want) : [];
+        const out = { answers: all.slice(0, asks.length) };
         if (req.diagnostics) {
             const toBytes = utf16ToByte(sf.text);
             const flat = (d) => (d.messageChain && d.messageChain.length ? [d.text, ...d.messageChain.map(flat)].join(" ") : d.text);
-            out.diagnostics = [...project.program.getSyntacticDiagnostics(file), ...project.program.getSemanticDiagnostics(file)]
+            out.diagnostics = all
+                .slice(asks.length)
+                .flat()
                 .filter((d) => d.category === 0 || d.category === 1)
                 .map((d) => ({
                     start: toBytes[Math.min(d.pos, sf.text.length)],

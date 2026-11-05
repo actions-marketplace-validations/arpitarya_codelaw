@@ -5,7 +5,9 @@ languages: [javascript, jsx, typescript, tsx]
 severity: error
 fix: manual
 fix_reason: "why a test is off, and until when, is a fact only the author knows; the engine can't write it"
+fix_exception: authored
 stability: preview
+ported_from: [biome/suspicious/noSkippedTests, eslint-plugin-jest/no-disabled-tests, eslint-plugin-playwright/no-skipped-test, eslint-plugin-sonarjs/no-skipped-tests]
 since: 0.5.0
 ---
 

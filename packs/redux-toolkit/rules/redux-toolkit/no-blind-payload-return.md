@@ -4,6 +4,7 @@ title: "A reducer builds its state, not the action's payload"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the reducer has to name the fields it takes from the payload"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

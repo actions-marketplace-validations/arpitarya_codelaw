@@ -4,6 +4,7 @@ title: "No two sibling headings with the same text"
 languages: [markdown]
 fix: manual
 fix_reason: "which heading to rename, and to what, needs the author"
+fix_exception: value
 stability: preview
 options:
   siblings_only: { type: "boolean", default: true, description: "only compare headings under the same parent; `false` compares every heading in the document" }

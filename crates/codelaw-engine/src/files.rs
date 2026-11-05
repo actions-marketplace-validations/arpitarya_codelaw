@@ -56,6 +56,7 @@ pub(crate) struct ProjectFile<'a> {
     tree: Tree<'a>,
     as_of: Option<AsOfFn<'a>>,
     asked: Mutex<Vec<Asked>>,
+    providers: Option<&'a crate::providers::Providers>,
 }
 
 impl<'a> ProjectFile<'a> {
@@ -67,12 +68,18 @@ impl<'a> ProjectFile<'a> {
             bytes.extend_from_slice("\u{feff}".as_bytes());
         }
         bytes.extend_from_slice(text.as_bytes());
-        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()) }
+        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None }
     }
 
     /// Where the as-of date comes from.
     pub fn with_as_of(mut self, as_of: AsOfFn<'a>) -> Self {
         self.as_of = Some(as_of);
+        self
+    }
+
+    /// The providers' tables its rules may read.
+    pub fn with_providers(mut self, providers: &'a crate::providers::Providers) -> Self {
+        self.providers = Some(providers);
         self
     }
 
@@ -234,6 +241,9 @@ impl FileContext for ProjectFile<'_> {
         let a = self.as_of.and_then(|f| f());
         self.record(Question::AsOf, hash_text(&a));
         a
+    }
+    fn class_table(&self, short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
+        self.providers?.table(short).map(|t| t as std::sync::Arc<dyn codelaw_core::class_table::ClassTable>)
     }
 }
 

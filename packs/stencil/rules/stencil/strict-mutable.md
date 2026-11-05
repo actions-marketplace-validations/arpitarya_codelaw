@@ -4,6 +4,7 @@ title: "mutable: true only on props the component changes"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the component should change the prop needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stencil/strict-mutable]
 since: 0.1.0

@@ -4,7 +4,9 @@ title: "No `!important`"
 languages: [css, scss]
 fix: manual
 fix_reason: "the selector or layer that should win instead is a design call"
+fix_pending: "suggest"
 stability: preview
+ported_from: [stylelint/declaration-no-important]
 since: 0.1.0
 ---
 

@@ -44,7 +44,11 @@ impl Drop for Repo {
 /// A rule file with examples for each language given.
 fn rule(id: &str, languages: &[Language], fix: &str, block: &str, examples: &[(Language, &str, &str)]) -> String {
     let langs: Vec<&str> = languages.iter().map(|l| l.name()).collect();
-    let reason = if fix == "auto" { String::new() } else { "fix_reason: test\n".into() };
+    let reason = match fix {
+        "auto" => String::new(),
+        "manual" => "fix_reason: test\nfix_exception: value\n".into(),
+        _ => "fix_reason: test\n".into(),
+    };
     let mut s = format!(
         "---\nid: {id}\ntitle: test rule\nlanguages: [{}]\nfix: {fix}\n{reason}stability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n",
         langs.join(", ")
@@ -131,7 +135,7 @@ fn editorconfig_is_the_base_layer_under_format() {
 fn dry_run_writes_nothing() {
     let r = Repo::new("dry");
     r.file(".codelaw/rules/acme/eqeqeq.md", &eqeq()).file("a.js", "a == b;\n");
-    let report = r.project().unwrap().fix(&[], &FixOptions { dry_run: true, unsafe_fixes: false, trace: false }).unwrap();
+    let report = r.project().unwrap().fix(&[], &FixOptions { dry_run: true, unsafe_fixes: false, trace: false, ..Default::default() }).unwrap();
     assert_eq!(report.files[0].fixed, "a === b;\n");
     assert!(!report.files[0].written);
     assert_eq!(r.read("a.js"), "a == b;\n");
@@ -206,9 +210,71 @@ fn native_rule_from_a_first_party_pack() {
     let d = r.check();
     assert_eq!(summary(&d), ["a.js:3:3 js/no-unreachable suggest"]);
     assert!(d[0].message.starts_with("Unreachable code"));
-    let fixed = r.project().unwrap().fix(&[], &FixOptions { unsafe_fixes: true, dry_run: false, trace: false }).unwrap();
+    let fixed = r.project().unwrap().fix(&[], &FixOptions { unsafe_fixes: true, dry_run: false, trace: false, ..Default::default() }).unwrap();
     assert_eq!(fixed.files.len(), 1);
     assert_eq!(r.read("a.js"), "function f() {\n  return 1;\n}\n");
+}
+
+/// SR-LAW-4 decisions 2 and 4: a match outside `auto_when:` is `suggest`,
+/// and a `choices:` fix offers each labelled edit; `fix --unsafe` applies
+/// only the default one, and the tester's choice applies the one named.
+#[test]
+fn per_finding_rung_and_choices() {
+    let r = Repo::new("ladder");
+    let auto = rule(
+        "acme/no-var",
+        &[Language::Javascript],
+        "auto",
+        "match:\n  kind: variable_declaration\nauto_when:\n  not: { has: { kind: variable_declarator, has: { kind: identifier, regex: '^keep' } } }\nmessage: \"no var\"\nfix: \"let x = 1;\"",
+        &[(Language::Javascript, "var x = 1;", "let x = 1;")],
+    );
+    let choices = rule(
+        "acme/no-debugger",
+        &[Language::Javascript],
+        "suggest",
+        "match:\n  kind: debugger_statement\nmessage: \"no debugger\"\nfix:\n  choices:\n    - label: remove it\n      default: true\n      fix: \"\"\n    - label: log instead\n      fix: \"console.log('here');\"",
+        &[(Language::Javascript, "debugger;", "")],
+    );
+    r.file(".codelaw/rules/acme/no-var.md", &auto).file(".codelaw/rules/acme/no-debugger.md", &choices);
+    r.file("a.js", "var x = 1;\nvar keep = 2;\ndebugger;\n");
+    let d = r.check();
+    let rung = |rule: &str, line: u32| d.iter().find(|x| x.rule == rule && x.start.line == line).map(|x| x.fix);
+    assert_eq!(rung("acme/no-var", 1), Some(FixClass::Auto));
+    assert_eq!(rung("acme/no-var", 2), Some(FixClass::Suggest), "outside `auto_when:`");
+    let dbg = d.iter().find(|x| x.rule == "acme/no-debugger").unwrap();
+    assert_eq!(dbg.fix, FixClass::Suggest);
+    assert!(dbg.edits.is_empty());
+    assert_eq!(dbg.choices.iter().map(|c| (c.label.as_str(), c.default)).collect::<Vec<_>>(), [("remove it", true), ("log instead", false)]);
+    let p = r.project().unwrap();
+    let src = "debugger;\n";
+    assert_eq!(p.fix_source("b.js", Language::Javascript, src, true).fixed, "\n");
+    assert_eq!(p.fix_source_choice("b.js", Language::Javascript, src, "log instead").fixed, "console.log('here');\n");
+    assert_eq!(p.fix_source("b.js", Language::Javascript, src, false).fixed, src, "choices are never applied without --unsafe");
+}
+
+/// SR-LAW-4 decision 16: a rule entry's `fix` lowers the rung, never raises it.
+#[test]
+fn a_project_lowers_a_fix_and_cannot_raise_it() {
+    let r = Repo::new("lower");
+    let auto = rule("acme/no-var", &[Language::Javascript], "auto", "match:\n  kind: variable_declaration\nmessage: \"no var\"\nfix: \"let x = 1;\"", &[(Language::Javascript, "var x = 1;", "let x = 1;")]);
+    r.file(".codelaw/rules/acme/no-var.md", &auto).file("a.js", "var x = 1;\n");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-var\" = { severity = \"error\", fix = \"suggest\" }\n");
+    let d = r.check();
+    assert_eq!((d[0].fix, d[0].edits.len()), (FixClass::Suggest, 1), "lowered to suggest: still a diff");
+    let fixed = r.project().unwrap().fix(&[], &FixOptions::default()).unwrap();
+    assert!(fixed.files.iter().all(|f| !f.written) && r.read("a.js") == "var x = 1;\n", "plain `fix` no longer applies it");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-var\" = { severity = \"error\", fix = \"manual\" }\n");
+    let d = r.check();
+    assert_eq!(d[0].fix, FixClass::Manual);
+    assert!(d[0].edits.is_empty() && d[0].steps.iter().any(|s| s.contains("make this edit by hand: replace `var x = 1;` with `let x = 1;`")), "{:?}", d[0].steps);
+    let suggest = rule("acme/no-dbg", &[Language::Javascript], "suggest", "match:\n  kind: debugger_statement\nmessage: \"x\"\nfix: \"\"", &[(Language::Javascript, "debugger;", "")]);
+    r.file(".codelaw/rules/acme/no-dbg.md", &suggest);
+    r.file("codelaw.toml", "[rules]\n\"acme/no-dbg\" = { severity = \"error\", fix = \"auto\" }\n");
+    let e = r.project().err().unwrap().to_string();
+    assert!(e.contains("`fix = \"auto\"` would raise its fix, which is `suggest`"), "{e}");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-dbg\" = { severity = \"error\", fix = \"never\" }\n");
+    let e = r.project().err().unwrap().to_string();
+    assert!(e.contains("invalid `fix = \"never\"`"), "{e}");
 }
 
 #[test]
@@ -628,7 +694,7 @@ fn bom_offsets_are_file_offsets_and_fix_reports_like_check() {
     assert_eq!(a.edits[0].start, b.edits[0].start + 3);
     let bytes = fs::read(r.0.join("a.js")).unwrap();
     assert_eq!(&bytes[a.start_byte..a.end_byte], b"a == b");
-    let dry = r.project().unwrap().fix(&[], &FixOptions { dry_run: true, unsafe_fixes: false, trace: false }).unwrap();
+    let dry = r.project().unwrap().fix(&[], &FixOptions { dry_run: true, unsafe_fixes: false, trace: false, ..Default::default() }).unwrap();
     assert_eq!(dry.fixed_count(), 2);
     assert!(dry.check.diagnostics.is_empty(), "{:?}", dry.check.diagnostics);
 }

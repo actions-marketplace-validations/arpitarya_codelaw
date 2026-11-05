@@ -4,6 +4,7 @@ title: "this is not used before super() in a derived constructor"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "moving statements across `super()` can change what the base class sees"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/no-this-before-super]
 since: 0.1.0

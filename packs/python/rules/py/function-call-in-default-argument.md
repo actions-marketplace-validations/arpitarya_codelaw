@@ -4,6 +4,7 @@ title: "No function calls in default arguments"
 languages: [python]
 fix: manual
 fix_reason: "whether the value should be computed per call or once at import needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   extend_immutable_calls: { type: "string[]", default: [], description: "more calls whose results are immutable, by qualified name" }

@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an annotation on the assigned name is dropped by the rewrite) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/E731` |
+| **Ported from** | `ruff/E731`, `pylint/unnecessary-lambda-assignment` |
 
 ## What it checks
 

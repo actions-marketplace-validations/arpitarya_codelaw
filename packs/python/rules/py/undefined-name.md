@@ -4,10 +4,11 @@ title: "Every name read is defined"
 languages: [python]
 fix: manual
 fix_reason: "whether to import, define or correct the name needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   builtins: { type: "string[]", default: [], description: "extra names to treat as builtins" }
-ported_from: [ruff/F821]
+ported_from: [ruff/F821, pylint/undefined-variable]
 since: 0.1.0
 ---
 

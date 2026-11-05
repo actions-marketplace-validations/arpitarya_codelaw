@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement raises the right exception for the framework, which only the author knows) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the edit raises AssertionError so the check survives `python -O`, which changes behaviour on purpose; the reviewer confirms it and may pick the framework's exception (PermissionDenied, 403) instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Files** | never `**/tests/**`, `**/test/**`, `**/test_*.py`, `**/*_test.py`, `**/*_tests.py`, `**/tests.py`, `**/conftest.py` |
@@ -134,6 +134,13 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 ```py
 def delete(request, item):
     assert request.user.is_staff
+```
+
+#### Fixed
+
+```py
+def delete(request, item):
+    if not (request.user.is_staff): raise AssertionError
 ```
 
 #### Do

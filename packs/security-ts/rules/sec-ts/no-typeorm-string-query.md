@@ -4,6 +4,7 @@ title: "No TypeORM query built from a template or concatenation"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the condition and its values have to be separated by hand"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [bandit/B608, ruff/S608]
 security: { cwe: [89], owasp: ["A05:2025"], severity: high }

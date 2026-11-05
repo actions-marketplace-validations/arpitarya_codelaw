@@ -4,6 +4,7 @@ title: "No Python 2 `print >>`"
 languages: [python]
 fix: manual
 fix_reason: "the rewrite depends on how the Python 2 arguments were meant"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F633]
 since: 0.1.0

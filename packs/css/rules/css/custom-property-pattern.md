@@ -4,6 +4,7 @@ title: "Custom property names are kebab-case"
 languages: [css, scss]
 fix: manual
 fix_reason: "renaming must update every use of the name, also in scripts"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$", description: "a regular expression names must match (without the leading `--`)" }

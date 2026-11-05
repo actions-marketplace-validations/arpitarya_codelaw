@@ -4,6 +4,7 @@ title: "One visible <main> per document"
 languages: [html]
 fix: manual
 fix_reason: "which one is the main content is a design decision"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/no-multiple-main]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "Render doesn't change module-level or global values"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the change belongs — state, a ref, an effect, an event — depends on what the value is for"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/globals, "@eslint-react/globals"]
 since: 0.3.0

@@ -4,8 +4,9 @@ title: "A starred assignment stays within Python's limits"
 languages: [python]
 fix: manual
 fix_reason: "how to restructure the unpacking is a design choice"
+fix_exception: restructure
 stability: preview
-ported_from: [ruff/F621]
+ported_from: [ruff/F621, pylint/too-many-star-expressions]
 since: 0.1.0
 ---
 

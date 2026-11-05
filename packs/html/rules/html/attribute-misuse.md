@@ -4,6 +4,7 @@ title: "Attributes are used only where they take effect"
 languages: [html]
 fix: manual
 fix_reason: "either the attribute or its context is wrong, and only the author knows which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/attribute-misuse]
 since: 0.1.0

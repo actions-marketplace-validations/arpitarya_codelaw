@@ -4,6 +4,7 @@ title: "No require or import of a computed module name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which modules may be loaded is a decision for the author"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-security/detect-non-literal-require, eslint-plugin-n/no-dynamic-require]
 security: { cwe: [829, 95], owasp: ["A08:2025"], severity: medium }

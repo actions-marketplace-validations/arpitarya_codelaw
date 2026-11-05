@@ -4,6 +4,7 @@ title: "No unknown pseudo-classes"
 languages: [css, scss]
 fix: manual
 fix_reason: "the intended pseudo-class is the author's call"
+fix_pending: "suggest-choices"
 stability: stable
 options:
   ignorePseudoClasses: { type: "string[]", default: [], description: "pseudo-classes to accept; `/regex/` for a pattern" }

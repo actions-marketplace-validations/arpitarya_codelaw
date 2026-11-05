@@ -2,8 +2,8 @@
 id: sec-js/no-jquery-html-sink
 title: "No jQuery call that parses a built string as HTML"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the value is text or markup is a decision for the author"
+fix: suggest
+fix_reason: "`.text()` writes the value as text instead of markup, and the reviewer confirms no markup was meant; built markup strings have no edit"
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0
@@ -33,7 +33,9 @@ jQuery's `.html(x)` is not given a value that is not a literal, and `$(x)`, `.ap
 ```codelaw
 match:
   any:
-    - pattern: $O.html($V)
+    - all:
+        - pattern: $O.html($V)
+        - pattern: $HTMLCALL
     - pattern: $($H)
     - pattern: jQuery($H)
     - pattern: $O.append($H)
@@ -56,6 +58,8 @@ constraints:
 where:
   $V: { not: { calls: sanitizers } }
 message: "A built string is parsed as HTML here; markup in a value inside it runs in the page"
+fix:
+  - replace: {target: $HTMLCALL, with: "$O.text($V)"}
 ```
 
 ## How to fix
@@ -72,14 +76,18 @@ message: "A built string is parsed as HTML here; markup in a value inside it run
 
 ```js
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```js
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```js
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### JSX
@@ -88,14 +96,18 @@ $("#list").append($("<li>").text(name));
 
 ```jsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```jsx
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```jsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### TypeScript
@@ -104,14 +116,18 @@ $("#list").append($("<li>").text(name));
 
 ```ts
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```ts
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```ts
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```
 
 ### TSX
@@ -120,12 +136,16 @@ $("#list").append($("<li>").text(name));
 
 ```tsx
 $("#out").html(comment.body);
-$("#list").append("<li>" + name + "</li>");
+```
+
+#### Fixed
+
+```tsx
+$("#out").text(comment.body);
 ```
 
 #### Do
 
 ```tsx
 $("#out").text(comment.body);
-$("#list").append($("<li>").text(name));
 ```

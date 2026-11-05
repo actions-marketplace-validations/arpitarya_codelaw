@@ -4,6 +4,7 @@ title: "`continue` only inside a loop"
 languages: [python]
 fix: manual
 fix_reason: "what should happen instead is the author's choice"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F702]
 since: 0.1.0

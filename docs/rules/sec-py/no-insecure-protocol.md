@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement (SSH or SFTP, FTPS, SNMPv3) needs the server to support it) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the finding is the import or the community string; the replacement (SSH or SFTP, FTPS, SNMPv3) is a different client and needs the server to support it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-319 · OWASP A04:2025 · security severity `high` |

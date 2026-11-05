@@ -2,8 +2,8 @@
 id: js/no-cond-assign
 title: "No assignment in a condition, unless doubly parenthesised"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether a comparison or an assignment was meant needs the author"
+fix: suggest
+fix_reason: "a mistyped `=` or an intended assignment look alike; the author picks `===` or the doubled parentheses"
 stability: preview
 ported_from: [eslint/no-cond-assign]
 since: 0.1.0
@@ -17,6 +17,7 @@ in a second pair of parentheses to say it's meant.
 ```codelaw
 match:
   kind: assignment_expression
+  pattern: $L = $R
   any:
     - inside:
         stopBy: neighbor
@@ -29,6 +30,13 @@ match:
         kind: expression_statement
         inside: { stopBy: neighbor, kind: for_statement, field: condition }
 message: "An assignment in a condition is usually a mistyped comparison"
+fix:
+  choices:
+    - label: compare
+      default: true
+      fix: "$L === $R"
+    - label: mark the assignment intended
+      fix: "($L = $R)"
 ```
 
 ## How to fix
@@ -44,6 +52,22 @@ message: "An assignment in a condition is usually a mistyped comparison"
 
 ```js
 if (user = admin) {
+  grant();
+}
+```
+
+#### Fixed (compare)
+
+```js
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```js
+if ((user = admin)) {
   grant();
 }
 ```
@@ -72,6 +96,22 @@ if (user = admin) {
 }
 ```
 
+#### Fixed (compare)
+
+```jsx
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```jsx
+if ((user = admin)) {
+  grant();
+}
+```
+
 #### Do
 
 ```jsx
@@ -96,6 +136,22 @@ if (user = admin) {
 }
 ```
 
+#### Fixed (compare)
+
+```ts
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```ts
+if ((user = admin)) {
+  grant();
+}
+```
+
 #### Do
 
 ```ts
@@ -116,6 +172,22 @@ while ((node = node.next)) {
 
 ```tsx
 if (user = admin) {
+  grant();
+}
+```
+
+#### Fixed (compare)
+
+```tsx
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```tsx
+if ((user = admin)) {
   grant();
 }
 ```

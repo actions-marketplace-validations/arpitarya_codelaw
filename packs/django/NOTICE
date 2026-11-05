@@ -1,0 +1,6 @@
+codelaw-rules-django
+
+The rules are reimplementations written for codelaw. Their `ported_from:`
+fields name the Ruff rule codes (https://docs.astral.sh/ruff, MIT License)
+whose documented behaviour they reproduce; for Django these come from
+flake8-django (GPL-2.0: behaviour only, no text) and Ruff (MIT). No code or documentation text of either is included.

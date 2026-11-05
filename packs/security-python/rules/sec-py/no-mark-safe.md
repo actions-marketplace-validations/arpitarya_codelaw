@@ -4,6 +4,7 @@ title: 'No `mark_safe` of dynamic text'
 languages: [python]
 fix: manual
 fix_reason: "the right fix is escaping the parts (`format_html`, `escape`) or rendering through a template, not removing the call"
+fix_exception: security
 stability: preview
 ported_from: [bandit/B308, bandit/B703, bandit/B704, ruff/S308, ruff/S703, ruff/S704]
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }

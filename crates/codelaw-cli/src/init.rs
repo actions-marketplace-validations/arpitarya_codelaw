@@ -25,7 +25,7 @@ pub struct InitArgs {
     /// Agent files to write: claude, cowork, copilot, codex, kiro (SR-AGENT-SURFACES).
     #[arg(long, value_delimiter = ',')]
     agents: Vec<String>,
-    /// Install git hooks: `pre-commit` (blocks) and `post-commit` (reminds, never blocks); both when none is named. In a repo codelaw already configures, it installs only the hooks (SR-CLI-MCP decision 7).
+    /// Install git hooks: `pre-commit` (blocks), `post-commit` (reminds, never blocks) and `commit-msg` (checks the message against `[commits]`); `pre-commit` and `post-commit` when none is named, `commit-msg` only when named. In a repo codelaw already configures, it installs only the hooks (SR-CLI-MCP decision 7).
     #[arg(long, value_delimiter = ',', num_args = 0.., value_name = "HOOKS")]
     git_hooks: Option<Vec<String>>,
     /// Write a CI workflow. `github` alone: the check workflow, which runs codelaw's GitHub Action at this version (SR-CLI-MCP decision 12a). With `--autofix` (`github` or `gitlab`): the scheduled auto-fix workflow (decision 12). In a repo codelaw already configures, it writes only the workflow.
@@ -49,8 +49,8 @@ enum Registry {
 }
 
 /// The packs a repo needs (decision 6): one per language, `ts` for
-/// TypeScript, and `react`, `stencil`, `tanstack-query` or `redux-toolkit`
-/// when `package.json` depends on the library.
+/// TypeScript, and `react`, `stencil`, `tanstack-query`, `redux-toolkit`,
+/// `nextjs` or `testing` when `package.json` depends on the library.
 fn packs_for(languages: &BTreeSet<Language>, package_json: Option<&str>) -> BTreeSet<&'static str> {
     let mut out = BTreeSet::new();
     for l in languages {
@@ -87,8 +87,37 @@ fn packs_for(languages: &BTreeSet<Language>, package_json: Option<&str>) -> BTre
         if package_json.is_some_and(|j| depends_on(j, "@reduxjs/toolkit") || depends_on(j, "redux")) {
             out.insert("redux-toolkit");
         }
+        if package_json.is_some_and(|j| depends_on(j, "next")) {
+            out.insert("nextjs");
+        }
+        if package_json.is_some_and(|j| !testing_presets(j).is_empty()) {
+            out.insert("testing");
+        }
+    }
+    // Tailwind CSS in package.json (W-145): `tailwindcss`, or one of its
+    // integrations. `uses_tailwind` adds a config file or a stylesheet that
+    // imports it.
+    if package_json.is_some_and(|j| ["tailwindcss", "@tailwindcss/vite", "@tailwindcss/postcss", "@tailwindcss/cli"].iter().any(|n| depends_on(j, n))) {
+        out.insert("tailwind");
     }
     out
+}
+
+/// Whether the repo uses Tailwind CSS without naming it in package.json: a
+/// `tailwind.config.*`, or a stylesheet that imports "tailwindcss" (W-145).
+fn uses_tailwind(root: &Path) -> bool {
+    let walk = ignore::WalkBuilder::new(root)
+        .hidden(false)
+        .git_global(false)
+        .require_git(false)
+        .filter_entry(|e| !codelaw_config::DEFAULT_EXCLUDES.iter().any(|x| e.file_name() == *x))
+        .build();
+    walk.flatten().any(|e| {
+        let name = e.file_name().to_string_lossy();
+        e.file_type().is_some_and(|t| t.is_file())
+            && (name.starts_with("tailwind.config.")
+                || (name.ends_with(".css") && std::fs::read_to_string(e.path()).is_ok_and(|t| t.contains("@import \"tailwindcss\"") || t.contains("@import 'tailwindcss'"))))
+    })
 }
 
 fn detect_languages(root: &Path) -> BTreeSet<Language> {
@@ -127,6 +156,34 @@ fn depends_on(package_json: &str, name: &str) -> bool {
     ["dependencies", "devDependencies", "peerDependencies"].iter().any(|k| v.get(k).and_then(|d| d.get(name)).is_some())
 }
 
+/// Whether `package.json` depends on any package under this scope (`@testing-library/`).
+fn depends_on_scope(package_json: &str, scope: &str) -> bool {
+    let Ok(v) = serde_json::from_str::<serde_json::Value>(package_json) else { return false };
+    ["dependencies", "devDependencies", "peerDependencies"]
+        .iter()
+        .any(|k| v.get(k).and_then(|d| d.as_object()).is_some_and(|d| d.keys().any(|n| n.starts_with(scope))))
+}
+
+/// The `testing` pack's presets for the test frameworks `package.json` names
+/// (W-144's ruling: a project switches on the ones it uses): `jest`, `vitest`,
+/// any `@testing-library/*`, `@playwright/test`.
+fn testing_presets(package_json: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    if depends_on(package_json, "jest") {
+        out.push("codelaw:testing/jest".into());
+    }
+    if depends_on(package_json, "vitest") {
+        out.push("codelaw:testing/vitest".into());
+    }
+    if depends_on_scope(package_json, "@testing-library/") {
+        out.push("codelaw:testing/testing-library".into());
+    }
+    if depends_on(package_json, "@playwright/test") {
+        out.push("codelaw:testing/playwright".into());
+    }
+    out
+}
+
 /// Each installed pack's `recommended` presets for what the repo holds.
 fn presets(packs: &BTreeSet<&str>, languages: &BTreeSet<Language>) -> Vec<String> {
     let mut out = Vec::new();
@@ -143,6 +200,8 @@ fn presets(packs: &BTreeSet<&str>, languages: &BTreeSet<Language>) -> Vec<String
             "stencil" => out.push("codelaw:stencil/recommended".into()),
             "tanstack-query" => out.push("codelaw:tanstack-query/recommended".into()),
             "redux-toolkit" => out.push("codelaw:redux-toolkit/recommended".into()),
+            "nextjs" => out.push("codelaw:next/recommended".into()),
+            "tailwind" => out.push("codelaw:tailwind/recommended".into()),
             "html" => out.push("codelaw:html/recommended".into()),
             "css" => out.push("codelaw:css/recommended".into()),
             "scss" => out.push("codelaw:scss/recommended".into()),
@@ -292,6 +351,9 @@ pub fn init(args: InitArgs) -> ExitCode {
     if has_css_modules(&root) {
         wanted.insert("css-modules");
     }
+    if uses_tailwind(&root) {
+        wanted.insert("tailwind");
+    }
     // Spelling from day one, on both registries (SR-SPELL decision 1).
     if !args.no_spell {
         wanted.insert("spell");
@@ -347,6 +409,17 @@ pub fn init(args: InitArgs) -> ExitCode {
         match chosen {
             Some(r) => {
                 by_registry.entry(r).or_default().push(pack.on(r.key()).expect("published there"));
+                // A pack's provider is installed with it; it is npm only
+                // (SR-RULE-PACKS decision 19).
+                if r == Registry::Npm {
+                    for (provider, short) in codelaw_rules::FIRST_PARTY_PROVIDERS {
+                        if *short == *p {
+                            by_registry.entry(r).or_default().push(*provider);
+                        }
+                    }
+                } else if codelaw_rules::FIRST_PARTY_PROVIDERS.iter().any(|(_, s)| *s == *p) {
+                    skipped.push(format!("{} reads a class table that @codelaw/provider-tailwind builds from node_modules/tailwindcss; it is npm only, so install it with npm where Tailwind is installed, or its rules and the class sorting are skipped (`[providers] on_missing`)", pack.on(r.key()).unwrap_or(p)));
+                }
                 packs.insert(p);
             }
             None => {
@@ -360,7 +433,12 @@ pub fn init(args: InitArgs) -> ExitCode {
             }
         }
     }
-    let extends = presets(&packs, &languages);
+    let mut extends = presets(&packs, &languages);
+    if packs.contains("testing")
+        && let Some(j) = package_json.as_deref()
+    {
+        extends.extend(testing_presets(j));
+    }
 
     // codelaw.toml: `extends` and nothing else (SR-CONFIG decision 8); its
     // text is templates/init/ (SR-LAW-10).
@@ -374,7 +452,13 @@ pub fn init(args: InitArgs) -> ExitCode {
             Err(e) => return fail(e),
         }
     };
-    let config = match template::render("init/codelaw.toml", &[("extends", &quoted.join(", ")), ("agents", &agents_section)]) {
+    // The `#:schema` line (W-157, SR-CONFIG decision 6): the schema npm
+    // `codelaw` ships, or, from PyPI, the schema of this version's tag.
+    let schema = match preferred("codelaw") {
+        Registry::Npm => codelaw_config::NPM_SCHEMA_PATH.to_owned(),
+        Registry::Pypi => codelaw_config::schema_url(codelaw_core::VERSION),
+    };
+    let config = match template::render("init/codelaw.toml", &[("schema", &schema), ("extends", &quoted.join(", ")), ("agents", &agents_section)]) {
         Ok(c) => c,
         Err(e) => return fail(e),
     };
@@ -575,6 +659,42 @@ mod tests {
         assert!(presets(&packs, &langs).contains(&"codelaw:redux-toolkit/recommended".to_owned()));
         let legacy = r#"{"devDependencies":{"react-query":"^3","redux":"^4"}}"#;
         assert_eq!(packs_for(&langs, Some(legacy)).into_iter().collect::<Vec<_>>(), ["js", "redux-toolkit", "tanstack-query", "ts"]);
+        assert_eq!(packs_for(&[Language::Python].into(), Some(pj)).into_iter().collect::<Vec<_>>(), ["python"]);
+    }
+
+    #[test]
+    fn a_tailwind_dependency_adds_the_tailwind_pack() {
+        let languages: BTreeSet<Language> = [Language::Tsx, Language::Css].into_iter().collect();
+        let pj = r#"{"devDependencies":{"tailwindcss":"^4"}}"#;
+        assert!(packs_for(&languages, Some(pj)).contains("tailwind"));
+        assert!(!packs_for(&languages, Some("{}")).contains("tailwind"));
+        let dir = std::env::temp_dir().join(format!("codelaw-init-tw-{}", std::process::id()));
+        std::fs::create_dir_all(dir.join("src")).unwrap();
+        std::fs::write(dir.join("src/app.css"), "@import \"tailwindcss\";\n").unwrap();
+        assert!(uses_tailwind(&dir));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn a_next_dependency_adds_the_nextjs_pack() {
+        // W-139: the npm-only `nextjs` pack (W-144's ruling), on `next` in package.json.
+        let langs: BTreeSet<Language> = [Language::Tsx].into();
+        let pj = r#"{"dependencies":{"next":"^16","react":"^19"}}"#;
+        let packs = packs_for(&langs, Some(pj));
+        assert_eq!(packs.iter().copied().collect::<Vec<_>>(), ["js", "nextjs", "react", "ts"]);
+        assert!(presets(&packs, &langs).contains(&"codelaw:next/recommended".to_owned()));
+        assert_eq!(packs_for(&[Language::Python].into(), Some(pj)).into_iter().collect::<Vec<_>>(), ["python"]);
+    }
+
+    #[test]
+    fn a_test_framework_dependency_adds_the_testing_pack_and_its_presets() {
+        // W-139: the npm-only `testing` pack (W-144's ruling), one preset per framework the project uses.
+        let langs: BTreeSet<Language> = [Language::Typescript].into();
+        let pj = r#"{"devDependencies":{"vitest":"^3","@testing-library/react":"^16","@playwright/test":"^1"}}"#;
+        assert_eq!(packs_for(&langs, Some(pj)).into_iter().collect::<Vec<_>>(), ["js", "testing", "ts"]);
+        assert_eq!(testing_presets(pj), ["codelaw:testing/vitest", "codelaw:testing/testing-library", "codelaw:testing/playwright"]);
+        assert_eq!(testing_presets(r#"{"devDependencies":{"jest":"^30"}}"#), ["codelaw:testing/jest"]);
+        assert!(!packs_for(&langs, Some(r#"{"dependencies":{"react":"^19"}}"#)).contains("testing"));
         assert_eq!(packs_for(&[Language::Python].into(), Some(pj)).into_iter().collect::<Vec<_>>(), ["python"]);
     }
 }

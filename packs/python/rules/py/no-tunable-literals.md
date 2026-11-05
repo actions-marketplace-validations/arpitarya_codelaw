@@ -4,6 +4,7 @@ title: "No hard-coded timeouts, limits or thresholds"
 languages: [python]
 fix: manual
 fix_reason: "which configuration key holds the value is the author's choice"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

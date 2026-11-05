@@ -1,0 +1,6 @@
+name = "codelaw-rules-pandas"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["python"]
+presets = ["pandas/recommended"]
+description = "codelaw's rules for pandas code, from pandas-vet; PyPI only (SR-RULE-PACKS)"

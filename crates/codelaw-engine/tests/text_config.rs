@@ -42,7 +42,7 @@ fn repo(name: &str, native: &str) -> Repo {
     let r = Repo::new(name);
     let id = format!("data/test-{native}");
     let rule = format!(
-        "---\nid: {id}\ntitle: test rule\nlanguages: [json]\nfix: manual\nfix_reason: test\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/{native}\n```\n\n## How to fix\n\n1. Make them agree.\n\n## Examples\n\n### JSON\n\n#### Don't\n\n```json\n{{}}\n```\n\n#### Do\n\n```json\n{{}}\n```\n"
+        "---\nid: {id}\ntitle: test rule\nlanguages: [json]\nfix: manual\nfix_reason: test\nfix_exception: value\nstability: stable\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\nnative: test/{native}\n```\n\n## How to fix\n\n1. Make them agree.\n\n## Examples\n\n### JSON\n\n#### Don't\n\n```json\n{{}}\n```\n\n#### Do\n\n```json\n{{}}\n```\n"
     );
     let dir = "node_modules/@codelaw/rules-data";
     r.file(&format!("{dir}/codelaw-pack.toml"), "name = \"@codelaw/rules-data\"\nversion = \"0.1.0\"\nmin_codelaw = \"0.1.0\"\nlanguages = [\"json\"]\npresets = [\"data/recommended\"]\n");

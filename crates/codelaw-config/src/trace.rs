@@ -190,6 +190,9 @@ impl Config {
         let (v, s) = root_key(&["allow_pack_fixers"], |r| (!r.allow_pack_fixers.is_empty()).then(|| json!(r.allow_pack_fixers)), json!([]));
         push("allow_pack_fixers", v, s);
 
+        let (v, s) = root_key(&["rules", "require_reason"], |r| r.require_reason.map(|x| json!(x)), json!(false));
+        push("rules.require_reason", v, s);
+
         let (v, s) = root_key(&["files", "follow_symlinks"], |r| r.files.follow_symlinks.map(|x| json!(x)), json!(false));
         push("files.follow_symlinks", v, s);
         let (_, s) = root_key(&["files", "generated_markers"], |r| r.files.generated_markers.as_ref().map(|x| json!(x)), Value::Null);
@@ -322,6 +325,23 @@ impl Config {
         push("deps.ignore", v, s);
         let (v, s) = root_key(&["deps", "max_snapshot_age"], |r| r.deps.max_snapshot_age.map(|d| json!(d.0)), json!(14));
         push("deps.max_snapshot_age", v, s);
+        // `[deps.licence]`, `[deps.drift]`, `[deps.runtime]` (W-129).
+        let (v, s) = root_key(&["deps", "licence", "allow"], |r| r.deps.licence.as_ref().and_then(|l| l.allow.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.licence.allow", v, s);
+        let (v, s) = root_key(&["deps", "licence", "deny"], |r| r.deps.licence.as_ref().and_then(|l| l.deny.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.licence.deny", v, s);
+        let (v, s) = root_key(&["deps", "licence", "unknown"], |r| r.deps.licence.as_ref().and_then(|l| l.unknown.as_ref()).map(|x| json!(x.0)), json!("warn"));
+        push("deps.licence.unknown", v, s);
+        let (v, s) = root_key(&["deps", "licence", "ignore"], |r| r.deps.licence.as_ref().and_then(|l| l.ignore.as_ref()).and_then(|x| serde_json::to_value(x).ok()), json!([]));
+        push("deps.licence.ignore", v, s);
+        let (v, s) = root_key(&["deps", "drift", "policy"], |r| r.deps.drift.as_ref().and_then(|d| d.policy.as_ref()).map(|x| json!(x)), json!("highest"));
+        push("deps.drift.policy", v, s);
+        let (v, s) = root_key(&["deps", "drift", "ignore"], |r| r.deps.drift.as_ref().and_then(|d| d.ignore.as_ref()).map(|x| json!(x)), json!([]));
+        push("deps.drift.ignore", v, s);
+        let (v, s) = root_key(&["deps", "runtime", "source", "node"], |r| r.deps.runtime.as_ref().and_then(|d| d.source.as_ref()).and_then(|x| x.node.as_ref()).map(|x| json!(x)), json!("engines.node"));
+        push("deps.runtime.source.node", v, s);
+        let (v, s) = root_key(&["deps", "runtime", "source", "python"], |r| r.deps.runtime.as_ref().and_then(|d| d.source.as_ref()).and_then(|x| x.python.as_ref()).map(|x| json!(x)), json!("requires-python"));
+        push("deps.runtime.source.python", v, s);
         // `[css]` (SR-PROJECT-GRAPH decision 8).
         let (v, s) = root_key(&["css", "modules"], |r| r.css.modules.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!([]));
         push("css.modules", v, s);
@@ -371,6 +391,15 @@ impl Config {
         push("flags.inline", v, s);
         let (v, s) = root_key(&["flags", "warn_days"], |r| r.flags.as_ref()?.warn_days.map(|d| json!(d.0)), json!(14));
         push("flags.warn_days", v, s);
+        // `[packs]` as written (SR-PACK-LOOKUP decision 6); the places
+        // they resolve to are `packs.npm[n]` and `packs.pypi[n]`, which
+        // `codelaw config --print` adds from the lookup itself.
+        let (v, s) = root_key(&["packs", "order"], |r| r.packs.order.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!(["npm", "pypi"]));
+        push("packs.order", v, s);
+        let (v, s) = root_key(&["packs", "node_modules"], |r| r.packs.node_modules.as_ref().and_then(|x| serde_json::to_value(x).ok()), serde_json::Value::Null);
+        push("packs.node_modules", v, s);
+        let (v, s) = root_key(&["packs", "venv"], |r| r.packs.venv.as_ref().map(|x| json!(x)), serde_json::Value::Null);
+        push("packs.venv", v, s);
         // The sections not validated yet: shown as written.
         for (name, get) in [
             ("format", (|r: &RawConfig| r.format.clone()) as fn(&RawConfig) -> Option<toml::Table>),

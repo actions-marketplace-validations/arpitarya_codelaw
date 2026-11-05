@@ -7,6 +7,7 @@
 //! [`GRAMMARS_FINGERPRINT`] joins every cache key (SR-ARCHITECTURE
 //! decision 3).
 
+pub mod class_lists;
 mod functions;
 mod grammar;
 mod regions;

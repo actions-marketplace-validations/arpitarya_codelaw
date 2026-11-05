@@ -4,8 +4,9 @@ title: "`assert` doesn't test a tuple"
 languages: [python]
 fix: manual
 fix_reason: "removing the parentheses turns a no-op into a check that can now fail"
+fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/F631]
+ported_from: [ruff/F631, pylint/assert-on-tuple]
 since: 0.1.0
 ---
 

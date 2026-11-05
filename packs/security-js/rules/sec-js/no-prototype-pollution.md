@@ -2,8 +2,8 @@
 id: sec-js/no-prototype-pollution
 title: "No request value used as a key to write or merge"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which keys a client may set is a decision for the author"
+fix: suggest
+fix_reason: "defining an own property cannot reach `Object.prototype` even for the key `__proto__`, and the reviewer confirms a plain assignment (setters, frozen objects) is not relied on"
 stability: preview
 ported_from: [eslint-plugin-security/detect-object-injection]
 security: { cwe: [1321], owasp: ["A08:2025"], severity: high }
@@ -17,7 +17,9 @@ An object is not written by a key that comes from the request (`target[key] = va
 ```codelaw
 match:
   any:
-    - pattern: $O[$K] = $V
+    - all:
+        - pattern: $O[$K] = $V
+        - pattern: $ASSIGN
     - pattern: _.merge($T, $K)
     - pattern: _.merge($T, $K, $$$R)
     - pattern: _.merge($A1, $T, $K)
@@ -60,6 +62,8 @@ match:
 where:
   $K: { from_source: { tables: [sources/express, sources/koa, sources/nextjs] } }
 message: "`$K` comes from the request and is used as a key or merged into an object; a key of `__proto__` pollutes every object"
+fix:
+  - replace: {target: $ASSIGN, with: 'Object.defineProperty($O, $K, { value: $V, writable: true, enumerable: true, configurable: true })'}
 ```
 
 ## How to fix
@@ -79,6 +83,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+#### Fixed
+
+```js
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 #### Do
 
 ```js
@@ -93,6 +104,13 @@ settings.set(key, value);
 ```jsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+#### Fixed
+
+```jsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 #### Do
@@ -111,6 +129,13 @@ const { key, value } = req.body;
 config[key] = value;
 ```
 
+#### Fixed
+
+```ts
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
+```
+
 #### Do
 
 ```ts
@@ -125,6 +150,13 @@ settings.set(key, value);
 ```tsx
 const { key, value } = req.body;
 config[key] = value;
+```
+
+#### Fixed
+
+```tsx
+const { key, value } = req.body;
+Object.defineProperty(config, key, { value: value, writable: true, enumerable: true, configurable: true });
 ```
 
 #### Do

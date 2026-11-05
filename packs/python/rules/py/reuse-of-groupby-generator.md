@@ -4,6 +4,7 @@ title: "A `groupby` group is used once"
 languages: [python]
 fix: manual
 fix_reason: "how to keep the items (a list, `itertools.tee`) is the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B031]
 since: 0.1.0

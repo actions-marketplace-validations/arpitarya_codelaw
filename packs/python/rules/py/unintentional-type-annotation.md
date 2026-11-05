@@ -4,6 +4,7 @@ title: "No annotation where an assignment was meant"
 languages: [python]
 fix: manual
 fix_reason: "whether an assignment was meant needs a person"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B032]
 since: 0.1.0

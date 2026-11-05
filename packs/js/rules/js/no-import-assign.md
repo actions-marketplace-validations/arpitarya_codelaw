@@ -4,6 +4,7 @@ title: "An imported binding is not reassigned"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the new value needs a variable of its own"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-import-assign]
 since: 0.1.0

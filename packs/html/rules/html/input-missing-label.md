@@ -4,6 +4,7 @@ title: "Form controls have a label"
 languages: [html]
 fix: manual
 fix_reason: "the label text needs a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/input-missing-label, htmlhint/input-requires-label]
 since: 0.1.0

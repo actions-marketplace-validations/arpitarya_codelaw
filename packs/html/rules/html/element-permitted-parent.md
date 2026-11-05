@@ -4,6 +4,7 @@ title: "Elements have a parent HTML allows"
 languages: [html]
 fix: manual
 fix_reason: "whether to wrap the element or change it depends on the intended structure"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/element-permitted-parent]
 since: 0.1.0

@@ -217,6 +217,8 @@ impl Project {
                 source: "engine".into(),
                 note: None,
                 data: None,
+                choices: Vec::new(),
+                fix_exception: None,
             };
             per_file.entry(src.rel.as_str()).or_default().push((diag, u.symbol.clone(), policy));
         }

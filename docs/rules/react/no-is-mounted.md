@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the callback has to be cancelled where it starts) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a guard with only a block of statements and no else is dropped, keeping the block (a setState after unmount is a no-op); the reviewer confirms the callback needs no cancellation instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-is-mounted` |
@@ -141,6 +141,16 @@ class A extends React.Component {
 }
 ```
 
+#### Fixed
+
+```js
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -168,6 +178,16 @@ class A extends React.Component {
 }
 ```
 
+#### Fixed
+
+```jsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
+  }
+}
+```
+
 #### Do
 
 ```jsx
@@ -191,6 +211,16 @@ class A extends React.Component {
     if (this.isMounted()) {
       this.setState({ ok: true });
     }
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
   }
 }
 ```

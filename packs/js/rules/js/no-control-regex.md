@@ -4,8 +4,9 @@ title: "No control characters in regular expressions"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which character was meant needs the author"
+fix_exception: value
 stability: preview
-ported_from: [eslint/no-control-regex]
+ported_from: [eslint/no-control-regex, eslint-plugin-regexp/no-control-character]
 since: 0.1.0
 ---
 

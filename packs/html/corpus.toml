@@ -12,6 +12,7 @@
 "html/close-attr" = 0
 "html/close-order" = 6
 "html/deprecated" = 4
+"html/deprecated-class" = 0
 "html/doctype-html" = 0
 "html/element-name" = 0
 "html/element-permitted-content" = 26
@@ -65,6 +66,7 @@
 "html/require-sri" = 9
 "html/script-element" = 0
 "html/script-type" = 0
+"html/svg-focusable" = 7
 "html/target-blank-rel" = 12
 "html/tel-non-breaking" = 0
 "html/text-content" = 0

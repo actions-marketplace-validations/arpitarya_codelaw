@@ -4,6 +4,7 @@ title: "A dict comprehension's key varies"
 languages: [python]
 fix: manual
 fix_reason: "the intended key can't be inferred"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B035]
 since: 0.1.0

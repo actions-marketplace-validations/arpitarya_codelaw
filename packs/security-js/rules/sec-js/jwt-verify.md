@@ -2,8 +2,8 @@
 id: sec-js/jwt-verify
 title: "A JWT is verified with a named algorithm, never `none`"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the algorithm to name is the one the issuer signs with"
+fix: suggest
+fix_reason: "naming the algorithm is fail-closed, but the reviewer confirms it is the one the issuer signs with (RS256, HS256 or ES256)"
 stability: preview
 security: { cwe: [347], owasp: ["A07:2025"], severity: high }
 since: 0.3.0
@@ -40,6 +40,20 @@ constraints:
   J2: { regex: '^(jwt|jsonwebtoken|jws)$' }
   J3: { regex: '^(jwt|jsonwebtoken|jws|jwtDecode)$' }
 message: "This JWT check lets the token choose its algorithm, accepts `none`, or does not verify"
+fix:
+  choices:
+    - label: RS256
+      fix:
+        - insert-after: {target: $K, text: ', { algorithms: ["RS256"] }'}
+        - replace: {target: $O, with: '{ ...$O, algorithms: ["RS256"] }'}
+    - label: HS256
+      fix:
+        - insert-after: {target: $K, text: ', { algorithms: ["HS256"] }'}
+        - replace: {target: $O, with: '{ ...$O, algorithms: ["HS256"] }'}
+    - label: ES256
+      fix:
+        - insert-after: {target: $K, text: ', { algorithms: ["ES256"] }'}
+        - replace: {target: $O, with: '{ ...$O, algorithms: ["ES256"] }'}
 ```
 
 ## How to fix
@@ -58,6 +72,24 @@ message: "This JWT check lets the token choose its algorithm, accepts `none`, or
 const claims = jwt.verify(token, publicKey);
 ```
 
+#### Fixed (RS256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+#### Fixed (HS256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+#### Fixed (ES256)
+
+```js
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
+```
+
 #### Do
 
 ```js
@@ -70,6 +102,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 
 ```jsx
 const claims = jwt.verify(token, publicKey);
+```
+
+#### Fixed (RS256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+#### Fixed (HS256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+#### Fixed (ES256)
+
+```jsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 ```
 
 #### Do
@@ -86,6 +136,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 const claims = jwt.verify(token, publicKey);
 ```
 
+#### Fixed (RS256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+#### Fixed (HS256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+#### Fixed (ES256)
+
+```ts
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
+```
+
 #### Do
 
 ```ts
@@ -98,6 +166,24 @@ const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
 
 ```tsx
 const claims = jwt.verify(token, publicKey);
+```
+
+#### Fixed (RS256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["RS256"] });
+```
+
+#### Fixed (HS256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["HS256"] });
+```
+
+#### Fixed (ES256)
+
+```tsx
+const claims = jwt.verify(token, publicKey, { algorithms: ["ES256"] });
 ```
 
 #### Do

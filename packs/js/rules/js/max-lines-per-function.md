@@ -4,6 +4,7 @@ title: "A function stays under a maximum number of lines"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "extracting part of a function changes its structure; where to cut and what to call the piece is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 50, description: "the most lines one function may span" }
@@ -12,7 +13,7 @@ options:
   include_nested: { type: "boolean", default: true, description: "the lines of an inner function count toward the outer one too" }
   include_iife: { type: "boolean", default: false, description: "measure an immediately invoked function, `(() => { … })()`, as a function of its own" }
   ignore_names: { type: "string", description: "a regular expression; functions named like this are exempt, e.g. \"^(test|it|describe)\"" }
-ported_from: [eslint/max-lines-per-function]
+ported_from: [eslint/max-lines-per-function, eslint-plugin-sonarjs/max-lines-per-function]
 since: 0.3.0
 ---
 

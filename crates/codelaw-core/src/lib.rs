@@ -3,6 +3,7 @@
 //! Offsets are bytes internally; output positions are 1-based line and
 //! column in characters (SR-ARCHITECTURE decision 13).
 
+pub mod class_table;
 mod diagnostic;
 mod language;
 pub mod process;
@@ -11,7 +12,7 @@ pub mod template;
 mod text;
 pub mod text_config;
 
-pub use diagnostic::{Diagnostic, FixClass, Severity, Skipped, TextEdit};
+pub use diagnostic::{Diagnostic, FixChoice, FixClass, FixException, Severity, Skipped, TextEdit, is_logical_location};
 pub use language::Language;
 pub use text::{LineIndex, Position, normalize_path};
 pub use text_config::{TEXT_CONFIG_FILES, is_text_config};

@@ -4,6 +4,7 @@ title: "Repeated landmarks have distinct names"
 languages: [html]
 fix: manual
 fix_reason: "the names need a human"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/unique-landmark]
 tags: [a11y]

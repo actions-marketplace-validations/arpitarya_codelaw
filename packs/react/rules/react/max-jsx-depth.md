@@ -4,6 +4,7 @@ title: "JSX elements nest no deeper than a maximum"
 languages: [jsx, tsx]
 fix: manual
 fix_reason: "moving a nested part into a component means choosing its name and its props; that is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 6, description: "the most JSX elements that may nest inside one another" }

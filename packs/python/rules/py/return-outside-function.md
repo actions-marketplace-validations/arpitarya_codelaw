@@ -4,6 +4,7 @@ title: "`return` only inside a function"
 languages: [python]
 fix: manual
 fix_reason: "the surrounding code has to be restructured"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F706]
 since: 0.1.0

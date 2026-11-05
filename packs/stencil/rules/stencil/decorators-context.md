@@ -4,6 +4,7 @@ title: "Stencil decorators only inside @Component classes"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the class should be a component needs the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [stencil/decorators-context]
 since: 0.1.0

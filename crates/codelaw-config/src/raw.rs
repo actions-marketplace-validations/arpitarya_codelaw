@@ -61,9 +61,12 @@ pub struct RawConfig {
     /// SR-BASELINE decision 9: dated exceptions. Root config only.
     pub exceptions: Option<RawExceptions>,
     /// SR-PROJECT-GRAPH decision 9 (W-71): the test rules of new code —
-    /// the lcov report and the rules' options; `[coverage.ignore]` is
-    /// SR-BASELINE decision 12's. Root config only.
+    /// the lcov report and the rules' options; `[coverage.ignore]` is the
+    /// deprecated spelling of `[codelawignore]`. Root config only.
     pub coverage: Option<RawCoverage>,
+    /// SR-BASELINE decision 12 (W-158): what every `.codelawignore` line
+    /// must carry, and a line's defaults. Root config only.
+    pub codelawignore: Option<RawCoverageIgnore>,
     /// SR-RULE-PACKS decision 15: the dependency rules. Root config only.
     #[serde(default)]
     pub deps: RawDeps,
@@ -85,10 +88,29 @@ pub struct RawConfig {
     /// SR-CONFIG decision 11a (W-131): `[tests.skip]`. Root config only.
     #[serde(default)]
     pub tests: RawTests,
+    /// SR-CONFIG decision 11b (W-146): `git/commit-message`. Root config only.
+    #[serde(default)]
+    pub commits: RawCommits,
+    /// SR-CONFIG decision 11b (W-146): `git/branch-name`. Root config only.
+    #[serde(default)]
+    pub branches: RawBranches,
+    /// SR-CONFIG decision 11b (W-146): `git/pr-size` and
+    /// `git/pr-description`. Root config only.
+    #[serde(default)]
+    pub pr: RawPr,
     /// SR-PROJECT-GRAPH decision 11 (W-130): feature-flag expiry — the
     /// accessors, the SDK presets, the inline markers' policy and the
     /// warning window. Its presence turns the flag rules on. Root config only.
     pub flags: Option<RawFlags>,
+    /// SR-PACK-LOOKUP decisions 6–7 (W-155): where rule packs are found.
+    /// Root config only.
+    #[serde(default)]
+    pub packs: crate::packs::RawPacks,
+    /// SR-RULE-PACKS decision 19 (W-145): what happens when a pack's
+    /// provider cannot build its table, and each provider's own settings.
+    /// Root config only.
+    #[serde(default)]
+    pub providers: RawProviders,
     #[serde(default)]
     pub adapters: RawAdapters,
     #[serde(default)]
@@ -102,9 +124,13 @@ pub struct RawConfig {
     /// in the engine reads it. Root config only.
     #[serde(default)]
     pub reviews: RawReviews,
+    /// SR-CONFIG decision 11c (W-158): `[rules] require_reason`, read out
+    /// of the `[rules]` table when the file loads. Root config only.
+    #[serde(skip)]
+    pub require_reason: Option<bool>,
 }
 
-/// A rule's severity, or its severity and options.
+/// A rule's severity, or its severity, options, lowered fix and reason.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum RuleSetting {
@@ -113,7 +139,18 @@ pub enum RuleSetting {
         severity: Option<String>,
         #[serde(default)]
         options: BTreeMap<String, serde_json::Value>,
+        /// A rung at or below the rule's own (SR-LAW-4 decision 16):
+        /// `suggest` or `manual` lowers it; raising is a load error.
+        #[serde(default)]
+        fix: Option<String>,
+        /// Why the rule is `"off"` (SR-CONFIG decision 11c); only an entry
+        /// that sets `severity = "off"` takes one.
+        #[serde(default)]
+        reason: Option<String>,
     },
+    /// Not a rule's setting: `[rules] require_reason`, which the loader
+    /// takes out of `[rules]`. Anywhere else it is a load error.
+    Flag(bool),
 }
 
 impl RuleSetting {
@@ -121,13 +158,30 @@ impl RuleSetting {
         match self {
             RuleSetting::Severity(s) => Some(s),
             RuleSetting::Full { severity, .. } => severity.as_deref(),
+            RuleSetting::Flag(_) => None,
         }
     }
 
     pub fn options(&self) -> Option<&BTreeMap<String, serde_json::Value>> {
         match self {
-            RuleSetting::Severity(_) => None,
+            RuleSetting::Severity(_) | RuleSetting::Flag(_) => None,
             RuleSetting::Full { options, .. } => Some(options),
+        }
+    }
+
+    /// The fix rung this entry lowers the rule to, as written.
+    pub fn fix(&self) -> Option<&str> {
+        match self {
+            RuleSetting::Severity(_) | RuleSetting::Flag(_) => None,
+            RuleSetting::Full { fix, .. } => fix.as_deref(),
+        }
+    }
+
+    /// Why the rule is `"off"`, as written; an empty reason is none.
+    pub fn reason(&self) -> Option<&str> {
+        match self {
+            RuleSetting::Full { reason, .. } => reason.as_deref().map(str::trim).filter(|r| !r.is_empty()),
+            _ => None,
         }
     }
 }
@@ -225,6 +279,23 @@ pub struct RawCache {
 #[serde(deny_unknown_fields)]
 pub struct RawFix {
     pub external_timeout: Option<Duration>,
+    /// SR-CONFIG decision 11e (W-166): whether every rule's `auto` fix runs
+    /// on save and from the agent hook, below the per-rule entries.
+    pub on_edit: Option<bool>,
+    /// SR-MULTI-FILE-FIXES decision 3 (SR-CONFIG decision 11g): whether a
+    /// fix may edit several files. Loaded and validated; W-162 builds what
+    /// it does.
+    pub multi_file: Option<MultiFile>,
+}
+
+/// `[fix] multi_file` and a rule entry's `multi_file`: SR-MULTI-FILE-FIXES
+/// decision 3.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MultiFile {
+    Auto,
+    Suggest,
+    Off,
 }
 
 /// `[adapters]`: SR-LINTER decision 2.
@@ -273,11 +344,13 @@ pub struct RawCoverage {
     pub on_no_change_set: Option<String>,
     /// A regex: function names that are never judged.
     pub ignore_names: Option<String>,
-    /// `[coverage.ignore]`: what every `.codelawignore` line must carry.
+    /// `[coverage.ignore]`: the deprecated spelling of `[codelawignore]`,
+    /// read for one minor release.
     pub ignore: Option<RawCoverageIgnore>,
 }
 
-/// `[coverage.ignore]`: SR-BASELINE decision 12.
+/// `[codelawignore]` (and its old spelling `[coverage.ignore]`):
+/// SR-BASELINE decision 12.
 #[derive(Debug, Default, Clone, PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RawCoverageIgnore {
@@ -341,6 +414,39 @@ pub struct RawSpell {
     pub words_file: Option<String>,
 }
 
+/// `on_missing`: what a run does when a provider cannot build its table
+/// (SR-RULE-PACKS decision 19).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum OnMissing {
+    /// Leave out the rules and the sorting that need the table, with one note.
+    Skip,
+    /// Stop the run, as a missing pack does.
+    Error,
+}
+
+/// `[providers]` (W-145, SR-RULE-PACKS decision 19).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawProviders {
+    /// Every provider's; default `skip`.
+    pub on_missing: Option<OnMissing>,
+    /// `[providers.tailwind]`: `@codelaw/provider-tailwind`.
+    pub tailwind: Option<RawProviderTailwind>,
+}
+
+/// `[providers.tailwind]`.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawProviderTailwind {
+    /// Overrides `[providers] on_missing` for this provider.
+    pub on_missing: Option<OnMissing>,
+    /// The project's Tailwind stylesheet, relative to the root config's
+    /// folder. Unset: the first `.css` file that imports "tailwindcss", else
+    /// Tailwind's own theme.
+    pub stylesheet: Option<String>,
+}
+
 /// `[todo]`: what a TODO-style comment must carry (SR-CONFIG decision 11a,
 /// W-131). The `*/todo-marker` rules read it as their options, so it
 /// serialises to the JSON they read.
@@ -394,6 +500,112 @@ pub struct RawTestsSkip {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub warn_days: Option<u32>,
 }
+
+/// `[commits]`: what a commit message must look like (SR-CONFIG decision
+/// 11b, W-146). `git/commit-message` reads it as its options (the rule's
+/// own options win), so it serialises to the JSON the rule reads.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawCommits {
+    /// `conventional` (the default), `angular`, `gitmoji`, `custom` or `off`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub types: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_scope: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subject_max: Option<u32>,
+    /// `lower`, `sentence` or `any`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subject_case: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_body: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub breaking: Option<Vec<String>>,
+    /// The regular expression a subject line must match, `preset = "custom"` only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub ticket: RawGitTicket,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub skip: RawCommitsSkip,
+}
+
+/// `[commits.ticket]` and `[branches.ticket]`.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawGitTicket {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    /// `[commits.ticket]` only: `subject`, `footer` or `either`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub place: Option<String>,
+    /// `[branches.ticket]` only: every commit names the branch's ticket.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub match_commits: Option<bool>,
+}
+
+/// `[commits.skip]`: the commits `git/commit-message` passes over.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawCommitsSkip {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merges: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reverts: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fixups: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authors: Option<Vec<String>>,
+}
+
+/// `[branches]`: `git/branch-name` (SR-CONFIG decision 11b).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawBranches {
+    /// A regular expression the whole name must match; empty or unset, the
+    /// name is not checked (unless a ticket is required).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_length: Option<u32>,
+    /// Globs of the branches never checked.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protected: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub skip_authors: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "is_default")]
+    pub ticket: RawGitTicket,
+}
+
+/// `[pr]`: `git/pr-size` and `git/pr-description` (SR-CONFIG decision 11b).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawPr {
+    /// Warn above this many changed lines; 0 is off; 400 by default.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_lines: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exclude: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title_pattern: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_ticket: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub template_sections: Option<Vec<String>>,
+}
+
+fn is_default<T: Default + PartialEq>(v: &T) -> bool {
+    *v == T::default()
+}
+
+/// `[commits] preset`'s values.
+pub const COMMIT_PRESETS: &[&str] = &["conventional", "angular", "gitmoji", "custom", "off"];
 
 /// The ticket pattern when `ticket_pattern` is not set (`ABC-123`).
 pub const DEFAULT_TICKET_PATTERN: &str = "[A-Z][A-Z0-9]+-\\d+";
@@ -457,7 +669,67 @@ pub struct RawDeps {
     /// a CI verdict.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub agent: Option<RawDepsAgent>,
+    /// `[deps.licence]`: `deps/licence` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub licence: Option<RawDepsLicence>,
+    /// `[deps.drift]`: `deps/version-drift` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub drift: Option<RawDepsDrift>,
+    /// `[deps.runtime]`: `deps/runtime-agreement` (W-129).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<RawDepsRuntime>,
 }
+
+/// `[deps.licence]`: globs over SPDX ids, checked before the defaults (a
+/// configured `allow` lifts a default denial), the severity of an unknown
+/// licence, and dated exceptions shaped as `[deps] ignore`'s.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsLicence {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deny: Option<Vec<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unknown: Option<GradeSeverity>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<RawDepsIgnore>>,
+}
+
+/// `[deps.drift]`: which range a monorepo's workspaces align to, and the
+/// packages never compared.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsDrift {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub policy: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ignore: Option<Vec<String>>,
+}
+
+/// The values of `[deps.drift] policy`.
+pub const DRIFT_POLICIES: &[&str] = &["highest", "root"];
+
+/// `[deps.runtime]`: the source that is the truth, per runtime.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawDepsRuntime {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<RawRuntimeSource>,
+}
+
+#[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawRuntimeSource {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub node: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub python: Option<String>,
+}
+
+/// The names `[deps.runtime] source` takes (`deps/runtime-agreement`).
+pub const RUNTIME_SOURCES_NODE: &[&str] = &["engines.node", "volta.node", ".nvmrc", ".node-version", ".tool-versions", "mise.toml"];
+pub const RUNTIME_SOURCES_PYTHON: &[&str] = &["requires-python", ".python-version", ".tool-versions", "mise.toml"];
 
 /// The kinds of advisory source: the wire shape a source speaks.
 pub const ADVISORY_KINDS: &[&str] = &["registry", "osv"];

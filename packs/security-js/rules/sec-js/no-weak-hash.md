@@ -2,8 +2,8 @@
 id: sec-js/no-weak-hash
 title: "No MD5 or SHA-1"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the digest length changes, so what stores or compares it has to change too"
+fix: suggest
+fix_reason: "SHA-256 replaces the broken hash, and the reviewer checks that no stored or protocol-fixed digest depends on the old length"
 stability: preview
 ported_from: [bandit/B324, ruff/S324]
 security: { cwe: [327], owasp: ["A04:2025"], severity: high }
@@ -25,11 +25,15 @@ match:
     - pattern: createHmac($A, $$$REST)
     - pattern: crypto.createHmac($A)
     - pattern: crypto.createHmac($A, $$$REST)
-    - pattern: $O.subtle.digest($A)
-    - pattern: $O.subtle.digest($A, $$$REST)
+    - pattern: $O.subtle.digest($A2)
+    - pattern: $O.subtle.digest($A2, $$$REST)
 constraints:
   A: { regex: '(?i)^["''`]\s*(md[245]|sha-?1|ripemd-?160?|rmd160|whirlpool)\s*["''`]$' }
+  A2: { regex: '(?i)^["''`]\s*(md[245]|sha-?1|ripemd-?160?|rmd160|whirlpool)\s*["''`]$' }
 message: "`$A` is a broken hash; two inputs can be made to share it"
+fix:
+  - replace: {target: $A, with: '"sha256"'}
+  - replace: {target: $A2, with: '"SHA-256"'}
 ```
 
 ## How to fix

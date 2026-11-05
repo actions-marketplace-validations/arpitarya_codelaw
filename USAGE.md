@@ -24,10 +24,10 @@ codelaw init --no-install
 # 3. Until the packs are published, link them from the clone:
 #    the npm packs into node_modules/, the PyPI-only ones where a Python install would put them
 mkdir -p node_modules/@codelaw .codelaw-packs
-for p in js ts react node stencil html css scss css-modules data tanstack-query redux-toolkit security-js security-ts security-html spell deps; do
+for p in js ts react node stencil html css scss css-modules data tanstack-query redux-toolkit security-js security-ts security-html spell deps nextjs testing tailwind; do
   ln -s "$OLDPWD/codelaw/packs/$p" "node_modules/@codelaw/rules-$p"
 done
-for p in python security-python; do
+for p in python security-python django fastapi airflow numpy pandas; do
   ln -s "$OLDPWD/codelaw/packs/$p" ".codelaw-packs/codelaw_rules_${p//-/_}"
 done
 export CODELAW_SITE_PACKAGES="$PWD/.codelaw-packs"
@@ -210,6 +210,30 @@ rules = { "js/max-lines" = { options = { max = 400 } } }
 
 `codelaw config --scopes` lists every scope with its files and where it is written, in the order they apply; `codelaw config --print --for <file>` names the scope each value came from. A scope name is lowercase letters, digits, `_` and `-`, and `default` is reserved.
 
+### Lowering a rule's fix
+
+Every rule has a fix class: `auto` (applied by `codelaw fix`, on save and by the agent hook), `suggest` (a diff to accept; `codelaw fix --unsafe` applies it) or `manual` (steps). A rule entry may lower it, never raise it:
+
+```toml
+[rules]
+"py/unused-import" = { severity = "error", fix = "suggest" }   # show the diff, don't apply it
+"js/no-debugger"   = { fix = "manual" }                        # nothing applies it; the finding spells out the edit
+```
+
+`fix = "auto"` on a `suggest` rule is a config error naming the rule's own class. `codelaw rules --why <id>` and `codelaw config --print` show the lowered class and the line that set it.
+
+### Saying why a rule is off
+
+A rule entry that sets `severity = "off"`, in `[rules]` or a scope, may say why. `require_reason = true` makes the reason mandatory:
+
+```toml
+[rules]
+require_reason = true                                   # default false
+"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }
+```
+
+With it on, an `"off"` that has no reason is a `codelaw/off-without-reason` error on its line in `codelaw.toml`. A `reason` on an entry that isn't `"off"` is a config error. `codelaw config --print` shows each reason and the line that set it ([SR-CONFIG](records/0110_config.md) decision 11c).
+
 ### Size limits
 
 Six rules cap how big a file, a function and a parameter list may grow, for JavaScript, TypeScript and Python. They are in no default preset; `codelaw:js/size` and `codelaw:py/size` turn all three of a language on at `warn`.
@@ -334,6 +358,19 @@ locale = "en-US"                          # or en-GB; unset accepts both
 
 A missing file at the default path is no error; a `words_file` you set must exist. `init` writes the file and fills it with **`codelaw spell learn`**, which runs `spell/unknown-word` over the project (whatever the config turns on) and adds each word it reports, lower case and sorted, after the lines already there. A word that is a known typo or one edit from a common word is listed for review, never added. A second run adds only new words ([SR-SPELL](records/0116_spell.md)).
 
+### Where rule packs are found
+
+Each pack in `extends` is looked for in `node_modules/` — in the config's folder, then every folder above it — and then in the Python environment: the launcher's paths, then `$VIRTUAL_ENV`, then the project's own `.venv/`. All three are searched, so an editor started from another project's shell (and its `VIRTUAL_ENV`) still finds the packs in this project's `.venv/`. To pin the places, set any of these; a key you set replaces its default:
+
+```toml
+[packs]
+order        = ["npm", "pypi"]   # the registries, in order; leave one out to skip it
+node_modules = ["node_modules"]  # exactly these folders, no walk-up
+venv         = ".venv"           # only this venv; CODELAW_SITE_PACKAGES and VIRTUAL_ENV are ignored
+```
+
+Folders are relative to the root config, and a folder you set must exist. `codelaw config --print` lists every place in search order with its source (`packs.npm[0]`, `packs.pypi[0]`, …), `codelaw rules --why <id>` names the folder the rule's pack came from, and a missing pack's error lists every folder searched ([SR-PACK-LOOKUP](records/0118_pack-lookup.md)).
+
 ### Type-aware rules
 
 With TypeScript 7.1 or later installed in your project, the `ts` pack's `ts/type-checked` preset asks **your own TypeScript** about types — a Promise nobody awaits, an `await` on a plain value, a value typed `any` called or read from — and reports TypeScript's own errors as `ts/type-error`. They are `preview` until TypeScript 7.1 is GA:
@@ -393,16 +430,16 @@ scope = "all"                   # "public": only exported functions (JS/TS), no 
 - **The change set is an input:** `--changed-since origin/main` in CI, `--staged` in the pre-commit hook, and the file an agent just edited in `codelaw hook`. A function is *new* when the base has none of that name and *edited* when its tokens changed — a reformat, a move or a comment outside it is not an edit. Plain `codelaw check` judges nothing and says `new code: no change set; test rules not evaluated`. See what it sees with `codelaw debug changed-functions --changed-since origin/main`.
 - **`graph/untested-function`:** no test file reaches the function — a test reaches it by importing it (any alias, through a barrel or `from pkg.mod import f`), or, for a function its module does not export, by importing the module. A string such as `mock.patch("pkg.mod.f")` does not count. It needs no report, so it runs in hooks too.
 - **`graph/function-coverage`:** the function's lines in an lcov report (Jest `coverageReporters: ["lcov"]`, Vitest `coverage.reporter: ["lcov"]`, c8, `coverage lcov`, pytest-cov `--cov-report=lcov`) are under `min`. **Generate the report in the same job, before `codelaw check`:** lcov has no content hash, so an old report is only mostly caught — a file it does not name, a line past the end, or a line that is now blank or a comment gives `codelaw/stale-coverage` and no verdict for that file. TypeScript compiled with plain `tsc` and measured by c8 without source maps is not supported; Jest and Vitest write lcov against the `.ts` source.
-- **Exemptions live in `.codelawignore`** at the project root, one line each, every line with a reason:
+- **Exemptions live in `.codelawignore`** at the project root, one line each: the target, the rules it exempts (any rule; `py/*` is a namespace), and a reason:
 
   ```text
-  src/utils/http.ts#get                 forever: thin wrapper over fetch, nothing to test
-  scripts/*.py                          on_touch=error expires=2027-01-31: one-off migration scripts
-  app/billing.py#Invoice.legacy_total   on_touch=error on_touch_scope=function expires=2027-03-01 by=lead@example.com: replaced in ORD-1500
-  app/legacy/report.py#build_report     on_touch=warn expires=2027-06-30: migration in progress
+  src/utils/http.ts#get                 graph/untested-function  forever: thin wrapper over fetch, nothing to test
+  scripts/*.py                          py/no-print,graph/*  on_touch=error expires=2027-01-31: one-off migration scripts
+  app/billing.py#Invoice.legacy_total   graph/function-coverage  on_touch=error on_touch_scope=function expires=2027-03-01 by=lead@example.com: replaced in ORD-1500
+  vendor                                js/*  forever: third-party code, never edited here
   ```
 
-  `on_touch=error` (the default) revokes an exemption when its file is edited — every function it covers in that file is judged again; `warn` brings the findings back as warnings; `keep` keeps it. `on_touch_scope=function` narrows "edited" to that function's own tokens. `forever` never expires and is never revoked. `[coverage.ignore]` sets `require_expiry` and `require_on_touch` (both `true`) and the defaults of a line; a line missing a field is `codelaw/incomplete-ignore` and exempts nothing, and a line that matches nothing is `codelaw/stale-ignore`, which `codelaw fix` removes. `codelaw exceptions` lists every line. A `// codelaw-ignore graph/untested-function: <why>` above one function works too ([SR-PROJECT-GRAPH](records/0103_project-graph.md) decision 9, [SR-BASELINE](records/0104_baseline-and-deprecations.md) decision 12).
+  `on_touch=error` (the default) revokes an exemption when its file is edited — every function it covers in that file is judged again; `warn` brings the findings back as warnings; `keep` keeps it. `on_touch_scope=function` narrows "edited" to that function's own tokens. `forever` never expires and is never revoked. An exempted finding is not reported and `codelaw fix` does not fix it; the editor shows it dotted grey, as a baseline finding. `[codelawignore]` (formerly `[coverage.ignore]`) sets `require_expiry` and `require_on_touch` (both `true`) and the defaults of a line; a line missing a field, or naming a rule the project does not have, is `codelaw/incomplete-ignore` and exempts nothing; a line that names no rule still means the two test rules, with a warning, until the next minor release; and a line that matches nothing is `codelaw/stale-ignore`, which `codelaw fix` removes. `codelaw exceptions` lists every line. A `// codelaw-ignore graph/untested-function: <why>` above one function works too ([SR-PROJECT-GRAPH](records/0103_project-graph.md) decision 9, [SR-BASELINE](records/0104_baseline-and-deprecations.md) decision 12).
 
 ---
 
@@ -503,16 +540,19 @@ flowchart LR
   - **`pre-commit` blocks:** it runs `codelaw fix --staged` on the files that are fully staged and re-stages them, then `codelaw check --staged` on every staged file. A partly staged file is checked but never fixed, so your unstaged hunks stay yours. Add flags to both with `CODELAW_HOOK_ARGS` (for example `--profile ci`); skip once with `git commit --no-verify`.
   - **`post-commit` never blocks:** it reminds you of your exceptions that expire within 7 days (`codelaw exceptions --mine --expiring 7d`) and the baseline's 30-day burn-down in one line, then prints what the scripts in `.codelaw/hooks/post-commit.d/` print, and always exits 0.
   - **By hand:** `codelaw check --staged`.
-  - **The pre-commit framework** — `codelaw` must be on `PATH`:
+  - **The pre-commit framework** — [`codelaw-pre-commit`](https://github.com/arpitarya/codelaw-pre-commit) installs codelaw from PyPI at the tag's version into the framework's own virtualenv; nothing to build, nothing on `PATH`. Hooks `codelaw-fix`, `codelaw-format` and `codelaw-check`; a new release reaches it as a tag within a day, and `pre-commit autoupdate` moves your `rev`:
 
     ```yaml
     repos:
-      - repo: https://github.com/arpitarya/codelaw
-        rev: v0.3.0
+      - repo: https://github.com/arpitarya/codelaw-pre-commit
+        rev: v0.4.3
         hooks:
           - id: codelaw-fix
+          - id: codelaw-format
           - id: codelaw-check
     ```
+
+    If codelaw is already installed (npm or pip), the main repository's `language: system` hooks run that copy instead — `repo: https://github.com/arpitarya/codelaw`, the same `rev`, hooks `codelaw-fix` and `codelaw-check`.
 
   - **husky** (`.husky/pre-commit`) and **lefthook** (`lefthook.yml`):
 

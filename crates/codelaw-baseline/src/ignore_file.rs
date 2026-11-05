@@ -1,17 +1,22 @@
-//! `.codelawignore` (SR-BASELINE decision 12, W-71): the exemptions from the
-//! test rules of new code, one per line, at the project root.
+//! `.codelawignore` (SR-BASELINE decision 12; W-71, widened to every rule
+//! by W-158): file- and function-level exemptions from any rule, one per
+//! line, at the project root.
 //!
 //! ```text
-//! src/utils/http.ts#get        forever: thin wrapper over fetch
-//! scripts/*.py                 on_touch=error expires=2027-01-31: one-off scripts
-//! app/billing.py#Invoice.legacy_total  on_touch=error on_touch_scope=function expires=2027-03-01 by=lead@example.com: replaced in ORD-1500
+//! src/utils/http.ts#get   graph/untested-function           forever: thin wrapper over fetch
+//! scripts/*.py            py/no-print,py/*                  on_touch=error expires=2027-01-31: one-off scripts
+//! app/billing.py#Invoice.legacy_total  py/*  on_touch=error on_touch_scope=function expires=2027-03-01 by=lead@example.com: replaced in ORD-1500
 //! ```
 //!
 //! A line is a target — a `.gitignore`-style glob, or `<path>#<qualified
-//! name>` for one function — then keys, then `: <reason>`. `#` starts a
-//! comment only at the start of a line. What a line must carry is checked
-//! here against `[coverage.ignore]`; a line that fails covers nothing.
-//! Nothing here reads the clock, git or the files (L5 decision 2).
+//! name>` for one function — then the rules it exempts (comma-separated;
+//! `js/*` is a namespace), then keys, then `: <reason>`. A line that names
+//! no rule is the old spelling: it means the two test rules of new code,
+//! for one minor release. `#` starts a comment only at the start of a
+//! line. What a line must carry is checked here against `[codelawignore]`;
+//! a line that fails covers nothing. Nothing here reads the clock, git or
+//! the files (L5 decision 2), and nothing here knows which rules exist:
+//! the engine checks the ids.
 
 use crate::date::Date;
 use crate::exception::valid_email;
@@ -22,6 +27,9 @@ pub const IGNORE_FILE: &str = ".codelawignore";
 pub const INCOMPLETE_RULE: &str = "codelaw/incomplete-ignore";
 /// A line matches no file or function.
 pub const STALE_IGNORE_RULE: &str = "codelaw/stale-ignore";
+/// What a line that names no rule exempts: the old spelling, kept for one
+/// minor release (the test rules of new code, SR-PROJECT-GRAPH decision 9).
+pub const LEGACY_RULES: &[&str] = &["graph/untested-function", "graph/function-coverage"];
 
 /// What an edit does to an exemption.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -64,7 +72,7 @@ impl TouchScope {
     }
 }
 
-/// `[coverage.ignore]`.
+/// `[codelawignore]` (formerly `[coverage.ignore]`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct IgnorePolicy {
     /// Every line says `expires=` or `forever`.
@@ -85,13 +93,14 @@ impl Default for IgnorePolicy {
 
 impl IgnorePolicy {
     /// The table's values; the loader has already refused an unknown key.
-    pub fn from_table(require_expiry: Option<bool>, require_on_touch: Option<bool>, on_touch: Option<&str>, on_touch_scope: Option<&str>) -> Result<IgnorePolicy, String> {
+    /// `table` names the table the values came from, for the message.
+    pub fn from_table(table: &str, require_expiry: Option<bool>, require_on_touch: Option<bool>, on_touch: Option<&str>, on_touch_scope: Option<&str>) -> Result<IgnorePolicy, String> {
         let d = IgnorePolicy::default();
         Ok(IgnorePolicy {
             require_expiry: require_expiry.unwrap_or(d.require_expiry),
             require_on_touch: require_on_touch.unwrap_or(d.require_on_touch),
-            on_touch: on_touch.map(IgnoreOnTouch::parse).transpose().map_err(|e| format!("[coverage.ignore]: {e}"))?.unwrap_or(d.on_touch),
-            on_touch_scope: on_touch_scope.map(TouchScope::parse).transpose().map_err(|e| format!("[coverage.ignore]: {e}"))?.unwrap_or(d.on_touch_scope),
+            on_touch: on_touch.map(IgnoreOnTouch::parse).transpose().map_err(|e| format!("[{table}]: {e}"))?.unwrap_or(d.on_touch),
+            on_touch_scope: on_touch_scope.map(TouchScope::parse).transpose().map_err(|e| format!("[{table}]: {e}"))?.unwrap_or(d.on_touch_scope),
         })
     }
 }
@@ -120,6 +129,11 @@ pub struct IgnoreEntry {
     /// 1-based.
     pub line: u32,
     pub target: IgnoreTarget,
+    /// The rule ids and namespaces (`js/*`) it exempts; [`LEGACY_RULES`]
+    /// when the line names none.
+    pub rules: Vec<String>,
+    /// The line names no rule: the old spelling.
+    pub legacy: bool,
     pub forever: bool,
     pub expires: Option<Date>,
     pub warn_days: Option<u32>,
@@ -137,6 +151,11 @@ impl IgnoreEntry {
     /// The line covers something: it was read and is complete.
     pub fn valid(&self) -> bool {
         self.unreadable.is_none() && self.incomplete.is_empty()
+    }
+
+    /// Whether the line exempts rule `id`: named, or in a named namespace.
+    pub fn names(&self, id: &str) -> bool {
+        self.rules.iter().any(|r| r == id || r.strip_suffix("/*").is_some_and(|ns| id.strip_prefix(ns).is_some_and(|rest| rest.starts_with('/'))))
     }
 
     /// `on_touch`, the line's or the policy's; `forever` never revokes.
@@ -180,6 +199,8 @@ fn parse_line(line: &str, n: u32, policy: &IgnorePolicy) -> IgnoreEntry {
     let mut e = IgnoreEntry {
         line: n,
         target,
+        rules: Vec::new(),
+        legacy: false,
         forever: false,
         expires: None,
         warn_days: None,
@@ -196,7 +217,12 @@ fn parse_line(line: &str, n: u32, policy: &IgnorePolicy) -> IgnoreEntry {
                 e.forever = true;
                 Ok(())
             }
-            None => Err(format!("`{w}` is not a key (forever, expires=, warn_days=, by=, on_touch=, on_touch_scope=)")),
+            // A rule id has a namespace: `js/no-var`, `js/*`.
+            None if w.contains('/') => {
+                e.rules.extend(w.split(',').filter(|r| !r.is_empty()).map(str::to_owned));
+                Ok(())
+            }
+            None => Err(format!("`{w}` is not a rule id or a key (forever, expires=, warn_days=, by=, on_touch=, on_touch_scope=)")),
             Some(("expires", v)) => Date::parse(v).map(|d| e.expires = Some(d)).map_err(|err| format!("`expires=`: {err}")),
             Some(("warn_days", v)) => v.parse::<u32>().map(|d| e.warn_days = Some(d)).map_err(|_| format!("`warn_days={v}` is not a whole number of days")),
             Some(("by", v)) => {
@@ -210,6 +236,10 @@ fn parse_line(line: &str, n: u32, policy: &IgnorePolicy) -> IgnoreEntry {
         if let Err(err) = r {
             e.unreadable.get_or_insert(err);
         }
+    }
+    if e.rules.is_empty() {
+        e.legacy = true;
+        e.rules = LEGACY_RULES.iter().map(|r| (*r).to_owned()).collect();
     }
     if target_text.is_empty() {
         e.unreadable.get_or_insert("the line names no file, glob or function".into());
@@ -227,10 +257,10 @@ fn parse_line(line: &str, n: u32, policy: &IgnorePolicy) -> IgnoreEntry {
         e.incomplete.push("a reason after a colon (`: <why>`), which a line with `expires=` or `forever` always needs".into());
     }
     if policy.require_expiry && !e.forever && e.expires.is_none() {
-        e.incomplete.push("`expires=YYYY-MM-DD` or `forever` (`[coverage.ignore] require_expiry` is on)".into());
+        e.incomplete.push("`expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry` is on)".into());
     }
     if policy.require_on_touch && !e.forever && e.on_touch.is_none() {
-        e.incomplete.push("`on_touch=error|warn|keep` (`[coverage.ignore] require_on_touch` is on)".into());
+        e.incomplete.push("`on_touch=error|warn|keep` (`[codelawignore] require_on_touch` is on)".into());
     }
     if e.forever {
         for (set, key) in [(e.expires.is_some(), "expires="), (e.warn_days.is_some(), "warn_days="), (e.on_touch.is_some(), "on_touch="), (e.on_touch_scope.is_some(), "on_touch_scope=")] {
@@ -340,10 +370,30 @@ app/legacy/report.py#build_report  on_touch=warn expires=2027-06-30: migration i
 
     #[test]
     fn the_policy_table_is_checked() {
-        assert_eq!(IgnorePolicy::from_table(None, None, None, None).unwrap(), IgnorePolicy::default());
-        let p = IgnorePolicy::from_table(Some(false), Some(false), Some("warn"), Some("function")).unwrap();
+        assert_eq!(IgnorePolicy::from_table("codelawignore", None, None, None, None).unwrap(), IgnorePolicy::default());
+        let p = IgnorePolicy::from_table("codelawignore", Some(false), Some(false), Some("warn"), Some("function")).unwrap();
         assert_eq!((p.on_touch, p.on_touch_scope), (IgnoreOnTouch::Warn, TouchScope::Function));
-        assert!(IgnorePolicy::from_table(None, None, Some("never"), None).unwrap_err().contains("[coverage.ignore]"));
+        assert!(IgnorePolicy::from_table("codelawignore", None, None, Some("never"), None).unwrap_err().contains("[codelawignore]"));
+    }
+
+    #[test]
+    fn a_line_names_its_rules() {
+        let p = IgnorePolicy::default();
+        let e = one("src/**/*.ts js/no-var,ts/* on_touch=keep expires=2027-01-01: legacy code", &p);
+        assert!(e.valid(), "{e:?}");
+        assert!(!e.legacy);
+        assert_eq!(e.rules, vec!["js/no-var".to_owned(), "ts/*".to_owned()]);
+        assert!(e.names("js/no-var") && e.names("ts/no-any") && !e.names("js/eqeqeq") && !e.names("tsx/x"));
+        let f = one("a.py#f py/no-print forever: the CLI's output", &p);
+        assert_eq!(f.target, IgnoreTarget::Function { path: "a.py".into(), name: "f".into() });
+        assert_eq!(f.rules, vec!["py/no-print".to_owned()]);
+    }
+
+    #[test]
+    fn a_line_without_rules_is_the_old_spelling() {
+        let e = one("src/utils/http.ts#get forever: thin wrapper", &IgnorePolicy::default());
+        assert!(e.legacy && e.valid());
+        assert!(e.names("graph/untested-function") && e.names("graph/function-coverage") && !e.names("js/no-var"));
     }
 
     #[test]

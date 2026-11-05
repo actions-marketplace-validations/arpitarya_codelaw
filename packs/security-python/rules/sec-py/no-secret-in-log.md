@@ -2,8 +2,8 @@
 id: sec-py/no-secret-in-log
 title: 'Secrets are not logged'
 languages: [python]
-fix: manual
-fix_reason: "whether to drop the value or mask it depends on what the log is for"
+fix: suggest
+fix_reason: "the reviewer confirms a redacted argument loses nothing the log needs; a keyword argument (`password=...`) gets no edit"
 stability: preview
 security: { cwe: [532], owasp: ["A09:2025"], severity: medium }
 since: 0.2.0
@@ -25,12 +25,14 @@ match:
         has:
           regex: '(?i)(pass(word|wd)?|secret|token|api_?key|auth|otp|nonce|salt|session_?id|csrf|reset_?code|verification_?code)'
           any:
-            - { kind: identifier }
-            - { kind: attribute }
-            - { kind: subscript }
-            - { kind: string, has: { kind: interpolation } }
+            - { kind: identifier, pattern: $S }
+            - { kind: attribute, pattern: $S }
+            - { kind: subscript, pattern: $S }
+            - { kind: string, has: { kind: interpolation }, pattern: $S }
             - { kind: keyword_argument }
 message: 'A secret may be written to the log; log that it was set, not its value'
+fix:
+  - replace: { target: $S, with: '"[REDACTED]"' }
 ```
 
 ## How to fix
@@ -46,6 +48,12 @@ message: 'A secret may be written to the log; log that it was set, not its value
 
 ```py
 logger.info("login with password %s", password)
+```
+
+#### Fixed
+
+```py
+logger.info("login with password %s", "[REDACTED]")
 ```
 
 #### Do

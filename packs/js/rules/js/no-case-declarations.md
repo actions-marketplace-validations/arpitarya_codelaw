@@ -4,6 +4,7 @@ title: "No let, const, function or class directly in a case"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "another case may rely on the shared declaration"
+fix_pending: "auto-subset; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint/no-case-declarations]
 since: 0.1.0

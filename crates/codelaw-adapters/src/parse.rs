@@ -426,6 +426,8 @@ impl Finding {
             source: source.to_owned(),
             note: None,
             data: None,
+            choices: Vec::new(),
+            fix_exception: None,
         }
     }
 }

@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (callers catching the `TypeError` the broken code raised would now see a different exception) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F901` |
+| **Ported from** | `ruff/F901`, `pylint/notimplemented-raised` |
 
 ## What it checks
 

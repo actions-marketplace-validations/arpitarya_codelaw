@@ -137,3 +137,51 @@ this.el.nativeElement.innerHTML = sanitizeHtml(x);
 ```expect
 (none)
 ```
+
+### case: Renderer2 writes text
+
+```ts
+this.renderer.setProperty(el, "innerHTML", html);
+```
+
+```expect
+1:1 sec-ts/angular-native-element-html
+```
+
+```fixed
+this.renderer.setProperty(el, "textContent", html);
+```
+
+### case: outerHTML has no edit
+
+```ts
+this.host.nativeElement.outerHTML = html;
+```
+
+```expect
+1:1 sec-ts/angular-native-element-html
+```
+
+### case: Renderer2 writes text
+
+```ts
+this.renderer.setProperty(el, "innerHTML", html);
+```
+
+```expect
+1:1 sec-ts/angular-native-element-html
+```
+
+```fixed
+this.renderer.setProperty(el, "textContent", html);
+```
+
+### case: outerHTML has no edit
+
+```ts
+this.host.nativeElement.outerHTML = html;
+```
+
+```expect
+1:1 sec-ts/angular-native-element-html
+```

@@ -4,6 +4,7 @@ title: "State is not set on every render"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the state should be instead — derived during render, or set in an event — is a design choice"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/set-state-in-render, "@eslint-react/set-state-in-render"]
 since: 0.3.0

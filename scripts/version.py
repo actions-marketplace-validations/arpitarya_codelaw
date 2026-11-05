@@ -42,6 +42,8 @@ VSCODE_COPIES = [
     (VSCODE / "package.json", re.compile(r'(?m)(^  "version": ")([^"]+)(")')),
     (VSCODE / "package-lock.json", re.compile(r'(?m)(^  "version": ")([^"]+)(")')),
     (VSCODE / "package-lock.json", re.compile(r'(\n    "": \{\n      "name": "[^"]+",\n      "version": ")([^"]+)(")')),
+    # The schema Even Better TOML gets for codelaw.toml: this version's tag (W-157).
+    (VSCODE / "package.json", re.compile(r'(raw\.githubusercontent\.com/arpitarya/codelaw/v)([^/"]+)(/crates/codelaw-config/codelaw\.schema\.json)')),
 ]
 # The GitHub Action (SR-PACKAGES decision 15, W-97): `uses: arpitarya/codelaw@v<v>`
 # installs codelaw <v> because its `version` input defaults to the tag's version.

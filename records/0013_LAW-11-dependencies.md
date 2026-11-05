@@ -10,7 +10,7 @@ feature: "dependencies by ratification only"
 owns:
   - crates/codelaw-cli/tests/dependencies.rs
 laws: [L0, L2, L11]
-timestamp: 2026-10-29T05:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ratifies: "Arpit, 2026-10-26 (Cowork): Okay. Create a law, no dependencies. For Rust, for Python, for JavaScript, TypeScript, JSON, CSS, YAML, TOML, HTML, nothing. No dependencies. Create a law. And then tell me what all dependencies do we have. We will ratify them one by one."
 ---
@@ -98,20 +98,20 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 
 **Ruled 2026-10-26** (the decider, by voice, one card per unit): 29 ratified; `strsim`, `anyhow` and `postcard` were replaced by codelaw's own code and removed (W-67, 2026-10-26) — `strsim` and `anyhow` still appear in `Cargo.lock` only as part of the ratified trees of `clap` and `markup_fmt`. Each ratification accepts the unit's transitive tree as pinned in `Cargo.lock` / `package-lock.json` that day (L11 decision 4).
 
-**Already dependency-free:** the published `codelaw` packages on npm and PyPI (zero runtime dependencies; the npm one names only its own `@codelaw/cli-*` binaries), every rule pack and dev-server plugin; the skills package's one dependency is codelaw itself (D-35); and every script in `scripts/` and `.claude/hooks/` (Python standard library only).
+**Already dependency-free:** the published `codelaw` packages on npm and PyPI (zero runtime dependencies; the npm one names only its own `@codelaw/cli-*` binaries), every rule pack but `@codelaw/rules-tailwind`, whose one dependency is its own provider (D-51), and every dev-server plugin; the skills package's one dependency is codelaw itself (D-35); the provider's one is a peer dependency on the project's own Tailwind (D-50); and every script in `scripts/` and `.claude/hooks/` (Python standard library only).
 
 ### Rust — compiled into the `codelaw` binary (runtime)
 
 | id | unit | crates | what it does for codelaw | pin | crates incl. transitive | status |
 |---|---|---|---|---|---|---|
-| D-01 | **Biome** | `biome_formatter`, `biome_languages`, `biome_js_parser`, `biome_js_formatter`, `biome_json_parser`, `biome_json_formatter`, `biome_css_parser`, `biome_css_formatter` | formats JS, TS, JSX, JSON, CSS | git `0b4c11f` (Biome 2.5.15) | 133 | ratified 2026-10-26 — *"Ratify."* |
+| D-01 | **Biome** | `biome_formatter`, `biome_languages`, `biome_js_parser`, `biome_js_formatter`, `biome_json_parser`, `biome_json_formatter`, `biome_css_parser`, `biome_css_formatter` | formats JS, TS, JSX, JSON (CSS and SCSS until 2026-11-05, now Oxc's, D-52; `biome_css_formatter` and `biome_css_parser` are no longer built) | git `0b4c11f` (Biome 2.5.15) | 133 | ratified 2026-10-26 — *"Ratify."* |
 | D-02 | **Ruff** | `ruff_formatter`, `ruff_python_formatter`, `ruff_python_parser`, `ruff_python_ast`, `ruff_text_size` | formats Python | `=0.0.18` | 165 | ratified 2026-10-26 — *"Ratify."* |
 | D-03 | **ast-grep** | `ast-grep-core`, `ast-grep-config`, `ast-grep-language` | the `match:` rule engine; brings the tree-sitter grammars for JS, TS, Python, JSON, YAML, Markdown, CSS, HTML | `=0.51.0` | 91 | ratified 2026-10-26 — *"Ratify."* |
 | D-04 | **tree-sitter** | `tree-sitter`, `tree-sitter-language`, `tree-sitter-md`, `tree-sitter-toml-ng` | the parser runtime every lint rule stands on; Markdown and TOML grammars | `=0.27.0` | 26 | ratified 2026-10-26 — *"Ratify."* |
 | D-05 | **tree-sitter-css fork** | in-tree copy of `tree-sitter-css` 0.25.0 (+ `cc`, build) | the CSS grammar (B-047: SCSS joins via tree-sitter-scss, W-62) | vendored | 3 | ratified 2026-10-26 — *"Ratify."* |
 | D-06 | **taplo** | `taplo` | formats TOML | `=0.14.0` | 64 | ratified 2026-10-26 — *"Ratify."* |
-| D-07 | **pretty_yaml** | `pretty_yaml` | formats YAML | `=0.6.0` | 10 | ratified 2026-10-26 — *"Ratify."* |
-| D-08 | **dprint Markdown** | `dprint-plugin-markdown`, `dprint-core` | formats Markdown | `=0.26.0` | 23 | ratified 2026-10-26 — *"Ratify."* |
+| D-07 | **pretty_yaml** | `pretty_yaml` | formatted YAML until 2026-11-05; **not used since** (W-141: Oxc, D-52) | `=0.6.0` | 10 | ratified 2026-10-26 — *"Ratify."* · unused since 2026-11-05; its ledger lines went with the code |
+| D-08 | **dprint Markdown** | `dprint-plugin-markdown`, `dprint-core` | formatted Markdown until 2026-11-05; **not used since** (W-141: Oxc, D-52) | `=0.26.0` | 23 | ratified 2026-10-26 — *"Ratify."* · unused since 2026-11-05; its ledger lines went with the code |
 | D-09 | **markup_fmt** | `markup_fmt` | formats HTML | `=0.27.6` | 12 | ratified 2026-10-26 — *"Ratify."* |
 | D-10 | **serde** | `serde`, `serde_json` | reads and writes JSON and Rust data everywhere | 1.0.229 / 1.0.154 | 16 | ratified 2026-10-26 — *"Ratify."* |
 | D-11 | **toml** | `toml`, `toml_edit` | reads `codelaw.toml`; edits it keeping the user's formatting | 1.1.8 / 0.25.17 | 19 | ratified 2026-10-26 — *"Ratify."* |
@@ -127,6 +127,7 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 | D-22 | **semver** | `semver` | version ranges (`requires`, packs, deps) | 1.0.28 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-25 | **libc** | `libc` | OS calls (signals, Unix sockets) | 0.2.191 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-33 | **tree-sitter-scss (vendored)** | in-tree copy of `tree-sitter-scss` 1.0.0, commit `5da5ba7` (MIT, +`tree-sitter-language`, `cc` already counted) | the SCSS grammar (W-62; B-047) | vendored | 0 new | ratified 2026-10-26 — *"Own grammar / tree-sitter-scss"* (B-047, docket) |
+| D-52 | **Oxc formatters** | `oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers (`oxc-css-parser`, `oxc-markdown-parser`, `oxc-yaml-parser`), `oxc_formatter_core`, `oxc_allocator` (MIT; `publish = false`, not on crates.io) | formats CSS, SCSS, YAML and Markdown closer to Prettier (W-141, measured: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3%) | git `7b933d5` of `oxc-project/oxc` (`7b933d595bf18619a3ceac5d4bf32099d5e0c30b`, 2026-11-05; `oxc_formatter_*` 0.76.0, `oxc_allocator` 0.157.0, `oxc-css-parser` 0.0.20, `oxc-markdown-parser` 0.0.4, `oxc-yaml-parser` 0.0.8), pinned by W-141's build; `oxc_allocator` is patched to the same revision so the crates.io parsers share it ([SR-PACKAGES](0107_packages.md) decision 4). Moved only by a change that reruns W-141's corpus | 74 (incl. `oxc_span`, `oxc_diagnostics`, `oxc_data_structures`, the `icu_segmenter` family, and the build-only `oxc_formatter_tests`, which generates Oxc's own test list) | ratified 2026-11-05 — *"Approve it."* · built 2026-11-05 (W-141): CSS, SCSS, YAML and Markdown format with it |
 
 ### Rust — tests and build only
 
@@ -152,6 +153,8 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 | id | unit | package that depends on it | what it does | pin | status |
 |---|---|---|---|---|---|
 | D-35 | **codelaw** (codelaw's own engine, on npm and PyPI) | the skills package: `@codelaw/skills` (`"dependencies": { "codelaw": "<version>" }`) and `codelaw-skills` (`Requires-Dist: codelaw==<version>`) | the engine the agent files were written for; installing the skills package brings it (W-77; [SR-PACKAGES](0107_packages.md) decision 3b) | exactly the skills package's own version, generated by `scripts/package.py` | ratified 2026-10-27 — the decider's W-77 ruling: *"it will have a hard dependency on code law"*, at *"the exact same version"*. codelaw's own package, so it brings no third-party code; `scripts/package.py check` refuses any other dependency on any published package |
+| D-50 | **tailwindcss** (npm, MIT) — **the consumer's own**, a peer dependency | `@codelaw/provider-tailwind` (`"peerDependencies": { "tailwindcss": ">=4.0.0" }`) | the Tailwind CSS the provider asks for the class table; it is the project's own copy in its `node_modules`, so codelaw installs, bundles and pins none ([SR-PACKAGES](0107_packages.md) decision 3c, [SR-RULE-PACKS](0101_rule-packs.md) decision 19) | `>=4.0.0`: the v4 design-system API; v3 has none | ratified 2026-10-30 — *"It should be a peer dependency or a dependency whosoever is going to consume it. … So it should be based on whatever is present in node modules and that way whatever version it is using it will also work."* (the decider, Cowork, voice; W-145) |
+| D-51 | **@codelaw/provider-tailwind** (codelaw's own, npm) | `@codelaw/rules-tailwind` on npm (`"dependencies": { "@codelaw/provider-tailwind": "<version>" }`); the PyPI copy declares none | one install gets the pack and the provider that builds its table ([L6](0008_LAW-6-python-and-node-packages.md) decisions 4 and 14) | exactly the pack's own version, generated by `scripts/package.py` | ratified 2026-10-30 — on the pack depending on its provider or naming it in its manifest: *"Why not both?"* (the decider, Cowork, voice; W-145). codelaw's own package; `scripts/package.py check` refuses any other dependency on a pack |
 
 ### Grammar tooling — by hand, when a vendored grammar changes
 
@@ -193,7 +196,18 @@ Installed only by `scripts/bench-rivals.py install` inside `.github/workflows/be
 
 | id | unit | what it does | pin | status |
 |---|---|---|---|---|
-| D-45 | **typescript** (npm, Apache-2.0) | the TypeScript codelaw's own type-aware tests and CI run against (W-105's fixtures, W-106's matrix); installed into fixture folders only — never in a package, the engine or a consumer's repo. A consumer's project uses its own TypeScript, which is no dependency of codelaw ([SR-TYPES](0117_types.md) decision 5). Separate from D-28, the extension's compiler | the **7.1** line, blocking; `typescript@next` in a nightly, reporting-only job. **Pinned by W-105 (2026-10-28)** in `fixtures/types/package-lock.json`: `typescript@7.1.0-beta` (no dependencies of its own) and its 21 optional platform-binary packages `@typescript/typescript-<platform>@7.1.0-beta`, of which npm installs the one for the machine (≈ 33 MB) — nothing else. Installed by `npm ci` in `fixtures/types` (ci.yml); moves to the RC and GA by W-105 step 6 and W-106 | ratified 2026-10-27 — *"Yes."* (the decider, 2026-10-27 (voice docket); with *"make sure it is as fast as possible"*) |
+| D-45 | **typescript** (npm, Apache-2.0) | the TypeScript codelaw's own type-aware tests and CI run against (W-105's fixtures, W-106's matrix); installed into fixture folders only — never in a package, the engine or a consumer's repo. A consumer's project uses its own TypeScript, which is no dependency of codelaw ([SR-TYPES](0117_types.md) decision 5). Separate from D-28, the extension's compiler | the **7.1** line, blocking; `typescript@next` in a nightly, reporting-only job. **Pinned by W-105 (2026-10-28)** in `fixtures/types/package-lock.json`: `typescript@7.1.0-beta` (no dependencies of its own) and its 21 optional platform-binary packages `@typescript/typescript-<platform>@7.1.0-beta`, of which npm installs the one for the machine (≈ 33 MB) — nothing else. Installed by `npm ci` in `fixtures/types` (ci.yml); moves to the RC and GA by W-105 step 6 and by `typescript-bump.yml`'s PRs (`scripts/typescript-watch.py bump` rewrites this pin; W-105, 2026-10-30) | ratified 2026-10-27 — *"Yes."* (the decider, 2026-10-27 (voice docket); with *"make sure it is as fast as possible"*) |
+
+### Tests and CI — Tailwind for the provider and its parity check (W-145)
+
+Installed into fixture folders or a throwaway bench folder only — never in the engine, a package, a pack or a consumer's repo. A consumer's project uses its own Tailwind: `@codelaw/provider-tailwind` declares it as a peer dependency (ruled 2026-10-30; D-50). `fixtures/tailwind/package-lock.json` pins D-48 (`npm ci` there, as `fixtures/types` does D-45); the ledger check reads `packaging/` only, so neither has a ledger line. D-49 is installed by hand into a throwaway folder outside the repo for `scripts/tailwind-parity.py` and is in no manifest of the repo.
+
+| id | unit | what it does | pin | status |
+|---|---|---|---|---|
+| D-48 | **tailwindcss** (npm, MIT, no dependencies) | the Tailwind `@codelaw/provider-tailwind`'s own tests and CI run against; installed into fixture folders only | `tailwindcss@4.3.3`, tarball SHA-256 `f1493c5bcb29a80310da63d19282d233ba259479f36561a27146cd4747d1faef` | ratified 2026-10-30 — *"Approve all the three items presented in the chat for work item 145."* (the decider, Cowork); fixtures only |
+| D-49 | **prettier-plugin-tailwindcss** (npm, MIT, no dependencies) with **prettier** (D-38's pin) | the measuring instrument of W-145's DoD 3: Tailwind class order compared byte for byte with codelaw's on a corpus of Tailwind projects | `prettier-plugin-tailwindcss@0.8.1`, SHA-256 `c2d90bbe3f89aedc62a1a1a187b0dc649125e0f85cc9028889cb0322d55388e3`; `prettier@3.9.10` | ratified 2026-10-30 — *"Approve all the three items presented in the chat for work item 145."* (the decider, Cowork); by hand or CI-only |
+
+**Running them:** Claude Code may run D-48 and D-49 when its permission check asks (the same ruling, item 3).
 
 ### CI — the VS Code extension's registry tools (L2 decision 8, W-95)
 
@@ -317,14 +331,21 @@ D-06 cargo tree ahash@0.8 aho-corasick@1 allocator-api2@0.2 arc-swap@1 autocfg@1
    taplo@0.14 text-size@1 thiserror-impl@1 thiserror@1 time-core@0.1 time-macros@0.2 time@0.3
    tracing-attributes@0.1 tracing-core@0.1 tracing@0.1 unicode-ident@1 version_check@0.9 wasip2@1
    wit-bindgen@0.57 zerocopy-derive@0.8 zerocopy@0.8 zmij@1
-D-07 cargo members pretty_yaml
-D-07 cargo tree countme@3 hashbrown@0.14 memchr@2 pretty_yaml@0.6 rowan@0.16 rustc-hash@1 text-size@1
-   tiny_pretty@0.2 winnow@0.7 yaml_parser@0.3
-D-08 cargo members dprint-core dprint-plugin-markdown
-D-08 cargo tree allocator-api2@0.2 bumpalo@3 dprint-core-macros@0.1 dprint-core@0.70
-   dprint-plugin-markdown@0.26 equivalent@1 foldhash@0.1 foldhash@0.2 hashbrown@0.15 hashbrown@0.17
-   indexmap@2 proc-macro2@1 quote@1 rustc-hash@2 serde@1 serde_core@1 serde_derive@1 syn@1 syn@3
-   thiserror-impl@2 thiserror@2 unicode-ident@1 unicode-width@0.2
+D-52 cargo members oxc-css-parser oxc-markdown-parser oxc-yaml-parser oxc_allocator oxc_formatter_core oxc_formatter_css oxc_formatter_markdown oxc_formatter_yaml
+D-52 cargo tree allocator-api2@0.2 bytecount@0.6 castaway@0.2 cfg-if@1 compact_str@0.10 cow-utils@0.1
+   displaydoc@0.2 equivalent@1 fastrand@2 foldhash@0.2 hashbrown@0.17 icu_collections@2
+   icu_locale_core@2 icu_locale_fallback@2 icu_locale_fallback_data@2 icu_provider@2 icu_segmenter@2
+   icu_segmenter_data@2 indexmap@2 itoa@1 litemap@0.8 memchr@2 oxc-css-parser@0.0.20
+   oxc-markdown-parser@0.0.4 oxc-yaml-parser@0.0.8 oxc_allocator@0.157 oxc_ast_macros@0.157
+   oxc_data_structures@0.157 oxc_diagnostics@0.157 oxc_estree@0.157 oxc_formatter_core@0.76
+   oxc_formatter_css@0.76 oxc_formatter_markdown@0.76 oxc_formatter_tests@0.62
+   oxc_formatter_yaml@0.76 oxc_span@0.157 oxc_str@0.157 percent-encoding@2 phf@0.14
+   phf_generator@0.14 phf_macros@0.14 phf_shared@0.14 potential_utf@0.1 proc-macro2@1 quote@1
+   rustc-hash@2 rustversion@1 serde@1 serde_core@1 serde_derive@1 serde_json@1 siphasher@1 smallvec@1
+   smawk@0.3 stable_deref_trait@1 static_assertions@1 syn@2 syn@3 synstructure@0.14 textwrap@0.16
+   tinystr@0.8 unicode-ident@1 unicode-segmentation@1 unicode-width@0.2 utf8_iter@1 writeable@0.6
+   yoke-derive@0.8 yoke@0.8 zerofrom-derive@0.1 zerofrom@0.1 zerotrie@0.2 zerovec-derive@0.11
+   zerovec@0.11 zmij@1
 D-09 cargo members markup_fmt
 D-09 cargo tree aho-corasick@1 anyhow@1 css_dataset@0.4 either@1 itertools@0.15 markup_fmt@0.27
    memchr@2 regex-automata@0.4 regex-syntax@0.8 regex@1 tiny_pretty@0.4 unicode-width@0.2

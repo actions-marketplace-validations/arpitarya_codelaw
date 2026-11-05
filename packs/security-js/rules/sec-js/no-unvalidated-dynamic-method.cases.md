@@ -32,3 +32,17 @@ api[ctx.query.fn]();
 ```expect
 1:1 sec-js/no-unvalidated-dynamic-method
 ```
+
+### case: fix: own-key check keeps this
+
+```js
+api[req.query.fn](1);
+```
+
+```expect
+1:1 sec-js/no-unvalidated-dynamic-method
+```
+
+```fixed
+(Object.hasOwn(api, req.query.fn) ? api[req.query.fn] : null).call(api, 1);
+```

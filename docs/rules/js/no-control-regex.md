@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which character was meant needs the author) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-control-regex` |
+| **Ported from** | `eslint/no-control-regex`, `eslint-plugin-regexp/no-control-character` |
 
 ## What it checks
 

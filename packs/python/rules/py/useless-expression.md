@@ -4,8 +4,9 @@ title: "No expression statement that does nothing"
 languages: [python]
 fix: manual
 fix_reason: "what the expression was meant for needs a person"
+fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/B018]
+ported_from: [ruff/B018, pylint/pointless-statement, pylint/expression-not-assigned]
 since: 0.1.0
 ---
 

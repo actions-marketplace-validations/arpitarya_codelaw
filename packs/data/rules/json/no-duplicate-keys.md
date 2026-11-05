@@ -4,6 +4,7 @@ title: "No key twice in one JSON object"
 languages: [json]
 fix: manual
 fix_reason: "which of the two values was meant can't be known from the file"
+fix_pending: "auto-subset"
 stability: preview
 since: 0.1.0
 ---

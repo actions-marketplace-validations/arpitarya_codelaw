@@ -4,6 +4,7 @@ title: "No binary expression whose result is fixed"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the intended grouping or comparison needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-constant-binary-expression]
 since: 0.1.0

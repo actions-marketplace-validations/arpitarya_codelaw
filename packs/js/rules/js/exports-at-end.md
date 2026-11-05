@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
 invariant: exports-unchanged
+ported_from: [eslint-plugin-import/exports-last]
 since: 0.1.0
 ---
 

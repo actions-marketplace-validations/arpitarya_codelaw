@@ -4,6 +4,7 @@ title: "No findDOMNode"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "a ref has to be attached to the right element by hand"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/no-find-dom-node]
 since: 0.1.0

@@ -4,8 +4,9 @@ title: "Module-level imports come first"
 languages: [python]
 fix: manual
 fix_reason: "moving an import above other code changes the order the module runs in"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
-ported_from: [ruff/E402]
+ported_from: [ruff/E402, pylint/wrong-import-position]
 since: 0.1.0
 ---
 

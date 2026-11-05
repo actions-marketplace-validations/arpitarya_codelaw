@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the safe form (a lookup by id, a resolved path checked against a base folder) depends on the storage layout) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the base folder the path must stay inside, or the id to look the file up by, is not in the code) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-22 · OWASP A01:2025 · security severity `high` |

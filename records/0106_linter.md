@@ -12,7 +12,7 @@ owns:
   - crates/codelaw-match
   - crates/codelaw-adapters
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-28T12:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ---
 
@@ -68,7 +68,7 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
 
 ### Decision
 
-1. **Languages and parsers.** Every grammar is MIT-licensed tree-sitter ([L2](0004_LAW-2-foss-dependencies.md)).
+1. **Languages and parsers.** Every grammar is MIT-licensed tree-sitter ([L2](0004_LAW-2-foss-dependencies.md)). `codelaw-lang` also says where a file writes class lists (`class_lists`, W-145), which [SR-FORMATTER](0105_formatter.md) decision 9 owns.
 
    | Language | Grammar | Built into ast-grep? |
    |---|---|---|
@@ -90,6 +90,8 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    `codelaw-lang`'s `functions` lists the functions of a JS, TS or Python file (W-71): qualified name (`Invoice.total`; `f#1`, `f#2` for several of one name), line span, whether the module exports it, and its own token stream (depth relative to the function). It lists declarations, methods, accessors, and arrow or function expressions bound to a name (a variable, a class field, an object property, `exports.x`); it does not list anonymous callbacks, functions nested in a function (judged through the holder), overload signatures, `@overload` / `@abstractmethod` definitions, abstract methods or `.d.ts`. `classify` sets a file's functions against the same file at a base revision: **new** (no function of that name there; a rename is new), **edited** (its token stream differs, so reformatting, moving and comments outside it are not edits) or **untouched**; no base copy makes every function new.
 
 2. **Three rule scopes**, all in the same Markdown rule format ([SR-RULE-PACKS](0101_rule-packs.md)) and all bound by [L4](0006_LAW-4-every-rule-has-a-fix.md):
+
+   **The finding's rung (W-156, 2026-10-31).** Each diagnostic's `fix` is the finding's own rung, never above its rule's ([L4](0006_LAW-4-every-rule-has-a-fix.md) decision 2): a match outside its rule's `auto_when:`, or a native finding its rule's `rung_of` lowers, is `suggest`; a finding no edit can be built for is `manual`. A `suggest` finding may carry labelled `choices` instead of one edit set (decision 4); a `manual` one carries `fix_exception`, its rule's or `value` (decision 5).
    - **`scope: file`** (the default): an ast-grep pattern or YAML rule with relational clauses (`inside`, `has`, `precedes`, `follows`) and the semantic-model predicates ([SR-RULE-FORMAT](0112_rule-format.md) decision 3a), or a `native:` rule ([SR-ARCHITECTURE](0108_architecture.md) decision 15b) for checks a pattern can't express, or for JSON, YAML and TOML a `target:` + `assert:` rule on the file's data tree ([SR-RULE-FORMAT](0112_rule-format.md) decision 3e); fixes come from the edit primitives;
      A `match:` rule may also ask type questions under `type:` (SR-RULE-FORMAT decision 3f; `crates/codelaw-match/src/types.rs`), answered by the project's TypeScript ([SR-TYPES](0117_types.md), W-105).
    - **`scope: project`**: a `graph:` query ([SR-PROJECT-GRAPH](0103_project-graph.md));
@@ -146,6 +148,7 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    - **What it covers:** a comment alone on its line covers the next line with code; a trailing comment covers its own line. Several rules are comma-separated before the colon.
    - A suppression with no reason is an error, and so is one naming a rule that doesn't exist (`codelaw/unknown-suppression`).
    - A suppression that suppresses nothing is reported as `info` with an `auto` fix that removes it.
+   - **Its file-level twin** is `.codelawignore` ([SR-BASELINE](0104_baseline-and-deprecations.md) decision 12, W-158): one line exempts a file glob or one function from the rules it names, with a reason and `expires=` or `forever`. The comment stays for one line.
    - **Dated:** before the colon, beside the rule ids, it may carry `expires=YYYY-MM-DD` (the first day it no longer covers; `until=` the day before, for one minor release), `warn_days=N` and `by=<email>`: `// codelaw-ignore js/no-console expires=2026-11-15 by=a@example.com: needed until the logger lands`. What they do — the warning before, the error on the day, the author check — is [SR-BASELINE](0104_baseline-and-deprecations.md) decision 9; a key that cannot be read makes the comment cover nothing and is reported as `codelaw/unknown-suppression`.
    - **Another tool's line suppressions** (W-94, 2026-10-27): `[lint] ignore_aliases = ["eslint", "ruff", "biome"]` (any of the three; none by default) also reads `eslint-disable-next-line` / `eslint-disable-line` (rules comma-separated, `-- reason` optional), Ruff's `# noqa` / `# noqa: F401, E501` (anywhere in the comment, covering its own line; `# ruff: noqa` is a file exemption and is not read) and `biome-ignore lint/<group>/<rule>: reason` (the next line; `lint` alone is every rule). Their ids are the tool's: each covers the codelaw rules whose `ported_from:` names it (`no-console` → `eslint/no-console`, `react/jsx-key` → `eslint-plugin-react/jsx-key`, a Biome rule through the sources Biome names, `codelaw-engine/data/biome-sources.json`), and an id no rule ports covers nothing. One with no ids covers every rule but `codelaw/*`. They need no reason and are never reported as unknown or unused — the old tool reads them too, so a codebase moving over needs no mass edit — and they cover file rules only: a `graph/` rule needs `codelaw-ignore`. The block forms (`/* eslint-disable */`, `biome-ignore-all`, `-start`/`-end`) are not read. `codelaw migrate` turns on its tool's alias ([SR-CLI-MCP](0115_cli-and-mcp.md) decision 15).
    - Bulk freezing of existing violations is [SR-BASELINE](0104_baseline-and-deprecations.md)'s job, never a wall of inline ignores.

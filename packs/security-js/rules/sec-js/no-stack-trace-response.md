@@ -2,8 +2,8 @@
 id: sec-js/no-stack-trace-response
 title: "No error object or stack trace in a response"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the client should be told is a decision for the author"
+fix: suggest
+fix_reason: "the client gets a generic message and the error is logged first, and the reviewer confirms the client needs nothing else (a JSON client may want an object)"
 stability: preview
 security: { cwe: [209], owasp: ["A10:2025"], severity: medium }
 since: 0.3.0
@@ -32,6 +32,10 @@ match:
 constraints:
   E: { regex: '^(err|error|e|ex|exception)$|\.stack\b|:\s*(err|error|ex|exception)\s*[,}]|\.stack\s*[,}]' }
 message: "An error or its stack is sent to the client"
+fix:
+  - insert-before: {target: $$MATCH, text: "(console.error($E), "}
+  - replace: {target: $E, with: '"Internal Server Error"'}
+  - insert-after: {target: $$MATCH, text: ")"}
 ```
 
 ## How to fix
@@ -49,6 +53,12 @@ message: "An error or its stack is sent to the client"
 res.status(500).send(err.stack);
 ```
 
+#### Fixed
+
+```js
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 #### Do
 
 ```js
@@ -62,6 +72,12 @@ res.status(500).send("Something went wrong");
 
 ```jsx
 res.status(500).send(err.stack);
+```
+
+#### Fixed
+
+```jsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 #### Do
@@ -79,6 +95,12 @@ res.status(500).send("Something went wrong");
 res.status(500).send(err.stack);
 ```
 
+#### Fixed
+
+```ts
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 #### Do
 
 ```ts
@@ -92,6 +114,12 @@ res.status(500).send("Something went wrong");
 
 ```tsx
 res.status(500).send(err.stack);
+```
+
+#### Fixed
+
+```tsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 #### Do

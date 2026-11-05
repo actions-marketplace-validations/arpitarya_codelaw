@@ -4,6 +4,7 @@ title: "No references to undeclared names"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the right declaration — an import, a local, or an environment — is the author's call"
+fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
 options:
   env: { type: "string[]", default: ["shared-node-browser"], description: "environments whose globals are declared: browser, node, commonjs, worker, serviceworker, shared-node-browser, jest, mocha, vitest" }

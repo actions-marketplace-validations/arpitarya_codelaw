@@ -4,7 +4,7 @@ title: "One module per `import` statement"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/E401]
+ported_from: [ruff/E401, pylint/multiple-imports]
 since: 0.1.0
 ---
 

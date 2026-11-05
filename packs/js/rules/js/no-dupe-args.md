@@ -4,6 +4,7 @@ title: "No two parameters share a name"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "which parameter was meant can't be known from the code"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-dupe-args]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "A component passed to memo or forwardRef has a name"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the name is the author's choice"
+fix_pending: "auto-subset; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/display-name]
 since: 0.1.0

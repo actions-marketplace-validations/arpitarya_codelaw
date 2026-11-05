@@ -24,7 +24,7 @@ fn finding(start: usize, end: usize, message: impl Into<String>) -> NativeFindin
 }
 
 /// Every node under `root` in document order.
-fn preorder(root: Node<'_>) -> Vec<Node<'_>> {
+pub(crate) fn preorder(root: Node<'_>) -> Vec<Node<'_>> {
     let mut out = Vec::new();
     let mut stack = vec![root];
     while let Some(n) = stack.pop() {
@@ -38,14 +38,14 @@ fn preorder(root: Node<'_>) -> Vec<Node<'_>> {
 
 // ---------------------------------------------------------------- headings
 
-struct Heading<'t> {
-    node: Node<'t>,
-    level: usize,
+pub(crate) struct Heading<'t> {
+    pub(crate) node: Node<'t>,
+    pub(crate) level: usize,
     /// The heading's inline content node.
-    content: Option<Node<'t>>,
+    pub(crate) content: Option<Node<'t>>,
     /// The `#` marker or the setext underline.
-    marker: Option<Node<'t>>,
-    setext: bool,
+    pub(crate) marker: Option<Node<'t>>,
+    pub(crate) setext: bool,
 }
 
 fn heading(n: Node<'_>) -> Option<Heading<'_>> {
@@ -66,7 +66,7 @@ fn heading(n: Node<'_>) -> Option<Heading<'_>> {
     }
 }
 
-fn headings(doc: Node<'_>) -> Vec<Heading<'_>> {
+pub(crate) fn headings(doc: Node<'_>) -> Vec<Heading<'_>> {
     preorder(doc).into_iter().filter_map(heading).collect()
 }
 
@@ -124,7 +124,7 @@ fn plain_text(n: Node<'_>, src: &str, out: &mut String) {
 }
 
 /// A heading's text as rendered, without an ATX closing sequence.
-fn heading_text(h: &Heading<'_>, src: &str) -> String {
+pub(crate) fn heading_text(h: &Heading<'_>, src: &str) -> String {
     let Some(content) = h.content else { return String::new() };
     let raw = &src[content.byte_range()];
     let mut out = String::new();
@@ -440,7 +440,7 @@ impl NativeRule for NoInlineHtml {
 
 /// Whether a node is the inline grammar's root, not the block grammar's
 /// `inline` node of the same name.
-fn inline_root(n: Node<'_>) -> bool {
+pub(crate) fn inline_root(n: Node<'_>) -> bool {
     n.kind() == "inline" && n.parent().is_none()
 }
 
@@ -481,7 +481,7 @@ impl NativeRule for NoReversedLinks {
 }
 
 /// Byte ranges an inline root's bare text must avoid.
-fn non_text_ranges(root: Node<'_>) -> Vec<(usize, usize)> {
+pub(crate) fn non_text_ranges(root: Node<'_>) -> Vec<(usize, usize)> {
     preorder(root)
         .into_iter()
         .filter(|n| {
@@ -637,7 +637,7 @@ fn label_key(t: &str) -> String {
 /// The inline trees of the document whose text contains one of `needles`
 /// (parsing is the cost; most inline content has no link at all), with the
 /// host offset each starts at.
-fn inline_trees(doc: Node<'_>, src: &str, needles: &[&str]) -> Vec<(usize, codelaw_lang::Root)> {
+pub(crate) fn inline_trees(doc: Node<'_>, src: &str, needles: &[&str]) -> Vec<(usize, codelaw_lang::Root)> {
     preorder(doc)
         .into_iter()
         .filter(|n| n.kind() == "inline" && needles.iter().any(|x| text(*n, src).contains(x)))
@@ -727,7 +727,7 @@ fn definitions(doc: Node<'_>, src: &str) -> Vec<Definition> {
     out
 }
 
-fn string_list(ctx: &NativeContext<'_>, key: &str, default: &[&str]) -> Vec<String> {
+pub(crate) fn string_list(ctx: &NativeContext<'_>, key: &str, default: &[&str]) -> Vec<String> {
     match ctx.options.get(key).and_then(|v| v.as_array()) {
         Some(a) => a.iter().filter_map(|v| v.as_str()).map(str::to_owned).collect(),
         None => default.iter().map(|s| s.to_string()).collect(),

@@ -4,6 +4,7 @@ title: 'No `xmlrpc` without `defusedxml`'
 languages: [python]
 fix: manual
 fix_reason: "the patch has to run once before any xmlrpc object exists, and where that is depends on the program's start-up"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B411, ruff/S411]
 security: { cwe: [776], owasp: ["A05:2025"], severity: medium }

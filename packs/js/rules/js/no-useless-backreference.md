@@ -4,8 +4,9 @@ title: "No backreference that can only match the empty string"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the reference was meant to repeat needs the author"
+fix_pending: "suggest"
 stability: preview
-ported_from: [eslint/no-useless-backreference]
+ported_from: [eslint/no-useless-backreference, eslint-plugin-regexp/no-useless-backreference]
 since: 0.1.0
 ---
 

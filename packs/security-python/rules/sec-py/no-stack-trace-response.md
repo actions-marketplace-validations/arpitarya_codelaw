@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
 fix_reason: "what the client sees instead (a generic message and an error id) is a product decision"
+fix_exception: security
 stability: preview
 security: { cwe: [209], owasp: ["A10:2025"], severity: medium }
 since: 0.2.0

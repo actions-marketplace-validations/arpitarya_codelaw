@@ -2,8 +2,8 @@
 id: js/require-yield
 title: "A generator function yields"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether to yield or to drop the `*` needs the author"
+fix: suggest
+fix_reason: "dropping the `*` makes a plain function, right only if the generator was never meant to yield; the reviewer confirms, since adding the missing `yield` is the author's"
 stability: preview
 ported_from: [eslint/require-yield]
 since: 0.1.0
@@ -18,6 +18,7 @@ match:
   any:
     - kind: generator_function_declaration
     - kind: generator_function
+  has: { pattern: $$STAR, regex: '^\*$' }
   not:
     any:
       - has: { field: body, regex: '^\{\s*\}$' }
@@ -26,11 +27,13 @@ match:
           stopBy:
             any: [{kind: function_declaration}, {kind: function_expression}, {kind: arrow_function}, {kind: method_definition}, {kind: generator_function_declaration}, {kind: generator_function}]
 message: "A generator that never yields is a plain function"
+fix:
+  - remove: $$STAR
 ```
 
 ## How to fix
 
-1. Add the `yield` the generator was meant to have, or remove the `*`.
+1. Add the `yield` the generator was meant to have, or remove the `*`; the fix removes the `*`.
 
 ## Examples
 
@@ -40,6 +43,14 @@ message: "A generator that never yields is a plain function"
 
 ```js
 function* ids() {
+  return 1;
+}
+```
+
+#### Fixed
+
+```js
+function ids() {
   return 1;
 }
 ```
@@ -62,6 +73,14 @@ function* ids() {
 }
 ```
 
+#### Fixed
+
+```jsx
+function ids() {
+  return 1;
+}
+```
+
 #### Do
 
 ```jsx
@@ -80,6 +99,14 @@ function* ids() {
 }
 ```
 
+#### Fixed
+
+```ts
+function ids() {
+  return 1;
+}
+```
+
 #### Do
 
 ```ts
@@ -94,6 +121,14 @@ function* ids() {
 
 ```tsx
 function* ids() {
+  return 1;
+}
+```
+
+#### Fixed
+
+```tsx
+function ids() {
   return 1;
 }
 ```

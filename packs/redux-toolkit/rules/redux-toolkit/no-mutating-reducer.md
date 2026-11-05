@@ -4,6 +4,7 @@ title: "A hand-written reducer doesn't change its state in place"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the update has to be rewritten to return a new value"
+fix_pending: "suggest"
 stability: preview
 since: 0.1.0
 ---

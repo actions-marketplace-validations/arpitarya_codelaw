@@ -4,6 +4,7 @@ title: "No inline event handlers"
 languages: [html]
 fix: manual
 fix_reason: "the handler's code has to move into a script that attaches it"
+fix_exception: restructure
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: medium }
 since: 0.2.0

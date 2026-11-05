@@ -6,7 +6,7 @@ fn rule(language: Language, block: &str) -> RuleFile {
     let ext = language.extension();
     let display = language.display();
     let text = format!(
-        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: manual\nfix_reason: test\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### {display}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
+        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: manual\nfix_reason: test\nfix_exception: value\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Fix it.\n\n## Examples\n\n### {display}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
         language.name()
     );
     parse_rule_ok(&text)
@@ -188,7 +188,7 @@ fn call_rule(options: &str, language: Language, src: &str, opts: serde_json::Val
 
 fn predicate_rule(pattern: &str, predicate: &str, options: &str, language: Language, src: &str, opts: serde_json::Value) -> usize {
     let text = format!(
-        "---\nid: t/r\ntitle: \"t\"\nlanguages: [{lang}]\nfix: manual\nfix_reason: \"x\"\noptions:\n  ok:\n    type: \"call[]\"\n    default: {options}\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: {pattern}\nwhere:\n  $$MATCH: {{ {predicate}: ok }}\nmessage: \"m $OPTION.ok\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### {title}\n\n#### Don't\n\n```{lang}\nx\n```\n\n#### Do\n\n```{lang}\ny\n```\n",
+        "---\nid: t/r\ntitle: \"t\"\nlanguages: [{lang}]\nfix: manual\nfix_reason: \"x\"\nfix_exception: value\noptions:\n  ok:\n    type: \"call[]\"\n    default: {options}\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: {pattern}\nwhere:\n  $$MATCH: {{ {predicate}: ok }}\nmessage: \"m $OPTION.ok\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### {title}\n\n#### Don't\n\n```{lang}\nx\n```\n\n#### Do\n\n```{lang}\ny\n```\n",
         lang = language.name(),
         title = if language == Language::Python { "Python" } else { "JavaScript" }
     );
@@ -272,7 +272,7 @@ fn function_calls_looks_through_the_enclosing_functions() {
 
 #[test]
 fn calls_must_name_a_call_option() {
-    let text = "---\nid: t/r\ntitle: \"t\"\nlanguages: [javascript]\nfix: manual\nfix_reason: \"x\"\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: $F($$$A)\nwhere:\n  $$MATCH: { calls: nope }\nmessage: \"m\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n";
+    let text = "---\nid: t/r\ntitle: \"t\"\nlanguages: [javascript]\nfix: manual\nfix_reason: \"x\"\nfix_exception: value\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  pattern: $F($$$A)\nwhere:\n  $$MATCH: { calls: nope }\nmessage: \"m\"\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n";
     let r = parse_rule_ok(text);
     let err = compile(&r, Grammar::JavaScript, &BTreeMap::new()).err().expect("an error");
     assert!(err.contains("names no `call[]` option"), "{err}");
@@ -293,4 +293,32 @@ fn option_references_in_a_message_name_the_resolved_list() {
     assert_eq!(crate::expand_options("one of $OPTION.ok.", &specs, &o), "one of a.b, mine.");
     o.insert("ok_mode".to_owned(), serde_json::json!("replace"));
     assert_eq!(crate::expand_options("$OPTION.ok; $OPTION.zz", &specs, &o), "mine; $OPTION.zz");
+}
+
+#[test]
+fn a_capture_takes_trim_and_lower_first_filters() {
+    // W-139: `$NAME|trim` and `$NAME|lower-first` (SR-RULE-FORMAT decision 3b).
+    let block = "match:\n  kind: string_fragment\n  pattern: $T\nmessage: \"[$T|trim] [$T|lower-first] [$T|trim|lower-first] [$T|trimmed] [$T || x]\"";
+    assert_eq!(matches(Language::Javascript, block, "f(\" Adds \");\n"), ["[Adds] [ Adds ] [adds] [ Adds |trimmed] [ Adds  || x]"]);
+}
+
+#[test]
+fn in_checks_a_capture_against_a_string_list_option() {
+    // W-139: `in: <string[] option>`, a string compared without its quotes.
+    let text = "---\nid: t/r\ntitle: \"t\"\nlanguages: [javascript]\nfix: manual\nfix_reason: \"x\"\nfix_exception: value\noptions:\n  names:\n    type: \"string[]\"\n    default: [toBeFalsy]\n---\n\nT.\n\n**Why:** W.\n\n```codelaw\nmatch:\n  kind: call_expression\n  has: { field: function, has: { field: property, pattern: $M } }\nwhere:\n  $M: { in: names }\nmessage: m\n```\n\n## How to fix\n\n1. x\n\n## Examples\n\n### JavaScript\n\n#### Don't\n\n```js\nx\n```\n\n#### Do\n\n```js\ny\n```\n";
+    let r = parse_rule_ok(text);
+    let compiled = compile(&r, Grammar::JavaScript, &BTreeMap::new()).unwrap();
+    let count = |src: &str, opts: serde_json::Value| {
+        let options: BTreeMap<String, serde_json::Value> = serde_json::from_value(opts).unwrap();
+        let root = codelaw_lang::parse(Language::Javascript, src);
+        let model = codelaw_semantic::build(Language::Javascript, &root, src);
+        root.root().dfs().filter(|n| compiled.try_match_with(n.clone(), model.as_ref(), &options).is_some()).count()
+    };
+    let src = "expect(a).toBeFalsy();\nexpect(a).toBe(1);\n";
+    assert_eq!(count(src, serde_json::json!({})), 1);
+    assert_eq!(count(src, serde_json::json!({ "names": ["toBe"] })), 1);
+    assert_eq!(count(src, serde_json::json!({ "names": [] })), 0);
+    let bad = text.replace("type: \"string[]\"", "type: \"call[]\"").replace("default: [toBeFalsy]", "default: []");
+    let r = parse_rule_ok(&bad);
+    assert!(compile(&r, Grammar::JavaScript, &BTreeMap::new()).is_err());
 }

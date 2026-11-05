@@ -4,8 +4,9 @@ title: "No `return`, `break` or `continue` in `finally`"
 languages: [python]
 fix: manual
 fix_reason: "how errors should propagate has to be decided"
+fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/B012]
+ported_from: [ruff/B012, pylint/lost-exception, pylint/return-in-finally, pylint/break-in-finally]
 since: 0.1.0
 ---
 

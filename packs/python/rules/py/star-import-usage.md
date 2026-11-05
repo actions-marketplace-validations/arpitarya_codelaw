@@ -4,6 +4,7 @@ title: "No names that may only come from a star import"
 languages: [python]
 fix: manual
 fix_reason: "the module the name comes from has to be confirmed by a person"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 ported_from: [ruff/F405]
 since: 0.1.0

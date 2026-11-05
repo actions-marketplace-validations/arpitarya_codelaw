@@ -4,8 +4,9 @@ title: "A `%` format string doesn't mix positional and named placeholders"
 languages: [python]
 fix: manual
 fix_reason: "which style the string should use is the author's choice"
+fix_exception: value
 stability: preview
-ported_from: [ruff/F506]
+ported_from: [ruff/F506, pylint/mixed-format-string]
 since: 0.1.0
 ---
 

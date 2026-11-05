@@ -64,7 +64,9 @@ PY_API = ROOT / "packaging" / "python" / "python" / "codelaw" / "__init__.py"
 FIX_CLASSES = ("auto", "suggest", "manual")
 WORDS = ("zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
          "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-         "sixteen", "seventeen", "eighteen", "nineteen", "twenty")
+         "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one",
+         "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six",
+         "twenty-seven", "twenty-eight", "twenty-nine", "thirty")
 
 
 def word(n, capital=False):
@@ -274,11 +276,11 @@ def sync_readme(packs, subcommands, checks):
     npm, pypi = package.NPM_PACKS, package.PYPI_PACKS
     doc.anchor(r"!\[rules: (\d+)\]\(https://img\.shields\.io/badge/rules-(\d+)-informational\)", [total, total])
     doc.anchor(r"\*\*Standard rules included\*\* \| (\d+) rules reimplemented", [total])
-    doc.anchor(r"all (\w+) rule packs work today", [word(len(packs))])
-    doc.anchor(r"(\w+) first-party packs: (\w+) on npm as `@codelaw/rules-<pack>`, (\w+) on PyPI",
+    doc.anchor(r"all ([\w-]+) rule packs work today", [word(len(packs))])
+    doc.anchor(r"([\w-]+) first-party packs: ([\w-]+) on npm as `@codelaw/rules-<pack>`, (\w+) on PyPI",
                [word(len(packs), True), word(len(npm)), word(len(pypi))])
     doc.anchor(r"### Fix classes across all (\d+) rules", [total])
-    doc.anchor(r"\| (\w+) rule packs: (\d+) rules \|", [word(len(packs), True), total])
+    doc.anchor(r"\| ([\w-]+) rule packs: (\d+) rules \|", [word(len(packs), True), total])
     if checks is not None:
         doc.anchor(r"\*\*([\d,]+) example checks, all green\.\*\*", ["{:,}".format(checks)])
 

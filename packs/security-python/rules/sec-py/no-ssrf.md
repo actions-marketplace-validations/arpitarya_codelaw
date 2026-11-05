@@ -4,6 +4,7 @@ title: 'A request value is not a URL to fetch'
 languages: [python]
 fix: manual
 fix_reason: "which hosts are allowed is a policy only the author knows"
+fix_exception: value
 stability: preview
 security: { cwe: [918], owasp: ["A01:2025"], severity: high }
 since: 0.2.0

@@ -4,6 +4,7 @@ title: "No character class holding a character made of several code points"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether an alternation or a different class was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-misleading-character-class]
 since: 0.1.0

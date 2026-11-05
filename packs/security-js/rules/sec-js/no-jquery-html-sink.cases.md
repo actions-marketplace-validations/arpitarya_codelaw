@@ -137,3 +137,17 @@ $(el).html(sanitizeHtml(x));
 ```expect
 (none)
 ```
+
+### case: fix: html becomes text
+
+```js
+$(el).html(user.bio);
+```
+
+```expect
+1:1 sec-js/no-jquery-html-sink
+```
+
+```fixed
+$(el).text(user.bio);
+```

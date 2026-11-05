@@ -4,6 +4,7 @@ title: "No two conditions in an if/else-if chain are the same"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the second condition should have been is a decision"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-dupe-else-if]
 since: 0.1.0

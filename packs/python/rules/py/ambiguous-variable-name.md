@@ -4,6 +4,7 @@ title: "No variables named `l`, `O` or `I`"
 languages: [python]
 fix: manual
 fix_reason: "the new name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [ruff/E741]
 since: 0.1.0

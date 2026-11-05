@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to reject, strip or encode the value depends on what the header is for) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (stripping the line breaks is one of two safe forms; the reviewer picks between them, or rejects the value or encodes it, and confirms the value is meant to be one header line) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-113 · OWASP A05:2025 · security severity `medium` |
@@ -134,6 +134,24 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 def view(request):
     resp = make_response("ok")
     resp.headers["X-Name"] = request.args["name"]
+    return resp
+```
+
+#### Fixed (strip line breaks)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = str(request.args["name"]).replace("\r", "").replace("\n", "")
+    return resp
+```
+
+#### Fixed (join lines with a space)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = " ".join(str(request.args["name"]).splitlines())
     return resp
 ```
 

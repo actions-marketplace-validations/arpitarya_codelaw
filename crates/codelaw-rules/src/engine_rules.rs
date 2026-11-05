@@ -1,7 +1,7 @@
 //! The engine's own diagnostics (SR-RULE-PACKS decision 1). They are not
 //! rule files, but every one still carries its fix class and steps (L4).
 
-use codelaw_core::{FixClass, Severity};
+use codelaw_core::{FixClass, FixException, Severity};
 
 pub struct EngineRule {
     pub id: &'static str,
@@ -157,7 +157,7 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         fix: FixClass::Manual,
         steps: &[
             "Write a unit test that imports the function (or its module, for a function the module does not export) and calls it: a test needs judgment, so codelaw does not write one.",
-            "If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` with `forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.",
+            "If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` — `<path>#<name> graph/untested-function forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.",
         ],
     },
     EngineRule {
@@ -167,7 +167,7 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         fix: FixClass::Manual,
         steps: &[
             "Add test cases that run the lines the coverage report shows as missed, regenerate the lcov report in the same job, and run `codelaw check --coverage <report>` again: a test needs judgment, so codelaw does not write one.",
-            "If the function cannot reasonably be covered, exempt it in `.codelawignore` with a reason, `expires=` or `forever`, and `on_touch=`.",
+            "If the function cannot reasonably be covered, exempt it in `.codelawignore` — `<path>#<name> graph/function-coverage` with `expires=` or `forever`, `on_touch=` and a reason.",
         ],
     },
     EngineRule {
@@ -190,8 +190,55 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         severity: Severity::Error,
         fix: FixClass::Manual,
         steps: &[
-            "Give the line what the message names: a reason after a colon (always, with `expires=` or `forever`), `expires=YYYY-MM-DD` or `forever` (`[coverage.ignore] require_expiry`), and `on_touch=error|warn|keep` unless it is `forever` (`[coverage.ignore] require_on_touch`).",
-            "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`.",
+            "Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).",
+            "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule.",
+        ],
+    },
+    EngineRule {
+        id: "codelaw/off-without-reason",
+        title: "A rule is turned `\"off\"` in the config without a `reason` while `[rules] require_reason` is on",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &["Write the entry as a table with a reason: `\"py/no-print\" = { severity = \"off\", reason = \"CLI tool: print is the output\" }` (SR-CONFIG decision 11c)."],
+    },
+    EngineRule {
+        id: "git/commit-message",
+        title: "A commit message does not follow `[commits]` (Conventional Commits by default)",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Reword the message to the form the finding shows: `git commit --amend` for the last commit, `git rebase -i <base>` and `reword` for an earlier one; a message is never rewritten for you.",
+            "If the convention is wrong for this repository, change `[commits]` in `codelaw.toml` (`preset`, `types`, `scopes`, `subject_max`, `subject_case`, `ticket`, `skip`).",
+        ],
+    },
+    EngineRule {
+        id: "git/branch-name",
+        title: "The branch name does not follow `[branches]`",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Rename the branch (`git branch -m <new-name>`), push it under the new name and open the pull request from it; the finding shows a name that passes.",
+            "Or change `[branches] pattern` or `max_length`, or add the branch to `[branches] protected`.",
+        ],
+    },
+    EngineRule {
+        id: "git/pr-size",
+        title: "The pull request changes more lines than `[pr] max_lines`",
+        severity: Severity::Warn,
+        fix: FixClass::Manual,
+        steps: &[
+            "Split the change into pull requests that each stand alone — the refactor first, then the feature that uses it.",
+            "Lockfiles and generated files are not counted: add other generated paths to `[pr] exclude`, or raise `[pr] max_lines`.",
+        ],
+    },
+    EngineRule {
+        id: "git/pr-description",
+        title: "The pull request's title or description does not follow `[pr]`",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &[
+            "Edit the pull request as the finding says: a title that matches `[pr] title_pattern`, a ticket in the title or description, each section of `[pr] template_sections` filled in.",
+            "Then run the CI job again: the description is read from what the CI hands the job, never fetched.",
         ],
     },
 ];
@@ -206,4 +253,39 @@ pub const TEST_RULES: &[&str] = &["graph/untested-function", "graph/function-cov
 
 pub fn engine_rule(id: &str) -> Option<&'static EngineRule> {
     ENGINE_RULES.iter().find(|r| r.id == id)
+}
+
+/// Each `manual` engine rule's named exception (SR-LAW-4 decision 15), kept
+/// beside `ENGINE_RULES` so a rule added there without one fails the test
+/// below rather than another item's build.
+pub fn engine_fix_exception(id: &str) -> Option<FixException> {
+    use FixException::*;
+    Some(match id {
+        // The run, not the code: what to configure, re-encode or rerun is
+        // the project's choice.
+        "codelaw/no-rules" | "codelaw/not-utf8" | "codelaw/file-too-large" | "codelaw/file-changed-during-run" | "codelaw/write-failed" => Value,
+        "format/failed" | "graph/no-deprecated-usage" | "codelaw/stale-baseline" | "codelaw/unknown-suppression" => Value,
+        "codelaw/expiring-exception" | "codelaw/expired-exception" | "codelaw/exception-without-expiry" | "codelaw/exception-author" => Value,
+        "codelaw/incomplete-ignore" | "git/branch-name" => Value,
+        // The fix is somewhere else: the generator, the rule, the CI job,
+        // a second pull request.
+        "codelaw/generated" | "codelaw/internal-error" | "codelaw/stale-coverage" | "git/pr-size" => Restructure,
+        // Missing human-authored content: a reason, a test, a message.
+        "codelaw/suppression-needs-reason" | "codelaw/off-without-reason" | "graph/untested-function" | "graph/function-coverage" => Authored,
+        "git/commit-message" | "git/pr-description" => Authored,
+        _ => return None,
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// SR-LAW-4 decision 15: every `manual` engine rule names its exception.
+    #[test]
+    fn every_manual_engine_rule_has_an_exception() {
+        let missing: Vec<&str> =
+            ENGINE_RULES.iter().filter(|r| r.fix == FixClass::Manual && engine_fix_exception(r.id).is_none()).map(|r| r.id).collect();
+        assert!(missing.is_empty(), "add these to `engine_fix_exception`: {missing:?}");
+    }
 }

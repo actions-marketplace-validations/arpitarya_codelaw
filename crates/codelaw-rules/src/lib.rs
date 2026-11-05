@@ -7,19 +7,23 @@
 
 mod calls;
 mod engine_rules;
+mod fix_ladder;
 mod markdown;
 mod pack;
 mod rule;
 mod ruleset;
+mod search;
 
 pub use calls::{CallItem, MODE_SUFFIX, is_replace, parse_call_items, resolve_calls};
-pub use engine_rules::{ENGINE_RULES, EngineRule, TEST_RULES, TESTS_PRESET, engine_rule};
-pub use pack::{ExtendsSpec, FIRST_PARTY_NAMESPACES, FIRST_PARTY_PACKS, FirstPartyPack, PackManifest, PackSearch, Preset, RulePack, first_party, first_party_npm, first_party_pypi, load_pack, load_pack_from, load_rules_dir, namespace_pack};
+pub use fix_ladder::{FixStats, fix_stats_text};
+pub use engine_rules::{ENGINE_RULES, EngineRule, TEST_RULES, TESTS_PRESET, engine_fix_exception, engine_rule};
+pub use pack::{ExtendsSpec, FIRST_PARTY_NAMESPACES, FIRST_PARTY_PACKS, FIRST_PARTY_PROVIDERS, read_manifest, FirstPartyPack, PackManifest, Preset, RulePack, first_party, first_party_npm, first_party_pypi, load_pack, load_pack_from, load_rules_dir, namespace_pack};
 pub use rule::{
     Block, BlockKind, Case, Example, ExampleKind, KNOWN_SKILLS, LanguageExamples, OptionSpec, RESERVED_NAMESPACES,
     OWASP_TOP_10_2025, RuleFile, SECURITY_NAMESPACES, Scope, Security, SecuritySeverity, Snippet, Stability, parse_cases, parse_rule,
 };
 pub use ruleset::{LoadOptions, LoadedRule, RuleSet, RuleSource};
+pub use search::{PackEnv, PackSearch, Place, python_places};
 
 use std::fmt;
 use std::path::PathBuf;

@@ -4,6 +4,7 @@ title: "No privileged branch decided by a request value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the decision should come from is a design choice"
+fix_exception: restructure
 stability: preview
 security: { cwe: [807], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

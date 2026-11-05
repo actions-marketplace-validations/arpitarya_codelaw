@@ -4,13 +4,16 @@
 //! The linter owns meaning; this crate owns layout. Every engine is
 //! compiled in and none is run as a program (L5, L6 decision 3).
 
+mod classes;
 pub mod editorconfig;
 pub mod import;
 mod engines;
 mod markers;
 mod options;
+mod oxc;
 
-pub use options::{EndOfLine, FormatOptions, IndentStyle, QuoteStyle, Semicolons, TrailingCommas};
+pub use classes::sort_class_lists;
+pub use options::{ArrowParens, ClassSort, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
 
 use codelaw_core::Language;
 use std::fmt;
@@ -18,18 +21,18 @@ use std::fmt;
 /// The pinned engines, in every cache key a format result enters
 /// (SR-FORMATTER decision 7: an engine upgrade changes output).
 pub const ENGINES_FINGERPRINT: &str =
-    "biome@2.5.15 ruff_python_formatter@0.0.18 pretty_yaml@0.6.0 taplo@0.14.0 dprint-plugin-markdown@0.26.0 markup_fmt@0.27.6";
+    "biome@2.5.15 ruff_python_formatter@0.0.18 oxc@7b933d5 taplo@0.14.0 markup_fmt@0.27.6";
 
 /// The engine that formats a language, as SR-FORMATTER decision 2 names it.
 pub fn engine(language: Language) -> &'static str {
     match language {
         Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => "biome_js_formatter",
         Language::Json => "biome_json_formatter",
-        Language::Css | Language::Scss => "biome_css_formatter",
+        Language::Css | Language::Scss => "oxc_formatter_css",
         Language::Python => "ruff_python_formatter",
-        Language::Yaml => "pretty_yaml",
+        Language::Yaml => "oxc_formatter_yaml",
         Language::Toml => "taplo",
-        Language::Markdown => "dprint-plugin-markdown",
+        Language::Markdown => "oxc_formatter_markdown",
         Language::Html => "markup_fmt",
     }
 }
@@ -61,6 +64,13 @@ impl std::error::Error for FormatError {}
 /// Format one file's text with its language's engine. `path` refines the
 /// dialect (`.d.ts`, `.pyi`, `.jsonc`). No verification: see [`format`].
 pub fn format_unverified(language: Language, path: &str, text: &str, options: &FormatOptions) -> Result<String, FormatError> {
+    // Class lists are sorted before layout, as prettier-plugin-tailwindcss
+    // sorts them in the tree before printing (decision 9).
+    let sorted = match &options.class_sort {
+        Some(sort) => classes::sort_class_lists(language, text, sort)?,
+        None => None,
+    };
+    let text = sorted.as_deref().unwrap_or(text);
     let out = if options.end_of_line.is_some() {
         engines::format(language, path, text, options)?
     } else {

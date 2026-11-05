@@ -16,7 +16,7 @@ owns:
   - crates/codelaw-cli/tests/spell.rs
   - crates/codelaw-cli/src/spell_cmd.rs
 laws: [L2, L3, L4, L5, L6, L8, L10, L11]
-timestamp: 2026-10-29T00:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ratifies: "Arpit, 2026-10-27 (Cowork, voice), on the CSpell research: the typo list — \"Let's go with B.\" (codelaw builds its own from SCOWL); SCOWL and VarCon — \"Approve both.\"; the software-terms dictionary — \"Approve it.\"; packaging — \"want it as a separate package.\"; defaults and where the data lives — \"Go with the recommendation.\"; writing it up — \"go ahead\". W-103."
 ---
@@ -86,7 +86,7 @@ question its maintainers left open. The forks and the rulings are in
    registries: `@codelaw/rules-spell` on npm and `codelaw-rules-spell` on PyPI
    (the decider: *"want it as a separate package"*). Its matchers are `native:`
    rules in the engine ([SR-ARCHITECTURE](0108_architecture.md) decision 15b);
-   its word data is in the pack (decision 6). **`codelaw init` adds it**
+   its word data is in the pack (decision 6). (`init`'s choice of the `tailwind` pack and its provider, W-145, leaves what it does for spell unchanged.) **`codelaw init` adds it**
    (reversed 2026-10-28, W-112; until then it never did, as it never adds a
    security pack): it adds the pack and `codelaw:spell/recommended`, writes
    `.codelaw/spell/words.txt` from `templates/init/.codelaw/spell/words.txt`
@@ -107,6 +107,10 @@ question its maintainers left open. The forks and the rulings are in
      extended but runs nothing until `preview = true` or its rules graduate.
      `codelaw`, the word in the rules folder's README `init` writes, is
      learned on every first run.
+   - **Hooks only** (W-146, 2026-11-05): in a repo codelaw already configures,
+     `init --git-hooks …` (any of `pre-commit`, `post-commit`, `commit-msg`)
+     installs only the hooks — the spell pack, its preset and the words file
+     are neither added nor touched, `--no-spell` or not.
 2. **Presets.** `spell/recommended` turns on `spell/known-typo` and
    `spell/known-typo-identifier` — on as soon as a project extends it.
    `spell/strict` extends it and adds `spell/unknown-word`,
@@ -161,7 +165,7 @@ question its maintainers left open. The forks and the rulings are in
    |---|---|---|
    | `spell/known-typo` | a word on the known-typo list, in prose (decision 3, all but identifiers) | `auto` when the list gives one correction; `suggest` when it gives several |
    | `spell/known-typo-identifier` | the same, in a declared name | `auto` only when every reference is in the same file and the name is not exported; otherwise `suggest`, naming the other files; `manual` for an exported name, a JSON key or a CSS class used elsewhere |
-   | `spell/unknown-word` | a word in no word list (decision 6) and not in `[spell] words` | `suggest`: up to three corrections; `manual`: add it to `[spell] words` |
+   | `spell/unknown-word` | a word in no word list (decision 6) and not in `[spell] words` | `suggest`: up to three corrections; `manual`: add it to `[spell] words`; its `ported_from:` names Pylint's `wrong-spelling-in-comment` and `wrong-spelling-in-docstring`, whose job it does — behaviour only, no Pylint text (W-139) |
    | `spell/locale-variant` | a spelling of the other locale (`colour` under `en-US`) | `auto` in prose; `suggest` in a name; meaning-dependent pairs (`program`/`programme`, `check`/`cheque`) are never reported |
    | `spell/inconsistent-term` | one word spelled two ways across the project (`canceled` / `cancelled`) | `suggest` the form the project uses most |
    | `spell/suspicious-word` | a `[spell] words` entry that is on the known-typo list, or one edit from a common word | `manual` |
@@ -321,6 +325,7 @@ question its maintainers left open. The forks and the rulings are in
    Its budget — the time it adds to `codelaw check` on the pinned corpus, and
    the bytes the data adds to each pack — is set from measurement in W-103 and
    then never loosened.
+   - **The budget: 2,500 ms** for the `spell` operation (`perf/budgets.toml`), set by the decider on 2026-11-05 above L8's method (2,152 ms from a worst p95 of 1,434.2 ms on three `perf` runs); a `spell` p95 over it fails CI.
    - **Measured (W-103, 2026-10-27; not yet a budget):** the generated list
      holds **188,151 entries**, 3,531,613 bytes of JSON; the whole pack is a
      625,127-byte npm tarball and a 636,231-byte wheel. Loading it adds about
@@ -392,6 +397,8 @@ question its maintainers left open. The forks and the rulings are in
   decision — the decider's call, in W-103.
 - Debt: `cspell.json` migration and non-English word lists are in
   [`BACKLOG.md`](../work/BACKLOG.md) (B-054, B-055).
+
+- **The fix ladder (W-156, 2026-11-05).** The spell pack's two `manual` rules name their exception or wait on their move (`fix_exception:` / `fix_pending:`, [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5), and its README carries the generated fix-ladder table.
 
 ### Alternatives considered
 

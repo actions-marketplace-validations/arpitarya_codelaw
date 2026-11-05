@@ -4,12 +4,13 @@ title: "A function's cyclomatic complexity stays under a maximum"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting a function changes its structure; where to cut and what to call each piece is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 20, description: "the highest cyclomatic complexity a function may have" }
   count_optional_chain: { type: "boolean", default: false, description: "count each optional chain, `a?.b`, as a branch" }
   ignore_names: { type: "string", description: "a regular expression; functions named like this are exempt" }
-ported_from: [eslint/complexity]
+ported_from: [eslint/complexity, eslint-plugin-sonarjs/cyclomatic-complexity]
 since: 0.5.0
 ---
 

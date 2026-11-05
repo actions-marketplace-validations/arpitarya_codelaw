@@ -4,6 +4,7 @@ title: "No duplicate mixins"
 languages: [scss]
 fix: manual
 fix_reason: "which definition should stay is the author's call"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [stylelint-scss/no-duplicate-mixins]
 since: 0.3.0

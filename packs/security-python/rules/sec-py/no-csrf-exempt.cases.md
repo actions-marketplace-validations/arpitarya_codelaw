@@ -47,3 +47,20 @@ def v(request):
 ```expect
 (none)
 ```
+
+### case: the decorator line is removed
+
+```py
+@csrf_exempt
+def update(request):
+    ...
+```
+
+```expect
+1:1 sec-py/no-csrf-exempt
+```
+
+```fixed
+def update(request):
+    ...
+```

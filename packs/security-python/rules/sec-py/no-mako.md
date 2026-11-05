@@ -2,8 +2,8 @@
 id: sec-py/no-mako
 title: 'No Mako templates'
 languages: [python]
-fix: manual
-fix_reason: "moving to another engine (or turning on `default_filters`) changes every template"
+fix: suggest
+fix_reason: "turning escaping on changes every template's output, so the reviewer confirms each one, and adds `|n` where markup is meant"
 stability: preview
 ported_from: [bandit/B702, ruff/S702]
 security: { cwe: [79], owasp: ["A05:2025"], severity: medium }
@@ -15,7 +15,13 @@ since: 0.2.0
 **Why:** Mako does not escape output unless told to, so every `${value}` is a script waiting for a hostile value (CWE-79).
 
 ```codelaw
-match: { any: [{ pattern: '$T($$$A)' }] }
+match:
+  all:
+    - pattern: '$T($$$A)'
+    - not:
+        has:
+          field: arguments
+          has: { kind: keyword_argument, has: { field: name, regex: '^default_filters$' } }
 constraints: { T: { regex: '^(Template|[A-Za-z_]+\.Template|mako\.template\.Template)$' } }
 where:
   $T:
@@ -24,6 +30,7 @@ where:
       - { imported-from: mako.template }
       - { imported-from: { module: mako, name: template } }
 message: 'Mako does not escape by default; use Jinja2 with autoescape, or set `default_filters=[''h'']`'
+fix: '$T($$$A, default_filters=["str", "h"])'
 ```
 
 ## How to fix
@@ -41,6 +48,14 @@ message: 'Mako does not escape by default; use Jinja2 with autoescape, or set `d
 from mako.template import Template
 
 t = Template(source)
+```
+
+#### Fixed
+
+```py
+from mako.template import Template
+
+t = Template(source, default_filters=["str", "h"])
 ```
 
 #### Do

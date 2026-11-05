@@ -4,6 +4,7 @@ title: "No mutable `ContextVar` defaults"
 languages: [python]
 fix: manual
 fix_reason: "whether to use an immutable value or set a fresh one per context is a design choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B039]
 since: 0.1.0

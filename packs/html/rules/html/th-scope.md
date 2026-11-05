@@ -4,6 +4,7 @@ title: "Header cells in complex tables have scope"
 languages: [html]
 fix: manual
 fix_reason: "whether each header labels a row or a column is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 options:
   strict: { type: "boolean", default: false, description: "check simple tables too" }

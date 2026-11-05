@@ -5,6 +5,7 @@ languages: [yaml]
 files: ["**/action.yml", "**/action.yaml"]
 fix: manual
 fix_reason: "a misshapen input or run step has several possible meanings; the author picks the one they intended"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [schemastore/github-action.json]
 since: 0.1.0

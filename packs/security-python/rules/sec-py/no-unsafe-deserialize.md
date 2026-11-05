@@ -4,6 +4,7 @@ title: 'Deserialising with `pickle` and its relatives'
 languages: [python]
 fix: manual
 fix_reason: "the replacement format (JSON, a schema, a signed payload) is a design choice"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B301, bandit/B302, bandit/B403]
 security: { cwe: [502], owasp: ["A08:2025"], severity: high }

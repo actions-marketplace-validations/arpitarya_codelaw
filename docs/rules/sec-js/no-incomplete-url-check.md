@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which hosts are allowed is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the host literal is in the code, and the reviewer picks exact host or host with its subdomains (a prefix test becomes an origin comparison either way)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-20 · OWASP A01:2025 · security severity `high` |
@@ -137,6 +137,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+#### Fixed (exact host)
+
+```js
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```js
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 #### Do
 
 ```js
@@ -151,6 +167,22 @@ if (new URL(url).hostname === "example.com") {
 
 ```jsx
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+#### Fixed (exact host)
+
+```jsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```jsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```
@@ -173,6 +205,22 @@ if (url.includes("example.com")) {
 }
 ```
 
+#### Fixed (exact host)
+
+```ts
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```ts
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
+  trust(url);
+}
+```
+
 #### Do
 
 ```ts
@@ -187,6 +235,22 @@ if (new URL(url).hostname === "example.com") {
 
 ```tsx
 if (url.includes("example.com")) {
+  trust(url);
+}
+```
+
+#### Fixed (exact host)
+
+```tsx
+if (URL.canParse(url) && new URL(url).hostname === "example.com") {
+  trust(url);
+}
+```
+
+#### Fixed (host or subdomain)
+
+```tsx
+if ((h => h === "example.com" || h.endsWith("." + "example.com"))(URL.canParse(url) ? new URL(url).hostname : "")) {
   trust(url);
 }
 ```

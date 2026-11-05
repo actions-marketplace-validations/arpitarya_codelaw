@@ -226,7 +226,7 @@ pub fn fix(args: FixArgs) -> ExitCode {
         Err(e) => return crate::fail(e),
     };
     eprintln!("warning: `fix --watch` writes each file you save; an editor that also fixes or formats on save can fight it");
-    let fix = FixOptions { unsafe_fixes: args.unsafe_fixes, dry_run: args.dry_run, trace: false };
+    let fix = FixOptions { unsafe_fixes: args.unsafe_fixes, dry_run: args.dry_run, trace: false, ..Default::default() };
     let (mut watch, report, fixed) = match Watch::start_fixing(&start(&args.paths), args.paths.clone(), options, &fix) {
         Ok(w) => w,
         Err(e) => return crate::fail(e),

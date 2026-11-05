@@ -4,7 +4,7 @@ title: "Every positional argument to `.format` is used"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/F523]
+ported_from: [ruff/F523, pylint/unused-format-string-argument]
 since: 0.1.0
 ---
 

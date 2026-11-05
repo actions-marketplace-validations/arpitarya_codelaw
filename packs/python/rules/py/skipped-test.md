@@ -5,6 +5,7 @@ languages: [python]
 severity: error
 fix: manual
 fix_reason: "why a test is off, and until when, is a fact only the author knows; the engine can't write it"
+fix_exception: authored
 stability: preview
 since: 0.5.0
 ---

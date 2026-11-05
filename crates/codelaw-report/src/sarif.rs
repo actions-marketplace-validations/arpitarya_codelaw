@@ -24,6 +24,16 @@ fn artifact(file: &str) -> Value {
     json!({ "uri": file })
 }
 
+/// A file's region, or for a commit, a branch or the pull request a
+/// logical location (W-146): `commit:<id>` is `{ kind: "commit", name: <id> }`.
+fn location(d: &Diagnostic, region: Value) -> Value {
+    if codelaw_core::is_logical_location(&d.file) {
+        let (kind, name) = d.file.split_once(':').unwrap_or(("pullRequest", "pr"));
+        return json!({ "logicalLocations": [{ "kind": kind, "name": name, "fullyQualifiedName": d.file }] });
+    }
+    json!({ "physicalLocation": { "artifactLocation": artifact(&d.file), "region": region } })
+}
+
 fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
     let mut region = json!({
         "startLine": d.start.line,
@@ -41,7 +51,7 @@ fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
         "ruleId": d.rule,
         "level": level(d.severity),
         "message": { "text": d.message },
-        "locations": [{ "physicalLocation": { "artifactLocation": artifact(&d.file), "region": region } }],
+        "locations": [location(d, region)],
         "properties": {
             "fixClass": d.fix.name(),
             "steps": d.steps,
@@ -55,16 +65,33 @@ fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
     if let Some(i) = rule_index {
         r["ruleIndex"] = json!(i);
     }
-    if d.fix != FixClass::Manual && !d.edits.is_empty() {
-        let replacements: Vec<Value> = d
-            .edits
+    if let Some(x) = d.fix_exception {
+        r["properties"]["fixException"] = json!(x.name());
+    }
+    let replacements = |edits: &[codelaw_core::TextEdit]| -> Vec<Value> {
+        edits
             .iter()
             .map(|e| json!({ "deletedRegion": { "byteOffset": e.start, "byteLength": e.end - e.start }, "insertedContent": { "text": e.text } }))
-            .collect();
+            .collect()
+    };
+    if d.fix != FixClass::Manual && !d.edits.is_empty() {
         r["fixes"] = json!([{
             "description": { "text": format!("{} fix for {}", d.fix.name(), d.rule) },
-            "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements }],
+            "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&d.edits) }],
         }]);
+    } else if d.fix != FixClass::Manual && !d.choices.is_empty() {
+        // One SARIF fix per labelled choice (L4 decision 4).
+        r["fixes"] = d
+            .choices
+            .iter()
+            .map(|c| {
+                json!({
+                    "description": { "text": format!("{}{} — suggest fix for {}", c.label, if c.default { " (default)" } else { "" }, d.rule) },
+                    "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&c.edits) }],
+                })
+            })
+            .collect::<Vec<_>>()
+            .into();
     }
     r
 }

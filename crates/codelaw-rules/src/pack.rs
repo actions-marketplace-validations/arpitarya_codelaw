@@ -1,5 +1,5 @@
-//! Rule packs: layout, manifest, presets and where they are found
-//! (SR-RULE-PACKS decisions 3–5 and 11).
+//! Rule packs: layout, manifest and presets (SR-RULE-PACKS decisions 3–5
+//! and 11). Where they are found is `search.rs` (SR-PACK-LOOKUP).
 
 use crate::LoadError;
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, parse_cases, parse_rule};
@@ -54,12 +54,16 @@ const fn pypi_only(short: &'static str, pypi: &'static str) -> FirstPartyPack {
     FirstPartyPack { short, manifest: pypi, npm: None, pypi: Some(pypi) }
 }
 
-/// The nineteen first-party packs: seventeen on npm, twelve on PyPI (the
+/// The twenty-seven first-party packs: twenty on npm, eighteen on PyPI (the
 /// decider's rulings of 2026-10-24: W-31's split, and W-32's two npm-only
 /// library packs; of 2026-10-25, W-53's four security packs; of
 /// 2026-10-26, W-62's `scss` pack on both registries and W-63's npm-only
 /// `css-modules` pack; of 2026-10-27, W-103's `spell` pack on both; and of
-/// 2026-10-29, W-128's `deps` pack on both).
+/// 2026-10-29, W-128's `deps` pack on both; and of 2026-10-30, W-139's
+/// npm-only `nextjs` pack, ruled on W-144, and the five PyPI-only framework
+/// packs, ruled on W-138: `django`, `fastapi`, `airflow`, `numpy`, `pandas`;
+/// and the npm-only `testing` pack, ruled on W-144; and W-145's `tailwind`
+/// pack on both, ruled 2026-10-30).
 /// `scripts/package.py` reads this table, so it is the one list of what is
 /// published where.
 pub const FIRST_PARTY_PACKS: &[FirstPartyPack] = &[
@@ -82,12 +86,31 @@ pub const FIRST_PARTY_PACKS: &[FirstPartyPack] = &[
     pypi_only("security-python", "codelaw-rules-security-python"),
     both("spell", "@codelaw/rules-spell", "codelaw-rules-spell"),
     both("deps", "@codelaw/rules-deps", "codelaw-rules-deps"),
+    npm_only("nextjs", "@codelaw/rules-nextjs"),
+    pypi_only("django", "codelaw-rules-django"),
+    pypi_only("fastapi", "codelaw-rules-fastapi"),
+    pypi_only("airflow", "codelaw-rules-airflow"),
+    pypi_only("numpy", "codelaw-rules-numpy"),
+    pypi_only("pandas", "codelaw-rules-pandas"),
+    npm_only("testing", "@codelaw/rules-testing"),
+    both("tailwind", "@codelaw/rules-tailwind", "codelaw-rules-tailwind"),
 ];
+
+/// The first-party providers (SR-RULE-PACKS decision 19): npm only, each
+/// the provider of one pack, whose manifest names it in `providers`.
+/// `scripts/package.py` reads this table.
+pub const FIRST_PARTY_PROVIDERS: &[(&str, &str)] = &[("@codelaw/provider-tailwind", "tailwind")];
+
+/// A pack's manifest, read from its folder.
+pub fn read_manifest(dir: &Path) -> Option<PackManifest> {
+    toml::from_str(&fs::read_to_string(dir.join("codelaw-pack.toml")).ok()?).ok()
+}
 
 /// Every namespace a first-party pack owns, in [`namespace_pack`]'s order.
 pub const FIRST_PARTY_NAMESPACES: &[&str] = &[
     "js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "py", "data", "md", "json", "yaml", "toml", "tanstack-query", "redux-toolkit",
-    "sec-js", "sec-ts", "sec-html", "sec-py", "spell", "deps",
+    "sec-js", "sec-ts", "sec-html", "sec-py", "spell", "deps", "next", "django",
+    "fastapi", "airflow", "numpy", "pandas", "testing", "tailwind",
 ];
 
 /// The fixed namespace-to-pack map (decision 4).
@@ -112,6 +135,14 @@ pub fn namespace_pack(namespace: &str) -> Option<&'static str> {
         "sec-py" => "security-python",
         "spell" => "spell",
         "deps" => "deps",
+        "next" => "nextjs",
+        "django" => "django",
+        "fastapi" => "fastapi",
+        "airflow" => "airflow",
+        "numpy" => "numpy",
+        "pandas" => "pandas",
+        "testing" => "testing",
+        "tailwind" => "tailwind",
         _ => return None,
     })
 }
@@ -183,6 +214,11 @@ pub struct PackManifest {
     #[serde(default)]
     pub presets: Vec<String>,
     pub description: Option<String>,
+    /// The providers whose tables its rules read: npm package names
+    /// (SR-RULE-PACKS decision 19). Each is also an npm dependency of the
+    /// pack, pinned to the release's version.
+    #[serde(default)]
+    pub providers: Vec<String>,
 }
 
 /// `presets/<namespace>/<name>.toml`.
@@ -232,87 +268,6 @@ pub struct RulePack {
 impl RulePack {
     pub fn label(&self) -> String {
         format!("{}@{}", self.manifest.name, self.manifest.version)
-    }
-}
-
-/// Where packs are looked for (decision 4).
-#[derive(Clone, Debug, Default)]
-pub struct PackSearch {
-    /// `node_modules` is searched from here upwards.
-    pub config_dir: PathBuf,
-    /// Python site-packages folders, in order.
-    pub site_packages: Vec<PathBuf>,
-}
-
-fn site_packages_of(venv: &Path) -> Vec<PathBuf> {
-    let mut out = Vec::new();
-    if let Ok(entries) = fs::read_dir(venv.join("lib")) {
-        let mut names: Vec<PathBuf> = entries
-            .flatten()
-            .filter(|e| e.file_name().to_string_lossy().starts_with("python"))
-            .map(|e| e.path().join("site-packages"))
-            .filter(|p| p.is_dir())
-            .collect();
-        names.sort();
-        out.extend(names);
-    }
-    let windows = venv.join("Lib").join("site-packages");
-    if windows.is_dir() {
-        out.push(windows);
-    }
-    out
-}
-
-impl PackSearch {
-    /// `CODELAW_SITE_PACKAGES` (set by the Python launcher), else
-    /// `$VIRTUAL_ENV`, else `.venv/` at the project root.
-    pub fn new(config_dir: &Path, project_root: &Path, site_packages_env: Option<&str>, virtual_env: Option<&str>) -> Self {
-        let site_packages = if let Some(env) = site_packages_env.filter(|e| !e.is_empty()) {
-            std::env::split_paths(env).collect()
-        } else if let Some(venv) = virtual_env.filter(|e| !e.is_empty()) {
-            site_packages_of(Path::new(venv))
-        } else {
-            site_packages_of(&project_root.join(".venv"))
-        };
-        PackSearch { config_dir: config_dir.to_owned(), site_packages }
-    }
-
-    pub fn find_npm(&self, package: &str) -> Option<PathBuf> {
-        let mut dir = Some(self.config_dir.as_path());
-        while let Some(d) = dir {
-            let candidate = d.join("node_modules").join(package);
-            if candidate.join("codelaw-pack.toml").is_file() {
-                return Some(candidate);
-            }
-            dir = d.parent();
-        }
-        None
-    }
-
-    pub fn find_pypi(&self, distribution: &str) -> Option<PathBuf> {
-        let module = distribution.replace(['-', '.'], "_").to_ascii_lowercase();
-        self.site_packages.iter().map(|sp| sp.join(&module)).find(|p| p.join("codelaw-pack.toml").is_file())
-    }
-
-    /// The npm copy first, then the Python one (decision 4), each only on
-    /// a registry the pack is published on.
-    pub fn find_first_party(&self, short: &str) -> Option<PathBuf> {
-        let p = first_party(short);
-        p.npm.and_then(|n| self.find_npm(n)).or_else(|| p.pypi.and_then(|d| self.find_pypi(d)))
-    }
-
-    /// The error for a missing first-party pack, naming every install it
-    /// has, and saying so when it is on one registry only.
-    pub fn missing_first_party(spec: &str, short: &str) -> String {
-        let p = first_party(short);
-        match (p.npm, p.pypi) {
-            (Some(npm), Some(pypi)) => {
-                format!("`{spec}` needs the rule pack {npm} (npm) or {pypi} (PyPI); install it with `npm i -D {npm}` or `pip install {pypi}`")
-            }
-            (Some(npm), None) => format!("`{spec}` needs the rule pack {npm}, which is published on npm only; install it with `npm i -D {npm}`"),
-            (None, Some(pypi)) => format!("`{spec}` needs the rule pack {pypi}, which is published on PyPI only; install it with `pip install {pypi}`"),
-            (None, None) => unreachable!("every first-party pack is on a registry"),
-        }
     }
 }
 
@@ -491,7 +446,10 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
         match fs::read_to_string(&path) {
             Ok(text) => match toml::from_str::<PresetFile>(&text) {
                 Ok(p) => {
-                    for id in p.rules.keys() {
+                    // The engine's `git/*` rules are in no pack; a preset may
+                    // still set them, to share `[commits]`, `[branches]` and
+                    // `[pr]` (SR-CONFIG decision 11b, W-146).
+                    for id in p.rules.keys().filter(|id| !(id.starts_with("git/") && crate::engine_rules::engine_rule(id).is_some())) {
                         if !rules.iter().any(|r| &r.id == id) {
                             errors.push(LoadError::new(Some(path.clone()), format!("preset `{name}` names `{id}`, which is not in this pack")));
                         }
@@ -543,6 +501,7 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::search::PackSearch;
 
     #[test]
     fn extends_specs() {
@@ -581,17 +540,20 @@ mod tests {
     }
 
     #[test]
-    fn seventeen_packs_on_npm_and_twelve_on_pypi() {
-        // The decider's rulings of 2026-10-24 to 2026-10-29 (L6 decision 11;
-        // W-31, W-32, W-53, W-62, W-63, W-103, W-128).
+    fn twenty_packs_on_npm_and_eighteen_on_pypi() {
+        // The decider's rulings of 2026-10-24 to 2026-10-30 (L6 decision 11;
+        // W-31, W-32, W-53, W-62, W-63, W-103, W-128, W-138, W-144, W-145).
         let npm: Vec<&str> = FIRST_PARTY_PACKS.iter().filter(|p| p.npm.is_some()).map(|p| p.short).collect();
         let pypi: Vec<&str> = FIRST_PARTY_PACKS.iter().filter(|p| p.pypi.is_some()).map(|p| p.short).collect();
-        assert_eq!(FIRST_PARTY_PACKS.len(), 19);
+        assert_eq!(FIRST_PARTY_PACKS.len(), 27);
         assert_eq!(
             npm,
-            ["js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "data", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "security-html", "spell", "deps"]
+            ["js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "data", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "security-html", "spell", "deps", "nextjs", "testing", "tailwind"]
         );
-        assert_eq!(pypi, ["js", "react", "html", "css", "scss", "python", "data", "security-js", "security-html", "security-python", "spell", "deps"]);
+        assert_eq!(
+            pypi,
+            ["js", "react", "html", "css", "scss", "python", "data", "security-js", "security-html", "security-python", "spell", "deps", "django", "fastapi", "airflow", "numpy", "pandas", "tailwind"]
+        );
         for p in FIRST_PARTY_PACKS {
             assert_eq!(Some(p.manifest), p.npm.or(p.pypi), "{}", p.short);
             if let Some(n) = p.npm {

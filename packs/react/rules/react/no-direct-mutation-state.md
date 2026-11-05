@@ -2,8 +2,8 @@
 id: react/no-direct-mutation-state
 title: "No assigning to this.state outside the constructor"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the update has to be rewritten as a `setState` call"
+fix: suggest
+fix_reason: "a plain `this.state.k = e` becomes `this.setState({ k: e })`, which is batched; the reviewer confirms nothing reads the value on the next line; updater-form and nested writes carry no edit"
 stability: preview
 ported_from: [eslint-plugin-react/no-direct-mutation-state]
 since: 0.1.0
@@ -17,6 +17,11 @@ the constructor.
 ```codelaw
 match:
   kind: assignment_expression
+  any:
+    - pattern: 'this.state.$K = $E'
+      inside: { kind: expression_statement, stopBy: neighbor }
+      not: { has: { field: right, regex: 'this\.state' } }
+    - kind: assignment_expression
   has:
     field: left
     regex: ^this\.state\b
@@ -27,6 +32,7 @@ match:
       stopBy: end
   inside: { kind: class_body, stopBy: end }
 message: "Assigning to `this.state` doesn't re-render; call `this.setState`"
+fix: "this.setState({ $K: $E })"
 ```
 
 ## How to fix
@@ -40,9 +46,9 @@ message: "Assigning to `this.state` doesn't re-render; call `this.setState`"
 #### Don't
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -50,9 +56,9 @@ class Counter extends React.Component {
 #### Do
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -62,9 +68,9 @@ class Counter extends React.Component {
 #### Don't
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -72,9 +78,9 @@ class Counter extends React.Component {
 #### Do
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -84,9 +90,9 @@ class Counter extends React.Component {
 #### Don't
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -94,9 +100,9 @@ class Counter extends React.Component {
 #### Do
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```

@@ -4,6 +4,7 @@ title: "No key or IV written into the source"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the key comes from instead is a deployment decision"
+fix_exception: value
 stability: preview
 security: { cwe: [321, 329], owasp: ["A04:2025"], severity: high }
 since: 0.3.0

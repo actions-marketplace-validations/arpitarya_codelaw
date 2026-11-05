@@ -4,6 +4,7 @@ title: "A password is stored with a slow, salted hash"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the parameters that fit the hardware are a decision for the author, and stored hashes have to be re-made"
+fix_exception: restructure
 stability: preview
 security: { cwe: [916], owasp: ["A04:2025"], severity: high }
 since: 0.3.0

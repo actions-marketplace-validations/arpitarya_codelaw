@@ -4,8 +4,9 @@ title: "A dict literal doesn't repeat a literal key"
 languages: [python]
 fix: manual
 fix_reason: "which value should win can't be known from the code"
+fix_pending: "auto-subset"
 stability: preview
-ported_from: [ruff/F601]
+ported_from: [ruff/F601, pylint/duplicate-key]
 since: 0.1.0
 ---
 

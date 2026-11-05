@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how to end the program cleanly depends on what is still running) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint-plugin-n/no-process-exit` |
+| **Ported from** | `eslint-plugin-n/no-process-exit`, `eslint-plugin-unicorn/no-process-exit` |
 
 ## What it checks
 

@@ -16,11 +16,24 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `react/recommended` | 29 | eslint-plugin-react 7.37.5 `recommended` + `jsx-runtime` (17 of its 20 active rules); eslint-plugin-react-hooks 7.1.1's `rules-of-hooks`, `exhaustive-deps` and 8 of the 14 React Compiler rules its `recommended` turns on; and 2 of @eslint-react 5.28.8's hooks rules (`no-unnecessary-use-prefix`, the lazy-initialisation part of `use-state`), at `warn` as there |
+| `react/recommended` | 66 | eslint-plugin-react 7.37.5 `recommended` + `jsx-runtime` (17 of its 20 active rules); eslint-plugin-react-hooks 7.1.1's `rules-of-hooks`, `exhaustive-deps` and 8 of the 14 React Compiler rules its `recommended` turns on; and 2 of @eslint-react 5.28.8's hooks rules (`no-unnecessary-use-prefix`, the lazy-initialisation part of `use-state`), at `warn` as there; and, through `react/a11y`, eslint-plugin-jsx-a11y's `recommended`; and Biome 2.6.4's `noSvgWithoutTitle` and `noSuspiciousSemicolonInJsx` (W-139) |
+| `react/a11y` | 31 | eslint-plugin-jsx-a11y 6.10.2 `recommended` — all 31 rules, at `error` (W-139); `react/recommended` extends it, and it can be used alone |
 | `react/conventions` | 2 | codelaw's starter catalogue: `react/hook-prefix`, `react/props-type-name` — opt in |
 | `react/size` | 3 | Component size: lines per component, props per component and JSX nesting depth; opt in |
 
 <!-- /docs-sync:presets -->
+
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 18 | 39 | 94 | 15 | 44 | 7 | 1 | 27 |
+
+<!-- /rule-docs:fix-ladder -->
 
 **In no preset:** `react/no-context` — no `createContext` or `useContext` — is a team's choice, so
 turn it on under `[rules]`. Its page shows how to keep today's context as warnings while new
@@ -38,6 +51,9 @@ section says so. The larger ones:
 | rule | difference |
 |---|---|
 | `react/jsx-key` | elements returned from a `.map()` callback's block body are not checked yet |
+| `react/a11y-*` | DOM elements are read by name, with no element-to-component mapping (the source's `settings.jsx-a11y.components`); a `{...spread}` attribute exempts the element from the "missing attribute" checks; ARIA values written as expressions are not checked |
+| `react/a11y-role-supports-aria-props` | only an explicit string `role` and the role-specific states the rule lists; the source also reads implicit roles and every ARIA attribute |
+| `react/a11y-no-static-element-interactions` | only `div` and `span` count as static elements |
 | `react/no-unknown-property` | renames HTML spellings (`class`, `onclick`, `tabindex`); in `.js`/`.jsx` the JavaScript grammar can't parse `class=` and `for=` |
 | `react/exhaustive-deps` | dependencies compared by root name; setters, dispatchers and refs are stable |
 | `react/rules-of-hooks` | an early `return` anywhere before a hook counts as making it conditional |

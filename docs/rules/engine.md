@@ -32,6 +32,11 @@
 | [`codelaw/stale-coverage`](#codelawstale-coverage) | The coverage report does not match this file, so its coverage is not judged | `warn` | `manual` |
 | [`codelaw/stale-ignore`](#codelawstale-ignore) | A `.codelawignore` line matches no file or function | `warn` | `auto` |
 | [`codelaw/incomplete-ignore`](#codelawincomplete-ignore) | A `.codelawignore` line is missing a field or contradicts itself, so it exempts nothing | `error` | `manual` |
+| [`codelaw/off-without-reason`](#codelawoff-without-reason) | A rule is turned `"off"` in the config without a `reason` while `[rules] require_reason` is on | `error` | `manual` |
+| [`git/commit-message`](#gitcommit-message) | A commit message does not follow `[commits]` (Conventional Commits by default) | `error` | `manual` |
+| [`git/branch-name`](#gitbranch-name) | The branch name does not follow `[branches]` | `error` | `manual` |
+| [`git/pr-size`](#gitpr-size) | The pull request changes more lines than `[pr] max_lines` | `warn` | `manual` |
+| [`git/pr-description`](#gitpr-description) | The pull request's title or description does not follow `[pr]` | `error` | `manual` |
 
 ## `codelaw/no-rules`
 
@@ -148,14 +153,14 @@
 **A new or edited function is reached by no test file** · severity `error` · fix `manual`
 
 1. Write a unit test that imports the function (or its module, for a function the module does not export) and calls it: a test needs judgment, so codelaw does not write one.
-2. If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` with `forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.
+2. If the function should never need its own test (a thin wrapper, generated code), exempt it in `.codelawignore` — `<path>#<name> graph/untested-function forever: <reason>`; to defer the test, give the line `expires=YYYY-MM-DD` and `on_touch=…` and a reason.
 
 ## `graph/function-coverage`
 
 **A new or edited function's line coverage is under `[coverage] min`** · severity `error` · fix `manual`
 
 1. Add test cases that run the lines the coverage report shows as missed, regenerate the lcov report in the same job, and run `codelaw check --coverage <report>` again: a test needs judgment, so codelaw does not write one.
-2. If the function cannot reasonably be covered, exempt it in `.codelawignore` with a reason, `expires=` or `forever`, and `on_touch=`.
+2. If the function cannot reasonably be covered, exempt it in `.codelawignore` — `<path>#<name> graph/function-coverage` with `expires=` or `forever`, `on_touch=` and a reason.
 
 ## `codelaw/stale-coverage`
 
@@ -171,5 +176,39 @@
 
 **A `.codelawignore` line is missing a field or contradicts itself, so it exempts nothing** · severity `error` · fix `manual`
 
-1. Give the line what the message names: a reason after a colon (always, with `expires=` or `forever`), `expires=YYYY-MM-DD` or `forever` (`[coverage.ignore] require_expiry`), and `on_touch=error|warn|keep` unless it is `forever` (`[coverage.ignore] require_on_touch`).
-2. `forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`.
+1. Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).
+2. `forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule.
+
+## `codelaw/off-without-reason`
+
+**A rule is turned `"off"` in the config without a `reason` while `[rules] require_reason` is on** · severity `error` · fix `manual`
+
+1. Write the entry as a table with a reason: `"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }` (SR-CONFIG decision 11c).
+
+## `git/commit-message`
+
+**A commit message does not follow `[commits]` (Conventional Commits by default)** · severity `error` · fix `manual`
+
+1. Reword the message to the form the finding shows: `git commit --amend` for the last commit, `git rebase -i <base>` and `reword` for an earlier one; a message is never rewritten for you.
+2. If the convention is wrong for this repository, change `[commits]` in `codelaw.toml` (`preset`, `types`, `scopes`, `subject_max`, `subject_case`, `ticket`, `skip`).
+
+## `git/branch-name`
+
+**The branch name does not follow `[branches]`** · severity `error` · fix `manual`
+
+1. Rename the branch (`git branch -m <new-name>`), push it under the new name and open the pull request from it; the finding shows a name that passes.
+2. Or change `[branches] pattern` or `max_length`, or add the branch to `[branches] protected`.
+
+## `git/pr-size`
+
+**The pull request changes more lines than `[pr] max_lines`** · severity `warn` · fix `manual`
+
+1. Split the change into pull requests that each stand alone — the refactor first, then the feature that uses it.
+2. Lockfiles and generated files are not counted: add other generated paths to `[pr] exclude`, or raise `[pr] max_lines`.
+
+## `git/pr-description`
+
+**The pull request's title or description does not follow `[pr]`** · severity `error` · fix `manual`
+
+1. Edit the pull request as the finding says: a title that matches `[pr] title_pattern`, a ticket in the title or description, each section of `[pr] template_sections` filled in.
+2. Then run the CI job again: the description is read from what the CI hands the job, never fetched.

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the statement and its values have to be separated by hand) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a template argument becomes a parameterised `sql` template, which turns each ${value} into a bound parameter, so the reviewer confirms none of them is an identifier or a fragment of the statement; a non-template argument gets no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-89 · OWASP A05:2025 · security severity `high` |
@@ -130,7 +130,7 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 #### Don't
 
 ```ts
-await db.execute(sql.raw(query));
+await db.execute(sql.raw(`select * from users where id = ${id}`));
 ```
 
 #### Do
@@ -144,7 +144,7 @@ await db.execute(sql`select * from users where id = ${id}`);
 #### Don't
 
 ```tsx
-await db.execute(sql.raw(query));
+await db.execute(sql.raw(`select * from users where id = ${id}`));
 ```
 
 #### Do

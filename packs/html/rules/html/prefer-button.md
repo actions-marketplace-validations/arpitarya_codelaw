@@ -4,6 +4,7 @@ title: "Buttons are <button> elements"
 languages: [html]
 fix: manual
 fix_reason: "the element changes, so CSS and scripts that select `input` need updating"
+fix_pending: "suggest"
 stability: preview
 ported_from: [html-validate/prefer-button]
 since: 0.1.0

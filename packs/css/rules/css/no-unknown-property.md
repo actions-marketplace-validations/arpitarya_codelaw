@@ -8,7 +8,7 @@ stability: stable
 options:
   ignoreProperties: { type: "string[]", default: [], description: "properties to accept; `/regex/` for a pattern" }
   checkPrefixed: { type: "boolean", default: false, description: "also check vendor-prefixed properties" }
-ported_from: [stylelint/property-no-unknown]
+ported_from: [stylelint/property-no-unknown, stylelint-scss/property-no-unknown]
 since: 0.1.0
 ---
 

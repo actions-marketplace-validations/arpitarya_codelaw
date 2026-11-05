@@ -4,6 +4,7 @@ title: "Links have a destination"
 languages: [markdown]
 fix: manual
 fix_reason: "where the link should go needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [markdownlint/MD042]
 since: 0.1.0

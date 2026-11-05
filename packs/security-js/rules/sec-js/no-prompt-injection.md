@@ -4,6 +4,7 @@ title: "No request data in a model's system prompt"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "how the prompt is split between instructions and data is a design decision"
+fix_exception: restructure
 stability: preview
 security: { cwe: [1427], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

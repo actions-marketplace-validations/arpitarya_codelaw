@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the digit or a literal backslash was meant needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the escape means just the digit today, but a literal backslash may have been meant: both are offered and the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-nonoctal-decimal-escape` |
@@ -134,6 +134,18 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 const msg = "version \8";
 ```
 
+#### Fixed (the digit)
+
+```js
+const msg = "version 8";
+```
+
+#### Fixed (a literal backslash)
+
+```js
+const msg = "version \\8";
+```
+
 #### Do
 
 ```js
@@ -146,6 +158,18 @@ const msg = "version 8";
 
 ```jsx
 const msg = "version \8";
+```
+
+#### Fixed (the digit)
+
+```jsx
+const msg = "version 8";
+```
+
+#### Fixed (a literal backslash)
+
+```jsx
+const msg = "version \\8";
 ```
 
 #### Do
@@ -162,6 +186,18 @@ const msg = "version 8";
 const msg = "version \8";
 ```
 
+#### Fixed (the digit)
+
+```ts
+const msg = "version 8";
+```
+
+#### Fixed (a literal backslash)
+
+```ts
+const msg = "version \\8";
+```
+
 #### Do
 
 ```ts
@@ -174,6 +210,18 @@ const msg = "version 8";
 
 ```tsx
 const msg = "version \8";
+```
+
+#### Fixed (the digit)
+
+```tsx
+const msg = "version 8";
+```
+
+#### Fixed (a literal backslash)
+
+```tsx
+const msg = "version \\8";
 ```
 
 #### Do

@@ -4,6 +4,7 @@ title: "No inline event handlers or javascript: URLs"
 languages: [html]
 fix: manual
 fix_reason: "the handler has to move into a script file"
+fix_exception: restructure
 stability: preview
 ported_from: [htmlhint/inline-script-disabled]
 since: 0.1.0

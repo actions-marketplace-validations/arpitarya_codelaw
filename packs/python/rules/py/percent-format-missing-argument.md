@@ -4,8 +4,9 @@ title: "Every named `%` placeholder has a value"
 languages: [python]
 fix: manual
 fix_reason: "the value for the missing key has to be supplied"
+fix_exception: value
 stability: preview
-ported_from: [ruff/F505]
+ported_from: [ruff/F505, pylint/missing-format-string-key]
 since: 0.1.0
 ---
 

@@ -4,6 +4,7 @@ title: "No ?. chain used where undefined throws"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right fallback value depends on the code"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-unsafe-optional-chaining]
 since: 0.1.0

@@ -45,8 +45,10 @@ impl PreAgent {
         let event = |key: &str| payload.get(key).and_then(Value::as_str).unwrap_or_default();
         if event("hook_event_name") == "BeforeTool" {
             PreAgent::Gemini
-        } else if event("hook_event_name") == "pre_write_code" || event("agent_action_name") == "pre_write_code" {
+        } else if ["pre_write_code", "pre_run_command"].iter().any(|e| event("hook_event_name") == *e || event("agent_action_name") == *e) {
             PreAgent::Windsurf
+        } else if event("hook_event_name") == "beforeShellExecution" {
+            PreAgent::Cursor
         } else if payload.get("toolArgs").is_some() {
             PreAgent::Copilot
         } else {
@@ -342,6 +344,8 @@ pub struct Added {
 pub struct Verdict {
     pub errors: Vec<Added>,
     pub warnings: Vec<Added>,
+    /// The verdict is on a `git commit` message, not a write (W-146).
+    pub commit: bool,
 }
 
 fn line_text(text: &str, byte: usize) -> &str {
@@ -487,6 +491,11 @@ fn plural(n: usize, one: &str) -> String {
 
 /// Why the write is refused, for the agent.
 pub fn deny_reason(v: &Verdict) -> String {
+    if v.commit {
+        let mut out = "codelaw refused this commit: its message breaks the repository's `[commits]` convention, which CI would fail. Commit again with a message that passes — the finding shows one; never skip the hook or disable the rule to pass.\n".to_owned();
+        out.push_str(&lines(&v.errors));
+        return out;
+    }
     let mut out = format!(
         "codelaw refused this write: it adds {} that CI would fail. Make the change again without {}; never suppress or disable a rule to pass.\n",
         plural(v.errors.len(), "error"),
@@ -533,7 +542,10 @@ pub fn answer(agent: PreAgent, v: &Verdict) -> Answer {
             ),
             PreAgent::Copilot | PreAgent::Vscode => Answer::json(json!({ "permissionDecision": "deny", "permissionDecisionReason": reason })),
             PreAgent::Gemini => Answer::json(json!({ "decision": "deny", "reason": reason })),
-            PreAgent::Cursor => Answer::json(json!({ "permission": "deny", "agent_message": reason, "user_message": format!("codelaw refused a write that adds {}", plural(v.errors.len(), "error")) })),
+            PreAgent::Cursor => {
+                let what = if v.commit { "a commit whose message adds" } else { "a write that adds" };
+                Answer::json(json!({ "permission": "deny", "agent_message": reason, "user_message": format!("codelaw refused {what} {}", plural(v.errors.len(), "error")) }))
+            }
             PreAgent::Kiro | PreAgent::Windsurf => Answer { stdout: String::new(), stderr: reason, code: 2 },
         };
     }
@@ -550,8 +562,272 @@ pub fn answer(agent: PreAgent, v: &Verdict) -> Answer {
 pub fn decide(payload: &str, agent: Option<PreAgent>, profile: Option<String>) -> Result<Answer, String> {
     let v: Value = serde_json::from_str(payload).map_err(|_| "the hook payload on stdin is not JSON".to_owned())?;
     let agent = agent.unwrap_or_else(|| PreAgent::detect(&v));
+    // A shell command: only a `git commit -m` is judged, by its message (W-146).
+    if let Some(command) = shell_command(&v) {
+        let Some(message) = commit_message(&command) else { return Ok(Answer::allow()) };
+        let cwd = v.get("cwd").and_then(Value::as_str).map(PathBuf::from).unwrap_or_else(|| PathBuf::from("."));
+        return Ok(answer(agent, &judge_commit(&cwd, &message, profile)?));
+    }
     let files = rebuild(&v)?;
     Ok(answer(agent, &judge(&files, profile)?))
+}
+
+/// The shell command a payload runs, when it runs one: `command` in the
+/// tool's arguments (Claude Code and Codex `Bash`, Gemini
+/// `run_shell_command`, Copilot and VS Code's shell tool through `toolArgs`)
+/// — a string, or a `["bash", "-lc", "<script>"]` list whose script is the
+/// last word — unless it holds an `apply_patch` envelope or names a file;
+/// Windsurf's
+/// `pre_run_command` `tool_info.command_line`; Cursor's
+/// `beforeShellExecution`, whose `command` is at the top of the payload.
+fn shell_command(payload: &Value) -> Option<String> {
+    let args = arguments(payload).unwrap_or(Value::Null);
+    // An editor tool may call its action `command` (`str_replace`): a
+    // payload that names a file is a write, never a shell command.
+    if patch_text(&args).is_some() || str_of(&args, &["file_path", "path", "filePath", "absolute_path"]).is_some() {
+        return None;
+    }
+    let from_args = match args.get("command") {
+        Some(Value::String(s)) => Some(s.clone()),
+        Some(Value::Array(words)) => {
+            let words: Vec<&str> = words.iter().filter_map(Value::as_str).collect();
+            match words.as_slice() {
+                [.., flag, script] if flag.starts_with('-') && flag.ends_with('c') => Some((*script).to_owned()),
+                w if !w.is_empty() => Some(w.join(" ")),
+                _ => None,
+            }
+        }
+        _ => None,
+    };
+    from_args
+        .or_else(|| str_of(&args, &["command_line"]).map(str::to_owned))
+        .or_else(|| (payload.get("hook_event_name").and_then(Value::as_str) == Some("beforeShellExecution")).then(|| payload.get("command").and_then(Value::as_str).map(str::to_owned)).flatten())
+}
+
+/// Judge a commit message as the `commit-msg` hook would, with the `ci`
+/// profile unless `profile` names another.
+pub fn judge_commit(cwd: &Path, message: &str, profile: Option<String>) -> Result<Verdict, String> {
+    let options = EngineOptions { profile, profile_surface: Some(("ci", "codelaw hook --pre")), no_cold_types: true, ..EngineOptions::from_env() };
+    let project = Project::load(&existing_dir(cwd), options).map_err(|e| e.to_string())?;
+    let mut verdict = Verdict { commit: true, ..Verdict::default() };
+    for d in project.check_commit_message("COMMIT_EDITMSG", message)? {
+        let a = Added { diagnostic: d, text: message.to_owned() };
+        match a.diagnostic.severity {
+            Severity::Error => verdict.errors.push(a),
+            Severity::Warn => verdict.warnings.push(a),
+            Severity::Info => {}
+        }
+    }
+    Ok(verdict)
+}
+
+/// One word of a shell command, or an operator that ends a command.
+#[derive(Clone, Debug, PartialEq, Eq)]
+enum Word {
+    Text { text: String, expands: bool },
+    Op,
+}
+
+/// Split a shell command into words the way `sh` would before expansion:
+/// quotes removed, a `$` or backtick outside single quotes marked as an
+/// expansion the hook cannot know. `$(cat <<'EOF' … EOF)` — the shape agents
+/// write a multi-line message in — is replaced by its text.
+fn shell_words(cmd: &str) -> Vec<Word> {
+    // Heredocs inside a command substitution, first: their text is literal.
+    let mut cmd = cmd.to_owned();
+    let mut heredocs: Vec<String> = Vec::new();
+    while let Some(start) = cmd.find("$(cat <<") {
+        let after = &cmd[start + 8..];
+        let line_end = match after.find('\n') {
+            Some(i) => i,
+            None => break,
+        };
+        let tag = after[..line_end].trim().trim_start_matches('-').trim().trim_matches(['\'', '"']).to_owned();
+        if tag.is_empty() || !tag.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            break;
+        }
+        let body_start = start + 8 + line_end + 1;
+        let mut pos = body_start;
+        let mut found = None;
+        for line in cmd[body_start..].split_inclusive('\n') {
+            if line.trim() == tag {
+                found = Some((pos, pos + line.len()));
+                break;
+            }
+            pos += line.len();
+        }
+        let Some((tag_at, tag_end)) = found else { break };
+        let Some(close) = cmd[tag_end..].find(')').filter(|i| cmd[tag_end..tag_end + i].trim().is_empty()) else { break };
+        heredocs.push(cmd[body_start..tag_at].trim_end_matches('\n').to_owned());
+        cmd.replace_range(start..tag_end + close + 1, &format!("\u{0}{}\u{0}", heredocs.len() - 1));
+    }
+    let mut out = Vec::new();
+    let mut cur = String::new();
+    let mut expands = false;
+    let mut in_word = false;
+    let mut chars = cmd.chars().peekable();
+    let flush = |out: &mut Vec<Word>, cur: &mut String, expands: &mut bool, in_word: &mut bool| {
+        if *in_word {
+            out.push(Word::Text { text: std::mem::take(cur), expands: *expands });
+        }
+        *expands = false;
+        *in_word = false;
+    };
+    while let Some(c) = chars.next() {
+        match c {
+            '\u{0}' => {
+                let mut n = String::new();
+                for d in chars.by_ref() {
+                    if d == '\u{0}' {
+                        break;
+                    }
+                    n.push(d);
+                }
+                cur.push_str(n.parse::<usize>().ok().and_then(|i| heredocs.get(i)).map(String::as_str).unwrap_or_default());
+                in_word = true;
+            }
+            '\'' => {
+                in_word = true;
+                for d in chars.by_ref() {
+                    if d == '\'' {
+                        break;
+                    }
+                    cur.push(d);
+                }
+            }
+            '"' => {
+                in_word = true;
+                while let Some(d) = chars.next() {
+                    match d {
+                        '"' => break,
+                        '\\' => match chars.next() {
+                            Some(e @ ('"' | '\\' | '$' | '`')) => cur.push(e),
+                            Some('\n') => {}
+                            Some(e) => {
+                                cur.push('\\');
+                                cur.push(e);
+                            }
+                            None => {}
+                        },
+                        '\u{0}' => {
+                            let mut n = String::new();
+                            for e in chars.by_ref() {
+                                if e == '\u{0}' {
+                                    break;
+                                }
+                                n.push(e);
+                            }
+                            cur.push_str(n.parse::<usize>().ok().and_then(|i| heredocs.get(i)).map(String::as_str).unwrap_or_default());
+                        }
+                        '$' | '`' => {
+                            expands = true;
+                            cur.push(d);
+                        }
+                        _ => cur.push(d),
+                    }
+                }
+            }
+            '\\' => {
+                in_word = true;
+                if let Some(d) = chars.next()
+                    && d != '\n'
+                {
+                    cur.push(d);
+                }
+            }
+            '$' | '`' => {
+                in_word = true;
+                expands = true;
+                cur.push(c);
+            }
+            ';' | '&' | '|' | '\n' | '(' | ')' => {
+                flush(&mut out, &mut cur, &mut expands, &mut in_word);
+                out.push(Word::Op);
+            }
+            c if c.is_whitespace() => flush(&mut out, &mut cur, &mut expands, &mut in_word),
+            c => {
+                in_word = true;
+                cur.push(c);
+            }
+        }
+    }
+    flush(&mut out, &mut cur, &mut expands, &mut in_word);
+    out
+}
+
+/// The message a shell command's `git commit` records, when the command
+/// spells it out with `-m` / `--message` (several join as paragraphs, as
+/// git joins them). `None` for any other command, for a commit whose message
+/// comes from a file, an editor or another commit, and for a message the
+/// shell would expand: the `commit-msg` hook sees those.
+pub fn commit_message(command: &str) -> Option<String> {
+    let words = shell_words(command);
+    let mut i = 0;
+    while i < words.len() {
+        let is_git = matches!(&words[i], Word::Text { text, .. } if text == "git" || text.ends_with("/git"));
+        i += 1;
+        if !is_git {
+            continue;
+        }
+        // git's own options before the subcommand.
+        while let Some(Word::Text { text, .. }) = words.get(i) {
+            if !text.starts_with('-') {
+                break;
+            }
+            i += if text == "-C" || text == "-c" { 2 } else { 1 };
+        }
+        if !matches!(words.get(i), Some(Word::Text { text, .. }) if text == "commit") {
+            continue;
+        }
+        i += 1;
+        let mut parts: Vec<String> = Vec::new();
+        while let Some(Word::Text { text, expands }) = words.get(i) {
+            let value = |j: usize| match words.get(j) {
+                Some(Word::Text { text, expands: false }) => Some(text.clone()),
+                _ => None,
+            };
+            if *expands && parts.is_empty() && !text.starts_with('-') {
+                i += 1;
+                continue;
+            }
+            match text.as_str() {
+                "-m" | "--message" => {
+                    parts.push(value(i + 1)?);
+                    i += 2;
+                    continue;
+                }
+                "-F" | "--file" | "-c" | "-C" | "--reuse-message" | "--reedit-message" | "--fixup" | "--squash" | "-t" | "--template" => return None,
+                t if t.starts_with("--message=") => {
+                    if *expands {
+                        return None;
+                    }
+                    parts.push(t["--message=".len()..].to_owned());
+                }
+                t if t.starts_with("--file=") || t.starts_with("--fixup=") || t.starts_with("--squash=") || t.starts_with("--reuse-message=") || t.starts_with("--reedit-message=") => return None,
+                t if t.starts_with('-') && !t.starts_with("--") && t.len() > 2 => {
+                    // Clustered short flags: `-am <msg>`, or `-m<msg>`.
+                    let flags = &t[1..];
+                    if let Some(at) = flags.find('m') {
+                        if at + 1 == flags.len() {
+                            parts.push(value(i + 1)?);
+                            i += 2;
+                            continue;
+                        }
+                        if *expands {
+                            return None;
+                        }
+                        parts.push(flags[at + 1..].to_owned());
+                    } else if flags.contains(['F', 'c', 'C', 't']) {
+                        return None;
+                    }
+                }
+                _ => {}
+            }
+            i += 1;
+        }
+        return (!parts.is_empty()).then(|| parts.join("\n\n"));
+    }
+    None
 }
 
 /// Run `f` on a thread of its own and wait at most `timeout`; a panic, an
@@ -588,6 +864,21 @@ mod tests {
 
     fn r(old: &str, new: &str) -> Replace {
         Replace { old: old.into(), new: new.into(), ..Replace::default() }
+    }
+
+    #[test]
+    fn a_commit_message_is_read_off_the_command() {
+        assert_eq!(commit_message("git commit -m 'feat: x'").as_deref(), Some("feat: x"));
+        assert_eq!(commit_message("git add . && git commit -am \"fix: y\" && git push").as_deref(), Some("fix: y"));
+        assert_eq!(commit_message("git -C repo commit -m a -m 'b c'").as_deref(), Some("a\n\nb c"));
+        assert_eq!(commit_message("git commit --message='docs: z'").as_deref(), Some("docs: z"));
+        assert_eq!(commit_message("git commit -m\"chore: w\"").as_deref(), Some("chore: w"));
+        let heredoc = "git commit -m \"$(cat <<'EOF'\nfeat(api): add login (beta)\n\nBody line.\nEOF\n)\"";
+        assert_eq!(commit_message(heredoc).as_deref(), Some("feat(api): add login (beta)\n\nBody line."));
+        assert_eq!(commit_message("git commit -m \"$MSG\""), None, "expanded by the shell");
+        assert_eq!(commit_message("git commit -F msg.txt"), None);
+        assert_eq!(commit_message("git commit --amend --no-edit"), None);
+        assert_eq!(commit_message("git status"), None);
     }
 
     #[test]
@@ -660,6 +951,28 @@ mod tests {
         assert_eq!(PreAgent::detect(&json!({ "agent_action_name": "pre_write_code" })), PreAgent::Windsurf);
         assert_eq!(PreAgent::detect(&json!({ "toolName": "edit", "toolArgs": "{}" })), PreAgent::Copilot);
         assert_eq!(PreAgent::detect(&json!({ "hook_event_name": "PreToolUse" })), PreAgent::Claude);
+        assert_eq!(PreAgent::detect(&json!({ "agent_action_name": "pre_run_command" })), PreAgent::Windsurf);
+        assert_eq!(PreAgent::detect(&json!({ "hook_event_name": "beforeShellExecution", "command": "ls" })), PreAgent::Cursor);
+    }
+
+    #[test]
+    fn every_agents_shell_command_is_read() {
+        let cmd = |v: Value| shell_command(&v);
+        let commit = Some("git commit -m 'feat: x'".to_owned());
+        // Claude Code and Codex `Bash`, Gemini `run_shell_command`.
+        assert_eq!(cmd(json!({ "tool_name": "Bash", "tool_input": { "command": "git commit -m 'feat: x'" } })), commit);
+        assert_eq!(cmd(json!({ "hook_event_name": "BeforeTool", "tool_name": "run_shell_command", "tool_input": { "command": "git commit -m 'feat: x'" } })), commit);
+        // A list: the script after `-c` / `-lc`.
+        assert_eq!(cmd(json!({ "tool_input": { "command": ["bash", "-lc", "git commit -m 'feat: x'"] } })), commit);
+        // Copilot and VS Code: `toolArgs`, an object or a JSON string.
+        assert_eq!(cmd(json!({ "toolName": "bash", "toolArgs": "{\"command\":\"git commit -m 'feat: x'\"}" })), commit);
+        // Windsurf `pre_run_command`; Cursor `beforeShellExecution`.
+        assert_eq!(cmd(json!({ "agent_action_name": "pre_run_command", "tool_info": { "command_line": "git commit -m 'feat: x'", "cwd": "/r" } })), commit);
+        assert_eq!(cmd(json!({ "hook_event_name": "beforeShellExecution", "command": "git commit -m 'feat: x'", "cwd": "/r" })), commit);
+        // Not a shell command: a patch, an editor tool's `command`, a write.
+        assert_eq!(cmd(json!({ "tool_name": "apply_patch", "tool_input": { "command": "*** Begin Patch\n*** End Patch" } })), None);
+        assert_eq!(cmd(json!({ "tool_input": { "command": "str_replace", "path": "a.ts", "old_str": "a", "new_str": "b" } })), None);
+        assert_eq!(cmd(json!({ "tool_input": { "file_path": "a.ts", "content": "x" } })), None);
     }
 
     #[test]
@@ -693,6 +1006,8 @@ mod tests {
             source: "p".into(),
             note: None,
             data: None,
+            choices: Vec::new(),
+            fix_exception: None,
         }
     }
 

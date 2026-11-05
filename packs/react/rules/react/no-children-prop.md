@@ -2,8 +2,8 @@
 id: react/no-children-prop
 title: "Children are passed as children, not as a prop"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "moving the children changes the element's shape by hand"
+fix: auto
+fix_reason: "a self-closing element whose last attribute is children={...} moves it into the body with identical output; the createElement form and other placements stay suggest"
 stability: preview
 ported_from: [eslint-plugin-react/no-children-prop]
 since: 0.1.0
@@ -20,9 +20,24 @@ match:
   any:
     - kind: jsx_attribute
       regex: ^children\b
+      inside:
+        stopBy: neighbor
+        all:
+          - pattern: $EL
+          - kind: jsx_self_closing_element
+          - pattern: '<$N $$$A children={$C} />'
+    - kind: jsx_attribute
+      regex: ^children\b
+      not:
+        inside:
+          stopBy: neighbor
+          kind: jsx_self_closing_element
+          pattern: '<$N $$$A children={$C} />'
     - pattern: 'createElement($T, { children: $C, $$$REST })'
     - pattern: 'React.createElement($T, { children: $C, $$$REST })'
 message: "Pass children between the tags, not as the `children` prop"
+fix:
+  - replace: {target: $EL, with: '<$N $$$A>{$C}</$N>'}
 ```
 
 ## How to fix
@@ -37,6 +52,12 @@ message: "Pass children between the tags, not as the `children` prop"
 
 ```js
 const a = <Panel children={<p>Hi</p>} />;
+```
+
+#### Fixed
+
+```js
+const a = <Panel >{<p>Hi</p>}</Panel>;
 ```
 
 #### Do
@@ -55,6 +76,12 @@ const a = <Panel>
 const a = <Panel children={<p>Hi</p>} />;
 ```
 
+#### Fixed
+
+```jsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
+```
+
 #### Do
 
 ```jsx
@@ -69,6 +96,12 @@ const a = <Panel>
 
 ```tsx
 const a = <Panel children={<p>Hi</p>} />;
+```
+
+#### Fixed
+
+```tsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
 ```
 
 #### Do

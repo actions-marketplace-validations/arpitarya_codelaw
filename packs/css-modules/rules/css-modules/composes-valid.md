@@ -4,6 +4,7 @@ title: "composes points at a class that exists"
 languages: [css, scss]
 fix: manual
 fix_reason: "which class to compose is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 since: 0.3.0
 ---

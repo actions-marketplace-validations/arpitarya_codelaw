@@ -59,3 +59,17 @@ keras.models.load_model(p)
 ```expect
 (none)
 ```
+
+### case: allow_pickle is dropped with its comma
+
+```py
+arr = np.load(path, allow_pickle=True, mmap_mode="r")
+```
+
+```expect
+1:7 sec-py/ml-unsafe-load
+```
+
+```fixed
+arr = np.load(path, mmap_mode="r")
+```

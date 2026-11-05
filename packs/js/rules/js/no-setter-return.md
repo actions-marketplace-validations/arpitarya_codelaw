@@ -4,6 +4,7 @@ title: "A setter does not return a value"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "whether the returned expression was meant as a side effect needs a reader"
+fix_pending: "auto"
 stability: preview
 ported_from: [eslint/no-setter-return]
 since: 0.1.0

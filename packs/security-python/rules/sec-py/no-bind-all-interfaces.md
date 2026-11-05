@@ -3,8 +3,8 @@ id: sec-py/no-bind-all-interfaces
 title: 'A server does not bind to every interface in code'
 languages: [python]
 severity: warn
-fix: manual
-fix_reason: "the address belongs in configuration, with a loopback default"
+fix: suggest
+fix_reason: "the reviewer confirms the loopback address suits the deployment (a container needs the address from its configuration); a host:port string for bind= gets no edit"
 stability: preview
 ported_from: [bandit/B104, ruff/S104]
 security: { cwe: [605], owasp: ["A02:2025"], severity: low }
@@ -26,7 +26,12 @@ match:
             has:
               nthChild: 1
               kind: tuple
-              has: { nthChild: 1, kind: string, regex: '^[''"](0\.0\.0\.0|::)[''"]$' }
+              has:
+                nthChild: 1
+                kind: string
+                any:
+                  - { regex: '^[''"]0\.0\.0\.0[''"]$', pattern: $A }
+                  - { regex: '^[''"]::[''"]$', pattern: $B }
     - all:
         - { kind: call }
         - has:
@@ -35,7 +40,12 @@ match:
               kind: keyword_argument
               all:
                 - { has: { field: name, regex: '^host$' } }
-                - { has: { field: value, kind: string, regex: '^[''"](0\.0\.0\.0|::)[''"]$' } }
+                - has:
+                    field: value
+                    kind: string
+                    any:
+                      - { regex: '^[''"]0\.0\.0\.0[''"]$', pattern: $A }
+                      - { regex: '^[''"]::[''"]$', pattern: $B }
     - all:
         - { kind: call }
         - has:
@@ -46,6 +56,9 @@ match:
                 - { has: { field: name, regex: '^bind$' } }
                 - { has: { field: value, kind: string, regex: '^[''"](0\.0\.0\.0|\[::\]):[0-9]+[''"]$' } }
 message: 'This binds to every network interface; read the address from configuration'
+fix:
+  - replace: { target: $A, with: '"127.0.0.1"' }
+  - replace: { target: $B, with: '"::1"' }
 ```
 
 ## How to fix
@@ -63,6 +76,14 @@ message: 'This binds to every network interface; read the address from configura
 import uvicorn
 
 uvicorn.run(app, host="0.0.0.0")
+```
+
+#### Fixed
+
+```py
+import uvicorn
+
+uvicorn.run(app, host="127.0.0.1")
 ```
 
 #### Do

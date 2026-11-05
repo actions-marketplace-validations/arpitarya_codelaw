@@ -4,6 +4,7 @@ title: "A class component's render() returns"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "what to render needs the author"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react/require-render-return]
 since: 0.1.0

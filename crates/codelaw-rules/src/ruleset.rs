@@ -3,11 +3,12 @@
 
 use crate::LoadError;
 use crate::engine_rules::engine_rule;
-use crate::pack::{ExtendsSpec, PackSearch, RulePack, first_party_npm, first_party_pypi, load_pack_from, load_rules_dir};
+use crate::search::PackSearch;
+use crate::pack::{ExtendsSpec, RulePack, first_party_npm, first_party_pypi, load_pack_from, load_rules_dir};
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, Stability};
 use codelaw_cache::{Key, KeyBuilder};
 use codelaw_config::{Config, Layer, PresetScope, RuleConfig, RuleSetting};
-use codelaw_core::Severity;
+use codelaw_core::{FixClass, Severity};
 use std::collections::{BTreeMap, VecDeque};
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -65,6 +66,12 @@ pub struct RuleSet {
     /// The scopes the presets ship, in `extends` order; the project's
     /// config puts them in front of its own (SR-CONFIG decision 4).
     pub preset_scopes: Vec<PresetScope>,
+    /// What each preset sets for the engine's own `git/*` rules, in
+    /// `extends` order, labelled by the preset: the lowest layers of those
+    /// rules' settings, below the project's `[rules]` (SR-CONFIG decision
+    /// 11b, W-146). No pack holds an engine rule, so these are not in
+    /// `rules`.
+    pub engine_settings: Vec<(String, BTreeMap<String, RuleSetting>)>,
     pub fingerprint: Key,
 }
 
@@ -78,7 +85,27 @@ fn to_config(rule: &RuleFile, setting: Option<&RuleSetting>) -> Option<RuleConfi
     if let Some(o) = setting.and_then(|s| s.options()) {
         options.extend(o.iter().map(|(k, v)| (k.clone(), v.clone())));
     }
-    Some(RuleConfig { severity: Some(severity), options })
+    let fix = lowered(rule.fix, setting);
+    Some(RuleConfig { severity: Some(severity), options, fix })
+}
+
+/// The rung an entry lowers a rule of class `own` to (SR-LAW-4 decision 16);
+/// `None` when it names none, or names the rule's own.
+fn lowered(own: FixClass, setting: Option<&RuleSetting>) -> Option<FixClass> {
+    setting.and_then(|s| s.fix()).and_then(FixClass::parse).filter(|f| *f > own)
+}
+
+/// A `fix` that would raise the rule's class: exit 2, naming the rule's own
+/// rung (SR-LAW-4 decision 16).
+fn check_fix(id: &str, own: FixClass, setting: &RuleSetting, file: &std::path::Path, errors: &mut Vec<LoadError>) {
+    if let Some(f) = setting.fix().and_then(FixClass::parse)
+        && f < own
+    {
+        errors.push(LoadError::new(
+            Some(file.to_owned()),
+            format!("rule `{id}`: `fix = \"{f}\"` would raise its fix, which is `{own}`; a project may only lower a rule's fix (SR-LAW-4 decision 16)"),
+        ));
+    }
 }
 
 fn check_options(rule: &RuleFile, setting: &RuleSetting, file: &std::path::Path, errors: &mut Vec<LoadError>) {
@@ -115,6 +142,7 @@ impl RuleSet {
         let mut loaded_packs: Vec<(PathBuf, Arc<RulePack>)> = Vec::new();
         let mut key = KeyBuilder::new("ruleset");
         let mut preset_scopes: Vec<PresetScope> = Vec::new();
+        let mut engine_settings: Vec<(String, BTreeMap<String, RuleSetting>)> = Vec::new();
 
         // Each entry, with the presets that extended it (outermost first):
         // a preset's own `extends` are resolved before its `[rules]`, so
@@ -145,9 +173,9 @@ impl RuleSet {
             };
             let Some(dir) = dir else {
                 let msg = match &spec {
-                    ExtendsSpec::FirstParty { pack, .. } => PackSearch::missing_first_party(&label, pack),
-                    ExtendsSpec::Npm(n) => format!("`{spec_text}`: no `node_modules/{n}` with a codelaw-pack.toml above {}", codelaw_core::normalize_path(&options.search.config_dir)),
-                    ExtendsSpec::Pypi(n) => format!("`{spec_text}`: `{n}` is not installed in the Python environment"),
+                    ExtendsSpec::FirstParty { pack, .. } => options.search.missing_first_party_in(&label, pack),
+                    ExtendsSpec::Npm(n) => format!("`{spec_text}`: no `{n}` with a codelaw-pack.toml in node_modules{}", options.search.searched(true, false)),
+                    ExtendsSpec::Pypi(n) => format!("`{spec_text}`: `{n}` is not installed in the Python environment{}", options.search.searched(false, true)),
                     ExtendsSpec::Path(p) => format!("`{spec_text}`: no codelaw-pack.toml in `{p}`"),
                 };
                 errors.push(LoadError::new(config_file.clone(), msg));
@@ -272,6 +300,11 @@ impl RuleSet {
                 },
                 _ => pack.rules.iter().map(|r| (r.id.clone(), None)).collect(),
             };
+            let git: BTreeMap<String, RuleSetting> =
+                enabled.iter().filter(|(id, _)| id.starts_with("git/") && engine_rule(id).is_some()).filter_map(|(id, s)| Some((id.clone(), s.clone()?))).collect();
+            if !git.is_empty() {
+                engine_settings.push((label.clone(), git));
+            }
             for (id, setting) in enabled {
                 let Some(entry) = merged.get_mut(&id) else { continue };
                 if entry.source != source {
@@ -358,12 +391,14 @@ impl RuleSet {
         // Every rule id the config names exists (SR-CONFIG decision 5).
         for f in &config.files {
             let mut check = |id: &str, setting: &RuleSetting| {
-                if engine_rule(id).is_some() {
+                if let Some(e) = engine_rule(id) {
+                    check_fix(id, e.fix, setting, &f.path, &mut errors);
                     return;
                 }
                 match merged.get(id) {
                     Some(r) => {
                         check_options(&r.rule, setting, &f.path, &mut errors);
+                        check_fix(id, r.rule.fix, setting, &f.path, &mut errors);
                         let w = format!("`{id}` is a preview rule and runs only with `preview = true`");
                         // Once, however many places (profiles included) name it.
                         if r.preview_blocked && setting.severity() != Some("off") && !warnings.contains(&w) {
@@ -402,9 +437,13 @@ impl RuleSet {
         for p in &preset_scopes {
             key.push(format!("scope {} {} {:?}", p.preset, p.name, p.scope));
         }
+        for (label, settings) in &engine_settings {
+            key.push(format!("engine {label} {settings:?}"));
+        }
         Ok(RuleSet {
             rules: merged.into_values().collect(),
             preset_scopes,
+            engine_settings,
             packs: loaded_packs.iter().map(|(d, p)| (p.label(), d.clone())).collect(),
             warnings,
             fingerprint: key.key(),
@@ -433,7 +472,7 @@ impl RuleSet {
                 Some("off") => current = None,
                 Some(s) => {
                     let sev = Severity::parse(s).unwrap_or(rule.rule.severity);
-                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options() });
+                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options(), fix: None });
                     cfg.severity = Some(sev);
                     current = Some(cfg);
                 }
@@ -441,6 +480,11 @@ impl RuleSet {
             }
             if let (Some(cfg), Some(opts)) = (current.as_mut(), setting.options()) {
                 cfg.options.extend(opts.iter().map(|(k, v)| (k.clone(), v.clone())));
+            }
+            // A later layer may lower further, or set the rule's own rung
+            // back; it never rises above the rule's (SR-LAW-4 decision 16).
+            if let (Some(cfg), Some(f)) = (current.as_mut(), setting.fix().and_then(FixClass::parse)) {
+                cfg.fix = (f > rule.rule.fix).then_some(f);
             }
         }
         current

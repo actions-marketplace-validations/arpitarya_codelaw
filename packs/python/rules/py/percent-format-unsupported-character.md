@@ -4,8 +4,9 @@ title: "A `%` format uses known conversions"
 languages: [python]
 fix: manual
 fix_reason: "the intended conversion can't be inferred"
+fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/F509]
+ported_from: [ruff/F509, pylint/bad-format-character]
 since: 0.1.0
 ---
 

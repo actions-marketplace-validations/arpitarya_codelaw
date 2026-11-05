@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "an annotation on the assigned name is dropped by the rewrite"
 stability: preview
-ported_from: [ruff/E731]
+ported_from: [ruff/E731, pylint/unnecessary-lambda-assignment]
 since: 0.1.0
 ---
 

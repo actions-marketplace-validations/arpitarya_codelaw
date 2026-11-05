@@ -56,6 +56,9 @@ pub struct Match {
     pub kind: String,
     pub single: BTreeMap<String, Captured>,
     pub multi: BTreeMap<String, Vec<Captured>>,
+    /// The rule's `auto_when:` holds on the matched node (true when it has
+    /// none): an `auto` rule's finding stays `auto` (SR-LAW-4 decision 2).
+    pub auto: bool,
 }
 
 impl Match {
@@ -69,6 +72,8 @@ impl Match {
 /// A `match:` rule compiled for one grammar.
 pub struct CompiledMatch {
     core: RuleCore,
+    /// `auto_when:`, compiled like `match:` with the same utils.
+    auto_when: Option<RuleCore>,
     predicates: Vec<(String, Predicate)>,
     /// `type:` (SR-RULE-FORMAT decision 3f): answered after matching, by
     /// the engine's type helper.
@@ -182,10 +187,14 @@ pub(crate) fn rule_core(
 /// Compile a rule's `match:` block for one grammar. `data` is the rule's
 /// pack's tables, for predicates that name one.
 pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<serde_json::Value>>) -> Result<CompiledMatch, String> {
-    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types } = &rule.block.kind else {
+    let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when } = &rule.block.kind else {
         return Err("not a `match:` rule".into());
     };
     let core = rule_core(matcher, constraints.as_ref(), utils.as_ref(), grammar)?;
+    let auto_when = match auto_when {
+        Some(a) => Some(rule_core(a, None, utils.as_ref(), grammar).map_err(|e| e.replace("`match:`", "`auto_when:`"))?),
+        None => None,
+    };
     let types = match types {
         Some(t) => parse_types(t)?,
         None => Vec::new(),
@@ -218,7 +227,7 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
             return Err(format!("`where:` names `{var}`, but `$$${name}` captures a list of nodes; a predicate applies to one node (`$NAME`)"));
         }
     }
-    Ok(CompiledMatch { core, predicates, types })
+    Ok(CompiledMatch { core, auto_when, predicates, types })
 }
 
 impl CompiledMatch {
@@ -256,6 +265,7 @@ impl CompiledMatch {
     /// Match one node under the rule's resolved options (`calls:` reads
     /// them; an option missing from `options` is the rule's default).
     pub fn try_match_with(&self, node: SyntaxNode<'_>, semantic: Option<&SemanticModel>, options: &BTreeMap<String, serde_json::Value>) -> Option<Match> {
+        let auto = self.auto_when.as_ref().is_none_or(|a| a.match_node(node.clone()).is_some());
         let m = self.core.match_node(node)?;
         let env = m.get_env();
         let mut single = BTreeMap::new();
@@ -285,7 +295,7 @@ impl CompiledMatch {
                 return None;
             }
         }
-        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi })
+        Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi, auto })
     }
 }
 
@@ -337,6 +347,38 @@ pub fn expand_options(template: &str, specs: &BTreeMap<String, codelaw_rules::Op
 /// Replace `$NAME`, `$$$NAME` and `$$MATCH` (the whole matched text) in a
 /// message or template with what the match captured. An unknown name is
 /// left as written.
+/// The text filters a capture may carry in a template, written right after
+/// it: `$NAME|trim` (no leading or trailing whitespace) and
+/// `$NAME|lower-first` (its first character in lower case) (SR-RULE-FORMAT
+/// decision 3b). Returns the filtered text and the bytes of filter consumed.
+fn text_filter(rest: &str, value: String) -> (String, usize) {
+    let mut v = value;
+    let mut used = 0;
+    loop {
+        let r = &rest[used..];
+        if let Some(after) = r.strip_prefix("|trim") {
+            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
+                break;
+            }
+            v = v.trim().to_owned();
+            used += "|trim".len();
+        } else if let Some(after) = r.strip_prefix("|lower-first") {
+            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
+                break;
+            }
+            let mut cs = v.chars();
+            v = match cs.next() {
+                Some(c) => c.to_lowercase().chain(cs).collect(),
+                None => v,
+            };
+            used += "|lower-first".len();
+        } else {
+            break;
+        }
+    }
+    (v, used)
+}
+
 pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
     let mut out = String::with_capacity(template.len());
     let bytes = template.as_bytes();
@@ -359,8 +401,10 @@ pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
                     m.single.get(name).map(|c| c.text.clone())
                 };
                 if let Some(v) = value {
-                    out.push_str(&v);
                     i = name_start + name_len;
+                    let (v, used) = text_filter(&template[i..], v);
+                    out.push_str(&v);
+                    i += used;
                     continue;
                 }
                 if dollars == 3 && m.multi.contains_key(name) {

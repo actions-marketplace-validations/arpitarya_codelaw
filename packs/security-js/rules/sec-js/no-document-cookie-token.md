@@ -4,6 +4,7 @@ title: "No token or session written to document.cookie"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the cookie has to be set by the server, which is a change to the response"
+fix_exception: restructure
 stability: preview
 security: { cwe: [1004], owasp: ["A07:2025"], severity: medium }
 since: 0.3.0

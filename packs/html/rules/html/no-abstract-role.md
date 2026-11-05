@@ -4,6 +4,7 @@ title: "No abstract ARIA roles"
 languages: [html]
 fix: manual
 fix_reason: "the concrete role depends on what the element is"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/no-abstract-role]
 tags: [a11y]

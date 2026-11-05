@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-js/recommended` at `error` · `codelaw:sec-js/strict` at `error` · `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the client should be told is a decision for the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the client gets a generic message and the error is logged first, and the reviewer confirms the client needs nothing else (a JSON client may want an object)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-209 · OWASP A10:2025 · security severity `medium` |
@@ -134,6 +134,12 @@ codelaw config --print --for <file>                  # the resolved setting, and
 res.status(500).send(err.stack);
 ```
 
+#### Fixed
+
+```js
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ res.status(500).send("Something went wrong");
 
 ```jsx
 res.status(500).send(err.stack);
+```
+
+#### Fixed
+
+```jsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 #### Do
@@ -164,6 +176,12 @@ res.status(500).send("Something went wrong");
 res.status(500).send(err.stack);
 ```
 
+#### Fixed
+
+```ts
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
+```
+
 #### Do
 
 ```ts
@@ -177,6 +195,12 @@ res.status(500).send("Something went wrong");
 
 ```tsx
 res.status(500).send(err.stack);
+```
+
+#### Fixed
+
+```tsx
+(console.error(err.stack), res.status(500).send("Internal Server Error"));
 ```
 
 #### Do

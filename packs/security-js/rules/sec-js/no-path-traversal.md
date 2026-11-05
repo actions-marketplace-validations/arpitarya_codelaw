@@ -4,6 +4,7 @@ title: "No file path taken from a request"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which folder the value must stay in is a decision for the author"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-security/detect-non-literal-fs-filename]
 security: { cwe: [22], owasp: ["A01:2025"], severity: high }

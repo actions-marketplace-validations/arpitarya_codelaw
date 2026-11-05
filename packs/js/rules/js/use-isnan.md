@@ -2,8 +2,8 @@
 id: js/use-isnan
 title: "Test for NaN with Number.isNaN"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the comparison's operator decides whether to negate"
+fix: suggest
+fix_reason: "the comparison is constant today, so the fix changes behaviour by design; the operator picks the negation and the reviewer confirms"
 stability: preview
 ported_from: [eslint/use-isnan]
 since: 0.1.0
@@ -20,15 +20,39 @@ match:
     field: operator
     regex: ^(==|===|!=|!==|<|>|<=|>=)$
   any:
+    - pattern: $PLN
+      has: { field: operator, regex: '^(==|===)$' }
+      all:
+        - has: { field: left, regex: '^(Number\.)?NaN$' }
+        - has: { field: right, pattern: $PLX }
+    - pattern: $PRN
+      has: { field: operator, regex: '^(==|===)$' }
+      all:
+        - has: { field: right, regex: '^(Number\.)?NaN$' }
+        - has: { field: left, pattern: $PRX }
+    - pattern: $NLN
+      has: { field: operator, regex: '^(!=|!==)$' }
+      all:
+        - has: { field: left, regex: '^(Number\.)?NaN$' }
+        - has: { field: right, pattern: $NLX }
+    - pattern: $NRN
+      has: { field: operator, regex: '^(!=|!==)$' }
+      all:
+        - has: { field: right, regex: '^(Number\.)?NaN$' }
+        - has: { field: left, pattern: $NRX }
     - has: { field: left, regex: '^(Number\.)?NaN$' }
     - has: { field: right, regex: '^(Number\.)?NaN$' }
 message: "Nothing equals NaN, not even NaN; use Number.isNaN(x)"
+fix:
+  - replace: { target: $PLN, with: "Number.isNaN($PLX)" }
+  - replace: { target: $PRN, with: "Number.isNaN($PRX)" }
+  - replace: { target: $NLN, with: "!Number.isNaN($NLX)" }
+  - replace: { target: $NRN, with: "!Number.isNaN($NRX)" }
 ```
 
 ## How to fix
 
-1. Replace `x === NaN` or `x == NaN` with `Number.isNaN(x)`.
-2. Replace `x !== NaN` or `x != NaN` with `!Number.isNaN(x)`.
+1. Check the branch that ran on a comparison with `NaN` (always false) is the one meant, then keep the `Number.isNaN` form.
 
 ## Examples
 
@@ -38,6 +62,14 @@ message: "Nothing equals NaN, not even NaN; use Number.isNaN(x)"
 
 ```js
 if (price === NaN) {
+  reset();
+}
+```
+
+#### Fixed
+
+```js
+if (Number.isNaN(price)) {
   reset();
 }
 ```
@@ -60,6 +92,14 @@ if (price === NaN) {
 }
 ```
 
+#### Fixed
+
+```jsx
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 #### Do
 
 ```jsx
@@ -78,6 +118,14 @@ if (price === NaN) {
 }
 ```
 
+#### Fixed
+
+```ts
+if (Number.isNaN(price)) {
+  reset();
+}
+```
+
 #### Do
 
 ```ts
@@ -92,6 +140,14 @@ if (Number.isNaN(price)) {
 
 ```tsx
 if (price === NaN) {
+  reset();
+}
+```
+
+#### Fixed
+
+```tsx
+if (Number.isNaN(price)) {
   reset();
 }
 ```

@@ -4,6 +4,7 @@ title: "No type error silenced on a line that holds a security sink"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "what the right type is depends on the value"
+fix_exception: restructure
 stability: preview
 security: { cwe: [20], owasp: ["A06:2025"], severity: medium }
 since: 0.3.0

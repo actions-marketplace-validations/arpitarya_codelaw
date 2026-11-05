@@ -1,0 +1,6 @@
+name = "codelaw-rules-numpy"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["python"]
+presets = ["numpy/recommended"]
+description = "codelaw's rules for NumPy code, from Ruff's `NPY` rules (Ruff 0.16.9); PyPI only (SR-RULE-PACKS)"

@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
 fix_reason: "what to do with the error (log, retry, stop) is a decision"
+fix_exception: security
 stability: preview
 ported_from: [bandit/B110, bandit/B112, ruff/S110, ruff/S112]
 security: { cwe: [703], owasp: ["A10:2025"], severity: low }

@@ -23,6 +23,18 @@ or `react-query`.
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 3 | 5 | 5 | 1 | 0 | 0 | 0 | 4 |
+
+<!-- /rule-docs:fix-ladder -->
+
 Every rule is **reimplemented**, not vendored: the matchers, messages and docs
 are written fresh, and each rule's `ported_from:` names the source rule. The
 rules read the option objects TanStack Query's hooks take, on codelaw's

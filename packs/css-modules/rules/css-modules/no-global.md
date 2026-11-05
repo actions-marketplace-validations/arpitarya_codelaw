@@ -4,6 +4,7 @@ title: "A CSS Module stays local"
 languages: [css, scss]
 fix: manual
 fix_reason: "a global selector exists to reach markup outside the module, which is the author's call"
+fix_exception: restructure
 stability: preview
 since: 0.3.0
 ---

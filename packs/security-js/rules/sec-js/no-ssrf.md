@@ -4,6 +4,7 @@ title: "No request made to an address taken from a request"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which hosts the server may call is a decision for the author"
+fix_exception: value
 stability: preview
 ported_from: [bandit/B310, ruff/S310]
 security: { cwe: [918], owasp: ["A01:2025"], severity: high }

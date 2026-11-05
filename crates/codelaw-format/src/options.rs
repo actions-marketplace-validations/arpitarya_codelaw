@@ -2,8 +2,41 @@
 //! Prettier-shaped keys with Prettier's defaults, and a `[format.python]`
 //! table with Black/Ruff's. Every key is strict: an unknown one is an error.
 
+use codelaw_core::class_table::ClassTable;
+use codelaw_lang::class_lists::ClassListOptions;
 use std::collections::BTreeSet;
+use std::sync::Arc;
 use toml::{Table, Value};
+
+/// The class sorting a file gets (SR-FORMATTER decision 9): the provider's
+/// table and where class lists are written. Two sorts are the same when the
+/// table's identity and the places are: that is all a cache key needs.
+#[derive(Clone)]
+pub struct ClassSort {
+    pub table: Arc<dyn ClassTable>,
+    pub lists: ClassListOptions,
+}
+
+impl std::fmt::Debug for ClassSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ClassSort({}, {:?})", self.table.identity(), self.lists)
+    }
+}
+
+impl PartialEq for ClassSort {
+    fn eq(&self, other: &Self) -> bool {
+        self.table.identity() == other.table.identity() && self.lists == other.lists
+    }
+}
+
+impl Eq for ClassSort {}
+
+impl std::hash::Hash for ClassSort {
+    fn hash<H: std::hash::Hasher>(&self, h: &mut H) {
+        self.table.identity().hash(h);
+        self.lists.hash(h);
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum IndentStyle {
@@ -29,6 +62,21 @@ pub enum Semicolons {
     AsNeeded,
 }
 
+/// `arrow_parens`: Prettier's `arrowParens`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum ArrowParens {
+    Always,
+    Avoid,
+}
+
+/// `quote_props`: Prettier's `quoteProps`. Prettier's `consistent` has no
+/// engine behind it (Biome has `as-needed` and `preserve`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum QuoteProps {
+    AsNeeded,
+    Preserve,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum TrailingCommas {
     All,
@@ -52,6 +100,12 @@ pub struct FormatOptions {
     pub quote_style: QuoteStyle,
     pub semicolons: Semicolons,
     pub trailing_commas: TrailingCommas,
+    /// JS/TS (W-141, Prettier's `arrowParens`, `bracketSpacing`,
+    /// `jsxSingleQuote`, `quoteProps`).
+    pub arrow_parens: ArrowParens,
+    pub bracket_spacing: bool,
+    pub jsx_quote_style: QuoteStyle,
+    pub quote_props: QuoteProps,
     /// Globs of files never formatted, relative to the project root.
     pub exclude: Vec<String>,
     /// `[format.python]`.
@@ -59,6 +113,13 @@ pub struct FormatOptions {
     pub python_indent_width: u8,
     /// `[format.markdown] format_code_blocks`.
     pub markdown_code_blocks: bool,
+    /// `[format.tailwind] sort`: unset sorts whenever a provider's table is
+    /// there (decision 9).
+    pub tailwind_sort: Option<bool>,
+    /// `[format.tailwind] attributes` and `functions`.
+    pub class_lists: ClassListOptions,
+    /// Set by the engine when the class lists are sorted.
+    pub class_sort: Option<ClassSort>,
 }
 
 impl FormatOptions {
@@ -87,10 +148,17 @@ impl Default for FormatOptions {
             quote_style: QuoteStyle::Double,
             semicolons: Semicolons::Always,
             trailing_commas: TrailingCommas::All,
+            arrow_parens: ArrowParens::Always,
+            bracket_spacing: true,
+            jsx_quote_style: QuoteStyle::Double,
+            quote_props: QuoteProps::AsNeeded,
             exclude: Vec::new(),
             python_line_width: 88,
             python_indent_width: 4,
             markdown_code_blocks: true,
+            tailwind_sort: None,
+            class_lists: ClassListOptions::default(),
+            class_sort: None,
         }
     }
 }
@@ -105,9 +173,14 @@ const KEYS: &[&str] = &[
     "quote_style",
     "semicolons",
     "trailing_commas",
+    "arrow_parens",
+    "bracket_spacing",
+    "jsx_quote_style",
+    "quote_props",
     "exclude",
     "python",
     "markdown",
+    "tailwind",
 ];
 
 fn unknown(section: &str, key: &str, valid: &[&str]) -> String {
@@ -141,7 +214,7 @@ impl FormatOptions {
         let mut out = BTreeSet::new();
         for (key, v) in table.into_iter().flatten() {
             match v.as_table() {
-                Some(t) if key == "python" || key == "markdown" => out.extend(t.keys().map(|k| format!("{key}.{k}"))),
+                Some(t) if key == "python" || key == "markdown" || key == "tailwind" => out.extend(t.keys().map(|k| format!("{key}.{k}"))),
                 _ => {
                     out.insert(key.clone());
                 }
@@ -168,6 +241,10 @@ impl FormatOptions {
                 "trailing_commas" => {
                     o.trailing_commas = choice(s, key, v, &[("all", TrailingCommas::All), ("es5", TrailingCommas::Es5), ("none", TrailingCommas::None)])?
                 }
+                "arrow_parens" => o.arrow_parens = choice(s, key, v, &[("always", ArrowParens::Always), ("avoid", ArrowParens::Avoid)])?,
+                "bracket_spacing" => o.bracket_spacing = boolean(s, key, v)?,
+                "jsx_quote_style" => o.jsx_quote_style = choice(s, key, v, &[("double", QuoteStyle::Double), ("single", QuoteStyle::Single)])?,
+                "quote_props" => o.quote_props = choice(s, key, v, &[("as-needed", QuoteProps::AsNeeded), ("preserve", QuoteProps::Preserve)])?,
                 "exclude" => {
                     let list = v.as_array().ok_or_else(|| format!("[{s}] exclude: expected a list of globs"))?;
                     o.exclude = list.iter().map(|g| g.as_str().map(str::to_owned).ok_or_else(|| format!("[{s}] exclude: expected a list of globs"))).collect::<Result<_, _>>()?;
@@ -188,6 +265,21 @@ impl FormatOptions {
                         match k.as_str() {
                             "format_code_blocks" => o.markdown_code_blocks = boolean("format.markdown", k, v)?,
                             _ => return Err(unknown("format.markdown", k, &["format_code_blocks"])),
+                        }
+                    }
+                }
+                "tailwind" => {
+                    let t = v.as_table().ok_or("[format.tailwind]: expected a table")?;
+                    let names = |k: &str, v: &Value| -> Result<Vec<String>, String> {
+                        let err = || format!("[format.tailwind] {k}: expected a list of names");
+                        v.as_array().ok_or_else(err)?.iter().map(|n| n.as_str().map(str::to_owned).ok_or_else(err)).collect()
+                    };
+                    for (k, v) in t {
+                        match k.as_str() {
+                            "sort" => o.tailwind_sort = Some(boolean("format.tailwind", k, v)?),
+                            "attributes" => o.class_lists.attributes = names(k, v)?,
+                            "functions" => o.class_lists.functions = names(k, v)?,
+                            _ => return Err(unknown("format.tailwind", k, &["sort", "attributes", "functions"])),
                         }
                     }
                 }
@@ -220,5 +312,11 @@ mod tests {
         assert_eq!((o.line_width, o.quote_style, o.python_line_width), (100, QuoteStyle::Single, 120));
         assert!(parse("[format]\nline_widht = 1\n").unwrap_err().contains("unknown key `line_widht`"));
         assert!(parse("[format]\nsemicolons = \"never\"\n").unwrap_err().contains("`as-needed`"));
+        let o = parse("[format]\narrow_parens = \"avoid\"\nbracket_spacing = false\njsx_quote_style = \"single\"\nquote_props = \"preserve\"\n").unwrap();
+        assert_eq!((o.arrow_parens, o.bracket_spacing, o.jsx_quote_style, o.quote_props), (ArrowParens::Avoid, false, QuoteStyle::Single, QuoteProps::Preserve));
+        assert!(parse("[format]\nquote_props = \"consistent\"\n").unwrap_err().contains("`preserve`"));
+        let o = parse("[format.tailwind]\nsort = false\nfunctions = [\"cx\"]\n").unwrap();
+        assert_eq!((o.tailwind_sort, o.class_lists.functions.clone()), (Some(false), vec!["cx".to_owned()]));
+        assert!(parse("[format.tailwind]\norder = 1\n").unwrap_err().contains("unknown key `order`"));
     }
 }

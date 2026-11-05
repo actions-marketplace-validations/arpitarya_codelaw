@@ -4,6 +4,7 @@ title: "No comment syntax as text inside JSX"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "whether the text is a comment or content needs the author"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-comment-textnodes]
 since: 0.1.0

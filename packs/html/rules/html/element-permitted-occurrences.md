@@ -4,6 +4,7 @@ title: "Elements that may appear once do"
 languages: [html]
 fix: manual
 fix_reason: "which of the duplicates to keep is the author's call"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/element-permitted-occurrences]
 since: 0.1.0

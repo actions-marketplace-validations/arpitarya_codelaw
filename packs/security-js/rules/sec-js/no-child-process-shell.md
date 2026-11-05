@@ -4,6 +4,7 @@ title: "No shell command built from a value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the program and its arguments have to be separated by hand"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-security/detect-child-process, bandit/B602, ruff/S602]
 security: { cwe: [78], owasp: ["A05:2025"], severity: high }

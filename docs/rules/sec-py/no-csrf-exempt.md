@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (an endpoint that needs to be exempt (a webhook) needs its own authentication, which only the author can choose) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the decorator makes the view check CSRF, so a webhook stops working until it has its own authentication; the reviewer confirms the view is not one, and removes the import if nothing else uses it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-352 · OWASP A01:2025 · security severity `high` |
@@ -133,6 +133,15 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
+def update(request):
+    ...
+```
+
+#### Fixed
+
+```py
+from django.views.decorators.csrf import csrf_exempt
+
 def update(request):
     ...
 ```

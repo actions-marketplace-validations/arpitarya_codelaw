@@ -4,6 +4,7 @@ title: "A caught error is not reassigned"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the original error should go is a decision"
+fix_pending: "suggest; needs scope-rename (W-162)"
 stability: preview
 ported_from: [eslint/no-ex-assign]
 since: 0.1.0

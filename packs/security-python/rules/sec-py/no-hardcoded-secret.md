@@ -5,6 +5,7 @@ languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
 fix_reason: "where the secret lives instead (environment, secret manager) is a decision, and the leaked one must be rotated"
+fix_exception: value
 stability: preview
 ported_from: [bandit/B105, bandit/B106, bandit/B107, ruff/S105, ruff/S106, ruff/S107]
 security: { cwe: [798], owasp: ["A07:2025"], severity: high }

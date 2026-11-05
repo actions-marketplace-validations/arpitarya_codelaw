@@ -32,6 +32,19 @@ pub struct RulesArgs {
     /// Each OWASP Top 10:2025 category and the security rules that map to it.
     #[arg(long)]
     security_coverage: bool,
+    /// Each pack's rules per fix rung and per `manual` exception (SR-LAW-4
+    /// decision 7): the packs the project loads, or with `--packs`, every
+    /// pack folder in a directory.
+    #[arg(long)]
+    fix_stats: bool,
+    /// With `--fix-stats`: count every pack folder in this directory.
+    #[arg(long, value_name = "DIR", requires = "fix_stats")]
+    packs: Option<PathBuf>,
+    /// With `--fix-stats`: exit 1 on a problem the ladder's checks find
+    /// (SR-LAW-4 decision 5). No count limits a pack's `manual` rules
+    /// (decision 6, retired 2026-11-05).
+    #[arg(long, requires = "packs")]
+    check: bool,
     /// text or json (the shape of the npm `rulesFor` and Python `rules_for`).
     #[arg(long, default_value = "text")]
     format: String,
@@ -112,7 +125,7 @@ fn rules_at(path: &Path) -> Result<Vec<LoadedRule>, String> {
 fn compile_check(rules: &[LoadedRule]) -> Result<(), String> {
     let mut rs: Vec<LoadedRule> = rules.to_vec();
     rs.sort_by(|a, b| a.rule.id.cmp(&b.rule.id));
-    let set = RuleSet { rules: rs, packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), fingerprint: Key([0; 32]) };
+    let set = RuleSet { rules: rs, packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), engine_settings: Vec::new(), fingerprint: Key([0; 32]) };
     Project::from_parts(Config::defaults(PathBuf::from(".")), set, EngineOptions { threads: Some(1), no_cache: true, ..Default::default() })
         .map(|_| ())
         .map_err(|e| e.to_string())
@@ -150,6 +163,9 @@ pub fn rules(args: RulesArgs) -> ExitCode {
         Ok(_) => false,
         Err(e) => return fail(e),
     };
+    if args.fix_stats {
+        return fix_stats(args.packs.as_deref(), args.check, json);
+    }
     let mut project = match load(&args.for_path.iter().cloned().collect::<Vec<_>>(), EngineOptions::from_env()) {
         Ok(p) => p,
         Err(e) => return fail(e),
@@ -182,10 +198,66 @@ pub fn rules(args: RulesArgs) -> ExitCode {
     if json {
         let v = codelaw_report::rules_json(&rows, args.for_path.as_deref().map(codelaw_core::normalize_path).as_deref());
         let notes = args.for_path.as_deref().map(|p| project.dependency_notes(p)).unwrap_or_default();
-        return print_json(&codelaw_report::with_dependencies(v, notes));
+        let mut v = codelaw_report::with_dependencies(v, notes);
+        // Each pack beside the folder it was loaded from (SR-PACK-LOOKUP decision 8).
+        let packs: Vec<serde_json::Value> = project
+            .rules
+            .packs
+            .iter()
+            .map(|(label, dir)| {
+                let (name, version) = label.rsplit_once('@').unwrap_or((label, ""));
+                serde_json::json!({ "name": name, "version": version, "dir": codelaw_core::normalize_path(dir) })
+            })
+            .collect();
+        if !packs.is_empty() {
+            v["packs"] = serde_json::Value::Array(packs);
+        }
+        return print_json(&v);
     }
     print!("{}", codelaw_report::rules_text(&rows));
     ExitCode::SUCCESS
+}
+
+/// `codelaw rules --fix-stats [--packs <dir> [--check]]` (SR-LAW-4
+/// decisions 5 and 7).
+fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
+    let dirs: Vec<PathBuf> = match packs_dir {
+        Some(d) => {
+            let mut v: Vec<PathBuf> = match std::fs::read_dir(d) {
+                Ok(it) => it.flatten().map(|e| e.path()).filter(|p| p.join("codelaw-pack.toml").is_file()).collect(),
+                Err(e) => return fail(format!("{}: {e}", d.display())),
+            };
+            v.sort();
+            v
+        }
+        None => match load(&[], EngineOptions::from_env()) {
+            Ok(p) => p.rules.packs.iter().map(|(_, dir)| dir.clone()).collect(),
+            Err(e) => return fail(e),
+        },
+    };
+    let mut stats = Vec::new();
+    for dir in &dirs {
+        let pack = match load_pack(dir) {
+            Ok(p) => p,
+            Err(e) => return fail(errors_text(&e)),
+        };
+        let name = dir.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| pack.manifest.name.clone());
+        stats.push(codelaw_rules::FixStats::of(&name, &pack.rules));
+    }
+    // `--check` holds the ladder's checks; the manual ceiling was one until
+    // SR-LAW-4 decision 6 was retired (2026-11-05). Decision 5's
+    // `fix_pending:` check joins here with W-156.
+    let problems: Vec<String> = Vec::new();
+    let _ = check;
+    if json {
+        print_json(&serde_json::json!({ "packs": stats, "problems": problems }));
+    } else {
+        print!("{}", codelaw_rules::fix_stats_text(&stats));
+        for p in &problems {
+            eprintln!("error: {p}");
+        }
+    }
+    if problems.is_empty() { ExitCode::SUCCESS } else { ExitCode::from(1) }
 }
 
 fn print_json(v: &serde_json::Value) -> ExitCode {
@@ -300,6 +372,7 @@ pub fn template(id: &str, languages: &[Language], scope: &str, fix: FixClass) ->
             ("scope", part("new-rule/scope-project.md", project)),
             ("fix", &fix.to_string()),
             ("fix_reason", part("new-rule/fix-reason.md", fix != FixClass::Auto)),
+            ("fix_exception", part("new-rule/fix-exception.md", fix == FixClass::Manual)),
             ("since", codelaw_core::VERSION),
             ("matcher", tpl::text(if project { "new-rule/matcher-project.md" } else { "new-rule/matcher-file.md" })),
             ("fix_line", part("new-rule/fix-line.md", fix != FixClass::Manual)),

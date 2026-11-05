@@ -4,6 +4,7 @@ title: 'XPath expressions are not built from strings'
 languages: [python]
 fix: manual
 fix_reason: "the expression has to be rewritten around `$name` variables, and which parts are values is the author's call"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 security: { cwe: [643], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

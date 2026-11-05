@@ -4,6 +4,7 @@ title: "No eval, new Function or string timers"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the string stood for (a function, a table of operations, a parser) is a design choice"
+fix_pending: "auto-subset; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-security/detect-eval-with-expression, bandit/B307, ruff/S307]
 security: { cwe: [94], owasp: ["A05:2025"], severity: high }

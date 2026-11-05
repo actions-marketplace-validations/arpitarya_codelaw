@@ -5,9 +5,9 @@ description: "Arpit, 2026-10-27 (W-36 R4): measure whether an agent with Fux and
 item: W-102
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated: 2026-11-05
+updated_by: "Arpit (Claude app, Opus 5.5)"
+ball: agent
 ---
 
 # W-102 — Experiment — does good guidance make the check unnecessary?
@@ -19,9 +19,22 @@ Rewritten 2026-10-30 to W-118's redesign, as ruled (R1–R3 below).
 | step | what we do | what it gives us | state |
 |---|---|---|---|
 | 1 | 38 latent (P1) candidates — the pilot's 18 re-tagged plus 20 new, 25 of them on an unknown rule (`acme/*`, `use-instead`), seed contagion and natural readings, two multi-file — and 4 requested (P2) tasks with their right answer fixed; a realistic `AGENTS.md` (layout and build, plus 32 conventions in prose for the guidance arms) | a fair task set | ✅ built 2026-10-30 (`tasks/t01`–`t42`, `arms/rules.md`) |
-| 2 | Six arms — 0 (no codelaw), A (guidance only, codelaw off `PATH`), A+ (the pilot's A), B (+ MCP and rule pages), C (+ Fux), D (A + `hook --pre`) — and the screen: arm 0 alone, 5 runs per candidate, keep 12 at ≥ 40% | the population and the arms | ✅ built, `harness.py dry-run` green (756 scripted runs, screen included); ✅ **screened 2026-10-30: 7 of 38 tempting — the null outcome** ($19.45); 🔴 what next is the decider's (inbox) |
-| 3 | `PREREG.md` landed (written; the run not started), then 6 arms × 12 tasks × 5 runs (+ P2 at 2 runs); `codelaw check` on each diff; Wilson intervals, task-paired differences, task-cluster bootstrap | the data | ⏳ |
+| 2 | Six arms — 0 (no codelaw), A (guidance only, codelaw off `PATH`), A+ (the pilot's A), B (+ MCP and rule pages), C (+ Fux), D (A + `hook --pre`) — and the screen: arm 0 alone, 5 runs per candidate, keep 12 at ≥ 40% | the population and the arms | ✅ built, `harness.py dry-run` green (756 scripted runs, screen included); ✅ **screened 2026-10-30: 7 of 38 tempting — the null outcome** ($19.45); ✅ ruled 2026-11-05: run the 7 (below) |
+| 3 | `PREREG.md` amended to the ruling (7 tasks × 9 runs, 63 per arm) and landed, then 6 arms × 7 tasks × 9 runs (+ P2 at 2 runs); `codelaw check` on each diff; Wilson intervals, task-paired differences, task-cluster bootstrap | the data | ⏳ |
 | 4 | Arm C adds no new error in ≥ 60 runs (bound 5%) → the README's "rules it can't skip" line goes; otherwise it stays with the measured rate | a README line backed by data | ⏳ |
+
+## Ruled 2026-11-05 (later) — after every rule is built
+
+**Arpit, 2026-11-05 (voice, Claude app):** asked to run it in parallel with the rule build and mark it do-first, he said *"I want to do it once all the rules are built"*; told it pushes the pitch back by weeks — *"Yes."* So W-102 **waits on W-139**; the run and design above are unchanged. Measuring rework (extra turns, tokens, cost) is a follow-up, not this run: *"Maybe put it in the backlog for the rework."* — B-072.
+
+## Ruled 2026-11-05 — run the 7
+
+**Arpit, 2026-11-05 (docket, Cowork):** asked *"what would you recommend and why"*, then chose *"1 · Run the 7 (Recommended)"*.
+
+- **The run:** the 7 tempting tasks (t03, t18, t22, t23, t24, t31, t40) × 9 runs per arm = 63 per arm, six arms (378 sessions) + P2's 48; ~$65, inside R3's ~$85 with the screen.
+- **R2 unchanged:** the README line goes only if arm C's upper 95% bound is under 5% — 0 new errors in 63 meets it.
+- **Known cost:** 7 task clusters, not 12 — wider paired intervals between arms; say so in the write-up.
+- **Next (agent):** amend `PREREG.md` to this design and land it **before** any run; then the run.
 
 ## The screen (2026-10-30, Claude Code)
 
@@ -150,6 +163,10 @@ step 4's README line (W-35's rule); (4) on close, the Ownership row passes to a 
 
 - The 180 runs, their inputs and the per-arm counts written up; the README line kept or removed per step 4.
 
+## Blockers
+
+- **W-139** — ruled 2026-11-05: the run waits until every rule is built.
+
 ## Record affected
 
 No SR affected — an experiment. README by W-35's rule.
@@ -158,3 +175,7 @@ No SR affected — an experiment. README by W-35's rule.
 
 - Agent runs cost tokens and time; budget them before starting (L9's disk budget applies to the fixture repos).
 - Non-determinism: report rates with the run count, never a single run.
+
+## Later — rework
+
+Not measured in this run: extra agent turns, tokens and cost per arm, the second headline (*"and it saves you X in tokens"*). Backlog: B-072.

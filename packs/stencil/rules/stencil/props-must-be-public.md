@@ -4,6 +4,7 @@ title: "@Prop() members are public"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "whether the field is public API needs the author"
+fix_pending: "auto"
 stability: preview
 ported_from: [stencil/props-must-be-public]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No script or frame source taken from a value that is not a literal"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which sources the page may load is a decision for the author"
+fix_exception: value
 stability: preview
 security: { cwe: [829], owasp: ["A08:2025"], severity: medium }
 since: 0.3.0

@@ -4,6 +4,7 @@ title: "A meta Content Security Policy does not allow unsafe script"
 languages: [html]
 fix: manual
 fix_reason: "the page's scripts have to be given nonces or hashes, or moved to files"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [693], owasp: ["A02:2025"], severity: medium }
 since: 0.2.0

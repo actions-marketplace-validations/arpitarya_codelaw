@@ -4,6 +4,7 @@ title: "`yield` and `await` only inside a function"
 languages: [python]
 fix: manual
 fix_reason: "the code has to be moved into a function, which changes its structure"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/F704]
 since: 0.1.0

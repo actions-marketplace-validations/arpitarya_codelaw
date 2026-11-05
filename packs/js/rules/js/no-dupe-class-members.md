@@ -4,6 +4,7 @@ title: "No two class members share a name"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "which of the two members to keep is a decision"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-dupe-class-members]
 since: 0.1.0

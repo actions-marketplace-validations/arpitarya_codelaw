@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether a comparison or an assignment was meant needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a mistyped `=` or an intended assignment look alike; the author picks `===` or the doubled parentheses) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-cond-assign` |
@@ -137,6 +137,22 @@ if (user = admin) {
 }
 ```
 
+#### Fixed (compare)
+
+```js
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```js
+if ((user = admin)) {
+  grant();
+}
+```
+
 #### Do
 
 ```js
@@ -157,6 +173,22 @@ while ((node = node.next)) {
 
 ```jsx
 if (user = admin) {
+  grant();
+}
+```
+
+#### Fixed (compare)
+
+```jsx
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```jsx
+if ((user = admin)) {
   grant();
 }
 ```
@@ -185,6 +217,22 @@ if (user = admin) {
 }
 ```
 
+#### Fixed (compare)
+
+```ts
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```ts
+if ((user = admin)) {
+  grant();
+}
+```
+
 #### Do
 
 ```ts
@@ -205,6 +253,22 @@ while ((node = node.next)) {
 
 ```tsx
 if (user = admin) {
+  grant();
+}
+```
+
+#### Fixed (compare)
+
+```tsx
+if (user === admin) {
+  grant();
+}
+```
+
+#### Fixed (mark the assignment intended)
+
+```tsx
+if ((user = admin)) {
   grant();
 }
 ```

@@ -4,6 +4,7 @@ title: "Public members don't reuse HTML element names"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "renaming a public member changes every user"
+fix_exception: value
 stability: preview
 ported_from: [stencil/reserved-member-names]
 since: 0.1.0

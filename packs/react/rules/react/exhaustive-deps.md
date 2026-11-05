@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "adding a dependency can make an effect run more often"
 stability: preview
-ported_from: [eslint-plugin-react-hooks/exhaustive-deps]
+ported_from: [eslint-plugin-react-hooks/exhaustive-deps, eslint-plugin-react-hooks/exhaustive-effect-dependencies, eslint-plugin-react-hooks/memo-dependencies, eslint-plugin-react-hooks/preserve-manual-memoization]
 since: 0.1.0
 ---
 

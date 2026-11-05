@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (using a model that needs custom code means reviewing and vendoring that code, which is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the keyword fails closed, but a model that needs its custom code stops loading, so the reviewer confirms it does not, or vendors and pins the code) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-94 · OWASP A03:2025 · security severity `high` |
@@ -132,6 +132,12 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 
 ```py
 model = AutoModel.from_pretrained(name, trust_remote_code=True)
+```
+
+#### Fixed
+
+```py
+model = AutoModel.from_pretrained(name)
 ```
 
 #### Do

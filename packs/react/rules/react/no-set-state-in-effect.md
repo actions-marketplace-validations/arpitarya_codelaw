@@ -4,6 +4,7 @@ title: "An effect doesn't set state synchronously"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to derive the value, lift the state or subscribe is a design choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react-hooks/set-state-in-effect, "@eslint-react/set-state-in-effect"]
 since: 0.3.0

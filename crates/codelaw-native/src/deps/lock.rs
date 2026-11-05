@@ -11,7 +11,7 @@ use serde_json::Value;
 use std::collections::BTreeMap;
 
 /// The folders from `dir` up to the project root (`""`), nearest first.
-fn folders(dir: &str) -> Vec<String> {
+pub(super) fn folders(dir: &str) -> Vec<String> {
     let mut out = vec![dir.to_owned()];
     let mut d = dir.to_owned();
     while !d.is_empty() {
@@ -21,12 +21,12 @@ fn folders(dir: &str) -> Vec<String> {
     out
 }
 
-fn join(dir: &str, name: &str) -> String {
+pub(super) fn join(dir: &str, name: &str) -> String {
     if dir.is_empty() { name.to_owned() } else { format!("{dir}/{name}") }
 }
 
 /// `dir` relative to `base` (both project-relative, `base` an ancestor).
-fn relative(dir: &str, base: &str) -> String {
+pub(super) fn relative(dir: &str, base: &str) -> String {
     if base.is_empty() {
         return dir.to_owned();
     }

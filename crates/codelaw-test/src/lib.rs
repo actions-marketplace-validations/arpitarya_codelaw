@@ -79,7 +79,7 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     }
     let mut defaults = rule.default_options();
     defaults.extend(options.iter().map(|(k, v)| (k.clone(), v.clone())));
-    let default = RuleConfig { severity: Some(rule.severity), options: defaults };
+    let default = RuleConfig { severity: Some(rule.severity), options: defaults, fix: None };
     let lr = LoadedRule {
         rule: Arc::new(rule),
         default: Some(default),
@@ -90,12 +90,12 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     // The compiled rule set is kept by fingerprint, and a rule compiled with
     // other options is another rule set.
     let fingerprint = if options.is_empty() { Key([0; 32]) } else { codelaw_cache::hash_bytes(format!("{}{}", loaded.rule.id, serde_json::to_string(options).unwrap_or_default()).as_bytes()) };
-    let rules = RuleSet { rules: vec![lr], packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), fingerprint };
+    let rules = RuleSet { rules: vec![lr], packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), engine_settings: Vec::new(), fingerprint };
     let config = Config::defaults(PathBuf::from("/codelaw-test"));
     // A type rule's examples are answered by the TypeScript
     // `CODELAW_TYPESCRIPT` names, with Node from `PATH` (SR-TYPES).
     let env = EngineOptions::from_env();
-    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, ..Default::default() };
+    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, provider_root_env: env.provider_root_env, ..Default::default() };
     Project::from_parts(config, rules, options).expect("a single loaded rule compiles: it already passed load")
 }
 
@@ -106,6 +106,8 @@ struct Tester<'a> {
     /// Projects for examples that carry their own `options=`, by options.
     optioned: Vec<(String, Project)>,
     report: RuleReport,
+    /// The labelled choice `fix` applies while one is being proved.
+    choice: Option<String>,
 }
 
 fn first_difference(expected: &str, got: &str) -> String {
@@ -153,11 +155,23 @@ impl<'a> Tester<'a> {
             Some(l) if self.plain.compiled.iter().any(|c| c.typed) => self.plain.types_unavailable(&format!("example.{}", l.extension()), *l),
             _ => None,
         };
-        let Some(why) = why else { return false };
+        let Some(why) = why else { return self.no_class_table(level) };
         self.report.warnings.push(Failure {
             level,
             at: level.name().into(),
             message: format!("not checked: {why}; set `CODELAW_TYPESCRIPT` to a `typescript` ≥ 7.1 package folder"),
+        });
+        true
+    }
+
+    /// A provider rule needs the provider's table: without one it finds
+    /// nothing, which says nothing about the rule (SR-RULE-PACKS decision 19).
+    fn no_class_table(&mut self, level: Level) -> bool {
+        let Some(why) = self.loaded.rule.native_id().and_then(|n| self.plain.provider_unavailable(n)) else { return false };
+        self.report.warnings.push(Failure {
+            level,
+            at: level.name().into(),
+            message: format!("not checked: {why}; set `CODELAW_PROVIDER_ROOT` to a folder whose node_modules hold the provider and what it asks (fixtures/tailwind)"),
         });
         true
     }
@@ -209,11 +223,12 @@ impl<'a> Tester<'a> {
     }
 
     fn fix(&mut self, language: Language, snippet: &Snippet, code: &str) -> String {
+        let choice = self.choice.clone();
         if self.as_files(code) {
             let files = split_files(language, code);
             let set: Vec<(String, Language, String)> = files.iter().map(|f| (f.path.clone(), f.language, f.text.clone())).collect();
             let p = if snippet.options.is_empty() { &self.plain } else { self.project(snippet) };
-            let fixed = p.fix_files(&set, true);
+            let fixed = p.fix_files_choice(&set, true, choice.as_deref());
             return files
                 .iter()
                 .zip(fixed)
@@ -224,7 +239,10 @@ impl<'a> Tester<'a> {
                 .collect();
         }
         let path = Self::path(language, snippet);
-        self.project(snippet).fix_source(&path, language, code, true).fixed
+        match choice {
+            Some(c) => self.project(snippet).fix_source_choice(&path, language, code, &c).fixed,
+            None => self.project(snippet).fix_source(&path, language, code, true).fixed,
+        }
     }
 
     fn exports(language: Language, code: &str) -> Option<BTreeSet<String>> {
@@ -273,6 +291,18 @@ impl<'a> Tester<'a> {
     fn examples(&mut self) {
         let rule = self.loaded.rule.clone();
         let fixable = rule.fix != FixClass::Manual;
+        // A native rule's choices are known only when it runs: its labelled
+        // `Fixed` blocks name them.
+        let mut labels = rule.block.choice_labels();
+        if labels.is_empty() {
+            for ex in &rule.examples {
+                for (l, _) in &ex.choices {
+                    if !labels.contains(l) {
+                        labels.push(l.clone());
+                    }
+                }
+            }
+        }
         for ex in &rule.examples {
             let l = ex.language;
             for (i, dont) in ex.donts.iter().enumerate() {
@@ -288,7 +318,20 @@ impl<'a> Tester<'a> {
                 if self.fires(l, dont, &dont.code) != hits {
                     self.fail(Level::Invariants, at.clone(), "two runs disagree".into());
                 }
-                if fixable {
+                // A rule with choices proves each one against its own
+                // `Fixed (<label>)` block (SR-LAW-4 decision 11).
+                if fixable && !labels.is_empty() {
+                    for label in &labels {
+                        let blocks: Vec<&Snippet> = ex.choices.iter().filter(|(l, _)| l == label).map(|(_, s)| s).collect();
+                        let Some(expected) = blocks.get(i).or(blocks.last()).copied() else {
+                            self.fail(Level::Examples, at.clone(), format!("no `#### Fixed ({label})` block for the choice `{label}`"));
+                            continue;
+                        };
+                        self.choice = Some(label.clone());
+                        self.fix_checks(l, dont, Some(expected), &format!("{at}, choice `{label}`"), Level::Examples);
+                        self.choice = None;
+                    }
+                } else if fixable {
                     let expected = if !ex.fixed.is_empty() {
                         ex.fixed.get(i).or(ex.fixed.last())
                     } else if ex.dos.len() == ex.donts.len() {
@@ -434,7 +477,9 @@ fn header_path(line: &str) -> Option<String> {
         return None;
     }
     let name = p.rsplit('/').next().unwrap_or(p);
-    let known = Language::from_path(std::path::Path::new(p)).is_some() || matches!(name, "setup.py" | "setup.cfg") || text_config;
+    // A lockfile no language reads (`uv.lock`, `poetry.lock`) is a file of
+    // a snippet too, for the rules that read it (W-129).
+    let known = Language::from_path(std::path::Path::new(p)).is_some() || matches!(name, "setup.py" | "setup.cfg" | "uv.lock" | "poetry.lock") || text_config;
     known.then(|| p.to_owned())
 }
 
@@ -469,7 +514,7 @@ pub fn test_rule(loaded: &LoadedRule, case: Option<&str>) -> RuleReport {
         failures: Vec::new(),
         warnings: Vec::new(),
     };
-    let mut t = Tester { loaded, plain: project_for(loaded, false, &Default::default()), with_globs: None, optioned: Vec::new(), report };
+    let mut t = Tester { loaded, plain: project_for(loaded, false, &Default::default()), with_globs: None, optioned: Vec::new(), report, choice: None };
     for inv in &loaded.rule.invariants {
         if !RULE_INVARIANTS.contains(&inv.as_str()) {
             t.fail(Level::Invariants, "frontmatter".into(), format!("unknown invariant `{inv}` (one of {})", RULE_INVARIANTS.join(", ")));
@@ -511,7 +556,7 @@ pub fn corpus_rule(loaded: &LoadedRule, files: &[(String, Language, String)]) ->
         failures: Vec::new(),
         warnings: Vec::new(),
     };
-    let mut t = Tester { loaded, plain: project_for(loaded, true, &Default::default()), with_globs: None, optioned: Vec::new(), report };
+    let mut t = Tester { loaded, plain: project_for(loaded, true, &Default::default()), with_globs: None, optioned: Vec::new(), report, choice: None };
     let id = loaded.rule.id.clone();
     if t.project_scope() {
         let run = |p: &Project| -> Vec<(String, u32, u32)> {

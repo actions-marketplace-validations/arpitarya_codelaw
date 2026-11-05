@@ -4,6 +4,7 @@ title: "A label points at a control"
 languages: [html]
 fix: manual
 fix_reason: "either the id or the element is wrong, and only the author knows which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/valid-for]
 since: 0.1.0

@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (assigning a property to itself can run a setter, so removing it may change behaviour) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the statement is exact for a local identifier but hides what was meant to be assigned, which the reviewer confirms; a property or other target carries no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-self-assign` |
+| **Ported from** | `eslint/no-self-assign`, `eslint-plugin-sonarjs/no-redundant-assignments` |
 
 ## What it checks
 
@@ -135,6 +135,12 @@ let x = 1;
 x = x;
 ```
 
+#### Fixed
+
+```js
+let x = 1;
+```
+
 #### Do
 
 ```js
@@ -149,6 +155,12 @@ x = y;
 ```jsx
 let x = 1;
 x = x;
+```
+
+#### Fixed
+
+```jsx
+let x = 1;
 ```
 
 #### Do
@@ -167,6 +179,12 @@ let x = 1;
 x = x;
 ```
 
+#### Fixed
+
+```ts
+let x = 1;
+```
+
 #### Do
 
 ```ts
@@ -181,6 +199,12 @@ x = y;
 ```tsx
 let x = 1;
 x = x;
+```
+
+#### Fixed
+
+```tsx
+let x = 1;
 ```
 
 #### Do

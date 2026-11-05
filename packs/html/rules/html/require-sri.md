@@ -4,6 +4,7 @@ title: "Scripts and stylesheets carry an integrity hash"
 languages: [html]
 fix: manual
 fix_reason: "the hash must be computed from the exact file served"
+fix_exception: security
 stability: preview
 options:
   target: { type: "string", default: "all", description: "`all` checks every resource; `crossorigin` only those loaded from another origin" }

@@ -4,6 +4,7 @@ title: "Less specific selectors come first"
 languages: [css, scss]
 fix: manual
 fix_reason: "reordering rules can change which declarations win"
+fix_pending: "auto-subset"
 stability: preview
 options:
   ignore: { type: "string[]", default: [], description: "`selectors-within-list` skips rules with a selector list" }

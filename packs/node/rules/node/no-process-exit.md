@@ -4,8 +4,9 @@ title: "No process.exit()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "how to end the program cleanly depends on what is still running"
+fix_pending: "suggest-choices"
 stability: preview
-ported_from: [eslint-plugin-n/no-process-exit]
+ported_from: [eslint-plugin-n/no-process-exit, eslint-plugin-unicorn/no-process-exit]
 since: 0.1.0
 ---
 

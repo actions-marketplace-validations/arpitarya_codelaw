@@ -27,6 +27,18 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 1 | 6 | 12 | 0 | 2 | 0 | 1 | 9 |
+
+<!-- /rule-docs:fix-ladder -->
+
 `recommended` holds only high-confidence rules, at `error`; `strict` adds the
 heuristic ones, at `warn`, so a team can start without noise.
 

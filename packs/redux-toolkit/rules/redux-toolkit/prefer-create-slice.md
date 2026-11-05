@@ -4,6 +4,7 @@ title: "Reducers are written with createSlice"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the reducer, its action types and its action creators are rewritten together"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---

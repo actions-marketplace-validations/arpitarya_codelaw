@@ -4,6 +4,7 @@ title: "A loop variable doesn't reuse an imported name"
 languages: [python]
 fix: manual
 fix_reason: "the new loop variable name is a choice the author has to make"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [ruff/F402]
 since: 0.1.0

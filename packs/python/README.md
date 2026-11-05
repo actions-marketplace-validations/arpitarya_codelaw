@@ -24,6 +24,18 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 <!-- /docs-sync:presets -->
 
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 159 | 197 | 150 | 40 | 40 | 3 | 1 | 66 |
+
+<!-- /rule-docs:fix-ladder -->
+
 The starter catalogue's other Python rules match a Ruff rule, so they sit in
 `py/recommended` under their starter ids: `py/no-bare-except` (`E722`),
 `py/no-mutable-default` (`B006`) and `py/all-sorted` (`RUF022`).

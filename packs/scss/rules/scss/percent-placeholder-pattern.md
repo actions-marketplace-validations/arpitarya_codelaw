@@ -4,6 +4,7 @@ title: "`%placeholder` names are kebab-case"
 languages: [scss]
 fix: manual
 fix_reason: "renaming must update every `@extend` of the placeholder"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 options:
   pattern: { type: "string", default: "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", description: "a regular expression a placeholder name, without its `%`, must match" }

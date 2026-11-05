@@ -2,8 +2,8 @@
 id: sec-js/postmessage-origin
 title: "postMessage names its target, a message handler checks the sender"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the origin to name is known only to the application"
+fix: suggest
+fix_reason: "naming the page's own origin and wrapping a listener in a same-origin check is fail-closed, and a cross-origin partner needs its origin typed by the reviewer"
 stability: preview
 security: { cwe: [346], owasp: ["A01:2025"], severity: high }
 since: 0.3.0
@@ -16,13 +16,14 @@ since: 0.3.0
 ```codelaw
 match:
   any:
-    - pattern: $W.postMessage($M, "*")
-    - pattern: $W.postMessage($M, '*')
-    - pattern: $W.postMessage($M, "*", $$$REST)
+    - pattern: $W.postMessage($M, $STAR)
+    - pattern: $W.postMessage($M, $STAR2, $$$REST)
     - pattern: $T.addEventListener("message", $FN)
     - pattern: $T.addEventListener("message", $FN, $$$REST)
     - pattern: $T.onmessage = $FN
 constraints:
+  STAR: { regex: '^["'']\*["'']$' }
+  STAR2: { regex: '^"\*"$' }
   FN:
     any:
       - kind: arrow_function
@@ -30,6 +31,10 @@ constraints:
     not:
       regex: 'origin|source'
 message: "This message exchange does not name or check the other window's origin"
+fix:
+  - replace: {target: $STAR, with: "window.location.origin"}
+  - replace: {target: $STAR2, with: "window.location.origin"}
+  - replace: {target: $FN, with: 'function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ($FN).call(this, messageEvent); }'}
 ```
 
 ## How to fix
@@ -49,6 +54,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+#### Fixed
+
+```js
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 #### Do
@@ -72,6 +86,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+#### Fixed
+
+```jsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 #### Do
 
 ```jsx
@@ -93,6 +116,15 @@ window.addEventListener("message", (event) => {
 });
 ```
 
+#### Fixed
+
+```ts
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
+```
+
 #### Do
 
 ```ts
@@ -112,6 +144,15 @@ parent.postMessage(payload, "*");
 window.addEventListener("message", (event) => {
   use(event.data);
 });
+```
+
+#### Fixed
+
+```tsx
+parent.postMessage(payload, window.location.origin);
+window.addEventListener("message", function (messageEvent) { if (messageEvent.origin !== window.location.origin) return; return ((event) => {
+  use(event.data);
+}).call(this, messageEvent); });
 ```
 
 #### Do

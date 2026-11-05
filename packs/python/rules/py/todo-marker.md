@@ -5,7 +5,9 @@ languages: [python]
 severity: error
 fix: manual
 fix_reason: "a ticket and a date are facts about the work that only the author knows; the engine can't invent them"
+fix_exception: value
 stability: preview
+ported_from: [ruff/FIX001, ruff/FIX002, ruff/FIX003, ruff/FIX004, pylint/fixme]
 since: 0.5.0
 ---
 

@@ -4,6 +4,7 @@ title: "A use… function calls a hook"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "renaming the function means renaming every caller, in other files too"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 ported_from: ["@eslint-react/no-unnecessary-use-prefix"]
 since: 0.3.0

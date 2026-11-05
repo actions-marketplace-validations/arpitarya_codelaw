@@ -2,8 +2,8 @@
 id: sec-js/no-bad-tag-filter
 title: "No regular expression that filters HTML tags"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which tags and attributes may stay is a decision for the author"
+fix: suggest
+fix_reason: "escaping shows the markup as text and a sanitizer keeps safe markup (the reviewer imports it); which one the page needs is the author's choice"
 stability: preview
 security: { cwe: [116, 185], owasp: ["A05:2025"], severity: medium }
 since: 0.3.0
@@ -19,6 +19,12 @@ match:
     - pattern: $S.replace($RE, $R)
     - regex: '\.replace\(\s*/<\\?/?[A-Za-z\[(]'
 message: "A regular expression cannot reliably remove HTML tags"
+fix:
+  choices:
+    - label: escape
+      fix: '$S.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c])'
+    - label: sanitizer
+      fix: "DOMPurify.sanitize($S)"
 ```
 
 ## How to fix
@@ -36,6 +42,18 @@ message: "A regular expression cannot reliably remove HTML tags"
 const clean = input.replace(/<script>/gi, "");
 ```
 
+#### Fixed (escape)
+
+```js
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```js
+const clean = DOMPurify.sanitize(input);
+```
+
 #### Do
 
 ```js
@@ -48,6 +66,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```jsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+#### Fixed (escape)
+
+```jsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```jsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 #### Do
@@ -64,6 +94,18 @@ const clean = DOMPurify.sanitize(input);
 const clean = input.replace(/<script>/gi, "");
 ```
 
+#### Fixed (escape)
+
+```ts
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```ts
+const clean = DOMPurify.sanitize(input);
+```
+
 #### Do
 
 ```ts
@@ -76,6 +118,18 @@ const clean = DOMPurify.sanitize(input);
 
 ```tsx
 const clean = input.replace(/<script>/gi, "");
+```
+
+#### Fixed (escape)
+
+```tsx
+const clean = input.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+```
+
+#### Fixed (sanitizer)
+
+```tsx
+const clean = DOMPurify.sanitize(input);
 ```
 
 #### Do

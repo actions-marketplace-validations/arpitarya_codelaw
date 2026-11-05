@@ -4,6 +4,7 @@ title: "A NestJS controller has a guard"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "which guard protects the route is a decision for the author"
+fix_exception: security
 stability: preview
 security: { cwe: [862], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

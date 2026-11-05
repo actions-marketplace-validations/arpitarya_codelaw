@@ -4,6 +4,7 @@ title: "@Watch watches a @Prop or @State"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "which member was meant needs the author"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [stencil/no-unused-watch]
 since: 0.1.0

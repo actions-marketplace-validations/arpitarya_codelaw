@@ -22,7 +22,7 @@
 //!   "package": "lodash", "version": "4.17.15", "safe": "4.17.21", "latest": "4.17.21",
 //!   "advisories": ["GHSA-35jh-r3h4-6jhm"], "more": 2,
 //!   "due": "2026-10-01", "days": -29, "ticket": "PAY-388", "tag": "TODO", "flag": "new-checkout",
-//!   "baseline": true, "fixable": true, "facts": { "…": "the rule's own data, verbatim" } }
+//!   "baseline": true, "ignored": true, "fixable": true, "facts": { "…": "the rule's own data, verbatim" } }
 //! ```
 
 use codelaw_core::{Diagnostic, FixClass, Language, Severity};
@@ -413,6 +413,9 @@ pub fn card(d: &Diagnostic, data: &Value, rule: Option<&RuleFile>, language: Opt
     if o.get("baseline").is_some() {
         chips.push("`baseline`".into());
     }
+    if o.get("ignored").is_some() {
+        chips.push("`.codelawignore`".into());
+    }
     chips.push(format!("`{}`", fix_chip(d)));
     let mut out = format!("**{}** &nbsp; {}\n\n", s(&o, "title").unwrap_or(&d.rule), chips.join(" "));
     // Why: the finding's own words for a fact-bearing kind, the rule's Why
@@ -450,7 +453,13 @@ pub fn card(d: &Diagnostic, data: &Value, rule: Option<&RuleFile>, language: Opt
     if let Some(sec) = rule.and_then(|r| r.security.as_ref()) {
         meta.extend(sec.cwe.iter().map(|c| format!("CWE-{c}")));
     }
-    meta.push(if o.get("baseline").is_some() { "in the baseline".into() } else { "new".into() });
+    meta.push(if o.get("ignored").is_some() {
+        "exempted in `.codelawignore`".into()
+    } else if o.get("baseline").is_some() {
+        "in the baseline".into()
+    } else {
+        "new".into()
+    });
     meta.push(format!("fix: `{}`", d.fix));
     out.push_str(&meta.join(" · "));
     if d.fix == FixClass::Manual && !d.steps.is_empty() {

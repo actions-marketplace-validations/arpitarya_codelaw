@@ -4,6 +4,7 @@ title: "No model output run, written as HTML or used as SQL"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the program may do with model output is a design decision"
+fix_exception: restructure
 stability: preview
 security: { cwe: [94, 79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

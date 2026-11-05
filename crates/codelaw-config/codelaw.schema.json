@@ -59,7 +59,7 @@
       "enum": ["error", "warn", "info", "off"]
     },
     "ruleSetting": {
-      "description": "A severity, or a severity and options.",
+      "description": "A severity, or a severity, options, a lowered fix and the reason a rule is off.",
       "oneOf": [
         { "$ref": "#/definitions/severity" },
         {
@@ -67,7 +67,16 @@
           "additionalProperties": false,
           "properties": {
             "severity": { "$ref": "#/definitions/severity" },
-            "options": { "type": "object" }
+            "options": { "type": "object" },
+            "fix": {
+              "description": "Lower the rule's fix (SR-LAW-4 decision 16): `suggest` stops `codelaw fix`, save and the agent hook applying it; `manual` stops every surface applying it. At or below the rule's own rung; raising is a config error.",
+              "type": "string",
+              "enum": ["auto", "suggest", "manual"]
+            },
+            "reason": {
+              "description": "Why the rule is turned off (SR-CONFIG decision 11c): only with `severity = \"off\"`. Mandatory when `[rules] require_reason` is true.",
+              "type": "string"
+            }
           }
         }
       ]
@@ -75,6 +84,18 @@
     "rules": {
       "type": "object",
       "description": "Severity and options per rule id (`<namespace>/<name>`).",
+      "additionalProperties": { "$ref": "#/definitions/ruleSetting" }
+    },
+    "rootRules": {
+      "type": "object",
+      "description": "The top-level `[rules]`: severity and options per rule id (`<namespace>/<name>`), and `require_reason`.",
+      "properties": {
+        "require_reason": {
+          "description": "Every rule entry in the project's config that sets `severity = \"off\"` must carry a `reason`; one that does not is a `codelaw/off-without-reason` finding (SR-CONFIG decision 11c). Root config only.",
+          "type": "boolean",
+          "default": false
+        }
+      },
       "additionalProperties": { "$ref": "#/definitions/ruleSetting" }
     }
   },
@@ -101,7 +122,7 @@
       "description": "The local rules folder; `.codelaw/rules` by default. Root config only.",
       "type": "string"
     },
-    "rules": { "x-codelaw-record": "SR-CONFIG", "$ref": "#/definitions/rules" },
+    "rules": { "x-codelaw-record": "SR-CONFIG", "$ref": "#/definitions/rootRules" },
     "scope": {
       "x-codelaw-record": "SR-CONFIG",
       "description": "Named groups of files with their own rule settings, applied in file order after [rules]; a preset may ship one (`tests`), and the project's of the same name extends it. A name is lowercase letters, digits, `_` and `-`; `default` is reserved.",
@@ -187,7 +208,18 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "external_timeout": { "$ref": "#/definitions/duration", "description": "Per file, for an external fixer; 5 s by default." }
+        "external_timeout": { "$ref": "#/definitions/duration", "description": "Per file, for an external fixer; 5 s by default." },
+        "on_edit": {
+          "description": "Whether every rule's `auto` fix runs on save and from the agent hook (SR-CONFIG decision 11e), below the per-rule entries. Unset, each rule keeps its own default (SR-RULE-FORMAT decision 2b).",
+          "type": "boolean"
+        },
+        "multi_file": {
+          "x-codelaw-record": "SR-MULTI-FILE-FIXES",
+          "description": "Whether a fix may edit several files (SR-MULTI-FILE-FIXES decision 3): `auto` (the default), `suggest` keeps each a diff, `off` offers none.",
+          "type": "string",
+          "enum": ["auto", "suggest", "off"],
+          "default": "auto"
+        }
       }
     },
     "lint": {
@@ -326,7 +358,7 @@
         },
         "ignore": {
           "x-codelaw-record": "SR-BASELINE",
-          "description": "What every `.codelawignore` line must carry, and the defaults of a line (SR-BASELINE decision 12).",
+          "description": "Deprecated: the old spelling of `[codelawignore]`, read until the next minor release (SR-BASELINE decision 12).",
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -351,6 +383,34 @@
               "default": "file"
             }
           }
+        }
+      }
+    },
+    "codelawignore": {
+      "x-codelaw-record": "SR-BASELINE",
+      "description": "What every `.codelawignore` line must carry, and the defaults of a line; the file exempts named files or functions from any rule (SR-BASELINE decision 12). Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_expiry": {
+          "description": "Every line says `expires=…` or `forever`; one without is `codelaw/incomplete-ignore`.",
+          "type": "boolean",
+          "default": true
+        },
+        "require_on_touch": {
+          "description": "Every line that is not `forever` says `on_touch=…`; one without is `codelaw/incomplete-ignore`.",
+          "type": "boolean",
+          "default": true
+        },
+        "on_touch": {
+          "description": "What an edit does to a line that does not say: `error` revokes it, `warn` revokes it as warnings, `keep` keeps it.",
+          "enum": ["error", "warn", "keep"],
+          "default": "error"
+        },
+        "on_touch_scope": {
+          "description": "What counts as an edit for a line that does not say: `file`, any change to the file; `function`, the function's tokens changed.",
+          "enum": ["file", "function"],
+          "default": "file"
         }
       }
     },
@@ -438,6 +498,79 @@
         "warn_days": { "description": "A marker is warned about this many days before its date.", "type": "integer", "minimum": 0, "default": 14 }
       }
     },
+    "commits": {
+      "x-codelaw-record": "SR-CONFIG",
+      "description": "What a commit message must look like (SR-CONFIG decision 11b): read by `git/commit-message` under `--changed-since`, in the `commit-msg` hook and in the agent hook. Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preset": { "description": "The convention: `conventional` (`<type>(<scope>)!: <subject>`), `angular`, `gitmoji`, `custom` (the subject line must match `pattern`) or `off`.", "enum": ["conventional", "angular", "gitmoji", "custom", "off"], "default": "conventional" },
+        "types": { "description": "The commit types allowed; Angular's eight under `angular`.", "type": "array", "items": { "type": "string", "pattern": "^[^\\s():!]+$" }, "default": ["feat", "fix", "docs", "refactor", "test", "chore", "perf", "ci", "build"] },
+        "scopes": { "description": "The scopes allowed; empty is any.", "type": "array", "items": { "type": "string" }, "default": [] },
+        "require_scope": { "description": "A scope is required.", "type": "boolean", "default": false },
+        "subject_max": { "description": "The longest subject line, in characters; 0 is no limit.", "type": "integer", "minimum": 0, "default": 72 },
+        "subject_case": { "description": "The first letter of the subject: `lower`, `sentence` or `any`.", "enum": ["lower", "sentence", "any"], "default": "lower" },
+        "require_body": { "description": "A body after the subject line is required.", "type": "boolean", "default": false },
+        "breaking": { "description": "The breaking-change markers accepted: `!` after the type, a `BREAKING CHANGE:` footer.", "type": "array", "items": { "type": "string" }, "default": ["!", "BREAKING CHANGE:"] },
+        "pattern": { "description": "A regular expression the subject line must match; only with `preset = \"custom\"`, which requires it.", "type": "string", "default": "" },
+        "ticket": {
+          "description": "A ticket in the message.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "required": { "description": "A ticket matching `pattern` is required.", "type": "boolean", "default": false },
+            "pattern": { "description": "A regular expression a ticket matches.", "type": "string", "default": "[A-Z]+-[0-9]+" },
+            "place": { "description": "Where the ticket goes: `footer` (any line after the subject), `subject` or `either`.", "enum": ["subject", "footer", "either"], "default": "footer" }
+          }
+        },
+        "skip": {
+          "description": "The commits not judged.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "merges": { "description": "Merge commits.", "type": "boolean", "default": true },
+            "reverts": { "description": "`Revert \"…\"` commits.", "type": "boolean", "default": true },
+            "fixups": { "description": "`fixup!`, `squash!` and `amend!` commits.", "type": "boolean", "default": true },
+            "authors": { "description": "Authors, by name or email, whose commits are not judged.", "type": "array", "items": { "type": "string" }, "default": ["dependabot[bot]", "renovate[bot]"] }
+          }
+        }
+      }
+    },
+    "branches": {
+      "x-codelaw-record": "SR-CONFIG",
+      "description": "What a branch name must look like (SR-CONFIG decision 11b): read by `git/branch-name` under `--changed-since`. Unchecked until `pattern` is set or a ticket is required. Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pattern": { "description": "A regular expression the whole branch name must match; empty leaves names unchecked.", "type": "string", "default": "" },
+        "max_length": { "description": "The longest branch name, in characters; 0 is no limit.", "type": "integer", "minimum": 0, "default": 60 },
+        "protected": { "description": "Globs of the branches never checked.", "type": "array", "items": { "type": "string" }, "default": ["main", "develop", "release/*"] },
+        "skip_authors": { "description": "Authors of `HEAD`, by name or email, whose branches are not checked.", "type": "array", "items": { "type": "string" }, "default": ["dependabot[bot]", "renovate[bot]"] },
+        "ticket": {
+          "description": "A ticket in the branch name.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "required": { "description": "A ticket matching `pattern` is required.", "type": "boolean", "default": false },
+            "pattern": { "description": "A regular expression a ticket matches.", "type": "string", "default": "[A-Z]+-[0-9]+" },
+            "match_commits": { "description": "Every judged commit of the range names the branch's ticket.", "type": "boolean", "default": false }
+          }
+        }
+      }
+    },
+    "pr": {
+      "x-codelaw-record": "SR-CONFIG",
+      "description": "A pull request's size and description (SR-CONFIG decision 11b): read by `git/pr-size` and `git/pr-description` under `--changed-since`. Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_lines": { "description": "Warn above this many changed lines (added plus deleted); 0 is off.", "type": "integer", "minimum": 0, "default": 400 },
+        "exclude": { "description": "Globs of files not counted: lockfiles and generated files.", "type": "array", "items": { "type": "string" }, "default": ["**/*.lock", "**/package-lock.json", "**/pnpm-lock.yaml", "**/generated/**"] },
+        "title_pattern": { "description": "A regular expression the title must match; empty is any.", "type": "string", "default": "" },
+        "require_ticket": { "description": "The title or description names a ticket matching `[commits.ticket]`'s pattern.", "type": "boolean", "default": false },
+        "template_sections": { "description": "Markdown headings the description must hold, each filled in.", "type": "array", "items": { "type": "string" }, "default": [] }
+      }
+    },
     "tests": {
       "x-codelaw-record": "SR-CONFIG",
       "description": "Tables about tests (SR-CONFIG decision 11a). Root config only.",
@@ -488,9 +621,52 @@
         }
       }
     },
+    "packs": {
+      "x-codelaw-record": "SR-PACK-LOOKUP",
+      "description": "Where the engine finds a rule pack (SR-PACK-LOOKUP decisions 6-7). Every key is optional; a key that is set replaces its default and is never added in front of it. Folders are relative to the root config's folder; absolute paths are allowed and no `~` or variable is expanded. Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "order": {
+          "description": "The registries searched for each pack, in this order; a registry left out is not searched.",
+          "type": "array",
+          "items": { "enum": ["npm", "pypi"] },
+          "minItems": 1,
+          "uniqueItems": true,
+          "default": ["npm", "pypi"]
+        },
+        "node_modules": {
+          "description": "The folders that hold npm packages, searched in this order with no walk-up. Unset: `node_modules/` in the config's folder and in every parent folder. A folder set here that does not exist is a config error.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "venv": {
+          "description": "One virtual environment whose site-packages are the only Python place; `CODELAW_SITE_PACKAGES` and `$VIRTUAL_ENV` are then ignored. Unset: the launcher's paths, then `$VIRTUAL_ENV`, then `.venv/` in the config's folder. A folder that does not exist, or has no site-packages folder, is a config error.",
+          "type": "string"
+        }
+      }
+    },
+    "providers": {
+      "x-codelaw-record": "SR-RULE-PACKS",
+      "description": "Providers: packages that build a pack's data table from a package installed in the project (SR-RULE-PACKS decision 19). Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_missing": { "description": "`skip` (default): the rules and the class sorting that need a provider's table are left out, with one note naming the package to install. `error`: the run stops with exit 2, as for a missing pack.", "enum": ["skip", "error"], "default": "skip" },
+        "tailwind": {
+          "description": "`@codelaw/provider-tailwind`, the tailwind pack's provider.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "on_missing": { "description": "Overrides `[providers] on_missing` for this provider.", "enum": ["skip", "error"], "default": "skip" },
+            "stylesheet": { "description": "The project's Tailwind CSS stylesheet, relative to the root config's folder. Unset: the first `.css` file under the root that imports \"tailwindcss\", else Tailwind's own theme.css.", "type": "string" }
+          }
+        }
+      }
+    },
     "deps": {
       "x-codelaw-record": "SR-RULE-PACKS",
-      "description": "The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated` and `deps/stale-snapshot` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.",
+      "description": "The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`, `deps/stale-snapshot`, `deps/licence`, `deps/lockfile-sync`, `deps/version-drift` and `deps/runtime-agreement` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -573,6 +749,61 @@
             "high": { "enum": ["inform", "block"], "default": "inform" },
             "moderate": { "enum": ["inform", "block"], "default": "inform" },
             "low": { "enum": ["inform", "block"], "default": "inform" }
+          }
+        },
+        "licence": {
+          "description": "`deps/licence`: which licences a dependency may have. `allow` and `deny` are globs over SPDX ids (`*` any run; `GPL-2.0-only WITH Classpath-exception-2.0` matches a `WITH` id), checked before the defaults, so a configured `allow` lifts a default denial. Defaults: permissive allowed (MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, Unlicense, CC0-1.0, PSF-2.0, Python-2.0, BlueOak-1.0.0), copyleft and source-available denied (GPL-*, AGPL-*, LGPL-*, SSPL-*, BUSL-*, EUPL-*), anything else unknown.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allow": { "type": "array", "items": { "type": "string" } },
+            "deny": { "type": "array", "items": { "type": "string" } },
+            "unknown": { "enum": ["error", "warn", "info", "off"], "default": "warn", "description": "The severity of a licence neither allowed nor denied, free text, or none." },
+            "ignore": {
+              "description": "Packages whose licence is not judged: `npm:<name>` / `pypi:<name>`, or a table with `package`, an `expires` date, `added_by` and `reason`.",
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  { "type": "string", "pattern": "^(npm|pypi):.+" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["package"],
+                    "properties": {
+                      "package": { "type": "string", "pattern": "^(npm|pypi):.+" },
+                      "advisory": { "type": "string" },
+                      "expires": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+                      "added_by": { "type": "string" },
+                      "reason": { "type": "string" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "drift": {
+          "description": "`deps/version-drift`: the range a monorepo's workspaces align one dependency to.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy": { "enum": ["highest", "root"], "default": "highest", "description": "`highest`: the range whose floor is highest; `root`: the root manifest's, else the highest." },
+            "ignore": { "type": "array", "items": { "type": "string", "pattern": "^(npm|pypi):.+" }, "description": "Packages never compared." }
+          }
+        },
+        "runtime": {
+          "description": "`deps/runtime-agreement`: the place that names the true Node and Python version.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "node": { "enum": ["engines.node", "volta.node", ".nvmrc", ".node-version", ".tool-versions", "mise.toml"], "default": "engines.node" },
+                "python": { "enum": ["requires-python", ".python-version", ".tool-versions", "mise.toml"], "default": "requires-python" }
+              }
+            }
           }
         }
       }

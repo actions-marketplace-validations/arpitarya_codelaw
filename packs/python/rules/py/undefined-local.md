@@ -4,6 +4,7 @@ title: "A local isn't read before the function assigns it"
 languages: [python]
 fix: manual
 fix_reason: "whether to declare it `global`, `nonlocal` or rename the local needs a person"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/F823]
 since: 0.1.0

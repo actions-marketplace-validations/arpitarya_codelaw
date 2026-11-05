@@ -4,6 +4,7 @@ title: "No request body written straight into a model"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which fields a client may set is a decision for the author"
+fix_exception: value
 stability: preview
 security: { cwe: [915], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

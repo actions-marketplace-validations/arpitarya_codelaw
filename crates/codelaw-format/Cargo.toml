@@ -10,6 +10,8 @@ publish.workspace = true
 # ENGINES_FINGERPRINT in src/lib.rs with any of them.
 [dependencies]
 codelaw-core.workspace = true
+# Where class lists are written (decision 9).
+codelaw-lang.workspace = true
 serde_json.workspace = true
 serde-saphyr.workspace = true
 toml.workspace = true
@@ -17,13 +19,11 @@ toml.workspace = true
 globset.workspace = true
 # Biome 2.5.15 (tag `@biomejs/biome@2.5.15`): the crates.io copies are stale.
 biome_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
-biome_languages = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131", features = ["lang_js", "lang_json", "lang_css"] }
+biome_languages = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131", features = ["lang_js", "lang_json"] }
 biome_js_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 biome_js_parser = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 biome_json_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 biome_json_parser = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
-biome_css_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
-biome_css_parser = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 # Ruff publishes its internal crates to crates.io; 0.0.18 is Ruff 0.17.1's.
 ruff_formatter = "=0.0.18"
 ruff_python_formatter = "=0.0.18"
@@ -31,8 +31,15 @@ ruff_python_parser = "=0.0.18"
 # The statement tree the ignore markers need (decision 6).
 ruff_python_ast = "=0.0.18"
 ruff_text_size = "=0.0.18"
-pretty_yaml = "=0.6.0"
 taplo = { version = "=0.14.0", default-features = false }
-dprint-plugin-markdown = "=0.26.0"
-dprint-core = { version = "=0.70.0", default-features = false }
 markup_fmt = "=0.27.6"
+# Oxc's native formatters (SR-LAW-11 D-52, ratified 2026-11-05): not on
+# crates.io (`publish = false`), so a git revision of oxc-project/oxc, moved
+# only by a change that reruns W-141's corpus. The parsers they use come from
+# crates.io through them; `oxc_allocator` is patched to the same revision in
+# the workspace manifest so there is one copy of it.
+oxc_allocator = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }
+oxc_formatter_core = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }
+oxc_formatter_css = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }
+oxc_formatter_markdown = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }
+oxc_formatter_yaml = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }

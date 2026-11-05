@@ -51,10 +51,18 @@ pub struct RuleWhy {
     pub title: String,
     pub source: String,
     pub path: String,
+    /// The folder the rule's pack was loaded from (SR-PACK-LOOKUP
+    /// decision 8); `None` for a local rule.
+    pub pack_dir: Option<String>,
     pub shadows: Vec<String>,
     pub enabled_by: Option<String>,
     pub default: String,
     pub preview: bool,
+    /// The rule's own fix rung.
+    pub fix: String,
+    /// The rung a config entry lowered it to, and the entry that did
+    /// (SR-LAW-4 decision 16): for `--for`'s file, else the project root.
+    pub fix_lowered: Option<(String, String)>,
     pub for_file: Option<WhyForFile>,
 }
 
@@ -148,17 +156,43 @@ impl Project {
             title: r.rule.title.clone(),
             source: r.source.label(),
             path: codelaw_core::normalize_path(&r.rule.path),
+            pack_dir: match &r.source {
+                codelaw_rules::RuleSource::Pack { dir, .. } => Some(codelaw_core::normalize_path(dir)),
+                codelaw_rules::RuleSource::Local => None,
+            },
             shadows: r.shadows.clone(),
             enabled_by: r.enabled_by.clone(),
             default: severity_name(&r.default),
             preview: r.preview_blocked,
+            fix: r.rule.fix.name().to_owned(),
+            fix_lowered: None,
             for_file: None,
         };
-        let Some(file) = file else { return Ok(why) };
+        let lowered = |layers: &[codelaw_config::Layer]| -> Option<(String, String)> {
+            let cfg = self.rules.effective(&r, layers)?;
+            let f = cfg.fix?;
+            let source = layers.iter().rev().find(|l| l.rules.get(id).and_then(|s| s.fix()).is_some()).map(|l| l.source.clone()).unwrap_or_default();
+            Some((f.name().to_owned(), source))
+        };
+        let Some(file) = file else {
+            why.fix_lowered = lowered(&self.config.layers_for(self.root()));
+            return Ok(why);
+        };
         let (abs, rel, language) = self.locate(file)?;
         let layers = self.config.layers_for(&abs);
-        let set_by =
-            layers.iter().filter(|l| l.rules.contains_key(id)).map(|l| (l.source.clone(), l.rules[id].severity().unwrap_or("(options)").to_owned())).collect();
+        why.fix_lowered = lowered(&layers);
+        let set_by = layers
+            .iter()
+            .filter(|l| l.rules.contains_key(id))
+            .map(|l| {
+                let s = &l.rules[id];
+                let mut v = s.severity().unwrap_or("(options)").to_owned();
+                if let Some(f) = s.fix() {
+                    v.push_str(&format!(", fix = {f}"));
+                }
+                (l.source.clone(), v)
+            })
+            .collect();
         let applies = self.compiled.iter().find(|c| c.id() == id).is_some_and(|c| c.applies_to_language(language) && c.applies_to_path(&rel));
         let severity = if applies { severity_name(&self.rules.effective(&r, &layers)) } else { "off".into() };
         let is_match = self.compiled.iter().any(|c| c.id() == id && matches!(c.matcher, crate::Matcher::Match(_)));
@@ -187,6 +221,7 @@ impl Project {
         let mut report = crate::CheckReport { diagnostics, skipped: Vec::new(), files_checked: 1, warnings: self.warnings.clone(), as_of: None, profile: None, new_code: None, types: self.types.report() };
         // The file's own rules ran, on this text: the baseline applies to
         // them as `check` applies it (SR-BASELINE).
+        self.apply_ignore_file(&mut report.diagnostics);
         let ran = crate::baseline::Ran { files: [rel.clone()].into(), scopes: vec![rel], project: false };
         self.apply_baselines(&mut report, Vec::new(), &ran);
         self.finish(&mut report);
@@ -199,7 +234,7 @@ impl Project {
     pub fn fix_snippet(&self, file: &Path, code: &str) -> Result<crate::FileFix, EngineError> {
         let (abs, rel, language) = self.locate(file)?;
         let entry = crate::FileEntry { abs, rel, language };
-        let options = crate::FixOptions { unsafe_fixes: false, dry_run: true, trace: false };
+        let options = crate::FixOptions { unsafe_fixes: false, dry_run: true, trace: false, ..Default::default() };
         Ok(crate::fix::fix_text(self, &entry, code, &options, self.formats(&entry), false, crate::files::Tree::Disk))
     }
 }

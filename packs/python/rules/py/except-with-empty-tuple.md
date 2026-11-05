@@ -4,6 +4,7 @@ title: "No `except ():`"
 languages: [python]
 fix: manual
 fix_reason: "the exceptions to catch are the author's choice"
+fix_pending: "suggest"
 stability: preview
 ported_from: [ruff/B029]
 since: 0.1.0

@@ -4,6 +4,7 @@ title: "No raw HTML in Markdown"
 languages: [markdown]
 fix: manual
 fix_reason: "the Markdown equivalent, if there is one, needs the author"
+fix_pending: "auto-subset"
 stability: preview
 options:
   allowed_elements: { type: "string[]", default: [], description: "element names that may be used, such as `details` or `kbd`" }

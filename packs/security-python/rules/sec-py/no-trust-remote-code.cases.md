@@ -29,3 +29,17 @@ load_dataset("x", trust_remote_code=True)
 ```expect
 1:1 sec-py/no-trust-remote-code
 ```
+
+### case: the keyword is removed with its comma
+
+```py
+AutoModel.from_pretrained(n, trust_remote_code=True, revision=r)
+```
+
+```expect
+1:1 sec-py/no-trust-remote-code
+```
+
+```fixed
+AutoModel.from_pretrained(n, revision=r)
+```

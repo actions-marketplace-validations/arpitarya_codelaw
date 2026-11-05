@@ -4,6 +4,7 @@ title: "No assignment to built-in globals"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the intended variable needs a name of its own"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-global-assign]
 since: 0.1.0

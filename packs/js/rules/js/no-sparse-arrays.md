@@ -4,6 +4,7 @@ title: "No holes in array literals"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether a value is missing or a comma is extra needs a reader"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [eslint/no-sparse-arrays]
 since: 0.1.0

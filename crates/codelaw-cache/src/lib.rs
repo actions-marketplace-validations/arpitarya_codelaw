@@ -31,7 +31,7 @@ pub struct KeyBuilder(blake3::Hasher);
 impl KeyBuilder {
     pub fn new(domain: &str) -> Self {
         let mut h = blake3::Hasher::new();
-        h.update(b"codelaw-cache-v1\0");
+        h.update(b"codelaw-cache-v2\0");
         h.update(codelaw_core::VERSION.as_bytes());
         h.update(b"\0");
         h.update(domain.as_bytes());
@@ -213,8 +213,8 @@ mod tests {
     /// a finding missed on every run).
     #[test]
     fn a_diagnostic_round_trips_with_and_without_data() {
-        use codelaw_core::{Diagnostic, FixClass, Position, Severity};
-        let mk = |data| Diagnostic {
+        use codelaw_core::{Diagnostic, FixChoice, FixClass, FixException, Position, Severity, TextEdit};
+        let mk = |data: Option<serde_json::Value>| Diagnostic {
             rule: "css/max-lines".into(),
             severity: Severity::Warn,
             file: "a.css".into(),
@@ -228,6 +228,10 @@ mod tests {
             steps: vec!["s".into()],
             source: "engine".into(),
             note: None,
+            // Choices and the exception ride with `data`: absent in one, there
+            // in the other, so both shapes go through the positional codec.
+            choices: if data.is_some() { vec![FixChoice { label: "keep first".into(), default: true, edits: vec![TextEdit::delete(1, 2)] }] } else { vec![] },
+            fix_exception: data.as_ref().map(|_| FixException::Value),
             data,
         };
         let cache = DiskCache::new(Some(temp_dir("diag")));

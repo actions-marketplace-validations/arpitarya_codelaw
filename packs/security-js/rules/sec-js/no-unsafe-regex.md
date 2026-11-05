@@ -4,6 +4,7 @@ title: "No regular expression that can run for ever, no regular expression built
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the pattern should accept is a decision for the author"
+fix_pending: "auto-subset; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-security/detect-unsafe-regex, eslint-plugin-security/detect-non-literal-regexp]
 security: { cwe: [1333], owasp: ["A06:2025"], severity: medium }

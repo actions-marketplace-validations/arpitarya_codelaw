@@ -74,6 +74,35 @@ DEV_SHARED = {  # destination (relative to packaging/npm) -> source
 }
 NPM_DIR = ROOT / "packaging" / "npm"
 
+# The providers (W-145; SR-PACKAGES decision 3c, SR-RULE-PACKS decision 19): npm
+# only, one folder each under packaging/npm/ holding index.mjs and README.md. A
+# provider's one declared dependency is a peer dependency on the package it reads
+# in the project (L11's list); the pack that names it in `providers` depends on it
+# at exactly the release's version. pack.rs's FIRST_PARTY_PROVIDERS is the list.
+PROVIDERS = {
+    "provider-tailwind": ("@codelaw/provider-tailwind", "tailwind", {"tailwindcss": ">=4.0.0"},
+                          "Builds the tailwind pack's class table from the project's own tailwindcss, for codelaw"),
+}
+
+
+def read_providers() -> dict[str, str]:
+    """FIRST_PARTY_PROVIDERS in pack.rs: npm name -> the pack it serves."""
+    text = PACK_TABLE.read_text(encoding="utf-8")
+    body = text[text.index("pub const FIRST_PARTY_PROVIDERS"):]
+    body = body[:body.index("];")]
+    got = dict(re.findall(r'\("(@codelaw/provider-[a-z-]+)", "([a-z-]+)"\)', body))
+    want = {name: pack for name, pack, _, _ in PROVIDERS.values()}
+    if got != want:
+        sys.exit(f"✗ FIRST_PARTY_PROVIDERS in {PACK_TABLE.relative_to(ROOT)} names {got}, scripts/package.py {want}")
+    return got
+
+
+def pack_providers(name: str) -> list[str]:
+    """The providers a pack's manifest names (`providers = [...]`)."""
+    text = (ROOT / "packs" / name / "codelaw-pack.toml").read_text(encoding="utf-8")
+    m = re.search(r'(?m)^providers = \[([^\]]*)\]', text)
+    return re.findall(r'"([^"]+)"', m.group(1)) if m else []
+
 
 def sync_dev_core(check: bool = False) -> list[str]:
     """Copy the shared dev-plugin sources into place; with `check`, only report the copies that differ."""
@@ -177,6 +206,10 @@ def pack_manifest(name: str, v: str, suffix: str = "", description: str = "") ->
     optional index package beside a pack (L6 decision 12, `scripts/fux-index.py`)."""
     m = base_manifest(f"@codelaw/rules-{name}{suffix}", v, description or pack_meta(name)["description"])
     m["keywords"] = ["codelaw", "codelaw-pack", "lint-rules"] + (["fux", "fux-index"] if suffix else [])
+    # A pack depends on its own provider, at exactly this version, and on
+    # nothing else (L6 decision 4); its index package depends on nothing.
+    if not suffix and (providers := pack_providers(name)):
+        m["dependencies"] = {p: v for p in providers}
     return m
 
 
@@ -409,6 +442,25 @@ def assemble(bins: pathlib.Path, wheels: pathlib.Path, out: pathlib.Path) -> Non
         write_json(d / "package.json", m)
         to_pack.append(d)
 
+    # the providers, npm only: a peer dependency on what they read (decision 3c)
+    read_providers()
+    for folder, (pname, _, peers, desc) in PROVIDERS.items():
+        d = stage / folder
+        shutil.copytree(NPM_DIR / folder, d)
+        copy_licences(d)
+        m = base_manifest(pname, v, desc)
+        m.update({
+            "type": "module",
+            "main": "index.mjs",
+            "exports": {".": "./index.mjs", "./package.json": "./package.json"},
+            "files": ["index.mjs", "README.md", *LICENCE_FILES],
+            "engines": {"node": ">=22"},
+            "keywords": ["codelaw", "codelaw-provider"],
+            "peerDependencies": peers,
+        })
+        write_json(d / "package.json", m)
+        to_pack.append(d)
+
     # the rule packs, each on the registries pack.rs names, the same files
     # on both where it is on both (decision 9, L6 decision 11)
     for name in PACKS:
@@ -472,13 +524,22 @@ def check(out: pathlib.Path) -> None:
             if man["name"] == SKILLS_NPM and field == "dependencies":
                 if man.get(field) != {"codelaw": v}:
                     bad.append(f"{t.name}: dependencies {man.get(field)} != {{'codelaw': '{v}'}} — the skills package's one dependency is codelaw at exactly its version (SR-PACKAGES decision 3b)")
+            elif field == "dependencies" and man["name"].startswith("@codelaw/rules-") and not man["name"].endswith("-fux-index"):
+                short = man["name"][len("@codelaw/rules-"):]
+                want = {p: v for p in pack_providers(short)} if short in NPM_PACKS else {}
+                if man.get(field, {}) != want:
+                    bad.append(f"{t.name}: dependencies {man.get(field)} != {want} — a pack depends only on its own provider, at exactly the release's version (L6 decision 4)")
+            elif field == "peerDependencies" and any(man["name"] == n for n, _, _, _ in PROVIDERS.values()):
+                want = next(peers for n, _, peers, _ in PROVIDERS.values() if n == man["name"])
+                if man.get(field) != want:
+                    bad.append(f"{t.name}: peerDependencies {man.get(field)} != {want} (SR-PACKAGES decision 3c)")
             elif man.get(field):
-                bad.append(f"{t.name}: has {field} — every package but {SKILLS_NPM} has zero runtime dependencies (L6 decision 4)")
+                bad.append(f"{t.name}: has {field} — every package but {SKILLS_NPM}, a pack with a provider and a provider has zero runtime dependencies (L6 decision 4)")
         if man["name"] != "codelaw" and man.get("optionalDependencies"):
             bad.append(f"{t.name}: only codelaw may have optionalDependencies")
         if "scripts" in man:
             bad.append(f"{t.name}: has lifecycle scripts")
-    want_npm = {"codelaw"} | {f"@codelaw/cli-{k}" for k in TARGETS} | {f"@codelaw/rules-{n}" for n in NPM_PACKS} | {n for n, _ in DEV_PLUGINS.values()} | {SKILLS_NPM}
+    want_npm = {"codelaw"} | {f"@codelaw/cli-{k}" for k in TARGETS} | {f"@codelaw/rules-{n}" for n in NPM_PACKS} | {n for n, _ in DEV_PLUGINS.values()} | {SKILLS_NPM} | {n for n, _, _, _ in PROVIDERS.values()}
     bad.extend(sync_dev_core(check=True))
     if set(npm) != want_npm:
         bad.append(f"npm names: missing {sorted(want_npm - set(npm))}, not allowed {sorted(set(npm) - want_npm)}")

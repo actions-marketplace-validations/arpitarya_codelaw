@@ -4,6 +4,7 @@ title: "Components used in JSX are declared"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the right import is the author's to choose"
+fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-undef]
 since: 0.1.0

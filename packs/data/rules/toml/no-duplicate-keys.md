@@ -4,6 +4,7 @@ title: "No key or table defined twice in TOML"
 languages: [toml]
 fix: manual
 fix_reason: "which of the two definitions was meant can't be known from the file"
+fix_pending: "auto-subset"
 stability: preview
 since: 0.1.0
 ---

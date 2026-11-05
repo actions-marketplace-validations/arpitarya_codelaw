@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how to restructure the unpacking is a design choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F621` |
+| **Ported from** | `ruff/F621`, `pylint/too-many-star-expressions` |
 
 ## What it checks
 

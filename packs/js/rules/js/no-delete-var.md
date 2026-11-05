@@ -2,8 +2,8 @@
 id: js/no-delete-var
 title: "No delete on a variable"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the code meant to clear is a decision"
+fix: suggest
+fix_reason: "`delete x` does nothing on a binding; resetting it to `undefined` is the closest live meaning, which the reviewer confirms (the author may have meant another value or to drop the line)"
 stability: preview
 ported_from: [eslint/no-delete-var]
 since: 0.1.0
@@ -19,6 +19,7 @@ match:
 constraints:
   X: { kind: identifier }
 message: "`delete` works on properties, not on the variable `$X`"
+fix: "$X = undefined"
 ```
 
 ## How to fix
@@ -37,6 +38,13 @@ let cache = {};
 delete cache;
 ```
 
+#### Fixed
+
+```js
+let cache = {};
+cache = undefined;
+```
+
 #### Do
 
 ```js
@@ -51,6 +59,13 @@ cache = {};
 ```jsx
 let cache = {};
 delete cache;
+```
+
+#### Fixed
+
+```jsx
+let cache = {};
+cache = undefined;
 ```
 
 #### Do
@@ -69,6 +84,13 @@ let cache = {};
 delete cache;
 ```
 
+#### Fixed
+
+```ts
+let cache = {};
+cache = undefined;
+```
+
 #### Do
 
 ```ts
@@ -83,6 +105,13 @@ cache = {};
 ```tsx
 let cache = {};
 delete cache;
+```
+
+#### Fixed
+
+```tsx
+let cache = {};
+cache = undefined;
 ```
 
 #### Do

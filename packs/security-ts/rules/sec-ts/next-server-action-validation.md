@@ -4,6 +4,7 @@ title: "A Next.js server action validates its input"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the schema and the authorisation check are written by the author"
+fix_exception: authored
 stability: preview
 security: { cwe: [20, 862], owasp: ["A01:2025"], severity: high }
 since: 0.3.0

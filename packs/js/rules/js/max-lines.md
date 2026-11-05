@@ -4,13 +4,14 @@ title: "A file stays under a maximum number of lines"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting a file changes its structure; which exports belong together is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 300, description: "the most lines a file may have" }
   skip_blank_lines: { type: "boolean", default: true, description: "blank lines do not count" }
   skip_comments: { type: "boolean", default: true, description: "lines that hold only a comment do not count" }
   skip_imports: { type: "boolean", default: false, description: "the import block does not count" }
-ported_from: [eslint/max-lines]
+ported_from: [eslint/max-lines, eslint-plugin-sonarjs/max-lines]
 since: 0.3.0
 ---
 

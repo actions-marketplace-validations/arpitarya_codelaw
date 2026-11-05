@@ -18,7 +18,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | preset | rules | what it holds |
 |---|---|---|
 | `data/recommended` | 6 | correctness for JSON, YAML and TOML: keys defined twice in each, YAML aliases without an anchor, and the YAML scalars that YAML 1.1 and 1.2 read differently |
-| `md/recommended` | 17 | the non-layout rules of markdownlint 0.42.0's default set, and the starter rule `md/relative-links` |
+| `md/recommended` | 22 | the non-layout rules of markdownlint 0.42.0's default set, and the starter rule `md/relative-links` |
 | `data/package-json` | 4 | `json/package-scripts-sorted`, `json/package-deps-sorted`, `json/package-engines`, `json/package-json-schema` — `files: **/package.json` |
 | `data/tsconfig` | 2 | `json/tsconfig-strict`, `json/tsconfig-schema` — `files: **/tsconfig.json`, `**/tsconfig.*.json` |
 | `data/pyproject` | 3 | `toml/deps-sorted`, `toml/pyproject-requires-python`, `toml/pyproject-schema` — `files: **/pyproject.toml` |
@@ -29,7 +29,19 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 <!-- /docs-sync:presets -->
 
-42 rules: 9 `auto`, 5 `suggest`, 28 `manual`. Every rule is
+## The fix ladder
+
+Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): `manual` rules by their named exception. `codelaw rules --fix-stats` prints the same table.
+
+<!-- rule-docs:fix-ladder -->
+
+| auto | suggest | manual | value | restructure | authored | security | waiting to move up |
+|---|---|---|---|---|---|---|---|
+| 11 | 6 | 30 | 5 | 0 | 3 | 0 | 22 |
+
+<!-- /rule-docs:fix-ladder -->
+
+47 rules: 11 `auto`, 6 `suggest`, 30 `manual`. Every rule is
 **reimplemented**, not vendored: the checks, messages and docs are written
 fresh, and each ported rule's `ported_from:` names its source. Rules that need
 more than a pattern are native rules in `crates/codelaw-native/src/data_*.rs`;

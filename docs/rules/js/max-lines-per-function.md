@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (extracting part of a function changes its structure; where to cut and what to call the piece is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
-| **Ported from** | `eslint/max-lines-per-function` |
+| **Ported from** | `eslint/max-lines-per-function`, `eslint-plugin-sonarjs/max-lines-per-function` |
 
 ## What it checks
 

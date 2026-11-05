@@ -4,6 +4,7 @@ title: "No token kept in localStorage or sessionStorage"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the token lives instead is a change to the sign-in flow"
+fix_exception: restructure
 stability: preview
 security: { cwe: [922], owasp: ["A07:2025"], severity: high }
 since: 0.3.0

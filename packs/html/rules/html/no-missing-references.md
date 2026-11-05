@@ -4,6 +4,7 @@ title: "Id references point at an element"
 languages: [html]
 fix: manual
 fix_reason: "either the id or the reference is wrong, and only the author knows which"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [html-validate/no-missing-references]
 since: 0.1.0

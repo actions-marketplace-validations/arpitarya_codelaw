@@ -49,3 +49,31 @@ app.config["SESSION_COOKIE_SECURE"] = True
 ```expect
 (none)
 ```
+
+### case: a keyword flag is turned on
+
+```py
+app.config.update(SESSION_COOKIE_SECURE=False)
+```
+
+```expect
+1:1 sec-py/flask-settings
+```
+
+```fixed
+app.config.update(SESSION_COOKIE_SECURE=True)
+```
+
+### case: an assigned flag is turned on
+
+```py
+app.config["WTF_CSRF_ENABLED"] = False
+```
+
+```expect
+1:1 sec-py/flask-settings
+```
+
+```fixed
+app.config["WTF_CSRF_ENABLED"] = True
+```

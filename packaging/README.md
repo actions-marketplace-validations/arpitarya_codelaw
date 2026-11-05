@@ -1,5 +1,9 @@
 # codelaw
 
+**Your team's rules, enforced on every AI edit.** Deterministic: no AI in the
+engine — the same verdict in CI, the editor and pre-commit, with or without an
+agent.
+
 A linter and formatter whose rules are Markdown files — for JavaScript,
 TypeScript, Python, JSON, YAML, TOML, Markdown, CSS and HTML, alone or mixed.
 
@@ -27,8 +31,8 @@ codelaw's exact version: `npm i -D @codelaw/skills` or `pip install codelaw-skil
 
 | registry | named | packs |
 |---|---|---|
-| npm | `@codelaw/rules-<name>` | `js` · `ts` · `react` · `node` · `stencil` · `html` · `css` · `scss` · `css-modules` · `data` · `tanstack-query` · `redux-toolkit` · `security-js` · `security-ts` · `security-html` · `spell` · `deps` |
-| PyPI | `codelaw-rules-<name>` | `js` · `react` · `html` · `css` · `scss` · `python` · `data` · `security-js` · `security-html` · `security-python` · `spell` · `deps` |
+| npm | `@codelaw/rules-<name>` | `js` · `ts` · `react` · `node` · `stencil` · `html` · `css` · `scss` · `css-modules` · `data` · `tanstack-query` · `redux-toolkit` · `security-js` · `security-ts` · `security-html` · `spell` · `deps` · `nextjs` · `testing` · `tailwind` |
+| PyPI | `codelaw-rules-<name>` | `js` · `react` · `html` · `css` · `scss` · `python` · `data` · `security-js` · `security-html` · `security-python` · `spell` · `deps` · `django` · `fastapi` · `airflow` · `numpy` · `pandas` · `tailwind` |
 
 <!-- /docs-sync:registries -->
 

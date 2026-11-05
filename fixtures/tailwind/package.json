@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "description": "W-145: the Tailwind CSS @codelaw/provider-tailwind's tests run against (L11 §3 D-48; test and CI scope only). `npm ci` here installs it; then link the provider: `mkdir -p node_modules/@codelaw && ln -sfn ../../../../packaging/npm/provider-tailwind node_modules/@codelaw/provider-tailwind`.",
+  "devDependencies": {
+    "tailwindcss": "4.3.3"
+  }
+}

@@ -4,8 +4,9 @@ title: "No `lru_cache` on methods"
 languages: [python]
 fix: manual
 fix_reason: "where the cache should live is a design choice"
+fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/B019]
+ported_from: [ruff/B019, pylint/method-cache-max-size-none]
 since: 0.1.0
 ---
 

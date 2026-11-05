@@ -1,6 +1,7 @@
 //! `codelaw init --git-hooks` (SR-CLI-MCP decision 7): write a blocking
 //! `pre-commit` and a non-blocking `post-commit` into the hooks folder git
-//! uses, chain a hook that was already there, never overwrite one.
+//! uses — and, when named, a blocking `commit-msg` (W-146) — chain a hook
+//! that was already there, never overwrite one.
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -14,31 +15,44 @@ pub fn post_commit() -> &'static str {
     codelaw_core::template::text("git-hooks/post-commit")
 }
 
+pub fn commit_msg() -> &'static str {
+    codelaw_core::template::text("git-hooks/commit-msg")
+}
+
 /// The line that marks a hook as ours.
 const MARKER: &str = "# codelaw-hook:";
 /// What an existing hook is renamed to, so the new one can run it first.
 const CHAINED: &str = ".pre-codelaw";
 
-pub const HOOKS: [&str; 2] = ["pre-commit", "post-commit"];
+pub const HOOKS: [&str; 3] = ["pre-commit", "post-commit", "commit-msg"];
 
-/// `pre-commit,post-commit` or any one of them; both when none is named.
+/// The hooks a bare `--git-hooks` installs: `commit-msg` holds every commit
+/// to a message convention, so it is installed only when named.
+pub const DEFAULT_HOOKS: [&str; 2] = ["pre-commit", "post-commit"];
+
+/// Any of `pre-commit`, `post-commit` and `commit-msg`; the first two when
+/// none is named.
 pub fn parse(names: &[String]) -> Result<Vec<&'static str>, String> {
     if names.is_empty() {
-        return Ok(HOOKS.to_vec());
+        return Ok(DEFAULT_HOOKS.to_vec());
     }
     let mut out = Vec::new();
     for n in names {
         match HOOKS.iter().find(|h| **h == n) {
             Some(h) if !out.contains(h) => out.push(*h),
             Some(_) => {}
-            None => return Err(format!("--git-hooks takes `pre-commit` and `post-commit`, not `{n}`")),
+            None => return Err(format!("--git-hooks takes `pre-commit`, `post-commit` and `commit-msg`, not `{n}`")),
         }
     }
     Ok(out)
 }
 
 fn script(hook: &str) -> &'static str {
-    if hook == "pre-commit" { pre_commit() } else { post_commit() }
+    match hook {
+        "pre-commit" => pre_commit(),
+        "commit-msg" => commit_msg(),
+        _ => post_commit(),
+    }
 }
 
 /// Where git looks for hooks: `core.hooksPath` or `.git/hooks`, as git itself
@@ -115,12 +129,13 @@ mod tests {
     fn names_parse() {
         assert_eq!(parse(&[]).unwrap(), ["pre-commit", "post-commit"]);
         assert_eq!(parse(&["post-commit".into(), "post-commit".into()]).unwrap(), ["post-commit"]);
+        assert_eq!(parse(&["commit-msg".into()]).unwrap(), ["commit-msg"]);
         assert!(parse(&["pre-push".into()]).is_err());
     }
 
     #[test]
     fn scripts_carry_the_marker_and_are_posix_sh() {
-        for s in [pre_commit(), post_commit()] {
+        for s in [pre_commit(), post_commit(), commit_msg()] {
             assert!(s.starts_with("#!/bin/sh\n"));
             assert!(s.contains(MARKER));
             assert!(!s.contains("[["), "bashisms break dash");

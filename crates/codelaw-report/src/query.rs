@@ -132,10 +132,13 @@ pub fn why_json(w: &RuleWhy) -> Value {
         "title": w.title,
         "source": w.source,
         "path": w.path,
+        "pack_dir": w.pack_dir,
         "shadows": w.shadows,
         "enabled_by": w.enabled_by,
         "default": w.default,
         "preview": w.preview,
+        "fix": w.fix,
+        "fix_lowered": w.fix_lowered.as_ref().map(|(rung, source)| json!({ "fix": rung, "source": source })),
         "for": for_file,
     }))
 }
@@ -144,11 +147,18 @@ pub fn why_json(w: &RuleWhy) -> Value {
 pub fn why_text(w: &RuleWhy) -> String {
     let mut out = format!("{}  {}\n", w.id, w.title);
     out.push_str(&format!("  source:     {} ({})\n", w.source, w.path));
+    if let Some(d) = &w.pack_dir {
+        out.push_str(&format!("  pack dir:   {d}\n"));
+    }
     if !w.shadows.is_empty() {
         out.push_str(&format!("  shadows:    {}\n", w.shadows.join(", ")));
     }
     out.push_str(&format!("  enabled by: {}\n", w.enabled_by.as_deref().unwrap_or("nothing (not in any extended preset)")));
     out.push_str(&format!("  default:    {}\n", w.default));
+    match &w.fix_lowered {
+        Some((rung, source)) => out.push_str(&format!("  fix:        {rung} (lowered from {} by {source})\n", w.fix)),
+        None => out.push_str(&format!("  fix:        {}\n", w.fix)),
+    }
     if w.preview {
         out.push_str("  preview:    yes — runs only with `preview = true`\n");
     }

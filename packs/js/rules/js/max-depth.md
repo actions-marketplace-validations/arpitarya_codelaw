@@ -4,10 +4,11 @@ title: "Blocks nest no deeper than a maximum"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "flattening nested blocks changes the function's structure; which guard to invert or which block to extract is the author's call"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "integer", default: 4, description: "the most blocks that may nest inside one another in a function" }
-ported_from: [eslint/max-depth]
+ported_from: [eslint/max-depth, eslint-plugin-sonarjs/nested-control-flow]
 since: 0.5.0
 ---
 

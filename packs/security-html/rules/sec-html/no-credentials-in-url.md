@@ -4,6 +4,7 @@ title: "No username and password in a URL"
 languages: [html]
 fix: manual
 fix_reason: "where the credential should live is the author's decision"
+fix_pending: "suggest"
 stability: preview
 security: { cwe: [522], owasp: ["A07:2025"], severity: high }
 since: 0.2.0

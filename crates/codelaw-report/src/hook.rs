@@ -22,8 +22,26 @@ fn next_step(d: &Diagnostic) -> String {
             let edits: Vec<String> = d.edits.iter().map(|e| format!("bytes {}..{} → \"{}\"", e.start, e.end, one_line(&e.text, 60))).collect();
             format!("fix: suggest — show the user this diff and apply it only once accepted: {}", edits.join("; "))
         }
-        _ if d.steps.is_empty() => "fix: manual — see `codelaw explain` for the steps".into(),
-        _ => format!("fix: manual — {}", d.steps.iter().enumerate().map(|(i, s)| format!("{}. {s}", i + 1)).collect::<Vec<_>>().join(" ")),
+        // Labelled choices (L4 decisions 4 and 12): every one goes back.
+        FixClass::Suggest if !d.choices.is_empty() => {
+            let choices: Vec<String> = d
+                .choices
+                .iter()
+                .map(|c| {
+                    let edits: Vec<String> = c.edits.iter().map(|e| format!("bytes {}..{} → \"{}\"", e.start, e.end, one_line(&e.text, 40))).collect();
+                    format!("[{}{}] {}", c.label, if c.default { ", default" } else { "" }, edits.join("; "))
+                })
+                .collect();
+            format!("fix: suggest — pick the choice that fits, show the user its diff and apply it once accepted: {}", choices.join(" · "))
+        }
+        _ => {
+            let why = d.fix_exception.map(|x| format!(" ({x})")).unwrap_or_default();
+            if d.steps.is_empty() {
+                format!("fix: manual{why} — see `codelaw explain` for the steps")
+            } else {
+                format!("fix: manual{why} — {}", d.steps.iter().enumerate().map(|(i, s)| format!("{}. {s}", i + 1)).collect::<Vec<_>>().join(" "))
+            }
+        }
     }
 }
 

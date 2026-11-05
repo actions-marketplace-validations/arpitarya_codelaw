@@ -2,8 +2,8 @@
 id: sec-ts/typeorm-synchronize
 title: "TypeORM does not synchronize the schema on start"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "how the schema is changed instead (migrations) is a decision for the author"
+fix: suggest
+fix_reason: "the edit fails closed, but the schema then changes only through migrations, so the reviewer confirms the project has them or writes them"
 stability: preview
 security: { cwe: [1188], owasp: ["A02:2025"], severity: medium }
 since: 0.3.0
@@ -15,10 +15,14 @@ A DataSource or `TypeOrmModule` configuration does not set `synchronize: true`.
 
 ```codelaw
 match:
-  pattern:
-    context: '({ synchronize: true })'
-    selector: pair
+  all:
+    - pattern:
+        context: '({ synchronize: true })'
+        selector: pair
+    - has: { field: value, kind: 'true', pattern: $T }
 message: "`synchronize: true` changes the database schema on every start"
+fix:
+  - replace: { target: $T, with: 'false' }
 ```
 
 ## How to fix
@@ -36,6 +40,12 @@ message: "`synchronize: true` changes the database schema on every start"
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
 ```
 
+#### Fixed
+
+```ts
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
+```
+
 #### Do
 
 ```ts
@@ -48,6 +58,12 @@ export const db = new DataSource({ type: "postgres", url, migrations: ["dist/mig
 
 ```tsx
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
+```
+
+#### Fixed
+
+```tsx
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
 ```
 
 #### Do

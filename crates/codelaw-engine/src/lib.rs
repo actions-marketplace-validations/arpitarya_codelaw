@@ -4,6 +4,7 @@
 
 mod adapters;
 mod baseline;
+mod codelawignore;
 mod changed_functions;
 mod compile;
 mod debug;
@@ -15,12 +16,15 @@ mod fix;
 mod flags;
 mod format;
 mod git;
+pub mod hygiene;
 mod incremental;
 mod lcov;
 mod lint;
 mod new_code;
+mod off_reason;
 mod query;
 mod project;
+pub mod providers;
 pub mod suppress;
 mod timings;
 mod types;
@@ -47,7 +51,7 @@ pub use watch::{COALESCE, Changes, Rerun, Snapshot, Watch};
 use codelaw_cache::DiskCache;
 use codelaw_config::{Config, ConfigError};
 use codelaw_core::{Diagnostic, Language, Skipped};
-use codelaw_rules::{LoadError, LoadOptions, PackSearch, RuleSet};
+use codelaw_rules::{LoadError, LoadOptions, PackEnv, PackSearch, RuleSet};
 use std::collections::BTreeSet;
 use std::fmt;
 use std::path::{Path, PathBuf};
@@ -111,21 +115,37 @@ pub struct EngineOptions {
     /// installed from a file's folder up to the root (codelaw's own tests
     /// and its rule tester; SR-TYPES decision 5).
     pub typescript_env: Option<String>,
+    /// `CODELAW_PROVIDER_ROOT`: a folder whose `node_modules` holds every
+    /// first-party provider and what it asks, used in place of the
+    /// project's (codelaw's own tests and its rule tester; SR-RULE-PACKS
+    /// decision 19).
+    pub provider_root_env: Option<String>,
+    /// The branch and pull-request variables each CI sets, for the `git/*`
+    /// rules (W-146): only the names `hygiene::CI_VARS` lists are read.
+    pub ci_vars: std::collections::BTreeMap<String, String>,
 }
 
 impl EngineOptions {
+    /// The two variables the pack lookup reads (SR-PACK-LOOKUP decision 4).
+    pub fn pack_env(&self) -> PackEnv {
+        PackEnv { site_packages: self.site_packages_env.clone(), virtual_env: self.virtual_env.clone() }
+    }
+
     /// The options the environment gives, before any flag.
     pub fn from_env() -> Self {
         let var = |k: &str| std::env::var(k).ok().filter(|v| !v.is_empty());
+        let pack_env = PackEnv::from_env();
         EngineOptions {
             cache_dir_env: var("CODELAW_CACHE_DIR"),
-            site_packages_env: var("CODELAW_SITE_PACKAGES"),
-            virtual_env: var("VIRTUAL_ENV"),
+            site_packages_env: pack_env.site_packages,
+            virtual_env: pack_env.virtual_env,
             path_env: std::env::var_os("PATH"),
             as_of_env: var("CODELAW_AS_OF"),
             profile_env: var("CODELAW_PROFILE"),
             ci_env: var("CI"),
             typescript_env: var("CODELAW_TYPESCRIPT"),
+            provider_root_env: var("CODELAW_PROVIDER_ROOT"),
+            ci_vars: hygiene::CI_VARS.iter().filter_map(|k| var(k).map(|v| (k.to_string(), v))).collect(),
             ..Default::default()
         }
     }
@@ -231,6 +251,8 @@ pub struct Project {
     /// The test rules of new code, `[coverage]` and `.codelawignore`
     /// (W-71), when the project turns them on.
     pub(crate) tests: Option<new_code::TestRules>,
+    /// `.codelawignore` (SR-BASELINE decision 12), when the project has one.
+    pub(crate) ignore: Option<codelawignore::IgnoreFile>,
     /// The as-of date and the change set, read on first use.
     as_of: std::sync::OnceLock<AsOf>,
     touched: std::sync::OnceLock<(BTreeSet<String>, Vec<String>)>,
@@ -239,6 +261,8 @@ pub struct Project {
     pub(crate) aliases: Option<Aliases>,
     /// The type helpers and what the report says of them (SR-TYPES).
     pub(crate) types: types::Types,
+    /// The providers' tables (SR-RULE-PACKS decision 19).
+    pub(crate) providers: providers::Providers,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -264,6 +288,13 @@ impl Aliases {
     }
 }
 
+/// Where a project's packs are found (SR-PACK-LOOKUP): the one search the
+/// run uses, and the language server's completions of `codelaw.toml` too
+/// (W-157), so the two never list different packs.
+pub fn pack_search(config: &Config, options: &EngineOptions) -> PackSearch {
+    PackSearch::new(config, &options.pack_env())
+}
+
 fn pool(threads: Option<usize>) -> rayon::ThreadPool {
     // Deeply nested code recurses deeply; give workers room.
     let mut b = rayon::ThreadPoolBuilder::new().stack_size(64 << 20);
@@ -281,12 +312,7 @@ impl Project {
     }
 
     pub fn from_config(config: Config, options: EngineOptions) -> Result<Project, EngineError> {
-        let search = PackSearch::new(
-            config.config_dir(),
-            &config.root_dir,
-            options.site_packages_env.as_deref(),
-            options.virtual_env.as_deref(),
-        );
+        let search = pack_search(&config, &options);
         let known = |id: &str| codelaw_native::lookup(id).is_some() || id == codelaw_types::TYPE_ERROR_NATIVE;
         let rules = RuleSet::load(&config, &LoadOptions { search, known_native: &known }).map_err(EngineError::Load)?;
         Project::from_parts(config, rules, options)
@@ -321,7 +347,9 @@ impl Project {
         } else {
             DiskCache::new(Some(config.cache_dir(options.cache_dir_env.as_deref())))
         };
-        let formatting = Formatting::from_config(&config)?;
+        let mut formatting = Formatting::from_config(&config)?;
+        let providers = providers::load(&config, &rules, &options, &formatting.options.class_lists, (!options.no_cache && config.cache_enabled()).then(|| config.cache_dir(options.cache_dir_env.as_deref())), &mut warnings)?;
+        formatting.set_class_table(providers.table("tailwind"), &mut warnings);
         // `[adapters] enabled` names only adapters codelaw has, on every
         // surface, whether or not this one runs them.
         if let Err(e) = codelaw_adapters::selected(config.adapters_enabled()) {
@@ -330,6 +358,7 @@ impl Project {
         let (baselines, deprecations, exceptions) = baseline::load(&config)?;
         flags::check_config(&config)?;
         let tests = new_code::load(&config)?;
+        let ignore = codelawignore::load(&config, &rules, &mut warnings)?;
         let aliases = Aliases::load(&config, &rules);
         let pool = pool(options.threads);
         let adapters = std::sync::OnceLock::new();
@@ -348,10 +377,12 @@ impl Project {
             deprecations,
             exceptions,
             tests,
+            ignore,
             as_of: std::sync::OnceLock::new(),
             touched: std::sync::OnceLock::new(),
             aliases,
             types: types::Types::default(),
+            providers,
         })
     }
 
@@ -403,7 +434,13 @@ impl Project {
         // from them: a watch keeps the parts and redoes only what changed
         // (W-44), so both go through the same `assemble`.
         let parts = self.parts(paths)?;
-        let out = self.assemble(&parts, paths);
+        let mut out = self.assemble(&parts, paths);
+        // The `git/*` rules judge the range, not a file (W-146).
+        let found = self.hygiene_findings(&mut out.0.warnings);
+        if !found.is_empty() {
+            out.0.diagnostics.extend(found);
+            out.0.diagnostics.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));
+        }
         self.cache.prune(self.config.cache_max_size());
         Ok(out)
     }
@@ -437,17 +474,31 @@ impl Project {
     /// Fix one file's text in memory; nothing is written. A leading
     /// byte-order mark is kept, as `fix` keeps one on disk.
     pub fn fix_source(&self, rel_path: &str, language: Language, source: &str, unsafe_fixes: bool) -> FileFix {
-        self.fix_source_in(rel_path, language, source, unsafe_fixes, files::Tree::Disk)
+        self.fix_source_in(rel_path, language, source, unsafe_fixes, None, files::Tree::Disk)
+    }
+
+    /// `fix_source` with `--unsafe`, applying the choice labelled `choice`
+    /// where a finding has choices (SR-LAW-4 decisions 4 and 11).
+    pub fn fix_source_choice(&self, rel_path: &str, language: Language, source: &str, choice: &str) -> FileFix {
+        self.fix_source_in(rel_path, language, source, true, Some(choice), files::Tree::Disk)
     }
 
     /// `fix_source`, with native rules seeing the files of `tree`.
-    pub(crate) fn fix_source_in(&self, rel_path: &str, language: Language, source: &str, unsafe_fixes: bool, tree: files::Tree<'_>) -> FileFix {
+    pub(crate) fn fix_source_in(
+        &self,
+        rel_path: &str,
+        language: Language,
+        source: &str,
+        unsafe_fixes: bool,
+        choice: Option<&str>,
+        tree: files::Tree<'_>,
+    ) -> FileFix {
         let entry = FileEntry { abs: self.config.root_dir.join(rel_path), rel: rel_path.to_owned(), language };
         let (text, bom) = match source.strip_prefix('\u{feff}') {
             Some(t) => (t, true),
             None => (source, false),
         };
-        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false }, false, bom, tree);
+        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned) }, false, bom, tree);
         if bom {
             f.original.insert(0, '\u{feff}');
             f.fixed.insert(0, '\u{feff}');

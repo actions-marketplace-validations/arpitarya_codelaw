@@ -4,6 +4,7 @@ title: 'A request value does not choose a module or attribute'
 languages: [python]
 fix: manual
 fix_reason: "the allow-list of names is the author's"
+fix_exception: value
 stability: preview
 security: { cwe: [470], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

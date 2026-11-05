@@ -55,7 +55,7 @@ fn team_pack(dir: &Path, name: &str, id: &str, lang: (&str, &str, &str), block: 
     fs::write(
         dir.join("rules").join(ns).join(format!("{rule}.md")),
         format!(
-            "---\nid: {id}\ntitle: request data reaches an HTML sink\nlanguages: [{}]\nfix: manual\nfix_reason: the safe API depends on what the value is\nstability: stable\nsecurity: {{ cwe: [79], owasp: [\"A05:2025\"], severity: high }}\n---\n\nRequest data is not written into HTML unescaped.\n\n**Why:** it is cross-site scripting. `from_source:` is not taint analysis.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Escape it, or write it as text.\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{}\n{dont}\n```\n\n#### Do\n\n```{}\n{doo}\n```\n",
+            "---\nid: {id}\ntitle: request data reaches an HTML sink\nlanguages: [{}]\nfix: manual\nfix_reason: the safe API depends on what the value is\nfix_exception: value\nstability: stable\nsecurity: {{ cwe: [79], owasp: [\"A05:2025\"], severity: high }}\n---\n\nRequest data is not written into HTML unescaped.\n\n**Why:** it is cross-site scripting. `from_source:` is not taint analysis.\n\n```codelaw\n{block}\n```\n\n## How to fix\n\n1. Escape it, or write it as text.\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{}\n{dont}\n```\n\n#### Do\n\n```{}\n{doo}\n```\n",
             lang.0, lang.1, lang.2, lang.2
         ),
     )
@@ -192,8 +192,8 @@ fn findings_name_the_cwe() {
     let d = project("text");
     let (code, out, err) = codelaw(&d, &["check", "a.js", "v.py"]);
     assert_eq!(code, 1, "{out}{err}");
-    assert!(out.contains("acme/no-url-to-inner-html (CWE-79) [manual]"), "{out}");
-    assert!(out.contains("acme-py/no-request-mark-safe (CWE-79) [manual]"), "{out}");
+    assert!(out.contains("acme/no-url-to-inner-html (CWE-79) [manual: value]"), "{out}");
+    assert!(out.contains("acme-py/no-request-mark-safe (CWE-79) [manual: value]"), "{out}");
     assert_eq!(out.matches("acme/no-url-to-inner-html").count(), 1, "the parameter in `safe` is not a source: {out}");
     let (_, out, _) = codelaw(&d, &["check", "a.js", "--format", "agent"]);
     assert!(out.starts_with("a.js:3:3 acme/no-url-to-inner-html (CWE-79) `h` comes from the URL"), "{out}");

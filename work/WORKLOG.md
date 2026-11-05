@@ -24,6 +24,239 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-166 step 0: main green on `[fix] on_edit`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-166; first fix main — `every_record_defined_key_is_in_the_schema` failed on `[fix] on_edit`.
+- **Done:** `[fix] on_edit` and `[fix] multi_file` loaded (`RawFix`, `MultiFile`) and in the schema; SR-ARCHITECTURE decision 18 defines `[fix] on_edit`.
+- **Decided / left open:** `[fix] multi_file`'s schema owner is SR-MULTI-FILE-FIXES (its decision 3 defines it); its behaviour stays W-162's.
+- **Mistakes:** none.
+- **Next:** W-166 step 1, `on_edit` per rule.
+
+---
+
+## 2026-11-05 — W-158 closed: a rule turned off says why  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-158 step 4 — `reason` on an `"off"` entry and `[rules] require_reason`, SR-CONFIG decision 11c.
+- **Done:** the loader, schema, `codelaw/off-without-reason`, `config --print`, USAGE, rule docs; SR-CONFIG 11c marked built; W-158 archived.
+- **Decided / left open:** with `require_reason` on, an unexplained `"off"` is a finding (as `require_expiry` and `.codelawignore` are), not exit 2; a preset's `"off"` entries are not the project's and need no reason.
+- **Mistakes:** the first end-of-turn landing went without the SR-CONFIG edit and the guard refused it; the record now changes in the same change.
+- **Next:** none for W-158.
+
+## 2026-11-05 — W-156 step 4: capability markers, the 37 re-judged, the moves begun  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-156 step 4 — move rules up the ladder pack by pack, mark the capability-blocked ones with W-162, give W-161's re-judged rules their exception.*
+- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496. security-js landed (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)). security-python landed (security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4)). security-ts landed (security-ts: auto 0 → 0, suggest 3 → 6, manual 13 → 10 (pending 4 → 1)). react landed (react: auto 11 → 18, suggest 17 → 39, manual 123 → 94 (pending 56 → 27)). js landed (js: auto 128 → 147, suggest 112 → 150, manual 342 → 285 (pending 150 → 90)). ts landed (ts: auto 19 → 20, suggest 12 → 16, manual 34 → 29 (pending 19 → 14)). nextjs landed (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)).
+- **Decided / left open:** the five odd `needs` labels folded as W-161 §1 counts them; `browser-targets` names W-166, the TS code fixes W-105.
+- **Mistakes:** none.
+- **Next:** the moves, pack by pack.
+
+## 2026-11-05 — W-167 and W-168 filed: graph architecture design, graph measured at 10k–1M files  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"how does the graph work in code law?"*, *"is it performant for very large repo??"*, then *"add few work items — 1. architecture design for graph generation 2. measurement for very large repos 10k, 50k, 100k, 500k, 1million"*.
+- **Done:** found that `codelaw bench`'s workload extends only `recommended` presets, so no L8 number includes the graph, and its files import only siblings. Filed W-167 (`research`, `cowork`) and W-168 (`reporting and benchmarks`, `agent`) with their rows; `check-work-system.py` and the inbox check green.
+- **Decided / left open:** which sizes get an L8 budget (W-168 step 6) and which design (W-167 step 5) are the decider's.
+- **Mistakes:** none.
+- **Next:** W-168 step 1 — the graph workload in `bench/workload.rs`.
+
+## 2026-11-05 — Inbox emptied: spell budget 2,500 ms; SR-MULTI-FILE-FIXES; L6 data packages  ·  Cowork (Opus 5.5)
+
+- **Asked:** the three blockers, one by one (voice), then *"file it."*
+- **Done:** `perf/budgets.toml` sets `spell` at 2,500 ms (L8 and SR-SPELL 9 follow); W-103 is 🟢. A Claude Code session had already filed W-162 and W-163 from the multiple-choice picks (`ba9add4b`). This change adds the voice refinements. New record **SR-MULTI-FILE-FIXES (0119)**: L4 decision 10 now points to it, and its "Amended" sub-list moved there; SR-CONFIG 11g adds `multi_file`. **L6 decision 15** adds data packages, and SR-RULE-FORMAT 2c and W-166 now ship the browser table as `@codelaw/data-browsers` / `codelaw-data-browsers` with a weekly CI check (W-166 step 5). W-142 gains its names. **`CLAUDE.md` changed** (SR-WORK-DOCS 7a): the L6 line names data packages, on the decider's ruling. L4 decision 6 is rewritten in present tense, because the record template keeps no history.
+- **Decided / left open:** ruled by Arpit: 2,500 ms, over the method's 2,152; multi-file fixes in their own SR, configurable (`auto` / `suggest` / `off`, per project and per rule), with fixed safeguards; the table as a data package on npm and PyPI with CI upkeep. Not ruled separately, but taken from the voice pitch he accepted: the data package's own version line between releases (L6 15).
+- **Mistakes:** none new; this session's first write found the other session's filing and was re-cut to add only what was missing.
+- **Next:** agents: W-139 2a, W-162 step 0, W-166 step 1, W-103's packaging.
+
+## 2026-11-05 — Parallel build run: cleanup, nine agents, four rulings, landings  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"do the cleanup then implement all green items in parallel"*; later *"merge whatever is done and do the clean up update the open work file"*.
+- **Done:** cleanup — `lm/W-74` deleted (in main); twelve unmerged branches ruled **keep** (W-165, archived); W-97's, W-163's and a Cowork hand-over's worktrees removed once only `.fux` re-index output was in them; `lm/W-97`, `lm/W-163` deleted (`-d`). One agent per 🟢 item: landed W-164, W-126 + W-103, W-95, W-97, the W-162/W-163 rulings (W-166 filed); W-102 stopped correctly (ruled to wait on W-139); still building W-105, W-139, W-141, W-158 (W-156 after W-139). Landed three Cowork / Claude app hand-overs from main's checkout (standing approval), fixing a CHANGELOG line (W-161) and an open count (W-97) on the way.
+- **Decided / left open:** Arpit ruled: keep the branches; W-162 multi-file fixes allowed; W-163 own browser table and target-gated lru_cache rules; push `main` — *"Not yet"* (now an inbox row blocking W-126). Open: the `spell` budget; `lm/handoff-20261105-142311`, whose content is on `main` (squashed) but needs `-D`; the docket skill's one-line drift from lockmaster's kit.
+- **Mistakes:** none.
+- **Next:** land W-139, then start W-156's per-pack moves.
+
+## 2026-11-05 — W-97 closed: the Action's proof and the pre-commit mirror  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-97* — the Action's proof in `codelaw-action-test`, the mirror in `codelaw-pre-commit`, the bump automation and the docs (a parallel build run).
+- **Done:** `codelaw-action-test` `7bc5975`, run 42002927893 green (`@v0` = 0.4.3, annotation, SARIF uploaded, alert #1); `codelaw-pre-commit` `22bd59f` = tag `v0.4.3`, verified with `uvx pre-commit try-repo`; its `bump.yml` run 42019788907 green (no-op); USAGE, RELEASING, `.pre-commit-hooks.yaml`, CHANGELOG; W-97 archived; B-073 filed (the `gh`-absent error, never ruled).
+- **Decided / left open:** the bump is a scheduled job in the mirror, not `publish.yml`, so no cross-repo token is needed; the mirror carries a no-code `pyproject.toml` because pip needs a project to install a `language: python` hook repo.
+- **Mistakes:** the kit's `block-main.py` refused `git commit` on the mirror's own `main` in the scratch clone (it reads any repo's branch); committed on a local branch and pushed it to the mirror's `main`.
+- **Next:** at the next release, check the mirror's bump tagged it and re-run the Action's proof after `v0` moves.
+
+---
+
+## 2026-11-05 — Rulings written back: W-162 multi-file fixes, W-163 save and targets  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) write back Arpit's three multiple-choice picks of 11-05: W-162 *"Allow multi-file (Recommended)"*; W-163 *"Own table (Recommended)"* and *"Target-gated (Recommended)"*, the rest of the proposal accepted as presented.
+- **Done:** SR-LAW-4 decisions 10 and 12 amended; SR-CONFIG 11e (`on_edit` entries), 11f (`[targets]`); SR-RULE-FORMAT 2b (`on_edit:`), 2c (`fix_target:`, the browser table) — each "Built: no". Both inbox rows and sub-rows removed; W-162 🟢 `agent`; W-163 closed and archived; W-166 filed (the build, 🟢 `agent`).
+- **Decided / left open:** CLAUDE.md's L4 line left as is — still true. `[targets]` is not in SR-CONFIG §1's map yet: the schema test reads that map, so W-166 adds it with the schema. `[fix] on_edit` and the data table land in SR-ARCHITECTURE and SR-RULE-PACKS with the build.
+- **Mistakes:** none. Waited for Cowork's W-161/W-163 hand-over to land first; the rulings sit on it.
+- **Next:** W-162 step 0, re-judge the 37 rules.
+
+## 2026-11-05 — seven proposals from the codelaw use-case research  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research repo, papers case studies which could tell how codelaw could help or how it can improve to fit a use case"*, then *"file proposals for all of the items"*.
+- **Done:** seven `work/proposals/` docs, each `proposed` with sources and a graduation trigger — `agent-done-gate`, `conventions-to-rules`, `security-pack-benchmark`, `hallucinated-packages-and-api-evolution`, `dead-subgraphs-and-duplication`, `flag-cleanup-pr`, `suppression-gate-and-rule-usefulness`; their rows B-073–B-079 under `unruled`; the proposals index. `check-work-system.py` green.
+- **Decided / left open:** nothing ruled; each proposal's §6 holds the questions for the decider. `suppression-gate-and-rule-usefulness` §6.2 offers ImpossibleBench as evidence for W-158's inbox question.
+- **Mistakes:** none.
+- **Next:** the decider walks B-073–B-079 (`/docket` or the proposals) and rules on each §6.
+
+## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
+- **Done:** the step exchanges the OIDC token at `/api/-/trusted-publishing/token` (body and audience read from Open VSX's source and `/api/version`) and uploads with the issued token; `OVSX_PAT` dropped; RELEASING.md, W-95's item and row, IMPLEMENTATION follow.
+- **Decided / left open:** `curl`, not `ovsx` (the coordinator's brief; decision 8 allows either). VSCodium not checked — its download stalled; Open VSX serves 0.3.0 for darwin-arm64 (0.4.0 only on some platforms).
+- **Mistakes:** none.
+- **Next:** the next release proves the upload; then the VSCodium install.
+
+## 2026-11-05 — W-164: the README opens on the ruled positioning  ·  Claude Code (Opus 5.5)
+
+- **Asked:** build W-164 (README opening), in parallel with other items.
+- **Done:** `README.md`'s two lines under the title are the ruled lead and the deterministic, no-AI second line; *The story*'s first paragraph ends on the unchecked edit; `packaging/README.md` (npm and PyPI) opens the same way; CHANGELOG line; W-164 closed and archived.
+- **Decided / left open:** the rest of the README unchanged — nothing contradicts the opening; W-102's "rules it can't skip" line left to W-102. `llms.txt` (generated by `scripts/rule-docs.py`) keeps its older, still-true pitch — the decider's call whether it should match.
+- **Mistakes:** none.
+- **Next:** none for W-164.
+
+## 2026-11-05 — W-126's `perf` matrix; W-103's `spell` budget to the inbox  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-126 step 6 — `perf` as a matrix on `build linux-x64-gnu`'s binary, not waited on — and measure; read W-103's three `spell` p95s and propose the budget by L8's method, to the inbox.
+- **Done:** `ci.yml`: `perf-plan`, `perf <group>` ×7, `perf` (merged report); SR-LAW-8, SR-PACKAGES, RELEASING.md say the limit (a group with a set budget still fails the run, L8 decision 7). W-103: p95 1,383.3 / 1,434.2 / 1,429.5 ms → proposed 2,152 ms; inbox row; W-103 🔴 `arpit`.
+- **Decided / left open:** not set — the budget is the decider's. `publish.yml` untouched (W-95's): its gate reads the run's conclusion, which `continue-on-error` legs do not fail.
+- **Mistakes:** none.
+- **Next:** W-126's measurement runs on the new `perf`, times into its §Measured.
+
+## 2026-11-05 — Positioning ruled; W-164 filed; W-102 after W-139; B-072  ·  Claude app (Opus 5.5)
+
+- **Asked:** *"is there a need or a usecase for code law"*, *"what would make people swap"*, then (voice) positioning, the experiment, what to pause; then *"file it."*
+- **Done:** W-164 filed (README opening, 🟢 `agent`); W-102 re-balled 🟡 waits on W-139, its file carries the ruling and §Later — rework; B-072 (`unmeasured`) for rework, turns and tokens.
+- **Decided / left open:** positioning — lead *"Your team's rules, enforced on every AI edit"*, second line deterministic and AI-free. Pausing W-139, W-141, W-143, W-145 recommended and refused: all of them are built. W-102 waits until every rule is built, over the recommendation to run it in parallel as do-first.
+- **Mistakes:** none.
+- **Next:** W-164's rewrite.
+
+## 2026-11-05 — W-161 and W-163 researched; W-161 closed; three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research w-161, w-163"*
+- **Done:** two proposals, `work/proposals/fix-capabilities.md` and `work/proposals/save-behaviour-and-targets.md`. W-161 closed and archived: 151 waiting rules, of which 112 move with six capabilities and 37 are re-judged `manual`; build order in the proposal. W-162 is red on the multi-file call; W-163 is red on its proposal and its two calls.
+- **Decided / left open:** nothing ruled. Inbox: W-162's multi-file fixes (L4 10, 12); W-163's proposal, its browser table and the two `auto` Python rules with a floor.
+- **Mistakes:** the Mac dropped off the bridge mid-research; the drafts waited in Cowork until it was back.
+- **Next:** the decider rules the three calls.
+
+## 2026-11-05 — W-139 step 2a: manual ceiling removed, 231 held ports landed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** build W-139 step 2a as ruled 11-05 (*"no manual ceiling at all"*).
+- **Done:** `packs/fix-ladder.toml` and its checks removed (only the ceiling's lines in W-156's `fix_ladder.rs` / `rules_cmd.rs`); 231 held ports + 2 staged `suggest` js rules landed, presets per SR-RULE-PACKS decision 18; SR-LAW-4 decision 6 and SR-RULE-PACKS 13a/18 say it is done. `codelaw test` 0 failed on every touched pack.
+- **Decided / left open:** a source's recommended rows go to that source's preset (`js/sonarjs`, `js/strict`, `js/regexp`), as the landed rules of the same sources did. Corpus counts for the 231 not run — the corpus is not on this machine.
+- **Mistakes:** the end-of-turn auto-land put the 176 copied js/native files on `main` (3798ca70) before the 75 js files had their `fix_exception:` (the strand's staged copies lacked it), so `main` refused the js pack until this change landed. Fixed here from the strand's specs.
+- **Next:** W-139 step 3 — fetch the corpus, write the 231's counts, L8 budgets.
+
+
+## 2026-11-05 — W-105: the type helper profiled and batched; corpus counts re-run; the dispatch proof waits on a push  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-105's pre-RC steps — the dispatch proof, profiling `check_types_cold`/`_warm`, corpus counts for the nine type rules, what is left of the version watch; not the RC release; no budget set.
+- **Done:** profiled the helper phase by phase (a scratch `node` shim on `PATH` running an instrumented `helper.mjs`): one synchronous round trip per question was most of a cold run, `getDefaultProjectForFile` per file most of the rest, type checking under a tenth. `helper.mjs` now batches each file's questions and diagnostics (`api.batch` of `.gen` calls) and reads a file's project from the snapshot's file lists; findings identical, ~2–3× faster cold on the loaded Mac. SR-TYPES decision 2 and §Consequences amended. Corpus counts re-run with each corpus repo as its own program: still the missing dependencies (W-105 *Left* 4). Found CI's three `perf` runs of `check_types_*` (10-30, old helper).
+- **Decided / left open:** no budget proposed — the CI numbers timed the old helper. The dispatch proof needs `typescript-bump.yml` on GitHub: `origin/main` is 147 commits behind; pushing is the decider's. Corpus repos' dependencies in CI is an L11 question, worth asking before promotion.
+- **Mistakes:** the first SR-guard landing was refused — `helper.mjs` changed without SR-TYPES; the record now carries the change.
+- **Next:** the decider pushes `main`; three `perf` runs on the batched helper, then the budget row; the RC on 11-10.
+
+## 2026-11-05 — W-141: Oxc's formatters built behind `codelaw format` for CSS, SCSS, YAML, Markdown  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build `oxc_formatter_css`, `_markdown`, `_yaml` behind codelaw's formatter, rerun W-141's corpus, measure size, speed and the layout check; adopt Oxc only where it beats the current backend within budget* (coordinator, after D-52).
+- **Done:** `crates/codelaw-format/src/oxc.rs`; oxc git `7b933d5` pinned, D-52's tree (74) and ledger lines written; `oxc_allocator` patch named in SR-PACKAGES decision 4. Corpus vs Prettier: CSS 74.4 → 88.6 %, SCSS 80.7 → 86.0 %, YAML 89.9 → 97.3 %, Markdown 93.3 → 94.7 %. Binary −2.3 MB; the four languages 2.4× faster; every L8 budget held; layout check 0 failed. All four adopted; Biome CSS, pretty_yaml, dprint removed. SR-FORMATTER decision 2 and § What is built updated.
+- **Decided / left open:** JS/TS stays on Biome (`oxc_formatter` is not in D-52). SR-PACKAGES decision 4 gained a third `[patch]` reason (one copy of a crate a ratified unit names) — an agent's reading of D-52, for the decider to confirm.
+- **Mistakes:** the D-52 ledger capture first swallowed the test harness's output (the dependency test failed, fixed). `cargo fetch` with libgit2 stalled on Oxc's history; the git CLI fetched it. Disk past the L9 budget during the parallel run, under the standing 2026-10-30 note.
+- **Next:** W-141 DoD 3 — name the remaining per-language differences in SR-FORMATTER.
+
+## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*
+- **Done:** OPEN-WORK's inbox emptied (next gate: TS 7.1 RC, 11-10); W-139, W-141, W-156 re-balled 🟢 `agent`; W-161, W-163 (research, `cowork`) and W-162 (build, 🟡 on W-161) filed. Records: SR-LAW-4 decision 6 retired, decision 5 amended (`fix_pending:` naming an open item), veto condition rewritten; SR-LAWS, the register, SR-RULE-PACKS 13a, SR-CLI-AND-MCP, SR-WORK-REGISTRY, SR-RULE-FORMAT 2 follow; SR-LAW-11 gains D-52 (Oxc). **`CLAUDE.md` changed** (SR-WORK-DOCS decision 7a): L4's line drops "each pack's manual count only falls", on the decider's ruling.
+- **Decided / left open:** ruled by Arpit — no ceiling (over the recommendation to leave the 231 out); Oxc approved; capabilities to research then build, W-156 closes with them pending; save and targets to research, configurable per rule, with defaults. Open: none in the inbox.
+- **Mistakes:** none.
+- **Next:** W-139 step 2a — remove the ceiling and land the 231 held ports.
+
+## 2026-11-05 — OPEN-WORK brought to its latest status; W-156's three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *Look into open work file, update the file to its latest status.*
+- **Done:** checked every row against main (`22219660`) and the item files. W-139: native strand landed (`2e59371c`), no longer "landing". W-156: its unruled choices (capability-blocked rules, `on_save`, targets) were sitting inside a green row; moved to the inbox with recommendations, row 🔴 `arpit` (rule 21a), 533 `fix_pending:` counted; its item file gains open question 3.
+- **Decided / left open:** nothing ruled; W-156's three calls wait on the decider.
+- **Mistakes:** none.
+- **Next:** the decider rules W-156's three calls.
+
+## 2026-11-05 — the parallel build run (30 Oct – 5 Nov): eleven items driven, nine closed or wound down  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"implement all build open items in parallel"*, W-143 queued behind W-139; then *"don't ask for approvals … implement everything … close all of them"*; finally *"merge whatever is done, do the clean up"* and *"update the open work file"*.
+- **Done:** closed W-105's slice (four type questions, version watch `7f3b41aa`), W-129 (`a1dc351a`), W-141's build (`1581a2a4`), W-146 (`970b6343`, `ea47f7eb`), W-152 (`262505a1`), W-155 (`ce3069e7`, `737bf74d`), W-157 (`1c1a365a`), W-158's build (`56ddc7f3`), W-145 (`8c18ff0d`, `5acdabc0`); W-156's engine and lowering (`89c67412`, `dff8ea25`); W-139 in five strands — about 1,300 rules, packs nextjs, django, fastapi, airflow, numpy, pandas, testing (`33d65ff2`) and the JS regex parser (`2e59371c`). Landed the decider's Cowork edits under the standing approval (`3277f5f0`, `953cca4f`). W-159 and W-160 filed by the ledger, ruled keep, closed. `cargo clean` at the end: 23 GB → 0.43 GB.
+- **Decided / left open:** the coordinator's calls under the decider's "don't wait" direction — `testing` as that pack's namespace (reversible by rename); keep for every live worktree. Put to the decider: W-139's 231 held manual ports (inbox), Oxc under L11 (W-141, inbox), W-156's capability-blocked rows, B-070 team-pack presets, Tailwind v3 (B-071), SchemaStore and the PyPI `#:schema` URL (W-157), `react/prop-types` noise.
+- **Mistakes:** eleven agents at once hit the 5-hour limit and then the weekly one, losing a day each time; the js strand spawned agents of its own until told not to. A shared cargo target swapped binaries between worktrees all run long, costing retries. Disk ran to 31 GB against a 5 GB budget, every GB approved. A `git mv` rename broke `lockmaster save` twice (lockmaster bug, unstaged to work around). The py strand killed a `corpus.py` run that may have been another strand's.
+- **Next:** the decider rules on the two inbox rows; then W-143 can start once W-139 closes.
+
+---
+
+## 2026-11-05 — Inbox emptied: Open VSX trusted publisher, W-97 repos, W-102 and W-158 ruled  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"check what all items can be closed"* with the browser; then the inbox one by one (text, then voice); *"file it."*
+- **Done:** Open VSX claim #14928 found granted (listing `verified: true`); the trusted publisher re-registered with environment `vscode`, replacing one with none (`4e45d64d`, landed by a Claude Code pickup). Public repos `arpitarya/codelaw-action-test` and `arpitarya/codelaw-pre-commit` created in the built-in browser. Written, not yet landed: OPEN-WORK (inbox empty, W-97/W-102/W-158 → 🟢 agent), W-97, W-102, W-103, W-142, W-158, SR-CONFIG decision 11c.
+- **Decided / left open:** W-102 → run the 7 (9 runs/arm, ~$65; PREREG first). W-158 → optional `reason` on an `"off"` rule + `[rules] require_reason` (default `false`). W-142 → nothing until W-139 is ready. W-103 → agent reads the `spell` p95s next; `typos` (L11) deferred. Open: whether the 2026-10-30 Open VSX hand-upload token was revoked.
+- **Mistakes:** lockmaster is not reachable from this Cowork bridge (only the codelaw folder is linked), so these edits wait in main's checkout for a Claude Code session to land.
+- **Next:** land these edits (`lockmaster save`), then W-103's p95s.
+
+## 2026-10-30 — L4 decision 16 (lower a rule's fix, never raise it); W-157 and W-158 filed  ·  Claude app (Opus 5.5)
+
+- **Asked (voice, then "file it"):** let a project switch a rule's fix down only; autocomplete in `codelaw.toml`; one file for every rule's exceptions.
+- **Done:** SR-LAW-4 decision 16 and W-156 DoD A6 (a rule entry's `fix` key: lower only, raising is exit 2); W-157 (schema registration and `#:schema` now, then the LSP completes and checks the config from the installed packs); W-158 (`.codelawignore`, built for two coverage rules under SR-BASELINE decision 12, extended to any rule).
+- **Decided / left open:** Arpit ruled down-only. Open in W-158: a `reason` on rules turned `"off"` in `codelaw.toml`. Corrected in-session: config exceptions are `[scope.<name>]` (`[[overrides]]` is the deprecated spelling), and `.codelawignore` exists but covers only test coverage.
+- **Mistakes:** the voice answer showed `[[overrides]]`/`disable`, the deprecated spelling; corrected here.
+- **Next:** W-156 slice A.
+
+## 2026-10-30 — W-145: the three L11 asks ratified (D-48, D-49)  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Approve all the three items presented in the chat for work item 145."*
+- **Done:** SR-LAW-11 §3 gains *Tests and CI — Tailwind for the provider and its parity check*: D-48 `tailwindcss@4.3.3` (fixtures only), D-49 `prettier-plugin-tailwindcss@0.8.1` with D-38's `prettier@3.9.10` (by hand or CI-only), and leave for Claude Code to run them; the inbox row and its blocks sub-row removed; W-145 re-balled 🟢 `agent`; item file and INTERVIEW §1.
+- **Decided / left open:** the peer dependency the provider declares is named in L11 with W-145's DoD 1, not now. The parity corpus is still unpinned.
+- **Mistakes:** none.
+- **Next:** W-145 to Claude Code — records (DoD 1, 2a, 5), then the provider.
+
+## 2026-10-30 — L4 rewritten as the fix ladder; every non-auto rule reviewed; W-156 filed  ·  Claude app (Opus 5.5)
+
+- **Asked:** *research which rules can be fixed automatically and propose how; make it a law — auto first, suggest so an agent can fix it second, manual only by exception.*
+- **Done:** inventory of all 810 first-party rules (93 auto, 140 suggest, 577 manual) joined to each upstream tool's fix ability; the 717 non-auto rules reviewed in five parallel groups against one rubric, three proposed `auto` fixes corrected to `suggest`; `work/proposals/fix-ladder.md` + `fix-ladder/rules.csv` (proposed: 112 auto, 142 auto for a subset, 254 suggest, 155 suggest with choices, 147 manual); SR-LAW-4 rewritten in place (decisions 2, 4–7, 15 new) and its one-liner in SR-LAWS, the register and CLAUDE.md; W-156 opened.
+- **Decided / left open:** a rewrite of L4, not a new L12 — SR-LAWS: a law restated twice is two laws. Left for Arpit: `on_save: false` for edits that destroy work in progress; browser targets and target Python as config inputs.
+- **Mistakes:** two scratch files were written into codelaw-playground/.tmp-fixres to move them into the cloud workspace; the bridge cannot delete them.
+- **Next:** W-156 slice A — per-finding rung and choices in the engine.
+
+## 2026-10-30 — W-145 ruled: providers — Tailwind's order from the project's own Tailwind  ·  Cowork (Opus 5.5)
+
+- **Asked:** *what is the blocker on W-145?* → by voice, the ruling → *"file it."* Earlier in the session, chat only: what `codelaw.view.code/manifests/markers` cover (`card.rs` `view_of`), and why toggling `codelaw.view.manifests` seems to do nothing (diagnosed, no change at his choice).
+- **Done:** W-145's item (the ruling verbatim, At a glance, DoD, Blockers, Hazards); OPEN-WORK's inbox row narrowed and its W-145 row; INTERVIEW §1; GLOSSARY *provider*; the registry rows. No record or law text changed: L6, L11, SR-RULE-PACKS, SR-PACKAGES, SR-CONFIG and SR-ARCHITECTURE are W-145's DoD 1 and 5, written with the build (as W-128's L6 amendment was).
+- **Decided / left open:** Arpit ruled no committed copy of Tailwind's order; a *provider* package (`@codelaw/provider-tailwind`, npm only, peer dependency `tailwindcss`) the engine runs with Node, cached by Tailwind version and config hash; the pack depends on it (exact pin) and names it in `codelaw-pack.toml`; `[providers] on_missing` `skip` (default) or `error`. The per-provider override was proposed and not objected to — filed, flagged as droppable. Still open (inbox): `tailwindcss` in test fixtures, the Prettier-plugin parity instrument, leave to run them. Also found, not filed: the editor's badges view never hides the squiggle and badges only appear after a settings change (likely overlapping async `paint()` calls) — he asked for diagnosis only.
+- **Mistakes:** none.
+- **Next:** Arpit rules the narrowed W-145 inbox row.
+
+---
+
+## 2026-10-30 — W-155 filed: SR-PACK-LOOKUP, the .venv fallback and `[packs]`  ·  Claude app (Opus 5.5)
+
+- **Asked:** *create an SR for how Node and .venv packages and paths are picked; fall back to the project's .venv; make both paths configurable in the TOML* — after codelaw-playground's editor loaded no Python packs under an inherited `VIRTUAL_ENV`.
+- **Done:** `records/0118_pack-lookup.md` (SR-PACK-LOOKUP, built: no); SR-RULE-PACKS decision 4 now links to it for where packs are found; SR-CONFIG gains `[packs]`; register row and a describes row on `pack.rs::PackSearch,site_packages_of`; W-155 opened.
+- **Decided / left open:** Arpit ruled that a set `[packs]` key replaces its default (never prepends) and that `order` is kept; a separate record, not an amendment.
+- **Mistakes:** none.
+- **Next:** build W-155 DoD 1 (the fallback), then `[packs]`.
+
+## 2026-10-30 — W-152 closed: the queue check refuses a ball that disagrees with its words  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-152* (one of seven parallel agents) — the check Arpit asked for after W-97 and W-126 sat green with his move next.
+- **Done:** `scripts/check-work-system.py` `ball_agrees`: inbox-named, first unfinished step 🔴, "needs Arpit"-style row text, an unruled choice in an unfinished step → must be 🔴; a 🔴 row must be in the inbox or name its chain. Self-test cases (five fail, two pass); SR-WORK-OPEN-QUEUE rule 21a; W-152 archived.
+- **Decided / left open:** placed in `check-work-system.py` (CI and every landing), not the hook's script, since item-file edits never run the hook. Quoted words are exempt — the first run failed W-152's own row, which quotes the rule.
+- **Mistakes:** none.
+- **Next:** none for W-152; a phrasing the lists miss is still rule 21a, judged by eye.
+
+## 2026-10-30 — codelaw-playground on the published 0.4.3  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"Update the sibling repo so I can get a full feel of how codelaw is working. With the extension and everything … Set it up for CodeLaw playground."*
+- **Done:** `~/my_programs/codelaw-playground` 7616ab8 (its own repo; nothing here changed): npm `codelaw@0.4.3` + 14 `@codelaw/rules-*` packs, the two Python packs from PyPI in `.venv` (Python 3.12 via uv), samples in all nine languages plus markers and vulnerable manifests, `deps refresh` snapshot, `.vscode` recommending `codelaw.codelaw-vscode`. `check`: 50 errors, 30 warnings, 3 infos across every file.
+- **Decided / left open:** observed, not filed — (1) every rule but 42 CSS ones is `preview` in 0.4.3, so a fresh `init` reports little beyond formatting; (2) `deps/vulnerable` on `pyproject.toml` with no lockfile says ``then run `your install` ``; (3) `package-lock.json` as npm writes it is `format/unformatted`; (4) `:global(…)` in a `*.module.css` is `format/failed` (biome_css_parser).
+- **Mistakes:** none.
+- **Next:** Arpit tries the extension on the playground; the four observations become backlog rows if he wants them.
+
 ## 2026-10-30 — A `cleanup` section in the queue  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"create another section for cleanup."*

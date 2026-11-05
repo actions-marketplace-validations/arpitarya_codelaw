@@ -4,8 +4,9 @@ title: "No `++x` or `--x`"
 languages: [python]
 fix: manual
 fix_reason: "whether an increment or a plain value was meant needs a person"
+fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/B002]
+ported_from: [ruff/B002, pylint/nonexistent-operator]
 since: 0.1.0
 ---
 

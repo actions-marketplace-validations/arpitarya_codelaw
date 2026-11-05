@@ -736,7 +736,7 @@ def defaults_block(rid, fm):
 def scope_example(fm, packs):
     langs = fm.get("languages") or []
     ext = LANG[langs[0]][1] if langs and langs[0] in LANG else "*"
-    if any(p in ("js", "react", "ts", "node", "stencil", "tanstack-query", "redux-toolkit", "security-js", "security-ts") for p in packs) and ext in ("js", "jsx", "ts", "tsx"):
+    if any(p in ("js", "react", "ts", "node", "stencil", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "nextjs", "testing", "tailwind") for p in packs) and ext in ("js", "jsx", "ts", "tsx"):
         return "tests", None, "the `tests` scope `codelaw:js/recommended` ships (`**/*.test.*`, `**/*.spec.*`); naming it extends it, so its files stay"
     if "python" in packs or "security-python" in packs:
         return "tests", None, "the `tests` scope `codelaw:py/recommended` ships (`**/tests/**`, `**/test_*.py`, `**/*_test.py`); naming it extends it, so its files stay"
@@ -1421,6 +1421,56 @@ def render_llms_full(ctx, engine):
     return re.sub(r"\n{3,}", "\n\n", "\n".join(o)).rstrip("\n") + "\n"
 
 
+# ── the fix ladder in each pack README (SR-LAW-4 decision 7) ────────────────
+
+LADDER_OPEN = "<!-- rule-docs:fix-ladder -->"
+LADDER_CLOSE = "<!-- /rule-docs:fix-ladder -->"
+EXCEPTIONS = ("value", "restructure", "authored", "security")
+
+
+def ladder_table(rules, pack):
+    counts = {"auto": 0, "suggest": 0, "manual": 0, "pending": 0}
+    counts.update({x: 0 for x in EXCEPTIONS})
+    for r in rules.values():
+        if pack not in r["packs"]:
+            continue
+        fm = r["fm"]
+        counts[fm["fix"]] += 1
+        if fm["fix"] == "manual":
+            counts[fm["fix_exception"] if fm.get("fix_exception") in EXCEPTIONS else "pending"] += 1
+    head = "| auto | suggest | manual | value | restructure | authored | security | waiting to move up |"
+    row = "| {} | {} | {} | {} | {} | {} | {} | {} |".format(
+        counts["auto"], counts["suggest"], counts["manual"], *(counts[x] for x in EXCEPTIONS), counts["pending"])
+    return "\n".join([LADDER_OPEN, "", head, "|---|---|---|---|---|---|---|---|", row, "", LADDER_CLOSE])
+
+
+def ladder_pages(rules):
+    """Each pack README's fix-ladder table, as `codelaw rules --fix-stats` counts it."""
+    pages = {}
+    for pack in package.PACKS:
+        readme = ROOT / "packs" / pack / "README.md"
+        if not readme.is_file():
+            continue
+        text = readme.read_text(encoding="utf-8")
+        table = ladder_table(rules, pack)
+        if LADDER_OPEN in text and LADDER_CLOSE in text:
+            a = text.index(LADDER_OPEN)
+            b = text.index(LADDER_CLOSE) + len(LADDER_CLOSE)
+            text = text[:a] + table + text[b:]
+        else:
+            section = ("## The fix ladder\n\nEach rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md)): "
+                       "`manual` rules by their named exception. "
+                       "`codelaw rules --fix-stats` prints the same table.\n\n" + table + "\n")
+            anchor = "<!-- /docs-sync:presets -->\n"
+            if anchor in text:
+                i = text.index(anchor) + len(anchor)
+                text = text[:i] + "\n" + section + text[i:]
+            else:
+                text = text.rstrip("\n") + "\n\n" + section
+        pages[readme] = text
+    return pages
+
+
 # ── main ───────────────────────────────────────────────────────────────────
 
 def build():
@@ -1435,6 +1485,7 @@ def build():
     pages[LLMS] = render_llms(ctx, engine)
     pages[LLMS_FULL] = render_llms_full(ctx, engine)
     pages[CATALOGUE] = catalogue(ctx, engine)
+    pages.update(ladder_pages(rules))
     return pages
 
 

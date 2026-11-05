@@ -4,6 +4,7 @@ title: "No prop given twice on one element"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "which value should win needs the author"
+fix_pending: "auto-subset"
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-duplicate-props]
 since: 0.1.0

@@ -43,3 +43,19 @@ def v(request):
 ```expect
 (none)
 ```
+
+### case: the message form is wrapped
+
+```py
+def v(request):
+    logger.warning(request.GET["u"])
+```
+
+```expect
+2:5 sec-py/no-log-injection
+```
+
+```fixed
+def v(request):
+    logger.warning(str(request.GET["u"]).replace("\r", "").replace("\n", " "))
+```

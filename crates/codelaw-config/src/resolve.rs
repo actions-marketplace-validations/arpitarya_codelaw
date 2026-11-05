@@ -54,6 +54,36 @@ pub struct ConfigFile {
     pub spell_file_words: Vec<String>,
 }
 
+type RuleTables<'a> = Vec<(Vec<String>, String, &'a BTreeMap<String, RuleSetting>)>;
+
+/// The rule tables of a file's (or a profile's) scopes and overrides, each
+/// with its key path and how a message names it.
+fn scope_tables<'a>(base: Vec<String>, label: String, scope: &'a crate::raw::ScopeMap, overrides: &'a [crate::raw::RawOverride], tables: &mut RuleTables<'a>) {
+    for (name, sc) in &scope.0 {
+        let mut p = base.clone();
+        p.extend(["scope".into(), name.clone(), "rules".into()]);
+        tables.push((p, format!("{label}scope `{name}`"), &sc.rules));
+    }
+    for (i, o) in overrides.iter().enumerate() {
+        let mut p = base.clone();
+        p.extend(["overrides".into(), i.to_string(), "rules".into()]);
+        tables.push((p, format!("{label}override #{}", i + 1), &o.rules));
+    }
+}
+
+/// A rule entry that turns a rule `"off"` without a `reason` while
+/// `[rules] require_reason` is on (SR-CONFIG decision 11c).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OffWithoutReason {
+    /// The config file the entry is in.
+    pub file: PathBuf,
+    /// Its line there, when the key can be found.
+    pub line: Option<u32>,
+    pub rule: String,
+    /// `[rules]`, `scope `tests``, `profile `ci``, …
+    pub place: String,
+}
+
 /// Where a scope's settings are listed by `codelaw config --scopes`.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ScopeInfo {
@@ -171,9 +201,24 @@ pub struct RuleConfig {
     /// `None` is `off`.
     pub severity: Option<codelaw_core::Severity>,
     pub options: BTreeMap<String, serde_json::Value>,
+    /// The rung a config entry lowered the rule's fix to (SR-LAW-4
+    /// decision 16); `None` keeps the rule's own.
+    pub fix: Option<codelaw_core::FixClass>,
 }
 
 fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(), ConfigError> {
+    if let RuleSetting::Flag(_) = setting {
+        let what = if id == "require_reason" { "`require_reason` is set in the top-level `[rules]` only".to_owned() } else { format!("rule `{id}`: a setting is a severity or a table, not true or false") };
+        return Err(ConfigError::new(Some(file.to_owned()), what));
+    }
+    if let RuleSetting::Full { reason: Some(_), .. } = setting
+        && setting.severity() != Some("off")
+    {
+        return Err(ConfigError::new(
+            Some(file.to_owned()),
+            format!("rule `{id}`: `reason` says why a rule is off, so it goes with `severity = \"off\"` (SR-CONFIG decision 11c)"),
+        ));
+    }
     if let Some(s) = setting.severity()
         && !matches!(s, "error" | "warn" | "info" | "off")
     {
@@ -182,6 +227,12 @@ fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(),
             Some(file.to_owned()),
             format!("rule `{id}`: invalid severity `{s}`{near} (one of error, warn, info, off)"),
         ));
+    }
+    if let Some(f) = setting.fix()
+        && codelaw_core::FixClass::parse(f).is_none()
+    {
+        let near = did_you_mean(f, ["auto", "suggest", "manual"]).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
+        return Err(ConfigError::new(Some(file.to_owned()), format!("rule `{id}`: invalid `fix = \"{f}\"`{near} (one of suggest, manual; a rule's fix can only be lowered)")));
     }
     Ok(())
 }
@@ -280,6 +331,11 @@ impl ConfigFile {
     fn new(path: PathBuf, home: Home, raw: RawConfig, text: String) -> Result<ConfigFile, ConfigError> {
         let dir = path.parent().map(Path::to_path_buf).unwrap_or_default();
         let mut raw = raw;
+        match raw.rules.remove("require_reason") {
+            Some(RuleSetting::Flag(b)) => raw.require_reason = Some(b),
+            Some(_) => return Err(ConfigError::new(Some(path), "`[rules] require_reason` is true or false".to_owned())),
+            None => {}
+        }
         order_scopes(&mut raw, home, &text);
         let renamed = rename_all_rules(&mut raw);
         if let Some(langs) = &raw.languages {
@@ -342,22 +398,47 @@ impl ConfigFile {
                 "{at}: `[[overrides]]` is deprecated and goes in the next minor release; write `[scope.<name>]` (each entry loads as `scope.override-<n>`)"
             ));
         }
+        if raw.coverage.as_ref().is_some_and(|c| c.ignore.is_some()) {
+            if raw.codelawignore.is_some() {
+                return Err(ConfigError::new(Some(path), "`[coverage.ignore]` and `[codelawignore]` are the same table; keep `[codelawignore]`".to_owned()));
+            }
+            deprecations.push(format!("{at}: `[coverage.ignore]` is deprecated and goes in the next minor release; write `[codelawignore]` (`.codelawignore` covers every rule now)"));
+        }
         if !alias_profiles.is_empty() {
             deprecations.push(format!("{at}: `[profiles.<name>]` is deprecated and goes in the next minor release; write `[profile.<name>]`"));
         }
         for (old, new, home) in RENAMED_RULES.iter().filter(|(o, _, _)| renamed.contains(o)) {
             deprecations.push(format!("{at}: rule `{old}` is now `{new}`, in {home}; rename it in the config (it runs as `{new}` until the next minor release)"));
         }
-        for e in raw.deps.ignore.iter().flatten() {
+        let named = |p: &str| p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
+        let licence_ignore = raw.deps.licence.as_ref().and_then(|l| l.ignore.as_ref());
+        for (key, e) in raw.deps.ignore.iter().flatten().map(|e| ("[deps] ignore", e)).chain(licence_ignore.into_iter().flatten().map(|e| ("[deps.licence] ignore", e))) {
             let p = e.package();
-            let named = p.strip_prefix("npm:").or_else(|| p.strip_prefix("pypi:")).is_some_and(|n| !n.is_empty());
-            if !named {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            if !named(p) {
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
             }
             if let RawDepsIgnore::Dated(d) = e
                 && let Some(x) = d.expires.as_deref().filter(|x| !is_date(x))
             {
-                return Err(ConfigError::new(Some(path), format!("`[deps] ignore`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+                return Err(ConfigError::new(Some(path), format!("`{key}`: `expires = \"{x}\"` is not a date; write it as YYYY-MM-DD")));
+            }
+        }
+        if let Some(d) = &raw.deps.drift {
+            if let Some(p) = d.policy.as_deref().filter(|p| !crate::raw::DRIFT_POLICIES.contains(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] policy`: `{p}` is not one of `highest`, `root`")));
+            }
+            if let Some(p) = d.ignore.iter().flatten().find(|p| !named(p)) {
+                return Err(ConfigError::new(Some(path), format!("`[deps.drift] ignore`: `{p}` names no package; write `npm:<name>` or `pypi:<name>`")));
+            }
+        }
+        if let Some(src) = raw.deps.runtime.as_ref().and_then(|r| r.source.as_ref()) {
+            for (rt, v, list) in [("node", &src.node, crate::raw::RUNTIME_SOURCES_NODE), ("python", &src.python, crate::raw::RUNTIME_SOURCES_PYTHON)] {
+                if let Some(v) = v.as_deref().filter(|v| !list.contains(v)) {
+                    return Err(ConfigError::new(
+                        Some(path),
+                        format!("`[deps.runtime] source.{rt}`: `{v}` is not one of {}", list.iter().map(|k| format!("`{k}`")).collect::<Vec<_>>().join(", ")),
+                    ));
+                }
             }
         }
         let mut source_names = BTreeSet::new();
@@ -402,6 +483,7 @@ impl ConfigFile {
         }
         check_reviews(&raw.reviews, &path)?;
         check_markers(&raw, &path)?;
+        check_git(&raw, &path)?;
         if let Some(f) = &raw.flags {
             if let Some(p) = f.presets.iter().flatten().find(|p| !crate::raw::FLAG_PRESETS.contains(&p.as_str())) {
                 return Err(ConfigError::new(
@@ -413,6 +495,7 @@ impl ConfigFile {
                 return Err(ConfigError::new(Some(path), format!("`[flags] inline`: `{i}` is not one of `allow`, `registry-only`")));
             }
         }
+        crate::packs::check(&raw.packs, &path, &dir)?;
         let spell_file_words = read_words_file(&path, &dir, raw.spell.words_file.as_deref())?;
         if let Some(globs) = &raw.css.modules {
             glob_set(globs, &path).map_err(|e| ConfigError::new(Some(path.clone()), format!("`[css] modules`: {}", e.message)))?;
@@ -489,6 +572,55 @@ fn check_reviews(r: &crate::raw::RawReviews, path: &Path) -> Result<(), ConfigEr
     Ok(())
 }
 
+/// `[commits]`, `[branches]` and `[pr]` (SR-CONFIG decision 11b, W-146):
+/// a value out of its list or a pattern that is not a regular expression
+/// fails on a laptop as it would in CI.
+fn check_git(raw: &RawConfig, path: &Path) -> Result<(), ConfigError> {
+    let fail = |m: String| Err(ConfigError::new(Some(path.to_path_buf()), m));
+    let c = &raw.commits;
+    if let Some(p) = c.preset.as_deref().filter(|p| !crate::raw::COMMIT_PRESETS.contains(p)) {
+        return fail(format!("`[commits] preset`: `{p}` is not one of `conventional`, `angular`, `gitmoji`, `custom`, `off`"));
+    }
+    if c.preset.as_deref() == Some("custom") && c.pattern.as_deref().is_none_or(str::is_empty) {
+        return fail("`[commits] preset = \"custom\"` needs a `pattern`".into());
+    }
+    if let Some(v) = c.subject_case.as_deref().filter(|v| !["lower", "sentence", "any"].contains(v)) {
+        return fail(format!("`[commits] subject_case`: `{v}` is not one of `lower`, `sentence`, `any`"));
+    }
+    if let Some(v) = c.ticket.place.as_deref().filter(|v| !["subject", "footer", "either"].contains(v)) {
+        return fail(format!("`[commits.ticket] place`: `{v}` is not one of `subject`, `footer`, `either`"));
+    }
+    if c.ticket.match_commits.is_some() {
+        return fail("`[commits.ticket] match_commits` belongs to `[branches.ticket]`".into());
+    }
+    if raw.branches.ticket.place.is_some() {
+        return fail("`[branches.ticket] place` belongs to `[commits.ticket]`".into());
+    }
+    if let Some(t) = c.types.iter().flatten().find(|t| t.is_empty() || t.chars().any(|ch| ch.is_whitespace() || "():!".contains(ch))) {
+        return fail(format!("`[commits] types`: `{t}` is not a commit type"));
+    }
+    let patterns = [
+        ("[commits] pattern", &c.pattern),
+        ("[commits.ticket] pattern", &c.ticket.pattern),
+        ("[branches] pattern", &raw.branches.pattern),
+        ("[branches.ticket] pattern", &raw.branches.ticket.pattern),
+        ("[pr] title_pattern", &raw.pr.title_pattern),
+    ];
+    for (key, pattern) in patterns {
+        if let Some(p) = pattern
+            && let Err(e) = regex::Regex::new(p)
+        {
+            return fail(format!("`{key}`: `{p}` is not a regular expression: {e}"));
+        }
+    }
+    for (key, globs) in [("[branches] protected", &raw.branches.protected), ("[pr] exclude", &raw.pr.exclude)] {
+        if let Some(g) = globs.iter().flatten().find(|g| globset::Glob::new(g).is_err()) {
+            return fail(format!("`{key}`: `{g}` is not a glob"));
+        }
+    }
+    Ok(())
+}
+
 /// `[todo]` and `[tests.skip]` (SR-CONFIG decision 11a): tags are plain words and
 /// a ticket pattern is a regular expression, so a typo fails on a laptop as
 /// it would in CI.
@@ -547,10 +679,15 @@ fn read_words_file(config: &Path, dir: &Path, set: Option<&str>) -> Result<Vec<S
 /// Load the config home of one folder, if it has one. A folder with more
 /// than one home uses the first and warns about the rest.
 pub fn load_file(dir: &Path, warnings: &mut Vec<String>) -> Result<Option<ConfigFile>, ConfigError> {
+    load_file_from(dir, warnings, &|p| fs::read_to_string(p))
+}
+
+/// [`load_file`], reading each home through `read`.
+fn load_file_from(dir: &Path, warnings: &mut Vec<String>, read: &dyn Fn(&Path) -> std::io::Result<String>) -> Result<Option<ConfigFile>, ConfigError> {
     let mut found: Vec<ConfigFile> = Vec::new();
     for home in [Home::CodelawToml, Home::Pyproject, Home::PackageJson] {
         let path = dir.join(home.file_name());
-        let Ok(text) = fs::read_to_string(&path) else { continue };
+        let Ok(text) = read(&path) else { continue };
         let raw = match home {
             Home::CodelawToml => Some(
                 toml::from_str::<RawConfig>(&text)
@@ -635,7 +772,8 @@ pub const DEFAULT_EXCLUDES: &[&str] = &[".git", "node_modules", ".venv", ".codel
 /// Keys a nested config may not set yet; they belong to the root config.
 const ROOT_ONLY: &[&str] = &[
     "extends", "rules_dir", "preview", "allow_pack_fixers", "[files]", "[cache]", "[fix]", "[lint]", "[markdown]", "[daemon]", "[lsp]", "[profile]",
-    "[deps]", "[css]", "[coverage]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]",
+    "[deps]", "[css]", "[coverage]", "[codelawignore]", "[spell]", "[reviews]", "[todo]", "[tests]", "[codeowners]", "[flags]", "[commits]", "[branches]", "[pr]", "[packs]",
+    "[rules] require_reason",
 ];
 
 fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
@@ -655,12 +793,18 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
         raw.deps != Default::default(),
         raw.css != Default::default(),
         raw.coverage.is_some(),
+        raw.codelawignore.is_some(),
         raw.spell != Default::default(),
         raw.reviews != Default::default(),
         raw.todo != Default::default(),
         raw.tests != Default::default(),
         raw.codeowners != Default::default(),
         raw.flags.is_some(),
+        raw.commits != Default::default(),
+        raw.branches != Default::default(),
+        raw.pr != Default::default(),
+        raw.packs != Default::default(),
+        raw.require_reason.is_some(),
     ];
     ROOT_ONLY.iter().zip(set).filter(|(_, s)| *s).map(|(k, _)| *k).collect()
 }
@@ -669,13 +813,24 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
 /// project root. With no config anywhere, `start` is the root and every
 /// value is a default.
 pub fn find_config(start: &Path) -> Result<Config, ConfigError> {
+    find_config_from(start, &|p| fs::read_to_string(p))
+}
+
+/// [`find_config`] with one file's text as an editor holds it, unsaved: the
+/// language server checks a config as it is typed with the same loader the
+/// run uses (W-157, SR-EDITOR decision 9).
+pub fn find_config_with(start: &Path, file: &Path, text: &str) -> Result<Config, ConfigError> {
+    find_config_from(start, &|p| if p == file { Ok(text.to_owned()) } else { fs::read_to_string(p) })
+}
+
+fn find_config_from(start: &Path, read: &dyn Fn(&Path) -> std::io::Result<String>) -> Result<Config, ConfigError> {
     let start = fs::canonicalize(start).unwrap_or_else(|_| start.to_path_buf());
     let start_dir = if start.is_file() { start.parent().map(Path::to_path_buf).unwrap_or_default() } else { start };
     let mut warnings = Vec::new();
     let mut chain = Vec::new();
     let mut dir = Some(start_dir.as_path());
     while let Some(d) = dir {
-        if let Some(f) = load_file(d, &mut warnings)? {
+        if let Some(f) = load_file_from(d, &mut warnings, read)? {
             let is_root = f.raw.root;
             chain.push(f);
             if is_root {
@@ -783,7 +938,7 @@ impl Config {
         }
     }
 
-    fn root_raw(&self) -> Option<&RawConfig> {
+    pub(crate) fn root_raw(&self) -> Option<&RawConfig> {
         self.files.first().map(|f| &f.raw)
     }
 
@@ -900,6 +1055,9 @@ impl Config {
             ("deps", Some(r)) => serde_json::to_value(&r.deps).ok(),
             ("css", Some(r)) => serde_json::to_value(&r.css).ok(),
             ("todo", Some(r)) => serde_json::to_value(&r.todo).ok(),
+            ("commits", Some(r)) => serde_json::to_value(&r.commits).ok(),
+            ("branches", Some(r)) => serde_json::to_value(&r.branches).ok(),
+            ("pr", Some(r)) => serde_json::to_value(&r.pr).ok(),
             ("tests.skip", Some(r)) => serde_json::to_value(&r.tests.skip).ok(),
             ("codeowners", Some(r)) => serde_json::to_value(&r.codeowners).ok(),
             ("flags", Some(r)) => r.flags.as_ref().and_then(|f| serde_json::to_value(f).ok()),
@@ -1032,6 +1190,44 @@ impl Config {
             }
         }
         r
+    }
+
+    /// `[rules] require_reason` (SR-CONFIG decision 11c): every `"off"` in
+    /// the project's own config must say why. Default `false`.
+    pub fn require_reason(&self) -> bool {
+        self.root_raw().and_then(|r| r.require_reason).unwrap_or(false)
+    }
+
+    /// Every rule entry in the project's own config files that sets
+    /// `severity = "off"` with no `reason` — `[rules]`, each scope, each
+    /// profile's — when `[rules] require_reason` is on; none otherwise.
+    /// A preset's entries are the preset's, not the project's.
+    pub fn offs_without_reason(&self) -> Vec<OffWithoutReason> {
+        let mut out = Vec::new();
+        if !self.require_reason() {
+            return out;
+        }
+        for f in &self.files {
+            let mut tables: RuleTables = vec![(vec!["rules".into()], "[rules]".into(), &f.raw.rules)];
+            scope_tables(Vec::new(), String::new(), &f.raw.scope, &f.raw.overrides, &mut tables);
+            for (key, map) in [("profile", &f.raw.profile), ("profiles", &f.raw.profiles)] {
+                for (name, p) in map {
+                    tables.push((vec![key.into(), name.clone(), "rules".into()], format!("profile `{name}`"), &p.rules));
+                    scope_tables(vec![key.into(), name.clone()], format!("profile `{name}` "), &p.scope, &p.overrides, &mut tables);
+                }
+            }
+            for (path, place, rules) in tables {
+                for (id, s) in rules {
+                    if s.severity() == Some("off") && s.reason().is_none() {
+                        let mut key: Vec<&str> = path.iter().map(String::as_str).collect();
+                        key.push(id);
+                        let line = f.line_of(&key).or_else(|| f.line_of(&key[..key.len() - 1]));
+                        out.push(OffWithoutReason { file: f.path.clone(), line, rule: id.clone(), place: place.clone() });
+                    }
+                }
+            }
+        }
+        out
     }
 
     /// Every rule id named anywhere in the config, with the file naming it.
@@ -1362,5 +1558,30 @@ rules = { "js/no-console" = "error" }
         let c = Config::from_toml(PathBuf::from("/x"), text).unwrap();
         assert_eq!(max_for(&c, "a/f.ts"), Some(2), "alpha is written last, so it wins");
         assert_eq!(c.scope_list().iter().map(|s| s.name.as_str()).collect::<Vec<_>>(), ["zeta", "alpha"]);
+    }
+
+    /// SR-CONFIG decision 11c: `reason` on an `"off"`, and `require_reason`.
+    #[test]
+    fn an_off_without_a_reason_is_listed_only_when_required() {
+        let text = "[rules]\nrequire_reason = true\n\"a/x\" = \"off\"\n\"a/y\" = { severity = \"off\", reason = \"why\" }\n\"a/z\" = { severity = \"off\", reason = \"  \" }\n\"a/w\" = \"warn\"\n[scope.t]\nfiles = [\"t/**\"]\nrules = { \"a/x\" = \"off\" }\n[profile.ci.scope.s]\nfiles = [\"s/**\"]\nrules = { \"a/v\" = \"off\" }\n";
+        let c = Config::from_toml(PathBuf::from("/x"), text).unwrap();
+        assert!(c.require_reason());
+        assert!(!c.files[0].raw.rules.contains_key("require_reason"), "the switch is not a rule");
+        let got: Vec<(String, String, Option<u32>)> = c.offs_without_reason().into_iter().map(|o| (o.rule, o.place, o.line)).collect();
+        assert_eq!(
+            got,
+            [
+                ("a/x".to_owned(), "[rules]".to_owned(), Some(3)),
+                ("a/z".to_owned(), "[rules]".to_owned(), Some(5)),
+                ("a/x".to_owned(), "scope `t`".to_owned(), Some(9)),
+                ("a/v".to_owned(), "profile `ci` scope `s`".to_owned(), Some(12)),
+            ]
+        );
+        let off = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = \"off\"\n").unwrap();
+        assert!(!off.require_reason() && off.offs_without_reason().is_empty(), "default false");
+        let err = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = { severity = \"warn\", reason = \"r\" }\n").unwrap_err();
+        assert!(err.message.contains("`reason` says why a rule is off"), "{}", err.message);
+        let err = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = true\n").unwrap_err();
+        assert!(err.message.contains("rule `a/x`: a setting is a severity or a table"), "{}", err.message);
     }
 }

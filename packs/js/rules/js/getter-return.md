@@ -4,6 +4,7 @@ title: "A getter returns a value on every path"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the value a getter should return is the author's decision"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint/getter-return]
 since: 0.1.0

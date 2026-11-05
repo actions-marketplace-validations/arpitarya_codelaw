@@ -4,6 +4,7 @@ title: "Don't assign to `os.environ`"
 languages: [python]
 fix: manual
 fix_reason: "whether to clear the environment first or only update it needs a person"
+fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/B003]
 since: 0.1.0

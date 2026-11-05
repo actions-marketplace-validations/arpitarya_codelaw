@@ -4,6 +4,7 @@ title: "A ref's current value is not read or written during render"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving the access into an effect or an event handler changes when it runs"
+fix_pending: "suggest"
 stability: preview
 ported_from: [eslint-plugin-react-hooks/refs, "@eslint-react/refs"]
 since: 0.3.0

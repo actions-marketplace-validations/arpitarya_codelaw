@@ -59,7 +59,17 @@ mod redux_toolkit;
 mod size_lines;
 pub mod spell;
 mod regexp;
+pub mod regex_ast;
+mod regexp_rules;
+mod react_ts_extra;
+mod css_lists;
+mod css_style;
+mod scss_extra;
+mod html_extra;
+mod md_extra;
+mod oxlint_extra;
 mod stencil;
+mod tailwind;
 mod typescript;
 mod unused_vars;
 mod useless_assignment;
@@ -67,7 +77,7 @@ mod useless_escape;
 mod use_instead;
 mod util;
 
-use codelaw_core::{Language, Severity, TextEdit};
+use codelaw_core::{FixChoice, FixClass, Language, Severity, TextEdit};
 use codelaw_lang::SyntaxNode;
 use codelaw_semantic::SemanticModel;
 use std::collections::BTreeMap;
@@ -122,6 +132,12 @@ pub trait FileContext: Sync {
     /// the only date a rule may judge by. The engine records the question,
     /// so a cached result is reused only on the same date.
     fn as_of(&self) -> Option<String> {
+        None
+    }
+    /// The class table of the provider `short` (`tailwind`), when the
+    /// project has one (SR-RULE-PACKS decision 19). Its identity is in the
+    /// file's cache key, so the question is not recorded.
+    fn class_table(&self, _short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         None
     }
 }
@@ -199,6 +215,12 @@ pub trait NativeRule: Send + Sync {
     fn needs_semantic(&self) -> bool {
         false
     }
+    /// The provider whose class table the rule reads (`tailwind`): without
+    /// the table it finds nothing, and the rule tester says its examples
+    /// were not checked (SR-RULE-PACKS decision 19).
+    fn provider(&self) -> Option<&'static str> {
+        None
+    }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>);
     /// A config section whose keys the rule reads as its options (the
     /// rule's own options win): `[deps]` for the dependency rules
@@ -224,6 +246,21 @@ pub trait NativeRule: Send + Sync {
     /// decision 15d). A path outside the list fails the rule on this file.
     /// Called once per finding, after `check`, with the same context.
     fn elsewhere(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<Elsewhere> {
+        Vec::new()
+    }
+    /// The highest rung one finding's edit reaches (SR-LAW-4 decision 2):
+    /// `Some(Suggest)` for a finding of an `auto` rule outside the subset its
+    /// `fix_reason:` states; `None` keeps the rule's. The finding never
+    /// rises above the rule's own class. Called once per finding, after
+    /// `check`, with the same context.
+    fn rung_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
+        None
+    }
+    /// A `suggest` finding's labelled alternatives (SR-LAW-4 decision 4),
+    /// when the right edit is one of a few the code determines; the
+    /// finding's own `edits` are then ignored. Called once per finding,
+    /// after `check`, with the same context.
+    fn choices_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<FixChoice> {
         Vec::new()
     }
 }
@@ -693,6 +730,14 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &redux_toolkit::ObjectShorthandMapDispatch,
     &redux_toolkit::PreferCreateSlice,
     &redux_toolkit::SliceKeyNames,
+    &tailwind::ImportantModifierSuffix,
+    &tailwind::NegativeArbitraryValues,
+    &tailwind::NoArbitraryValue,
+    &tailwind::NoRestrictedClasses,
+    &tailwind::NoUnknownClasses,
+    &tailwind::NoConflictingClasses,
+    &tailwind::CanonicalClassname,
+    &tailwind::NoConcatenatedClasses,
     &stencil::BanDefaultTrue,
     &stencil::BanExportedConstEnums,
     &stencil::BanPrefix,
@@ -717,6 +762,10 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &deps::StaleDepsSnapshot,
     &deps::Vulnerable,
     &deps::IncompleteScan,
+    &deps::Licence,
+    &deps::LockfileSync,
+    &deps::VersionDrift,
+    &deps::RuntimeAgreement,
     &data_toml::NoDuplicateKeys,
     &data_toml::PyprojectRequiresPython,
     &typescript::NoDuplicateEnumValues,
@@ -741,15 +790,18 @@ static REGISTRY: &[&dyn NativeRule] = &[
 
 /// Every registered native rule.
 pub fn registry() -> &'static [&'static dyn NativeRule] {
-    REGISTRY
+    &ALL
 }
+
+/// `REGISTRY` and the rule families kept in their own lists.
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]
     if let Some(r) = fault::lookup(id) {
         return Some(r);
     }
-    REGISTRY.iter().copied().find(|r| r.id() == id)
+    ALL.iter().copied().find(|r| r.id() == id)
 }
 
 /// A file and a fixed set of neighbours, for the tests of rules that read

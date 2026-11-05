@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether `0` or `-0` was meant needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`0` keeps what the code does today, `Object.is` tests for -0 as the code seems to intend; the author picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-compare-neg-zero` |
@@ -136,6 +136,22 @@ if (x === -0) {
 }
 ```
 
+#### Fixed (compare with 0)
+
+```js
+if (x === 0) {
+  flip();
+}
+```
+
+#### Fixed (use Object.is)
+
+```js
+if (Object.is(x, -0)) {
+  flip();
+}
+```
+
 #### Do
 
 ```js
@@ -150,6 +166,22 @@ if (Object.is(x, -0)) {
 
 ```jsx
 if (x === -0) {
+  flip();
+}
+```
+
+#### Fixed (compare with 0)
+
+```jsx
+if (x === 0) {
+  flip();
+}
+```
+
+#### Fixed (use Object.is)
+
+```jsx
+if (Object.is(x, -0)) {
   flip();
 }
 ```
@@ -172,6 +204,22 @@ if (x === -0) {
 }
 ```
 
+#### Fixed (compare with 0)
+
+```ts
+if (x === 0) {
+  flip();
+}
+```
+
+#### Fixed (use Object.is)
+
+```ts
+if (Object.is(x, -0)) {
+  flip();
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +234,22 @@ if (Object.is(x, -0)) {
 
 ```tsx
 if (x === -0) {
+  flip();
+}
+```
+
+#### Fixed (compare with 0)
+
+```tsx
+if (x === 0) {
+  flip();
+}
+```
+
+#### Fixed (use Object.is)
+
+```tsx
+if (Object.is(x, -0)) {
   flip();
 }
 ```

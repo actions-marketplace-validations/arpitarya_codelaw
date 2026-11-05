@@ -4,6 +4,7 @@ title: "multer has size limits and a file filter"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which sizes and types are allowed is a decision for the author"
+fix_exception: value
 stability: preview
 security: { cwe: [434, 770], owasp: ["A06:2025"], severity: medium }
 since: 0.3.0
