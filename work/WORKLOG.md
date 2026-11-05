@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Positioning ruled; W-164 filed; W-102 after W-139; B-072  ·  Claude app (Opus 5.5)
+
+- **Asked:** *"is there a need or a usecase for code law"*, *"what would make people swap"*, then (voice) positioning, the experiment, what to pause; then *"file it."*
+- **Done:** W-164 filed (README opening, 🟢 `agent`); W-102 re-balled 🟡 waits on W-139, its file carries the ruling and §Later — rework; B-072 (`unmeasured`) for rework, turns and tokens.
+- **Decided / left open:** positioning — lead *"Your team's rules, enforced on every AI edit"*, second line deterministic and AI-free. Pausing W-139, W-141, W-143, W-145 recommended and refused: all of them are built. W-102 waits until every rule is built, over the recommendation to run it in parallel as do-first.
+- **Mistakes:** none.
+- **Next:** W-164's rewrite.
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*

@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (15)
+## Open items (16)
 
-### build (7)
+### build (8)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -44,6 +44,8 @@ here. Read that record before changing anything below it.
 🟡 **W-162** waits on **W-161** `agent` Build the six fix capabilities W-161 designs (cross-file edits, type information, adding an import, scope rename, computed edits, purity) and move the ~119 rules waiting on them up the ladder. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
+
+🟢 **W-164** `agent` README opening, ruled 11-05: lead *"Your team's rules, enforced on every AI edit"*; second line: deterministic, no AI in the engine, same result with or without an agent. Nothing written. Filed by Arpit (Claude app). [detail](open/W-164-readme-opening.md)
 
 ### ci/cd (4)
 
@@ -63,7 +65,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-103** `agent` Spell pack done; the `spell` bench operation has its three CI `perf` runs on `main` (10-30: 41005346138, 41006814384, 41007205048). Next: read their p95s, then the budget to Arpit. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
-🟢 **W-102** `agent` Ruled 11-05: run the 7 tempting tasks at 9 runs per arm (63 per arm, ~$65); `PREREG.md` amended and landed before any run. Screen 10-30: 7 of 38 tempt ($19.45). Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 ### record update (0)
 
