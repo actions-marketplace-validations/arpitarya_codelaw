@@ -3,6 +3,7 @@ id: py/lru-cache-without-parameters
 title: "@lru_cache, not @lru_cache()"
 languages: [python]
 fix: auto
+fix_target: { python: "3.8" }
 stability: preview
 ported_from: [ruff/UP011]
 since: 0.5.0

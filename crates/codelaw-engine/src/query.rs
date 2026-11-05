@@ -67,6 +67,10 @@ pub struct RuleWhy {
     /// what set it (SR-CONFIG decision 11e): for `--for`'s file, else the
     /// project root.
     pub on_edit: (bool, String),
+    /// The rule's `fix_target:` and the target it meets or misses, with
+    /// its source (SR-RULE-FORMAT decision 2c), for `--for`'s file, else
+    /// the project root.
+    pub fix_target: Option<(String, String)>,
     pub for_file: Option<WhyForFile>,
 }
 
@@ -157,6 +161,30 @@ impl Project {
         (r.rule.on_edit, own.to_owned())
     }
 
+    /// `rules --why`'s `fix target:` line: the rule's requirement, and the
+    /// target `abs` resolves to with its source.
+    fn fix_target_why(&self, r: &LoadedRule, abs: &Path) -> Option<(String, String)> {
+        let t = r.rule.fix_target.as_ref()?;
+        let id = Some(r.rule.id.as_str());
+        let got = match t {
+            codelaw_rules::FixTarget::Python(_) => {
+                let p = self.python_target(abs, id);
+                match p.value {
+                    Some(v) => format!("python {} ({})", crate::targets::dotted(&v), p.source),
+                    None => p.source,
+                }
+            }
+            codelaw_rules::FixTarget::Browsers(_) => {
+                let b = self.browsers_target(abs, id);
+                match b.value {
+                    Some(v) => format!("{} ({})", v.iter().map(|(n, x)| format!("{n} >= {}", crate::targets::dotted(x))).collect::<Vec<_>>().join(", "), b.source),
+                    None => b.source,
+                }
+            }
+        };
+        Some((t.label(), got))
+    }
+
     /// The rules whose `auto` fix waits for `codelaw fix` in `abs`: save
     /// and the agent hook leave them (SR-LAW-4 decision 12).
     pub(crate) fn on_edit_held(&self, abs: &Path) -> std::collections::BTreeSet<String> {
@@ -193,6 +221,7 @@ impl Project {
             fix: r.rule.fix.name().to_owned(),
             fix_lowered: None,
             on_edit: self.on_edit(&r, &self.config.layers_for(self.root())),
+            fix_target: self.fix_target_why(&r, &self.root().join("_")),
             for_file: None,
         };
         let lowered = |layers: &[codelaw_config::Layer]| -> Option<(String, String)> {
@@ -209,6 +238,7 @@ impl Project {
         let layers = self.config.layers_for(&abs);
         why.fix_lowered = lowered(&layers);
         why.on_edit = self.on_edit(&r, &layers);
+        why.fix_target = self.fix_target_why(&r, &abs);
         let set_by = layers
             .iter()
             .filter(|l| l.rules.contains_key(id))

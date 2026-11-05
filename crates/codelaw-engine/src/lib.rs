@@ -4,6 +4,7 @@
 
 mod adapters;
 mod baseline;
+pub mod browsers;
 mod codelawignore;
 mod changed_functions;
 mod compile;
@@ -26,6 +27,7 @@ mod query;
 mod project;
 pub mod providers;
 pub mod suppress;
+pub mod targets;
 mod timings;
 mod types;
 mod watch;
@@ -263,6 +265,8 @@ pub struct Project {
     pub(crate) types: types::Types,
     /// The providers' tables (SR-RULE-PACKS decision 19).
     pub(crate) providers: providers::Providers,
+    /// The browser-support table, read on first use (W-166).
+    pub(crate) browsers: std::sync::OnceLock<Option<browsers::BrowserTable>>,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -383,6 +387,7 @@ impl Project {
             aliases,
             types: types::Types::default(),
             providers,
+            browsers: std::sync::OnceLock::new(),
         })
     }
 
