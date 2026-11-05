@@ -1,0 +1,8 @@
+description = "eslint-plugin-better-tailwindcss and eslint-plugin-tailwindcss's bug-catching rules, reimplemented (W-145); the class order is the formatter's"
+
+[rules]
+"tailwind/important-modifier-suffix" = "warn"
+"tailwind/enforces-negative-arbitrary-values" = "warn"
+"tailwind/no-concatenated-classes" = "warn"
+"tailwind/no-unknown-classes" = "warn"
+"tailwind/no-conflicting-classes" = "error"

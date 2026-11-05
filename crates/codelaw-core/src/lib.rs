@@ -3,6 +3,7 @@
 //! Offsets are bytes internally; output positions are 1-based line and
 //! column in characters (SR-ARCHITECTURE decision 13).
 
+pub mod class_table;
 mod diagnostic;
 mod language;
 pub mod process;

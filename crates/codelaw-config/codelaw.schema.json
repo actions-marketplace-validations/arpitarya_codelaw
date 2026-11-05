@@ -619,6 +619,24 @@
         }
       }
     },
+    "providers": {
+      "x-codelaw-record": "SR-RULE-PACKS",
+      "description": "Providers: packages that build a pack's data table from a package installed in the project (SR-RULE-PACKS decision 19). Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_missing": { "description": "`skip` (default): the rules and the class sorting that need a provider's table are left out, with one note naming the package to install. `error`: the run stops with exit 2, as for a missing pack.", "enum": ["skip", "error"], "default": "skip" },
+        "tailwind": {
+          "description": "`@codelaw/provider-tailwind`, the tailwind pack's provider.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "on_missing": { "description": "Overrides `[providers] on_missing` for this provider.", "enum": ["skip", "error"], "default": "skip" },
+            "stylesheet": { "description": "The project's Tailwind CSS stylesheet, relative to the root config's folder. Unset: the first `.css` file under the root that imports \"tailwindcss\", else Tailwind's own theme.css.", "type": "string" }
+          }
+        }
+      }
+    },
     "deps": {
       "x-codelaw-record": "SR-RULE-PACKS",
       "description": "The `deps` pack's rules — `deps/vulnerable`, `deps/incomplete-scan`, `deps/outdated`, `deps/stale-snapshot`, `deps/licence`, `deps/lockfile-sync`, `deps/version-drift` and `deps/runtime-agreement` — read against `.codelaw/deps-snapshot.json`, which `codelaw deps refresh` writes from the registries and the advisory sources (SR-RULE-PACKS decision 15). Root config only.",

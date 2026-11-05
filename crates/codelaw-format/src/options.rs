@@ -2,8 +2,41 @@
 //! Prettier-shaped keys with Prettier's defaults, and a `[format.python]`
 //! table with Black/Ruff's. Every key is strict: an unknown one is an error.
 
+use codelaw_core::class_table::ClassTable;
+use codelaw_lang::class_lists::ClassListOptions;
 use std::collections::BTreeSet;
+use std::sync::Arc;
 use toml::{Table, Value};
+
+/// The class sorting a file gets (SR-FORMATTER decision 9): the provider's
+/// table and where class lists are written. Two sorts are the same when the
+/// table's identity and the places are: that is all a cache key needs.
+#[derive(Clone)]
+pub struct ClassSort {
+    pub table: Arc<dyn ClassTable>,
+    pub lists: ClassListOptions,
+}
+
+impl std::fmt::Debug for ClassSort {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ClassSort({}, {:?})", self.table.identity(), self.lists)
+    }
+}
+
+impl PartialEq for ClassSort {
+    fn eq(&self, other: &Self) -> bool {
+        self.table.identity() == other.table.identity() && self.lists == other.lists
+    }
+}
+
+impl Eq for ClassSort {}
+
+impl std::hash::Hash for ClassSort {
+    fn hash<H: std::hash::Hasher>(&self, h: &mut H) {
+        self.table.identity().hash(h);
+        self.lists.hash(h);
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum IndentStyle {
@@ -80,6 +113,13 @@ pub struct FormatOptions {
     pub python_indent_width: u8,
     /// `[format.markdown] format_code_blocks`.
     pub markdown_code_blocks: bool,
+    /// `[format.tailwind] sort`: unset sorts whenever a provider's table is
+    /// there (decision 9).
+    pub tailwind_sort: Option<bool>,
+    /// `[format.tailwind] attributes` and `functions`.
+    pub class_lists: ClassListOptions,
+    /// Set by the engine when the class lists are sorted.
+    pub class_sort: Option<ClassSort>,
 }
 
 impl FormatOptions {
@@ -116,6 +156,9 @@ impl Default for FormatOptions {
             python_line_width: 88,
             python_indent_width: 4,
             markdown_code_blocks: true,
+            tailwind_sort: None,
+            class_lists: ClassListOptions::default(),
+            class_sort: None,
         }
     }
 }
@@ -137,6 +180,7 @@ const KEYS: &[&str] = &[
     "exclude",
     "python",
     "markdown",
+    "tailwind",
 ];
 
 fn unknown(section: &str, key: &str, valid: &[&str]) -> String {
@@ -170,7 +214,7 @@ impl FormatOptions {
         let mut out = BTreeSet::new();
         for (key, v) in table.into_iter().flatten() {
             match v.as_table() {
-                Some(t) if key == "python" || key == "markdown" => out.extend(t.keys().map(|k| format!("{key}.{k}"))),
+                Some(t) if key == "python" || key == "markdown" || key == "tailwind" => out.extend(t.keys().map(|k| format!("{key}.{k}"))),
                 _ => {
                     out.insert(key.clone());
                 }
@@ -224,6 +268,21 @@ impl FormatOptions {
                         }
                     }
                 }
+                "tailwind" => {
+                    let t = v.as_table().ok_or("[format.tailwind]: expected a table")?;
+                    let names = |k: &str, v: &Value| -> Result<Vec<String>, String> {
+                        let err = || format!("[format.tailwind] {k}: expected a list of names");
+                        v.as_array().ok_or_else(err)?.iter().map(|n| n.as_str().map(str::to_owned).ok_or_else(err)).collect()
+                    };
+                    for (k, v) in t {
+                        match k.as_str() {
+                            "sort" => o.tailwind_sort = Some(boolean("format.tailwind", k, v)?),
+                            "attributes" => o.class_lists.attributes = names(k, v)?,
+                            "functions" => o.class_lists.functions = names(k, v)?,
+                            _ => return Err(unknown("format.tailwind", k, &["sort", "attributes", "functions"])),
+                        }
+                    }
+                }
                 _ => return Err(unknown(s, key, KEYS)),
             }
         }
@@ -256,5 +315,8 @@ mod tests {
         let o = parse("[format]\narrow_parens = \"avoid\"\nbracket_spacing = false\njsx_quote_style = \"single\"\nquote_props = \"preserve\"\n").unwrap();
         assert_eq!((o.arrow_parens, o.bracket_spacing, o.jsx_quote_style, o.quote_props), (ArrowParens::Avoid, false, QuoteStyle::Single, QuoteProps::Preserve));
         assert!(parse("[format]\nquote_props = \"consistent\"\n").unwrap_err().contains("`preserve`"));
+        let o = parse("[format.tailwind]\nsort = false\nfunctions = [\"cx\"]\n").unwrap();
+        assert_eq!((o.tailwind_sort, o.class_lists.functions.clone()), (Some(false), vec!["cx".to_owned()]));
+        assert!(parse("[format.tailwind]\norder = 1\n").unwrap_err().contains("unknown key `order`"));
     }
 }

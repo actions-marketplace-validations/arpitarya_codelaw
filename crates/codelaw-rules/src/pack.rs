@@ -54,7 +54,7 @@ const fn pypi_only(short: &'static str, pypi: &'static str) -> FirstPartyPack {
     FirstPartyPack { short, manifest: pypi, npm: None, pypi: Some(pypi) }
 }
 
-/// The twenty-six first-party packs: nineteen on npm, seventeen on PyPI (the
+/// The twenty-seven first-party packs: twenty on npm, eighteen on PyPI (the
 /// decider's rulings of 2026-10-24: W-31's split, and W-32's two npm-only
 /// library packs; of 2026-10-25, W-53's four security packs; of
 /// 2026-10-26, W-62's `scss` pack on both registries and W-63's npm-only
@@ -62,7 +62,8 @@ const fn pypi_only(short: &'static str, pypi: &'static str) -> FirstPartyPack {
 /// 2026-10-29, W-128's `deps` pack on both; and of 2026-10-30, W-139's
 /// npm-only `nextjs` pack, ruled on W-144, and the five PyPI-only framework
 /// packs, ruled on W-138: `django`, `fastapi`, `airflow`, `numpy`, `pandas`;
-/// and the npm-only `testing` pack, ruled on W-144).
+/// and the npm-only `testing` pack, ruled on W-144; and W-145's `tailwind`
+/// pack on both, ruled 2026-10-30).
 /// `scripts/package.py` reads this table, so it is the one list of what is
 /// published where.
 pub const FIRST_PARTY_PACKS: &[FirstPartyPack] = &[
@@ -92,13 +93,24 @@ pub const FIRST_PARTY_PACKS: &[FirstPartyPack] = &[
     pypi_only("numpy", "codelaw-rules-numpy"),
     pypi_only("pandas", "codelaw-rules-pandas"),
     npm_only("testing", "@codelaw/rules-testing"),
+    both("tailwind", "@codelaw/rules-tailwind", "codelaw-rules-tailwind"),
 ];
+
+/// The first-party providers (SR-RULE-PACKS decision 19): npm only, each
+/// the provider of one pack, whose manifest names it in `providers`.
+/// `scripts/package.py` reads this table.
+pub const FIRST_PARTY_PROVIDERS: &[(&str, &str)] = &[("@codelaw/provider-tailwind", "tailwind")];
+
+/// A pack's manifest, read from its folder.
+pub fn read_manifest(dir: &Path) -> Option<PackManifest> {
+    toml::from_str(&fs::read_to_string(dir.join("codelaw-pack.toml")).ok()?).ok()
+}
 
 /// Every namespace a first-party pack owns, in [`namespace_pack`]'s order.
 pub const FIRST_PARTY_NAMESPACES: &[&str] = &[
     "js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "py", "data", "md", "json", "yaml", "toml", "tanstack-query", "redux-toolkit",
     "sec-js", "sec-ts", "sec-html", "sec-py", "spell", "deps", "next", "django",
-    "fastapi", "airflow", "numpy", "pandas", "testing",
+    "fastapi", "airflow", "numpy", "pandas", "testing", "tailwind",
 ];
 
 /// The fixed namespace-to-pack map (decision 4).
@@ -130,6 +142,7 @@ pub fn namespace_pack(namespace: &str) -> Option<&'static str> {
         "numpy" => "numpy",
         "pandas" => "pandas",
         "testing" => "testing",
+        "tailwind" => "tailwind",
         _ => return None,
     })
 }
@@ -201,6 +214,11 @@ pub struct PackManifest {
     #[serde(default)]
     pub presets: Vec<String>,
     pub description: Option<String>,
+    /// The providers whose tables its rules read: npm package names
+    /// (SR-RULE-PACKS decision 19). Each is also an npm dependency of the
+    /// pack, pinned to the release's version.
+    #[serde(default)]
+    pub providers: Vec<String>,
 }
 
 /// `presets/<namespace>/<name>.toml`.
@@ -522,19 +540,19 @@ mod tests {
     }
 
     #[test]
-    fn nineteen_packs_on_npm_and_seventeen_on_pypi() {
+    fn twenty_packs_on_npm_and_eighteen_on_pypi() {
         // The decider's rulings of 2026-10-24 to 2026-10-30 (L6 decision 11;
-        // W-31, W-32, W-53, W-62, W-63, W-103, W-128, W-138, W-144).
+        // W-31, W-32, W-53, W-62, W-63, W-103, W-128, W-138, W-144, W-145).
         let npm: Vec<&str> = FIRST_PARTY_PACKS.iter().filter(|p| p.npm.is_some()).map(|p| p.short).collect();
         let pypi: Vec<&str> = FIRST_PARTY_PACKS.iter().filter(|p| p.pypi.is_some()).map(|p| p.short).collect();
-        assert_eq!(FIRST_PARTY_PACKS.len(), 26);
+        assert_eq!(FIRST_PARTY_PACKS.len(), 27);
         assert_eq!(
             npm,
-            ["js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "data", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "security-html", "spell", "deps", "nextjs", "testing"]
+            ["js", "ts", "react", "node", "stencil", "html", "css", "scss", "css-modules", "data", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "security-html", "spell", "deps", "nextjs", "testing", "tailwind"]
         );
         assert_eq!(
             pypi,
-            ["js", "react", "html", "css", "scss", "python", "data", "security-js", "security-html", "security-python", "spell", "deps", "django", "fastapi", "airflow", "numpy", "pandas"]
+            ["js", "react", "html", "css", "scss", "python", "data", "security-js", "security-html", "security-python", "spell", "deps", "django", "fastapi", "airflow", "numpy", "pandas", "tailwind"]
         );
         for p in FIRST_PARTY_PACKS {
             assert_eq!(Some(p.manifest), p.npm.or(p.pypi), "{}", p.short);

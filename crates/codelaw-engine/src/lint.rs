@@ -272,6 +272,8 @@ impl Project {
             // config fingerprint.
             .part(format!("{:?}", self.formatting.options_for(&entry.abs)))
             .part(format!("{:?}{:?}", self.options.languages, self.options.rules))
+            // The providers' tables the rules read (SR-RULE-PACKS decision 19).
+            .part(self.providers.key())
             // A dated `codelaw-ignore` is judged on the as-of date.
             .part(self.exception_key(&file.text))
             .part(match &types {
@@ -482,7 +484,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
     let crlf = dominant_crlf(text);
     // Every unit, regions included, sees the host file (decision 15b).
     let as_of = || project.as_of_text();
-    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of);
+    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers);
     let mut findings: Vec<Finding> = Vec::new();
     let mut comments: Vec<(usize, usize)> = Vec::new();
     // Type rules no program answered: they did not run (SR-TYPES decision 6).

@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-145-tailwind-pack-and-class-sorting.md`](open/W-145-tailwind-pack-and-class-sorting.md) | 2026-11-05 | done — [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 19 (providers, `[providers]`, the `tailwind` pack), [SR-FORMATTER](../records/0105_formatter.md) decision 9 (class sorting, `[format.tailwind]`, parity 100 % of 2,479 files), [SR-ARCHITECTURE](../records/0108_architecture.md) decision 28a, [SR-PACKAGES](../records/0107_packages.md) decision 3c, [L6](../records/0008_LAW-6-python-and-node-packages.md) decision 14, [L11](../records/0013_LAW-11-dependencies.md) D-50, D-51; the names in [W-142](../work/open/W-142-framework-pack-names.md) |
 | [`W-155-pack-lookup.md`](open/W-155-pack-lookup.md) | 2026-10-31 | done — [SR-PACK-LOOKUP](../records/0118_pack-lookup.md) (`crates/codelaw-rules/src/search.rs`; `[packs]` in `crates/codelaw-config/src/packs.rs`); the playground check after a release is B-069 |
 | [`W-152-ball-matches-the-text.md`](open/W-152-ball-matches-the-text.md) | 2026-10-30 | done — [SR-WORK-OPEN-QUEUE](../records/0051_WORK-open-queue.md) rule 21a, checked by `scripts/check-work-system.py` |
 | [`W-150-publish-dev-server-plugins.md`](open/W-150-publish-dev-server-plugins.md) | 2026-10-30 | merged into [W-151](../work/open/W-151-release-0-4-1.md) §*Merged in: W-150* (Arpit: *"go ahead, merge them."*) |

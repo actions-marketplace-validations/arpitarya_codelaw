@@ -30,9 +30,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
-### build (8)
+### build (7)
 
 🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep 11-05; W-146, W-157 and four W-139 strands since landed and removed; left: W-139-native, W-145, W-156 (three). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
@@ -44,7 +44,6 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); left: moving the ~530 `fix_pending:` rules up, pack by pack; Arpit rules on the capability-blocked ones. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 

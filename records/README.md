@@ -110,7 +110,7 @@ Start from `TEMPLATE.md`.
 | [0005](0005_LAW-3-languages.md) | **SR-LAW-3** | **L3** — nine languages — JS, TS, Python, JSON, YAML, TOML, Markdown, CSS (with its dialect SCSS), HTML — each alone or in any combination; a closed list of plain-text config files carries findings, never lint or format | accepted | partly |
 | [0006](0006_LAW-4-every-rule-has-a-fix.md) | **SR-LAW-4** | **L4** — every rule has a fix, automatic first — `auto`, else `suggest` (a diff an agent accepts), else `manual` only by one of four named exceptions; each pack's manual count only falls | accepted | partly |
 | [0007](0007_LAW-5-no-model-in-the-engine.md) | **SR-LAW-5** | **L5** — no model in the engine; works the same with or without an agent | accepted | partly |
-| [0008](0008_LAW-6-python-and-node-packages.md) | **SR-LAW-6** | **L6** — one release — `codelaw` on PyPI and on npm — each a complete engine, identical output; rules as twenty-six packs, nineteen on npm (`@codelaw/rules-*`) and seventeen on PyPI (`codelaw-rules-*`); npm sub-packages only as `@codelaw/*` | accepted | partly |
+| [0008](0008_LAW-6-python-and-node-packages.md) | **SR-LAW-6** | **L6** — one release — `codelaw` on PyPI and on npm — each a complete engine, identical output; rules as twenty-seven packs, twenty on npm (`@codelaw/rules-*`) and eighteen on PyPI (`codelaw-rules-*`); a pack's table may come from its own npm-only provider (`@codelaw/provider-*`); npm sub-packages only as `@codelaw/*` | accepted | partly |
 | [0009](0009_LAW-7-linter-and-formatter.md) | **SR-LAW-7** | **L7** — always both a linter and a formatter, for every L3 language | accepted | yes |
 | [0010](0010_LAW-8-performance-budgets.md) | **SR-LAW-8** | **L8** — performance budgets — set from measurement, never exceeded, never loosened | accepted | partly |
 | [0011](0011_LAW-9-machine-budget.md) | **SR-LAW-9** | **L9** — `work/MACHINE.md`'s budget section is always followed — 5 GB of disk per project, all agents combined; every GB past it approved first | accepted | yes |
@@ -128,13 +128,13 @@ Start from `TEMPLATE.md`.
 | [0060](0060_WORK-registry.md) | **SR-WORK-REGISTRY** | The doc registry — rules in §2, the table in §3 | accepted | yes |
 | [0061](0061_WORK-now.md) | **SR-WORK-NOW** | `work/NOW.md` holds only what is live — a row per session; what a session leaves becomes a work item | accepted | yes |
 | [0062](0062_WORK-cleanup.md) | **SR-WORK-CLEANUP** | Worktrees, lock files and session leftovers — cleaned automatically when nothing is lost; red, blocked on the decider, when something would be | accepted | yes |
-| [0101](0101_rule-packs.md) | **SR-RULE-PACKS** | Twenty-six first-party rule packs, nineteen on npm and seventeen on PyPI, apart from the engine — the `deps` pack among them (W-128); team packs; project rules in `.codelaw/rules` | accepted | partly |
+| [0101](0101_rule-packs.md) | **SR-RULE-PACKS** | Twenty-seven first-party rule packs, twenty on npm and eighteen on PyPI, apart from the engine — the `deps` pack among them (W-128); providers, which build a pack's table from the project (W-145); team packs; project rules in `.codelaw/rules` | accepted | partly |
 | [0102](0102_agent-surfaces.md) | **SR-AGENT-SURFACES** | Skills, steering, instructions, agent files and hooks, generated from one source | accepted | partly |
 | [0103](0103_project-graph.md) | **SR-PROJECT-GRAPH** | A whole-repo symbol graph for cross-file rules — unused exports first | accepted | partly |
 | [0104](0104_baseline-and-deprecations.md) | **SR-BASELINE** | Grandfather violations with a deadline and a touch policy; the deprecations registry | accepted | yes |
 | [0105](0105_formatter.md) | **SR-FORMATTER** | codelaw is a linter and a formatter — embedded engines, layout owned by the formatter | accepted | yes |
 | [0106](0106_linter.md) | **SR-LINTER** | The linter — nine languages, file/project/adapter rules, embedded code, one diagnostic stream | accepted | partly |
-| [0107](0107_packages.md) | **SR-PACKAGES** | What goes into which package — 20 internal crates; npm `codelaw` + 8 `@codelaw/cli-*`; PyPI `codelaw`; twenty-six rule packs, nineteen on npm and seventeen on PyPI; the editor extension | accepted | partly |
+| [0107](0107_packages.md) | **SR-PACKAGES** | What goes into which package — 20 internal crates; npm `codelaw` + 8 `@codelaw/cli-*`; PyPI `codelaw`; twenty-seven rule packs, twenty on npm and eighteen on PyPI; the npm-only provider; the editor extension | accepted | partly |
 | [0108](0108_architecture.md) | **SR-ARCHITECTURE** | The design of record — layers, pipelines, file I/O rules, contracts for fixers and adapters, warm processes, failure handling | accepted | partly |
 | [0109](0109_cache.md) | **SR-CACHE** | Content-addressed caches — safe to delete, never change output | accepted | partly |
 | [0110](0110_config.md) | **SR-CONFIG** | The configuration file — three homes, sections and owners, precedence, strict validation | accepted | partly |
@@ -246,7 +246,7 @@ yet is owned by an open `W-nn`.
 | `scripts/bench-rivals.py` | SR-CLI-MCP | decision 10: the side-by-side bench, which runs a rival only when L11 ratifies it (W-99) |
 | `.github/workflows/bench-rivals.yml` | SR-CLI-MCP | decision 10: the side-by-side bench's job, skipped until a rival is ratified (W-99) |
 | `experiments/guidance-vs-check` | W-102 | no decision yet: the guidance-vs-check experiment — its consumer repo, 20 tasks, harness and scorer; it drives an agent, so it sits outside the engine (L5) and is no governing file (SR-WORK-GOVERNANCE) |
-| `packs` | SR-RULE-PACKS | decisions 2, 3, 7 and 8: the twenty-six first-party packs' rules, presets and data |
+| `packs` | SR-RULE-PACKS | decisions 2, 3, 7 and 8: the twenty-seven first-party packs' rules, presets and data |
 | `packs/spell` | SR-SPELL | decisions 1, 2, 5 and 6: the spell pack — its presets, rules, generated word data and notices |
 | `crates/codelaw-native/src/spell.rs` | SR-SPELL | decisions 3–5 and 8: the text read, the words and the `spell/*` native rules |
 | `scripts/spell-data.py` | SR-SPELL | decision 6: writes `packs/spell/data/spell/` from the pinned sources (L11 §3 D-42–D-44) |
@@ -259,6 +259,10 @@ yet is owned by an open `W-nn`.
 | `packaging/vscode` | SR-EDITOR | decision 4: the thin VS Code extension (SR-PACKAGES decision 6 is how it ships) |
 | `scripts/version.py` | SR-PACKAGES | decision 7: the one version, written and checked everywhere |
 | `scripts/format-parity.py` | SR-FORMATTER | the Prettier/Black parity measurement in its Consequences |
+| `scripts/tailwind-parity.py` | SR-FORMATTER | decision 9: the class sorting measured against prettier-plugin-tailwindcss (W-145) |
+| `crates/codelaw-lang/src/class_lists.rs` | SR-FORMATTER | decision 9: where class lists are written — the one finder the sorter and the `tailwind` rules share (W-145) |
+| `crates/codelaw-native/src/tailwind.rs` | SR-RULE-PACKS | decision 19: the `tailwind` pack's eight native rules (W-145) |
+| `fixtures/tailwind` | SR-RULE-PACKS | decision 19: the Tailwind CSS the provider and the `tailwind` rules are tested on (L11 §3 D-48) |
 | `scripts/format-corpus.py` | SR-FORMATTER | fetches W-141's pinned real-world corpus for the parity measurement |
 | `scripts/law-gate.py` | SR-PACKAGES | decision 11: refuses a release while the engine lacks `format`, `mcp` or `lsp` (L6 decision 3, L7) |
 | `scripts/package.py` | SR-PACKAGES | decision 11: assembles every package and runs the release checks |

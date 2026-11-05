@@ -64,6 +64,19 @@ impl Formatting {
             .clone()
     }
 
+    /// Sort class lists with the provider's table (SR-FORMATTER decision 9):
+    /// whenever there is one, unless `[format.tailwind] sort = false`.
+    pub(crate) fn set_class_table(&mut self, table: Option<Arc<crate::providers::ProviderTable>>, warnings: &mut Vec<String>) {
+        match (table, self.options.tailwind_sort) {
+            (_, Some(false)) => {}
+            (Some(t), _) => {
+                self.options.class_sort = Some(codelaw_format::ClassSort { table: t, lists: self.options.class_lists.clone() });
+            }
+            (None, Some(true)) => warnings.push("`[format.tailwind] sort = true`, but no provider gave a class table: class lists are not sorted".into()),
+            (None, None) => {}
+        }
+    }
+
     /// The options for one file (SR-FORMATTER decision 5): `.editorconfig`
     /// as the base layer (the file's folder and each one above it, up to
     /// one with `root = true`), and `[format]` over it.

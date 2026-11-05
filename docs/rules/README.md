@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1756 rules in 26 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1764 rules in 27 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -54,6 +54,7 @@ remap = { error = "warn" }
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
+| [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
 | [python](#python) | — | `codelaw-rules-python` | 449 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
@@ -1412,6 +1413,21 @@ Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/
 | [`testing/valid-expect-in-promise`](testing/valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/jest`, `testing/vitest` |
 | [`testing/valid-title`](testing/valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/jest`, `testing/vitest` |
 | [`testing/warn-todo`](testing/warn-todo.md) | No `test.todo` left behind | `manual` | — | *[rules] only* |
+
+## tailwind
+
+Presets: `codelaw:tailwind/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`tailwind/enforces-canonical-classname`](tailwind/enforces-canonical-classname.md) | Classes are written as Tailwind spells them | `auto` | — | *[rules] only* |
+| [`tailwind/enforces-negative-arbitrary-values`](tailwind/enforces-negative-arbitrary-values.md) | A negative arbitrary value keeps its minus inside the brackets | `auto` | — | `tailwind/recommended` |
+| [`tailwind/important-modifier-suffix`](tailwind/important-modifier-suffix.md) | The important modifier comes last | `auto` | — | `tailwind/recommended` |
+| [`tailwind/no-arbitrary-value`](tailwind/no-arbitrary-value.md) | No arbitrary values | `manual` | — | *[rules] only* |
+| [`tailwind/no-concatenated-classes`](tailwind/no-concatenated-classes.md) | Classes are not joined with + | `suggest` | — | `tailwind/recommended` |
+| [`tailwind/no-conflicting-classes`](tailwind/no-conflicting-classes.md) | No two classes set the same properties | `suggest` | — | `tailwind/recommended` |
+| [`tailwind/no-restricted-classes`](tailwind/no-restricted-classes.md) | No classes the project restricts | `suggest` | `restrict` | *[rules] only* |
+| [`tailwind/no-unknown-classes`](tailwind/no-unknown-classes.md) | Every class is one the project's Tailwind knows | `suggest` | `ignore` | `tailwind/recommended` |
 
 ## python
 
