@@ -25,6 +25,8 @@ ball: agent
 
 **Arpit, 2026-11-05 (voice):** *"So we'll do research on each one of these items So create a research work item so that we can figure out how these can be implemented."* · *"We can close it but once the research item is done it needs to be implemented. … go ahead and create one more build item blocked on research work item."*; then (text) *"file it."*
 
+**Arpit, 2026-11-05 (voice), refining it:** *"Create an SR for this."* · *"and make it configurable"* · *"it does and that's all"*; then (text) *"file it."* The multi-file rules are their own record, [SR-MULTI-FILE-FIXES](../../records/0119_multi-file-fixes.md): the five safeguards are never configurable; `[fix] multi_file` and per rule take `auto`, `suggest` or `off` (SR-CONFIG decision 11g).
+
 **Arpit, 2026-11-05 (Claude Code, multiple choice):** *"Allow multi-file (Recommended)"* — a fix may edit several files: verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook. Written into [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 10 and 12 (ruled, not built).
 
 **Model:** Opus (Claude Code): engine changes under a law (L4) and the verifier.
@@ -46,7 +48,7 @@ None. The multi-file call was ruled 2026-11-05 (allowed, above); W-161's designs
 
 ## Record affected
 
-SR-LAW-4 decisions 5 (the stand-in ends), 8, 9, 10 and 12 (multi-file fixes, ruled 2026-11-05 — their "Built: no" lines); SR-RULE-FORMAT 3a–3c; SR-TYPES 4; SR-PROJECT-GRAPH; SR-CLI-AND-MCP; SR-CACHE.
+SR-LAW-4 decision 5 (the stand-in ends); SR-MULTI-FILE-FIXES and SR-CONFIG 11g (built: no → yes); SR-RULE-FORMAT 3a–3c; SR-TYPES 4; SR-PROJECT-GRAPH; SR-CLI-AND-MCP; SR-CACHE.
 
 ## Hazards
 

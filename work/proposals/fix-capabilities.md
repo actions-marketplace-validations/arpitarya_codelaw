@@ -329,6 +329,8 @@ Ranked by rules unlocked for the work, with dependencies first:
 
 ## 5 · One question for the decider
 
+**Ruled 2026-11-05: allowed, configurable** — [SR-MULTI-FILE-FIXES](../../records/0119_multi-file-fixes.md).
+
 **Multi-file fixes amend L4.** Decision 10 says "fixes touch only their own
 range", and decision 12 lets the agent hook apply `auto` fixes. 2.2b needs:
 

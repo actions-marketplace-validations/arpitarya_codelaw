@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Inbox emptied: spell budget 2,500 ms; SR-MULTI-FILE-FIXES; L6 data packages  ·  Cowork (Opus 5.5)
+
+- **Asked:** the three blockers, one by one (voice), then *"file it."*
+- **Done:** `perf/budgets.toml` sets `spell` at 2,500 ms (L8 and SR-SPELL 9 follow); W-103 is 🟢. A Claude Code session had already filed W-162 and W-163 from the multiple-choice picks (`ba9add4b`). This change adds the voice refinements. New record **SR-MULTI-FILE-FIXES (0119)**: L4 decision 10 now points to it, and its "Amended" sub-list moved there; SR-CONFIG 11g adds `multi_file`. **L6 decision 15** adds data packages, and SR-RULE-FORMAT 2c and W-166 now ship the browser table as `@codelaw/data-browsers` / `codelaw-data-browsers` with a weekly CI check (W-166 step 5). W-142 gains its names. **`CLAUDE.md` changed** (SR-WORK-DOCS 7a): the L6 line names data packages, on the decider's ruling. L4 decision 6 is rewritten in present tense, because the record template keeps no history.
+- **Decided / left open:** ruled by Arpit: 2,500 ms, over the method's 2,152; multi-file fixes in their own SR, configurable (`auto` / `suggest` / `off`, per project and per rule), with fixed safeguards; the table as a data package on npm and PyPI with CI upkeep. Not ruled separately, but taken from the voice pitch he accepted: the data package's own version line between releases (L6 15).
+- **Mistakes:** none new; this session's first write found the other session's filing and was re-cut to add only what was missing.
+- **Next:** agents: W-139 2a, W-162 step 0, W-166 step 1, W-103's packaging.
+
 ## 2026-11-05 — Parallel build run: cleanup, nine agents, four rulings, landings  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *"do the cleanup then implement all green items in parallel"*; later *"merge whatever is done and do the clean up update the open work file"*.

@@ -142,6 +142,8 @@ checkout.
 
 ## 2 · In flight, and the immediate next step
 
+**Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. The `spell` budget is 2,500 ms. Multi-file fixes have their own record, **SR-MULTI-FILE-FIXES** (configurable, safeguards fixed). The browser table is a data package (**L6 decision 15**), checked weekly by CI (W-166 step 5).
+
 **Researched 2026-11-05 (Cowork):** W-161 is closed. 151 rules wait on a fix capability: 112 move with six capabilities, built by W-162 in the order in `work/proposals/fix-capabilities.md`, and 37 are re-judged `manual`. W-163's proposal is `work/proposals/save-behaviour-and-targets.md`. **Inbox:** W-162's multi-file fixes and W-163's proposal with its two calls.
 
 **Ruled 2026-11-05 (Claude app, voice; filed on *"file it."*):** positioning — lead *"Your team's rules, enforced on every AI edit"*, then deterministic and the same with no AI (W-164). Every pack is still built (W-139, W-141, W-143, W-145), pausing refused; **W-102 runs only after W-139**; rework measurement is B-072.
