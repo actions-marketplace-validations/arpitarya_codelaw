@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Parallel build run: cleanup, nine agents, four rulings, landings  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"do the cleanup then implement all green items in parallel"*; later *"merge whatever is done and do the clean up update the open work file"*.
+- **Done:** cleanup — `lm/W-74` deleted (in main); twelve unmerged branches ruled **keep** (W-165, archived); W-97's, W-163's and a Cowork hand-over's worktrees removed once only `.fux` re-index output was in them; `lm/W-97`, `lm/W-163` deleted (`-d`). One agent per 🟢 item: landed W-164, W-126 + W-103, W-95, W-97, the W-162/W-163 rulings (W-166 filed); W-102 stopped correctly (ruled to wait on W-139); still building W-105, W-139, W-141, W-158 (W-156 after W-139). Landed three Cowork / Claude app hand-overs from main's checkout (standing approval), fixing a CHANGELOG line (W-161) and an open count (W-97) on the way.
+- **Decided / left open:** Arpit ruled: keep the branches; W-162 multi-file fixes allowed; W-163 own browser table and target-gated lru_cache rules; push `main` — *"Not yet"* (now an inbox row blocking W-126). Open: the `spell` budget; `lm/handoff-20261105-142311`, whose content is on `main` (squashed) but needs `-D`; the docket skill's one-line drift from lockmaster's kit.
+- **Mistakes:** none.
+- **Next:** land W-139, then start W-156's per-pack moves.
+
 ## 2026-11-05 — W-97 closed: the Action's proof and the pre-commit mirror  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *build W-97* — the Action's proof in `codelaw-action-test`, the mirror in `codelaw-pre-commit`, the bump automation and the docs (a parallel build run).

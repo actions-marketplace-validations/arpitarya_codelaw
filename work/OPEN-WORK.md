@@ -24,6 +24,8 @@ here. Read that record before changing anything below it.
 |---|---|
 | 🔴 **`spell`'s L8 budget: 2,152 ms?** ([W-103](open/W-103-spell-pack.md)): the `spell` operation's p95 on the three `perf` runs on `main` is 1,383.3 / 1,434.2 / 1,429.5 ms (`ci` 41005346138, 41006814384, 41007205048; 1,004 files, 12 findings each). Your method (L8 decision 4): 1.5 × the worst, 1,434.2 → **2,152 ms**; no design target, so no guard. **Set it** (then a `spell` p95 over 2,152 ms fails CI) **or leave it unset** (reported only). | 2026-11-05 |
 | ↳ **blocks:** W-103 | |
+| 🔴 **Push `main` to GitHub?** Local `main` is 181 commits ahead of `origin/main`. W-126's three measurement runs of the new `perf` matrix need it on GitHub, and so does every landed change's CI. Asked 2026-11-05 in Claude Code: *"Not yet"*. **Push** (`git push origin main`; CI runs on everything since the last push) **or hold**. | 2026-11-05 |
+| ↳ **blocks:** W-126 | |
 
 ---
 
@@ -50,7 +52,7 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (3)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05 (seven groups, the build's binary). Next: measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🔴 **W-126** `arpit` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05 (seven groups, the build's binary). Its measurement runs wait on pushing `main` (inbox). Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
