@@ -325,6 +325,7 @@ question its maintainers left open. The forks and the rulings are in
    Its budget — the time it adds to `codelaw check` on the pinned corpus, and
    the bytes the data adds to each pack — is set from measurement in W-103 and
    then never loosened.
+   - **The budget: 2,500 ms** for the `spell` operation (`perf/budgets.toml`), set by the decider on 2026-11-05 above L8's method (2,152 ms from a worst p95 of 1,434.2 ms on three `perf` runs); a `spell` p95 over it fails CI.
    - **Measured (W-103, 2026-10-27; not yet a budget):** the generated list
      holds **188,151 entries**, 3,531,613 bytes of JSON; the whole pack is a
      625,127-byte npm tarball and a 636,231-byte wheel. Loading it adds about

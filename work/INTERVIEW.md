@@ -24,6 +24,10 @@ entry.**
 
 ## 1 · State of play
 
+**Ruled 2026-11-05 (Claude Code, multiple choice): W-162 and W-163.** W-162: *"Allow multi-file (Recommended)"* — a fix may edit several files, verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook; SR-LAW-4 decisions 10 and 12 amended (not built), W-162 🟢 `agent`. W-163: the proposal accepted as presented (`on_edit` per rule with its defaults; `[targets]`, Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule), call 1 *"Own table (Recommended)"* (codelaw's own ~250-row cited browser table; caniuse and MDN stay refused under L2), call 2 *"Target-gated (Recommended)"* (`py/lru-cache-with-maxsize-none` 3.9, `py/lru-cache-without-parameters` 3.8). Written into SR-LAW-4 decision 12, SR-CONFIG 11e–11f, SR-RULE-FORMAT 2b–2c (not built); W-163 closed, its build is W-166 (🟢 `agent`). [W-162](open/W-162-fix-capabilities-build.md) · [W-166](open/W-166-save-behaviour-and-targets-build.md)
+
+**Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (a demo, three `keep/` Fux-index branches, eight stale `lm/` handoff and save branches; listed in the item). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)
+
 **Built and closed 2026-10-30 (Claude Code): W-129** — `deps/licence`, `deps/lockfile-sync`, `deps/version-drift`, `deps/runtime-agreement` (SR-RULE-PACKS decision 15). Found on the way: the engine keeps one finding per rule and span, so `deps/vulnerable`'s transitive findings (all on the manifest's first line) collapse to the first — `deps/licence` reports its transitive ones as one listing finding; `deps/vulnerable` is unchanged and needs the same treatment.
 
 **Ruled 2026-10-30 (voice): W-145 — providers.** No copy of Tailwind's class order in codelaw: `@codelaw/provider-tailwind` (npm only, the release's version, peer dependency `tailwindcss`) builds the table from the project's installed Tailwind; the engine runs it with Node and caches it by Tailwind version and config hash. The `tailwind` pack depends on its provider (exact pin) and names it in `codelaw-pack.toml`; L6 is amended when it is built. `[providers] on_missing` is `skip` (default) or `error`. Then all three L11 asks ratified (D-48 `tailwindcss` in fixtures only, D-49 the Prettier-plugin parity instrument, leave for Claude Code to run them) — W-145 is 🟢 `agent`: records and the provider first, the pack's registration after W-139.
@@ -137,6 +141,12 @@ for two days because another session's edits were uncommitted in the main
 checkout.
 
 ## 2 · In flight, and the immediate next step
+
+**Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. The `spell` budget is 2,500 ms. Multi-file fixes have their own record, **SR-MULTI-FILE-FIXES** (configurable, safeguards fixed). The browser table is a data package (**L6 decision 15**), checked weekly by CI (W-166 step 5).
+
+**Researched 2026-11-05 (Cowork):** W-161 is closed. 151 rules wait on a fix capability: 112 move with six capabilities, built by W-162 in the order in `work/proposals/fix-capabilities.md`, and 37 are re-judged `manual`. W-163's proposal is `work/proposals/save-behaviour-and-targets.md`. **Inbox:** W-162's multi-file fixes and W-163's proposal with its two calls.
+
+**Ruled 2026-11-05 (Claude app, voice; filed on *"file it."*):** positioning — lead *"Your team's rules, enforced on every AI edit"*, then deterministic and the same with no AI (W-164). Every pack is still built (W-139, W-141, W-143, W-145), pausing refused; **W-102 runs only after W-139**; rework measurement is B-072.
 
 **Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. **W-139** — no manual ceiling at all: L4 decision 6 retired; W-139 removes `packs/fix-ladder.toml` and lands its 231 held ports. **W-141** — Oxc's formatter crates ratified (L11 D-52); W-141 builds them. **W-156** — closes once only the ~119 capability-blocked rules are left, their `fix_pending:` naming W-162 (L4 decision 5 amended); **W-161** researches the six capabilities, **W-162** builds them (🟡 on W-161); **W-163** researches per-rule save/agent-hook behaviour and target versions, configurable, with defaults. **Next for an agent (🟢):** W-139 step 2a, W-141's Oxc build, W-156's moves.
 
