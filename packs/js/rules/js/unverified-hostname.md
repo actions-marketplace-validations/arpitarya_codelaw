@@ -4,6 +4,7 @@ title: "Verify the TLS host name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right check is the default one, or a pinned identity the author chooses"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/unverified-hostname]
 since: 0.5.0

@@ -33,7 +33,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity, wound down 11-05: js 345/828, Ruff 349/708, Pylint 108/298, testing 169/182, nextjs, 5 PyPI packs. Ruled 11-05: no manual ceiling. Next: remove `fix-ladder.toml`, land the 231 held ports. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity, wound down 11-05: js 345/828, Ruff 349/708, Pylint 108/298, testing 169/182, nextjs, 5 PyPI packs. Step 2a done 11-05: manual ceiling removed, 231 held ports landed (+2 staged `suggest`). Next: step 3 — corpus counts (corpus not fetched), L8 budgets. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Oxc's formatter crates ratified 11-05 (L11, D-52); next: build them behind the formatter and remeasure. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 

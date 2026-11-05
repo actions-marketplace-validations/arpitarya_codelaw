@@ -4,6 +4,7 @@ title: "Escape values in a selector"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which parts are values is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/require-css-escape]
 since: 0.5.0

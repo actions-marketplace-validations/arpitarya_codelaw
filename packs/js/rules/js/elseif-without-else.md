@@ -4,6 +4,7 @@ title: "An else if chain ends with else"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the final branch does is the author's call"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-sonarjs/elseif-without-else]
 since: 0.5.0

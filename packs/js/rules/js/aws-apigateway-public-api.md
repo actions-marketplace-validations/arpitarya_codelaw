@@ -4,6 +4,7 @@ title: "API Gateway methods require authorisation"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the endpoint is meant to be public is the owner's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-apigateway-public-api]
 since: 0.5.0

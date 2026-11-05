@@ -15,7 +15,7 @@ mod ruleset;
 mod search;
 
 pub use calls::{CallItem, MODE_SUFFIX, is_replace, parse_call_items, resolve_calls};
-pub use fix_ladder::{FixStats, fix_stats_text, read_ceilings};
+pub use fix_ladder::{FixStats, fix_stats_text};
 pub use engine_rules::{ENGINE_RULES, EngineRule, TEST_RULES, TESTS_PRESET, engine_fix_exception, engine_rule};
 pub use pack::{ExtendsSpec, FIRST_PARTY_NAMESPACES, FIRST_PARTY_PACKS, FIRST_PARTY_PROVIDERS, read_manifest, FirstPartyPack, PackManifest, Preset, RulePack, first_party, first_party_npm, first_party_pypi, load_pack, load_pack_from, load_rules_dir, namespace_pack};
 pub use rule::{

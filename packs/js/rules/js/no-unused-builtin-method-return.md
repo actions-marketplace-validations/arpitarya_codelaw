@@ -4,6 +4,7 @@ title: "Use the result of a method that returns a new value"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "where the result should go is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-unused-builtin-method-return]
 since: 0.5.0

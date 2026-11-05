@@ -4,6 +4,7 @@ title: "No public ACL on an S3 bucket"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the access is intended is the owner's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-s3-bucket-granted-access]
 since: 0.5.0

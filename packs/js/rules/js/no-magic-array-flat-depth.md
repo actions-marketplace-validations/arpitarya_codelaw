@@ -4,6 +4,7 @@ title: "Name the depth given to flat()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the name of the depth is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-magic-array-flat-depth]
 since: 0.5.0

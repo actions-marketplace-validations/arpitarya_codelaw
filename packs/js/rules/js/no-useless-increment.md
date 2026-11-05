@@ -4,6 +4,7 @@ title: "No x = x++"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the increment or the assignment was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-useless-increment]
 since: 0.5.0

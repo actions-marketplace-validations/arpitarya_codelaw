@@ -4,6 +4,7 @@ title: "No assertion of a value against itself"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the expected value is the author's"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-same-argument-assert]
 since: 0.5.0

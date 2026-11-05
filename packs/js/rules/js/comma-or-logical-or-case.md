@@ -4,6 +4,7 @@ title: "No comma or || in a case"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the case is a structural edit"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/comma-or-logical-or-case]
 since: 0.5.0

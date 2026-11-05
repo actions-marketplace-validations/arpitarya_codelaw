@@ -4,6 +4,7 @@ title: "No MD5 or SHA-1"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "changing the algorithm changes every stored digest"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/hashing]
 since: 0.5.0

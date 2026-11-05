@@ -4,6 +4,7 @@ title: "No Angular sanitiser bypass"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "only the author knows whether the value is trusted"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-angular-bypass-sanitization]
 since: 0.5.0

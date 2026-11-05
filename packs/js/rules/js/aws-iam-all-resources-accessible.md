@@ -4,6 +4,7 @@ title: "No IAM policy on every resource"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which resources are needed is the owner's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-iam-all-resources-accessible]
 since: 0.5.0

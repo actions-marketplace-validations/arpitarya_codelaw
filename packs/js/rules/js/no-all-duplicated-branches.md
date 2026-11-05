@@ -4,6 +4,7 @@ title: "Not every branch the same"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which branch is wrong is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-all-duplicated-branches]
 since: 0.5.0

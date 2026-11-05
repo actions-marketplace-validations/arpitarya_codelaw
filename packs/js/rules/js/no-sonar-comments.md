@@ -4,6 +4,7 @@ title: "No NOSONAR comment"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what the comment silenced must be looked at"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-sonar-comments]
 since: 0.5.0

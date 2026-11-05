@@ -4,6 +4,7 @@ title: "No label inside a case"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether a case or a label was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-case-label-in-switch]
 since: 0.5.0

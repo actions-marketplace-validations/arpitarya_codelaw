@@ -4,6 +4,7 @@ title: "Rest parameters rather than arguments"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the rest parameter needs a name and its uses change"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/arguments-usage]
 since: 0.5.0

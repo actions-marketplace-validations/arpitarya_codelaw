@@ -4,6 +4,7 @@ title: "No Promise.all([single])"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the destructuring around the call changes too"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-single-promise-in-promise-methods]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No http:// or ftp:// URLs"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the host supports TLS must be checked"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-clear-text-protocols]
 since: 0.5.0

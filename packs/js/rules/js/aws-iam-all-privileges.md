@@ -4,6 +4,7 @@ title: "No IAM policy granting every action"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which actions are needed is the owner's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-iam-all-privileges]
 since: 0.5.0

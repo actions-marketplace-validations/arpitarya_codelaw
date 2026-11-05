@@ -4,6 +4,7 @@ title: "No ECB or unauthenticated CBC"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "changing the mode changes the data format"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/encryption-secure-mode]
 since: 0.5.0

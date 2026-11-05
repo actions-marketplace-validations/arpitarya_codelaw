@@ -143,7 +143,7 @@ a diff.
    want that count. There shouldn't be an upper ceiling to it. If there is a
    rule, add it."* No count limits a pack's `manual` rules; each still needs
    its exception (decision 5), and decision 7 keeps the counts visible.
-   `packs/fix-ladder.toml` and its check are removed by W-139. As it stood:
+   `packs/fix-ladder.toml` and its check were removed by W-139 on 2026-11-05, and the 231 ports held at the ceiling landed. As it stood:
    ~~**The manual ceiling — first-party packs.** `packs/fix-ladder.toml` holds,
    for each first-party pack, the most `manual` rules it may ship. CI fails a
    change that takes a pack over its ceiling.
@@ -225,7 +225,7 @@ a diff.
   W-156 built (2026-10-31) the per-finding rung (2: `auto_when:`, `NativeRule::rung_of`),
   choices (4: `fix: { choices }`, `NativeRule::choices_of`, `Fixed (<label>)`),
   `fix_exception` (5, refused at load; `fix_pending:` stands in on a rule
-  waiting to move up), the ceiling (6: `packs/fix-ladder.toml`; retired 2026-11-05, its removal is W-139's), `--fix-stats`
+  waiting to move up), the ceiling (6: `packs/fix-ladder.toml`; retired 2026-11-05 and removed by W-139 the same day), `--fix-stats`
   (7) and the engine rules' exceptions (15). The project's lowering (16)
   was built 2026-11-05 ([SR-CONFIG](0110_config.md) decision 11d).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`

@@ -4,6 +4,7 @@ title: "No unsigned JWTs"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the algorithm must match how tokens are issued"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/insecure-jwt-token]
 since: 0.5.0

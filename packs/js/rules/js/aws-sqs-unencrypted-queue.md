@@ -4,6 +4,7 @@ title: "SQS queues are encrypted"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a KMS key has its own cost and policy"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-sqs-unencrypted-queue]
 since: 0.5.0

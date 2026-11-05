@@ -4,6 +4,7 @@ title: "No external entities in XML parsing"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "a document that needs entities must be trusted first"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/xml-parser-xxe]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No ?. on an undeclared name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the name is a global or a typo is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-optional-chaining-on-undeclared-variable]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No assignment to a for loop counter in its body"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the rewrite (a `while` loop, a `continue`) depends on intent"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-sonarjs/updated-loop-counter]
 since: 0.5.0

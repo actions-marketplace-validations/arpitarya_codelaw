@@ -4,6 +4,7 @@ title: "No ++ or -- inside another expression"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the statement depends on prefix or postfix"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-nested-incdec]
 since: 0.5.0

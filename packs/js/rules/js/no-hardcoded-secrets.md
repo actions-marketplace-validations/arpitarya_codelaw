@@ -4,6 +4,7 @@ title: "No secret in a variable name"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the secret's new home is the owner's choice"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-hardcoded-secrets]
 since: 0.5.0

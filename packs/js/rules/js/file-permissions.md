@@ -4,6 +4,7 @@ title: "No world-writable file modes"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right mode depends on who must read the file"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/file-permissions]
 since: 0.5.0

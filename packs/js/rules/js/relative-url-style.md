@@ -4,6 +4,7 @@ title: "No ./ in a relative URL"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "stripping the prefix is a computed edit"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/relative-url-style]
 since: 0.5.0

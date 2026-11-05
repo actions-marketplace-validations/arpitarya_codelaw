@@ -4,6 +4,7 @@ title: "No ${} in a plain string"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "changing the quotes may need re-escaping the text"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-incorrect-template-string-interpolation]
 since: 0.5.0

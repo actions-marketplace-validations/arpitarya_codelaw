@@ -4,6 +4,7 @@ title: "No switch inside a switch"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the extracted function needs a name"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-nested-switch]
 since: 0.5.0

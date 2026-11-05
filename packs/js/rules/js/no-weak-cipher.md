@@ -4,6 +4,7 @@ title: "No weak cipher"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "changing the cipher changes the key size and the data format"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-weak-cipher]
 since: 0.5.0

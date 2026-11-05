@@ -4,6 +4,7 @@ title: "object elements have fallback content"
 languages: [jsx, tsx]
 fix: manual
 fix_reason: "the text is human-written"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-sonarjs/object-alt-content]
 since: 0.5.0

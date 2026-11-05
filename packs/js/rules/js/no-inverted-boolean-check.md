@@ -4,6 +4,7 @@ title: "No !(a === b)"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the opposite operator is read from the token, and `!(a < b)` is not `a >= b` for NaN"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-inverted-boolean-check]
 since: 0.5.0

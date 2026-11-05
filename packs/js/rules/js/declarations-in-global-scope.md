@@ -4,6 +4,7 @@ title: "No var or function at the top of a script"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "turning the file into a module changes how it is loaded"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-sonarjs/declarations-in-global-scope]
 since: 0.5.0

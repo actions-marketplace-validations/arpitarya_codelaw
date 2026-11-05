@@ -4,6 +4,7 @@ title: "No comparison with a boolean literal"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "for a non-boolean operand the comparison and the bare value differ"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-redundant-boolean]
 since: 0.5.0

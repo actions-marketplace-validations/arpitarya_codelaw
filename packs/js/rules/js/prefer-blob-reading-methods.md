@@ -4,6 +4,7 @@ title: "blob.text() rather than FileReader"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the event handlers become an `await`"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-blob-reading-methods]
 since: 0.5.0

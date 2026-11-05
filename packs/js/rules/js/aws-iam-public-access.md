@@ -4,6 +4,7 @@ title: "No IAM policy for any principal"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which principals need access is the owner's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-iam-public-access]
 since: 0.5.0

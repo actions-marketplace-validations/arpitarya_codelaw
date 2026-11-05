@@ -4,6 +4,7 @@ title: "No empty catch"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "what to do with the error is the author's call"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-ignored-exceptions]
 since: 0.5.0

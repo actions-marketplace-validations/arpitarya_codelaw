@@ -4,6 +4,7 @@ title: "#private rather than _private"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "every use of the member must change, and outside code that reads it breaks"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-private-class-fields]
 since: 0.5.0

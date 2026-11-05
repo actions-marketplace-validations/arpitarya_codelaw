@@ -4,6 +4,7 @@ title: "No properties on the global object"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "readers of the global become importers of a module"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-global-object-property-assignment]
 since: 0.5.0

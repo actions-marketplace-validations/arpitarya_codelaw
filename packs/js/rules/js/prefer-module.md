@@ -4,6 +4,7 @@ title: "ES modules rather than CommonJS"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the file's importers and its package type change"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-module]
 since: 0.5.0

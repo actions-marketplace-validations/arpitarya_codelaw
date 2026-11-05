@@ -4,6 +4,7 @@ title: "No == or != as a for loop end test"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which relational operator is right depends on the direction"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-equals-in-for-termination]
 since: 0.5.0

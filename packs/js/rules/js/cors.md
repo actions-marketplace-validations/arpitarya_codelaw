@@ -4,6 +4,7 @@ title: "No wildcard CORS origin"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the allowed origins are the owner's"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/cors]
 since: 0.5.0

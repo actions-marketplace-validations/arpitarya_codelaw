@@ -4,6 +4,7 @@ title: "Function names in camelCase"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new name is the author's choice and changes every call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/function-name]
 since: 0.5.0

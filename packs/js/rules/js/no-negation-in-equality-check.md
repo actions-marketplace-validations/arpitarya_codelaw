@@ -4,6 +4,7 @@ title: "No !a === b"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `a !== b` or `!(a === b)` was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-negation-in-equality-check]
 since: 0.5.0

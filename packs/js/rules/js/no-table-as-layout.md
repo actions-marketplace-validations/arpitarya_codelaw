@@ -4,6 +4,7 @@ title: "No table for layout"
 languages: [jsx, tsx]
 fix: manual
 fix_reason: "the CSS layout is the author's to write"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-table-as-layout]
 since: 0.5.0

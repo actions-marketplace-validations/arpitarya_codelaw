@@ -4,6 +4,7 @@ title: ".catch() rather than a second then() argument"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "`.catch()` also catches errors from `show`, which changes behaviour"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-then-catch]
 since: 0.5.0

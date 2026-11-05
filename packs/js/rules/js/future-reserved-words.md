@@ -4,6 +4,7 @@ title: "No variable named after a reserved word"
 languages: [javascript, jsx]
 fix: manual
 fix_reason: "the new name is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/future-reserved-words]
 since: 0.5.0

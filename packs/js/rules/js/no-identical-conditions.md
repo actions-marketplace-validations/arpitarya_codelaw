@@ -4,6 +4,7 @@ title: "No repeated condition in an if chain"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which condition was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-identical-conditions]
 since: 0.5.0

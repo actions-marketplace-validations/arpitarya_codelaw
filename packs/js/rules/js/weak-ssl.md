@@ -4,6 +4,7 @@ title: "No TLS 1.0 or 1.1"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "very old clients will no longer connect"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/weak-ssl]
 since: 0.5.0

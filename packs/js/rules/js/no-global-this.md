@@ -4,6 +4,7 @@ title: "No this at the top level"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether `globalThis` or `undefined` was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-global-this]
 since: 0.5.0

@@ -40,9 +40,9 @@ pub struct RulesArgs {
     /// With `--fix-stats`: count every pack folder in this directory.
     #[arg(long, value_name = "DIR", requires = "fix_stats")]
     packs: Option<PathBuf>,
-    /// With `--fix-stats`: exit 1 when a pack ships more `manual` rules than
-    /// its ceiling in `<packs>/fix-ladder.toml`, or has no ceiling there
-    /// (SR-LAW-4 decision 6).
+    /// With `--fix-stats`: exit 1 on a problem the ladder's checks find
+    /// (SR-LAW-4 decision 5). No count limits a pack's `manual` rules
+    /// (decision 6, retired 2026-11-05).
     #[arg(long, requires = "packs")]
     check: bool,
     /// text or json (the shape of the npm `rulesFor` and Python `rules_for`).
@@ -219,7 +219,7 @@ pub fn rules(args: RulesArgs) -> ExitCode {
 }
 
 /// `codelaw rules --fix-stats [--packs <dir> [--check]]` (SR-LAW-4
-/// decisions 6 and 7).
+/// decisions 5 and 7).
 fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
     let dirs: Vec<PathBuf> = match packs_dir {
         Some(d) => {
@@ -235,13 +235,6 @@ fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
             Err(e) => return fail(e),
         },
     };
-    let ceilings = match (check, packs_dir) {
-        (true, Some(d)) => match codelaw_rules::read_ceilings(&d.join("fix-ladder.toml")) {
-            Ok(c) => Some(c),
-            Err(e) => return fail(e),
-        },
-        _ => packs_dir.and_then(|d| codelaw_rules::read_ceilings(&d.join("fix-ladder.toml")).ok()),
-    };
     let mut stats = Vec::new();
     for dir in &dirs {
         let pack = match load_pack(dir) {
@@ -249,19 +242,13 @@ fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
             Err(e) => return fail(errors_text(&e)),
         };
         let name = dir.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| pack.manifest.name.clone());
-        let mut s = codelaw_rules::FixStats::of(&name, &pack.rules);
-        s.ceiling = ceilings.as_ref().and_then(|c| c.get(&name).copied());
-        stats.push(s);
+        stats.push(codelaw_rules::FixStats::of(&name, &pack.rules));
     }
-    let mut problems: Vec<String> = Vec::new();
-    if check {
-        for s in &stats {
-            if s.ceiling.is_none() {
-                problems.push(format!("pack `{}` has no ceiling in fix-ladder.toml; add `{} = {}` (its count today) (SR-LAW-4 decision 6)", s.pack, s.pack, s.manual));
-            }
-            problems.extend(s.over_ceiling());
-        }
-    }
+    // `--check` holds the ladder's checks; the manual ceiling was one until
+    // SR-LAW-4 decision 6 was retired (2026-11-05). Decision 5's
+    // `fix_pending:` check joins here with W-156.
+    let problems: Vec<String> = Vec::new();
+    let _ = check;
     if json {
         print_json(&serde_json::json!({ "packs": stats, "problems": problems }));
     } else {

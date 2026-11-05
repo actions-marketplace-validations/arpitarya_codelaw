@@ -4,6 +4,7 @@ title: "No files in /tmp"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the private directory's lifetime is the author's choice"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/publicly-writable-directories]
 since: 0.5.0

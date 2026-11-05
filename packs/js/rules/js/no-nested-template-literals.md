@@ -4,6 +4,7 @@ title: "No template literal inside another"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the variable for the inner string needs a name"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-nested-template-literals]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "A test has a title"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the title is human-written"
+fix_exception: authored
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-empty-test-title]
 since: 0.5.0

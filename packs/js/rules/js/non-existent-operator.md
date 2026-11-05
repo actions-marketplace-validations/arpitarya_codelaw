@@ -4,6 +4,7 @@ title: "No =+, =- or =!"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which operator was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/non-existent-operator]
 since: 0.5.0

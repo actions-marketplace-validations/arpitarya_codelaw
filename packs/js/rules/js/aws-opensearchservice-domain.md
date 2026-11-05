@@ -4,6 +4,7 @@ title: "OpenSearch domains are encrypted"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "encryption cannot be turned on for an existing domain"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-opensearchservice-domain]
 since: 0.5.0

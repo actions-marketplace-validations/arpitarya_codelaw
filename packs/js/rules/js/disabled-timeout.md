@@ -4,6 +4,7 @@ title: "No timeout(0) in a test"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the right bound is the author's choice"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/disabled-timeout]
 since: 0.5.0

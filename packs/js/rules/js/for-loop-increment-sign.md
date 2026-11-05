@@ -4,6 +4,7 @@ title: "A for loop counts towards its end"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the condition or the update is wrong is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/for-loop-increment-sign]
 since: 0.5.0

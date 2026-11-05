@@ -4,6 +4,7 @@ title: "Class names in PascalCase"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the new name is the author's choice and changes every use"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/class-name]
 since: 0.5.0

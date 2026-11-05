@@ -4,6 +4,7 @@ title: "No return of push()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the array or the length was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-return-array-push]
 since: 0.5.0

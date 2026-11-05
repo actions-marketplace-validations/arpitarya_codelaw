@@ -4,6 +4,7 @@ title: "Math.random() in security code"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the value needs to be unpredictable is the author's call"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/pseudo-random]
 since: 0.5.0

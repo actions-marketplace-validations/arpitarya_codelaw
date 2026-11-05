@@ -4,6 +4,7 @@ title: "No SSH or RDP open to the internet"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the allowed range is the owner's"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/aws-restricted-ip-admin-access]
 since: 0.5.0

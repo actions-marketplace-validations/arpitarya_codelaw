@@ -4,6 +4,7 @@ title: "No identical operands"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which operand was meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-identical-expressions]
 since: 0.5.0

@@ -4,6 +4,7 @@ title: "No hard-coded JWT secret"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the secret's new home is the owner's choice"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/hardcoded-secret-signatures]
 since: 0.5.0

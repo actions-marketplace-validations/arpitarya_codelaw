@@ -4,6 +4,7 @@ title: "Run commands by absolute path"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the absolute path differs between machines"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-os-command-from-path]
 since: 0.5.0

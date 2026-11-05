@@ -4,6 +4,7 @@ title: "No hard-coded IP address"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the configuration key is the author's choice"
+fix_exception: security
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-hardcoded-ip]
 since: 0.5.0

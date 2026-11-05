@@ -4,6 +4,7 @@ title: "No assignment inside an expression"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the statement is a structural edit"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-sonarjs/no-nested-assignment]
 since: 0.5.0
