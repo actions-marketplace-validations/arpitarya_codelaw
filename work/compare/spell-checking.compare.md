@@ -44,7 +44,7 @@ What the research found: CSpell (MIT, Node) reads code as words — split at `ca
 
 ## References
 
-- [SR-SPELL](../../records/0116_spell.md) · [L11 §3](../../records/0013_LAW-11-dependencies.md#3--the-list) · [W-103](../open/W-103-spell-pack.md)
+- [SR-SPELL](../../records/0116_spell.md) · [L11 §3](../../records/0013_LAW-11-dependencies.md#3--the-list) · [W-103](../../archive/open/W-103-spell-pack.md)
 - [CSpell configuration](https://cspell.org/docs/Configuration) · [cspell-dicts](https://github.com/streetsidesoftware/cspell-dicts) · [typos comparison](https://github.com/crate-ci/typos/blob/master/docs/comparison.md) · [typos #44](https://github.com/crate-ci/typos/issues/44) · [cspell #2360 (slow with a large word list)](https://github.com/streetsidesoftware/cspell/issues/2360) · [MegaLinter #1655](https://github.com/oxsecurity/megalinter/issues/1655)
 
 ## Reopen-trigger

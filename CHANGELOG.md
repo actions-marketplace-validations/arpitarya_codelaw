@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **The spell pack is complete (W-103):** `@codelaw/rules-spell` and `codelaw-rules-spell` hold the same files byte for byte, its word data included, and the `spell` operation's CI budget is 2,500 ms.
 - **css-modules: rules move up the fix ladder (W-156):** no-undefined-class kept, now naming cross-file (W-162) (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
 - **redux-toolkit: rules move up the fix ladder (W-156):** no-legacy-create-store and prefer-hooks-api kept, now naming computed edits (W-162) (redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7)).
 - **python: rules move up the fix ladder (W-156):** py/no-tunable-literals and py/pytest-raises-ambiguous-pattern kept, now naming computed edits and add-import (W-162) (python: auto 159 → 159, suggest 197 → 197, manual 150 → 150 (pending 66 → 66)).
