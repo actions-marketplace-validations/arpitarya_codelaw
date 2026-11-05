@@ -33,9 +33,11 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (15)
+## Open items (16)
 
-### build (9)
+### build (10)
+
+🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep all eight 11-05; each lands with its item (W-139, W-145, W-146, W-156, W-157). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
