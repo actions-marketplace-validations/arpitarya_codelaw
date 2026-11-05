@@ -347,6 +347,38 @@ pub fn expand_options(template: &str, specs: &BTreeMap<String, codelaw_rules::Op
 /// Replace `$NAME`, `$$$NAME` and `$$MATCH` (the whole matched text) in a
 /// message or template with what the match captured. An unknown name is
 /// left as written.
+/// The text filters a capture may carry in a template, written right after
+/// it: `$NAME|trim` (no leading or trailing whitespace) and
+/// `$NAME|lower-first` (its first character in lower case) (SR-RULE-FORMAT
+/// decision 3b). Returns the filtered text and the bytes of filter consumed.
+fn text_filter(rest: &str, value: String) -> (String, usize) {
+    let mut v = value;
+    let mut used = 0;
+    loop {
+        let r = &rest[used..];
+        if let Some(after) = r.strip_prefix("|trim") {
+            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
+                break;
+            }
+            v = v.trim().to_owned();
+            used += "|trim".len();
+        } else if let Some(after) = r.strip_prefix("|lower-first") {
+            if after.starts_with(|c: char| c.is_ascii_alphanumeric() || c == '-') {
+                break;
+            }
+            let mut cs = v.chars();
+            v = match cs.next() {
+                Some(c) => c.to_lowercase().chain(cs).collect(),
+                None => v,
+            };
+            used += "|lower-first".len();
+        } else {
+            break;
+        }
+    }
+    (v, used)
+}
+
 pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
     let mut out = String::with_capacity(template.len());
     let bytes = template.as_bytes();
@@ -369,8 +401,10 @@ pub fn interpolate(template: &str, m: &Match, source: &str) -> String {
                     m.single.get(name).map(|c| c.text.clone())
                 };
                 if let Some(v) = value {
-                    out.push_str(&v);
                     i = name_start + name_len;
+                    let (v, used) = text_filter(&template[i..], v);
+                    out.push_str(&v);
+                    i += used;
                     continue;
                 }
                 if dollars == 3 && m.multi.contains_key(name) {

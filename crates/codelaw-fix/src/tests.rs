@@ -192,3 +192,12 @@ fn the_trace_names_every_step() {
         ]
     );
 }
+
+#[test]
+fn each_branch_of_an_any_gets_the_steps_on_its_own_captures() {
+    // W-139: a step whose capture the matched branch did not bind is skipped,
+    // so one rule can map each alias to its own replacement.
+    let block = "match:\n  kind: property_identifier\n  any:\n    - { regex: ^toBeCalled$, pattern: $A }\n    - { regex: ^toThrowError$, pattern: $B }\nmessage: alias\nfix:\n  - replace: { target: $A, with: toHaveBeenCalled }\n  - replace: { target: $B, with: toThrow }";
+    let out = fix(Language::Javascript, block, "expect(f).toBeCalled();\nexpect(g).toThrowError();\n");
+    assert_eq!(out.text, "expect(f).toHaveBeenCalled();\nexpect(g).toThrow();\n");
+}

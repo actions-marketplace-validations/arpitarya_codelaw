@@ -49,8 +49,8 @@ enum Registry {
 }
 
 /// The packs a repo needs (decision 6): one per language, `ts` for
-/// TypeScript, and `react`, `stencil`, `tanstack-query`, `redux-toolkit` or
-/// `nextjs` when `package.json` depends on the library.
+/// TypeScript, and `react`, `stencil`, `tanstack-query`, `redux-toolkit`,
+/// `nextjs` or `testing` when `package.json` depends on the library.
 fn packs_for(languages: &BTreeSet<Language>, package_json: Option<&str>) -> BTreeSet<&'static str> {
     let mut out = BTreeSet::new();
     for l in languages {
@@ -90,6 +90,9 @@ fn packs_for(languages: &BTreeSet<Language>, package_json: Option<&str>) -> BTre
         if package_json.is_some_and(|j| depends_on(j, "next")) {
             out.insert("nextjs");
         }
+        if package_json.is_some_and(|j| !testing_presets(j).is_empty()) {
+            out.insert("testing");
+        }
     }
     out
 }
@@ -128,6 +131,34 @@ fn has_css_modules(root: &Path) -> bool {
 fn depends_on(package_json: &str, name: &str) -> bool {
     let Ok(v) = serde_json::from_str::<serde_json::Value>(package_json) else { return false };
     ["dependencies", "devDependencies", "peerDependencies"].iter().any(|k| v.get(k).and_then(|d| d.get(name)).is_some())
+}
+
+/// Whether `package.json` depends on any package under this scope (`@testing-library/`).
+fn depends_on_scope(package_json: &str, scope: &str) -> bool {
+    let Ok(v) = serde_json::from_str::<serde_json::Value>(package_json) else { return false };
+    ["dependencies", "devDependencies", "peerDependencies"]
+        .iter()
+        .any(|k| v.get(k).and_then(|d| d.as_object()).is_some_and(|d| d.keys().any(|n| n.starts_with(scope))))
+}
+
+/// The `testing` pack's presets for the test frameworks `package.json` names
+/// (W-144's ruling: a project switches on the ones it uses): `jest`, `vitest`,
+/// any `@testing-library/*`, `@playwright/test`.
+fn testing_presets(package_json: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    if depends_on(package_json, "jest") {
+        out.push("codelaw:testing/jest".into());
+    }
+    if depends_on(package_json, "vitest") {
+        out.push("codelaw:testing/vitest".into());
+    }
+    if depends_on_scope(package_json, "@testing-library/") {
+        out.push("codelaw:testing/testing-library".into());
+    }
+    if depends_on(package_json, "@playwright/test") {
+        out.push("codelaw:testing/playwright".into());
+    }
+    out
 }
 
 /// Each installed pack's `recommended` presets for what the repo holds.
@@ -364,7 +395,12 @@ pub fn init(args: InitArgs) -> ExitCode {
             }
         }
     }
-    let extends = presets(&packs, &languages);
+    let mut extends = presets(&packs, &languages);
+    if packs.contains("testing")
+        && let Some(j) = package_json.as_deref()
+    {
+        extends.extend(testing_presets(j));
+    }
 
     // codelaw.toml: `extends` and nothing else (SR-CONFIG decision 8); its
     // text is templates/init/ (SR-LAW-10).
@@ -596,6 +632,18 @@ mod tests {
         let packs = packs_for(&langs, Some(pj));
         assert_eq!(packs.iter().copied().collect::<Vec<_>>(), ["js", "nextjs", "react", "ts"]);
         assert!(presets(&packs, &langs).contains(&"codelaw:next/recommended".to_owned()));
+        assert_eq!(packs_for(&[Language::Python].into(), Some(pj)).into_iter().collect::<Vec<_>>(), ["python"]);
+    }
+
+    #[test]
+    fn a_test_framework_dependency_adds_the_testing_pack_and_its_presets() {
+        // W-139: the npm-only `testing` pack (W-144's ruling), one preset per framework the project uses.
+        let langs: BTreeSet<Language> = [Language::Typescript].into();
+        let pj = r#"{"devDependencies":{"vitest":"^3","@testing-library/react":"^16","@playwright/test":"^1"}}"#;
+        assert_eq!(packs_for(&langs, Some(pj)).into_iter().collect::<Vec<_>>(), ["js", "testing", "ts"]);
+        assert_eq!(testing_presets(pj), ["codelaw:testing/vitest", "codelaw:testing/testing-library", "codelaw:testing/playwright"]);
+        assert_eq!(testing_presets(r#"{"devDependencies":{"jest":"^30"}}"#), ["codelaw:testing/jest"]);
+        assert!(!packs_for(&langs, Some(r#"{"dependencies":{"react":"^19"}}"#)).contains("testing"));
         assert_eq!(packs_for(&[Language::Python].into(), Some(pj)).into_iter().collect::<Vec<_>>(), ["python"]);
     }
 }

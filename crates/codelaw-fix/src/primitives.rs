@@ -327,7 +327,22 @@ fn declaration_of<'t>(node: tree_sitter::Node<'t>) -> tree_sitter::Node<'t> {
     export_statement(node).and_then(|s| s.child_by_field_name("declaration")).unwrap_or(node)
 }
 
+/// Whether a step acts on a capture the matched branch did not bind: a rule
+/// whose `any:` binds `$A` in one branch and `$B` in another gives each
+/// branch its own steps (SR-RULE-FORMAT decision 3c), so such a step is
+/// skipped, as a `calls:` entry is.
+fn unbound(p: &Primitive, m: &Match) -> bool {
+    let t = match p {
+        Primitive::Replace { target, .. } | Primitive::Remove { target } | Primitive::InsertBefore { target, .. } | Primitive::InsertAfter { target, .. } => target,
+        _ => return false,
+    };
+    matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none())
+}
+
 fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    if unbound(p, m) {
+        return Ok(());
+    }
     match p {
         Primitive::Replace { target, with } => {
             let (s, e) = range(target, m)?;
@@ -405,6 +420,9 @@ pub fn edits_for(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<
     let mut out = Vec::new();
     for p in steps {
         step_edits(p, m, ctx, &mut out)?;
+    }
+    if out.is_empty() && steps.iter().any(|p| unbound(p, m)) {
+        return Err("no step of the fix acts on what this match captured".into());
     }
     Ok(sort_edits(out))
 }

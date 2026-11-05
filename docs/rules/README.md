@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1269 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1438 rules in 26 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -53,6 +53,7 @@ remap = { error = "warn" }
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
+| [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
 | [python](#python) | — | `codelaw-rules-python` | 173 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
@@ -1194,6 +1195,182 @@ Presets: `codelaw:next/recommended`.
 | [`next/no-title-in-document-head`](next/no-title-in-document-head.md) | No title in _document's Head | `manual` | — | `next/recommended` |
 | [`next/no-typos`](next/no-typos.md) | Data-fetching functions are spelled right | `manual` | — | `next/recommended` |
 | [`next/no-unwanted-polyfillio`](next/no-unwanted-polyfillio.md) | No polyfill.io | `manual` | — | `next/recommended` |
+
+## testing
+
+Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/testing-library` · `codelaw:testing/playwright`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`testing/consistent-each-for`](testing/consistent-each-for.md) | `.for` over `.each` in Vitest | `manual` | — | *[rules] only* |
+| [`testing/consistent-test-filename`](testing/consistent-test-filename.md) | Test files named `*.test.*` | `manual` | — | *[rules] only* |
+| [`testing/consistent-test-it`](testing/consistent-test-it.md) | `test` at the top level, `it` inside `describe` | `auto` | — | *[rules] only* |
+| [`testing/consistent-vitest-vi`](testing/consistent-vitest-vi.md) | `vi`, not `vitest`, for Vitest's utilities | `auto` | — | *[rules] only* |
+| [`testing/expect-expect`](testing/expect-expect.md) | Every test asserts | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/hoisted-apis-on-top`](testing/hoisted-apis-on-top.md) | `vi.mock` and `vi.hoisted` at the top level | `suggest` | — | *[rules] only* |
+| [`testing/max-expects`](testing/max-expects.md) | At most five assertions in a test | `manual` | — | *[rules] only* |
+| [`testing/max-nested-describe`](testing/max-nested-describe.md) | At most five nested `describe` blocks | `manual` | — | *[rules] only* |
+| [`testing/no-alias-methods`](testing/no-alias-methods.md) | Matchers by their canonical names | `auto` | — | `testing/jest` |
+| [`testing/no-commented-out-tests`](testing/no-commented-out-tests.md) | No commented-out tests | `suggest` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-conditional-expect`](testing/no-conditional-expect.md) | No `expect` inside a condition | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-conditional-in-test`](testing/no-conditional-in-test.md) | No conditional logic in a test | `manual` | — | *[rules] only* |
+| [`testing/no-conditional-tests`](testing/no-conditional-tests.md) | No tests declared inside a condition | `manual` | — | *[rules] only* |
+| [`testing/no-confusing-set-timeout`](testing/no-confusing-set-timeout.md) | `jest.setTimeout` once, at the top of the file | `suggest` | — | *[rules] only* |
+| [`testing/no-deprecated-functions`](testing/no-deprecated-functions.md) | No deprecated Jest functions | `auto` | — | `testing/jest` |
+| [`testing/no-done-callback`](testing/no-done-callback.md) | No `done` callback in tests and hooks | `manual` | — | `testing/jest` |
+| [`testing/no-duplicate-hooks`](testing/no-duplicate-hooks.md) | One hook of each kind per block | `manual` | — | *[rules] only* |
+| [`testing/no-export`](testing/no-export.md) | No exports from a test file | `manual` | — | `testing/jest` |
+| [`testing/no-hooks`](testing/no-hooks.md) | No setup and teardown hooks | `manual` | — | *[rules] only* |
+| [`testing/no-identical-title`](testing/no-identical-title.md) | No two tests with one title | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-import-node-test`](testing/no-import-node-test.md) | No `node:test` in a Vitest suite | `auto` | — | `testing/vitest` |
+| [`testing/no-importing-vitest-globals`](testing/no-importing-vitest-globals.md) | No imports of Vitest's globals | `auto` | — | *[rules] only* |
+| [`testing/no-interpolation-in-snapshots`](testing/no-interpolation-in-snapshots.md) | No interpolation in an inline snapshot | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-jasmine-globals`](testing/no-jasmine-globals.md) | No Jasmine globals | `auto` | — | `testing/jest` |
+| [`testing/no-large-snapshots`](testing/no-large-snapshots.md) | No inline snapshot longer than 50 lines | `manual` | — | *[rules] only* |
+| [`testing/no-mocks-import`](testing/no-mocks-import.md) | No imports from `__mocks__` | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-restricted-jest-methods`](testing/no-restricted-jest-methods.md) | No `jest` methods the project restricts | `manual` | `methods` | *[rules] only* |
+| [`testing/no-restricted-matchers`](testing/no-restricted-matchers.md) | No matchers the project restricts | `manual` | `matchers` | *[rules] only* |
+| [`testing/no-restricted-vi-methods`](testing/no-restricted-vi-methods.md) | No `vi` methods the project restricts | `manual` | `methods` | *[rules] only* |
+| [`testing/no-standalone-expect`](testing/no-standalone-expect.md) | No `expect` outside a test or hook | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-test-prefixes`](testing/no-test-prefixes.md) | `.skip` and `.only`, not `x` and `f` prefixes | `auto` | — | `testing/jest` |
+| [`testing/no-test-return-statement`](testing/no-test-return-statement.md) | No `return` from a test | `manual` | — | *[rules] only* |
+| [`testing/no-unneeded-async-expect-function`](testing/no-unneeded-async-expect-function.md) | No async wrapper around an awaited promise in `expect` | `auto` | — | `testing/vitest` |
+| [`testing/no-untyped-mock-factory`](testing/no-untyped-mock-factory.md) | Typed `jest.mock` factories | `auto` | — | *[rules] only* |
+| [`testing/playwright-expect-expect`](testing/playwright-expect-expect.md) | Every test asserts | `manual` | — | `testing/playwright` |
+| [`testing/playwright-max-expects`](testing/playwright-max-expects.md) | At most five assertions in a test | `manual` | — | *[rules] only* |
+| [`testing/playwright-max-nested-describe`](testing/playwright-max-nested-describe.md) | At most five nested `describe` blocks | `manual` | — | `testing/playwright` |
+| [`testing/playwright-missing-playwright-await`](testing/playwright-missing-playwright-await.md) | `await` Playwright's async assertions and steps | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-action-timeout`](testing/playwright-no-action-timeout.md) | No `timeout` on an action | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-commented-out-tests`](testing/playwright-no-commented-out-tests.md) | No commented-out tests | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-conditional-expect`](testing/playwright-no-conditional-expect.md) | No `expect` inside a condition | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-conditional-in-test`](testing/playwright-no-conditional-in-test.md) | No conditional logic in a test | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-duplicate-hooks`](testing/playwright-no-duplicate-hooks.md) | One hook of each kind per block | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-duplicate-slow`](testing/playwright-no-duplicate-slow.md) | One `test.slow()` per test | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-element-handle`](testing/playwright-no-element-handle.md) | Locators, not element handles | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-eval`](testing/playwright-no-eval.md) | No `$eval` and `$$eval` | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-export`](testing/playwright-no-export.md) | No exports from a test file | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-force-option`](testing/playwright-no-force-option.md) | No `force: true` on actions | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-get-by-title`](testing/playwright-no-get-by-title.md) | No `getByTitle` | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-hooks`](testing/playwright-no-hooks.md) | No setup and teardown hooks | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-identical-title`](testing/playwright-no-identical-title.md) | No two tests with one title | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-magic-timeouts`](testing/playwright-no-magic-timeouts.md) | No literal timeout values | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-nested-step`](testing/playwright-no-nested-step.md) | No `test.step` inside a step | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-networkidle`](testing/playwright-no-networkidle.md) | No `networkidle` | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-nth-methods`](testing/playwright-no-nth-methods.md) | No `first()`, `last()` and `nth()` | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-page-pause`](testing/playwright-no-page-pause.md) | No `page.pause()` left in a test | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-raw-locators`](testing/playwright-no-raw-locators.md) | No CSS or XPath locators | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-restricted-locators`](testing/playwright-no-restricted-locators.md) | No locator methods the project restricts | `manual` | `locators` | *[rules] only* |
+| [`testing/playwright-no-restricted-matchers`](testing/playwright-no-restricted-matchers.md) | No matchers the project restricts | `manual` | `matchers` | *[rules] only* |
+| [`testing/playwright-no-restricted-roles`](testing/playwright-no-restricted-roles.md) | No `getByRole` roles the project restricts | `manual` | `roles` | *[rules] only* |
+| [`testing/playwright-no-slowed-test`](testing/playwright-no-slowed-test.md) | No `test.slow()` | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-standalone-expect`](testing/playwright-no-standalone-expect.md) | No `expect` outside a test or hook | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-template-literal-title`](testing/playwright-no-template-literal-title.md) | No template literal as a test title | `auto` | — | *[rules] only* |
+| [`testing/playwright-no-test-return-statement`](testing/playwright-no-test-return-statement.md) | No `return` from a test | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-unnecessary-assertions`](testing/playwright-no-unnecessary-assertions.md) | No assertion on a constant | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-unused-locators`](testing/playwright-no-unused-locators.md) | No locator created and left unused | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-useless-await`](testing/playwright-no-useless-await.md) | No `await` on a locator | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-useless-not`](testing/playwright-no-useless-not.md) | No `.not` where a matcher says it | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-navigation`](testing/playwright-no-wait-for-navigation.md) | No `waitForNavigation` | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-selector`](testing/playwright-no-wait-for-selector.md) | No `waitForSelector` | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-timeout`](testing/playwright-no-wait-for-timeout.md) | No fixed sleeps | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-comparison-matcher`](testing/playwright-prefer-comparison-matcher.md) | Comparison matchers for comparisons | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-ending-with-an-expect`](testing/playwright-prefer-ending-with-an-expect.md) | A test ends with an assertion | `manual` | — | *[rules] only* |
+| [`testing/playwright-prefer-equality-matcher`](testing/playwright-prefer-equality-matcher.md) | An equality matcher for an equality | `suggest` | — | *[rules] only* |
+| [`testing/playwright-prefer-hooks-in-order`](testing/playwright-prefer-hooks-in-order.md) | Hooks in the order they run | `manual` | — | `testing/playwright` |
+| [`testing/playwright-prefer-hooks-on-top`](testing/playwright-prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | `testing/playwright` |
+| [`testing/playwright-prefer-locator`](testing/playwright-prefer-locator.md) | Locator methods over `page` actions | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-lowercase-title`](testing/playwright-prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-strict-equal`](testing/playwright-prefer-strict-equal.md) | `toStrictEqual` over `toEqual` | `suggest` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-be`](testing/playwright-prefer-to-be.md) | `toBe` for primitives, `toBeNull`, `toBeUndefined`, `toBeNaN` | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-contain`](testing/playwright-prefer-to-contain.md) | `toContain` for an `includes` check | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-have-count`](testing/playwright-prefer-to-have-count.md) | `toHaveCount` for a locator's count | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-to-have-length`](testing/playwright-prefer-to-have-length.md) | `toHaveLength` for a length | `auto` | — | `testing/playwright` |
+| [`testing/playwright-prefer-web-first-assertions`](testing/playwright-prefer-web-first-assertions.md) | Web-first assertions over reading state | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-require-annotation-reason`](testing/playwright-require-annotation-reason.md) | Annotations give a reason | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-hook`](testing/playwright-require-hook.md) | Setup code in a hook | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-soft-assertions`](testing/playwright-require-soft-assertions.md) | Soft assertions | `suggest` | — | *[rules] only* |
+| [`testing/playwright-require-tags`](testing/playwright-require-tags.md) | Every test is tagged | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-to-pass-timeout`](testing/playwright-require-to-pass-timeout.md) | `toPass` with a timeout | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-to-throw-message`](testing/playwright-require-to-throw-message.md) | `toThrow` names the error | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-top-level-describe`](testing/playwright-require-top-level-describe.md) | Tests inside a top-level `describe` | `manual` | — | *[rules] only* |
+| [`testing/playwright-valid-describe-callback`](testing/playwright-valid-describe-callback.md) | `describe` takes a plain synchronous callback | `manual` | — | `testing/playwright` |
+| [`testing/playwright-valid-expect`](testing/playwright-valid-expect.md) | `expect` is called right and awaited when async | `auto` | — | `testing/playwright` |
+| [`testing/playwright-valid-expect-in-promise`](testing/playwright-valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/playwright` |
+| [`testing/playwright-valid-test-tags`](testing/playwright-valid-test-tags.md) | Test tags start with `@` | `auto` | — | `testing/playwright` |
+| [`testing/playwright-valid-title`](testing/playwright-valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/playwright` |
+| [`testing/prefer-called-exactly-once-with`](testing/prefer-called-exactly-once-with.md) | `toHaveBeenCalledExactlyOnceWith` | `auto` | — | `testing/vitest` |
+| [`testing/prefer-called-once`](testing/prefer-called-once.md) | `toHaveBeenCalledOnce()` over `toHaveBeenCalledTimes(1)` | `auto` | — | *[rules] only* |
+| [`testing/prefer-called-times`](testing/prefer-called-times.md) | `toHaveBeenCalledTimes(1)` over `toHaveBeenCalledOnce()` | `auto` | — | *[rules] only* |
+| [`testing/prefer-called-with`](testing/prefer-called-with.md) | `toHaveBeenCalledWith` over `toHaveBeenCalled` | `manual` | — | *[rules] only* |
+| [`testing/prefer-comparison-matcher`](testing/prefer-comparison-matcher.md) | Comparison matchers for comparisons | `auto` | — | *[rules] only* |
+| [`testing/prefer-describe-function-title`](testing/prefer-describe-function-title.md) | `describe(fn)` for a block about an imported function | `auto` | — | *[rules] only* |
+| [`testing/prefer-each`](testing/prefer-each.md) | `test.each` over a loop of tests | `manual` | — | *[rules] only* |
+| [`testing/prefer-ending-with-an-expect`](testing/prefer-ending-with-an-expect.md) | A test ends with an assertion | `manual` | — | *[rules] only* |
+| [`testing/prefer-equality-matcher`](testing/prefer-equality-matcher.md) | An equality matcher for an equality | `suggest` | — | *[rules] only* |
+| [`testing/prefer-expect-assertions`](testing/prefer-expect-assertions.md) | Async tests count their assertions | `suggest` | — | *[rules] only* |
+| [`testing/prefer-expect-resolves`](testing/prefer-expect-resolves.md) | `await expect(p).resolves` over `expect(await p)` | `auto` | — | *[rules] only* |
+| [`testing/prefer-expect-type-of`](testing/prefer-expect-type-of.md) | `expectTypeOf` for a type check | `suggest` | — | *[rules] only* |
+| [`testing/prefer-hooks-in-order`](testing/prefer-hooks-in-order.md) | Hooks in the order they run | `manual` | — | *[rules] only* |
+| [`testing/prefer-hooks-on-top`](testing/prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | *[rules] only* |
+| [`testing/prefer-import-in-mock`](testing/prefer-import-in-mock.md) | `vi.mock(import("…"))` | `auto` | — | *[rules] only* |
+| [`testing/prefer-jest-mocked`](testing/prefer-jest-mocked.md) | `jest.mocked()` over a type assertion | `auto` | — | *[rules] only* |
+| [`testing/prefer-lowercase-title`](testing/prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
+| [`testing/prefer-mock-promise-shorthand`](testing/prefer-mock-promise-shorthand.md) | `mockResolvedValue` and `mockRejectedValue` | `auto` | — | *[rules] only* |
+| [`testing/prefer-mock-return-shorthand`](testing/prefer-mock-return-shorthand.md) | `mockReturnValue` for a constant | `auto` | — | *[rules] only* |
+| [`testing/prefer-snapshot-hint`](testing/prefer-snapshot-hint.md) | A hint on each of several snapshots | `manual` | — | *[rules] only* |
+| [`testing/prefer-spy-on`](testing/prefer-spy-on.md) | `spyOn` instead of overwriting a method | `auto` | — | *[rules] only* |
+| [`testing/prefer-strict-boolean-matchers`](testing/prefer-strict-boolean-matchers.md) | `toBe(true)` over `toBeTruthy()` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-strict-equal`](testing/prefer-strict-equal.md) | `toStrictEqual` over `toEqual` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-be`](testing/prefer-to-be.md) | `toBe` for primitives, `toBeNull`, `toBeUndefined`, `toBeNaN` | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-be-falsy`](testing/prefer-to-be-falsy.md) | `toBeFalsy()` over `toBe(false)` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-be-object`](testing/prefer-to-be-object.md) | `toBeInstanceOf(Object)` over an `instanceof` check | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-be-truthy`](testing/prefer-to-be-truthy.md) | `toBeTruthy()` over `toBe(true)` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-contain`](testing/prefer-to-contain.md) | `toContain` for an `includes` check | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-been-called`](testing/prefer-to-have-been-called.md) | `not.toHaveBeenCalled()` for zero calls | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-been-called-times`](testing/prefer-to-have-been-called-times.md) | `toHaveBeenCalledTimes` for a call count | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-length`](testing/prefer-to-have-length.md) | `toHaveLength` for a length | `auto` | — | *[rules] only* |
+| [`testing/prefer-vi-mocked`](testing/prefer-vi-mocked.md) | `vi.mocked()` over a type assertion | `auto` | — | *[rules] only* |
+| [`testing/require-awaited-expect-poll`](testing/require-awaited-expect-poll.md) | `expect.poll` is awaited | `auto` | — | *[rules] only* |
+| [`testing/require-hook`](testing/require-hook.md) | Setup code in a hook | `manual` | — | *[rules] only* |
+| [`testing/require-local-test-context-for-concurrent-snapshots`](testing/require-local-test-context-for-concurrent-snapshots.md) | Concurrent snapshot tests use their own `expect` | `manual` | — | `testing/vitest` |
+| [`testing/require-mock-type-parameters`](testing/require-mock-type-parameters.md) | `vi.fn` with a type parameter | `manual` | — | *[rules] only* |
+| [`testing/require-test-timeout`](testing/require-test-timeout.md) | Every test sets a timeout | `manual` | — | *[rules] only* |
+| [`testing/require-to-throw-message`](testing/require-to-throw-message.md) | `toThrow` names the error | `manual` | — | *[rules] only* |
+| [`testing/require-top-level-describe`](testing/require-top-level-describe.md) | Tests inside a top-level `describe` | `manual` | — | *[rules] only* |
+| [`testing/testing-library-await-async-events`](testing/testing-library-await-async-events.md) | `await` user-event calls | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-await-async-queries`](testing/testing-library-await-async-queries.md) | `await` `findBy` queries | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-await-async-utils`](testing/testing-library-await-async-utils.md) | `await` `waitFor` and its kin | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-consistent-data-testid`](testing/testing-library-consistent-data-testid.md) | `data-testid` values follow one pattern | `manual` | — | *[rules] only* |
+| [`testing/testing-library-no-await-sync-events`](testing/testing-library-no-await-sync-events.md) | No `await` on `fireEvent` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-await-sync-queries`](testing/testing-library-no-await-sync-queries.md) | No `await` on `getBy` and `queryBy` queries | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-container`](testing/testing-library-no-container.md) | No DOM queries through `container` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-debugging-utils`](testing/testing-library-no-debugging-utils.md) | No `debug()` left in a test | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-dom-import`](testing/testing-library-no-dom-import.md) | Import from your framework's Testing Library | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-global-regexp-flag-in-query`](testing/testing-library-no-global-regexp-flag-in-query.md) | No `g` flag on a regular expression in a query | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-manual-cleanup`](testing/testing-library-no-manual-cleanup.md) | No manual `cleanup` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-node-access`](testing/testing-library-no-node-access.md) | No DOM traversal in Testing Library tests | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-promise-in-fire-event`](testing/testing-library-no-promise-in-fire-event.md) | No promise passed to `fireEvent` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-render-in-lifecycle`](testing/testing-library-no-render-in-lifecycle.md) | No `render` in a setup hook | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-test-id-queries`](testing/testing-library-no-test-id-queries.md) | No queries by test id | `manual` | — | *[rules] only* |
+| [`testing/testing-library-no-unnecessary-act`](testing/testing-library-no-unnecessary-act.md) | No `act` around Testing Library calls | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-multiple-assertions`](testing/testing-library-no-wait-for-multiple-assertions.md) | One assertion per `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-side-effects`](testing/testing-library-no-wait-for-side-effects.md) | No side effects inside `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-snapshot`](testing/testing-library-no-wait-for-snapshot.md) | No snapshot inside `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-explicit-assert`](testing/testing-library-prefer-explicit-assert.md) | An explicit assertion on a `getBy` query | `suggest` | — | *[rules] only* |
+| [`testing/testing-library-prefer-find-by`](testing/testing-library-prefer-find-by.md) | `findBy` over `waitFor` + `getBy` | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-implicit-assert`](testing/testing-library-prefer-implicit-assert.md) | A `getBy` query as its own assertion | `suggest` | — | *[rules] only* |
+| [`testing/testing-library-prefer-presence-queries`](testing/testing-library-prefer-presence-queries.md) | `getBy` for presence, `queryBy` for absence | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-query-by-disappearance`](testing/testing-library-prefer-query-by-disappearance.md) | `queryBy` in `waitForElementToBeRemoved` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-query-matchers`](testing/testing-library-prefer-query-matchers.md) | The query each matcher is meant for | `manual` | `get_matchers`, `query_matchers` | *[rules] only* |
+| [`testing/testing-library-prefer-screen-queries`](testing/testing-library-prefer-screen-queries.md) | Queries through `screen` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-user-event`](testing/testing-library-prefer-user-event.md) | `userEvent` over `fireEvent` | `manual` | — | *[rules] only* |
+| [`testing/testing-library-prefer-user-event-setup`](testing/testing-library-prefer-user-event-setup.md) | `userEvent.setup()` before user-event calls | `manual` | — | *[rules] only* |
+| [`testing/testing-library-render-result-naming-convention`](testing/testing-library-render-result-naming-convention.md) | The render result is called `view` or destructured | `suggest` | — | `testing/testing-library` |
+| [`testing/valid-describe-callback`](testing/valid-describe-callback.md) | `describe` takes a plain synchronous callback | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-expect`](testing/valid-expect.md) | `expect` is called right and awaited when async | `auto` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-expect-in-promise`](testing/valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-title`](testing/valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/jest`, `testing/vitest` |
+| [`testing/warn-todo`](testing/warn-todo.md) | No `test.todo` left behind | `manual` | — | *[rules] only* |
 
 ## python
 
