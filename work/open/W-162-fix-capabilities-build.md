@@ -7,7 +7,7 @@ filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
 updated_by: "Cowork (Opus 5.5)"
-ball: agent
+ball: arpit
 ---
 
 # W-162 — Build: the six fix capabilities, and the rules waiting on them
@@ -16,8 +16,10 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | W-161's designs and build order | what to build, in what order | 🟡 waits on W-161 |
-| 2 | Build each capability in W-161's order | the engine can make the fix | ⏳ |
+| 0 | Re-judge the 37 waiting rules whose reason is an author's decision: `manual` with their exception ([proposal](../proposals/fix-capabilities.md) §3) | the waiting count falls by a quarter | ⏳ |
+| 1 | W-161's designs and build order | what to build, in what order | ✅ 2026-11-05 — [`fix-capabilities.md`](../proposals/fix-capabilities.md) §2, §4 |
+| 1a | The decider rules whether a fix may edit several files (L4 decisions 10, 12; proposal §5) | the 22 rename rules' path | 🔴 decider decides |
+| 2 | Build each capability in the proposal's order (§4): computed edits, scope rename, add-import, purity, types, cross-file read, cross-file write, action SHAs | the engine can make the fix | ⏳ |
 | 3 | Move each waiting rule up, proven by its own examples (`codelaw test`) | agents get a diff, not steps | ⏳ |
 | 4 | Close when no `fix_pending:` names W-162 | L4 holds without a stand-in | ⏳ |
 
@@ -38,11 +40,11 @@ Every rule whose `fix_pending:` names W-162 reaches its proposed rung, or is re-
 
 ## Blockers
 
-W-161 (its designs).
+The decider's call on multi-file fixes (inbox) holds step 2's cross-file write; W-161's designs are done.
 
 ## Record affected
 
-SR-LAW-4 decision 5 (the stand-in ends), and the records W-161's designs name.
+SR-LAW-4 decisions 5 (the stand-in ends), 8, 9, 10 and 12 (multi-file fixes, if ruled); SR-RULE-FORMAT 3a–3c; SR-TYPES 4; SR-PROJECT-GRAPH; SR-CLI-AND-MCP; SR-CACHE.
 
 ## Hazards
 
@@ -50,4 +52,4 @@ SR-LAW-4 decision 5 (the stand-in ends), and the records W-161's designs name.
 
 ## Reference
 
-[W-161](W-161-fix-capabilities-research.md) · [W-156](W-156-fix-ladder.md) B4
+[W-161](../../archive/open/W-161-fix-capabilities-research.md) · [proposal](../proposals/fix-capabilities.md) · [W-156](W-156-fix-ladder.md) B4

@@ -7,7 +7,7 @@ filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
 updated_by: "Cowork (Opus 5.5)"
-ball: cowork
+ball: arpit
 ---
 
 # W-163 — Research: fixes that wait for `codelaw fix`, and target versions
@@ -16,10 +16,10 @@ ball: cowork
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | List every `auto` rule whose edit throws away work in progress (an unused import, code after a debugging `return`, a `.only` test) and propose each rule's default | safe saves, safe agent edits | ⏳ |
-| 2 | List every rule whose fix is safe only from a version up (9 CSS, 3 Python today, and any others) and the version each needs | which fixes a target unlocks | ⏳ |
-| 3 | Propose the keys: the rule's setting, the project's override per rule and per scope, the targets in `codelaw.toml` | the config shape | ⏳ |
-| 4 | Put the proposal to the decider, then file the build item | a ruled design | ⏳ |
+| 1 | List every `auto` rule whose edit throws away work in progress (an unused import, code after a debugging `return`, a `.only` test) and propose each rule's default | safe saves, safe agent edits | ✅ 2026-11-05 — [proposal](../proposals/save-behaviour-and-targets.md) |
+| 2 | List every rule whose fix is safe only from a version up (9 CSS, 3 Python today, and any others) and the version each needs | which fixes a target unlocks | ✅ 2026-11-05 — [proposal](../proposals/save-behaviour-and-targets.md) |
+| 3 | Propose the keys: the rule's setting, the project's override per rule and per scope, the targets in `codelaw.toml` | the config shape | ✅ 2026-11-05 — [proposal](../proposals/save-behaviour-and-targets.md) |
+| 4 | Put the proposal to the decider, then file the build item | a ruled design | 🔴 decider decides |
 
 **Arpit, 2026-11-05 (voice):** *"Probably research all these items and make it configurable against each and every rule."* · *"come up with default values as well for these rules."* · *"Let's go with it."* · *"But make it configurable as well."*; then (text) *"file it."*
 
@@ -28,6 +28,8 @@ ball: cowork
 - **Python target:** read from `requires-python` in `pyproject.toml`; codelaw's config can override it, also per rule.
 - **Browser targets:** explicit minimum versions only (`chrome >= 110`), in codelaw's config or a browserslist entry that lists versions. No bundled caniuse data: it is CC-BY-4.0, and [SR-RULE-PACKS](../../records/0101_rule-packs.md) already refuses non-OSI data licences (MDN's CC0 data).
 - **Default with no target:** the fix stays `suggest`, never `auto` — an `auto` fix must never change behaviour (L4 decision 3).
+
+**Researched 2026-11-05 (Cowork):** [`work/proposals/save-behaviour-and-targets.md`](../proposals/save-behaviour-and-targets.md). `on_edit`: 14 `auto` rules default to `false` today, and 10 more take `false` as they move up. The most destructive fixes (unused imports, unreachable code, focused tests) are still `suggest`. `[targets]` gates 21 rules (12 Python, 9 CSS), not 12. Two calls are in the inbox: a codelaw-owned browser-support table (~250 cited rows), and two `auto` Python rules with a version floor.
 
 **Model:** Cowork: research and a config design (SR-WORK-OPEN-QUEUE rule 37a), no code.
 
@@ -39,14 +41,14 @@ A ruled design for both settings, each rule's default, and the build item filed.
 
 | DoD | what | state |
 |---|---|---|
-| 1 · save | every `auto` rule judged, its default named, the reason in one line | ⏳ |
-| 2 · targets | every target-dependent rule, its version threshold, how the target is read and overridden | ⏳ |
-| 3 · config | the keys, their precedence (rule default < project < scope < rule entry), `config --print` and `rules --why` showing them | ⏳ |
+| 1 · save | every `auto` rule judged, its default named, the reason in one line | ✅ 2026-11-05 |
+| 2 · targets | every target-dependent rule, its version threshold, how the target is read and overridden | ✅ 2026-11-05 |
+| 3 · config | the keys, their precedence (rule default < project < scope < rule entry), `config --print` and `rules --why` showing them | ✅ 2026-11-05 |
 | 4 · ruled | the decider rules on the proposal; the build item is filed | ⏳ |
 
 ## Blockers
 
-None.
+The decider's ruling on the proposal and its two calls (inbox).
 
 ## Record affected
 

@@ -34,6 +34,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
+- **Done:** the step exchanges the OIDC token at `/api/-/trusted-publishing/token` (body and audience read from Open VSX's source and `/api/version`) and uploads with the issued token; `OVSX_PAT` dropped; RELEASING.md, W-95's item and row, IMPLEMENTATION follow.
+- **Decided / left open:** `curl`, not `ovsx` (the coordinator's brief; decision 8 allows either). VSCodium not checked — its download stalled; Open VSX serves 0.3.0 for darwin-arm64 (0.4.0 only on some platforms).
+- **Mistakes:** none.
+- **Next:** the next release proves the upload; then the VSCodium install.
+
 ## 2026-11-05 — W-164: the README opens on the ruled positioning  ·  Claude Code (Opus 5.5)
 
 - **Asked:** build W-164 (README opening), in parallel with other items.
@@ -57,6 +65,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Decided / left open:** positioning — lead *"Your team's rules, enforced on every AI edit"*, second line deterministic and AI-free. Pausing W-139, W-141, W-143, W-145 recommended and refused: all of them are built. W-102 waits until every rule is built, over the recommendation to run it in parallel as do-first.
 - **Mistakes:** none.
 - **Next:** W-164's rewrite.
+
+## 2026-11-05 — W-161 and W-163 researched; W-161 closed; three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research w-161, w-163"*
+- **Done:** two proposals, `work/proposals/fix-capabilities.md` and `work/proposals/save-behaviour-and-targets.md`. W-161 closed and archived: 151 waiting rules, of which 112 move with six capabilities and 37 are re-judged `manual`; build order in the proposal. W-162 is red on the multi-file call; W-163 is red on its proposal and its two calls.
+- **Decided / left open:** nothing ruled. Inbox: W-162's multi-file fixes (L4 10, 12); W-163's proposal, its browser table and the two `auto` Python rules with a floor.
+- **Mistakes:** the Mac dropped off the bridge mid-research; the drafts waited in Cowork until it was back.
+- **Next:** the decider rules the three calls.
 
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
