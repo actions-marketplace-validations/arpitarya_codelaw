@@ -13,6 +13,11 @@ use codelaw_lang::SyntaxNode;
 use codelaw_lang::class_lists::{ClassList, ClassListOptions, class_lists_in};
 use std::collections::BTreeMap;
 
+/// A class list with each of its words and the table's answer for it.
+type Answered<'s> = Vec<(ClassList, Vec<(Word<'s>, Option<ClassInfo>)>)>;
+/// Classes keyed by (variants, important, properties), each with its Tailwind order.
+type Groups<'a, 's> = BTreeMap<(String, bool, Vec<String>), Vec<(&'a Word<'s>, u128)>>;
+
 const LANGUAGES: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx, Language::Html];
 const ROOTS: &[&str] = &["program", "document"];
 
@@ -105,7 +110,7 @@ fn table(ctx: &NativeContext<'_>) -> Option<std::sync::Arc<dyn ClassTable>> {
 }
 
 /// Each list's words and the table's answer for each, all from one lookup.
-fn answered<'s>(src: &'s str, ls: &[ClassList], t: &dyn ClassTable) -> Vec<(ClassList, Vec<(Word<'s>, Option<ClassInfo>)>)> {
+fn answered<'s>(src: &'s str, ls: &[ClassList], t: &dyn ClassTable) -> Answered<'s> {
     let per_list: Vec<Vec<Word<'s>>> = ls.iter().map(|l| words(src, l)).collect();
     let all: Vec<&str> = per_list.iter().flatten().map(|w| w.text).collect();
     let Ok(mut answers) = t.lookup(&all) else { return Vec::new() };
@@ -274,7 +279,7 @@ impl NoConflictingClasses {
         for (l, ws) in answered(ctx.source, ls, t.as_ref()) {
             // Classes that set exactly the same properties under the same
             // variants: the one later in Tailwind's order wins.
-            let mut groups: BTreeMap<(String, bool, Vec<String>), Vec<(&Word<'_>, u128)>> = BTreeMap::new();
+            let mut groups: Groups<'_, '_> = BTreeMap::new();
             for (w, info) in &ws {
                 if let Some(i) = info.as_ref().filter(|i| !i.properties.is_empty()) {
                     groups.entry((i.variants.clone(), i.important, i.properties.clone())).or_default().push((w, i.order));
