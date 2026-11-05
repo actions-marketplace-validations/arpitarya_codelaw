@@ -204,6 +204,10 @@ pub struct RuleConfig {
     /// The rung a config entry lowered the rule's fix to (SR-LAW-4
     /// decision 16); `None` keeps the rule's own.
     pub fix: Option<codelaw_core::FixClass>,
+    /// Whether the rule's `auto` fix runs on save and from the agent hook,
+    /// as the last config entry naming it says (SR-CONFIG decision 11e);
+    /// `None` leaves it to `[fix] on_edit`, then the rule's own default.
+    pub on_edit: Option<bool>,
 }
 
 fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(), ConfigError> {
@@ -1017,6 +1021,12 @@ impl Config {
     }
 
     /// Default 5 s (SR-ARCHITECTURE decision 18).
+    /// `[fix] on_edit` (SR-CONFIG decision 11e): every rule's on-edit
+    /// default, below the per-rule entries; `None` when unset.
+    pub fn fix_on_edit(&self) -> Option<bool> {
+        self.root_raw().and_then(|r| r.fix.on_edit)
+    }
+
     pub fn external_timeout(&self) -> Duration {
         self.root_raw().and_then(|r| r.fix.external_timeout).map(|d| d.0).unwrap_or(Duration::from_secs(5))
     }

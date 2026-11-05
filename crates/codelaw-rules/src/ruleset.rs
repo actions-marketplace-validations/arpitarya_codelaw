@@ -86,7 +86,7 @@ fn to_config(rule: &RuleFile, setting: Option<&RuleSetting>) -> Option<RuleConfi
         options.extend(o.iter().map(|(k, v)| (k.clone(), v.clone())));
     }
     let fix = lowered(rule.fix, setting);
-    Some(RuleConfig { severity: Some(severity), options, fix })
+    Some(RuleConfig { severity: Some(severity), options, fix, on_edit: setting.and_then(|s| s.on_edit()) })
 }
 
 /// The rung an entry lowers a rule of class `own` to (SR-LAW-4 decision 16);
@@ -472,7 +472,7 @@ impl RuleSet {
                 Some("off") => current = None,
                 Some(s) => {
                     let sev = Severity::parse(s).unwrap_or(rule.rule.severity);
-                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options(), fix: None });
+                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options(), fix: None, on_edit: None });
                     cfg.severity = Some(sev);
                     current = Some(cfg);
                 }
@@ -485,6 +485,11 @@ impl RuleSet {
             // back; it never rises above the rule's (SR-LAW-4 decision 16).
             if let (Some(cfg), Some(f)) = (current.as_mut(), setting.fix().and_then(FixClass::parse)) {
                 cfg.fix = (f > rule.rule.fix).then_some(f);
+            }
+            // Either direction, the last entry naming it winning (SR-CONFIG
+            // decision 11e).
+            if let (Some(cfg), Some(o)) = (current.as_mut(), setting.on_edit()) {
+                cfg.on_edit = Some(o);
             }
         }
         current
