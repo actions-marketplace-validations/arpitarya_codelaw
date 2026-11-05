@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **numpy: rules move up the fix ladder (W-156):** 2 moved to auto (numpy-deprecated-function; numpy2-deprecation with an auto_when on the plain aliases) (numpy: auto 0 → 2, suggest 1 → 1, manual 3 → 1 (pending 2 → 0)).
 - **node: rules move up the fix ladder (W-156):** 3 moved (no-process-exit with labelled choices; global-require hoisted with move-to after-imports; no-exports-assign to suggest) (node: auto 2 → 2, suggest 15 → 18, manual 18 → 15 (pending 9 → 6)).
 - **nextjs: rules move up the fix ladder (W-156):** 6 moved to suggest (no-sync-scripts with labelled choices; google-font-preconnect, no-head-import-in-document, no-script-component-in-head, no-typos, no-unwanted-polyfillio); google-font-display kept as needing computed edits (W-162) (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)).
 - **ts: rules move up the fix ladder (W-156):** 5 moved (no-confusing-non-null-assertion, no-empty-object-type and no-require-imports with labelled choices; no-non-null-assertion to suggest; no-unnecessary-parameter-property-assignment to auto with auto_when); adjacent-overload-signatures and no-this-alias kept as needing computed edits or scope rename (W-162) (ts: auto 19 → 20, suggest 12 → 16, manual 34 → 29 (pending 19 → 14)).

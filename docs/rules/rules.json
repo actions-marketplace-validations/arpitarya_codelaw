@@ -45407,8 +45407,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "each has its own replacement name",
+   "fix": "auto",
+   "fix_reason": "each is a plain alias of its replacement, so renaming it keeps the behaviour",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -45540,8 +45540,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "each removed name has its own replacement, given in the NumPy 2 migration guide",
+   "fix": "auto",
+   "fix_reason": "auto for the names that are plain aliases of a name that also exists in NumPy 1 (`np.Inf`, `np.float_`, `np.product`, `np.row_stack` and the like); every other removed name needs the migration guide's rewrite",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",

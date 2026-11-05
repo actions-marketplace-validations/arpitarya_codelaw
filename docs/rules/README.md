@@ -2351,10 +2351,10 @@ Presets: `codelaw:numpy/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`numpy/numpy-deprecated-function`](numpy/numpy-deprecated-function.md) | No deprecated NumPy functions | `manual` | — | `numpy/recommended` |
+| [`numpy/numpy-deprecated-function`](numpy/numpy-deprecated-function.md) | No deprecated NumPy functions | `auto` | — | `numpy/recommended` |
 | [`numpy/numpy-deprecated-type-alias`](numpy/numpy-deprecated-type-alias.md) | Builtins, not NumPy's removed type aliases | `suggest` | — | `numpy/recommended` |
 | [`numpy/numpy-legacy-random`](numpy/numpy-legacy-random.md) | A Generator, not np.random's legacy functions | `manual` | — | `numpy/recommended` |
-| [`numpy/numpy2-deprecation`](numpy/numpy2-deprecation.md) | No names NumPy 2 removed | `manual` | — | `numpy/recommended` |
+| [`numpy/numpy2-deprecation`](numpy/numpy2-deprecation.md) | No names NumPy 2 removed | `auto` | — | `numpy/recommended` |
 
 ## pandas
 

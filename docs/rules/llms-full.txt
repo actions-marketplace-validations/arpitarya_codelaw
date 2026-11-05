@@ -71825,7 +71825,7 @@ show(text);
 ## `numpy/numpy-deprecated-function` — No deprecated NumPy functions
 
 - **Pack:** `codelaw-rules-numpy` · **Languages:** Python
-- **Fix:** `manual` (each has its own replacement name)
+- **Fix:** `auto` (each is a plain alias of its replacement, so renaming it keeps the behaviour)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:numpy/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/numpy/numpy-deprecated-function.md
 
@@ -71927,7 +71927,7 @@ x = rng.normal(size=3)
 ## `numpy/numpy2-deprecation` — No names NumPy 2 removed
 
 - **Pack:** `codelaw-rules-numpy` · **Languages:** Python
-- **Fix:** `manual` (each removed name has its own replacement, given in the NumPy 2 migration guide)
+- **Fix:** `auto` (auto for the names that are plain aliases of a name that also exists in NumPy 1 (`np.Inf`, `np.float_`, `np.product`, `np.row_stack` and the like); every other removed name needs the migration guide's rewrite)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:numpy/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/numpy/numpy2-deprecation.md
 
