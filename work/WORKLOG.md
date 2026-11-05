@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — seven proposals from the codelaw use-case research  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"research repo, papers case studies which could tell how codelaw could help or how it can improve to fit a use case"*, then *"file proposals for all of the items"*.
+- **Done:** seven `work/proposals/` docs, each `proposed` with sources and a graduation trigger — `agent-done-gate`, `conventions-to-rules`, `security-pack-benchmark`, `hallucinated-packages-and-api-evolution`, `dead-subgraphs-and-duplication`, `flag-cleanup-pr`, `suppression-gate-and-rule-usefulness`; their rows B-073–B-079 under `unruled`; the proposals index. `check-work-system.py` green.
+- **Decided / left open:** nothing ruled; each proposal's §6 holds the questions for the decider. `suppression-gate-and-rule-usefulness` §6.2 offers ImpossibleBench as evidence for W-158's inbox question.
+- **Mistakes:** none.
+- **Next:** the decider walks B-073–B-079 (`/docket` or the proposals) and rules on each §6.
+
 ## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
