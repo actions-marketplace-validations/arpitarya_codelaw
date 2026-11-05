@@ -331,14 +331,8 @@ D-06 cargo tree ahash@0.8 aho-corasick@1 allocator-api2@0.2 arc-swap@1 autocfg@1
    taplo@0.14 text-size@1 thiserror-impl@1 thiserror@1 time-core@0.1 time-macros@0.2 time@0.3
    tracing-attributes@0.1 tracing-core@0.1 tracing@0.1 unicode-ident@1 version_check@0.9 wasip2@1
    wit-bindgen@0.57 zerocopy-derive@0.8 zerocopy@0.8 zmij@1
-D-07 cargo members pretty_yaml
-D-07 cargo tree countme@3 hashbrown@0.14 memchr@2 pretty_yaml@0.6 rowan@0.16 rustc-hash@1 text-size@1
-   tiny_pretty@0.2 winnow@0.7 yaml_parser@0.3
-D-08 cargo members dprint-core dprint-plugin-markdown
-D-08 cargo tree allocator-api2@0.2 bumpalo@3 dprint-core-macros@0.1 dprint-core@0.70
-   dprint-plugin-markdown@0.26 equivalent@1 foldhash@0.1 foldhash@0.2 hashbrown@0.15 hashbrown@0.17
-   indexmap@2 proc-macro2@1 quote@1 rustc-hash@2 serde@1 serde_core@1 serde_derive@1 syn@1 syn@3
-   thiserror-impl@2 thiserror@2 unicode-ident@1 unicode-width@0.2
+D-52 cargo members oxc-css-parser oxc-markdown-parser oxc-yaml-parser oxc_allocator oxc_formatter_core oxc_formatter_css oxc_formatter_markdown oxc_formatter_yaml
+D-52 cargo tree oxc_allocator@0.157
 D-09 cargo members markup_fmt
 D-09 cargo tree aho-corasick@1 anyhow@1 css_dataset@0.4 either@1 itertools@0.15 markup_fmt@0.27
    memchr@2 regex-automata@0.4 regex-syntax@0.8 regex@1 tiny_pretty@0.4 unicode-width@0.2
