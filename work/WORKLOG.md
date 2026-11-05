@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-105: the type helper profiled and batched; corpus counts re-run; the dispatch proof waits on a push  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-105's pre-RC steps — the dispatch proof, profiling `check_types_cold`/`_warm`, corpus counts for the nine type rules, what is left of the version watch; not the RC release; no budget set.
+- **Done:** profiled the helper phase by phase (a scratch `node` shim on `PATH` running an instrumented `helper.mjs`): one synchronous round trip per question was most of a cold run, `getDefaultProjectForFile` per file most of the rest, type checking under a tenth. `helper.mjs` now batches each file's questions and diagnostics (`api.batch` of `.gen` calls) and reads a file's project from the snapshot's file lists; findings identical, ~2–3× faster cold on the loaded Mac. SR-TYPES decision 2 and §Consequences amended. Corpus counts re-run with each corpus repo as its own program: still the missing dependencies (W-105 *Left* 4). Found CI's three `perf` runs of `check_types_*` (10-30, old helper).
+- **Decided / left open:** no budget proposed — the CI numbers timed the old helper. The dispatch proof needs `typescript-bump.yml` on GitHub: `origin/main` is 147 commits behind; pushing is the decider's. Corpus repos' dependencies in CI is an L11 question, worth asking before promotion.
+- **Mistakes:** the first SR-guard landing was refused — `helper.mjs` changed without SR-TYPES; the record now carries the change.
+- **Next:** the decider pushes `main`; three `perf` runs on the batched helper, then the budget row; the RC on 11-10.
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*

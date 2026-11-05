@@ -57,7 +57,7 @@ Built against 7.1 Beta (2026-10-20) until the RC lands. First landing 2026-10-28
 
 ## Record affected
 
-SR-TYPES (W-104; amended with the as-built decisions 2–5, 7–10 and 12, and its Ownership rows, 2026-10-28), SR-RULE-FORMAT 3f, SR-RULE-PACKS (the `ts` row names `ts/type-checked`; the pack's README drops "out of scope" for `*-type-checked`), SR-PACKAGES decision 1 (`codelaw-types` in the engines layer), L11 §3 D-45 (the pinned tree). Second landing: SR-CLI-MCP decisions 1 and 10 (`--version --json`, the type workload), SR-TYPES decisions 2 and 12 and §Consequences, L8 §How it is enforced and §Consequences (status lines only), SR-PACKAGES (the `perf` job's TypeScript), SR-ARCHITECTURE (`types_version`).
+SR-TYPES (W-104; amended with the as-built decisions 2–5, 7–10 and 12, and its Ownership rows, 2026-10-28), SR-RULE-FORMAT 3f, SR-RULE-PACKS (the `ts` row names `ts/type-checked`; the pack's README drops "out of scope" for `*-type-checked`), SR-PACKAGES decision 1 (`codelaw-types` in the engines layer), L11 §3 D-45 (the pinned tree). Second landing: SR-CLI-MCP decisions 1 and 10 (`--version --json`, the type workload), SR-TYPES decisions 2 and 12 and §Consequences, L8 §How it is enforced and §Consequences (status lines only), SR-PACKAGES (the `perf` job's TypeScript), SR-ARCHITECTURE (`types_version`). Third landing (2026-11-05): SR-TYPES decision 2 (how the helper asks: one batch per file, the project from the snapshot's file lists) and §Consequences (the corpus counts re-run as each repo's program).
 
 ## Hazards
 

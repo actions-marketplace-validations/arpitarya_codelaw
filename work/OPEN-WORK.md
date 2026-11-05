@@ -31,7 +31,7 @@ here. Read that record before changing anything below it.
 
 ### build (7)
 
-🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built; profiled 11-05 (one call per question was most of a cold run; batched, ~2–3× faster locally, findings identical). Its dispatch proof and the `check_types_*` re-measure wait on `main` being pushed; corpus counts need repo deps (L11, ask before promotion); next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity, wound down 11-05: js 345/828, Ruff 349/708, Pylint 108/298, testing 169/182, nextjs, 5 PyPI packs. Ruled 11-05: no manual ceiling. Next: remove `fix-ladder.toml`, land the 231 held ports. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
