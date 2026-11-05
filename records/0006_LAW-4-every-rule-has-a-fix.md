@@ -160,8 +160,8 @@ a diff.
     outside the edits are byte-identical before and after, in every file a
     fix edits. A fix edits more than one file only as
     [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) allows: five safeguards
-    that are never configurable, and `[fix] multi_file` / per rule (`auto`,
-    `suggest`, `off`) that are.
+    that are never configurable, and `[fix] multi_file` / per rule (`auto`, `suggest`, `off`; [its decision 3](0119_multi-file-fixes.md))
+    that are.
 11. **Fixes are proven by the rule's own examples.** `codelaw test` applies
     each `auto` and `suggest` fix, and each choice, to every `Don't` example.
     The result must pass the rule, equal the paired `Do` example (or a `Fixed`

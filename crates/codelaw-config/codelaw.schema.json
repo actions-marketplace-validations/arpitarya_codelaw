@@ -208,7 +208,18 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "external_timeout": { "$ref": "#/definitions/duration", "description": "Per file, for an external fixer; 5 s by default." }
+        "external_timeout": { "$ref": "#/definitions/duration", "description": "Per file, for an external fixer; 5 s by default." },
+        "on_edit": {
+          "description": "Whether every rule's `auto` fix runs on save and from the agent hook (SR-CONFIG decision 11e), below the per-rule entries. Unset, each rule keeps its own default (SR-RULE-FORMAT decision 2b).",
+          "type": "boolean"
+        },
+        "multi_file": {
+          "x-codelaw-record": "SR-MULTI-FILE-FIXES",
+          "description": "Whether a fix may edit several files (SR-MULTI-FILE-FIXES decision 3): `auto` (the default), `suggest` keeps each a diff, `off` offers none.",
+          "type": "string",
+          "enum": ["auto", "suggest", "off"],
+          "default": "auto"
+        }
       }
     },
     "lint": {

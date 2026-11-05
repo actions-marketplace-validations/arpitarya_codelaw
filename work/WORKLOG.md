@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-166 step 0: main green on `[fix] on_edit`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-166; first fix main — `every_record_defined_key_is_in_the_schema` failed on `[fix] on_edit`.
+- **Done:** `[fix] on_edit` and `[fix] multi_file` loaded (`RawFix`, `MultiFile`) and in the schema; SR-ARCHITECTURE decision 18 defines `[fix] on_edit`.
+- **Decided / left open:** `[fix] multi_file`'s schema owner is SR-MULTI-FILE-FIXES (its decision 3 defines it); its behaviour stays W-162's.
+- **Mistakes:** none.
+- **Next:** W-166 step 1, `on_edit` per rule.
+
+---
+
 ## 2026-11-05 — W-158 closed: a rule turned off says why  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-158 step 4 — `reason` on an `"off"` entry and `[rules] require_reason`, SR-CONFIG decision 11c.
