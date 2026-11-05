@@ -61,6 +61,17 @@ then tick *Publish this Action to the GitHub Marketplace* when creating the
 release (`gh release create` cannot tick it; use the web form or edit the
 release after).
 
+**After each release (W-97):** move the Action's moving tag — `git tag -f v0
+v<x> && git push -f origin v0`, so `uses: arpitarya/codelaw@v0` installs the
+newest codelaw (a tag push runs no workflow). The pre-commit mirror,
+[`codelaw-pre-commit`](https://github.com/arpitarya/codelaw-pre-commit),
+follows by itself: its `bump.yml` runs daily (and by hand, `gh workflow run
+bump.yml -R arpitarya/codelaw-pre-commit`), reads codelaw's latest version
+from PyPI, rewrites the `codelaw==<x>` pin, commits and pushes tag `v<x>`. The
+Action's proof is `arpitarya/codelaw-action-test` (`uses: …@v0` on one known
+finding); re-run it after moving `v0`: `gh workflow run codelaw.yml -R
+arpitarya/codelaw-action-test`.
+
 ## One time, by hand (the decider)
 
 In this order. npm binds a trusted publisher only to a package that already
@@ -124,6 +135,8 @@ After this, no release needs a token, a code or your machine.
 
 **A PyPI project that does not exist yet is skipped, not failed (W-116).** The `pypi` job uploads a wheel only if its project is on PyPI or holds a pending publisher the decider added — `PENDING` in its `exists` step: `codelaw` (`codelaw-rules-deps` and its Fux index until v0.4.2 and v0.4.3 created them; drop a name once its project exists) (W-134, ruled 2026-10-30: CI creates it, never a local upload); every skipped project is named in the job summary. For a new project: add its pending publisher on pypi.org (step 4's form), add it to `PENDING`, and the Release creates it — or, after the Release, `gh workflow run publish.yml -R arpitarya/codelaw --ref v<x> -f only=pypi -f package=<project>` uploads that one wheel from the tag's `dist`.
 
+**`perf` (L8) is split and only partly waited on (W-126, the decider 2026-10-30):** `ci.yml` runs it as `perf-plan`, seven `perf <group>` jobs on `build linux-x64-gnu`'s binary, and `perf`, the merged report; nothing `needs` them. A group with no budget the decider set is `continue-on-error`, so it never holds the run or this gate. A group holding a set budget fails the run on a breach — L8 decision 7 limits the ruling to unset budgets — and so this gate refuses that commit.
+
 **Cut the Release only on a commit whose `ci.yml` run has finished green on `main`.** `publish.yml`'s gate verifies every file's attestation against the release commit's sha; a Release created on a later commit fails there (v0.2.0's first run, 2026-10-28).
 
 ## The optional Fux index packages (W-34) — published by `publish.yml` since B-063
@@ -136,9 +149,9 @@ L6 decision 12: each pack that holds rules has a companion `@codelaw/rules-<name
 
 ## The VS Code extension (W-95) — published by `publish.yml` from v0.3.0
 
-SR-PACKAGES decision 6: `codelaw.codelaw-vscode` ships as eight platform `.vsix` files, each with that platform's binary as `bin/codelaw`. `ci.yml`'s `vscode` job compiles and tests `packaging/vscode`, writes them with `python3 scripts/vsix.py build --bins out/bin --out dist` (the standard library; no `vsce`) and checks them with `scripts/vsix.py check dist --bins out/bin`, into **`dist/vscode/`**, uploaded as the artifact **`vscode`** — beside `dist`, never in it, **`publish.yml`'s `vscode` job (environment `vscode`, tag rule `v*`) uploads them with `curl` once npm trusts the workflow, beside the npm and PyPI uploads**: to the Visual Studio Marketplace by trusted publishing (the GitHub OIDC token, audience `marketplace.visualstudio.com`, exchanged at `/_apis/gallery/token` for a short-lived credential — no token stored), and to Open VSX when `OVSX_PAT` is set in the environment (W-117; skipped and named in the job summary while it is not). The job is `continue-on-error`: a listing problem never fails or withdraws the engine's release — read its summary. The first release proves the upload endpoints and whether the deleted `codelaw.codelaw` can be listed again. To try one: `gh run download <run-id> -n vscode`, then `code --install-extension codelaw-<target>-<v>.vsix` (`darwin-arm64`, `linux-x64`, `alpine-x64`, `win32-x64`, …).
+SR-PACKAGES decision 6: `codelaw.codelaw-vscode` ships as eight platform `.vsix` files, each with that platform's binary as `bin/codelaw`. `ci.yml`'s `vscode` job compiles and tests `packaging/vscode`, writes them with `python3 scripts/vsix.py build --bins out/bin --out dist` (the standard library; no `vsce`) and checks them with `scripts/vsix.py check dist --bins out/bin`, into **`dist/vscode/`**, uploaded as the artifact **`vscode`** — beside `dist`, never in it, **`publish.yml`'s `vscode` job (environment `vscode`, tag rule `v*`) uploads them with `curl` once npm trusts the workflow, beside the npm and PyPI uploads**: to the Visual Studio Marketplace by trusted publishing (the GitHub OIDC token, audience `marketplace.visualstudio.com`, exchanged at `/_apis/gallery/token` for a short-lived credential — no token stored), and to Open VSX by trusted publishing too (the OIDC token, audience `https://open-vsx.org`, exchanged at `POST /api/-/trusted-publishing/token` for a token scoped to `codelaw.codelaw-vscode` for minutes — no `OVSX_PAT`; the trusted publisher names `publish.yml` and environment `vscode`). The job is `continue-on-error`: a listing problem never fails or withdraws the engine's release — read its summary. The first release proves the upload endpoints and whether the deleted `codelaw.codelaw` can be listed again. To try one: `gh run download <run-id> -n vscode`, then `code --install-extension codelaw-<target>-<v>.vsix` (`darwin-arm64`, `linux-x64`, `alpine-x64`, `win32-x64`, …).
 
-**The decider's one-time steps are W-95's inbox row in [`work/OPEN-WORK.md`](work/OPEN-WORK.md):** the GitHub environment `vscode` (tag rule `v*`, like `npm` and `pypi`), the Marketplace publisher `codelaw` and its token as the environment secret `VSCE_PAT`, the Open VSX namespace `codelaw` and its token as `OVSX_PAT`, and a ruling on the upload tool. `@vscode/vsce` and `ovsx` are not ratified (L11), and L2 refuses both as they stand: `ovsx` is EPL-2.0 (copyleft), and `vsce` brings `@vscode/vsce-sign` under Microsoft's proprietary licence. Only after that ruling does `publish.yml` gain its `vscode` job (W-95 step 3), after the engine's.
+**The decider's one-time steps are done** (W-95): the GitHub environment `vscode` (tag rule `v*`, like `npm` and `pypi`), the Marketplace publisher `codelaw` with its Trusted Publishing policy, and the Open VSX namespace `codelaw` (ownership granted) with its trusted publisher — both naming `publish.yml` and environment `vscode`. No registry token is stored. `@vscode/vsce` and `ovsx` are allowed here by L2 decision 8 (D-46, D-47); the job needs neither.
 
 ## Every release
 

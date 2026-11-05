@@ -48,6 +48,13 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 | `@codelaw/rules-tailwind` | npm (first publish by hand, as `nextjs`'s in § W-147) | `@codelaw/rules-tailwind-fux-index` |
 | `@codelaw/provider-tailwind` | npm (first publish by hand; `publish.yml` uploads it in the binaries' tier, before the packs) | — (holds no rules) |
 
+**Added 2026-11-05 by W-166:** the browser-support data package (L6 decision 15) needs its names before the release that first carries it —
+
+| package | registry | its Fux index |
+|---|---|---|
+| `codelaw-data-browsers` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
+| `@codelaw/data-browsers` | npm (first publish by hand) | — (holds no rules) |
+
 
 **PyPI only:** L6 ships `python` and `security-python` on PyPI alone (*"each registry carries only the packs its users install"*); these five follow them. Said by voice as also on npm (`@codelaw/rules-django` …) — not filed; say so if npm is wanted, and L6's table changes with it.
 

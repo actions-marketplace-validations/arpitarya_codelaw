@@ -22,14 +22,14 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+| 🔴 **Push `main` to GitHub?** Local `main` is 181 commits ahead of `origin/main`. W-126's three measurement runs of the new `perf` matrix need it on GitHub, and so does every landed change's CI. Asked 2026-11-05 in Claude Code: *"Not yet"*. **Push** (`git push origin main`; CI runs on everything since the last push) **or hold**. | 2026-11-05 |
+| ↳ **blocks:** W-126 | |
 
 ---
 
-## Open items (15)
+## Open items (13)
 
-### build (7)
+### build (8)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -41,19 +41,20 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); 533 rules `fix_pending:`. Ruled 11-05: closes once only the capability-blocked rules are left, their markers naming W-162. Next: the moves, pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟡 **W-162** waits on **W-161** `agent` Build the six fix capabilities W-161 designs (cross-file edits, type information, adding an import, scope rename, computed edits, purity) and move the ~119 rules waiting on them up the ladder. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. Next: re-judge the 37. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+
+🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
-### ci/cd (4)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. Next: the `perf` matrix, then the measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+### ci/cd (3)
 
-🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
+🔴 **W-126** `arpit` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05 (seven groups, the build's binary); its measurement runs wait on pushing `main` (inbox). Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
-🟢 **W-97** `agent` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64): both public repos created 11-05 — next the Action's proof in `codelaw-action-test`, then the mirror. Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
+🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147) and Tailwind's, with Fux indexes; before their release. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
+🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
 ### cleanup (0)
 
@@ -61,16 +62,13 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟢 **W-103** `agent` Spell pack done; the `spell` bench operation has its three CI `perf` runs on `main` (10-30: 41005346138, 41006814384, 41007205048). Next: read their p95s, then the budget to Arpit. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
+🟢 **W-103** `agent` Spell pack done; its L8 budget set 11-05 at 2,500 ms (Arpit; the method gave 2,152). Left: DoD 5 (byte-identical packaging) and SR-SPELL `built: yes`. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
-🟢 **W-102** `agent` Ruled 11-05: run the 7 tempting tasks at 9 runs per arm (63 per arm, ~$65); `PREREG.md` amended and landed before any run. Screen 10-30: 7 of 38 tempt ($19.45). Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 ### record update (0)
 
-### research (2)
+### research (0)
 
-🟢 **W-161** `cowork` Research: how the engine can make the six kinds of fix it cannot make yet — cross-file edits (69 rules), type information (17), adding an import (16), scope rename (6), computed edits (6), purity (5); one design each, for W-162. Filed by Arpit (Cowork). [detail](open/W-161-fix-capabilities-research.md)
-
-🟢 **W-163** `cowork` Research: per-rule save and agent-hook behaviour (`on_edit`) and target versions (Python, browsers) — each configurable per rule and per project, with a default for every rule. Filed by Arpit (Cowork). [detail](open/W-163-save-behaviour-and-targets.md)
 
 ---
