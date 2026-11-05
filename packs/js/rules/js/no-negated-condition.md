@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "swapping the branches moves code; the author confirms"
 stability: preview
-ported_from: [eslint/no-negated-condition]
+ported_from: [eslint/no-negated-condition, eslint-plugin-unicorn/no-negated-condition]
 since: 0.5.0
 ---
 

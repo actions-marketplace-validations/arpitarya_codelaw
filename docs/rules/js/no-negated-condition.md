@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (swapping the branches moves code; the author confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/no-negated-condition` |
+| **Ported from** | `eslint/no-negated-condition`, `eslint-plugin-unicorn/no-negated-condition` |
 
 ## What it checks
 
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:js/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:js/strict` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/recommended"]
-
-[rules]
-"js/no-negated-condition" = "error"
+extends = ["codelaw:js/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).
