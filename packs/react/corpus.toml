@@ -79,10 +79,12 @@
 "react/jsx-pascal-case" = 0
 "react/jsx-props-no-spread-multi" = 0
 "react/jsx-props-no-spreading" = 208
+"react/jsx-sort-props" = 359
 "react/max-jsx-depth" = 60
 "react/max-props" = 0
 "react/memoized-effect-dependencies" = 0
 "react/no-access-state-in-setstate" = 0
+"react/no-adjacent-inline-elements" = 0
 "react/no-array-index-key" = 6
 "react/no-arrow-function-lifecycle" = 0
 "react/no-children-prop" = 1
@@ -116,8 +118,10 @@
 "react/no-unnecessary-use-prefix" = 1
 "react/no-unsafe" = 0
 "react/no-unused-class-component-methods" = 0
+"react/no-unused-prop-types" = 0
 "react/no-will-update-set-state" = 0
 "react/prefer-es6-class" = 0
+"react/prefer-exact-props" = 0
 "react/prefer-lazy-state-init" = 0
 "react/prefer-read-only-props" = 56
 "react/prefer-stateless-function" = 0
@@ -130,6 +134,8 @@
 "react/rule-suppression" = 0
 "react/rules-of-hooks" = 65
 "react/self-closing-comp" = 0
+"react/sort-default-props" = 0
+"react/sort-prop-types" = 0
 "react/state-in-constructor" = 1
 "react/static-property-placement" = 0
 "react/style-prop-object" = 0

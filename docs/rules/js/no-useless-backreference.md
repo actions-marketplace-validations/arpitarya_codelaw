@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the reference was meant to repeat needs the author) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-useless-backreference` |
+| **Ported from** | `eslint/no-useless-backreference`, `eslint-plugin-regexp/no-useless-backreference` |
 
 ## What it checks
 

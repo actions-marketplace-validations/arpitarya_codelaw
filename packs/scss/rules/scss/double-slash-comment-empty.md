@@ -4,7 +4,7 @@ title: "No empty `//` comments"
 languages: [scss]
 fix: auto
 stability: preview
-ported_from: [stylelint-scss/double-slash-comment-empty]
+ported_from: [stylelint-scss/double-slash-comment-empty, stylelint-scss/comment-no-empty]
 since: 0.3.0
 ---
 

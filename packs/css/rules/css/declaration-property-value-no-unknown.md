@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the intended value is the author's call"
 fix_pending: "suggest-choices"
 stability: preview
-ported_from: [stylelint/declaration-property-value-no-unknown]
+ported_from: [stylelint/declaration-property-value-no-unknown, stylelint-scss/declaration-property-value-no-unknown]
 since: 0.1.0
 ---
 

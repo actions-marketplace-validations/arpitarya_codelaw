@@ -54,14 +54,16 @@ macro_rules! scss_rule {
     };
 }
 
+pub(crate) use scss_rule;
+
 /// The lowercased name of a Sass at-rule statement (`@mixin` → `mixin`).
-fn sass_name(sheet: &Sheet, i: usize, src: &str) -> Option<String> {
+pub(crate) fn sass_name(sheet: &Sheet, i: usize, src: &str) -> Option<String> {
     let n = &sheet.nodes[i];
     (n.kind == Kind::Other && src[n.start..].starts_with('@')).then(|| text(src, n.name).to_ascii_lowercase())
 }
 
 /// The Sass statements named `name`, in source order.
-fn sass_statements<'a>(sheet: &'a Sheet, src: &'a str, names: &'a [&'a str]) -> impl Iterator<Item = (usize, String)> + 'a {
+pub(crate) fn sass_statements<'a>(sheet: &'a Sheet, src: &'a str, names: &'a [&'a str]) -> impl Iterator<Item = (usize, String)> + 'a {
     sheet.walk().into_iter().filter_map(move |i| sass_name(sheet, i, src).filter(|n| names.contains(&n.as_str())).map(|n| (i, n)))
 }
 
@@ -169,7 +171,7 @@ fn use_position(sheet: &Sheet, src: &str) -> (usize, bool) {
 
 /// The edit that adds `@use "sass:<module>";` — none when the file already
 /// loads it (any `as` form counts).
-fn use_edit(sheet: &Sheet, src: &str, module: &str) -> Option<TextEdit> {
+pub(crate) fn use_edit(sheet: &Sheet, src: &str, module: &str) -> Option<TextEdit> {
     let want = format!("sass:{module}");
     for (i, _) in sass_statements(sheet, src, &["use"]) {
         let p = text(src, sheet.nodes[i].params);
@@ -185,7 +187,7 @@ fn use_edit(sheet: &Sheet, src: &str, module: &str) -> Option<TextEdit> {
     Some(TextEdit::insert(at, s))
 }
 
-fn pattern_option(ctx: &NativeContext<'_>) -> regex::Regex {
+pub(crate) fn pattern_option(ctx: &NativeContext<'_>) -> regex::Regex {
     let p = opt_str(ctx, "pattern", KEBAB);
     regex::Regex::new(p).unwrap_or_else(|_| regex::Regex::new(KEBAB).expect("the default pattern is valid"))
 }
@@ -230,7 +232,7 @@ fn plain_css_import(part: &str) -> bool {
 }
 
 /// Split at top-level commas.
-fn split_top(s: &str) -> Vec<&str> {
+pub(crate) fn split_top(s: &str) -> Vec<&str> {
     let b = s.as_bytes();
     let mut out = Vec::new();
     let (mut depth, mut from, mut i) = (0usize, 0, 0);

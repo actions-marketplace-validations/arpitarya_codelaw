@@ -16,7 +16,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `js/recommended` | 92 | ESLint `js.configs.recommended`, `@eslint/js` 10.0.1 — all 64 rules — plus `js/no-console` at `warn`, which ESLint leaves out, and `js/use-instead` at `warn`, inert until `replacements` is set (W-73); a team turns it to `error` in `[profiles.ci]`; eslint-plugin-promise 7.3.0's `recommended` — all 10 `js/promise-*` rules, at its severities; and the 16 JavaScript rules Biome 2.6.4 recommends that no other tool has, the two unused-name rules at `warn` (W-139) |
+| `js/recommended` | 145 | ESLint `js.configs.recommended`, `@eslint/js` 10.0.1 — all 64 rules — plus `js/no-console` at `warn`, which ESLint leaves out, and `js/use-instead` at `warn`, inert until `replacements` is set (W-73); a team turns it to `error` in `[profiles.ci]`; eslint-plugin-promise 7.3.0's `recommended` — all 10 `js/promise-*` rules, at its severities; and the 16 JavaScript rules Biome 2.6.4 recommends that no other tool has, the two unused-name rules at `warn` (W-139) |
 | `js/typescript` | 4 | the four core rules typescript-eslint 8.71.2's `eslint-recommended` switches on for TypeScript: `js/no-var`, `js/prefer-const`, `js/prefer-rest-params`, `js/prefer-spread`; use it with `codelaw:ts/recommended` |
 | `js/conventions` | 3 | codelaw's starter catalogue: `js/exports-at-end`, `js/import-groups`, `js/no-default-export` — opt in |
 | `js/project` | 1 | `graph/no-unused-exports`, the rule that reads the whole repo, from knip's `exports` and `types` — opt in |
@@ -26,6 +26,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `js/strict` | 135 | eslint-plugin-unicorn 79.0.0 recommended, reimplemented: the stricter, opinionated rules; opt in (W-139, ruled 2026-10-30 on W-138: R2) |
 | `js/taste` | 6 | ESLint's style-only rules and two TSLint ones, which no defect stands behind; opt in (W-139, ruled 2026-10-30 on W-138: R1) |
 | `js/sonarjs` | 30 | eslint-plugin-sonarjs 4.2.2 recommended, reimplemented from its documented behaviour (LGPL-3.0: no code, text or tests used); opt in (W-139, ruled 2026-10-30 on W-144: R7) |
+| `js/regexp` | 52 | eslint-plugin-regexp 3.3.2's recommended rules, reimplemented on codelaw's own regular-expression parser (W-139); `js/recommended` extends it |
 
 <!-- /docs-sync:presets -->
 
@@ -37,7 +38,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up | ceiling |
 |---|---|---|---|---|---|---|---|---|
-| 75 | 93 | 258 | 39 | 34 | 27 | 1 | 157 | 258 |
+| 128 | 110 | 258 | 39 | 34 | 27 | 1 | 157 | 258 |
 
 <!-- /rule-docs:fix-ladder -->
 

@@ -8,7 +8,7 @@ fix_pending: "suggest; needs cross-file"
 stability: preview
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$", description: "a regular expression names must match" }
-ported_from: [stylelint/selector-class-pattern]
+ported_from: [stylelint/selector-class-pattern, stylelint-scss/selector-class-pattern]
 since: 0.1.0
 ---
 

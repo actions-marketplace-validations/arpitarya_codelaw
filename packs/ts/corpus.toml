@@ -39,6 +39,7 @@
 "ts/no-non-null-asserted-optional-chain" = 0
 "ts/no-non-null-assertion" = 1109
 "ts/no-require-imports" = 3
+"ts/no-restricted-types" = 0
 "ts/no-this-alias" = 1
 "ts/no-unnecessary-parameter-property-assignment" = 0
 "ts/no-unnecessary-type-constraint" = 0
@@ -64,3 +65,4 @@
 "ts/triple-slash-reference" = 0
 "ts/type-error" = 0
 "ts/type-only-imports" = 797
+"ts/unified-signatures" = 1

@@ -8,3 +8,7 @@ description = "SCSS correctness: unknown at-rules and functions' neighbours, dup
 "scss/load-no-partial-leading-underscore" = "error"
 "scss/no-duplicate-dollar-variables" = "error"
 "scss/no-duplicate-mixins" = "error"
+"scss/dollar-variable-no-missing-interpolation" = "error"
+"scss/function-quote-no-quoted-strings-inside" = "error"
+"scss/function-unquote-no-unquoted-strings-inside" = "error"
+"scss/load-partial-extension" = "error"

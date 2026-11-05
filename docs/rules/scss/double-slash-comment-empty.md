@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
-| **Ported from** | `stylelint-scss/double-slash-comment-empty` |
+| **Ported from** | `stylelint-scss/double-slash-comment-empty`, `stylelint-scss/comment-no-empty` |
 
 ## What it checks
 
