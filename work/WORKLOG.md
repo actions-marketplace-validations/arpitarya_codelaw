@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Inbox emptied: Open VSX trusted publisher, W-97 repos, W-102 and W-158 ruled  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"check what all items can be closed"* with the browser; then the inbox one by one (text, then voice); *"file it."*
+- **Done:** Open VSX claim #14928 found granted (listing `verified: true`); the trusted publisher re-registered with environment `vscode`, replacing one with none (`4e45d64d`, landed by a Claude Code pickup). Public repos `arpitarya/codelaw-action-test` and `arpitarya/codelaw-pre-commit` created in the built-in browser. Written, not yet landed: OPEN-WORK (inbox empty, W-97/W-102/W-158 → 🟢 agent), W-97, W-102, W-103, W-142, W-158, SR-CONFIG decision 11c.
+- **Decided / left open:** W-102 → run the 7 (9 runs/arm, ~$65; PREREG first). W-158 → optional `reason` on an `"off"` rule + `[rules] require_reason` (default `false`). W-142 → nothing until W-139 is ready. W-103 → agent reads the `spell` p95s next; `typos` (L11) deferred. Open: whether the 2026-10-30 Open VSX hand-upload token was revoked.
+- **Mistakes:** lockmaster is not reachable from this Cowork bridge (only the codelaw folder is linked), so these edits wait in main's checkout for a Claude Code session to land.
+- **Next:** land these edits (`lockmaster save`), then W-103's p95s.
+
 ## 2026-10-30 — L4 decision 16 (lower a rule's fix, never raise it); W-157 and W-158 filed  ·  Claude app (Opus 5.5)
 
 - **Asked (voice, then "file it"):** let a project switch a rule's fix down only; autocomplete in `codelaw.toml`; one file for every rule's exceptions.

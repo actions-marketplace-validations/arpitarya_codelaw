@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-05
+updated_by: "Cowork (Opus 5.5)"
 ball: arpit
 ---
 
@@ -25,6 +25,8 @@ ball: arpit
 **Arpit, 2026-10-30 (voice):** *"Give each framework its own pack."* · on the names: *"with anything that you recommend."*
 
 **Model:** Cowork with Claude in Chrome; Arpit submits.
+
+**Arpit, 2026-11-05 (voice docket):** *"Go with the recommendation."* — nothing now; the pending publishers, the four npm first publishes and their trusted publishers are done just before the release that carries the packs, once W-139 is ready.
 
 ## The names (all free on PyPI, checked 2026-10-30 08:30)
 

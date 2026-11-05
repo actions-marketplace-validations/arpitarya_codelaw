@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-27 (Cowork, voice): build spelling into codelaw as 
 item: W-103
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Claude Code (Opus 5.5)"
+updated: 2026-11-05
+updated_by: "Cowork (Opus 5.5)"
 ball: agent
 ---
 
@@ -28,6 +28,8 @@ ball: agent
 **Arpit, 2026-10-27 (voice):** *"There is a tool called C-Spell. Research it and tell me if that can be built into CodeLaw. A similar feature, a better feature, would be even better."* Then, ruling the forks: *"Let's go with B."* · *"Approve both."* · *"Approve it."* · *"want it as a separate package."* · *"Go with the recommendation."* · *"go ahead"*. The forks: [the compare doc](../compare/spell-checking.compare.md).
 
 **Model:** Opus: it amends a law (L6's pack count) and the generated typo list's quality is judged by people, not caught by a test; close to Sonnet, because SR-SPELL fixes the rules and their fix classes.
+
+**Arpit, 2026-11-05 (voice docket):** *"Go with the recommendation."* — (1) the next agent session reads the `spell` p95s from the three `perf` runs (their job summaries need a GitHub sign-in; the desktop app's browser pane is signed in) and puts the budget to him by L8's method; (2) **`typos` deferred:** its L11 ratification (item 8) waits — not needed to finish the pack.
 
 ## Goal
 

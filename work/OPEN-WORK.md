@@ -22,12 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **Guidance experiment — the screen came back null** ([W-102](open/W-102-guidance-vs-check-experiment.md)): arm 0 (no codelaw at all) broke a rule on only **7 of 38** candidate tasks (6 at 5/5, 31 at 0/5) — it uses `apiFetch`, `http_get` and the clock because it reads them in the code; what tempts is inline style, SQL column names and copied `== None` / `tags=[]`. Fewer than 12, so by the pre-registration no run. **Pick one:** (1) *recommended* — run the 7 at 9 runs each (63 per arm, the 5% bound holds; ~$65, ~$85 with the screen); (2) write ~10 more in the families that tempted, re-screen, then 12 × 5 (~$95 in all); (3) stop and close: the README line stays. | 2026-10-30 |
-| ↳ **blocks:** W-102 itself | |
-| 🔴 **A public repo, twice** ([W-97](open/W-97-github-action.md)): the Action's proof needs a throwaway repo, and the pre-commit mirror its own. Claude Code's permission check refused `gh repo create --public`. **Allow it** when it asks, or create `arpitarya/codelaw-action-test` and `arpitarya/codelaw-pre-commit` yourself and say so. | 2026-10-30 |
-| ↳ **blocks:** W-97 itself | |
-| 🔴 **Reasons on `"off"` in `codelaw.toml`** ([W-158](open/W-158-codelawignore-every-rule.md)): `.codelawignore` and the inline comment now both demand a reason; a rule set to `"off"` in `[rules]` or a scope needs none. Recommended: a `reason` key on a rule entry that turns a rule off (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`) plus `[rules] require_reason` (default `false`, so no config breaks). **Rule on it, or leave `codelaw.toml` as it is.** | 2026-10-31 |
-| ↳ **blocks:** W-158's last step | |
+
+*Empty since 2026-11-05 — next gate: W-103's `spell` budget, put to Arpit once an agent reads the three `perf` runs' p95s.*
 
 ---
 
@@ -49,7 +45,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4 rewritten 10-30): auto, else suggest for the agent, else manual by exception. Review of 717 rules: manual 577 → 147. Engine: per-finding rung, choices, `fix_exception`, ceiling. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🔴 **W-158** `arpit` `.codelawignore` covers every rule — built 10-31 (rule ids and namespaces per line, same stale/incomplete checks, `[codelawignore]`, unfixed by `fix`, grey in the editor). Left: Arpit's ruling on reasons for `"off"` in `codelaw.toml` (inbox). Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
+🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
 ### ci/cd (4)
 
@@ -57,7 +53,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🔴 **W-97** `arpit` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64) both need a public repo: allow `gh repo create` in Claude Code, or create them (inbox). Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
+🟢 **W-97** `agent` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64): both public repos created 11-05 — next the Action's proof in `codelaw-action-test`, then the mirror. Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147) and Tailwind's, with Fux indexes; before their release. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
@@ -69,7 +65,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-103** `agent` Spell pack done; the `spell` bench operation has its three CI `perf` runs on `main` (10-30: 41005346138, 41006814384, 41007205048). Next: read their p95s, then the budget to Arpit. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
-🔴 **W-102** `arpit` Redesign built (six arms, 42 tasks, screen, PREREG); screened 10-30: only 7 of 38 tasks tempt an agent with no codelaw ($19.45) — the null outcome, no run. Left: run the 7, widen the screen, or stop (inbox). Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟢 **W-102** `agent` Ruled 11-05: run the 7 tempting tasks at 9 runs per arm (63 per arm, ~$65); `PREREG.md` amended and landed before any run. Screen 10-30: 7 of 38 tempt ($19.45). Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 ### record update (0)
 
