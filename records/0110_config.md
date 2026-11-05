@@ -73,6 +73,7 @@ remap = { error = "warn" }
 [commits]     # SR-CONFIG (what a commit message must look like: decision 11b)
 [branches]    # SR-CONFIG (what a branch name must look like: decision 11b)
 [pr]          # SR-CONFIG (a pull request's size and description: decision 11b)
+[targets]     # SR-CONFIG (the oldest Python and browsers the code supports, an input to fixes: decision 11f)
 ```
 
 ```mermaid

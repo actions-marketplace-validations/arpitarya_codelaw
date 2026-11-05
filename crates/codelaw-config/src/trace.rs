@@ -420,6 +420,41 @@ impl Config {
     /// Every setting of rule `id` that applies to `file` (the root when
     /// `None`), lowest precedence first, with its source: each config's
     /// `[rules]`, then the matching `[[overrides]]` (decision 4).
+    /// One of `file`'s targets from the config alone, and the place that
+    /// set it (SR-CONFIG decision 11f), highest first: `rule`'s entry (the
+    /// last layer naming it), the matching scopes (the last), the nearest
+    /// `[targets]`. The engine falls back to `pyproject.toml` and
+    /// `browserslist` when this is `None`.
+    fn target_from_config<T>(&self, file: &Path, rule: Option<&str>, key: &str, get: impl Fn(&crate::raw::RawTargets) -> Option<T>) -> Option<(T, String)> {
+        if let Some(id) = rule {
+            let layers = self.layers_for(file);
+            if let Some(hit) = layers.iter().rev().find_map(|l| l.rules.get(id).and_then(|s| s.targets()).and_then(&get).map(|v| (v, format!("{} (`{id}`'s `targets.{key}`)", l.source)))) {
+                return Some(hit);
+            }
+        }
+        if let Some(hit) = self.scopes_for(file).iter().rev().find_map(|(f, s)| get(&s.targets).map(|v| (v, format!("{} (`targets.{key}`)", self.scope_label(f, s))))) {
+            return Some(hit);
+        }
+        self.files
+            .iter()
+            .filter(|f| file.starts_with(&f.dir))
+            .collect::<Vec<_>>()
+            .into_iter()
+            .rev()
+            .find_map(|f| f.raw.targets.as_ref().and_then(&get).map(|v| (v, self.source(f, &["targets", key]))))
+    }
+
+    /// `targets.python` for `file` (and `rule`), from the config.
+    pub fn python_target(&self, file: &Path, rule: Option<&str>) -> Option<(Vec<u64>, String)> {
+        self.target_from_config(file, rule, "python", |t| t.python.as_deref().and_then(crate::raw::parse_python_target))
+    }
+
+    /// `targets.browsers` for `file` (and `rule`), from the config: each
+    /// browser and its minimum version.
+    pub fn browsers_target(&self, file: &Path, rule: Option<&str>) -> Option<(Vec<(String, Vec<u64>)>, String)> {
+        self.target_from_config(file, rule, "browsers", |t| t.browsers.as_ref().map(|b| b.iter().filter_map(|q| crate::raw::parse_browser_target(q)).collect()))
+    }
+
     /// `[fix] on_edit` and the line that set it (SR-CONFIG decision 11e);
     /// `None` when unset.
     pub fn fix_on_edit_source(&self) -> Option<(bool, String)> {
