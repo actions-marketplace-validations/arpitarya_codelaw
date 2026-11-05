@@ -2,8 +2,9 @@
 id: css/color-function-alias-notation
 title: "`rgb()` and `hsl()`, not `rgba()` and `hsla()`"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers before 2018 ignore an alpha channel in `rgb()`"
+fix: auto
+fix_target: { browsers: "css-color:rgb-hsl-alpha" }
+fix_reason: "browsers before 2018 ignore an alpha channel in `rgb()`; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 ported_from: [stylelint/color-function-alias-notation]
 since: 0.1.0

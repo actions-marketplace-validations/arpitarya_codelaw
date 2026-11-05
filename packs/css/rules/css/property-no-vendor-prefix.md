@@ -2,8 +2,9 @@
 id: css/property-no-vendor-prefix
 title: "No vendor-prefixed properties"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers that need the prefix lose the declaration"
+fix: auto
+fix_target: { browsers: "css-property:$FIXED" }
+fix_reason: "browsers that need the prefix lose the declaration; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   ignoreProperties: { type: "string[]", default: [], description: "properties to accept; `/regex/` for a pattern" }

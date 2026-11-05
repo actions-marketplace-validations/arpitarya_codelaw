@@ -169,6 +169,9 @@ yet is owned by an open `W-nn`.
 | `scripts/fux-index.py` | SR-PACKAGES | decision 14: the optional Fux index packages, built in CI from a pinned fux |
 | `scripts/typescript-watch.py` | SR-TYPES | decision 7: npm's newest TypeScript with the 7.1 API against the pin, and the bump that pins it and widens the tested range (W-105) |
 | `.github/workflows/typescript-bump.yml` | SR-TYPES | decision 7: the daily job that proposes a TypeScript re-pin as one PR, or one issue naming what broke (W-105) |
+| `scripts/data-browsers-check.py` | SR-LAW-6 | decision 15: the browser-support table's checks — `--check` in CI's lint job, `--review` for the weekly job (W-166) |
+| `.github/workflows/data-browsers.yml` | SR-LAW-6 | decision 15: the weekly job that opens one PR naming the browser table's rows to review (W-166) |
+| `data-packages/browsers` | SR-LAW-6 | decision 15: the `data-browsers` package's source — the table, its NOTICE and README (W-166) |
 | `scripts/vsix.py` | SR-PACKAGES | decision 6: the editor extension's eight platform `.vsix` files, built and checked in CI (W-95) |
 | `.claude/hooks/guard-open-work-inbox.sh` | SR-WORK-OPEN-QUEUE | rule 45a, in-session |
 | `.claude/hooks/inject-inbox.sh` | SR-WORK-BLOCKERS | decision 7 |

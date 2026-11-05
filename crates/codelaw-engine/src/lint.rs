@@ -578,7 +578,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         // the rule's `fix_target` (SR-RULE-FORMAT decision 2c); elsewhere
         // `suggest`, its note naming the line that would make it `auto`.
         let (reach, gate) = match &rule.loaded.rule.fix_target {
-            Some(t) if reach == FixClass::Auto => match project.target_gate(entry, rule.id(), t) {
+            Some(t) if reach == FixClass::Auto => match project.target_gate(entry, rule.id(), t, &|| crate::targets::fixed_text(text, f.start, f.end, f.edits.as_deref().unwrap_or_default())) {
                 Ok(()) => (reach, None),
                 Err(why) => (FixClass::Suggest, Some(why)),
             },

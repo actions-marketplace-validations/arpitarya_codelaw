@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "version": "2026.11.5",
+  "browsers": ["chrome", "edge", "firefox", "safari", "ios_saf", "samsung"],
+  "features": {
+    "css-property:appearance": {
+      "since": { "firefox": "80", "safari": "15.4", "ios_saf": "15.4" },
+      "sources": [
+        "https://bugzil.la/1620467",
+        "https://webkit.org/blog/12445/new-webkit-features-in-safari-15-4/"
+      ]
+    },
+    "css-property:backdrop-filter": {
+      "since": { "chrome": "76", "safari": "18.0", "ios_saf": "18.0" },
+      "sources": [
+        "https://chromestatus.com/feature/5679432723333120",
+        "https://webkit.org/blog/15865/webkit-features-in-safari-18-0/"
+      ]
+    },
+    "css-property:clip-path": {
+      "since": { "chrome": "55" },
+      "sources": ["https://chromestatus.com/feature/5742325112242176"]
+    },
+    "css-property:mask": {
+      "since": { "chrome": "120", "firefox": "53", "safari": "15.4", "ios_saf": "15.4" },
+      "sources": [
+        "https://chromestatus.com/feature/5839739127332864",
+        "https://developer.chrome.com/blog/chrome-120-beta",
+        "https://bugzil.la/1251161",
+        "https://webkit.org/blog/12445/new-webkit-features-in-safari-15-4/"
+      ]
+    },
+    "css-property:mask-image": {
+      "since": { "chrome": "120", "firefox": "53", "safari": "15.4", "ios_saf": "15.4" },
+      "sources": [
+        "https://chromestatus.com/feature/5839739127332864",
+        "https://developer.chrome.com/blog/chrome-120-beta",
+        "https://bugzil.la/1251161",
+        "https://webkit.org/blog/12445/new-webkit-features-in-safari-15-4/"
+      ]
+    },
+    "css-property:mask-size": {
+      "since": { "chrome": "120", "firefox": "53", "safari": "15.4", "ios_saf": "15.4" },
+      "sources": [
+        "https://chromestatus.com/feature/5839739127332864",
+        "https://bugzil.la/1251161",
+        "https://webkit.org/blog/12445/new-webkit-features-in-safari-15-4/"
+      ]
+    },
+    "css-property:mask-origin": {
+      "since": { "chrome": "120", "firefox": "53", "safari": "15.4", "ios_saf": "15.4" },
+      "sources": [
+        "https://chromestatus.com/feature/5839739127332864",
+        "https://bugzil.la/1251161",
+        "https://webkit.org/blog/12445/new-webkit-features-in-safari-15-4/"
+      ]
+    }
+  }
+}

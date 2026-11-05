@@ -149,3 +149,48 @@ fn a_browserslist_counts_only_when_every_query_is_a_minimum() {
     assert_eq!(printed(&d, "targets.browsers")["value"], serde_json::json!(["firefox >= 113"]));
     let _ = fs::remove_dir_all(&d);
 }
+
+/// A CSS project with the css pack, `config` appended, and the browser
+/// table installed when `table` is set.
+fn css_project(name: &str, config: &str, table: bool) -> PathBuf {
+    let d = temp(name);
+    let repo = Path::new(env!("CARGO_MANIFEST_DIR")).ancestors().nth(2).unwrap().to_path_buf();
+    copy_dir(&repo.join("packs/css"), &d.join("node_modules/@codelaw/rules-css"));
+    if table {
+        copy_dir(&repo.join("data-packages/browsers"), &d.join("node_modules/@codelaw/data-browsers"));
+    }
+    fs::write(d.join("codelaw.toml"), format!("extends = [\"codelaw:css/recommended\"]\npreview = true\n\n[rules]\n\"css/property-no-vendor-prefix\" = \"warn\"\n{config}")).unwrap();
+    fs::write(d.join("a.css"), "a {\n  -webkit-mask-image: none;\n}\n").unwrap();
+    d
+}
+
+fn css_finding(d: &Path) -> (String, String) {
+    let out = run(d, &["check", "a.css", "--format", "json", "--no-cache"]);
+    let v: Value = serde_json::from_slice(&out.stdout).unwrap_or_else(|e| panic!("{e}: {}", String::from_utf8_lossy(&out.stderr)));
+    let d = v["diagnostics"].as_array().unwrap().iter().find(|d| d["rule"] == "css/property-no-vendor-prefix").unwrap_or_else(|| panic!("{v:#}"));
+    (d["fix"]["class"].as_str().unwrap_or_default().to_owned(), d["fix"]["note"].as_str().unwrap_or_default().to_owned())
+}
+
+#[test]
+fn a_prefix_fix_is_auto_where_the_table_says_every_target_browser_supports_it() {
+    let targets = "\n[targets]\nbrowsers = [\"chrome >= 120\", \"firefox >= 53\", \"safari >= 15.4\"]\n";
+    let d = css_project("css-auto", targets, true);
+    assert_eq!(css_finding(&d).0, "auto");
+    let v: Value = serde_json::from_slice(&run(&d, &["--version", "--json"]).stdout).unwrap();
+    assert!(v["data"]["browsers"]["version"].as_str().is_some_and(|s| s.starts_with("20")), "{v}");
+    let _ = fs::remove_dir_all(&d);
+    // A target below the row's version: `suggest`, naming both.
+    let d = css_project("css-old", "\n[targets]\nbrowsers = [\"safari >= 15\"]\n", true);
+    let (fix, note) = css_finding(&d);
+    assert_eq!(fix, "suggest");
+    assert!(note.contains("`css-property:mask-image` is unprefixed from safari 15.4"), "{note}");
+    let _ = fs::remove_dir_all(&d);
+    // No table: `suggest`, saying how to install it.
+    let d = css_project("css-none", targets, false);
+    let (fix, note) = css_finding(&d);
+    assert_eq!(fix, "suggest");
+    assert!(note.contains("@codelaw/data-browsers"), "{note}");
+    let v: Value = serde_json::from_slice(&run(&d, &["--version", "--json"]).stdout).unwrap();
+    assert_eq!(v["data"]["browsers"], Value::Null);
+    let _ = fs::remove_dir_all(&d);
+}

@@ -1048,7 +1048,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`css/alpha-value-notation`](css/alpha-value-notation.md) | Alpha values are percentages | `suggest` | `exceptProperties` | `css/standard` |
+| [`css/alpha-value-notation`](css/alpha-value-notation.md) | Alpha values are percentages | `auto` | `exceptProperties` | `css/standard` |
 | [`css/annotation-no-unknown`](css/annotation-no-unknown.md) | No unknown `!` annotations | `manual` | `ignoreAnnotations` | `css/recommended` |
 | [`css/at-rule-allowed-list`](css/at-rule-allowed-list.md) | Only at-rules the project allows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-descriptor-no-unknown`](css/at-rule-descriptor-no-unknown.md) | No unknown descriptors inside at-rules | `manual` | — | `css/recommended` |
@@ -1056,12 +1056,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/at-rule-disallowed-list`](css/at-rule-disallowed-list.md) | No at-rule the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-no-deprecated`](css/at-rule-no-deprecated.md) | No deprecated at-rules | `auto` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `manual` | `ignoreAtRules` | `css/recommended` |
-| [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `suggest` | `ignoreAtRules` | `css/standard` |
+| [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `auto` | `ignoreAtRules` | `css/standard` |
 | [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-property-required-list`](css/at-rule-property-required-list.md) | At-rules hold the descriptors the project requires | `manual` | `list` | *[rules] only* |
 | [`css/block-no-redundant-nested-style-rules`](css/block-no-redundant-nested-style-rules.md) | No `& { … }` wrapper | `suggest` | — | `css/standard` |
-| [`css/color-function-alias-notation`](css/color-function-alias-notation.md) | `rgb()` and `hsl()`, not `rgba()` and `hsla()` | `suggest` | — | `css/standard` |
-| [`css/color-function-notation`](css/color-function-notation.md) | Space-separated colour functions | `suggest` | — | `css/standard` |
+| [`css/color-function-alias-notation`](css/color-function-alias-notation.md) | `rgb()` and `hsl()`, not `rgba()` and `hsla()` | `auto` | — | `css/standard` |
+| [`css/color-function-notation`](css/color-function-notation.md) | Space-separated colour functions | `auto` | — | `css/standard` |
 | [`css/color-hex-alpha`](css/color-hex-alpha.md) | Hex colours with or without an alpha channel, as set | `auto` | `mode` | *[rules] only* |
 | [`css/color-hex-length`](css/color-hex-length.md) | Short hex colours | `auto` | — | `css/standard` |
 | [`css/color-named`](css/color-named.md) | No named colours | `auto` | — | *[rules] only* |
@@ -1141,8 +1141,8 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/property-allowed-list`](css/property-allowed-list.md) | Only propertys the project allows | `manual` | `list` | *[rules] only* |
 | [`css/property-disallowed-list`](css/property-disallowed-list.md) | No property the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/property-layout-mappings`](css/property-layout-mappings.md) | Flow-relative properties, not physical ones | `suggest` | — | *[rules] only* |
-| [`css/property-no-deprecated`](css/property-no-deprecated.md) | No deprecated properties | `suggest` | `ignoreProperties` | `css/recommended` |
-| [`css/property-no-vendor-prefix`](css/property-no-vendor-prefix.md) | No vendor-prefixed properties | `suggest` | `ignoreProperties` | `css/standard` |
+| [`css/property-no-deprecated`](css/property-no-deprecated.md) | No deprecated properties | `auto` | `ignoreProperties` | `css/recommended` |
+| [`css/property-no-vendor-prefix`](css/property-no-vendor-prefix.md) | No vendor-prefixed properties | `auto` | `ignoreProperties` | `css/standard` |
 | [`css/relative-selector-nesting-notation`](css/relative-selector-nesting-notation.md) | Nested relative selectors start with `&` | `auto` | — | *[rules] only* |
 | [`css/rule-nesting-at-rule-required-list`](css/rule-nesting-at-rule-required-list.md) | Nested rules sit inside the at-rules the project requires | `manual` | `list` | *[rules] only* |
 | [`css/rule-selector-property-disallowed-list`](css/rule-selector-property-disallowed-list.md) | No property the project disallows for a selector | `manual` | `list` | *[rules] only* |
@@ -1170,7 +1170,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/selector-no-invalid`](css/selector-no-invalid.md) | No invalid selector | `manual` | — | *[rules] only* |
 | [`css/selector-no-qualifying-type`](css/selector-no-qualifying-type.md) | No class, id or attribute qualified by a type | `suggest` | — | *[rules] only* |
 | [`css/selector-no-unmatchable`](css/selector-no-unmatchable.md) | No selector that can never match | `manual` | — | *[rules] only* |
-| [`css/selector-no-vendor-prefix`](css/selector-no-vendor-prefix.md) | No vendor-prefixed selectors | `suggest` | `ignoreSelectors` | `css/standard` |
+| [`css/selector-no-vendor-prefix`](css/selector-no-vendor-prefix.md) | No vendor-prefixed selectors | `auto` | `ignoreSelectors` | `css/standard` |
 | [`css/selector-not-notation`](css/selector-not-notation.md) | One `:not()` with a list | `suggest` | — | `css/standard` |
 | [`css/selector-pseudo-class-allowed-list`](css/selector-pseudo-class-allowed-list.md) | Only pseudo-classs the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-class-disallowed-list`](css/selector-pseudo-class-disallowed-list.md) | No pseudo-class the project disallows | `manual` | `list` | *[rules] only* |
@@ -1192,7 +1192,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/unit-no-unknown`](css/unit-no-unknown.md) | No unknown units | `manual` | `ignore` | *[rules] only* |
 | [`css/value-keyword-case`](css/value-keyword-case.md) | Keywords in lower case | `auto` | — | *[rules] only* |
 | [`css/value-keyword-layout-mappings`](css/value-keyword-layout-mappings.md) | Flow-relative keywords, not physical ones | `suggest` | — | *[rules] only* |
-| [`css/value-no-vendor-prefix`](css/value-no-vendor-prefix.md) | No vendor-prefixed values | `suggest` | `ignoreValues` | `css/standard` |
+| [`css/value-no-vendor-prefix`](css/value-no-vendor-prefix.md) | No vendor-prefixed values | `auto` | `ignoreValues` | `css/standard` |
 | [`graph/no-unused-css-classes`](graph/no-unused-css-classes.md) | CSS classes must be used somewhere | `suggest` | — | `css/project` |
 
 ## scss

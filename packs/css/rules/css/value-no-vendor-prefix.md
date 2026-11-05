@@ -2,8 +2,9 @@
 id: css/value-no-vendor-prefix
 title: "No vendor-prefixed values"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers that need the prefix lose the value"
+fix: auto
+fix_target: { browsers: "css-value:$FIXED" }
+fix_reason: "browsers that need the prefix lose the value; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   ignoreValues: { type: "string[]", default: ["box", "inline-box"], description: "values to accept, without their prefix; `/regex/` for a pattern" }
