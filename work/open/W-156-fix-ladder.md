@@ -6,7 +6,7 @@ item: W-156
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
+updated_by: "Cowork (Opus 5.5)"
 ball: agent
 ---
 
@@ -20,9 +20,14 @@ ball: agent
 | 2 | Rewrite L4 as the ladder: automatic, then suggested, then manual by a named exception | the rule every future rule follows | ✅ 2026-10-30 |
 | 3 | Teach the engine per-finding fallback, choices, `fix_exception`, the manual ceiling and `--fix-stats` | the law becomes checkable | ✅ 2026-10-31 (lowering, A6, open) |
 | 4 | Move the rules up, pack by pack, choices first: 577 manual → 147 | agents get diffs, not prose | ⏳ |
-| 5 | The decider rules on save vs `fix`, and on two new config inputs | the last 21 moves and safe saves | 🔴 decider decides |
+| 5 | The decider rules on save vs `fix`, the two config inputs, and the capability-blocked rules | the last moves and safe saves | ✅ ruled 2026-11-05 — W-161 and W-162 (capabilities), W-163 (save, targets) |
 
 **Arpit, 2026-10-30:** *"Whenever a rule gets created, there has to be a fix for it. The first priority is fixing it automatically. The second priority is suggesting it so that AI agent can fix it. The last one is manual, and only in exceptional cases we go with manual. Research all the rules and propose how it can be fixed. The priority, create a law SR for it."*
+
+**Ruled 2026-11-05. Arpit (voice):** capabilities — *"So we'll do research on each one of these items So create a research work item so that we can figure out how these can be implemented."* · *"We can close it but once the research item is done it needs to be implemented. … go ahead and create one more build item blocked on research work item."*; save and targets — *"Probably research all these items and make it configurable against each and every rule."* · *"come up with default values as well for these rules."* · *"Let's go with it."* · *"But make it configurable as well."*; then (text) *"file it."*
+- **Capability-blocked rules (B4):** W-161 researches the six capabilities; W-162 (🟡 waits on W-161) builds them and moves the rules. **W-156 closes when only B4's rules are left**, each `fix_pending: "<rung>; needs <capability> (W-162)"` — [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decision 5 amended to allow it.
+- **Save vs `fix`, and the targets:** out of this item, into W-163 (research): a per-rule setting, configurable per rule and per project, with a default for every rule. The 12 target rules stay `suggest` until W-163's build.
+- **The manual ceiling (A4) is retired** (W-139's ruling, SR-LAW-4 decision 6); W-139 removes it. The moves no longer lower ceilings.
 
 **Model:** Opus for slice A (the engine's fix model touches a law and every output format); Sonnet for the per-pack moves, where each rule's examples prove the move.
 
@@ -44,13 +49,12 @@ Build [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 2, 
 | B1 · choices rules | the 155 `suggest-choices` rows, pack by pack, each with its `Fixed (<label>)` examples | ⏳ |
 | B2 · subset `auto` | the 142 `auto+` rows: the subset condition in `fix_reason`, a `Don't` example on each side | ⏳ |
 | B3 · the rest | 16 + 3 → `auto`; 181 → `suggest`; ceilings lowered as each pack lands | ⏳ |
-| B4 · needs | cross-file (69), type info (17), add-import (16), scope rename (6), computed edits (6), purity (5): each row whose capability is missing stays at its current rung until that capability lands | ⏳ |
+| B4 · needs | cross-file (69), type info (17), add-import (16), scope rename (6), computed edits (6), purity (5): each row whose capability is missing stays at its current rung until that capability lands; its `fix_pending:` names W-162 (ruled 2026-11-05), and W-156 closes when only these are left | ⏳ |
 | C · ports | W-139's ports are judged against decisions 3–5 when built; none is `manual` only because its upstream has no fix | ⏳ |
 
 ## Open questions — the decider
 
-1. **Save vs `fix`.** Some `auto` edits keep behaviour but destroy work in progress on every save: a whole unused import, unreachable code, a focused test. Recommended: a rule may say `on_save: false`. `codelaw fix` and the agent hook still apply it; save does not.
-2. **Browser targets** (9 CSS rules) and **the target Python version** (3 rules) as config inputs. Without them those rules stay `suggest`.
+None — all three ruled 2026-11-05 (above).
 
 ## Blockers
 

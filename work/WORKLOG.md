@@ -24,6 +24,22 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*
+- **Done:** OPEN-WORK's inbox emptied (next gate: TS 7.1 RC, 11-10); W-139, W-141, W-156 re-balled 🟢 `agent`; W-161, W-163 (research, `cowork`) and W-162 (build, 🟡 on W-161) filed. Records: SR-LAW-4 decision 6 retired, decision 5 amended (`fix_pending:` naming an open item), veto condition rewritten; SR-LAWS, the register, SR-RULE-PACKS 13a, SR-CLI-AND-MCP, SR-WORK-REGISTRY, SR-RULE-FORMAT 2 follow; SR-LAW-11 gains D-52 (Oxc). **`CLAUDE.md` changed** (SR-WORK-DOCS decision 7a): L4's line drops "each pack's manual count only falls", on the decider's ruling.
+- **Decided / left open:** ruled by Arpit — no ceiling (over the recommendation to leave the 231 out); Oxc approved; capabilities to research then build, W-156 closes with them pending; save and targets to research, configurable per rule, with defaults. Open: none in the inbox.
+- **Mistakes:** none.
+- **Next:** W-139 step 2a — remove the ceiling and land the 231 held ports.
+
+## 2026-11-05 — OPEN-WORK brought to its latest status; W-156's three calls to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *Look into open work file, update the file to its latest status.*
+- **Done:** checked every row against main (`22219660`) and the item files. W-139: native strand landed (`2e59371c`), no longer "landing". W-156: its unruled choices (capability-blocked rules, `on_save`, targets) were sitting inside a green row; moved to the inbox with recommendations, row 🔴 `arpit` (rule 21a), 533 `fix_pending:` counted; its item file gains open question 3.
+- **Decided / left open:** nothing ruled; W-156's three calls wait on the decider.
+- **Mistakes:** none.
+- **Next:** the decider rules W-156's three calls.
+
 ## 2026-11-05 — the parallel build run (30 Oct – 5 Nov): eleven items driven, nine closed or wound down  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *"implement all build open items in parallel"*, W-143 queued behind W-139; then *"don't ask for approvals … implement everything … close all of them"*; finally *"merge whatever is done, do the clean up"* and *"update the open work file"*.

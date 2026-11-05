@@ -22,28 +22,26 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-139: raise manual ceilings, or leave 231 ports out?** ([W-139](open/W-139-rule-parity-build.md)): 231 ports are written and green but `manual`: 75 js (SonarJS, unicorn), 57 Python (Ruff, Pylint), 99 from the native strand (regexp, stylelint, scss, html-validate, markdownlint, react). Their packs are at their ceilings, and only you may raise one (SR-LAW-4 decision 6). **Pick:** (1) *recommended* — leave them out (the ladder exists to push manual down; they would sit in opt-in presets); (2) raise the ceilings by each pack's held count. Specs kept outside the repo in `~/my_programs/codelaw-w139-held/`. | 2026-11-05 |
-| ↳ **blocks:** W-139's 231 held rules | |
-| 🔴 **Oxc's formatter crates under L11** ([W-141](open/W-141-formatter-parity.md)): `oxc_formatter_css`, `_markdown`, `_yaml` and their parsers (MIT, a pinned git revision, not on crates.io) for CSS, SCSS, YAML and Markdown. Measured on the pinned corpus: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3% byte-identical to Prettier. **Ratify or refuse**; if refused, W-141 closes with the engine gaps named in SR-FORMATTER. | 2026-11-05 |
-| ↳ **blocks:** W-141 | |
 
+*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
-## Open items (12)
+## Open items (15)
 
-### build (6)
+### build (7)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🔴 **W-139** `arpit` Rule parity, wound down 11-05: js 345/828 rows, Ruff 349/708, Pylint 108/298, react/ts, testing 169/182, nextjs, 5 PyPI packs; 231 manual ports held (inbox); native strand landing; the rest in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity, wound down 11-05: js 345/828, Ruff 349/708, Pylint 108/298, testing 169/182, nextjs, 5 PyPI packs. Ruled 11-05: no manual ceiling. Next: remove `fix-ladder.toml`, land the 231 held ports. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🔴 **W-141** `arpit` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Next: Arpit's L11 call on Oxc's crates (inbox). Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
+🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Oxc's formatter crates ratified 11-05 (L11, D-52); next: build them behind the formatter and remeasure. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
+🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); 533 rules `fix_pending:`. Ruled 11-05: closes once only the capability-blocked rules are left, their markers naming W-162. Next: the moves, pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); left: moving the ~530 `fix_pending:` rules up, pack by pack; Arpit rules on the capability-blocked ones. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟡 **W-162** waits on **W-161** `agent` Build the six fix capabilities W-161 designs (cross-file edits, type information, adding an import, scope rename, computed edits, purity) and move the ~119 rules waiting on them up the ladder. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
@@ -69,6 +67,10 @@ here. Read that record before changing anything below it.
 
 ### record update (0)
 
-### research (0)
+### research (2)
+
+🟢 **W-161** `cowork` Research: how the engine can make the six kinds of fix it cannot make yet — cross-file edits (69 rules), type information (17), adding an import (16), scope rename (6), computed edits (6), purity (5); one design each, for W-162. Filed by Arpit (Cowork). [detail](open/W-161-fix-capabilities-research.md)
+
+🟢 **W-163** `cowork` Research: per-rule save and agent-hook behaviour (`on_edit`) and target versions (Python, browsers) — each configurable per rule and per project, with a default for every rule. Filed by Arpit (Cowork). [detail](open/W-163-save-behaviour-and-targets.md)
 
 ---

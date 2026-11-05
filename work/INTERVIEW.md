@@ -138,6 +138,8 @@ checkout.
 
 ## 2 · In flight, and the immediate next step
 
+**Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. **W-139** — no manual ceiling at all: L4 decision 6 retired; W-139 removes `packs/fix-ladder.toml` and lands its 231 held ports. **W-141** — Oxc's formatter crates ratified (L11 D-52); W-141 builds them. **W-156** — closes once only the ~119 capability-blocked rules are left, their `fix_pending:` naming W-162 (L4 decision 5 amended); **W-161** researches the six capabilities, **W-162** builds them (🟡 on W-161); **W-163** researches per-rule save/agent-hook behaviour and target versions, configurable, with defaults. **Next for an agent (🟢):** W-139 step 2a, W-141's Oxc build, W-156's moves.
+
 **W-119 step 1 built 2026-10-29 (Claude Code):** Arpit ruled *"Admit main in pypi"* — over a v0.3.1 tag or a W-119-only rule — so `publish.yml -f only=pypi-new` runs from `main` and uploads one new project from v0.3.0's attested build. **Next:** the loop, one name at a time from `codelaw-rules-scss` (the inbox row); the first run is the test of the new mode.
 
 **Ruled 2026-10-29 (Cowork, voice):** the next release is **0.3.0 through CI** (W-116) — npm everything, PyPI only `codelaw` and the six packs that exist; it replaces W-86's v0.2.0 Release. W-114: drop all five worktrees. W-95: Open VSX now (W-117), the Marketplace by hand on release day. W-105: agents add the four type questions (SR-TYPES decision 4), profile before budgets. W-102: redesign first (W-118, research). W-103: spell measured as its own operation (B-062 for the shared benchmark). The inbox holds only PyPI days 2–4, W-97's Marketplace tick and W-117.
