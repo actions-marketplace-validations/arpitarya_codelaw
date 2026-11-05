@@ -71,10 +71,10 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    | JS · JSX · TS · TSX | Biome formatter (`biome_js_formatter`) | Prettier-compatible (Biome tracks its Prettier compatibility in a published report) | MIT / Apache-2.0 | git dependency pinned to a Biome release tag; the crates.io copies are stale |
    | JSON · JSONC | Biome formatter (`biome_json_formatter`) | Prettier-compatible | MIT / Apache-2.0 | same pin |
    | Python | Ruff formatter (`ruff_python_formatter`) | Black-compatible (> 99.9 % identical lines on Django and Zulip, per Ruff) | MIT | crates.io, pinned exactly (`=0.0.18`, the crates Ruff 0.17.1 publishes) |
-   | YAML | `pretty_yaml` | configurable, close to Prettier's YAML style | MIT | crates.io |
+   | YAML | Oxc's formatter (`oxc_formatter_yaml`; W-141, replaced `pretty_yaml` 2026-11-05) | Prettier-compatible (Oxc's own Prettier fixtures: 301/302) | MIT | git revision of `oxc-project/oxc` ([L11](0013_LAW-11-dependencies.md) D-52); its parsers from crates.io |
    | TOML | `taplo` formatter | taplo style | MIT | crates.io |
-   | Markdown | `dprint-plugin-markdown` | CommonMark/GFM, dprint style | MIT | crates.io |
-   | CSS · SCSS | Biome formatter (`biome_css_formatter`; `.scss` through its SCSS source) | Prettier-compatible; no Less or indented Sass | MIT / Apache-2.0 | same Biome pin |
+   | Markdown | Oxc's formatter (`oxc_formatter_markdown`; W-141, replaced `dprint-plugin-markdown` 2026-11-05); a fenced block in a language codelaw formats, and front matter, go to that language's engine through Oxc's dispatcher (`[format.markdown] format_code_blocks`) | Prettier-compatible, CommonMark/GFM (273/283) | MIT | the same Oxc revision |
+   | CSS · SCSS | Oxc's formatter (`oxc_formatter_css`; `.scss` as its SCSS variant; W-141, replaced `biome_css_formatter` 2026-11-05) | Prettier-compatible (CSS 221/221, SCSS 203/217); no indented Sass | MIT | the same Oxc revision; `oxc_allocator` patched to it ([SR-PACKAGES](0107_packages.md) decision 4) |
    | HTML | `markup_fmt` | Prettier-like; embedded `<script>` and `<style>` are handed to the JS and CSS engines through its callback | MIT | crates.io |
 
    Every engine must pass [L2](0004_LAW-2-foss-dependencies.md); `crates/codelaw-cli/tests/licences.rs` checks every crate in `Cargo.lock`, the git-pinned Biome ones included. One transitive crate failed L2: Biome reaches `option-ext` (MPL-2.0) through `directories`. The workspace's `[patch.crates-io]` replaces it with `crates/codelaw-format/shims/option-ext`, an MIT re-implementation of the one trait method `dirs-sys` uses; the licence check sees the shim, not the original. The engine versions are `codelaw_format::ENGINES_FINGERPRINT`, part of every cache key a format result enters (decision 7).
@@ -148,12 +148,12 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
 
      | engine | how |
      |---|---|
-     | Biome (JS · TS · JSON · CSS) | the marker is rewritten to Biome's own `biome-ignore format: codelaw` before formatting and restored after |
-     | pretty_yaml · dprint-plugin-markdown · markup_fmt | each is configured with `prettier-ignore` as its directive; `codelaw-format-ignore` is rewritten to it and restored. Markdown also takes `<!-- prettier-ignore-start -->` … `<!-- prettier-ignore-end -->` |
+     | Biome (JS · TS · JSON) | the marker is rewritten to Biome's own `biome-ignore format: codelaw` before formatting and restored after |
+     | Oxc (CSS · SCSS · YAML · Markdown) · markup_fmt | Oxc reads `prettier-ignore` natively and markup_fmt is configured with `prettier-ignore` as its directive; `codelaw-format-ignore` is rewritten to it and restored. Markdown also takes `<!-- prettier-ignore-start -->` … `<!-- prettier-ignore-end -->` |
      | Ruff (Python) | Ruff's own `# fmt:` pragmas work as they are. An own-line marker followed at its own indentation by a statement becomes `# fmt: off`, and a `# fmt: on` follows that statement; both are undone after. A marker inside an expression, or with no statement after it at its level, skips nothing |
      | taplo (TOML) | taplo has no directive: the file is formatted, then the next entry, table header or array element after each marker is put back as it was written |
 
-     Restoring goes by order: a marker the engine drops or moves fails the file with `format-engine`, so a fenced-off node is never reformatted silently. pretty_yaml applies a marker before a block's first entry to the whole block, not only that entry. The statement tree comes from `ruff_python_ast` and `ruff_text_size` (MIT, `=0.0.18`, the same Ruff release as the formatter).
+     Restoring goes by order: a marker the engine drops or moves fails the file with `format-engine`, so a fenced-off node is never reformatted silently. A YAML marker before a block's first entry applies to the whole block, not only that entry. The statement tree comes from `ruff_python_ast` and `ruff_text_size` (MIT, `=0.0.18`, the same Ruff release as the formatter).
 
 7. **Deterministic and stable ([L5](0007_LAW-5-no-model-in-the-engine.md)).**
    - The same input and the same codelaw version always give byte-identical output.
@@ -218,7 +218,19 @@ Built 2026-11-05 (`W-145`): decision 9. Built 2026-10-21 (`W-07`): decisions 1, 
   | JS · JSX | 139 | 97.1 % | 97.1 % | 97.8 % |
   | TS · TSX | 129 | 82.2 % | 82.2 % | 82.9 % |
 
-  What `W-141` changed, each in `engines.rs`: a block comment that starts its own line at statement level keeps it (`*/.a {` printed as `*/ .a {` before; only whitespace is inserted, so no token changes); HTML void elements end in ` />`; a `style=""` attribute is formatted as CSS declarations joined by `; `; a `<script>` body fits inside its indentation. What is left is inside the engines: Biome's custom-property lists, `calc()` breaks and `a/b` spacing (CSS, SCSS); `markup_fmt` breaking inside an inline element where Prettier moves the element to the next line, and `<caption>`/empty `<style>` layout (HTML).
+  What `W-141` changed, each in `engines.rs`: a block comment that starts its own line at statement level keeps it (`*/.a {` printed as `*/ .a {` before; only whitespace is inserted, so no token changes); HTML void elements end in ` />`; a `style=""` attribute is formatted as CSS declarations joined by `; `; a `<script>` body fits inside its indentation. What was left was inside the engines: Biome's custom-property lists, `calc()` breaks and `a/b` spacing (CSS, SCSS — gone with Biome's CSS formatter, below); `markup_fmt` breaking inside an inline element where Prettier moves the element to the next line, and `<caption>`/empty `<style>` layout (HTML).
+  **Oxc behind the formatter, built 2026-11-05 (`W-141`; [L11](0013_LAW-11-dependencies.md) D-52).** `crates/codelaw-format/src/oxc.rs` runs `oxc_formatter_css`, `_yaml` and `_markdown` (one arena per file); the verifier's parse check uses the same parsers. `format-parity.py` on the same corpus, Prettier 3.9.10, identical files (identical lines):
+
+  | language | files | Biome / pretty_yaml / dprint | Oxc |
+  |---|--:|--:|--:|
+  | CSS | 79 | 74.4 % (98.9 %), 1 skipped | **88.6 %** (99.1 %), none skipped |
+  | SCSS | 150 | 80.7 % (98.0 %) | **86.0 %** (97.4 %) |
+  | YAML | 150 | 89.9 % (99.4 %), 1 skipped | **97.3 %** (99.9 %), none skipped |
+  | Markdown | 150 | 93.3 % (99.8 %) | **94.7 %** (99.9 %) |
+  | HTML (its `<style>` through CSS) | 147 | 68.7 % | 69.4 % |
+
+  SCSS's identical lines fall because of one file, Bootstrap's `_utilities.scss`, where Prettier indents nested maps after a comment by two extra spaces and Oxc does not (72 → 513 differing lines); the other 149 files go from 454 to 302. Markdown's last eight files are fenced JS that Biome leaves as written (strict-mode-invalid examples: octal literals, an `eval` parameter, `"use strict"` in a non-simple function) where Prettier's parser formats them, two `:::` containers Oxc follows with a blank line, and a BOM inside a fence; oxfmt's 97.3 % formats those blocks with Oxc's JS formatter, which D-52 does not cover. **Speed:** `format --check` on the corpus's 529 CSS, SCSS, Markdown and YAML files, 118 → 49 ms (0.43 → 0.19 s on one thread); `format_warm_10k` p95 917 / 743 → 715 / 708 ms (budget 2,379), `startup` p95 2.2 → 2.2 ms (budget 3), `fix_one_file` unchanged — on a loaded M4 (load 9–12), each binary run alternately. **Binary:** 37,958,944 → 35,666,544 bytes (−2.3 MB): Biome's CSS crates, `pretty_yaml` and dprint left the build. **Layout check:** `codelaw test` on the `css`, `scss`, `html` and `security-html` packs as before (decision 3 compares tokens, not the engine).
+
 - **The binary grows** by the size of six formatter engines. Accepted, because each package must be complete ([L6](0008_LAW-6-python-and-node-packages.md) decision 3).
 
 ### Alternatives considered

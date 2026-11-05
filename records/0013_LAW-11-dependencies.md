@@ -104,14 +104,14 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 
 | id | unit | crates | what it does for codelaw | pin | crates incl. transitive | status |
 |---|---|---|---|---|---|---|
-| D-01 | **Biome** | `biome_formatter`, `biome_languages`, `biome_js_parser`, `biome_js_formatter`, `biome_json_parser`, `biome_json_formatter`, `biome_css_parser`, `biome_css_formatter` | formats JS, TS, JSX, JSON, CSS | git `0b4c11f` (Biome 2.5.15) | 133 | ratified 2026-10-26 — *"Ratify."* |
+| D-01 | **Biome** | `biome_formatter`, `biome_languages`, `biome_js_parser`, `biome_js_formatter`, `biome_json_parser`, `biome_json_formatter`, `biome_css_parser`, `biome_css_formatter` | formats JS, TS, JSX, JSON (CSS and SCSS until 2026-11-05, now Oxc's, D-52; `biome_css_formatter` and `biome_css_parser` are no longer built) | git `0b4c11f` (Biome 2.5.15) | 133 | ratified 2026-10-26 — *"Ratify."* |
 | D-02 | **Ruff** | `ruff_formatter`, `ruff_python_formatter`, `ruff_python_parser`, `ruff_python_ast`, `ruff_text_size` | formats Python | `=0.0.18` | 165 | ratified 2026-10-26 — *"Ratify."* |
 | D-03 | **ast-grep** | `ast-grep-core`, `ast-grep-config`, `ast-grep-language` | the `match:` rule engine; brings the tree-sitter grammars for JS, TS, Python, JSON, YAML, Markdown, CSS, HTML | `=0.51.0` | 91 | ratified 2026-10-26 — *"Ratify."* |
 | D-04 | **tree-sitter** | `tree-sitter`, `tree-sitter-language`, `tree-sitter-md`, `tree-sitter-toml-ng` | the parser runtime every lint rule stands on; Markdown and TOML grammars | `=0.27.0` | 26 | ratified 2026-10-26 — *"Ratify."* |
 | D-05 | **tree-sitter-css fork** | in-tree copy of `tree-sitter-css` 0.25.0 (+ `cc`, build) | the CSS grammar (B-047: SCSS joins via tree-sitter-scss, W-62) | vendored | 3 | ratified 2026-10-26 — *"Ratify."* |
 | D-06 | **taplo** | `taplo` | formats TOML | `=0.14.0` | 64 | ratified 2026-10-26 — *"Ratify."* |
-| D-07 | **pretty_yaml** | `pretty_yaml` | formats YAML | `=0.6.0` | 10 | ratified 2026-10-26 — *"Ratify."* |
-| D-08 | **dprint Markdown** | `dprint-plugin-markdown`, `dprint-core` | formats Markdown | `=0.26.0` | 23 | ratified 2026-10-26 — *"Ratify."* |
+| D-07 | **pretty_yaml** | `pretty_yaml` | formatted YAML until 2026-11-05; **not used since** (W-141: Oxc, D-52) | `=0.6.0` | 10 | ratified 2026-10-26 — *"Ratify."* · unused since 2026-11-05; its ledger lines went with the code |
+| D-08 | **dprint Markdown** | `dprint-plugin-markdown`, `dprint-core` | formatted Markdown until 2026-11-05; **not used since** (W-141: Oxc, D-52) | `=0.26.0` | 23 | ratified 2026-10-26 — *"Ratify."* · unused since 2026-11-05; its ledger lines went with the code |
 | D-09 | **markup_fmt** | `markup_fmt` | formats HTML | `=0.27.6` | 12 | ratified 2026-10-26 — *"Ratify."* |
 | D-10 | **serde** | `serde`, `serde_json` | reads and writes JSON and Rust data everywhere | 1.0.229 / 1.0.154 | 16 | ratified 2026-10-26 — *"Ratify."* |
 | D-11 | **toml** | `toml`, `toml_edit` | reads `codelaw.toml`; edits it keeping the user's formatting | 1.1.8 / 0.25.17 | 19 | ratified 2026-10-26 — *"Ratify."* |
@@ -127,7 +127,7 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 | D-22 | **semver** | `semver` | version ranges (`requires`, packs, deps) | 1.0.28 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-25 | **libc** | `libc` | OS calls (signals, Unix sockets) | 0.2.191 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-33 | **tree-sitter-scss (vendored)** | in-tree copy of `tree-sitter-scss` 1.0.0, commit `5da5ba7` (MIT, +`tree-sitter-language`, `cc` already counted) | the SCSS grammar (W-62; B-047) | vendored | 0 new | ratified 2026-10-26 — *"Own grammar / tree-sitter-scss"* (B-047, docket) |
-| D-52 | **Oxc formatters** | `oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers (`oxc-css-parser`, `oxc-markdown-parser`, `oxc-yaml-parser`), `oxc_formatter_core`, `oxc_allocator` (MIT; `publish = false`, not on crates.io) | formats CSS, SCSS, YAML and Markdown closer to Prettier (W-141, measured: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3%) | a git revision of `oxc-project/oxc`, pinned by W-141's build and written here (decision 4: the tree as pinned then) | counted at the build | ratified 2026-11-05 — *"Approve it."* |
+| D-52 | **Oxc formatters** | `oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers (`oxc-css-parser`, `oxc-markdown-parser`, `oxc-yaml-parser`), `oxc_formatter_core`, `oxc_allocator` (MIT; `publish = false`, not on crates.io) | formats CSS, SCSS, YAML and Markdown closer to Prettier (W-141, measured: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3%) | git `7b933d5` of `oxc-project/oxc` (`7b933d595bf18619a3ceac5d4bf32099d5e0c30b`, 2026-11-05; `oxc_formatter_*` 0.76.0, `oxc_allocator` 0.157.0, `oxc-css-parser` 0.0.20, `oxc-markdown-parser` 0.0.4, `oxc-yaml-parser` 0.0.8), pinned by W-141's build; `oxc_allocator` is patched to the same revision so the crates.io parsers share it ([SR-PACKAGES](0107_packages.md) decision 4). Moved only by a change that reruns W-141's corpus | 74 (incl. `oxc_span`, `oxc_diagnostics`, `oxc_data_structures`, the `icu_segmenter` family, and the build-only `oxc_formatter_tests`, which generates Oxc's own test list) | ratified 2026-11-05 — *"Approve it."* · built 2026-11-05 (W-141): CSS, SCSS, YAML and Markdown format with it |
 
 ### Rust — tests and build only
 
@@ -331,14 +331,21 @@ D-06 cargo tree ahash@0.8 aho-corasick@1 allocator-api2@0.2 arc-swap@1 autocfg@1
    taplo@0.14 text-size@1 thiserror-impl@1 thiserror@1 time-core@0.1 time-macros@0.2 time@0.3
    tracing-attributes@0.1 tracing-core@0.1 tracing@0.1 unicode-ident@1 version_check@0.9 wasip2@1
    wit-bindgen@0.57 zerocopy-derive@0.8 zerocopy@0.8 zmij@1
-D-07 cargo members pretty_yaml
-D-07 cargo tree countme@3 hashbrown@0.14 memchr@2 pretty_yaml@0.6 rowan@0.16 rustc-hash@1 text-size@1
-   tiny_pretty@0.2 winnow@0.7 yaml_parser@0.3
-D-08 cargo members dprint-core dprint-plugin-markdown
-D-08 cargo tree allocator-api2@0.2 bumpalo@3 dprint-core-macros@0.1 dprint-core@0.70
-   dprint-plugin-markdown@0.26 equivalent@1 foldhash@0.1 foldhash@0.2 hashbrown@0.15 hashbrown@0.17
-   indexmap@2 proc-macro2@1 quote@1 rustc-hash@2 serde@1 serde_core@1 serde_derive@1 syn@1 syn@3
-   thiserror-impl@2 thiserror@2 unicode-ident@1 unicode-width@0.2
+D-52 cargo members oxc-css-parser oxc-markdown-parser oxc-yaml-parser oxc_allocator oxc_formatter_core oxc_formatter_css oxc_formatter_markdown oxc_formatter_yaml
+D-52 cargo tree allocator-api2@0.2 bytecount@0.6 castaway@0.2 cfg-if@1 compact_str@0.10 cow-utils@0.1
+   displaydoc@0.2 equivalent@1 fastrand@2 foldhash@0.2 hashbrown@0.17 icu_collections@2
+   icu_locale_core@2 icu_locale_fallback@2 icu_locale_fallback_data@2 icu_provider@2 icu_segmenter@2
+   icu_segmenter_data@2 indexmap@2 itoa@1 litemap@0.8 memchr@2 oxc-css-parser@0.0.20
+   oxc-markdown-parser@0.0.4 oxc-yaml-parser@0.0.8 oxc_allocator@0.157 oxc_ast_macros@0.157
+   oxc_data_structures@0.157 oxc_diagnostics@0.157 oxc_estree@0.157 oxc_formatter_core@0.76
+   oxc_formatter_css@0.76 oxc_formatter_markdown@0.76 oxc_formatter_tests@0.62
+   oxc_formatter_yaml@0.76 oxc_span@0.157 oxc_str@0.157 percent-encoding@2 phf@0.14
+   phf_generator@0.14 phf_macros@0.14 phf_shared@0.14 potential_utf@0.1 proc-macro2@1 quote@1
+   rustc-hash@2 rustversion@1 serde@1 serde_core@1 serde_derive@1 serde_json@1 siphasher@1 smallvec@1
+   smawk@0.3 stable_deref_trait@1 static_assertions@1 syn@2 syn@3 synstructure@0.14 textwrap@0.16
+   tinystr@0.8 unicode-ident@1 unicode-segmentation@1 unicode-width@0.2 utf8_iter@1 writeable@0.6
+   yoke-derive@0.8 yoke@0.8 zerofrom-derive@0.1 zerofrom@0.1 zerotrie@0.2 zerovec-derive@0.11
+   zerovec@0.11 zmij@1
 D-09 cargo members markup_fmt
 D-09 cargo tree aho-corasick@1 anyhow@1 css_dataset@0.4 either@1 itertools@0.15 markup_fmt@0.27
    memchr@2 regex-automata@0.4 regex-syntax@0.8 regex@1 tiny_pretty@0.4 unicode-width@0.2

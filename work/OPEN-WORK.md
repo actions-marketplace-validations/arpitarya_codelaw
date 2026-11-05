@@ -35,7 +35,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-05: manual ceiling removed, the 231 held ports landed. Next: step 3 — corpus counts, L8 budgets. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Oxc's formatter crates ratified 11-05 (L11, D-52); next: build them behind the formatter and remeasure. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
+🟢 **W-141** `agent` Formatter vs Prettier. Oxc built behind the formatter 11-05 (D-52): CSS 74→89%, SCSS 81→86%, YAML 90→97%, Markdown 93→95%, faster, binary −2.3 MB. Left: DoD 3's ≥ 98% — the rest is in Biome (JS/TS), markup_fmt (HTML) and Oxc. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
