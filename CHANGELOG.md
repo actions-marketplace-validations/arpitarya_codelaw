@@ -39,6 +39,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **pandas: rules move up the fix ladder (W-156):** 3 moved (pandas-use-of-dot-read-table to auto with auto_when — no sep, delimiter or second positional; nunique-constant-series-check and use-of-inplace-argument to suggest) (pandas: auto 0 → 1, suggest 7 → 9, manual 5 → 2 (pending 3 → 0)).
 - **numpy: rules move up the fix ladder (W-156):** 2 moved to auto (numpy-deprecated-function; numpy2-deprecation with an auto_when on the plain aliases) (numpy: auto 0 → 2, suggest 1 → 1, manual 3 → 1 (pending 2 → 0)).
 - **node: rules move up the fix ladder (W-156):** 3 moved (no-process-exit with labelled choices; global-require hoisted with move-to after-imports; no-exports-assign to suggest) (node: auto 2 → 2, suggest 15 → 18, manual 18 → 15 (pending 9 → 6)).
 - **nextjs: rules move up the fix ladder (W-156):** 6 moved to suggest (no-sync-scripts with labelled choices; google-font-preconnect, no-head-import-in-document, no-script-component-in-head, no-typos, no-unwanted-polyfillio); google-font-display kept as needing computed edits (W-162) (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)).

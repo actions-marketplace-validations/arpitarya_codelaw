@@ -2362,15 +2362,15 @@ Presets: `codelaw:pandas/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-at`](pandas/pandas-use-of-dot-at.md) | .loc, not .at | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-iat`](pandas/pandas-use-of-dot-iat.md) | .iloc, not .iat | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-is-null`](pandas/pandas-use-of-dot-is-null.md) | .isna, not .isnull | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-ix`](pandas/pandas-use-of-dot-ix.md) | No .ix | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-not-null`](pandas/pandas-use-of-dot-not-null.md) | .notna, not .notnull | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-pivot-or-unstack`](pandas/pandas-use-of-dot-pivot-or-unstack.md) | pivot_table, not pivot or unstack | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `auto` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-stack`](pandas/pandas-use-of-dot-stack.md) | melt, not stack | `manual` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-values`](pandas/pandas-use-of-dot-values.md) | .to_numpy, not .values | `suggest` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-pd-merge`](pandas/pandas-use-of-pd-merge.md) | df.merge, not pd.merge | `suggest` | — | `pandas/recommended` |

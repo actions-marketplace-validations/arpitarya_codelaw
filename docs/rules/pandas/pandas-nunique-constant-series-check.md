@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:pandas/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the faster check is written by hand) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the replacement reads the first value and compares it with the rest; the reviewer confirms how an empty series and NaN should count) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PD101` |
