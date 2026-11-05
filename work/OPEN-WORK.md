@@ -39,9 +39,9 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); 533 rules `fix_pending:`. Ruled 11-05: closes once only the capability-blocked rules are left, their markers naming W-162. Next: the moves, pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); 496 rules `fix_pending:` — 114 capability-blocked, marked `(W-162)` (2 name W-105, W-166), and 382 to move. Ruled 11-05: closes once only the capability-blocked rules are left. Next: the moves, pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. Next: re-judge the 37. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. The 37 re-judged `manual` by W-156 (11-05). Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 

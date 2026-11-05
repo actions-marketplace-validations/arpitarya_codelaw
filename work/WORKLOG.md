@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-156 step 4: capability markers, the 37 re-judged, the moves begun  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-156 step 4 — move rules up the ladder pack by pack, mark the capability-blocked ones with W-162, give W-161's re-judged rules their exception.*
+- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496.
+- **Decided / left open:** the five odd `needs` labels folded as W-161 §1 counts them; `browser-targets` names W-166, the TS code fixes W-105.
+- **Mistakes:** none.
+- **Next:** the moves, pack by pack.
+
 ## 2026-11-05 — W-167 and W-168 filed: graph architecture design, graph measured at 10k–1M files  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"how does the graph work in code law?"*, *"is it performant for very large repo??"*, then *"add few work items — 1. architecture design for graph generation 2. measurement for very large repos 10k, 50k, 100k, 500k, 1million"*.
