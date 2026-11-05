@@ -2,9 +2,8 @@
 id: react/a11y-aria-unsupported-elements
 title: "No ARIA on elements that cannot carry it"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the attribute was meant for another element, and which one is the author's call"
-fix_pending: "auto"
+fix: auto
+fix_reason: "the element is never rendered or has no role, so removing the attribute changes nothing for assistive technology"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-unsupported-elements]
 since: 0.5.0
@@ -22,6 +21,7 @@ match:
     any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}]
     has: { field: name, regex: '^(base|col|colgroup|head|html|link|meta|noembed|noscript|param|picture|script|source|style|template|title|track)$' }
 message: "This element does not support ARIA; remove `$$MATCH`"
+fix: [remove]
 ```
 
 ## How to fix
@@ -38,6 +38,12 @@ message: "This element does not support ARIA; remove `$$MATCH`"
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+#### Fixed
+
+```js
+const m = <meta charset="utf-8"  />;
+```
+
 #### Do
 
 ```js
@@ -52,6 +58,12 @@ const m = <meta charset="utf-8" />;
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+#### Fixed
+
+```jsx
+const m = <meta charset="utf-8"  />;
+```
+
 #### Do
 
 ```jsx
@@ -64,6 +76,12 @@ const m = <meta charset="utf-8" />;
 
 ```tsx
 const m = <meta charset="utf-8" aria-hidden="true" />;
+```
+
+#### Fixed
+
+```tsx
+const m = <meta charset="utf-8"  />;
 ```
 
 #### Do

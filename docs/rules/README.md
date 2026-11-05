@@ -731,41 +731,41 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`react/a11y-alt-text`](react/a11y-alt-text.md) | Images and image-like elements carry alternative text | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-alt-text`](react/a11y-alt-text.md) | Images and image-like elements carry alternative text | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-anchor-ambiguous-text`](react/a11y-anchor-ambiguous-text.md) | Link text says where it goes | `manual` | — | *[rules] only* |
 | [`react/a11y-anchor-has-content`](react/a11y-anchor-has-content.md) | A link has content | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-anchor-is-valid`](react/a11y-anchor-is-valid.md) | A link goes somewhere | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-aria-activedescendant-has-tabindex`](react/a11y-aria-activedescendant-has-tabindex.md) | An element with aria-activedescendant is focusable | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-anchor-is-valid`](react/a11y-anchor-is-valid.md) | A link goes somewhere | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-activedescendant-has-tabindex`](react/a11y-aria-activedescendant-has-tabindex.md) | An element with aria-activedescendant is focusable | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-aria-props`](react/a11y-aria-props.md) | ARIA attributes are real ones | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-aria-proptypes`](react/a11y-aria-proptypes.md) | ARIA attribute values have the right type | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-proptypes`](react/a11y-aria-proptypes.md) | ARIA attribute values have the right type | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-aria-role`](react/a11y-aria-role.md) | A role is a real ARIA role | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-aria-unsupported-elements`](react/a11y-aria-unsupported-elements.md) | No ARIA on elements that cannot carry it | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-aria-unsupported-elements`](react/a11y-aria-unsupported-elements.md) | No ARIA on elements that cannot carry it | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-autocomplete-valid`](react/a11y-autocomplete-valid.md) | autoComplete holds a valid token list | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-click-events-have-key-events`](react/a11y-click-events-have-key-events.md) | A clickable element also answers the keyboard | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-click-events-have-key-events`](react/a11y-click-events-have-key-events.md) | A clickable element also answers the keyboard | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-control-has-associated-label`](react/a11y-control-has-associated-label.md) | A button has a label | `manual` | — | *[rules] only* |
 | [`react/a11y-heading-has-content`](react/a11y-heading-has-content.md) | A heading has content | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-html-has-lang`](react/a11y-html-has-lang.md) | The html element has a lang | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-iframe-has-title`](react/a11y-iframe-has-title.md) | An iframe has a title | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-img-redundant-alt`](react/a11y-img-redundant-alt.md) | Alt text does not say "image" | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-interactive-supports-focus`](react/a11y-interactive-supports-focus.md) | An element with an interactive role is focusable | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-label-has-associated-control`](react/a11y-label-has-associated-control.md) | A label is tied to a control | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-interactive-supports-focus`](react/a11y-interactive-supports-focus.md) | An element with an interactive role is focusable | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-label-has-associated-control`](react/a11y-label-has-associated-control.md) | A label is tied to a control | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-lang`](react/a11y-lang.md) | lang is a valid language tag | `manual` | — | *[rules] only* |
 | [`react/a11y-media-has-caption`](react/a11y-media-has-caption.md) | Audio and video have captions | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-mouse-events-have-key-events`](react/a11y-mouse-events-have-key-events.md) | Hover handlers have focus twins | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-access-key`](react/a11y-no-access-key.md) | No accessKey | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `manual` | — | *[rules] only* |
-| [`react/a11y-no-autofocus`](react/a11y-no-autofocus.md) | No autoFocus | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-distracting-elements`](react/a11y-no-distracting-elements.md) | No marquee or blink | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-interactive-element-to-noninteractive-role`](react/a11y-no-interactive-element-to-noninteractive-role.md) | Interactive elements keep an interactive role | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-noninteractive-element-interactions`](react/a11y-no-noninteractive-element-interactions.md) | Non-interactive elements have no handlers | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-noninteractive-element-to-interactive-role`](react/a11y-no-noninteractive-element-to-interactive-role.md) | Non-interactive elements keep their role | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-noninteractive-tabindex`](react/a11y-no-noninteractive-tabindex.md) | Non-interactive elements are not in the tab order | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-redundant-roles`](react/a11y-no-redundant-roles.md) | No role an element already has | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-mouse-events-have-key-events`](react/a11y-mouse-events-have-key-events.md) | Hover handlers have focus twins | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-access-key`](react/a11y-no-access-key.md) | No accessKey | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `suggest` | — | *[rules] only* |
+| [`react/a11y-no-autofocus`](react/a11y-no-autofocus.md) | No autoFocus | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-distracting-elements`](react/a11y-no-distracting-elements.md) | No marquee or blink | `auto` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-interactive-element-to-noninteractive-role`](react/a11y-no-interactive-element-to-noninteractive-role.md) | Interactive elements keep an interactive role | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-element-interactions`](react/a11y-no-noninteractive-element-interactions.md) | Non-interactive elements have no handlers | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-element-to-interactive-role`](react/a11y-no-noninteractive-element-to-interactive-role.md) | Non-interactive elements keep their role | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-noninteractive-tabindex`](react/a11y-no-noninteractive-tabindex.md) | Non-interactive elements are not in the tab order | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-no-redundant-roles`](react/a11y-no-redundant-roles.md) | No role an element already has | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-static-element-interactions`](react/a11y-no-static-element-interactions.md) | div and span have a role when they handle events | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-prefer-tag-over-role`](react/a11y-prefer-tag-over-role.md) | The native element, not a role | `manual` | — | *[rules] only* |
-| [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `manual` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `auto` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `suggest` | — | `react/recommended`, `react/a11y` |
+| [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-tabindex-no-positive`](react/a11y-tabindex-no-positive.md) | No positive tabIndex | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/boolean-prop-naming`](react/boolean-prop-naming.md) | Boolean props are named is… or has… | `manual` | — | *[rules] only* |
 | [`react/button-has-type`](react/button-has-type.md) | A <button> says its type | `suggest` | — | *[rules] only* |
@@ -821,18 +821,18 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-adjacent-inline-elements`](react/no-adjacent-inline-elements.md) | No inline elements that touch | `suggest` | — | *[rules] only* |
 | [`react/no-array-index-key`](react/no-array-index-key.md) | No array index as a key | `manual` | — | *[rules] only* |
 | [`react/no-arrow-function-lifecycle`](react/no-arrow-function-lifecycle.md) | Lifecycle methods are methods, not arrow fields | `auto` | — | *[rules] only* |
-| [`react/no-children-prop`](react/no-children-prop.md) | Children are passed as children, not as a prop | `manual` | — | `react/recommended` |
+| [`react/no-children-prop`](react/no-children-prop.md) | Children are passed as children, not as a prop | `auto` | — | `react/recommended` |
 | [`react/no-clone-element`](react/no-clone-element.md) | No `cloneElement` | `manual` | — | *[rules] only* |
 | [`react/no-context`](react/no-context.md) | No React context: no createContext, no useContext | `manual` | `use_instead` | *[rules] only* |
-| [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `manual` | — | `react/recommended` |
-| [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `manual` | — | `react/recommended` |
+| [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `suggest` | — | `react/recommended` |
+| [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `suggest` | — | `react/recommended` |
 | [`react/no-deriving-state-in-effects`](react/no-deriving-state-in-effects.md) | No effect that only copies a value into state | `manual` | — | *[rules] only* |
 | [`react/no-did-mount-set-state`](react/no-did-mount-set-state.md) | No setState in componentDidMount | `manual` | — | *[rules] only* |
 | [`react/no-did-update-set-state`](react/no-did-update-set-state.md) | No setState in componentDidUpdate | `manual` | — | *[rules] only* |
-| [`react/no-direct-mutation-state`](react/no-direct-mutation-state.md) | No assigning to this.state outside the constructor | `manual` | — | `react/recommended` |
+| [`react/no-direct-mutation-state`](react/no-direct-mutation-state.md) | No assigning to this.state outside the constructor | `suggest` | — | `react/recommended` |
 | [`react/no-find-dom-node`](react/no-find-dom-node.md) | No findDOMNode | `manual` | — | `react/recommended` |
 | [`react/no-invalid-html-attribute`](react/no-invalid-html-attribute.md) | rel holds only valid link types | `manual` | — | *[rules] only* |
-| [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `manual` | — | `react/recommended` |
+| [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `suggest` | — | `react/recommended` |
 | [`react/no-multi-comp`](react/no-multi-comp.md) | One component per file | `manual` | — | *[rules] only* |
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
 | [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
@@ -840,15 +840,15 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
 | [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
-| [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `manual` | — | `react/recommended` |
+| [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `suggest` | — | `react/recommended` |
 | [`react/no-set-state`](react/no-set-state.md) | No this.setState | `manual` | — | *[rules] only* |
 | [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `manual` | — | `react/recommended` |
 | [`react/no-set-state-in-render`](react/no-set-state-in-render.md) | State is not set on every render | `manual` | — | `react/recommended` |
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
-| [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `manual` | — | `react/recommended` |
+| [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `suggest` | — | `react/recommended` |
 | [`react/no-this-in-sfc`](react/no-this-in-sfc.md) | No this in a function component | `manual` | — | *[rules] only* |
-| [`react/no-typos`](react/no-typos.md) | No miscased React class members | `manual` | — | *[rules] only* |
+| [`react/no-typos`](react/no-typos.md) | No miscased React class members | `suggest` | — | *[rules] only* |
 | [`react/no-unescaped-entities`](react/no-unescaped-entities.md) | No unescaped >, ", ' or } in JSX text | `manual` | — | `react/recommended` |
 | [`react/no-unknown-property`](react/no-unknown-property.md) | DOM elements use React's prop names, not HTML attribute names | `auto` | — | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `manual` | — | `react/recommended` |

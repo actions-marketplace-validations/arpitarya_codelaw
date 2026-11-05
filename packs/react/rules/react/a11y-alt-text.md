@@ -2,9 +2,8 @@
 id: react/a11y-alt-text
 title: "Images and image-like elements carry alternative text"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "only the author knows what the image shows"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "an `<img>` hidden with aria-hidden is decorative, so an empty `alt` changes nothing for assistive technology; any other image needs an `alt` that says what it shows, so the reviewer confirms it is decorative"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/alt-text]
 since: 0.5.0
@@ -25,7 +24,10 @@ match:
   - not:
       has: {kind: jsx_attribute, regex: ^(aria-label|aria-labelledby)\b}
   - any:
-    - has: {field: name, regex: ^(img|area)$}
+    - has: {field: name, regex: ^img$, pattern: $N}
+      not:
+        has: {kind: jsx_attribute, regex: '^(alt\b|role=["'']?(presentation|none))'}
+    - has: {field: name, regex: ^area$}
       not:
         has: {kind: jsx_attribute, regex: '^(alt\b|role=["'']?(presentation|none))'}
     - all:
@@ -36,7 +38,13 @@ match:
     - has: {field: name, regex: ^object$}
       not:
         has: {kind: jsx_attribute, regex: ^title\b}
+auto_when:
+  all:
+  - has: {field: name, regex: ^img$}
+  - has: {kind: jsx_attribute, regex: '^aria-hidden(=(["'']true|\{\s*true\s*\})|$)'}
 message: 'Give this element alternative text: an `alt` (empty for a decorative image) or an `aria-label`'
+fix:
+  - insert-after: { target: $N, text: ' alt=""' }
 ```
 
 ## How to fix
@@ -53,6 +61,12 @@ message: 'Give this element alternative text: an `alt` (empty for a decorative i
 const logo = <img src="logo.png" />;
 ```
 
+#### Fixed
+
+```js
+const logo = <img alt="" src="logo.png" />;
+```
+
 #### Do
 
 ```js
@@ -67,6 +81,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 const logo = <img src="logo.png" />;
 ```
 
+#### Fixed
+
+```jsx
+const logo = <img alt="" src="logo.png" />;
+```
+
 #### Do
 
 ```jsx
@@ -79,6 +99,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 
 ```tsx
 const logo = <img src="logo.png" />;
+```
+
+#### Fixed
+
+```tsx
+const logo = <img alt="" src="logo.png" />;
 ```
 
 #### Do

@@ -2,9 +2,8 @@
 id: react/a11y-no-noninteractive-element-interactions
 title: "Non-interactive elements have no handlers"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the fix is a native control or an interactive role with focus, and that is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the handler moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; an element with no children gets no edit"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-noninteractive-element-interactions]
 since: 0.5.0
@@ -26,7 +25,18 @@ match:
       has: {kind: jsx_attribute, regex: ^role\b}
   - not:
       has: {kind: jsx_expression}
+  - any:
+    - kind: jsx_opening_element
+      has: {kind: jsx_attribute, regex: ^(onClick|onMouseDown|onMouseUp|onKeyPress|onKeyDown|onKeyUp)\b, pattern: $A}
+      inside:
+        kind: jsx_element
+        has: {field: close_tag, pattern: $CT}
+    - {regex: '.'}
 message: Do not put a handler on a non-interactive element; use a `<button>` inside it
+fix:
+  - remove: $A
+  - insert-after: { target: match, text: '<button type="button" $A>' }
+  - insert-before: { target: $CT, text: "</button>" }
 ```
 
 ## How to fix
@@ -43,6 +53,12 @@ message: Do not put a handler on a non-interactive element; use a `<button>` ins
 const i = <li onClick={pick}>One</li>;
 ```
 
+#### Fixed
+
+```js
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 #### Do
 
 ```js
@@ -57,6 +73,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 const i = <li onClick={pick}>One</li>;
 ```
 
+#### Fixed
+
+```jsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 #### Do
 
 ```jsx
@@ -69,6 +91,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 
 ```tsx
 const i = <li onClick={pick}>One</li>;
+```
+
+#### Fixed
+
+```tsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
 ```
 
 #### Do

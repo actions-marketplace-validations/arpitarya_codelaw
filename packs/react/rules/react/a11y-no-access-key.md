@@ -2,9 +2,8 @@
 id: react/a11y-no-access-key
 title: "No accessKey"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "removing the shortcut may need another way to reach the element"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing the shortcut may leave the element without another way to reach it, which the reviewer confirms"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-access-key]
 since: 0.5.0
@@ -21,6 +20,7 @@ match:
   not: { regex: '^accessKey=\{\s*undefined\s*\}$' }
   inside: { any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}], has: { field: name, regex: '^[a-z]' } }
 message: "Remove `accessKey`; it clashes with assistive-technology shortcuts"
+fix: [remove]
 ```
 
 ## How to fix
@@ -37,6 +37,12 @@ message: "Remove `accessKey`; it clashes with assistive-technology shortcuts"
 const s = <button accessKey="s">Save</button>;
 ```
 
+#### Fixed
+
+```js
+const s = <button >Save</button>;
+```
+
 #### Do
 
 ```js
@@ -51,6 +57,12 @@ const s = <button>Save</button>;
 const s = <button accessKey="s">Save</button>;
 ```
 
+#### Fixed
+
+```jsx
+const s = <button >Save</button>;
+```
+
 #### Do
 
 ```jsx
@@ -63,6 +75,12 @@ const s = <button>Save</button>;
 
 ```tsx
 const s = <button accessKey="s">Save</button>;
+```
+
+#### Fixed
+
+```tsx
+const s = <button >Save</button>;
 ```
 
 #### Do

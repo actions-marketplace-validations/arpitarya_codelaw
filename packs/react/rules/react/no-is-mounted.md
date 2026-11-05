@@ -2,9 +2,8 @@
 id: react/no-is-mounted
 title: "No this.isMounted()"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the callback has to be cancelled where it starts"
-fix_pending: "auto-subset"
+fix: suggest
+fix_reason: "a guard with only a block of statements and no else is dropped, keeping the block (a setState after unmount is a no-op); the reviewer confirms the callback needs no cancellation instead"
 stability: preview
 ported_from: [eslint-plugin-react/no-is-mounted]
 since: 0.1.0
@@ -17,8 +16,17 @@ instead.
 
 ```codelaw
 match:
-  pattern: this.isMounted()
+  any:
+    - pattern: this.isMounted()
+      inside:
+        stopBy: end
+        all:
+          - pattern: $IF
+          - pattern: 'if (this.isMounted()) { $$$B }'
+    - pattern: this.isMounted()
 message: "`isMounted` is an anti-pattern and gone from ES6 classes"
+fix:
+  - replace: {target: $IF, with: '$$$B'}
 ```
 
 ## How to fix
@@ -38,6 +46,16 @@ class A extends React.Component {
     if (this.isMounted()) {
       this.setState({ ok: true });
     }
+  }
+}
+```
+
+#### Fixed
+
+```js
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
   }
 }
 ```
@@ -69,6 +87,16 @@ class A extends React.Component {
 }
 ```
 
+#### Fixed
+
+```jsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
+  }
+}
+```
+
 #### Do
 
 ```jsx
@@ -92,6 +120,16 @@ class A extends React.Component {
     if (this.isMounted()) {
       this.setState({ ok: true });
     }
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
   }
 }
 ```

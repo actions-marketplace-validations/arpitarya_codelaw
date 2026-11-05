@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right keys and behaviour depend on what the element does — usually a `<button>` is the better fix) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a button changes the element's markup and styling, and the copied key handler assumes Enter and Space should click it; the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/click-events-have-key-events` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                           # the resolved set
 const c = <div onClick={open}>Open</div>;
 ```
 
+#### Fixed (use a button)
+
+```js
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+#### Fixed (add key handler)
+
+```js
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const c = <button type="button" onClick={open}>Open</button>;
 const c = <div onClick={open}>Open</div>;
 ```
 
+#### Fixed (use a button)
+
+```jsx
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+#### Fixed (add key handler)
+
+```jsx
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const c = <button type="button" onClick={open}>Open</button>;
 
 ```tsx
 const c = <div onClick={open}>Open</div>;
+```
+
+#### Fixed (use a button)
+
+```tsx
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+#### Fixed (add key handler)
+
+```tsx
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
 ```
 
 #### Do

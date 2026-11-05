@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (use a non-interactive element instead, or drop the role; which is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the role keeps the interactive element and drops the semantics it claimed; the reviewer confirms the control is meant to stay, or swaps in a non-interactive element) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-interactive-element-to-noninteractive-role` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                                            #
 const b = <button role="heading">Title</button>;
 ```
 
+#### Fixed
+
+```js
+const b = <button >Title</button>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const b = <h2>Title</h2>;
 const b = <button role="heading">Title</button>;
 ```
 
+#### Fixed
+
+```jsx
+const b = <button >Title</button>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const b = <h2>Title</h2>;
 
 ```tsx
 const b = <button role="heading">Title</button>;
+```
+
+#### Fixed
+
+```tsx
+const b = <button >Title</button>;
 ```
 
 #### Do

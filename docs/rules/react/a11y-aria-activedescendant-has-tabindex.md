@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the element joins the tab order (`0`) or not (`-1`) is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether the element joins the tab order (0) or is focused from code only (-1) is the reviewer's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/aria-activedescendant-has-tabindex` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                                 # the resolv
 const l = <div aria-activedescendant={id} />;
 ```
 
+#### Fixed (in the tab order)
+
+```js
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+#### Fixed (focused from code)
+
+```js
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const l = <div aria-activedescendant={id} tabIndex={0} />;
 const l = <div aria-activedescendant={id} />;
 ```
 
+#### Fixed (in the tab order)
+
+```jsx
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+#### Fixed (focused from code)
+
+```jsx
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const l = <div aria-activedescendant={id} tabIndex={0} />;
 
 ```tsx
 const l = <div aria-activedescendant={id} />;
+```
+
+#### Fixed (in the tab order)
+
+```tsx
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+#### Fixed (focused from code)
+
+```tsx
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
 ```
 
 #### Do

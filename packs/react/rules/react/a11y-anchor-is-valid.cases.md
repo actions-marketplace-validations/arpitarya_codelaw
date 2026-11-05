@@ -19,3 +19,14 @@ const a = <a href="javascript:void(0)">x</a>;
 ```expect
 1:11 react/a11y-anchor-is-valid
 ```
+
+### case: a self-closing anchor still matches and is fixed
+```jsx
+const a = <a href="#" onClick={open} />;
+```
+```expect
+1:11 react/a11y-anchor-is-valid
+```
+```fixed
+const a = <button type="button"  onClick={open} />;
+```

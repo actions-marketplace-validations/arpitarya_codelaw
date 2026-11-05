@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the attribute's value is the element's state, which the author wires up) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a non-heading element given role=heading gets aria-level="2", ARIA's default level; the other roles need the element's live state, so they carry no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/role-has-required-aria-props` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>                           # the resolved set
 
 ## How to fix
 
-1. Add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
+1. A `role="heading"` gets `aria-level="2"` from the fix. For the other roles, add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
 
 ## Examples
 
@@ -130,13 +130,19 @@ codelaw config --print --for <file>                           # the resolved set
 #### Don't
 
 ```js
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```js
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```js
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ### JSX
@@ -144,13 +150,19 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 #### Don't
 
 ```jsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```jsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```jsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ### TSX
@@ -158,13 +170,19 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 #### Don't
 
 ```tsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```tsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```tsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ---

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the fix is a real URL or a `<button>`, and which one is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a button takes the click without navigating, so the reviewer confirms the link runs an action rather than needing a real URL) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/anchor-is-valid` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+#### Fixed
+
+```js
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+#### Fixed
+
+```jsx
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 
 ```tsx
 const a = <a href="#" onClick={open}>Open</a>;
+```
+
+#### Fixed
+
+```tsx
+const a = <button type="button"  onClick={open}>Open</button>;
 ```
 
 #### Do

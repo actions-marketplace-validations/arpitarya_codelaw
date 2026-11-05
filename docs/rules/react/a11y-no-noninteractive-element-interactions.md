@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the fix is a native control or an interactive role with focus, and that is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the handler moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; an element with no children gets no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-noninteractive-element-interactions` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                                     # the re
 const i = <li onClick={pick}>One</li>;
 ```
 
+#### Fixed
+
+```js
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 const i = <li onClick={pick}>One</li>;
 ```
 
+#### Fixed
+
+```jsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 
 ```tsx
 const i = <li onClick={pick}>One</li>;
+```
+
+#### Fixed
+
+```tsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
 ```
 
 #### Do

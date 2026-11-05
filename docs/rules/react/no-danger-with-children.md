@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which content the element should have needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the element keeps either its children or its injected HTML; the reviewer picks which to drop) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-danger-with-children` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 
 ## How to fix
 
-1. Keep either the HTML or the children, not both.
+1. Keep either the HTML or the children, not both: drop the children, or drop `dangerouslySetInnerHTML`.
 
 ## Examples
 
@@ -131,6 +131,18 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 
 ```js
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
+```
+
+#### Fixed (remove the children)
+
+```js
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```js
+const a = <div >Fallback</div>;
 ```
 
 #### Do
@@ -147,6 +159,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
 ```
 
+#### Fixed (remove the children)
+
+```jsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```jsx
+const a = <div >Fallback</div>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 
 ```tsx
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
+```
+
+#### Fixed (remove the children)
+
+```tsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+#### Fixed (remove the HTML)
+
+```tsx
+const a = <div >Fallback</div>;
 ```
 
 #### Do

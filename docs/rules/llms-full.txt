@@ -86918,7 +86918,7 @@ The fix adds `strict=False`, which keeps today's behaviour; set `strict=True` wh
 ## `react/a11y-alt-text` — Images and image-like elements carry alternative text
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (only the author knows what the image shows)
+- **Fix:** `auto` (an `<img>` hidden with aria-hidden is decorative, so an empty `alt` changes nothing for assistive technology; any other image needs an `alt` that says what it shows, so the reviewer confirms it is decorative)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-alt-text.md
 
@@ -86942,6 +86942,12 @@ The fix adds `strict=False`, which keeps today's behaviour; set `strict=True` wh
 const logo = <img src="logo.png" />;
 ```
 
+##### Fixed
+
+```js
+const logo = <img alt="" src="logo.png" />;
+```
+
 ##### Do
 
 ```js
@@ -86956,6 +86962,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 const logo = <img src="logo.png" />;
 ```
 
+##### Fixed
+
+```jsx
+const logo = <img alt="" src="logo.png" />;
+```
+
 ##### Do
 
 ```jsx
@@ -86968,6 +86980,12 @@ const logo = <img src="logo.png" alt="Acme" />;
 
 ```tsx
 const logo = <img src="logo.png" />;
+```
+
+##### Fixed
+
+```tsx
+const logo = <img alt="" src="logo.png" />;
 ```
 
 ##### Do
@@ -87101,7 +87119,7 @@ const a = <a href="/home">Home</a>;
 ## `react/a11y-anchor-is-valid` — A link goes somewhere
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the fix is a real URL or a `<button>`, and which one is the author's choice)
+- **Fix:** `suggest` (a button takes the click without navigating, so the reviewer confirms the link runs an action rather than needing a real URL)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-anchor-is-valid.md
 
@@ -87125,6 +87143,12 @@ An `<a>` has an `href` that navigates: not `#`, not `javascript:`, and not missi
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+##### Fixed
+
+```js
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 ##### Do
 
 ```js
@@ -87137,6 +87161,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 
 ```jsx
 const a = <a href="#" onClick={open}>Open</a>;
+```
+
+##### Fixed
+
+```jsx
+const a = <button type="button"  onClick={open}>Open</button>;
 ```
 
 ##### Do
@@ -87153,6 +87183,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+##### Fixed
+
+```tsx
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 ##### Do
 
 ```tsx
@@ -87162,7 +87198,7 @@ const a = <button type="button" onClick={open}>Open</button>;
 ## `react/a11y-aria-activedescendant-has-tabindex` — An element with aria-activedescendant is focusable
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (whether the element joins the tab order (`0`) or not (`-1`) is the author's choice)
+- **Fix:** `suggest` (whether the element joins the tab order (0) or is focused from code only (-1) is the reviewer's choice)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-aria-activedescendant-has-tabindex.md
 
@@ -87186,6 +87222,18 @@ A non-interactive element with `aria-activedescendant` also has a `tabIndex`.
 const l = <div aria-activedescendant={id} />;
 ```
 
+##### Fixed (in the tab order)
+
+```js
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+##### Fixed (focused from code)
+
+```js
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
+```
+
 ##### Do
 
 ```js
@@ -87200,6 +87248,18 @@ const l = <div aria-activedescendant={id} tabIndex={0} />;
 const l = <div aria-activedescendant={id} />;
 ```
 
+##### Fixed (in the tab order)
+
+```jsx
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+##### Fixed (focused from code)
+
+```jsx
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
+```
+
 ##### Do
 
 ```jsx
@@ -87212,6 +87272,18 @@ const l = <div aria-activedescendant={id} tabIndex={0} />;
 
 ```tsx
 const l = <div aria-activedescendant={id} />;
+```
+
+##### Fixed (in the tab order)
+
+```tsx
+const l = <div tabIndex={0} aria-activedescendant={id} />;
+```
+
+##### Fixed (focused from code)
+
+```tsx
+const l = <div tabIndex={-1} aria-activedescendant={id} />;
 ```
 
 ##### Do
@@ -87284,7 +87356,7 @@ const f = <input aria-labelledby="name" />;
 ## `react/a11y-aria-proptypes` — ARIA attribute values have the right type
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the intended value is the author's)
+- **Fix:** `suggest` (for the true/false-typed attributes the reviewer picks `true` or `false`; attributes that take other tokens or numbers get no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-aria-proptypes.md
 
@@ -87308,6 +87380,18 @@ An `aria-*` attribute written as a string holds a value its type allows: `true`/
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+##### Fixed (true)
+
+```js
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+##### Fixed (false)
+
+```js
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 ##### Do
 
 ```js
@@ -87322,6 +87406,18 @@ const b = <button aria-pressed="true">Bold</button>;
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+##### Fixed (true)
+
+```jsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+##### Fixed (false)
+
+```jsx
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 ##### Do
 
 ```jsx
@@ -87334,6 +87430,18 @@ const b = <button aria-pressed="true">Bold</button>;
 
 ```tsx
 const b = <button aria-pressed="yes">Bold</button>;
+```
+
+##### Fixed (true)
+
+```tsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+##### Fixed (false)
+
+```tsx
+const b = <button aria-pressed="false">Bold</button>;
 ```
 
 ##### Do
@@ -87410,7 +87518,7 @@ const d = <div role="dialog" />;
 ## `react/a11y-aria-unsupported-elements` — No ARIA on elements that cannot carry it
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the attribute was meant for another element, and which one is the author's call)
+- **Fix:** `auto` (the element is never rendered or has no role, so removing the attribute changes nothing for assistive technology)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-aria-unsupported-elements.md
 
@@ -87434,6 +87542,12 @@ Elements that are never rendered or have no accessible role — `<meta>`, `<html
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+##### Fixed
+
+```js
+const m = <meta charset="utf-8"  />;
+```
+
 ##### Do
 
 ```js
@@ -87448,6 +87562,12 @@ const m = <meta charset="utf-8" />;
 const m = <meta charset="utf-8" aria-hidden="true" />;
 ```
 
+##### Fixed
+
+```jsx
+const m = <meta charset="utf-8"  />;
+```
+
 ##### Do
 
 ```jsx
@@ -87460,6 +87580,12 @@ const m = <meta charset="utf-8" />;
 
 ```tsx
 const m = <meta charset="utf-8" aria-hidden="true" />;
+```
+
+##### Fixed
+
+```tsx
+const m = <meta charset="utf-8"  />;
 ```
 
 ##### Do
@@ -87532,7 +87658,7 @@ const e = <input name="email" autoComplete="email" />;
 ## `react/a11y-click-events-have-key-events` — A clickable element also answers the keyboard
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the right keys and behaviour depend on what the element does — usually a `<button>` is the better fix)
+- **Fix:** `suggest` (a button changes the element's markup and styling, and the copied key handler assumes Enter and Space should click it; the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-click-events-have-key-events.md
 
@@ -87556,6 +87682,18 @@ A non-interactive DOM element with an `onClick` also has an `onKeyDown`, `onKeyU
 const c = <div onClick={open}>Open</div>;
 ```
 
+##### Fixed (use a button)
+
+```js
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+##### Fixed (add key handler)
+
+```js
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
+```
+
 ##### Do
 
 ```js
@@ -87570,6 +87708,18 @@ const c = <button type="button" onClick={open}>Open</button>;
 const c = <div onClick={open}>Open</div>;
 ```
 
+##### Fixed (use a button)
+
+```jsx
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+##### Fixed (add key handler)
+
+```jsx
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
+```
+
 ##### Do
 
 ```jsx
@@ -87582,6 +87732,18 @@ const c = <button type="button" onClick={open}>Open</button>;
 
 ```tsx
 const c = <div onClick={open}>Open</div>;
+```
+
+##### Fixed (use a button)
+
+```tsx
+const c = <button type="button" onClick={open}>Open</button>;
+```
+
+##### Fixed (add key handler)
+
+```tsx
+const c = <div onClick={open} tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") (open)(e); }}>Open</div>;
 ```
 
 ##### Do
@@ -87898,7 +88060,7 @@ const p = <img src="cat.jpg" alt="A cat asleep on a sofa" />;
 ## `react/a11y-interactive-supports-focus` — An element with an interactive role is focusable
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (whether to add `tabIndex` or switch to a native control is the author's call)
+- **Fix:** `suggest` (adding tabIndex 0 or -1 changes focus behaviour, and a native control may fit better; the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-interactive-supports-focus.md
 
@@ -87922,6 +88084,18 @@ A non-interactive DOM element given an interactive role and a handler also has a
 const b = <span role="button" onClick={go}>Go</span>;
 ```
 
+##### Fixed (in the tab order)
+
+```js
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+##### Fixed (focused from code)
+
+```js
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
+```
+
 ##### Do
 
 ```js
@@ -87934,6 +88108,18 @@ const b = <span role="button" tabIndex={0} onClick={go} onKeyDown={go}>Go</span>
 
 ```jsx
 const b = <span role="button" onClick={go}>Go</span>;
+```
+
+##### Fixed (in the tab order)
+
+```jsx
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+##### Fixed (focused from code)
+
+```jsx
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
 ```
 
 ##### Do
@@ -87950,6 +88136,18 @@ const b = <span role="button" tabIndex={0} onClick={go} onKeyDown={go}>Go</span>
 const b = <span role="button" onClick={go}>Go</span>;
 ```
 
+##### Fixed (in the tab order)
+
+```tsx
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+##### Fixed (focused from code)
+
+```tsx
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
+```
+
 ##### Do
 
 ```tsx
@@ -87959,7 +88157,7 @@ const b = <span role="button" tabIndex={0} onClick={go} onKeyDown={go}>Go</span>
 ## `react/a11y-label-has-associated-control` — A label is tied to a control
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (which control the label belongs to is the author's)
+- **Fix:** `suggest` (htmlFor ties the label to the next sibling control that has a static id, which the reviewer confirms is the intended one; a label with no such sibling gets no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-label-has-associated-control.md
 
@@ -87983,6 +88181,12 @@ A `<label>` has an `htmlFor`, or wraps the `<input>`, `<select>`, `<textarea>` o
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+##### Fixed
+
+```js
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 ##### Do
 
 ```js
@@ -87997,6 +88201,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 const f = <><label>Name</label><input id="name" /></>;
 ```
 
+##### Fixed
+
+```jsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
+```
+
 ##### Do
 
 ```jsx
@@ -88009,6 +88219,12 @@ const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 
 ```tsx
 const f = <><label>Name</label><input id="name" /></>;
+```
+
+##### Fixed
+
+```tsx
+const f = <><label htmlFor="name">Name</label><input id="name" /></>;
 ```
 
 ##### Do
@@ -88146,7 +88362,7 @@ const v = <video src="intro.mp4"><track kind="captions" src="intro.vtt" /></vide
 ## `react/a11y-mouse-events-have-key-events` — Hover handlers have focus twins
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the focus handler's behaviour is the author's)
+- **Fix:** `suggest` (the focus handler receives a FocusEvent, so the reviewer confirms the copied mouse handler does not read mouse coordinates)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-mouse-events-have-key-events.md
 
@@ -88170,6 +88386,12 @@ A DOM element with `onMouseOver` also has `onFocus`, and one with `onMouseOut` a
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+##### Fixed
+
+```js
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 ##### Do
 
 ```js
@@ -88182,6 +88404,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 
 ```jsx
 const t = <span onMouseOver={show}>?</span>;
+```
+
+##### Fixed
+
+```jsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
 ```
 
 ##### Do
@@ -88198,6 +88426,12 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 const t = <span onMouseOver={show}>?</span>;
 ```
 
+##### Fixed
+
+```tsx
+const t = <span onMouseOver={show} onFocus={show}>?</span>;
+```
+
 ##### Do
 
 ```tsx
@@ -88207,7 +88441,7 @@ const t = <span onMouseOver={show} onFocus={show}>?</span>;
 ## `react/a11y-no-access-key` — No accessKey
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (removing the shortcut may need another way to reach the element)
+- **Fix:** `suggest` (removing the shortcut may leave the element without another way to reach it, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-access-key.md
 
@@ -88231,6 +88465,12 @@ DOM elements carry no `accessKey`.
 const s = <button accessKey="s">Save</button>;
 ```
 
+##### Fixed
+
+```js
+const s = <button >Save</button>;
+```
+
 ##### Do
 
 ```js
@@ -88243,6 +88483,12 @@ const s = <button>Save</button>;
 
 ```jsx
 const s = <button accessKey="s">Save</button>;
+```
+
+##### Fixed
+
+```jsx
+const s = <button >Save</button>;
 ```
 
 ##### Do
@@ -88259,6 +88505,12 @@ const s = <button>Save</button>;
 const s = <button accessKey="s">Save</button>;
 ```
 
+##### Fixed
+
+```tsx
+const s = <button >Save</button>;
+```
+
 ##### Do
 
 ```tsx
@@ -88268,7 +88520,7 @@ const s = <button>Save</button>;
 ## `react/a11y-no-aria-hidden-on-focusable` — No aria-hidden on a focusable element
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (either the element should be hidden from everyone or not hidden at all; the author decides)
+- **Fix:** `suggest` (removing aria-hidden exposes the element to assistive technology while tabIndex -1 keeps it hidden but unfocusable; the reviewer picks)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-aria-hidden-on-focusable.md
 
@@ -88292,6 +88544,18 @@ An element that can take focus — a native control, a link with `href`, or one 
 const b = <button aria-hidden="true">Close</button>;
 ```
 
+##### Fixed (remove aria-hidden)
+
+```js
+const b = <button >Close</button>;
+```
+
+##### Fixed (take out of tab order)
+
+```js
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
+```
+
 ##### Do
 
 ```js
@@ -88304,6 +88568,18 @@ const b = <button>Close</button>;
 
 ```jsx
 const b = <button aria-hidden="true">Close</button>;
+```
+
+##### Fixed (remove aria-hidden)
+
+```jsx
+const b = <button >Close</button>;
+```
+
+##### Fixed (take out of tab order)
+
+```jsx
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
 ```
 
 ##### Do
@@ -88320,6 +88596,18 @@ const b = <button>Close</button>;
 const b = <button aria-hidden="true">Close</button>;
 ```
 
+##### Fixed (remove aria-hidden)
+
+```tsx
+const b = <button >Close</button>;
+```
+
+##### Fixed (take out of tab order)
+
+```tsx
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
+```
+
 ##### Do
 
 ```tsx
@@ -88329,7 +88617,7 @@ const b = <button>Close</button>;
 ## `react/a11y-no-autofocus` — No autoFocus
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (some dialogs need initial focus, set deliberately in code)
+- **Fix:** `suggest` (removing autoFocus drops initial focus, so the reviewer confirms the element needs none or moves focus from the open handler)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-autofocus.md
 
@@ -88353,6 +88641,12 @@ No element carries `autoFocus`.
 const q = <input autoFocus />;
 ```
 
+##### Fixed
+
+```js
+const q = <input  />;
+```
+
 ##### Do
 
 ```js
@@ -88365,6 +88659,12 @@ const q = <input />;
 
 ```jsx
 const q = <input autoFocus />;
+```
+
+##### Fixed
+
+```jsx
+const q = <input  />;
 ```
 
 ##### Do
@@ -88381,6 +88681,12 @@ const q = <input />;
 const q = <input autoFocus />;
 ```
 
+##### Fixed
+
+```tsx
+const q = <input  />;
+```
+
 ##### Do
 
 ```tsx
@@ -88390,7 +88696,7 @@ const q = <input />;
 ## `react/a11y-no-distracting-elements` — No marquee or blink
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the replacement depends on what the element was for)
+- **Fix:** `auto` (`<blink>` is unsupported by current browsers and renders as an inline span, so `span` changes nothing; `<marquee>` still scrolls, so its `div` replacement is only suggested)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-distracting-elements.md
 
@@ -88414,6 +88720,12 @@ Neither `<marquee>` nor `<blink>` is used.
 const m = <marquee>Sale!</marquee>;
 ```
 
+##### Fixed
+
+```js
+const m = <div>Sale!</div>;
+```
+
 ##### Do
 
 ```js
@@ -88426,6 +88738,12 @@ const m = <p>Sale!</p>;
 
 ```jsx
 const m = <marquee>Sale!</marquee>;
+```
+
+##### Fixed
+
+```jsx
+const m = <div>Sale!</div>;
 ```
 
 ##### Do
@@ -88442,6 +88760,12 @@ const m = <p>Sale!</p>;
 const m = <marquee>Sale!</marquee>;
 ```
 
+##### Fixed
+
+```tsx
+const m = <div>Sale!</div>;
+```
+
 ##### Do
 
 ```tsx
@@ -88451,7 +88775,7 @@ const m = <p>Sale!</p>;
 ## `react/a11y-no-interactive-element-to-noninteractive-role` — Interactive elements keep an interactive role
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (use a non-interactive element instead, or drop the role; which is the author's call)
+- **Fix:** `suggest` (removing the role keeps the interactive element and drops the semantics it claimed; the reviewer confirms the control is meant to stay, or swaps in a non-interactive element)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-interactive-element-to-noninteractive-role.md
 
@@ -88475,6 +88799,12 @@ A native interactive element (`<button>`, `<a>`, `<input>`, `<select>`, `<textar
 const b = <button role="heading">Title</button>;
 ```
 
+##### Fixed
+
+```js
+const b = <button >Title</button>;
+```
+
 ##### Do
 
 ```js
@@ -88487,6 +88817,12 @@ const b = <h2>Title</h2>;
 
 ```jsx
 const b = <button role="heading">Title</button>;
+```
+
+##### Fixed
+
+```jsx
+const b = <button >Title</button>;
 ```
 
 ##### Do
@@ -88503,6 +88839,12 @@ const b = <h2>Title</h2>;
 const b = <button role="heading">Title</button>;
 ```
 
+##### Fixed
+
+```tsx
+const b = <button >Title</button>;
+```
+
 ##### Do
 
 ```tsx
@@ -88512,7 +88854,7 @@ const b = <h2>Title</h2>;
 ## `react/a11y-no-noninteractive-element-interactions` — Non-interactive elements have no handlers
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the fix is a native control or an interactive role with focus, and that is the author's choice)
+- **Fix:** `suggest` (the handler moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; an element with no children gets no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-noninteractive-element-interactions.md
 
@@ -88536,6 +88878,12 @@ A non-interactive element (`<li>`, `<h1>`, `<img>`, `<main>`, …) without a rol
 const i = <li onClick={pick}>One</li>;
 ```
 
+##### Fixed
+
+```js
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 ##### Do
 
 ```js
@@ -88548,6 +88896,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 
 ```jsx
 const i = <li onClick={pick}>One</li>;
+```
+
+##### Fixed
+
+```jsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
 ```
 
 ##### Do
@@ -88564,6 +88918,12 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 const i = <li onClick={pick}>One</li>;
 ```
 
+##### Fixed
+
+```tsx
+const i = <li ><button type="button" onClick={pick}>One</button></li>;
+```
+
 ##### Do
 
 ```tsx
@@ -88573,7 +88933,7 @@ const i = <li><button type="button" onClick={pick}>One</button></li>;
 ## `react/a11y-no-noninteractive-element-to-interactive-role` — Non-interactive elements keep their role
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the fix is the native control, which changes the markup)
+- **Fix:** `suggest` (for role button the role is dropped and the onClick moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; other roles get no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-noninteractive-element-to-interactive-role.md
 
@@ -88597,6 +88957,12 @@ A non-interactive element (`<h1>`, `<p>`, `<img>`, `<main>`, …) is not given a
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
 ```
 
+##### Fixed
+
+```js
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
+```
+
 ##### Do
 
 ```js
@@ -88609,6 +88975,12 @@ const b = <h3><button type="button" onClick={toggle}>Details</button></h3>;
 
 ```jsx
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
+```
+
+##### Fixed
+
+```jsx
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
 ```
 
 ##### Do
@@ -88625,6 +88997,12 @@ const b = <h3><button type="button" onClick={toggle}>Details</button></h3>;
 const b = <h3 role="button" onClick={toggle}>Details</h3>;
 ```
 
+##### Fixed
+
+```tsx
+const b = <h3  ><button type="button" onClick={toggle}>Details</button></h3>;
+```
+
 ##### Do
 
 ```tsx
@@ -88634,7 +89012,7 @@ const b = <h3><button type="button" onClick={toggle}>Details</button></h3>;
 ## `react/a11y-no-noninteractive-tabindex` — Non-interactive elements are not in the tab order
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the element either needs an interactive role and behaviour, or no `tabIndex`)
+- **Fix:** `suggest` (removing tabIndex takes the element out of the tab order, while -1 keeps it focusable from code only; the reviewer picks, or gives the element an interactive role instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-noninteractive-tabindex.md
 
@@ -88658,6 +89036,18 @@ A non-interactive element with no interactive role does not get a `tabIndex` of 
 const a = <article tabIndex={0}>…</article>;
 ```
 
+##### Fixed (remove tabIndex)
+
+```js
+const a = <article >…</article>;
+```
+
+##### Fixed (focus from code only)
+
+```js
+const a = <article tabIndex={-1}>…</article>;
+```
+
 ##### Do
 
 ```js
@@ -88672,6 +89062,18 @@ const a = <article>…</article>;
 const a = <article tabIndex={0}>…</article>;
 ```
 
+##### Fixed (remove tabIndex)
+
+```jsx
+const a = <article >…</article>;
+```
+
+##### Fixed (focus from code only)
+
+```jsx
+const a = <article tabIndex={-1}>…</article>;
+```
+
 ##### Do
 
 ```jsx
@@ -88684,6 +89086,18 @@ const a = <article>…</article>;
 
 ```tsx
 const a = <article tabIndex={0}>…</article>;
+```
+
+##### Fixed (remove tabIndex)
+
+```tsx
+const a = <article >…</article>;
+```
+
+##### Fixed (focus from code only)
+
+```tsx
+const a = <article tabIndex={-1}>…</article>;
 ```
 
 ##### Do
@@ -88695,7 +89109,7 @@ const a = <article>…</article>;
 ## `react/a11y-no-redundant-roles` — No role an element already has
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (removing the role is safe, but whether the element is the one meant is for the author to confirm)
+- **Fix:** `auto` (removing a role the element already has is exact for every role but img, whose element role depends on alt, so img findings stay suggest)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-redundant-roles.md
 
@@ -88705,10 +89119,6 @@ An element is not given the role it has by default (`<button role="button">`, `<
 
 **Why:** The role says nothing new and invites drift when the element changes.
 
-### How to fix
-
-1. Remove the `role` attribute.
-
 ### Examples
 
 #### JavaScript
@@ -88717,6 +89127,12 @@ An element is not given the role it has by default (`<button role="button">`, `<
 
 ```js
 const b = <button role="button">Save</button>;
+```
+
+##### Fixed
+
+```js
+const b = <button >Save</button>;
 ```
 
 ##### Do
@@ -88733,6 +89149,12 @@ const b = <button>Save</button>;
 const b = <button role="button">Save</button>;
 ```
 
+##### Fixed
+
+```jsx
+const b = <button >Save</button>;
+```
+
 ##### Do
 
 ```jsx
@@ -88745,6 +89167,12 @@ const b = <button>Save</button>;
 
 ```tsx
 const b = <button role="button">Save</button>;
+```
+
+##### Fixed
+
+```tsx
+const b = <button >Save</button>;
 ```
 
 ##### Do
@@ -88886,7 +89314,7 @@ const b = <button type="button" onClick={go}>Go</button>;
 ## `react/a11y-role-has-required-aria-props` — A role carries the ARIA attributes it requires
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the attribute's value is the element's state, which the author wires up)
+- **Fix:** `auto` (a non-heading element given role=heading gets aria-level="2", ARIA's default level; the other roles need the element's live state, so they carry no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-role-has-required-aria-props.md
 
@@ -88898,7 +89326,7 @@ An element given a role that requires state (`checkbox`, `switch`, `radio`, `sli
 
 ### How to fix
 
-1. Add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
+1. A `role="heading"` gets `aria-level="2"` from the fix. For the other roles, add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
 
 ### Examples
 
@@ -88907,13 +89335,19 @@ An element given a role that requires state (`checkbox`, `switch`, `radio`, `sli
 ##### Don't
 
 ```js
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+##### Fixed
+
+```js
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 ##### Do
 
 ```js
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 #### JSX
@@ -88921,13 +89355,19 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 ##### Don't
 
 ```jsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+##### Fixed
+
+```jsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 ##### Do
 
 ```jsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 #### TSX
@@ -88935,19 +89375,25 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 ##### Don't
 
 ```tsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+##### Fixed
+
+```tsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 ##### Do
 
 ```tsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ## `react/a11y-role-supports-aria-props` — ARIA attributes fit the element's role
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (either the role or the attribute is wrong, and only the author knows which)
+- **Fix:** `suggest` (either the role or the attribute is wrong; the reviewer picks removing the attribute or changing the role to one that supports it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-role-supports-aria-props.md
 
@@ -88971,6 +89417,18 @@ An element with an explicit `role` written as a string uses only the role-specif
 const b = <div role="button" aria-checked="true" />;
 ```
 
+##### Fixed (remove the attribute)
+
+```js
+const b = <div role="button"  />;
+```
+
+##### Fixed (change the role)
+
+```js
+const b = <div role="checkbox" aria-checked="true" />;
+```
+
 ##### Do
 
 ```js
@@ -88985,6 +89443,18 @@ const b = <div role="button" aria-pressed="true" />;
 const b = <div role="button" aria-checked="true" />;
 ```
 
+##### Fixed (remove the attribute)
+
+```jsx
+const b = <div role="button"  />;
+```
+
+##### Fixed (change the role)
+
+```jsx
+const b = <div role="checkbox" aria-checked="true" />;
+```
+
 ##### Do
 
 ```jsx
@@ -88997,6 +89467,18 @@ const b = <div role="button" aria-pressed="true" />;
 
 ```tsx
 const b = <div role="button" aria-checked="true" />;
+```
+
+##### Fixed (remove the attribute)
+
+```tsx
+const b = <div role="button"  />;
+```
+
+##### Fixed (change the role)
+
+```tsx
+const b = <div role="checkbox" aria-checked="true" />;
 ```
 
 ##### Do
@@ -89012,7 +89494,7 @@ Only an explicit `role` written as a string, and the role-specific states listed
 ## `react/a11y-scope` — scope only on th
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the cell may need to become a `<th>`, which changes the table's markup)
+- **Fix:** `auto` (scope is inert on any element but a td, so removing it changes nothing there; on a td the cell may need to become a `<th>`, so those findings stay suggest)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-scope.md
 
@@ -89024,7 +89506,7 @@ The `scope` attribute is used only on `<th>`.
 
 ### How to fix
 
-1. Make the cell a `<th>`, or remove `scope`.
+1. On a `<td>`, make the cell a `<th>`, or remove `scope`.
 
 ### Examples
 
@@ -89034,6 +89516,12 @@ The `scope` attribute is used only on `<th>`.
 
 ```js
 const c = <td scope="row">Total</td>;
+```
+
+##### Fixed
+
+```js
+const c = <td >Total</td>;
 ```
 
 ##### Do
@@ -89050,6 +89538,12 @@ const c = <th scope="row">Total</th>;
 const c = <td scope="row">Total</td>;
 ```
 
+##### Fixed
+
+```jsx
+const c = <td >Total</td>;
+```
+
 ##### Do
 
 ```jsx
@@ -89062,6 +89556,12 @@ const c = <th scope="row">Total</th>;
 
 ```tsx
 const c = <td scope="row">Total</td>;
+```
+
+##### Fixed
+
+```tsx
+const c = <td >Total</td>;
 ```
 
 ##### Do
@@ -93008,7 +93508,7 @@ class Clock extends Component {
 ## `react/no-children-prop` — Children are passed as children, not as a prop
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving the children changes the element's shape by hand)
+- **Fix:** `auto` (a self-closing element whose last attribute is children={...} moves it into the body with identical output; the createElement form and other placements stay suggest)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-children-prop.md
 
@@ -93034,6 +93534,12 @@ look for it.
 const a = <Panel children={<p>Hi</p>} />;
 ```
 
+##### Fixed
+
+```js
+const a = <Panel >{<p>Hi</p>}</Panel>;
+```
+
 ##### Do
 
 ```js
@@ -93050,6 +93556,12 @@ const a = <Panel>
 const a = <Panel children={<p>Hi</p>} />;
 ```
 
+##### Fixed
+
+```jsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
+```
+
 ##### Do
 
 ```jsx
@@ -93064,6 +93576,12 @@ const a = <Panel>
 
 ```tsx
 const a = <Panel children={<p>Hi</p>} />;
+```
+
+##### Fixed
+
+```tsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
 ```
 
 ##### Do
@@ -93279,7 +93797,7 @@ Add `--expires <date>` to give the old uses a deadline: from that day they are e
 ## `react/no-danger-with-children` — No dangerouslySetInnerHTML together with children
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (which content the element should have needs the author)
+- **Fix:** `suggest` (the element keeps either its children or its injected HTML; the reviewer picks which to drop)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-danger-with-children.md
 
@@ -93291,7 +93809,7 @@ An element with `dangerouslySetInnerHTML` has no children.
 
 ### How to fix
 
-1. Keep either the HTML or the children, not both.
+1. Keep either the HTML or the children, not both: drop the children, or drop `dangerouslySetInnerHTML`.
 
 ### Examples
 
@@ -93301,6 +93819,18 @@ An element with `dangerouslySetInnerHTML` has no children.
 
 ```js
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
+```
+
+##### Fixed (remove the children)
+
+```js
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+##### Fixed (remove the HTML)
+
+```js
+const a = <div >Fallback</div>;
 ```
 
 ##### Do
@@ -93317,6 +93847,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
 ```
 
+##### Fixed (remove the children)
+
+```jsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+##### Fixed (remove the HTML)
+
+```jsx
+const a = <div >Fallback</div>;
+```
+
 ##### Do
 
 ```jsx
@@ -93331,6 +93873,18 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;
 ```
 
+##### Fixed (remove the children)
+
+```tsx
+const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
+```
+
+##### Fixed (remove the HTML)
+
+```tsx
+const a = <div >Fallback</div>;
+```
+
 ##### Do
 
 ```tsx
@@ -93340,7 +93894,7 @@ const a = <div dangerouslySetInnerHTML={{ __html: html }} />;
 ## `react/no-deprecated` — No deprecated React APIs
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (each deprecated API has its own replacement)
+- **Fix:** `suggest` (the UNSAFE_ alias is exact for a legacy lifecycle, but the reviewer confirms React is 16.3 or later and nothing calls the method by name; the other APIs carry no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-deprecated.md
 
@@ -93354,7 +93908,7 @@ concurrent rendering.
 
 ### How to fix
 
-1. Replace `ReactDOM.render` with `createRoot(el).render(…)` and `hydrate` with `hydrateRoot`.
+1. A legacy lifecycle takes its `UNSAFE_` name from the fix; the others are by hand. Replace `ReactDOM.render` with `createRoot(el).render(…)` and `hydrate` with `hydrateRoot`.
 2. Rename legacy lifecycles to their `UNSAFE_` names, or move their work to `componentDidMount`/`componentDidUpdate`.
 3. Use the `prop-types` package instead of `React.PropTypes`.
 
@@ -93365,13 +93919,31 @@ concurrent rendering.
 ##### Don't
 
 ```js
-ReactDOM.render(<App />, root);
+class Card extends React.Component {
+  componentWillMount() {
+    this.load();
+  }
+}
+```
+
+##### Fixed
+
+```js
+class Card extends React.Component {
+  UNSAFE_componentWillMount() {
+    this.load();
+  }
+}
 ```
 
 ##### Do
 
 ```js
-createRoot(root).render(<App />);
+class Card extends React.Component {
+  componentDidMount() {
+    this.load();
+  }
+}
 ```
 
 #### JSX
@@ -93379,13 +93951,31 @@ createRoot(root).render(<App />);
 ##### Don't
 
 ```jsx
-ReactDOM.render(<App />, root);
+class Card extends React.Component {
+  componentWillMount() {
+    this.load();
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class Card extends React.Component {
+  UNSAFE_componentWillMount() {
+    this.load();
+  }
+}
 ```
 
 ##### Do
 
 ```jsx
-createRoot(root).render(<App />);
+class Card extends React.Component {
+  componentDidMount() {
+    this.load();
+  }
+}
 ```
 
 #### TSX
@@ -93393,13 +93983,31 @@ createRoot(root).render(<App />);
 ##### Don't
 
 ```tsx
-ReactDOM.render(<App />, root);
+class Card extends React.Component {
+  componentWillMount() {
+    this.load();
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+class Card extends React.Component {
+  UNSAFE_componentWillMount() {
+    this.load();
+  }
+}
 ```
 
 ##### Do
 
 ```tsx
-createRoot(root).render(<App />);
+class Card extends React.Component {
+  componentDidMount() {
+    this.load();
+  }
+}
 ```
 
 ### Differences from the source
@@ -93668,7 +94276,7 @@ class Panel extends Component {
 ## `react/no-direct-mutation-state` — No assigning to this.state outside the constructor
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the update has to be rewritten as a `setState` call)
+- **Fix:** `suggest` (a plain `this.state.k = e` becomes `this.setState({ k: e })`, which is batched; the reviewer confirms nothing reads the value on the next line; updater-form and nested writes carry no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-direct-mutation-state.md
 
@@ -93690,9 +94298,9 @@ the constructor.
 ##### Don't
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -93700,9 +94308,9 @@ class Counter extends React.Component {
 ##### Do
 
 ```js
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -93712,9 +94320,9 @@ class Counter extends React.Component {
 ##### Don't
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -93722,9 +94330,9 @@ class Counter extends React.Component {
 ##### Do
 
 ```jsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -93734,9 +94342,9 @@ class Counter extends React.Component {
 ##### Don't
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.state.count = this.state.count + 1;
+class Menu extends React.Component {
+  open() {
+    this.state.open = true;
   }
 }
 ```
@@ -93744,9 +94352,9 @@ class Counter extends React.Component {
 ##### Do
 
 ```tsx
-class Counter extends React.Component {
-  inc() {
-    this.setState((s) => ({ count: s.count + 1 }));
+class Menu extends React.Component {
+  open() {
+    this.setState({ open: true });
   }
 }
 ```
@@ -93878,7 +94486,7 @@ const a = <a href={url} rel="noopener">Docs</a>;
 ## `react/no-is-mounted` — No this.isMounted()
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the callback has to be cancelled where it starts)
+- **Fix:** `suggest` (a guard with only a block of statements and no else is dropped, keeping the block (a setState after unmount is a no-op); the reviewer confirms the callback needs no cancellation instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-is-mounted.md
 
@@ -93910,6 +94518,16 @@ class A extends React.Component {
 }
 ```
 
+##### Fixed
+
+```js
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -93937,6 +94555,16 @@ class A extends React.Component {
 }
 ```
 
+##### Fixed
+
+```jsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
+  }
+}
+```
+
 ##### Do
 
 ```jsx
@@ -93960,6 +94588,16 @@ class A extends React.Component {
     if (this.isMounted()) {
       this.setState({ ok: true });
     }
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+class A extends React.Component {
+  done() {
+    this.setState({ ok: true });
   }
 }
 ```
@@ -94569,7 +95207,7 @@ function Counter() {
 ## `react/no-render-return-value` — The return value of ReactDOM.render is not used
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (code that used the instance needs a ref instead)
+- **Fix:** `suggest` (a `const x = ReactDOM.render(…)` statement drops the binding and keeps the call; the reviewer confirms the binding is never read (otherwise a ref must be threaded in); other uses carry no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-render-return-value.md
 
@@ -94593,6 +95231,12 @@ The value `ReactDOM.render` returns is not stored, returned or passed on.
 const app = ReactDOM.render(<App />, root);
 ```
 
+##### Fixed
+
+```js
+ReactDOM.render(<App />, root);
+```
+
 ##### Do
 
 ```js
@@ -94607,6 +95251,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 const app = ReactDOM.render(<App />, root);
 ```
 
+##### Fixed
+
+```jsx
+ReactDOM.render(<App />, root);
+```
+
 ##### Do
 
 ```jsx
@@ -94619,6 +95269,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 
 ```tsx
 const app = ReactDOM.render(<App />, root);
+```
+
+##### Fixed
+
+```tsx
+ReactDOM.render(<App />, root);
 ```
 
 ##### Do
@@ -95111,7 +95767,7 @@ const page = (
 ## `react/no-svg-without-title` — An SVG has a title or is hidden
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the title is the author's, or the SVG is decorative and should be hidden — the author decides which)
+- **Fix:** `suggest` (adds aria-hidden="true", which is right only when the SVG is decorative; the reviewer confirms that, or writes a title instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-svg-without-title.md
 
@@ -95135,6 +95791,12 @@ An inline `<svg>` has a `<title>` inside it, an `aria-label` or `aria-labelledby
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
+##### Fixed
+
+```js
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
 ##### Do
 
 ```js
@@ -95149,6 +95811,12 @@ const icon = <svg viewBox="0 0 8 8"><title>Stop</title><path d="M0 0h8v8H0z" /><
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
+##### Fixed
+
+```jsx
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
 ##### Do
 
 ```jsx
@@ -95161,6 +95829,12 @@ const icon = <svg viewBox="0 0 8 8"><title>Stop</title><path d="M0 0h8v8H0z" /><
 
 ```tsx
 const icon = <svg viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
+```
+
+##### Fixed
+
+```tsx
+const icon = <svg aria-hidden="true" viewBox="0 0 8 8"><path d="M0 0h8v8H0z" /></svg>;
 ```
 
 ##### Do
@@ -95245,7 +95919,7 @@ function Hello(props) {
 ## `react/no-typos` — No miscased React class members
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (value: the intended name is read off the message; there is no template that recases a name)
+- **Fix:** `suggest` (each miscased name has one spelling in React's own list; the reviewer confirms the member was meant to be that lifecycle or static)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-typos.md
 
@@ -95272,6 +95946,15 @@ class A extends Component {
 A.PropTypes = {};
 ```
 
+##### Fixed
+
+```js
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
+```
+
 ##### Do
 
 ```js
@@ -95292,6 +95975,15 @@ class A extends Component {
 A.PropTypes = {};
 ```
 
+##### Fixed
+
+```jsx
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
+```
+
 ##### Do
 
 ```jsx
@@ -95310,6 +96002,15 @@ class A extends Component {
   componentdidmount() {}
 }
 A.PropTypes = {};
+```
+
+##### Fixed
+
+```tsx
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
 ```
 
 ##### Do

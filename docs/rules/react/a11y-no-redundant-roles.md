@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the role is safe, but whether the element is the one meant is for the author to confirm) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (removing a role the element already has is exact for every role but img, whose element role depends on alt, so img findings stay suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-redundant-roles` |
@@ -119,10 +119,6 @@ codelaw check --rule react/a11y-no-redundant-roles  # only this rule
 codelaw config --print --for <file>                 # the resolved setting, and where it came from
 ```
 
-## How to fix
-
-1. Remove the `role` attribute.
-
 ## Examples
 
 ### JavaScript
@@ -131,6 +127,12 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 
 ```js
 const b = <button role="button">Save</button>;
+```
+
+#### Fixed
+
+```js
+const b = <button >Save</button>;
 ```
 
 #### Do
@@ -147,6 +149,12 @@ const b = <button>Save</button>;
 const b = <button role="button">Save</button>;
 ```
 
+#### Fixed
+
+```jsx
+const b = <button >Save</button>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +167,12 @@ const b = <button>Save</button>;
 
 ```tsx
 const b = <button role="button">Save</button>;
+```
+
+#### Fixed
+
+```tsx
+const b = <button >Save</button>;
 ```
 
 #### Do

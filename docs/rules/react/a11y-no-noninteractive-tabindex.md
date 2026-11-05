@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the element either needs an interactive role and behaviour, or no `tabIndex`) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing tabIndex takes the element out of the tab order, while -1 keeps it focusable from code only; the reviewer picks, or gives the element an interactive role instead) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-noninteractive-tabindex` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                         # the resolved setti
 const a = <article tabIndex={0}>…</article>;
 ```
 
+#### Fixed (remove tabIndex)
+
+```js
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```js
+const a = <article tabIndex={-1}>…</article>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const a = <article>…</article>;
 const a = <article tabIndex={0}>…</article>;
 ```
 
+#### Fixed (remove tabIndex)
+
+```jsx
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```jsx
+const a = <article tabIndex={-1}>…</article>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const a = <article>…</article>;
 
 ```tsx
 const a = <article tabIndex={0}>…</article>;
+```
+
+#### Fixed (remove tabIndex)
+
+```tsx
+const a = <article >…</article>;
+```
+
+#### Fixed (focus from code only)
+
+```tsx
+const a = <article tabIndex={-1}>…</article>;
 ```
 
 #### Do

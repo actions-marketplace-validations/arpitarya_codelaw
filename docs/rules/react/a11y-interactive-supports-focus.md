@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to add `tabIndex` or switch to a native control is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (adding tabIndex 0 or -1 changes focus behaviour, and a native control may fit better; the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/interactive-supports-focus` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>                         # the resolved setti
 const b = <span role="button" onClick={go}>Go</span>;
 ```
 
+#### Fixed (in the tab order)
+
+```js
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+#### Fixed (focused from code)
+
+```js
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const b = <span role="button" tabIndex={0} onClick={go} onKeyDown={go}>Go</span>
 const b = <span role="button" onClick={go}>Go</span>;
 ```
 
+#### Fixed (in the tab order)
+
+```jsx
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+#### Fixed (focused from code)
+
+```jsx
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const b = <span role="button" tabIndex={0} onClick={go} onKeyDown={go}>Go</span>
 
 ```tsx
 const b = <span role="button" onClick={go}>Go</span>;
+```
+
+#### Fixed (in the tab order)
+
+```tsx
+const b = <span tabIndex={0} role="button" onClick={go}>Go</span>;
+```
+
+#### Fixed (focused from code)
+
+```tsx
+const b = <span tabIndex={-1} role="button" onClick={go}>Go</span>;
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the shortcut may need another way to reach the element) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing the shortcut may leave the element without another way to reach it, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-access-key` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>            # the resolved setting, and where
 const s = <button accessKey="s">Save</button>;
 ```
 
+#### Fixed
+
+```js
+const s = <button >Save</button>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const s = <button>Save</button>;
 const s = <button accessKey="s">Save</button>;
 ```
 
+#### Fixed
+
+```jsx
+const s = <button >Save</button>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const s = <button>Save</button>;
 
 ```tsx
 const s = <button accessKey="s">Save</button>;
+```
+
+#### Fixed
+
+```tsx
+const s = <button >Save</button>;
 ```
 
 #### Do
