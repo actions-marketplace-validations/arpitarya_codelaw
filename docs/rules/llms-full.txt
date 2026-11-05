@@ -108197,7 +108197,7 @@ resp.set_cookie("sid", sid, secure=True, httponly=True, samesite="Lax")
 ## `sec-py/django-settings` — Django settings are safe
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the production value comes from the deployment (environment variables, a secret manager))
+- **Fix:** `suggest` (the reviewer confirms each cookie or redirect flag turned on suits the deployment; DEBUG, SECRET_KEY and ALLOWED_HOSTS get no edit (the value comes from the deployment))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/django-settings.md
 
@@ -108221,17 +108221,13 @@ In a settings module, `DEBUG`, `ALLOWED_HOSTS`, `SECRET_KEY` and the cookie flag
 ##### Don't
 
 ```py path=settings.py
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+SESSION_COOKIE_SECURE = False
 ```
 
 ##### Do
 
 ```py path=settings.py
-import os
-
-DEBUG = os.environ.get("DJANGO_DEBUG") == "1"
-ALLOWED_HOSTS = ["app.example.com"]
+SESSION_COOKIE_SECURE = True
 ```
 
 ## `sec-py/fastapi-cors` — CORS does not allow every origin with credentials
@@ -108311,7 +108307,7 @@ app.run()
 ## `sec-py/flask-settings` — Flask configuration is safe
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the production values come from the deployment (environment variables, a secret manager))
+- **Fix:** `suggest` (the reviewer confirms each flag turned on suits the deployment; a literal SECRET_KEY gets no edit (the value comes from the deployment))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/flask-settings.md
 
@@ -108334,15 +108330,13 @@ app.run()
 ##### Don't
 
 ```py
-app.config["SECRET_KEY"] = "dev-secret-key"
+app.config["SESSION_COOKIE_SECURE"] = False
 ```
 
 ##### Do
 
 ```py
-import os
-
-app.config["SECRET_KEY"] = os.environ["FLASK_SECRET_KEY"]
+app.config["SESSION_COOKIE_SECURE"] = True
 ```
 
 ## `sec-py/hf-pin-revision` — Hugging Face downloads pin a revision
@@ -108472,7 +108466,7 @@ logging.config.dictConfig(CONFIG)
 ## `sec-py/ml-unsafe-load` — Model and array files are not unpickled
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the replacement format (`safetensors`, `.npy` without pickle, Parquet) means converting the stored files)
+- **Fix:** `suggest` (the reviewer confirms the arrays are not object arrays, which stop loading once allow_pickle is dropped; the pickle loaders (joblib, read_pickle) and safe_mode=False get no edit (the files must be converted))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/ml-unsafe-load.md
 
@@ -108511,7 +108505,7 @@ arr = np.load(path)
 ## `sec-py/no-assert-for-auth` — `assert` is not an access check
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the replacement raises the right exception for the framework, which only the author knows)
+- **Fix:** `suggest` (the edit raises AssertionError so the check survives `python -O`, which changes behaviour on purpose; the reviewer confirms it and may pick the framework's exception (PermissionDenied, 403) instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-assert-for-auth.md
 
@@ -108537,6 +108531,13 @@ def delete(request, item):
     assert request.user.is_staff
 ```
 
+##### Fixed
+
+```py
+def delete(request, item):
+    if not (request.user.is_staff): raise AssertionError
+```
+
 ##### Do
 
 ```py
@@ -108550,7 +108551,7 @@ def delete(request, item):
 ## `sec-py/no-bind-all-interfaces` — A server does not bind to every interface in code
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the address belongs in configuration, with a loopback default)
+- **Fix:** `suggest` (the reviewer confirms the loopback address suits the deployment (a container needs the address from its configuration); a host:port string for bind= gets no edit)
 - **Severity when named:** `warn` · **Turned on by:** `codelaw:sec-py/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-bind-all-interfaces.md
 
@@ -108575,6 +108576,14 @@ A socket or server is not bound to `0.0.0.0` in the source.
 import uvicorn
 
 uvicorn.run(app, host="0.0.0.0")
+```
+
+##### Fixed
+
+```py
+import uvicorn
+
+uvicorn.run(app, host="127.0.0.1")
 ```
 
 ##### Do
@@ -108627,7 +108636,7 @@ resp = requests.get("https://api.example.com/data", timeout=5)
 ## `sec-py/no-csrf-exempt` — No `@csrf_exempt`
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (an endpoint that needs to be exempt (a webhook) needs its own authentication, which only the author can choose)
+- **Fix:** `suggest` (removing the decorator makes the view check CSRF, so a webhook stops working until it has its own authentication; the reviewer confirms the view is not one, and removes the import if nothing else uses it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-csrf-exempt.md
 
@@ -108652,6 +108661,15 @@ A view is not decorated with `@csrf_exempt`.
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
+def update(request):
+    ...
+```
+
+##### Fixed
+
+```py
+from django.views.decorators.csrf import csrf_exempt
+
 def update(request):
     ...
 ```
@@ -108852,7 +108870,7 @@ DB_PASSWORD = os.environ["DB_PASSWORD"]
 ## `sec-py/no-header-injection` — A request value is not a response header
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (whether to reject, strip or encode the value depends on what the header is for)
+- **Fix:** `suggest` (stripping the line breaks is one of two safe forms; the reviewer picks between them, or rejects the value or encodes it, and confirms the value is meant to be one header line)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-header-injection.md
 
@@ -108881,6 +108899,24 @@ def view(request):
     return resp
 ```
 
+##### Fixed (strip line breaks)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = str(request.args["name"]).replace("\r", "").replace("\n", "")
+    return resp
+```
+
+##### Fixed (join lines with a space)
+
+```py
+def view(request):
+    resp = make_response("ok")
+    resp.headers["X-Name"] = " ".join(str(request.args["name"]).splitlines())
+    return resp
+```
+
 ##### Do
 
 ```py
@@ -108893,7 +108929,7 @@ def view(request):
 ## `sec-py/no-insecure-protocol` — No Telnet, FTP or SNMP v1/v2
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the replacement (SSH or SFTP, FTPS, SNMPv3) needs the server to support it)
+- **Fix:** `manual` (the finding is the import or the community string; the replacement (SSH or SFTP, FTPS, SNMPv3) is a different client and needs the server to support it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-insecure-protocol.md
 
@@ -109097,7 +109133,7 @@ if action in ACTIONS:
 ## `sec-py/no-log-injection` — A request value is not logged raw
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (whether to strip, escape or reject the value depends on how the log is read)
+- **Fix:** `suggest` (the reviewer confirms line breaks in the value are only noise for this log, since stripping them changes the logged text)
 - **Severity when named:** `warn` · **Turned on by:** `codelaw:sec-py/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-log-injection.md
 
@@ -109123,6 +109159,13 @@ def view(request):
     logger.info("login %s", request.POST["user"])
 ```
 
+##### Fixed
+
+```py
+def view(request):
+    logger.info("login %s", str(request.POST["user"]).replace("\r", "").replace("\n", " "))
+```
+
 ##### Do
 
 ```py
@@ -109136,7 +109179,7 @@ def view(request):
 ## `sec-py/no-mako` — No Mako templates
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (moving to another engine (or turning on `default_filters`) changes every template)
+- **Fix:** `suggest` (turning escaping on changes every template's output, so the reviewer confirms each one, and adds `|n` where markup is meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-mako.md
 
@@ -109161,6 +109204,14 @@ def view(request):
 from mako.template import Template
 
 t = Template(source)
+```
+
+##### Fixed
+
+```py
+from mako.template import Template
+
+t = Template(source, default_filters=["str", "h"])
 ```
 
 ##### Do
@@ -109364,7 +109415,7 @@ subprocess.run(["/usr/bin/git", "status"])
 ## `sec-py/no-path-traversal` — A request value is not a file path
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (the safe form (a lookup by id, a resolved path checked against a base folder) depends on the storage layout)
+- **Fix:** `manual` (the base folder the path must stay inside, or the id to look the file up by, is not in the code)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-path-traversal.md
 
@@ -109556,7 +109607,7 @@ def find(request, text):
 ## `sec-py/no-secret-in-log` — Secrets are not logged
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (whether to drop the value or mask it depends on what the log is for)
+- **Fix:** `suggest` (the reviewer confirms a redacted argument loses nothing the log needs; a keyword argument (`password=...`) gets no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-secret-in-log.md
 
@@ -109579,6 +109630,12 @@ A value named `password`, `token` or `secret` is not written to a log.
 
 ```py
 logger.info("login with password %s", password)
+```
+
+##### Fixed
+
+```py
+logger.info("login with password %s", "[REDACTED]")
 ```
 
 ##### Do
@@ -109830,7 +109887,7 @@ resp = requests.get(url, timeout=5)
 ## `sec-py/no-trust-remote-code` — No `trust_remote_code=True`
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (using a model that needs custom code means reviewing and vendoring that code, which is the author's call)
+- **Fix:** `suggest` (removing the keyword fails closed, but a model that needs its custom code stops loading, so the reviewer confirms it does not, or vendors and pins the code)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-trust-remote-code.md
 
@@ -109854,6 +109911,12 @@ resp = requests.get(url, timeout=5)
 
 ```py
 model = AutoModel.from_pretrained(name, trust_remote_code=True)
+```
+
+##### Fixed
+
+```py
+model = AutoModel.from_pretrained(name)
 ```
 
 ##### Do

@@ -35,7 +35,7 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-05 — W-156 step 4: capability markers, the 37 re-judged, the moves begun  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *build W-156 step 4 — move rules up the ladder pack by pack, mark the capability-blocked ones with W-162, give W-161's re-judged rules their exception.*
-- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496. security-js landed (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)).
+- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496. security-js landed (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)). security-python landed (security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4)).
 - **Decided / left open:** the five odd `needs` labels folded as W-161 §1 counts them; `browser-targets` names W-166, the TS code fixes W-105.
 - **Mistakes:** none.
 - **Next:** the moves, pack by pack.

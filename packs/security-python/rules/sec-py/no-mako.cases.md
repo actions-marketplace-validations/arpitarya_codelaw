@@ -35,3 +35,33 @@ Template(src)
 ```expect
 (none)
 ```
+
+### case: escaping already on
+
+```py
+from mako.template import Template
+
+Template(src, default_filters=["h"])
+```
+
+```expect
+(none)
+```
+
+### case: escaping is turned on
+
+```py
+from mako.template import Template
+
+Template(src, input_encoding="utf-8")
+```
+
+```expect
+3:1 sec-py/no-mako
+```
+
+```fixed
+from mako.template import Template
+
+Template(src, input_encoding="utf-8", default_filters=["str", "h"])
+```

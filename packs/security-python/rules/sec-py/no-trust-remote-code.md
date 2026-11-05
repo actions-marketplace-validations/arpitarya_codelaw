@@ -2,9 +2,8 @@
 id: sec-py/no-trust-remote-code
 title: 'No `trust_remote_code=True`'
 languages: [python]
-fix: manual
-fix_reason: "using a model that needs custom code means reviewing and vendoring that code, which is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing the keyword fails closed, but a model that needs its custom code stops loading, so the reviewer confirms it does not, or vendors and pins the code"
 stability: preview
 security: { cwe: [94], owasp: ["A03:2025"], severity: high }
 since: 0.2.0
@@ -22,10 +21,13 @@ match:
         field: arguments
         has:
           kind: keyword_argument
+          pattern: $K
           all:
             - { has: { field: name, regex: '^trust_remote_code$' } }
             - { has: { field: value, kind: 'true' } }
 message: 'This runs code from the model repository; review it and vendor it, or use a model without custom code'
+fix:
+  - remove: $K
 ```
 
 ## How to fix
@@ -42,6 +44,12 @@ message: 'This runs code from the model repository; review it and vendor it, or 
 
 ```py
 model = AutoModel.from_pretrained(name, trust_remote_code=True)
+```
+
+#### Fixed
+
+```py
+model = AutoModel.from_pretrained(name)
 ```
 
 #### Do

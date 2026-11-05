@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to drop the value or mask it depends on what the log is for) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms a redacted argument loses nothing the log needs; a keyword argument (`password=...`) gets no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-532 · OWASP A09:2025 · security severity `medium` |
@@ -131,6 +131,12 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 
 ```py
 logger.info("login with password %s", password)
+```
+
+#### Fixed
+
+```py
+logger.info("login with password %s", "[REDACTED]")
 ```
 
 #### Do

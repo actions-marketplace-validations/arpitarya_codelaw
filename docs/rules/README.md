@@ -2249,31 +2249,31 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`sec-py/cookie-flags`](sec-py/cookie-flags.md) | Cookies are `Secure`, `HttpOnly` and `SameSite` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/django-settings`](sec-py/django-settings.md) | Django settings are safe | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/django-settings`](sec-py/django-settings.md) | Django settings are safe | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/fastapi-cors`](sec-py/fastapi-cors.md) | CORS does not allow every origin with credentials | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/flask-debug`](sec-py/flask-debug.md) | Flask's debugger is off | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/flask-settings`](sec-py/flask-settings.md) | Flask configuration is safe | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/flask-settings`](sec-py/flask-settings.md) | Flask configuration is safe | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/hf-pin-revision`](sec-py/hf-pin-revision.md) | Hugging Face downloads pin a revision | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/jinja-autoescape`](sec-py/jinja-autoescape.md) | Jinja2 keeps autoescape on | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/logging-listen`](sec-py/logging-listen.md) | `logging.config.listen` is not used | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/ml-unsafe-load`](sec-py/ml-unsafe-load.md) | Model and array files are not unpickled | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-assert-for-auth`](sec-py/no-assert-for-auth.md) | `assert` is not an access check | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-bind-all-interfaces`](sec-py/no-bind-all-interfaces.md) | A server does not bind to every interface in code | `manual` | — | `sec-py/strict` |
+| [`sec-py/ml-unsafe-load`](sec-py/ml-unsafe-load.md) | Model and array files are not unpickled | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-assert-for-auth`](sec-py/no-assert-for-auth.md) | `assert` is not an access check | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-bind-all-interfaces`](sec-py/no-bind-all-interfaces.md) | A server does not bind to every interface in code | `suggest` | — | `sec-py/strict` |
 | [`sec-py/no-cleartext-http`](sec-py/no-cleartext-http.md) | Requests go over HTTPS | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-csrf-exempt`](sec-py/no-csrf-exempt.md) | No `@csrf_exempt` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-csrf-exempt`](sec-py/no-csrf-exempt.md) | No `@csrf_exempt` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-dynamic-import`](sec-py/no-dynamic-import.md) | A request value does not choose a module or attribute | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-exec-eval`](sec-py/no-exec-eval.md) | `exec`, `eval` and `compile` of a non-literal | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-format-string-injection`](sec-py/no-format-string-injection.md) | A request value is not a format string | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-hardcoded-crypto-key`](sec-py/no-hardcoded-crypto-key.md) | No keys or IVs in the source | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-hardcoded-secret`](sec-py/no-hardcoded-secret.md) | No secrets in the source | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-header-injection`](sec-py/no-header-injection.md) | A request value is not a response header | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-header-injection`](sec-py/no-header-injection.md) | A request value is not a response header | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-insecure-protocol`](sec-py/no-insecure-protocol.md) | No Telnet, FTP or SNMP v1/v2 | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-insecure-random`](sec-py/no-insecure-random.md) | `secrets` for tokens, not `random` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-insecure-tempfile`](sec-py/no-insecure-tempfile.md) | `mkstemp` instead of `mktemp` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-ldap-injection`](sec-py/no-ldap-injection.md) | LDAP filters are not built from strings | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-llm-output-to-sink`](sec-py/no-llm-output-to-sink.md) | Model output is not run or rendered | `manual` | — | `sec-py/strict` |
-| [`sec-py/no-log-injection`](sec-py/no-log-injection.md) | A request value is not logged raw | `manual` | — | `sec-py/strict` |
-| [`sec-py/no-mako`](sec-py/no-mako.md) | No Mako templates | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-log-injection`](sec-py/no-log-injection.md) | A request value is not logged raw | `suggest` | — | `sec-py/strict` |
+| [`sec-py/no-mako`](sec-py/no-mako.md) | No Mako templates | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-mark-safe`](sec-py/no-mark-safe.md) | No `mark_safe` of dynamic text | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-mass-assignment`](sec-py/no-mass-assignment.md) | A request is not splatted into a model | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-nosql-injection`](sec-py/no-nosql-injection.md) | A request is not a MongoDB query | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
@@ -2284,14 +2284,14 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | [`sec-py/no-pycrypto`](sec-py/no-pycrypto.md) | No `pycrypto` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-reflected-xss`](sec-py/no-reflected-xss.md) | A request value is not written into the response as it is | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-regex-injection`](sec-py/no-regex-injection.md) | A request value is not a regular expression | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-secret-in-log`](sec-py/no-secret-in-log.md) | Secrets are not logged | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-secret-in-log`](sec-py/no-secret-in-log.md) | Secrets are not logged | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-shell`](sec-py/no-shell.md) | A shell command built from data | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-silent-except`](sec-py/no-silent-except.md) | Errors are not swallowed | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-sql-string`](sec-py/no-sql-string.md) | SQL built from a string | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-ssrf`](sec-py/no-ssrf.md) | A request value is not a URL to fetch | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-stack-trace-response`](sec-py/no-stack-trace-response.md) | A stack trace is not sent to the client | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-tls-bypass`](sec-py/no-tls-bypass.md) | TLS certificate checks stay on | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/no-trust-remote-code`](sec-py/no-trust-remote-code.md) | No `trust_remote_code=True` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/no-trust-remote-code`](sec-py/no-trust-remote-code.md) | No `trust_remote_code=True` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-unsafe-deserialize`](sec-py/no-unsafe-deserialize.md) | Deserialising with `pickle` and its relatives | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-weak-cipher`](sec-py/no-weak-cipher.md) | No DES, RC4, Blowfish or ECB | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-weak-hash`](sec-py/no-weak-hash.md) | No MD5 or SHA-1 for security | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |

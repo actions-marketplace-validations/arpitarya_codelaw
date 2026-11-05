@@ -3,9 +3,8 @@ id: sec-py/no-log-injection
 title: 'A request value is not logged raw'
 languages: [python]
 severity: warn
-fix: manual
-fix_reason: "whether to strip, escape or reject the value depends on how the log is read"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the reviewer confirms line breaks in the value are only noise for this log, since stripping them changes the logged text"
 stability: preview
 security: { cwe: [117], owasp: ["A09:2025"], severity: low }
 since: 0.2.0
@@ -23,6 +22,8 @@ constraints:
   A: { regex: '^[rbf]?[''\"]' }
 where: { $V: { from_source: { tables: [sources/django, sources/flask, sources/fastapi] } } }
 message: '`$V` comes from the request and is logged as it is'
+fix:
+  - replace: { target: $V, with: 'str($V).replace("\r", "").replace("\n", " ")' }
 ```
 
 ## How to fix
@@ -39,6 +40,13 @@ message: '`$V` comes from the request and is logged as it is'
 ```py
 def view(request):
     logger.info("login %s", request.POST["user"])
+```
+
+#### Fixed
+
+```py
+def view(request):
+    logger.info("login %s", str(request.POST["user"]).replace("\r", "").replace("\n", " "))
 ```
 
 #### Do

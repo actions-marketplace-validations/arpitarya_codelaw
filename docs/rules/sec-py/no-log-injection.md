@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/strict` at `warn` |
 | **Severity when named without one** | `warn` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to strip, escape or reject the value depends on how the log is read) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms line breaks in the value are only noise for this log, since stripping them changes the logged text) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-117 · OWASP A09:2025 · security severity `low` |
@@ -132,6 +132,13 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 ```py
 def view(request):
     logger.info("login %s", request.POST["user"])
+```
+
+#### Fixed
+
+```py
+def view(request):
+    logger.info("login %s", str(request.POST["user"]).replace("\r", "").replace("\n", " "))
 ```
 
 #### Do
