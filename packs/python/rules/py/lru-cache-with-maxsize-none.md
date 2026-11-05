@@ -3,6 +3,7 @@ id: py/lru-cache-with-maxsize-none
 title: "functools.cache, not lru_cache(maxsize=None)"
 languages: [python]
 fix: auto
+fix_target: { python: "3.9" }
 stability: preview
 ported_from: [ruff/UP033]
 since: 0.5.0

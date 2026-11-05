@@ -43,7 +43,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. 37 re-judged by W-156. Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
-🟢 **W-166** `agent` Build W-163's save-and-targets design ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Steps 0–1 ✅ (main green; `on_edit`). Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
+🟢 **W-166** `agent` Build W-163's save-and-targets design ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Steps 0–2 ✅ (`on_edit`, `[targets]`). Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 
 
 ### ci/cd (4)
