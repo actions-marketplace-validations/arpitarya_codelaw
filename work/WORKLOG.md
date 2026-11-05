@@ -157,6 +157,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** the first SR-guard landing was refused — `helper.mjs` changed without SR-TYPES; the record now carries the change.
 - **Next:** the decider pushes `main`; three `perf` runs on the batched helper, then the budget row; the RC on 11-10.
 
+## 2026-11-05 — W-141: Oxc's formatters built behind `codelaw format` for CSS, SCSS, YAML, Markdown  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build `oxc_formatter_css`, `_markdown`, `_yaml` behind codelaw's formatter, rerun W-141's corpus, measure size, speed and the layout check; adopt Oxc only where it beats the current backend within budget* (coordinator, after D-52).
+- **Done:** `crates/codelaw-format/src/oxc.rs`; oxc git `7b933d5` pinned, D-52's tree (74) and ledger lines written; `oxc_allocator` patch named in SR-PACKAGES decision 4. Corpus vs Prettier: CSS 74.4 → 88.6 %, SCSS 80.7 → 86.0 %, YAML 89.9 → 97.3 %, Markdown 93.3 → 94.7 %. Binary −2.3 MB; the four languages 2.4× faster; every L8 budget held; layout check 0 failed. All four adopted; Biome CSS, pretty_yaml, dprint removed. SR-FORMATTER decision 2 and § What is built updated.
+- **Decided / left open:** JS/TS stays on Biome (`oxc_formatter` is not in D-52). SR-PACKAGES decision 4 gained a third `[patch]` reason (one copy of a crate a ratified unit names) — an agent's reading of D-52, for the decider to confirm.
+- **Mistakes:** the D-52 ledger capture first swallowed the test harness's output (the dependency test failed, fixed). `cargo fetch` with libgit2 stalled on Oxc's history; the git CLI fetched it. Disk past the L9 budget during the parallel run, under the standing 2026-10-30 note.
+- **Next:** W-141 DoD 3 — name the remaining per-language differences in SR-FORMATTER.
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*

@@ -10,6 +10,7 @@ pub mod import;
 mod engines;
 mod markers;
 mod options;
+mod oxc;
 
 pub use classes::sort_class_lists;
 pub use options::{ArrowParens, ClassSort, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
@@ -20,18 +21,18 @@ use std::fmt;
 /// The pinned engines, in every cache key a format result enters
 /// (SR-FORMATTER decision 7: an engine upgrade changes output).
 pub const ENGINES_FINGERPRINT: &str =
-    "biome@2.5.15 ruff_python_formatter@0.0.18 pretty_yaml@0.6.0 taplo@0.14.0 dprint-plugin-markdown@0.26.0 markup_fmt@0.27.6";
+    "biome@2.5.15 ruff_python_formatter@0.0.18 oxc@7b933d5 taplo@0.14.0 markup_fmt@0.27.6";
 
 /// The engine that formats a language, as SR-FORMATTER decision 2 names it.
 pub fn engine(language: Language) -> &'static str {
     match language {
         Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => "biome_js_formatter",
         Language::Json => "biome_json_formatter",
-        Language::Css | Language::Scss => "biome_css_formatter",
+        Language::Css | Language::Scss => "oxc_formatter_css",
         Language::Python => "ruff_python_formatter",
-        Language::Yaml => "pretty_yaml",
+        Language::Yaml => "oxc_formatter_yaml",
         Language::Toml => "taplo",
-        Language::Markdown => "dprint-plugin-markdown",
+        Language::Markdown => "oxc_formatter_markdown",
         Language::Html => "markup_fmt",
     }
 }

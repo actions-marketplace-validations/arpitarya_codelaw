@@ -116,7 +116,7 @@ fn ignore_markers_skip_the_next_node_in_every_engine() {
         (Language::Tsx, "a.tsx", "// {}\n", "let t:number   =  1;\n", "let u:number=2\n", "let u: number = 2;\n"),
         (Language::Css, "a.css", "/* {} */\n", "a{color:red}\n", "b{color:blue}\n", "b {\n  color: blue;\n}\n"),
         (Language::Python, "a.py", "# {}\n", "x = [  1,2,\n  3 ]\n", "y = {  'a':1 }\n", "y = {\"a\": 1}\n"),
-        // pretty_yaml: a marker before a block's first entry keeps the whole block.
+        // YAML: a marker before a block's first entry keeps the whole block.
         (Language::Yaml, "a.yaml", "x: 0\n# {}\n", "a:   [1,   2]\n", "b:    1\n", "b: 1\n"),
         (Language::Toml, "a.toml", "# {}\n", "a  =   [1,2]\n", "b=1\n", "b = 1\n"),
         (Language::Markdown, "a.md", "<!-- {} -->\n", "| a | b |\n|-|-|\n| 1 | 2 |\n", "\n* x\n", "\n- x\n"),
