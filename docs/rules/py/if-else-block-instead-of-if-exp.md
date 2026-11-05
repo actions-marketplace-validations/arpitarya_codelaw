@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the statement form becomes an expression; review long branches) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/SIM108` |
+| **Ported from** | `ruff/SIM108`, `pylint/consider-ternary-expression` |
 
 ## What it checks
 

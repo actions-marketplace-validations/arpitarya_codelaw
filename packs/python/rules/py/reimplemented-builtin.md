@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "the loop and the return after it become one `return any(...)`"
 stability: preview
-ported_from: [ruff/SIM110]
+ported_from: [ruff/SIM110, pylint/consider-using-any-or-all]
 since: 0.5.0
 ---
 

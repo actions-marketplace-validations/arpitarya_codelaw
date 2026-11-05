@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the loop and the return after it become one `return any(...)`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/SIM110` |
+| **Ported from** | `ruff/SIM110`, `pylint/consider-using-any-or-all` |
 
 ## What it checks
 
