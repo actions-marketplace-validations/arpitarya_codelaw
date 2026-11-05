@@ -2,9 +2,8 @@
 id: numpy/numpy-deprecated-function
 title: "No deprecated NumPy functions"
 languages: [python]
-fix: manual
-fix_reason: "each has its own replacement name"
-fix_pending: "auto"
+fix: auto
+fix_reason: "each is a plain alias of its replacement, so renaming it keeps the behaviour"
 stability: preview
 ported_from: [ruff/NPY003]
 since: 0.5.0
@@ -16,11 +15,22 @@ since: 0.5.0
 
 ```codelaw
 match:
-  pattern: np.$F
+  all:
+    - pattern: np.$_F
+    - any:
+        - has: { field: attribute, regex: '^round_$', pattern: $F0 }
+        - has: { field: attribute, regex: '^product$', pattern: $F1 }
+        - has: { field: attribute, regex: '^cumproduct$', pattern: $F2 }
+        - has: { field: attribute, regex: '^sometrue$', pattern: $F3 }
+        - has: { field: attribute, regex: '^alltrue$', pattern: $F4 }
   inside: { kind: module, stopBy: end, has: { any: [{kind: import_statement}, {kind: import_from_statement}], regex: '^(import|from)\s+numpy\b' } }
-constraints:
-  F: { regex: '^(round_|product|cumproduct|sometrue|alltrue)$' }
-message: "`np.$F` is deprecated; use its current name"
+message: "`$$MATCH` is deprecated; use its current name"
+fix:
+  - replace: { target: $F0, with: "round" }
+  - replace: { target: $F1, with: "prod" }
+  - replace: { target: $F2, with: "cumprod" }
+  - replace: { target: $F3, with: "any" }
+  - replace: { target: $F4, with: "all" }
 ```
 
 ## How to fix

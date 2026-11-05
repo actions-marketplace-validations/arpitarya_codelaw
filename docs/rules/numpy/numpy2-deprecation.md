@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:numpy/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (each removed name has its own replacement, given in the NumPy 2 migration guide) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for the names that are plain aliases of a name that also exists in NumPy 1 (`np.Inf`, `np.float_`, `np.product`, `np.row_stack` and the like); every other removed name needs the migration guide's rewrite) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/NPY201` |
