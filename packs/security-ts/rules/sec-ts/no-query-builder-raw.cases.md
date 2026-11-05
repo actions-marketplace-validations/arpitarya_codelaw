@@ -39,3 +39,27 @@ const q = sql.raw(`order by ${col}`);
 ```expect
 1:11 sec-ts/no-query-builder-raw
 ```
+
+### case: a template argument becomes a sql template
+
+```ts
+const q = sql.raw(`order by ${col}`);
+```
+
+```expect
+1:11 sec-ts/no-query-builder-raw
+```
+
+```fixed
+const q = sql`order by ${col}`;
+```
+
+### case: a variable argument has no edit
+
+```ts
+const q = sql.raw(query);
+```
+
+```expect
+1:11 sec-ts/no-query-builder-raw
+```

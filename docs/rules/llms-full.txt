@@ -110692,7 +110692,7 @@ class Post {
 ## `sec-ts/angular-native-element-html` — No HTML written to a native element or through Renderer2
 
 - **Pack:** `@codelaw/rules-security-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the value is text or markup is a decision for the author)
+- **Fix:** `suggest` (writing text instead of markup changes what the page shows, so the reviewer confirms the value is meant to be text; outerHTML and insertAdjacentHTML get no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-ts/angular-native-element-html.md
 
@@ -110731,6 +110731,16 @@ class Box {
 }
 ```
 
+##### Fixed
+
+```ts
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -110749,6 +110759,16 @@ class Box {
 class Box {
   show(html: string) {
     this.el.nativeElement.innerHTML = html;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+class Box {
+  show(html: string) {
+    this.el.nativeElement.textContent = html;
   }
 }
 ```
@@ -111265,7 +111285,7 @@ const rows = await prisma.$queryRaw`SELECT * FROM "User" WHERE id = ${id}`;
 ## `sec-ts/no-query-builder-raw` — No raw SQL fragment from a value in Drizzle, Kysely or MikroORM
 
 - **Pack:** `@codelaw/rules-security-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the statement and its values have to be separated by hand)
+- **Fix:** `suggest` (a template argument becomes a parameterised `sql` template, which turns each ${value} into a bound parameter, so the reviewer confirms none of them is an identifier or a fragment of the statement; a non-template argument gets no edit)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-ts/no-query-builder-raw.md
 
@@ -111287,7 +111307,7 @@ const rows = await prisma.$queryRaw`SELECT * FROM "User" WHERE id = ${id}`;
 ##### Don't
 
 ```ts
-await db.execute(sql.raw(query));
+await db.execute(sql.raw(`select * from users where id = ${id}`));
 ```
 
 ##### Do
@@ -111301,7 +111321,7 @@ await db.execute(sql`select * from users where id = ${id}`);
 ##### Don't
 
 ```tsx
-await db.execute(sql.raw(query));
+await db.execute(sql.raw(`select * from users where id = ${id}`));
 ```
 
 ##### Do
@@ -111530,7 +111550,7 @@ export const create = protectedProcedure.input(schema).mutation(({ input }) => s
 ## `sec-ts/typeorm-synchronize` — TypeORM does not synchronize the schema on start
 
 - **Pack:** `@codelaw/rules-security-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (how the schema is changed instead (migrations) is a decision for the author)
+- **Fix:** `suggest` (the edit fails closed, but the schema then changes only through migrations, so the reviewer confirms the project has them or writes them)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-ts/recommended` at `error` · `codelaw:sec-ts/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-ts/typeorm-synchronize.md
 
@@ -111555,6 +111575,12 @@ A DataSource or `TypeOrmModule` configuration does not set `synchronize: true`.
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
 ```
 
+##### Fixed
+
+```ts
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
+```
+
 ##### Do
 
 ```ts
@@ -111567,6 +111593,12 @@ export const db = new DataSource({ type: "postgres", url, migrations: ["dist/mig
 
 ```tsx
 export const db = new DataSource({ type: "postgres", url, synchronize: true });
+```
+
+##### Fixed
+
+```tsx
+export const db = new DataSource({ type: "postgres", url, synchronize: false });
 ```
 
 ##### Do
