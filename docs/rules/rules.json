@@ -44177,8 +44177,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each deprecated API has its own replacement",
+   "fix": "auto",
+   "fix_reason": "auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

@@ -41,6 +41,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- **node: native rules move up the fix ladder (W-156):** node/no-deprecated-api to auto for the APIs that are the same function under another name (util.isArray, util.isBuffer, os.tmpDir, os.getNetworkInterfaces, path._makeLong, crypto's randomBytes aliases), dropping an import nothing else reads; every other API manual (restructure). (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)).
 - **The spell pack is complete (W-103):** `@codelaw/rules-spell` and `codelaw-rules-spell` hold the same files byte for byte, its word data included, and the `spell` operation's CI budget is 2,500 ms.
 - **css-modules: rules move up the fix ladder (W-156):** no-undefined-class kept, now naming cross-file (W-162) (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
 - **redux-toolkit: rules move up the fix ladder (W-156):** no-legacy-create-store and prefer-hooks-api kept, now naming computed edits (W-162) (redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7)).
