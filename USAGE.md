@@ -222,6 +222,18 @@ Every rule has a fix class: `auto` (applied by `codelaw fix`, on save and by the
 
 `fix = "auto"` on a `suggest` rule is a config error naming the rule's own class. `codelaw rules --why <id>` and `codelaw config --print` show the lowered class and the line that set it.
 
+### Saying why a rule is off
+
+A rule entry that sets `severity = "off"`, in `[rules]` or a scope, may say why. `require_reason = true` makes the reason mandatory:
+
+```toml
+[rules]
+require_reason = true                                   # default false
+"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }
+```
+
+With it on, an `"off"` that has no reason is a `codelaw/off-without-reason` error on its line in `codelaw.toml`. A `reason` on an entry that isn't `"off"` is a config error. `codelaw config --print` shows each reason and the line that set it ([SR-CONFIG](records/0110_config.md) decision 11c).
+
 ### Size limits
 
 Six rules cap how big a file, a function and a parameter list may grow, for JavaScript, TypeScript and Python. They are in no default preset; `codelaw:js/size` and `codelaw:py/size` turn all three of a language on at `warn`.

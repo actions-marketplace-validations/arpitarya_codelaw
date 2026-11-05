@@ -21,6 +21,7 @@ mod incremental;
 mod lcov;
 mod lint;
 mod new_code;
+mod off_reason;
 mod query;
 mod project;
 pub mod providers;

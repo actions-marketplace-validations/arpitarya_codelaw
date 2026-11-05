@@ -195,6 +195,13 @@ pub const ENGINE_RULES: &[EngineRule] = &[
         ],
     },
     EngineRule {
+        id: "codelaw/off-without-reason",
+        title: "A rule is turned `\"off\"` in the config without a `reason` while `[rules] require_reason` is on",
+        severity: Severity::Error,
+        fix: FixClass::Manual,
+        steps: &["Write the entry as a table with a reason: `\"py/no-print\" = { severity = \"off\", reason = \"CLI tool: print is the output\" }` (SR-CONFIG decision 11c)."],
+    },
+    EngineRule {
         id: "git/commit-message",
         title: "A commit message does not follow `[commits]` (Conventional Commits by default)",
         severity: Severity::Error,
@@ -264,7 +271,7 @@ pub fn engine_fix_exception(id: &str) -> Option<FixException> {
         // a second pull request.
         "codelaw/generated" | "codelaw/internal-error" | "codelaw/stale-coverage" | "git/pr-size" => Restructure,
         // Missing human-authored content: a reason, a test, a message.
-        "codelaw/suppression-needs-reason" | "graph/untested-function" | "graph/function-coverage" => Authored,
+        "codelaw/suppression-needs-reason" | "codelaw/off-without-reason" | "graph/untested-function" | "graph/function-coverage" => Authored,
         "git/commit-message" | "git/pr-description" => Authored,
         _ => return None,
     })

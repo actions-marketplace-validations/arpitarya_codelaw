@@ -46,6 +46,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 | [`W-153-session-cleanup.md`](open/W-153-session-cleanup.md) | 2026-10-30 | moot — its one worktree, Cowork's handoff, landed as `4afabc5b`; nothing dropped |
 | [`W-149-ci-red-corpus-markers.md`](open/W-149-ci-red-corpus-markers.md) | 2026-10-30 | done — the eleven marker rules' first corpus counts (`30b716a5`); `main` green again, `ci` 41005346138 |
 | [`W-157-config-completion.md`](open/W-157-config-completion.md) | 2026-10-31 | done — [SR-EDITOR](../records/0114_editor.md) decision 9 (the server completes and checks codelaw's own config), [SR-CONFIG](../records/0110_config.md) decisions 6 and 8 (`#:schema` from `init`) |
+| [`W-158-codelawignore-every-rule.md`](open/W-158-codelawignore-every-rule.md) | 2026-11-05 | done — [SR-BASELINE](../records/0104_baseline-and-deprecations.md) decision 12 (`.codelawignore` for every rule), [SR-CONFIG](../records/0110_config.md) decision 11c (`reason` on an `"off"`, `[rules] require_reason`) |
 | [`W-165-stale-branches.md`](open/W-165-stale-branches.md) | 2026-11-05 | done — twelve unmerged local branches, ruled keep ([SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md)) |
 | [`W-159-session-cleanup.md`](open/W-159-session-cleanup.md) | 2026-11-05 | done — every kept worktree landed with its item and was removed ([SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md)) |
 | [`W-160-session-cleanup.md`](open/W-160-session-cleanup.md) | 2026-11-05 | done — W-156's worktrees landed and removed ([SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md)) |

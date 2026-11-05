@@ -3,7 +3,7 @@
  "repository": "https://github.com/arpitarya/codelaw",
  "counts": {
   "rules": 1888,
-  "engine": 27,
+  "engine": 28,
   "packs": 27
  },
  "rules": [
@@ -90272,6 +90272,34 @@
    "fix_steps": [
     "Give the line what the message names: the rules it exempts after the target, each a rule this project has or a namespace (`js/*`); a reason after a colon (always, with `expires=` or `forever`); `expires=YYYY-MM-DD` or `forever` (`[codelawignore] require_expiry`); and `on_touch=error|warn|keep` unless it is `forever` (`[codelawignore] require_on_touch`).",
     "`forever` takes no `expires=`, `warn_days=` or `on_touch=`; a glob takes no `on_touch_scope=function`; no line exempts a `codelaw/` rule."
+   ],
+   "example": null,
+   "ported_from": [],
+   "security": null,
+   "page": "https://github.com/arpitarya/codelaw/blob/main/docs/rules/engine.md",
+   "source": [
+    "crates/codelaw-rules/src/engine_rules.rs"
+   ]
+  },
+  {
+   "id": "codelaw/off-without-reason",
+   "title": "A rule is turned `\"off\"` in the config without a `reason` while `[rules] require_reason` is on",
+   "packs": [],
+   "npm": [],
+   "pypi": [],
+   "languages": [],
+   "fix": "manual",
+   "fix_reason": null,
+   "severity": "error",
+   "stability": "stable",
+   "since": null,
+   "scope": "engine",
+   "presets": [],
+   "options": {},
+   "dont": null,
+   "do": null,
+   "fix_steps": [
+    "Write the entry as a table with a reason: `\"py/no-print\" = { severity = \"off\", reason = \"CLI tool: print is the output\" }` (SR-CONFIG decision 11c)."
    ],
    "example": null,
    "ported_from": [],

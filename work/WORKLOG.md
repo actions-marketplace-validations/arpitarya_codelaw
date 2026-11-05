@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-158 closed: a rule turned off says why  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-158 step 4 — `reason` on an `"off"` entry and `[rules] require_reason`, SR-CONFIG decision 11c.
+- **Done:** the loader, schema, `codelaw/off-without-reason`, `config --print`, USAGE, rule docs; SR-CONFIG 11c marked built; W-158 archived.
+- **Decided / left open:** with `require_reason` on, an unexplained `"off"` is a finding (as `require_expiry` and `.codelawignore` are), not exit 2; a preset's `"off"` entries are not the project's and need no reason.
+- **Mistakes:** the first end-of-turn landing went without the SR-CONFIG edit and the guard refused it; the record now changes in the same change.
+- **Next:** none for W-158.
+
 ## 2026-11-05 — Positioning ruled; W-164 filed; W-102 after W-139; B-072  ·  Claude app (Opus 5.5)
 
 - **Asked:** *"is there a need or a usecase for code law"*, *"what would make people swap"*, then (voice) positioning, the experiment, what to pause; then *"file it."*

@@ -59,7 +59,7 @@
       "enum": ["error", "warn", "info", "off"]
     },
     "ruleSetting": {
-      "description": "A severity, or a severity, options and a lowered fix.",
+      "description": "A severity, or a severity, options, a lowered fix and the reason a rule is off.",
       "oneOf": [
         { "$ref": "#/definitions/severity" },
         {
@@ -72,6 +72,10 @@
               "description": "Lower the rule's fix (SR-LAW-4 decision 16): `suggest` stops `codelaw fix`, save and the agent hook applying it; `manual` stops every surface applying it. At or below the rule's own rung; raising is a config error.",
               "type": "string",
               "enum": ["auto", "suggest", "manual"]
+            },
+            "reason": {
+              "description": "Why the rule is turned off (SR-CONFIG decision 11c): only with `severity = \"off\"`. Mandatory when `[rules] require_reason` is true.",
+              "type": "string"
             }
           }
         }
@@ -80,6 +84,18 @@
     "rules": {
       "type": "object",
       "description": "Severity and options per rule id (`<namespace>/<name>`).",
+      "additionalProperties": { "$ref": "#/definitions/ruleSetting" }
+    },
+    "rootRules": {
+      "type": "object",
+      "description": "The top-level `[rules]`: severity and options per rule id (`<namespace>/<name>`), and `require_reason`.",
+      "properties": {
+        "require_reason": {
+          "description": "Every rule entry in the project's config that sets `severity = \"off\"` must carry a `reason`; one that does not is a `codelaw/off-without-reason` finding (SR-CONFIG decision 11c). Root config only.",
+          "type": "boolean",
+          "default": false
+        }
+      },
       "additionalProperties": { "$ref": "#/definitions/ruleSetting" }
     }
   },
@@ -106,7 +122,7 @@
       "description": "The local rules folder; `.codelaw/rules` by default. Root config only.",
       "type": "string"
     },
-    "rules": { "x-codelaw-record": "SR-CONFIG", "$ref": "#/definitions/rules" },
+    "rules": { "x-codelaw-record": "SR-CONFIG", "$ref": "#/definitions/rootRules" },
     "scope": {
       "x-codelaw-record": "SR-CONFIG",
       "description": "Named groups of files with their own rule settings, applied in file order after [rules]; a preset may ship one (`tests`), and the project's of the same name extends it. A name is lowercase letters, digits, `_` and `-`; `default` is reserved.",

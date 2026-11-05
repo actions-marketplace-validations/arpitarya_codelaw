@@ -54,6 +54,36 @@ pub struct ConfigFile {
     pub spell_file_words: Vec<String>,
 }
 
+type RuleTables<'a> = Vec<(Vec<String>, String, &'a BTreeMap<String, RuleSetting>)>;
+
+/// The rule tables of a file's (or a profile's) scopes and overrides, each
+/// with its key path and how a message names it.
+fn scope_tables<'a>(base: Vec<String>, label: String, scope: &'a crate::raw::ScopeMap, overrides: &'a [crate::raw::RawOverride], tables: &mut RuleTables<'a>) {
+    for (name, sc) in &scope.0 {
+        let mut p = base.clone();
+        p.extend(["scope".into(), name.clone(), "rules".into()]);
+        tables.push((p, format!("{label}scope `{name}`"), &sc.rules));
+    }
+    for (i, o) in overrides.iter().enumerate() {
+        let mut p = base.clone();
+        p.extend(["overrides".into(), i.to_string(), "rules".into()]);
+        tables.push((p, format!("{label}override #{}", i + 1), &o.rules));
+    }
+}
+
+/// A rule entry that turns a rule `"off"` without a `reason` while
+/// `[rules] require_reason` is on (SR-CONFIG decision 11c).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OffWithoutReason {
+    /// The config file the entry is in.
+    pub file: PathBuf,
+    /// Its line there, when the key can be found.
+    pub line: Option<u32>,
+    pub rule: String,
+    /// `[rules]`, `scope `tests``, `profile `ci``, …
+    pub place: String,
+}
+
 /// Where a scope's settings are listed by `codelaw config --scopes`.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ScopeInfo {
@@ -1162,6 +1192,44 @@ impl Config {
         r
     }
 
+    /// `[rules] require_reason` (SR-CONFIG decision 11c): every `"off"` in
+    /// the project's own config must say why. Default `false`.
+    pub fn require_reason(&self) -> bool {
+        self.root_raw().and_then(|r| r.require_reason).unwrap_or(false)
+    }
+
+    /// Every rule entry in the project's own config files that sets
+    /// `severity = "off"` with no `reason` — `[rules]`, each scope, each
+    /// profile's — when `[rules] require_reason` is on; none otherwise.
+    /// A preset's entries are the preset's, not the project's.
+    pub fn offs_without_reason(&self) -> Vec<OffWithoutReason> {
+        let mut out = Vec::new();
+        if !self.require_reason() {
+            return out;
+        }
+        for f in &self.files {
+            let mut tables: RuleTables = vec![(vec!["rules".into()], "[rules]".into(), &f.raw.rules)];
+            scope_tables(Vec::new(), String::new(), &f.raw.scope, &f.raw.overrides, &mut tables);
+            for (key, map) in [("profile", &f.raw.profile), ("profiles", &f.raw.profiles)] {
+                for (name, p) in map {
+                    tables.push((vec![key.into(), name.clone(), "rules".into()], format!("profile `{name}`"), &p.rules));
+                    scope_tables(vec![key.into(), name.clone()], format!("profile `{name}` "), &p.scope, &p.overrides, &mut tables);
+                }
+            }
+            for (path, place, rules) in tables {
+                for (id, s) in rules {
+                    if s.severity() == Some("off") && s.reason().is_none() {
+                        let mut key: Vec<&str> = path.iter().map(String::as_str).collect();
+                        key.push(id);
+                        let line = f.line_of(&key).or_else(|| f.line_of(&key[..key.len() - 1]));
+                        out.push(OffWithoutReason { file: f.path.clone(), line, rule: id.clone(), place: place.clone() });
+                    }
+                }
+            }
+        }
+        out
+    }
+
     /// Every rule id named anywhere in the config, with the file naming it.
     pub fn named_rule_ids(&self) -> Vec<(String, PathBuf)> {
         let mut out = Vec::new();
@@ -1490,5 +1558,30 @@ rules = { "js/no-console" = "error" }
         let c = Config::from_toml(PathBuf::from("/x"), text).unwrap();
         assert_eq!(max_for(&c, "a/f.ts"), Some(2), "alpha is written last, so it wins");
         assert_eq!(c.scope_list().iter().map(|s| s.name.as_str()).collect::<Vec<_>>(), ["zeta", "alpha"]);
+    }
+
+    /// SR-CONFIG decision 11c: `reason` on an `"off"`, and `require_reason`.
+    #[test]
+    fn an_off_without_a_reason_is_listed_only_when_required() {
+        let text = "[rules]\nrequire_reason = true\n\"a/x\" = \"off\"\n\"a/y\" = { severity = \"off\", reason = \"why\" }\n\"a/z\" = { severity = \"off\", reason = \"  \" }\n\"a/w\" = \"warn\"\n[scope.t]\nfiles = [\"t/**\"]\nrules = { \"a/x\" = \"off\" }\n[profile.ci.scope.s]\nfiles = [\"s/**\"]\nrules = { \"a/v\" = \"off\" }\n";
+        let c = Config::from_toml(PathBuf::from("/x"), text).unwrap();
+        assert!(c.require_reason());
+        assert!(!c.files[0].raw.rules.contains_key("require_reason"), "the switch is not a rule");
+        let got: Vec<(String, String, Option<u32>)> = c.offs_without_reason().into_iter().map(|o| (o.rule, o.place, o.line)).collect();
+        assert_eq!(
+            got,
+            [
+                ("a/x".to_owned(), "[rules]".to_owned(), Some(3)),
+                ("a/z".to_owned(), "[rules]".to_owned(), Some(5)),
+                ("a/x".to_owned(), "scope `t`".to_owned(), Some(9)),
+                ("a/v".to_owned(), "profile `ci` scope `s`".to_owned(), Some(12)),
+            ]
+        );
+        let off = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = \"off\"\n").unwrap();
+        assert!(!off.require_reason() && off.offs_without_reason().is_empty(), "default false");
+        let err = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = { severity = \"warn\", reason = \"r\" }\n").unwrap_err();
+        assert!(err.message.contains("`reason` says why a rule is off"), "{}", err.message);
+        let err = Config::from_toml(PathBuf::from("/x"), "[rules]\n\"a/x\" = true\n").unwrap_err();
+        assert!(err.message.contains("rule `a/x`: a setting is a severity or a table"), "{}", err.message);
     }
 }
