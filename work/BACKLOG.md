@@ -75,6 +75,7 @@ it, and do not read it top-down as a priority order.
 | B-051 | `deps refresh` and `data/outdated-dependency` do not read `requirements*.txt`: it is not one of L3's nine languages, so no rule can report on its lines | [L3](../records/0005_LAW-3-languages.md) · `archive/open/W-52-dependency-latest-versions.md` §As built | the decider amends L3, or rules that refresh reads it with findings elsewhere |
 | B-054 | Reading a project's `cspell.json` (`words`, `ignoreWords`, `flagWords`) into `[spell] words`, through `spell/suspicious-word`, so a CSpell user switches in one step | [SR-SPELL](../records/0116_spell.md) Consequences | the decider rules it into W-94's `codelaw migrate` (a `cspell` source) or out |
 | B-055 | The spell pack checks English only; another language needs a word list under a permissive licence and its own L11 row (many CSpell dictionaries are LGPL/GPL) | [SR-SPELL](../records/0116_spell.md) decision 10 | the decider names a language and ratifies a source for it, or rules English-only permanent |
+| B-073 | The Action with `upload-sarif` on and no `gh` on the runner (a self-hosted runner or a slim image) fails with a shell error, not a named one; offered in W-97 (2026-10-27), never ruled. The check-and-annotate path needs no `gh` | [archive W-97](../archive/open/W-97-github-action.md) §Left step 4 · [SR-PACKAGES](../records/0107_packages.md) decision 15 | the decider rules it in (a W-item adds the check to `action.yml`) or out |
 
 ---
 

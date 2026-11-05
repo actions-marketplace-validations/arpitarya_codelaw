@@ -1,10 +1,12 @@
 # Hooks for the pre-commit framework (https://pre-commit.com), SR-CLI-MCP
 # decision 11. `codelaw` must be on PATH (npm i -D codelaw, or pip install
-# codelaw): the framework builds nothing from this repository.
+# codelaw): the framework builds nothing from this repository. To have the
+# framework install codelaw itself, from PyPI at the tag's version, use the
+# mirror instead: https://github.com/arpitarya/codelaw-pre-commit (W-97).
 #
 #   repos:
 #     - repo: https://github.com/arpitarya/codelaw
-#       rev: v0.3.0
+#       rev: v0.4.3
 #       hooks:
 #         - id: codelaw-fix
 #         - id: codelaw-check

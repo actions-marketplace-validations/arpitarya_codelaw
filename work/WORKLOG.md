@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-97 closed: the Action's proof and the pre-commit mirror  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *build W-97* — the Action's proof in `codelaw-action-test`, the mirror in `codelaw-pre-commit`, the bump automation and the docs (a parallel build run).
+- **Done:** `codelaw-action-test` `7bc5975`, run 42002927893 green (`@v0` = 0.4.3, annotation, SARIF uploaded, alert #1); `codelaw-pre-commit` `22bd59f` = tag `v0.4.3`, verified with `uvx pre-commit try-repo`; its `bump.yml` run 42019788907 green (no-op); USAGE, RELEASING, `.pre-commit-hooks.yaml`, CHANGELOG; W-97 archived; B-073 filed (the `gh`-absent error, never ruled).
+- **Decided / left open:** the bump is a scheduled job in the mirror, not `publish.yml`, so no cross-repo token is needed; the mirror carries a no-code `pyproject.toml` because pip needs a project to install a `language: python` hook repo.
+- **Mistakes:** the kit's `block-main.py` refused `git commit` on the mirror's own `main` in the scratch clone (it reads any repo's branch); committed on a local branch and pushed it to the mirror's `main`.
+- **Next:** at the next release, check the mirror's bump tagged it and re-run the Action's proof after `v0` moves.
+
+---
+
 ## 2026-11-05 — Rulings written back: W-162 multi-file fixes, W-163 save and targets  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) write back Arpit's three multiple-choice picks of 11-05: W-162 *"Allow multi-file (Recommended)"*; W-163 *"Own table (Recommended)"* and *"Target-gated (Recommended)"*, the rest of the proposal accepted as presented.
