@@ -37,6 +37,10 @@ const LANGUAGES = [
 // decision 10): opened under any language id, so matched by pattern. Keep
 // in step with `TEXT_CONFIG_FILES` in crates/codelaw-core/src/text_config.rs.
 const TEXT_CONFIG = "**/{.nvmrc,.node-version,.python-version,.tool-versions,Dockerfile,CODEOWNERS,yarn.lock}";
+// codelaw's own config (W-157, SR-EDITOR decision 9): the server completes
+// and checks it, under any language id — VS Code has no TOML language of its
+// own. `pyproject.toml` and `package.json` come as `toml` and `json`.
+const CONFIG = "**/codelaw.toml";
 
 let client: LanguageClient | undefined;
 let binary: Found | undefined;
@@ -134,7 +138,7 @@ async function start(context: vscode.ExtensionContext): Promise<void> {
     return Promise.resolve(child);
   };
   const options: LanguageClientOptions = {
-    documentSelector: [...LANGUAGES.map((language) => ({ scheme: "file", language })), { scheme: "file", pattern: TEXT_CONFIG }],
+    documentSelector: [...LANGUAGES.map((language) => ({ scheme: "file", language })), { scheme: "file", pattern: TEXT_CONFIG }, { scheme: "file", pattern: CONFIG }],
     outputChannel: clientChannel(),
     initializationOptions: { logLevel: level },
     middleware: {

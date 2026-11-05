@@ -623,10 +623,15 @@ fn read_words_file(config: &Path, dir: &Path, set: Option<&str>) -> Result<Vec<S
 /// Load the config home of one folder, if it has one. A folder with more
 /// than one home uses the first and warns about the rest.
 pub fn load_file(dir: &Path, warnings: &mut Vec<String>) -> Result<Option<ConfigFile>, ConfigError> {
+    load_file_from(dir, warnings, &|p| fs::read_to_string(p))
+}
+
+/// [`load_file`], reading each home through `read`.
+fn load_file_from(dir: &Path, warnings: &mut Vec<String>, read: &dyn Fn(&Path) -> std::io::Result<String>) -> Result<Option<ConfigFile>, ConfigError> {
     let mut found: Vec<ConfigFile> = Vec::new();
     for home in [Home::CodelawToml, Home::Pyproject, Home::PackageJson] {
         let path = dir.join(home.file_name());
-        let Ok(text) = fs::read_to_string(&path) else { continue };
+        let Ok(text) = read(&path) else { continue };
         let raw = match home {
             Home::CodelawToml => Some(
                 toml::from_str::<RawConfig>(&text)
@@ -750,13 +755,24 @@ fn root_only_keys(raw: &RawConfig) -> Vec<&'static str> {
 /// project root. With no config anywhere, `start` is the root and every
 /// value is a default.
 pub fn find_config(start: &Path) -> Result<Config, ConfigError> {
+    find_config_from(start, &|p| fs::read_to_string(p))
+}
+
+/// [`find_config`] with one file's text as an editor holds it, unsaved: the
+/// language server checks a config as it is typed with the same loader the
+/// run uses (W-157, SR-EDITOR decision 9).
+pub fn find_config_with(start: &Path, file: &Path, text: &str) -> Result<Config, ConfigError> {
+    find_config_from(start, &|p| if p == file { Ok(text.to_owned()) } else { fs::read_to_string(p) })
+}
+
+fn find_config_from(start: &Path, read: &dyn Fn(&Path) -> std::io::Result<String>) -> Result<Config, ConfigError> {
     let start = fs::canonicalize(start).unwrap_or_else(|_| start.to_path_buf());
     let start_dir = if start.is_file() { start.parent().map(Path::to_path_buf).unwrap_or_default() } else { start };
     let mut warnings = Vec::new();
     let mut chain = Vec::new();
     let mut dir = Some(start_dir.as_path());
     while let Some(d) = dir {
-        if let Some(f) = load_file(d, &mut warnings)? {
+        if let Some(f) = load_file_from(d, &mut warnings, read)? {
             let is_root = f.raw.root;
             chain.push(f);
             if is_root {
