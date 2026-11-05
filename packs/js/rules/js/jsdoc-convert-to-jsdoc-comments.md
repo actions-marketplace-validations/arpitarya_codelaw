@@ -4,7 +4,7 @@ title: "Functions documented in JSDoc, not // comments"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`)"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/convert-to-jsdoc-comments]
 since: 0.5.0

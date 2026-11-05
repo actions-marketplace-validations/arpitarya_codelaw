@@ -4,7 +4,7 @@ title: "Class selectors are kebab-case"
 languages: [css, scss]
 fix: manual
 fix_reason: "renaming must update the markup and scripts that use the class"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$", description: "a regular expression names must match" }

@@ -4,7 +4,7 @@ title: "Imports use relative paths, not absolute ones"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the relative path depends on where this file sits, which the rule does not see"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-import/no-absolute-path]
 since: 0.5.0

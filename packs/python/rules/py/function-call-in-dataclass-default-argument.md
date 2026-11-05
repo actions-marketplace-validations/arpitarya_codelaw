@@ -4,7 +4,7 @@ title: "No call as a dataclass field default"
 languages: [python]
 fix: manual
 fix_reason: "whether the value is meant to be shared or built per instance is the author's call"
-fix_pending: "suggest-choices; needs add-import"
+fix_pending: "suggest-choices; needs add-import (W-162)"
 stability: preview
 ported_from: [ruff/RUF009]
 since: 0.5.0

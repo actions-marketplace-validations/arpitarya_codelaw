@@ -4,7 +4,7 @@ title: "No dangerouslySetInnerHTML from a value that is not sanitized"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether the value needs markup at all is a decision for the author"
-fix_pending: "suggest; needs add-import"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 ported_from: [eslint-plugin-react/no-danger]

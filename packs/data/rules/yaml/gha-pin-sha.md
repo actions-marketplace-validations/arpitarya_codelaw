@@ -5,7 +5,7 @@ languages: [yaml]
 files: ["**/.github/workflows/*.yml", "**/.github/workflows/*.yaml", "**/action.yml", "**/action.yaml"]
 fix: manual
 fix_reason: "finding the commit a tag points to needs the network, and the engine never uses it (L5)"
-fix_pending: "suggest; needs action-tag-SHAs-in-deps-snapshot"
+fix_pending: "suggest; needs action-tag-SHAs-in-deps-snapshot (W-162)"
 stability: preview
 since: 0.1.0
 ---

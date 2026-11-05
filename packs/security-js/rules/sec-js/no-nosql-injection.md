@@ -4,7 +4,7 @@ title: "No request object passed straight to a query, no $where"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which fields the query may filter on is a decision for the author"
-fix_pending: "suggest; needs add-import"
+fix_exception: security
 stability: preview
 security: { cwe: [943], owasp: ["A05:2025"], severity: high }
 since: 0.3.0

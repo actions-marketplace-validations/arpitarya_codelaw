@@ -4,7 +4,7 @@ title: "No leading or trailing space in console arguments"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "trimming the string is a computed edit a template cannot make"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-console-spaces]
 since: 0.5.0

@@ -4,7 +4,7 @@ title: 'A request value is not a redirect target'
 languages: [python]
 fix: manual
 fix_reason: "the allowed destinations depend on the application"
-fix_pending: "suggest; needs add-import"
+fix_exception: security
 stability: preview
 security: { cwe: [601], owasp: ["A01:2025"], severity: medium }
 since: 0.2.0

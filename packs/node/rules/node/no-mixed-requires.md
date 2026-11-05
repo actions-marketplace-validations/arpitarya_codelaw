@@ -4,7 +4,7 @@ title: "Don't mix requires with other declarations"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "splitting the declaration needs its keyword repeated per declarator, which no declarative edit can write"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-n/no-mixed-requires]
 since: 0.5.0

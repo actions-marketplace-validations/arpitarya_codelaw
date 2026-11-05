@@ -4,7 +4,7 @@ title: "A NestJS sign-in controller is rate limited"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the limits that fit the route are a decision for the author"
-fix_pending: "suggest; needs cross-file"
+fix_exception: security
 stability: preview
 security: { cwe: [770, 307], owasp: ["A07:2025"], severity: medium }
 since: 0.3.0

@@ -4,7 +4,7 @@ title: "x > a || x === a is x >= a"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the operator of the rewrite depends on which of four patterns matched"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-double-comparison]
 since: 0.5.0

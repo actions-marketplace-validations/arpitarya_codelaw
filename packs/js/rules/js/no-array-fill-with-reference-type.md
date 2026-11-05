@@ -4,7 +4,7 @@ title: "No fill() with an object"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the array length is not always in the same expression"
-fix_pending: "suggest; needs computed-edit"
+fix_pending: "suggest; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-fill-with-reference-type]
 since: 0.5.0

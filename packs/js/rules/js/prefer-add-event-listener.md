@@ -4,7 +4,7 @@ title: "addEventListener rather than an on-property"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the listener can no longer be replaced by a later assignment, which other code may rely on"
-fix_pending: "suggest; needs computed-edit"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-add-event-listener]
 since: 0.5.0

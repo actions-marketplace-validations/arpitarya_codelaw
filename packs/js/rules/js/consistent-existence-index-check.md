@@ -4,7 +4,7 @@ title: "Check indexOf against -1 the same way"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template"
-fix_pending: "auto; needs computed-edit"
+fix_pending: "auto; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-unicorn/consistent-existence-index-check]
 since: 0.5.0

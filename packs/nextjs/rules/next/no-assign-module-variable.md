@@ -4,7 +4,7 @@ title: "No variable named module"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the variable needs a new name, chosen by the author"
-fix_pending: "suggest; needs scope-rename"
+fix_pending: "suggest; needs scope-rename (W-162)"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-assign-module-variable"]
 since: 0.5.0

@@ -4,7 +4,7 @@ title: "Import by name, not the default"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the module's named export for this value is not written in this file"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 ported_from: [tslint/no-default-import]
 since: 0.5.0

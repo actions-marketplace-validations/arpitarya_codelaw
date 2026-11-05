@@ -4,7 +4,7 @@ title: "Google Analytics through next/third-parties"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "moving to the component changes how the tag is configured"
-fix_pending: "suggest; needs add-import"
+fix_pending: "suggest; needs add-import (W-162)"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/next-script-for-ga"]
 since: 0.5.0

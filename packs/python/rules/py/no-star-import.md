@@ -4,7 +4,7 @@ title: "No `from module import *`"
 languages: [python]
 fix: manual
 fix_reason: "which names the module needs can only be found by reading its uses"
-fix_pending: "auto-subset; needs cross-file"
+fix_pending: "auto-subset; needs cross-file (W-162)"
 stability: preview
 ported_from: [ruff/F403, pylint/wildcard-import]
 since: 0.1.0

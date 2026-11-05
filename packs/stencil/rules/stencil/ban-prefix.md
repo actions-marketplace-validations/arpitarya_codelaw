@@ -4,7 +4,7 @@ title: "A component tag doesn't use a reserved prefix"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "renaming a tag changes every page that uses it"
-fix_pending: "suggest; needs cross-file"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 options:
   prefixes: { type: "string[]", default: ["stencil", "stnl", "st"] }

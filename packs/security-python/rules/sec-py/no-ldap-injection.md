@@ -4,7 +4,7 @@ title: 'LDAP filters are not built from strings'
 languages: [python]
 fix: manual
 fix_reason: "the escaping function belongs to the LDAP library in use"
-fix_pending: "suggest; needs add-import"
+fix_exception: security
 stability: preview
 security: { cwe: [90], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

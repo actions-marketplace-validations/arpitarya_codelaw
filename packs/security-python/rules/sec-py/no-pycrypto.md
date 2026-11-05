@@ -4,7 +4,7 @@ title: 'No `pycrypto`'
 languages: [python]
 fix: manual
 fix_reason: "the replacement package changes the import path and some call signatures"
-fix_pending: "suggest; needs cross-file"
+fix_exception: restructure
 stability: preview
 ported_from: [bandit/B413, ruff/S413]
 security: { cwe: [1104], owasp: ["A03:2025"], severity: medium }
