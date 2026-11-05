@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-126: first matrix runs skipped `perf`; fix  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) after Arpit pushed `d5006de0` and `3b53d1a8`, three measurement runs of the new `perf`, times into W-126.
+- **Done:** dispatched `ci` 42053908300; with 42053047689 and 42053750244, every `perf <group>` skipped — `build linux-arm64-musl` red (`rules lint packs/js/` segfaults). `perf-op` now runs on `!cancelled()`.
+- **Decided / left open:** the segfault is not W-126's; named in the item for the js pack's owner. No budget touched.
+- **Mistakes:** `needs: build` with the default `success()` skipped perf on any platform's failure — missed when the matrix was built.
+- **Next:** three runs once this commit is pushed.
+
 ## 2026-11-05 — W-166 step 0: main green on `[fix] on_edit`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-166; first fix main — `every_record_defined_key_is_in_the_schema` failed on `[fix] on_edit`.

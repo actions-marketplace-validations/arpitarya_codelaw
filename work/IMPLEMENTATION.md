@@ -11,6 +11,7 @@ against this file before an item may be closed
 
 | date | item | what landed | outcome | evidence |
 |---|---|---|---|---|
+| 2026-11-05 | W-126 (step 6 fix) | `perf-op` runs on `!cancelled()`: a failed build on another platform no longer skips the measurement (only linux-x64-gnu's binary is used) | built; runs 42053047689, 42053750244, 42053908300 skipped `perf` behind `build linux-arm64-musl` (`rules lint packs/js/` segfaults there) | `actionlint` clean |
 | 2026-11-05 | W-156 (step 4: css-modules moves) | no-undefined-class kept, now naming cross-file (W-162) | css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3); whole tree: 186 to move, 168 capability-blocked | `codelaw test packs/css-modules` 0 failed; `rules --fix-stats --check` exit 0; rule-docs regenerated |
 | 2026-11-05 | W-156 (step 4: redux-toolkit moves) | no-legacy-create-store and prefer-hooks-api kept, now naming computed edits (W-162) | redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7); whole tree: 187 to move, 167 capability-blocked | `codelaw test packs/redux-toolkit` 0 failed; `rules --fix-stats --check` exit 0; rule-docs regenerated |
 | 2026-11-05 | W-156 (step 4: python moves) | py/no-tunable-literals and py/pytest-raises-ambiguous-pattern kept, now naming computed edits and add-import (W-162) | python: auto 159 → 159, suggest 197 → 197, manual 150 → 150 (pending 66 → 66); whole tree: 189 to move, 165 capability-blocked | `codelaw test packs/python` 4 warnings; `rules --fix-stats --check` exit 0; rule-docs regenerated |

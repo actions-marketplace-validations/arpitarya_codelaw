@@ -102,6 +102,8 @@ Left: one more cached run; three clean Rust-change and pack-change runs once W-1
 - **"Not waited on", within L8:** nothing `needs` any of them, and branch protection is off on `main` (no required checks). Seven budgets are set, so by the ruling's own limit (L8 decision 7) `cold` and `warm` still fail the run — and so `publish.yml`'s gate — on a breach; the five ungated groups hold neither. Written into SR-LAW-8 §How L8 is enforced, SR-PACKAGES and RELEASING.md. `publish.yml` unchanged: its gate reads the run's conclusion, which `continue-on-error` legs do not turn red.
 - **The binary:** the wheel's (maturin, zig, manylinux2014, `strip`), from the same `[profile.release]` — the 10-30 ruling chose it over a `cargo build --release` of perf's own; the measurement runs below show whether the set budgets' p95s moved.
 
+**Measuring, 2026-11-05 (Claude Code) — no number yet.** The first runs of the matrix (`ci` 42053047689 on `d5006de0`, push; 42053750244 on `3b53d1a8`, push; 42053908300 on `d5006de0`, dispatch): `perf-plan` green, every `perf <group>` **skipped**. `build linux-arm64-musl` is red: `codelaw rules lint packs/js/` **segfaults** on that platform (a crash, not a failed check — not W-126's; for whoever owns the js pack), and `needs: build` skipped perf with it. **Fixed here:** `perf-op` runs on `!cancelled()`, so only the linux-x64-gnu binary it uses counts. Next: three runs once this commit is pushed.
+
 ## What cannot be bought
 
 - **Larger or faster runners are paid** — [L2](../../records/0004_LAW-2-foss-dependencies.md) decision 5 refuses a paid hosted service; the plan uses standard GitHub-hosted runners only.
