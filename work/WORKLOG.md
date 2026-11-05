@@ -165,6 +165,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Next:** W-139 step 3 — fetch the corpus, write the 231's counts, L8 budgets.
 
 
+## 2026-11-05 — W-105: the version watch proven on GitHub; perf still skipped  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator, after the push) the dispatch proof, three `perf` runs of `check_types_*` on the batched helper, the budget proposal to the inbox.
+- **Done:** `typescript-bump.yml` dispatched plain (nothing to do), with a newer nightly (PR #7, `ci.yml` dispatched on it) and with a pre-API nightly (issue #6); both closed. W-106's definition of done met.
+- **Decided / left open:** no budget row: all three post-push `ci.yml` runs skipped `perf` (the `linux-arm64-musl` build is red and `perf-op` needed every leg). W-126's fix `9b8ca7b7` is on local `main` only; pushing it is the decider's. W-126's runs serve both items.
+- **Mistakes:** a script edit truncated the item file in the worktree; restored from git before landing.
+- **Next:** `9b8ca7b7` pushed, three `perf` runs, then the inbox row (min(target, 1.5 × the worst p95); no design target).
+
 ## 2026-11-05 — W-105: the type helper profiled and batched; corpus counts re-run; the dispatch proof waits on a push  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-105's pre-RC steps — the dispatch proof, profiling `check_types_cold`/`_warm`, corpus counts for the nine type rules, what is left of the version watch; not the RC release; no budget set.
