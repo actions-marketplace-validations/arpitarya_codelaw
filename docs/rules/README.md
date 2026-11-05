@@ -677,7 +677,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
 | [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `suggest` | — | *[rules] only* |
 | [`ts/no-const-enum`](ts/no-const-enum.md) | enum, not const enum | `auto` | — | `ts/recommended` |
-| [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
+| [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `suggest` | — | `ts/recommended` |
 | [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `suggest` | — | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `auto` | — | `ts/recommended` |
@@ -704,12 +704,12 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-call`](ts/no-unsafe-call.md) | No call of a value typed `any` | `manual` | — | `ts/type-checked` |
-| [`ts/no-unsafe-declaration-merging`](ts/no-unsafe-declaration-merging.md) | No interface that merges with a class of the same name | `manual` | — | `ts/recommended` |
+| [`ts/no-unsafe-declaration-merging`](ts/no-unsafe-declaration-merging.md) | No interface that merges with a class of the same name | `auto` | — | `ts/recommended` |
 | [`ts/no-unsafe-function-type`](ts/no-unsafe-function-type.md) | No Function type | `manual` | — | `ts/recommended` |
 | [`ts/no-unsafe-member-access`](ts/no-unsafe-member-access.md) | No member access on a value typed `any` | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-return`](ts/no-unsafe-return.md) | No `return` of a value typed `any` | `manual` | — | `ts/type-checked` |
-| [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `manual` | — | `ts/recommended` |
-| [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `manual` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
+| [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `suggest` | — | `ts/recommended` |
+| [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `auto` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
 | [`ts/no-useless-empty-export`](ts/no-useless-empty-export.md) | No export {} in a module | `auto` | — | *[rules] only* |
 | [`ts/no-wrapper-object-types`](ts/no-wrapper-object-types.md) | Primitive types, not wrapper object types | `auto` | — | `ts/recommended` |
 | [`ts/parameter-properties`](ts/parameter-properties.md) | No parameter properties | `manual` | — | *[rules] only* |
