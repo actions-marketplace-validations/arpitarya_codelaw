@@ -1282,7 +1282,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`json/tsconfig-strict`](json/tsconfig-strict.md) | tsconfig.json turns on strict mode | `suggest` | — | `data/tsconfig` |
 | [`md/commands-show-output`](md/commands-show-output.md) | No $ before shell commands that show no output | `auto` | — | `md/recommended` |
 | [`md/descriptive-link-text`](md/descriptive-link-text.md) | Link text says where the link goes | `manual` | `prohibited_texts` | `md/recommended` |
-| [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `manual` | — | `md/recommended` |
+| [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `suggest` | — | `md/recommended` |
 | [`md/first-line-heading`](md/first-line-heading.md) | A document starts with its title heading | `manual` | `level`, `allow_preamble` | `md/recommended` |
 | [`md/heading-increment`](md/heading-increment.md) | Heading levels go down one at a time | `suggest` | — | `md/recommended` |
 | [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `manual` | `ignore_case` | `md/recommended` |
@@ -1293,7 +1293,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/no-blanks-blockquote`](md/no-blanks-blockquote.md) | No blank line inside a blockquote | `suggest` | — | `md/recommended` |
 | [`md/no-duplicate-heading`](md/no-duplicate-heading.md) | No two sibling headings with the same text | `manual` | `siblings_only` | `md/recommended` |
 | [`md/no-emphasis-as-heading`](md/no-emphasis-as-heading.md) | Headings are headings, not bold lines | `manual` | `punctuation` | `md/recommended` |
-| [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `manual` | — | `md/recommended` |
+| [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `suggest` | — | `md/recommended` |
 | [`md/no-inline-html`](md/no-inline-html.md) | No raw HTML in Markdown | `manual` | `allowed_elements` | `data/conventions` |
 | [`md/no-reversed-links`](md/no-reversed-links.md) | Links are written \[text\](url), not (text)\[url\] | `auto` | — | `md/recommended` |
 | [`md/no-trailing-punctuation`](md/no-trailing-punctuation.md) | No punctuation at the end of a heading | `auto` | `punctuation` | `md/recommended` |
@@ -2320,7 +2320,7 @@ Presets: `codelaw:django/recommended`.
 | [`django/django-exclude-with-model-form`](django/django-exclude-with-model-form.md) | ModelForm lists fields, not exclude | `manual` | — | `django/recommended` |
 | [`django/django-locals-in-render-function`](django/django-locals-in-render-function.md) | No locals() as a template context | `manual` | — | `django/recommended` |
 | [`django/django-model-without-dunder-str`](django/django-model-without-dunder-str.md) | A model defines __str__ | `manual` | — | `django/recommended` |
-| [`django/django-non-leading-receiver-decorator`](django/django-non-leading-receiver-decorator.md) | @receiver is the first decorator | `manual` | — | `django/recommended` |
+| [`django/django-non-leading-receiver-decorator`](django/django-non-leading-receiver-decorator.md) | @receiver is the first decorator | `suggest` | — | `django/recommended` |
 | [`django/django-nullable-model-string-field`](django/django-nullable-model-string-field.md) | No null=True on string fields | `manual` | — | `django/recommended` |
 | [`django/django-unordered-body-content-in-model`](django/django-unordered-body-content-in-model.md) | A model's body follows Django's order | `manual` | — | `django/recommended` |
 
@@ -2362,15 +2362,15 @@ Presets: `codelaw:pandas/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-nunique-constant-series-check`](pandas/pandas-nunique-constant-series-check.md) | No nunique() to test a constant series | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-at`](pandas/pandas-use-of-dot-at.md) | .loc, not .at | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-iat`](pandas/pandas-use-of-dot-iat.md) | .iloc, not .iat | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-is-null`](pandas/pandas-use-of-dot-is-null.md) | .isna, not .isnull | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-ix`](pandas/pandas-use-of-dot-ix.md) | No .ix | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-not-null`](pandas/pandas-use-of-dot-not-null.md) | .notna, not .notnull | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-pivot-or-unstack`](pandas/pandas-use-of-dot-pivot-or-unstack.md) | pivot_table, not pivot or unstack | `manual` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-dot-read-table`](pandas/pandas-use-of-dot-read-table.md) | read_csv, not read_table | `auto` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-stack`](pandas/pandas-use-of-dot-stack.md) | melt, not stack | `manual` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-dot-values`](pandas/pandas-use-of-dot-values.md) | .to_numpy, not .values | `suggest` | — | `pandas/recommended` |
-| [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `manual` | — | `pandas/recommended` |
+| [`pandas/pandas-use-of-inplace-argument`](pandas/pandas-use-of-inplace-argument.md) | No inplace=True | `suggest` | — | `pandas/recommended` |
 | [`pandas/pandas-use-of-pd-merge`](pandas/pandas-use-of-pd-merge.md) | df.merge, not pd.merge | `suggest` | — | `pandas/recommended` |

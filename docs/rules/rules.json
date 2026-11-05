@@ -8223,8 +8223,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "reordering decorators changes which wrapper is connected",
+   "fix": "suggest",
+   "fix_reason": "swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -41686,8 +41686,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which language the code is in can't always be told from the code",
+   "fix": "suggest",
+   "fix_reason": "the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42271,8 +42271,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "where the link should go needs the author",
+   "fix": "suggest",
+   "fix_reason": "unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -45585,8 +45585,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the faster check is written by hand",
+   "fix": "suggest",
+   "fix_reason": "the replacement reads the first value and compares it with the rest; the reviewer confirms how an empty series and NaN should count",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -45890,8 +45890,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the separator argument has to be added",
+   "fix": "auto",
+   "fix_reason": "auto when the call passes no separator of its own (no `sep`, `delimiter`, `delim_whitespace`, second positional or splat); a call that does is reported as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -46023,8 +46023,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the call must become an assignment of its result, which changes the statement",
+   "fix": "suggest",
+   "fix_reason": "the statement becomes an assignment of the result, so other references to the object no longer see the change; the reviewer confirms (offered for a call on a plain name used as a statement)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",

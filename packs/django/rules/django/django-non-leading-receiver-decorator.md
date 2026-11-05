@@ -2,9 +2,8 @@
 id: django/django-non-leading-receiver-decorator
 title: "@receiver is the first decorator"
 languages: [python]
-fix: manual
-fix_reason: "reordering decorators changes which wrapper is connected"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two)"
 stability: preview
 ported_from: [ruff/DJ013]
 since: 0.5.0
@@ -18,9 +17,16 @@ since: 0.5.0
 match:
   kind: decorator
   regex: '^@(\w+\.)*receiver\b'
-  follows: { kind: decorator, stopBy: end, not: { regex: '^@(\w+\.)*receiver\b' } }
   inside: { kind: decorated_definition }
+  any:
+    - all:
+        - nthChild: 2
+        - follows: { kind: decorator, pattern: $FIRST, not: { regex: '^@(\w+\.)*receiver\b' } }
+    - follows: { kind: decorator, stopBy: end, not: { regex: '^@(\w+\.)*receiver\b' } }
 message: "Put `@receiver` first, above the other decorators"
+fix:
+  - replace: { target: $FIRST, with: "$$MATCH" }
+  - replace: "$FIRST"
 ```
 
 ## How to fix
