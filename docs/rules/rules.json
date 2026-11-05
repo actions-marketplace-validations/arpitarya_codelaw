@@ -43957,8 +43957,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads",
+   "fix": "suggest",
+   "fix_reason": "hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -44225,8 +44225,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `module.exports` or a property was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "assigning to `module.exports` makes the module export that value, which it did not before; the reviewer confirms it was meant and that no `exports.x` use depends on the old object",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -44636,8 +44636,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "how to end the program cleanly depends on what is still running",
+   "fix": "suggest",
+   "fix_reason": "code after the call now runs and open handles keep the process alive, so the reviewer picks setting the exit code or throwing (both offered for a call with an exit code)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

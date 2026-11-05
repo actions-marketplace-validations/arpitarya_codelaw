@@ -891,13 +891,13 @@ Presets: `codelaw:node/recommended`.
 |---|---|---|---|---|
 | [`node/callback-return`](node/callback-return.md) | Return after calling the callback | `suggest` | — | *[rules] only* |
 | [`node/exports-style`](node/exports-style.md) | module.exports, not the exports shortcut | `auto` | — | *[rules] only* |
-| [`node/global-require`](node/global-require.md) | require() at the top of the module | `manual` | — | *[rules] only* |
+| [`node/global-require`](node/global-require.md) | require() at the top of the module | `suggest` | — | *[rules] only* |
 | [`node/handle-callback-err`](node/handle-callback-err.md) | Handle the err argument | `manual` | — | *[rules] only* |
 | [`node/hashbang`](node/hashbang.md) | Commands start with a Node.js hashbang, and nothing else has one | `suggest` | — | `node/recommended` |
 | [`node/no-async-express-handler`](node/no-async-express-handler.md) | No async Express route handlers | `manual` | — | *[rules] only* |
 | [`node/no-callback-literal`](node/no-callback-literal.md) | Pass an Error, not a string, to the callback | `suggest` | — | *[rules] only* |
 | [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `manual` | — | `node/recommended` |
-| [`node/no-exports-assign`](node/no-exports-assign.md) | No assigning to exports | `manual` | — | `node/recommended` |
+| [`node/no-exports-assign`](node/no-exports-assign.md) | No assigning to exports | `suggest` | — | `node/recommended` |
 | [`node/no-extraneous-import`](node/no-extraneous-import.md) | Imported packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-extraneous-require`](node/no-extraneous-require.md) | Required packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-missing-import`](node/no-missing-import.md) | Imported project paths must exist | `manual` | — | `node/recommended` |
@@ -906,7 +906,7 @@ Presets: `codelaw:node/recommended`.
 | [`node/no-new-require`](node/no-new-require.md) | No new require(...) | `suggest` | — | *[rules] only* |
 | [`node/no-path-concat`](node/no-path-concat.md) | Join paths with path.join, not + | `suggest` | — | *[rules] only* |
 | [`node/no-process-env`](node/no-process-env.md) | No process.env outside the config module | `manual` | — | *[rules] only* |
-| [`node/no-process-exit`](node/no-process-exit.md) | No process.exit() | `manual` | — | `node/recommended` |
+| [`node/no-process-exit`](node/no-process-exit.md) | No process.exit() | `suggest` | — | `node/recommended` |
 | [`node/no-sync`](node/no-sync.md) | No synchronous *Sync calls | `manual` | — | *[rules] only* |
 | [`node/no-top-level-await`](node/no-top-level-await.md) | No await at the top level of a module | `manual` | — | *[rules] only* |
 | [`node/no-unpublished-import`](node/no-unpublished-import.md) | Published files import only what is published | `manual` | — | `node/recommended` |

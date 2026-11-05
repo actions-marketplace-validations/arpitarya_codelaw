@@ -68812,7 +68812,7 @@ module.exports.parse = function parse(text) {
 ## `node/global-require` — require() at the top of the module
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads)
+- **Fix:** `suggest` (hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/global-require.md
 
@@ -68840,6 +68840,15 @@ function render(md) {
 }
 ```
 
+##### Fixed
+
+```js
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 ##### Do
 
 ```js
@@ -68857,6 +68866,15 @@ function render(md) {
 ```jsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+##### Fixed
+
+```jsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -68882,6 +68900,15 @@ function render(md) {
 }
 ```
 
+##### Fixed
+
+```ts
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 ##### Do
 
 ```ts
@@ -68899,6 +68926,15 @@ function render(md) {
 ```tsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+##### Fixed
+
+```tsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -69359,7 +69395,7 @@ is not read.
 ## `node/no-exports-assign` — No assigning to exports
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `module.exports` or a property was meant needs the author)
+- **Fix:** `suggest` (assigning to `module.exports` makes the module export that value, which it did not before; the reviewer confirms it was meant and that no `exports.x` use depends on the old object)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-exports-assign.md
 
@@ -70173,7 +70209,7 @@ const { port } = require("./config");
 ## `node/no-process-exit` — No process.exit()
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (how to end the program cleanly depends on what is still running)
+- **Fix:** `suggest` (code after the call now runs and open handles keep the process alive, so the reviewer picks setting the exit code or throwing (both offered for a call with an exit code))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-process-exit.md
 
@@ -70200,6 +70236,22 @@ if (failed) {
 }
 ```
 
+##### Fixed (set exit code)
+
+```js
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```js
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 ##### Do
 
 ```js
@@ -70215,6 +70267,22 @@ if (failed) {
 ```jsx
 if (failed) {
   process.exit(1);
+}
+```
+
+##### Fixed (set exit code)
+
+```jsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```jsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 
@@ -70236,6 +70304,22 @@ if (failed) {
 }
 ```
 
+##### Fixed (set exit code)
+
+```ts
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```ts
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 ##### Do
 
 ```ts
@@ -70251,6 +70335,22 @@ if (failed) {
 ```tsx
 if (failed) {
   process.exit(1);
+}
+```
+
+##### Fixed (set exit code)
+
+```tsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```tsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 
