@@ -10,7 +10,9 @@
 #             the work-system checks (W-20) · clippy
 #   perf      L8's gate (W-19): `codelaw bench` on the reference workload against
 #             perf/budgets.toml — fails only on a budget the decider SET; an
-#             unset one (a proposal) is reported in the job summary
+#             unset one (a proposal) is reported in the job summary. Split (W-126,
+#             ruled 2026-10-30): perf-plan · `perf <group>` ×7 on `build linux-x64-gnu`'s
+#             binary, a group with no set budget `continue-on-error` · `perf` the merged report
 #   corpus    level 4 (W-20): every pack's rules over the pinned corpus (scripts/corpus.json),
 #             invariants on every file, finding counts against packs/<pack>/corpus.toml —
 #             one job per pack, on `build linux-x64-gnu`'s binary (W-126)
@@ -210,21 +212,28 @@ jobs:
           path: .verdict
           key: clippy-${{ steps.rustc.outputs.v }}-${{ hashFiles('Cargo.toml', 'Cargo.lock', 'crates/**', 'templates/**', 'perf/**', 'packs/**') }}
 
-  perf:
-    # L8's perf gate (SR-LAW-8 decision 7; W-19). `codelaw bench` times every
-    # L8 operation on the reference workload (generated from its seed, no
-    # network) and compares each p95 with perf/budgets.toml: exit 1 when one
-    # is over a budget the decider SET (`budget = <number>`). A `budget =
-    # "unset"` entry — every one until the decider rules; a `proposed` value is
-    # never compared — is reported in the job summary and fails nothing
-    # (decision 6). No verdict is reused: the timing is what is checked.
+  perf-plan:
+    # L8's perf gate (SR-LAW-8 decision 7; W-19), split across parallel jobs
+    # (W-126, ruled by the decider 2026-10-30: "split the operations across
+    # parallel machines, and not wait for it on pass or fail"). This job plans
+    # it: whether it runs, and the groups `perf-op` runs one per job.
     # A push or PR that changed nothing it times — the engine, its toolchain,
     # the packs it loads, perf/, the TypeScript fixtures/types pins, this
-    # file — skips it (W-24); the nightly run
-    # and a manual dispatch always run it.
+    # file — skips it (W-24); the nightly run and a manual dispatch always run it.
+    # THE GROUPS are listed below, once: every L8 operation in
+    # perf/budgets.toml must be in exactly one, or this job fails. A group is
+    # GATED when one of its operations has a budget the decider SET: L8
+    # decision 7 makes a breach of a set budget fail, so a gated job holds the
+    # run's verdict (and so publish.yml's gate). A group holding only unset
+    # budgets and context rows is `continue-on-error`: it reports and holds
+    # nothing — the 10-30 ruling, which L8 limits to unset budgets. Setting a
+    # budget gates its group with no change here.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
-    runs-on: ubuntu-24.04 # L8 reference machine (the decider, 2026-10-24); never ubuntu-latest
-    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.changed.outputs.run }}
+      groups: ${{ steps.groups.outputs.groups }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -239,21 +248,71 @@ jobs:
           fi
           echo "run=$run" >> "$GITHUB_OUTPUT"
           [ "$run" = true ] || echo "::notice title=perf::skipped — nothing it times changed since ${BASE::8}"
-      - id: rustc # the pinned toolchain, read from the file — nothing is installed to learn it
-        run: echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
-      - if: steps.changed.outputs.run == 'true'
-        run: rustup toolchain install ${{ steps.rustc.outputs.v }} --profile minimal --no-self-update
-      - if: steps.changed.outputs.run == 'true'
-        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - id: groups
+        name: the groups, each gated when it holds a set budget (perf/budgets.toml)
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, tomllib
+          # group: (operations for `codelaw bench --only`, needs the pinned repos, needs TypeScript)
+          GROUPS = {
+              "cold": ("check_cold_10k,peak_memory_10k", False, False),
+              "warm": ("startup,check_warm_10k,format_warm_10k,lsp_after_edit,mcp_rules_for_path,check_warm_10k_no_daemon", False, False),
+              "hooks": ("fix_one_file,fix_one_file_cold,hook_pre,watch_rerun,watch_save_to_print", False, False),
+              "types-cold": ("check_types_cold", False, True),
+              "types-warm": ("check_types_warm", False, True),
+              "spell": ("spell", True, False),
+              "repos": ("check_cold_repo,check_warm_repo", True, False),
+          }
+          ops = tomllib.load(open("perf/budgets.toml", "rb"))["operation"]
+          placed = [o for only, _, _ in GROUPS.values() for o in only.split(",")]
+          missing = sorted(set(ops) - set(placed))
+          twice = sorted({o for o in placed if placed.count(o) > 1})
+          if missing or twice:
+              raise SystemExit(f"perf groups: not in any group {missing}, in two {twice} — edit GROUPS in ci.yml's perf-plan")
+          include = []
+          for group, (only, repos, ts) in GROUPS.items():
+              gated = any(not isinstance(ops.get(o, {}).get("budget", "unset"), str) for o in only.split(","))
+              include.append({"group": group, "only": only, "gated": gated, "repos": repos, "ts": ts})
+          print("groups=" + json.dumps(include))
+          PY
+          cat "$GITHUB_OUTPUT"
+
+  perf-op:
+    # One group of L8 operations per job, on L8's reference machine, with the
+    # same repetitions and method as one job had (L8 decisions 3 and 7) — only
+    # the wall time changes. `codelaw bench --only <group> --budgets
+    # perf/budgets.toml` exits 1 when a p95 is over a budget the decider SET
+    # (`budget = <number>`); an `unset` one is reported in the job summary and
+    # fails nothing (decision 6). No verdict is reused: the timing is checked.
+    # The binary is the one this run shipped — `build linux-x64-gnu`'s, taken
+    # out of its wheel (the same release profile, built by maturin with zig
+    # for manylinux2014) — not a third `cargo build --release` (W-126, ruled
+    # 2026-10-30). Nothing `needs` this job. A gated group (a set budget)
+    # fails the run on a breach — L8 decision 7 — and so publish.yml's gate;
+    # an ungated one is `continue-on-error` and holds neither.
+    needs: [perf-plan, build]
+    if: needs.perf-plan.outputs.run == 'true'
+    name: perf ${{ matrix.group }}
+    runs-on: ubuntu-24.04 # L8 reference machine (the decider, 2026-10-24); never ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: ${{ !matrix.gated }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.perf-plan.outputs.groups) }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          cache-on-failure: true
-      - if: steps.changed.outputs.run == 'true'
-        run: cargo build --release --locked -p codelaw-cli
+          persist-credentials: false # nothing here pushes (W-18)
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: build-linux-x64-gnu
+          path: ${{ runner.temp }}/build
+      - run: chmod +x "$RUNNER_TEMP/build/bin/linux-x64-gnu/codelaw" # an artifact keeps no file mode
       - name: the machine measured (a budget names its reference machine, L8 decision 2)
-        if: steps.changed.outputs.run == 'true'
         run: |
           {
-            echo '### perf: the runner'
+            echo '### perf ${{ matrix.group }}: the runner'
             echo '```'
             lscpu | grep -E '^(Model name|CPU\(s\)|Thread|Core|Socket)' || true
             free -m | sed -n '1,2p'
@@ -261,26 +320,30 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: the three pinned real repos (L8 decision 2; scripts/corpus.json)
-        if: steps.changed.outputs.run == 'true'
+        if: matrix.repos
         run: python3 scripts/corpus.py fetch --dir "$RUNNER_TEMP/corpus" --repo djangoproject.com --repo full-stack-fastapi-template --repo html5-boilerplate
       # check_types_cold / check_types_warm ask the TypeScript fixtures/types
       # pins, as the test job does (L11 §3 D-45, CI scope; SR-TYPES, W-105).
-      - if: steps.changed.outputs.run == 'true'
+      - if: matrix.ts
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
-      - if: steps.changed.outputs.run == 'true'
+      - if: matrix.ts
         working-directory: fixtures/types
         run: npm ci --ignore-scripts --no-audit --no-fund
-      - name: codelaw bench --budgets perf/budgets.toml
-        if: steps.changed.outputs.run == 'true'
+      - name: codelaw bench --only ${{ matrix.only }} --budgets perf/budgets.toml
+        env:
+          ONLY: ${{ matrix.only }}
+          REPOS: ${{ matrix.repos }}
+          TS: ${{ matrix.ts }}
         run: |
           code=0
-          repos=()
-          for r in djangoproject.com full-stack-fastapi-template html5-boilerplate; do repos+=(--repo "$RUNNER_TEMP/corpus/repos/$r"); done
-          target/release/codelaw bench --workload "$RUNNER_TEMP/bench" --packs packs --budgets perf/budgets.toml "${repos[@]}" --typescript fixtures/types/node_modules/typescript --output "$RUNNER_TEMP/bench.json" 2>&1 | tee "$RUNNER_TEMP/bench.txt" || code=$?
+          extra=()
+          if [ "$REPOS" = true ]; then for r in djangoproject.com full-stack-fastapi-template html5-boilerplate; do extra+=(--repo "$RUNNER_TEMP/corpus/repos/$r"); done; fi
+          [ "$TS" = true ] && extra+=(--typescript fixtures/types/node_modules/typescript)
+          "$RUNNER_TEMP/build/bin/linux-x64-gnu/codelaw" bench --workload "$RUNNER_TEMP/bench" --packs packs --budgets perf/budgets.toml --only "$ONLY" "${extra[@]}" --output "$RUNNER_TEMP/bench.json" 2>&1 | tee "$RUNNER_TEMP/bench.txt" || code=$?
           {
-            echo '### perf: L8 operations (each p95 against perf/budgets.toml; an unset budget is reported only)'
+            echo '### perf ${{ matrix.group }}: L8 operations (each p95 against perf/budgets.toml; an unset budget is reported only)'
             echo '```'
             cat "$RUNNER_TEMP/bench.txt"
             echo '```'
@@ -289,8 +352,55 @@ jobs:
             echo "::error title=L8 perf gate::a p95 is over a budget the decider set in perf/budgets.toml; optimise it — a budget is never loosened (L8 decision 5)"
           fi
           exit "$code"
-      - if: always() && steps.changed.outputs.run == 'true'
+      - if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: perf-bench-${{ matrix.group }}
+          path: ${{ runner.temp }}/bench.json
+          if-no-files-found: ignore
+
+  perf:
+    # Every group's report as one: the job summary's table and the `perf-bench`
+    # artifact (bench.json, the operations of every group in one list) that the
+    # three-run budget measurements read (L8 decision 4). It reports only;
+    # each `perf <group>` job carries its own verdict.
+    needs: [perf-plan, perf-op]
+    if: ${{ always() && needs.perf-plan.outputs.run == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: perf-bench-*
+          path: ${{ runner.temp }}/groups
+      - name: one report
+        run: |
+          python3 - "$RUNNER_TEMP/groups" "$RUNNER_TEMP/bench.json" <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, pathlib, sys
+          root, out = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+          merged, groups = None, {}
+          for p in sorted(root.glob("perf-bench-*/bench.json")):
+              r = json.loads(p.read_text())
+              group = p.parent.name.removeprefix("perf-bench-")
+              groups[group] = [o["name"] for o in r["operations"]]
+              if merged is None:
+                  merged = {k: v for k, v in r.items() if k != "operations"} | {"operations": []}
+              for k in ("repos", "types_workload", "spell_workload"):
+                  if r.get(k):
+                      merged[k] = r[k]
+              merged["operations"] += [o | {"group": group} for o in r["operations"]]
+          if merged is None:
+              print("### perf: no group reported")
+              raise SystemExit(0)
+          merged["groups"] = groups
+          out.write_text(json.dumps(merged, indent=2) + "\n")
+          print("### perf: every group (p95 against perf/budgets.toml)")
+          print("| group | operation | repo | median | p95 | budget | verdict |")
+          print("|---|---|---|---|---|---|---|")
+          for o in merged["operations"]:
+              print(f'| {o["group"]} | `{o["name"]}` | {o["repo"] or ""} | {o["median"]} {o["unit"]} | {o["p95"]} {o["unit"]} | {o["budget"] if o["budget"] is not None else ""} | {o["verdict"] or "context"} |')
+          PY
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: perf-bench
           path: ${{ runner.temp }}/bench.json

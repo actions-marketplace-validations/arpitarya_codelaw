@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+| 🔴 **`spell`'s L8 budget: 2,152 ms?** ([W-103](open/W-103-spell-pack.md)): the `spell` operation's p95 on the three `perf` runs on `main` is 1,383.3 / 1,434.2 / 1,429.5 ms (`ci` 41005346138, 41006814384, 41007205048; 1,004 files, 12 findings each). Your method (L8 decision 4): 1.5 × the worst, 1,434.2 → **2,152 ms**; no design target, so no guard. **Set it** (then a `spell` p95 over 2,152 ms fails CI) **or leave it unset** (reported only). | 2026-11-05 |
+| ↳ **blocks:** W-103 | |
 
 ---
 
@@ -49,7 +49,7 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (4)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. Next: the `perf` matrix, then the measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05 (seven groups, the build's binary). Next: measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
@@ -63,7 +63,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟢 **W-103** `agent` Spell pack done; the `spell` bench operation has its three CI `perf` runs on `main` (10-30: 41005346138, 41006814384, 41007205048). Next: read their p95s, then the budget to Arpit. Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
+🔴 **W-103** `arpit` Spell pack done; the `spell` p95s read from the three `perf` runs (1,383–1,434 ms); blocked on Arpit's ruling on the budget, 2,152 ms by L8's method (inbox). Filed by Arpit (Cowork). [detail](open/W-103-spell-pack.md)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 

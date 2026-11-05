@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-126's `perf` matrix; W-103's `spell` budget to the inbox  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-126 step 6 — `perf` as a matrix on `build linux-x64-gnu`'s binary, not waited on — and measure; read W-103's three `spell` p95s and propose the budget by L8's method, to the inbox.
+- **Done:** `ci.yml`: `perf-plan`, `perf <group>` ×7, `perf` (merged report); SR-LAW-8, SR-PACKAGES, RELEASING.md say the limit (a group with a set budget still fails the run, L8 decision 7). W-103: p95 1,383.3 / 1,434.2 / 1,429.5 ms → proposed 2,152 ms; inbox row; W-103 🔴 `arpit`.
+- **Decided / left open:** not set — the budget is the decider's. `publish.yml` untouched (W-95's): its gate reads the run's conclusion, which `continue-on-error` legs do not fail.
+- **Mistakes:** none.
+- **Next:** W-126's measurement runs on the new `perf`, times into its §Measured.
+
 ## 2026-11-05 — Positioning ruled; W-164 filed; W-102 after W-139; B-072  ·  Claude app (Opus 5.5)
 
 - **Asked:** *"is there a need or a usecase for code law"*, *"what would make people swap"*, then (voice) positioning, the experiment, what to pause; then *"file it."*
