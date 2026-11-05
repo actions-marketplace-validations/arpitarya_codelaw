@@ -12,3 +12,4 @@ description = "SCSS correctness: unknown at-rules and functions' neighbours, dup
 "scss/function-quote-no-quoted-strings-inside" = "error"
 "scss/function-unquote-no-unquoted-strings-inside" = "error"
 "scss/load-partial-extension" = "error"
+"scss/declaration-nested-properties-no-divided-groups" = "error"

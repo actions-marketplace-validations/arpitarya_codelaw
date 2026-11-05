@@ -114,6 +114,15 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** the Mac dropped off the bridge mid-research; the drafts waited in Cowork until it was back.
 - **Next:** the decider rules the three calls.
 
+## 2026-11-05 — W-139 step 2a: manual ceiling removed, 231 held ports landed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** build W-139 step 2a as ruled 11-05 (*"no manual ceiling at all"*).
+- **Done:** `packs/fix-ladder.toml` and its checks removed (only the ceiling's lines in W-156's `fix_ladder.rs` / `rules_cmd.rs`); 231 held ports + 2 staged `suggest` js rules landed, presets per SR-RULE-PACKS decision 18; SR-LAW-4 decision 6 and SR-RULE-PACKS 13a/18 say it is done. `codelaw test` 0 failed on every touched pack.
+- **Decided / left open:** a source's recommended rows go to that source's preset (`js/sonarjs`, `js/strict`, `js/regexp`), as the landed rules of the same sources did. Corpus counts for the 231 not run — the corpus is not on this machine.
+- **Mistakes:** the end-of-turn auto-land put the 176 copied js/native files on `main` (3798ca70) before the 75 js files had their `fix_exception:` (the strand's staged copies lacked it), so `main` refused the js pack until this change landed. Fixed here from the strand's specs.
+- **Next:** W-139 step 3 — fetch the corpus, write the 231's counts, L8 budgets.
+
+
 ## 2026-11-05 — Inbox emptied: no manual ceiling, Oxc ratified, W-156's three calls; W-161–W-163 filed  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Explain me the blockers one by one."* (voice), then *"file it."*
