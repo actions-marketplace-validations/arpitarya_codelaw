@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-n/global-require` |
@@ -139,6 +139,15 @@ function render(md) {
 }
 ```
 
+#### Fixed
+
+```js
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 #### Do
 
 ```js
@@ -156,6 +165,15 @@ function render(md) {
 ```jsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+#### Fixed
+
+```jsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -181,6 +199,15 @@ function render(md) {
 }
 ```
 
+#### Fixed
+
+```ts
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 #### Do
 
 ```ts
@@ -198,6 +225,15 @@ function render(md) {
 ```tsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+#### Fixed
+
+```tsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```

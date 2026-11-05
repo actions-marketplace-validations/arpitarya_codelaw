@@ -2,9 +2,8 @@
 id: node/no-exports-assign
 title: "No assigning to exports"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether `module.exports` or a property was meant needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "assigning to `module.exports` makes the module export that value, which it did not before; the reviewer confirms it was meant and that no `exports.x` use depends on the old object"
 stability: preview
 ported_from: [eslint-plugin-n/no-exports-assign]
 since: 0.1.0
@@ -28,6 +27,8 @@ match:
 where:
   $E: undeclared
 message: "Assigning to `exports` exports nothing; assign to `module.exports`"
+fix:
+  - replace: { target: $E, with: "module.exports" }
 ```
 
 ## How to fix
