@@ -82,6 +82,9 @@ toml = "1.1"
 [patch.crates-io]
 option-ext = { path = "crates/codelaw-format/shims/option-ext" }
 tree-sitter-css = { path = "crates/codelaw-lang/grammars/tree-sitter-css" }
+# Oxc's parsers on crates.io name `oxc_allocator` from crates.io; this makes
+# them share the one Oxc's formatters use (SR-LAW-11 D-52, W-141).
+oxc_allocator = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf18619a3ceac5d4bf32099d5e0c30b" }
 
 [profile.release]
 lto = "thin"

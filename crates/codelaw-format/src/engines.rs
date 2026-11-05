@@ -21,12 +21,12 @@ pub(crate) fn format(language: Language, path: &str, text: &str, o: &FormatOptio
             markers::native(text, &["//", "/*"], BIOME, |t| biome_js(js_source(language, path), t, o, o.line_width))
         }
         Language::Json => markers::native(text, &["//", "/*"], BIOME, |t| biome_json(t, o, o.line_width)),
-        Language::Css => markers::native(text, &["/*"], BIOME, |t| biome_css(t, o, o.line_width, biome_languages::CssFileSource::css())),
-        Language::Scss => markers::native(text, &["//", "/*"], BIOME, |t| biome_css(t, o, o.line_width, biome_languages::CssFileSource::scss())),
+        Language::Css => markers::native(text, &["/*"], PRETTIER, |t| crate::oxc::css(t, o, o.line_width, false)),
+        Language::Scss => markers::native(text, &["//", "/*"], PRETTIER, |t| crate::oxc::css(t, o, o.line_width, true)),
         Language::Python => markers::python(text, |t| ruff(path, t, o, o.python_line_width)),
-        Language::Yaml => markers::native(text, &["#"], PRETTIER, |t| yaml(t, o, o.line_width)),
+        Language::Yaml => markers::native(text, &["#"], PRETTIER, |t| crate::oxc::yaml(t, o, o.line_width)),
         Language::Toml => markers::toml(text, |t| toml_fmt(t, o, o.line_width)),
-        Language::Markdown => markers::native(text, &["<!--"], PRETTIER, |t| markdown(t, o)),
+        Language::Markdown => markers::native(text, &["<!--"], PRETTIER, |t| crate::oxc::markdown(t, o)),
         Language::Html => markers::native(text, &["<!--"], PRETTIER, |t| html(t, o)),
     }
 }
@@ -38,10 +38,10 @@ pub(crate) fn parse_error(language: Language, path: &str, text: &str) -> Option<
             biome_js_parser::parse(text, js_source(language, path), biome_js_parser::JsParserOptions::default()).has_errors()
         }
         Language::Json => biome_json_parser::parse_json(text, json_parser_options()).has_errors(),
-        Language::Css => biome_css_parser::parse_css(text, biome_languages::CssFileSource::css(), biome_css_parser::CssParserOptions::default()).has_errors(),
-        Language::Scss => biome_css_parser::parse_css(text, biome_languages::CssFileSource::scss(), biome_css_parser::CssParserOptions::default()).has_errors(),
+        Language::Css => return crate::oxc::css_parse_error(text, false),
+        Language::Scss => return crate::oxc::css_parse_error(text, true),
         Language::Python => ruff_python_parser::parse_module(text).is_err(),
-        Language::Yaml => return pretty_yaml::format_text(text, &Default::default()).err().map(|e| e.to_string()),
+        Language::Yaml => return crate::oxc::yaml_parse_error(text),
         Language::Toml => !taplo::parser::parse(text).errors.is_empty(),
         Language::Markdown => false,
         Language::Html => return markup_fmt::format_text(text, markup_fmt::Language::Html, &Default::default(), |c, _| Ok(c.into())).err().map(|e| e.to_string()),
@@ -72,7 +72,7 @@ pub(crate) fn same_meaning(language: Language, _path: &str, before: &str, after:
     }
 }
 
-// ---- Biome: JS, TS, JSX, TSX, JSON, CSS ----
+// ---- Biome: JS, TS, JSX, TSX, JSON ----
 
 use biome_formatter::{IndentStyle as BIndentStyle, IndentWidth, LineEnding, LineWidth, QuoteStyle as BQuoteStyle};
 use biome_languages::JsFileSource;
@@ -169,91 +169,6 @@ fn biome_json(text: &str, o: &FormatOptions, width: u16) -> Result<String, Forma
     Ok(formatted.print().map_err(engine_error)?.into_code())
 }
 
-/// Prettier's CSS comment placement (W-141): a block comment that starts its
-/// own line at statement level — after `{`, `}`, `;` or at the start of the
-/// file — stays on its own line, so `*/.a {` and `*/ .a {` become `*/` and
-/// `.a {`. Biome keeps such a comment as the next node's leading trivia on
-/// the same line. Only whitespace is inserted, between tokens that whitespace
-/// already separates, so no token changes (decision 3). Strings, `url(…)`
-/// and, in SCSS, `//` comments are skipped.
-pub(crate) fn css_comment_breaks(text: &str, scss: bool) -> Cow<'_, str> {
-    let b = text.as_bytes();
-    let mut out: Option<String> = None;
-    let mut copied = 0;
-    let mut last = b'{'; // the start of the file is statement level
-    let mut i = 0;
-    while i < b.len() {
-        let c = b[i];
-        match c {
-            b'"' | b'\'' => {
-                i += 1;
-                while i < b.len() && b[i] != c && b[i] != b'\n' {
-                    i += if b[i] == b'\\' { 2 } else { 1 };
-                }
-                last = c;
-                i += 1;
-            }
-            b'/' if b.get(i + 1) == Some(&b'*') => {
-                let start = i;
-                let end = text[i + 2..].find("*/").map_or(b.len(), |e| i + 2 + e + 2);
-                let line_start = text[..start].rfind('\n').map_or(0, |n| n + 1);
-                let own_line = text[line_start..start].bytes().all(|x| x == b' ' || x == b'\t');
-                i = end;
-                let mut j = end;
-                while j < b.len() && (b[j] == b' ' || b[j] == b'\t') {
-                    j += 1;
-                }
-                let next_is_content = j < b.len() && !matches!(b[j], b'\n' | b'\r' | b'}') && !text[j..].starts_with("/*") && !(scss && text[j..].starts_with("//"));
-                if own_line && matches!(last, b'{' | b'}' | b';') && next_is_content && end <= b.len() && text[..end].ends_with("*/") {
-                    let indent = &text[line_start..start];
-                    let o = out.get_or_insert_with(String::new);
-                    o.push_str(&text[copied..end]);
-                    o.push('\n');
-                    o.push_str(indent);
-                    copied = j;
-                }
-            }
-            b'/' if scss && b.get(i + 1) == Some(&b'/') => {
-                i = text[i..].find('\n').map_or(b.len(), |n| i + n);
-            }
-            b'u' | b'U' if text[i..].len() >= 4 && text[i..i + 4].eq_ignore_ascii_case("url(") => {
-                i = text[i..].find(')').map_or(b.len(), |n| i + n + 1);
-                last = b')';
-            }
-            b' ' | b'\t' | b'\n' | b'\r' => i += 1,
-            _ => {
-                last = c;
-                i += 1;
-            }
-        }
-    }
-    match out {
-        Some(mut o) => {
-            o.push_str(&text[copied..]);
-            Cow::Owned(o)
-        }
-        None => Cow::Borrowed(text),
-    }
-}
-
-fn biome_css(text: &str, o: &FormatOptions, width: u16, source: biome_languages::CssFileSource) -> Result<String, FormatError> {
-    use biome_css_formatter::context::CssFormatOptions;
-    let text = &*css_comment_breaks(text, source.is_scss());
-    let parsed = biome_css_parser::parse_css(text, source, biome_css_parser::CssParserOptions::default());
-    if parsed.has_errors() {
-        return Err(FormatError::Syntax("biome_css_parser rejects it".into()));
-    }
-    let (indent, line) = biome_widths(o, width)?;
-    let options = CssFormatOptions::new(source)
-        .with_indent_style(biome_indent(o))
-        .with_indent_width(indent)
-        .with_line_width(line)
-        .with_line_ending(biome_eol(o))
-        .with_quote_style(BQuoteStyle::Double);
-    let formatted = biome_css_formatter::format_node(options, &parsed.syntax()).map_err(engine_error)?;
-    Ok(formatted.print().map_err(engine_error)?.into_code())
-}
-
 // ---- Ruff: Python ----
 
 fn ruff(path: &str, text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
@@ -278,21 +193,6 @@ fn ruff(path: &str, text: &str, o: &FormatOptions, width: u16) -> Result<String,
     }
 }
 
-// ---- pretty_yaml: YAML ----
-
-fn yaml(text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
-    let mut options = pretty_yaml::config::FormatOptions::default();
-    options.layout.print_width = width as usize;
-    options.layout.indent_width = o.indent_width as usize;
-    options.layout.line_break = match o.eol() {
-        options::EndOfLine::Lf => pretty_yaml::config::LineBreak::Lf,
-        options::EndOfLine::Crlf => pretty_yaml::config::LineBreak::Crlf,
-    };
-    // `# prettier-ignore`, and `# codelaw-format-ignore` rewritten to it.
-    options.language.ignore_comment_directive = markers::PRETTIER.into();
-    pretty_yaml::format_text(text, &options).map_err(|e| FormatError::Syntax(e.to_string()))
-}
-
 // ---- taplo: TOML ----
 
 fn toml_fmt(text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
@@ -312,7 +212,7 @@ fn toml_fmt(text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatE
     Ok(taplo::formatter::format_syntax(parsed.into_syntax(), options))
 }
 
-// ---- dprint-plugin-markdown: Markdown ----
+// ---- Embedded blocks: Markdown fences (`oxc::markdown`), HTML embeds ----
 
 /// The language a Markdown fence tag or an HTML embed names.
 fn tag_language(tag: &str) -> Option<(Language, &'static str)> {
@@ -335,7 +235,7 @@ fn tag_language(tag: &str) -> Option<(Language, &'static str)> {
 
 /// Format an embedded block; `None` leaves it as written (a block that
 /// does not parse is not the file's failure, as in Prettier).
-fn embedded(tag: &str, code: &str, o: &FormatOptions, width: u16) -> Option<String> {
+pub(crate) fn embedded(tag: &str, code: &str, o: &FormatOptions, width: u16) -> Option<String> {
     let (language, path) = tag_language(tag)?;
     let mut inner = o.clone();
     inner.line_width = width.max(20);
@@ -343,33 +243,6 @@ fn embedded(tag: &str, code: &str, o: &FormatOptions, width: u16) -> Option<Stri
         inner.python_line_width = width.max(20);
     }
     crate::format(language, path, code, &inner).ok()
-}
-
-fn markdown(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
-    use dprint_core::configuration::NewLineKind;
-    use dprint_plugin_markdown::configuration::ConfigurationBuilder;
-    let config = ConfigurationBuilder::new()
-        .line_width(o.line_width as u32)
-        .new_line_kind(match o.eol() {
-            options::EndOfLine::Lf => NewLineKind::LineFeed,
-            options::EndOfLine::Crlf => NewLineKind::CarriageReturnLineFeed,
-        })
-        // `<!-- prettier-ignore -->`, and `<!-- codelaw-format-ignore -->`
-        // rewritten to it; Prettier's start and end markers too.
-        .ignore_directive(markers::PRETTIER)
-        .ignore_start_directive("prettier-ignore-start")
-        .ignore_end_directive("prettier-ignore-end")
-        .build();
-    let blocks = o.markdown_code_blocks;
-    let result = dprint_plugin_markdown::format_text(text, &config, |tag, code, width| {
-        if !blocks {
-            return Ok(None);
-        }
-        let width = u16::try_from(width).unwrap_or(u16::MAX);
-        Ok(embedded(tag, code, o, width).map(|s| s.trim_end_matches(['\n', '\r']).to_owned()).filter(|s| s != code))
-    })
-    .map_err(engine_error)?;
-    Ok(result.unwrap_or_else(|| text.to_owned()))
 }
 
 // ---- markup_fmt: HTML ----

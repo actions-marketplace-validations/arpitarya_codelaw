@@ -3,7 +3,7 @@
 //! `codelaw-format-ignore` and `prettier-ignore` skip the next node. No
 //! engine knows both, so each gets them in the form it does know:
 //!
-//! - **a native directive** (Biome, pretty_yaml, dprint-plugin-markdown,
+//! - **a native directive** (Biome, Oxc's CSS, YAML and Markdown formatters,
 //!   markup_fmt): each marker comment is rewritten to the engine's own
 //!   directive before formatting, and restored, in order, after;
 //! - **`# fmt: off` / `# fmt: on`** (Ruff): the marker becomes `# fmt: off`
@@ -25,7 +25,7 @@ pub(crate) const MARKERS: [&str; 2] = ["codelaw-format-ignore", "prettier-ignore
 /// the reason.
 pub(crate) const BIOME: &str = "biome-ignore format: codelaw";
 
-/// The directive pretty_yaml, dprint-plugin-markdown and markup_fmt are
+/// The directive Oxc's formatters and markup_fmt are
 /// configured with.
 pub(crate) const PRETTIER: &str = "prettier-ignore";
 
