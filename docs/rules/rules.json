@@ -82425,8 +82425,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the production value comes from the deployment (environment variables, a secret manager)",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms each cookie or redirect flag turned on suits the deployment; DEBUG, SECRET_KEY and ALLOWED_HOSTS get no edit (the value comes from the deployment)",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -82442,8 +82442,8 @@
     }
    ],
    "options": {},
-   "dont": "DEBUG = True",
-   "do": "import os",
+   "dont": "SESSION_COOKIE_SECURE = False",
+   "do": "SESSION_COOKIE_SECURE = True",
    "fix_steps": [
     "`DEBUG = os.environ.get(\"DJANGO_DEBUG\") == \"1\"`.",
     "`ALLOWED_HOSTS = [\"app.example.com\"]`: list the host names you serve.",
@@ -82452,8 +82452,8 @@
    ],
    "example": {
     "language": "python",
-    "dont": "DEBUG = True\nALLOWED_HOSTS = [\"*\"]",
-    "do": "import os\n\nDEBUG = os.environ.get(\"DJANGO_DEBUG\") == \"1\"\nALLOWED_HOSTS = [\"app.example.com\"]"
+    "dont": "SESSION_COOKIE_SECURE = False",
+    "do": "SESSION_COOKIE_SECURE = True"
    },
    "ported_from": [
     "ruff/S105"
@@ -82602,8 +82602,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the production values come from the deployment (environment variables, a secret manager)",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms each flag turned on suits the deployment; a literal SECRET_KEY gets no edit (the value comes from the deployment)",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -82619,8 +82619,8 @@
     }
    ],
    "options": {},
-   "dont": "app.config[\"SECRET_KEY\"] = \"dev-secret-key\"",
-   "do": "import os",
+   "dont": "app.config[\"SESSION_COOKIE_SECURE\"] = False",
+   "do": "app.config[\"SESSION_COOKIE_SECURE\"] = True",
    "fix_steps": [
     "`app.config[\"SECRET_KEY\"] = os.environ[\"FLASK_SECRET_KEY\"]`, and rotate the key that was committed.",
     "Leave `WTF_CSRF_ENABLED` on; send the token with `{{ csrf_token() }}`.",
@@ -82628,8 +82628,8 @@
    ],
    "example": {
     "language": "python",
-    "dont": "app.config[\"SECRET_KEY\"] = \"dev-secret-key\"",
-    "do": "import os\n\napp.config[\"SECRET_KEY\"] = os.environ[\"FLASK_SECRET_KEY\"]"
+    "dont": "app.config[\"SESSION_COOKIE_SECURE\"] = False",
+    "do": "app.config[\"SESSION_COOKIE_SECURE\"] = True"
    },
    "ported_from": [],
    "security": {
@@ -82839,8 +82839,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement format (`safetensors`, `.npy` without pickle, Parquet) means converting the stored files",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms the arrays are not object arrays, which stop loading once allow_pickle is dropped; the pickle loaders (joblib, read_pickle) and safe_mode=False get no edit (the files must be converted)",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -82896,8 +82896,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement raises the right exception for the framework, which only the author knows",
+   "fix": "suggest",
+   "fix_reason": "the edit raises AssertionError so the check survives `python -O`, which changes behaviour on purpose; the reviewer confirms it and may pick the framework's exception (PermissionDenied, 403) instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -82955,8 +82955,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the address belongs in configuration, with a loopback default",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms the loopback address suits the deployment (a container needs the address from its configuration); a host:port string for bind= gets no edit",
    "severity": "warn",
    "stability": "preview",
    "since": "0.2.0",
@@ -83066,8 +83066,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "an endpoint that needs to be exempt (a webhook) needs its own authentication, which only the author can choose",
+   "fix": "suggest",
+   "fix_reason": "removing the decorator makes the view check CSRF, so a webhook stops working until it has its own authentication; the reviewer confirms the view is not one, and removes the import if nothing else uses it",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -83415,8 +83415,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to reject, strip or encode the value depends on what the header is for",
+   "fix": "suggest",
+   "fix_reason": "stripping the line breaks is one of two safe forms; the reviewer picks between them, or rejects the value or encodes it, and confirms the value is meant to be one header line",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -83473,7 +83473,7 @@
     "python"
    ],
    "fix": "manual",
-   "fix_reason": "the replacement (SSH or SFTP, FTPS, SNMPv3) needs the server to support it",
+   "fix_reason": "the finding is the import or the community string; the replacement (SSH or SFTP, FTPS, SNMPv3) is a different client and needs the server to support it",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -83772,8 +83772,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to strip, escape or reject the value depends on how the log is read",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms line breaks in the value are only noise for this log, since stripping them changes the logged text",
    "severity": "warn",
    "stability": "preview",
    "since": "0.2.0",
@@ -83824,8 +83824,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "moving to another engine (or turning on `default_filters`) changes every template",
+   "fix": "suggest",
+   "fix_reason": "turning escaping on changes every template's output, so the reviewer confirms each one, and adds `|n` where markup is meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -84173,7 +84173,7 @@
     "python"
    ],
    "fix": "manual",
-   "fix_reason": "the safe form (a lookup by id, a resolved path checked against a base folder) depends on the storage layout",
+   "fix_reason": "the base folder the path must stay inside, or the id to look the file up by, is not in the code",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -84460,8 +84460,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to drop the value or mask it depends on what the log is for",
+   "fix": "suggest",
+   "fix_reason": "the reviewer confirms a redacted argument loses nothing the log needs; a keyword argument (`password=...`) gets no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -84883,8 +84883,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "using a model that needs custom code means reviewing and vendoring that code, which is the author's call",
+   "fix": "suggest",
+   "fix_reason": "removing the keyword fails closed, but a model that needs its custom code stops loading, so the reviewer confirms it does not, or vendors and pins the code",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",

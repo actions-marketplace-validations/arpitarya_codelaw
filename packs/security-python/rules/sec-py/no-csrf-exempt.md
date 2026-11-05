@@ -2,9 +2,8 @@
 id: sec-py/no-csrf-exempt
 title: 'No `@csrf_exempt`'
 languages: [python]
-fix: manual
-fix_reason: "an endpoint that needs to be exempt (a webhook) needs its own authentication, which only the author can choose"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing the decorator makes the view check CSRF, so a webhook stops working until it has its own authentication; the reviewer confirms the view is not one, and removes the import if nothing else uses it"
 stability: preview
 security: { cwe: [352], owasp: ["A01:2025"], severity: high }
 since: 0.2.0
@@ -19,6 +18,8 @@ match:
   kind: decorator
   regex: '^@\s*((django\.views\.decorators\.csrf\.)|(csrf\.))?csrf_exempt\b'
 message: 'This view skips the CSRF check'
+fix:
+  - remove: $$MATCH
 ```
 
 ## How to fix
@@ -36,6 +37,15 @@ message: 'This view skips the CSRF check'
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
+def update(request):
+    ...
+```
+
+#### Fixed
+
+```py
+from django.views.decorators.csrf import csrf_exempt
+
 def update(request):
     ...
 ```

@@ -3,9 +3,8 @@ id: sec-py/flask-settings
 title: 'Flask configuration is safe'
 languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
-fix: manual
-fix_reason: "the production values come from the deployment (environment variables, a secret manager)"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the reviewer confirms each flag turned on suits the deployment; a literal SECRET_KEY gets no edit (the value comes from the deployment)"
 stability: preview
 security: { cwe: [798, 352, 614], owasp: ["A02:2025"], severity: high }
 since: 0.2.0
@@ -31,7 +30,7 @@ match:
         - has:
             field: left
             regex: 'config\[\s*[''"](WTF_CSRF_ENABLED|WTF_CSRF_CHECK_DEFAULT|SESSION_COOKIE_SECURE|SESSION_COOKIE_HTTPONLY)[''"]\s*\]$'
-        - { has: { field: right, kind: 'false' } }
+        - { has: { field: right, kind: 'false', pattern: $B } }
     - kind: call
       all:
         - { has: { field: function, regex: '\.config\.(update|from_mapping)$' } }
@@ -49,15 +48,17 @@ match:
                   kind: keyword_argument
                   all:
                     - { has: { field: name, regex: '^WTF_CSRF_ENABLED$' } }
-                    - { has: { field: value, kind: 'false' } }
+                    - { has: { field: value, kind: 'false', pattern: $B } }
             - has:
                 field: arguments
                 has:
                   kind: keyword_argument
                   all:
                     - { has: { field: name, regex: '^SESSION_COOKIE_SECURE$' } }
-                    - { has: { field: value, kind: 'false' } }
+                    - { has: { field: value, kind: 'false', pattern: $B } }
 message: 'This Flask setting is unsafe outside development'
+fix:
+  - replace: { target: $B, with: 'True' }
 ```
 
 ## How to fix
@@ -73,13 +74,11 @@ message: 'This Flask setting is unsafe outside development'
 #### Don't
 
 ```py
-app.config["SECRET_KEY"] = "dev-secret-key"
+app.config["SESSION_COOKIE_SECURE"] = False
 ```
 
 #### Do
 
 ```py
-import os
-
-app.config["SECRET_KEY"] = os.environ["FLASK_SECRET_KEY"]
+app.config["SESSION_COOKIE_SECURE"] = True
 ```

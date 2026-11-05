@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving to another engine (or turning on `default_filters`) changes every template) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (turning escaping on changes every template's output, so the reviewer confirms each one, and adds `|n` where markup is meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `medium` |
@@ -134,6 +134,14 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 from mako.template import Template
 
 t = Template(source)
+```
+
+#### Fixed
+
+```py
+from mako.template import Template
+
+t = Template(source, default_filters=["str", "h"])
 ```
 
 #### Do

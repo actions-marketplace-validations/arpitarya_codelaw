@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the production value comes from the deployment (environment variables, a secret manager)) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer confirms each cookie or redirect flag turned on suits the deployment; DEBUG, SECRET_KEY and ALLOWED_HOSTS get no edit (the value comes from the deployment)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Files** | only `**/settings.py`, `**/settings/**/*.py`, `**/*_settings.py`, `**/settings_*.py`; never `**/*dev*.py`, `**/*local*.py`, `**/*test*.py` |
@@ -134,17 +134,13 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 #### Don't
 
 ```py path=settings.py
-DEBUG = True
-ALLOWED_HOSTS = ["*"]
+SESSION_COOKIE_SECURE = False
 ```
 
 #### Do
 
 ```py path=settings.py
-import os
-
-DEBUG = os.environ.get("DJANGO_DEBUG") == "1"
-ALLOWED_HOSTS = ["app.example.com"]
+SESSION_COOKIE_SECURE = True
 ```
 
 ---

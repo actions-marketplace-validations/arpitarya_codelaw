@@ -39,3 +39,30 @@ print(api_key)
 ```expect
 1:1 sec-py/no-secret-in-log
 ```
+
+### case: the secret argument is redacted
+
+```py
+log.debug(f"token {token}")
+print(api_key)
+```
+
+```expect
+1:1 sec-py/no-secret-in-log
+2:1 sec-py/no-secret-in-log
+```
+
+```fixed
+log.debug("[REDACTED]")
+print("[REDACTED]")
+```
+
+### case: a keyword argument has no edit
+
+```py
+logger.info("login", extra=dict(password=p))
+```
+
+```expect
+1:1 sec-py/no-secret-in-log
+```
