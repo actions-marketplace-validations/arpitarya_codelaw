@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (assigning a property to itself can run a setter, so removing it may change behaviour) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-self-assign` |
+| **Ported from** | `eslint/no-self-assign`, `eslint-plugin-sonarjs/no-redundant-assignments` |
 
 ## What it checks
 

@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (dropping `new` changes the value from an object to a primitive, which the author confirms) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (dropping `new` changes the value from an object to a primitive, which the author confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/no-new-wrappers` |
+| **Ported from** | `eslint/no-new-wrappers`, `eslint-plugin-sonarjs/no-primitive-wrappers` |
 
 ## What it checks
 
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:js/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:js/sonarjs` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/recommended"]
-
-[rules]
-"js/no-new-wrappers" = "error"
+extends = ["codelaw:js/sonarjs"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).
@@ -121,6 +118,10 @@ codelaw explain js/no-new-wrappers       # what it wants, why, how to fix
 codelaw check --rule js/no-new-wrappers  # only this rule
 codelaw config --print --for <file>      # the resolved setting, and where it came from
 ```
+
+## How to fix
+
+1. Remove `new` to convert to the primitive, or use the literal.
 
 ## Examples
 

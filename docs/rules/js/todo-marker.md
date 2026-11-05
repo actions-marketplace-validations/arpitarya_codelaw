@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/markers` at `error` |
+| **Turned on by** | `codelaw:js/markers` at `error` · `codelaw:js/strict` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a ticket and a date are facts about the work that only the author knows; the engine can't invent them) |

@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "moving a chain to `await` needs an `async` function and may restructure the error handling"
 fix_pending: "suggest"
 stability: preview
-ported_from: [eslint-plugin-promise/prefer-await-to-then]
+ported_from: [eslint-plugin-promise/prefer-await-to-then, eslint-plugin-unicorn/prefer-await]
 since: 0.5.0
 ---
 
