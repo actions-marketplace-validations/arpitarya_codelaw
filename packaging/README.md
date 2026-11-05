@@ -1,5 +1,9 @@
 # codelaw
 
+**Your team's rules, enforced on every AI edit.** Deterministic: no AI in the
+engine — the same verdict in CI, the editor and pre-commit, with or without an
+agent.
+
 A linter and formatter whose rules are Markdown files — for JavaScript,
 TypeScript, Python, JSON, YAML, TOML, Markdown, CSS and HTML, alone or mixed.
 

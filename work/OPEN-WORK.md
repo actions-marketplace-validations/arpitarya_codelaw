@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (16)
+## Open items (15)
 
-### build (8)
+### build (7)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -45,7 +45,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
-🟢 **W-164** `agent` README opening, ruled 11-05: lead *"Your team's rules, enforced on every AI edit"*; second line: deterministic, no AI in the engine, same result with or without an agent. Nothing written. Filed by Arpit (Claude app). [detail](open/W-164-readme-opening.md)
 
 ### ci/cd (4)
 
