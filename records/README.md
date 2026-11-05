@@ -190,6 +190,7 @@ yet is owned by an open `W-nn`.
 | `crates/codelaw-config` | SR-CONFIG | decisions 1–5 and 9 |
 | `crates/codelaw-lang` | SR-LINTER | decisions 1 and 3: grammars and embedded regions; `grammars/tree-sitter-css` is the CSS grammar fork SR-ARCHITECTURE decision 3 records |
 | `crates/codelaw-rules` | SR-RULE-FORMAT | decisions 1–7: the rule-file parser and its load checks |
+| `crates/codelaw-rules/src/engine_rules.rs` | SR-RULE-PACKS | decision 1: the engine's own rules, their fix classes, steps and exceptions |
 | `crates/codelaw-rules/src/search.rs` | SR-PACK-LOOKUP | decisions 1–9: the folders a pack is looked for in, their order and the one lookup every caller uses (W-155) |
 | `crates/codelaw-semantic` | SR-ARCHITECTURE | decision 15a |
 | `crates/codelaw-match` | SR-LINTER | decision 2: file-scope `match:` rules |
@@ -299,6 +300,8 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 | `crates/codelaw-native/src/markers.rs` | SR-CONFIG | decision 11a: the TODO-marker rules, the marker syntax and the dates they judge (W-131) |
 | `crates/codelaw-native/src/test_markers.rs` | SR-CONFIG | decision 11a: the focused- and skipped-test rules and the `SKIP` comment (W-131) |
 | `crates/codelaw-cli/tests/markers.rs` | SR-CONFIG | decision 11a: the markers through the binary (W-131) |
+| `crates/codelaw-engine/src/off_reason.rs` | SR-CONFIG | decision 11c: `codelaw/off-without-reason`, an `"off"` that does not say why (W-158) |
+| `crates/codelaw-cli/tests/config_reason.rs` | SR-CONFIG | decision 11c: `reason` and `require_reason` through the binary (W-158) |
 | `crates/codelaw-cli/src/deps_cmd.rs` | SR-RULE-PACKS | decision 15: what `codelaw deps refresh` reads, sends and writes |
 | `crates/codelaw-cli/src/deps_cmd.rs` | SR-LAW-5 | decision 3: the one command that may use the network |
 | `crates/codelaw-engine/src/suppress.rs` | SR-LINTER | decision 6: the suppression syntax and what it covers |

@@ -410,6 +410,7 @@ pub(crate) fn fix_paths(project: &mut Project, paths: &[PathBuf], options: &FixO
         found.retain(|d| d.rule != codelaw_baseline::STALE_IGNORE_RULE);
     }
     report.check.diagnostics.extend(found);
+    report.check.diagnostics.extend(project.off_reason_findings());
     project.apply_ignore_file(&mut report.check.diagnostics);
     let ran = crate::baseline::Ran {
         files: files.iter().filter(|e| !skipped.iter().any(|s| s.file == e.rel)).map(|e| e.rel.clone()).collect(),

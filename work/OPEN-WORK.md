@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (15)
+## Open items (14)
 
-### build (8)
+### build (7)
 
 🔴 **W-105** `arpit` Type-aware TypeScript: nine rules, the version watch; helper batched 11-05 (~2–3× faster). Dispatch proof and `check_types_*` re-measure wait on `main` pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -44,8 +44,6 @@ here. Read that record before changing anything below it.
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. 37 re-judged by W-156. Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule, `[targets]`, the browser table as `@codelaw/data-browsers` with a weekly CI check, lru_cache target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
-
-🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
 
 ### ci/cd (3)

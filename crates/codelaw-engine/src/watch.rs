@@ -116,6 +116,8 @@ impl Project {
         // `.codelawignore` (SR-BASELINE decision 12): its own findings, then
         // the findings its lines exempt are dropped.
         report.diagnostics.extend(self.ignore_file_findings(parts.graph.as_ref().map(|g| &g.sources[..])));
+        // An `"off"` that does not say why (SR-CONFIG decision 11c).
+        report.diagnostics.extend(self.off_reason_findings());
         self.apply_ignore_file(&mut report.diagnostics);
         // The adapters (SR-ARCHITECTURE decision 4, step 5): a finding a
         // pack rule already reports is shown once.

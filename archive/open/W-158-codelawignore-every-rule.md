@@ -6,8 +6,8 @@ item: W-158
 filed: 2026-10-30
 filed_by: "Arpit (Claude app, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
-ball: agent
+updated_by: "Claude Code (Opus 5.5)"
+ball: done
 ---
 
 # W-158 — `.codelawignore` holds the exceptions for every rule, not just test coverage
@@ -19,7 +19,7 @@ ball: agent
 | 1 | Let each `.codelawignore` line name the rules it exempts | one file lists every exception in the repo | ✅ 2026-10-31 |
 | 2 | Keep today's checks for every line: a reason, `expires=` or `forever`, `on_touch`, stale and incomplete lines flagged | no silent, endless exception | ✅ 2026-10-31 |
 | 3 | The decider rules on reasons for `"off"` and scope exceptions in `codelaw.toml` | the config's exceptions held to the same bar | ✅ ruled 2026-11-05 — A (below) |
-| 4 | Build the ruling: `reason` on a rule entry set to `"off"` (in `[rules]` or a scope), `[rules] require_reason` (default `false`); SR-CONFIG decision 11c | an `"off"` that says why | ⏳ agent |
+| 4 | Build the ruling: `reason` on a rule entry set to `"off"` (in `[rules]` or a scope), `[rules] require_reason` (default `false`); SR-CONFIG decision 11c | an `"off"` that says why | ✅ 2026-11-05 |
 
 **Ruled 2026-11-05 — option A. Arpit (voice):** *"Go with the recommendation."*; then (text) *"file it."* A rule entry that sets `severity = "off"` — in `[rules]` or in a `[scope.<name>]` — may carry `reason = "<text>"` (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`); `[rules] require_reason` (default `false`, so no config breaks) makes it mandatory. Recorded as [SR-CONFIG](../../records/0110_config.md) decision 11c. **Next (agent):** build it — the schema, the loader, the finding when `require_reason` is on, `config --print` showing the reason.
 
@@ -50,7 +50,14 @@ ball: agent
 - **Editor**: `data.ignored` from the LSP, a `.codelawignore` chip and meta line on the card; the VS Code extension draws `ignored` as it draws `baseline`.
 - **Judged when building:** no `info` finding for a broad line (`** js/*`) — it is listed by `codelaw exceptions` with its reason and expiry like any other line (SR-BASELINE decision 12).
 
-## Open question — the decider
+## Built (2026-11-05) — step 4
+
+- **Config** (`crates/codelaw-config`): `reason` on `RuleSetting::Full` (an empty one is none; on an entry that is not `"off"` it is exit 2); `[rules] require_reason` read out of `[rules]` at load (`RawConfig.require_reason`), root only, a non-bool or a placement elsewhere exit 2; `Config::offs_without_reason` lists every unexplained `"off"` in the project's own files — `[rules]`, scopes, `[[overrides]]`, profiles and their scopes — with its line; a preset's entries are not the project's. Scope merge keeps the reason of the entry that set the severity. `codelaw.schema.json`: `reason`, and `rootRules` with `require_reason`.
+- **Engine**: `codelaw/off-without-reason` (`error`, `manual`, exception `Authored`) on the entry's line in `check` (and watch) and `fix` (`off_reason.rs`); `config --print` prints `rules.require_reason` and `rules."<id>".reason` with the entry that set it.
+- **Judged when building:** a finding, not exit 2 — as `[exceptions] require_expiry` and `.codelawignore`'s reasons are; the run still reports everything else.
+- **Tests:** `crates/codelaw-cli/tests/config_reason.rs` (3), `resolve::tests::an_off_without_a_reason_is_listed_only_when_required`, the schema tests.
+
+## Open question — the decider (ruled 2026-11-05, option A)
 
 **Reasons in `codelaw.toml`.** An inline `codelaw-ignore` and a `.codelawignore` line must give a reason. A rule set to `"off"` in `[rules]` or in a scope needs none. Recommended: a `reason` key on a rule entry that turns a rule off (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`), with `[rules] require_reason` (default `false`, so no existing config breaks) to make it mandatory. Rule on it, or leave `codelaw.toml` as it is.
 

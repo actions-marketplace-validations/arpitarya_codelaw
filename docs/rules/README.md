@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2121 rules in 27 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2121 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -62,7 +62,7 @@ remap = { error = "warn" }
 | [airflow](#airflow) | — | `codelaw-rules-airflow` | 5 | 0 |
 | [numpy](#numpy) | — | `codelaw-rules-numpy` | 4 | 0 |
 | [pandas](#pandas) | — | `codelaw-rules-pandas` | 12 | 0 |
-| [engine](engine.md) | in `codelaw` | in `codelaw` | 27 | 0 |
+| [engine](engine.md) | in `codelaw` | in `codelaw` | 28 | 0 |
 
 ## js
 
