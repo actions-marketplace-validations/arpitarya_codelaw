@@ -6,8 +6,8 @@ item: W-141
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-141 — The formatter, closer to Prettier (and Oxc's formatters)
@@ -20,7 +20,9 @@ ball: arpit
 | 2 | HTML: void elements written as Prettier writes them (`<meta charset="utf-8" />`) | most of the HTML gap | ✅ 10-30 (HTML 18.4% → 68.7%) |
 | 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | 🟡 rerun done; what is left is inside Biome and markup_fmt — see § Built |
 | 4 | The corpus and the comparison kept as a repeatable check | the number cannot slip back unseen | ✅ 10-30 |
-| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | 🟡 oxfmt measured on the corpus; building it in codelaw waits on Arpit — see § Built |
+| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ✅ oxfmt measured; Oxc's crates ratified 2026-11-05 (L11 D-52) · ⏳ agent — build them behind the formatter (§ W-148 step 1) |
+
+**Ruled 2026-11-05 — Oxc's formatter crates ratified under L11. Arpit (voice):** *"Approve it."*; then (text) *"file it."* `oxc_formatter_css`, `_markdown`, `_yaml`, their parsers, `oxc_formatter_core`, `oxc_allocator` (MIT, a pinned git revision) are [SR-LAW-11](../../records/0013_LAW-11-dependencies.md) D-52. **Next (agent):** § W-148 step 1 — pin a revision (write it, the transitive count and its `members`/`tree` ledger lines into D-52, which `tests/dependencies.rs` reads), build them behind `codelaw format` for CSS, SCSS, YAML and Markdown, rerun `format-corpus.py`, and measure L8, the layout check and the binary size; then [SR-FORMATTER](../../records/0105_formatter.md) records what was built.
 
 **Merged 2026-10-30 (Arpit, text):** *"There are too many work items. See if we can review all the work items and merge them into few of them."* → *"go ahead, merge them."* Merged in: W-148.
 

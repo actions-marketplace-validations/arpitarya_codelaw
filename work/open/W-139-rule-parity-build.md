@@ -6,8 +6,8 @@ item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-139 — Build: port the rules W-138 and W-144 pick
@@ -18,10 +18,13 @@ ball: arpit
 |---|---|---|---|
 | 1 | W-138's research and Arpit's ruling | a decided list | ✅ 2026-10-30 — build all: 1,690 + 16 taste + 39 framework = **1,745**; round 2 (W-144) ruled the same day — **2,572 in all** |
 | 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | 🔄 slice by slice — see *Progress* |
+| 2a | Remove L4's manual ceiling — `packs/fix-ladder.toml`, its check in `--fix-stats --check` and `laws.rs`, the ceiling column in the pack READMEs — and land the 231 held ports from `~/my_programs/codelaw-w139-held/` | every written, green rule ships | ⏳ agent — ruled 2026-11-05 |
 | 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ⏳ |
 | 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ⏳ |
 
 **Arpit, 2026-10-30 (voice):** *"One big item for Opus to research it and once the research is done, then one big work item to build it."*
+
+**Ruled 2026-11-05 — no manual ceiling at all. Arpit (voice):** *"Yeah, I don't want that count. There shouldn't be an upper ceiling to it. If there is a rule, add it."*; then (text) *"file it."* Over the recommendation to leave the 231 out: the per-pack ceiling goes completely, not raised. [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decision 6 is retired; every `manual` rule still names its `fix_exception` (decision 5), and `--fix-stats` still shows the counts (decision 7). **Next (agent):** step 2a. The 231 ports join presets as every port does ([SR-RULE-PACKS](../../records/0101_rule-packs.md) decision 18: tranche A in `recommended`, the rest `preview`). **Hazard:** `crates/codelaw-rules/src/fix_ladder.rs` and `rules_cmd.rs` are W-156's while it is open — claim only the ceiling's lines.
 
 **Model:** Opus (Claude Code): hundreds of rules across every pack; split into parallel worktrees per pack only within L9's disk budget.
 
@@ -182,7 +185,7 @@ Landed in slices 12, 14 and 17: **Ruff 349 of 708** Python-side rows (framework 
 
 **Not written** — 302 Ruff rows (D 47, PYI 36, RUF 19, PT 18, PLR 15, N 14, PLE 14, ASYNC 12, UP 12, PLC 10, ANN 9, FURB 9, AIR 8, DOC 7, TC 7, TRY 7, A 6, RET 5, PERF 4, PTH 4, TID 4, EM 3, EXE 3, FBT 3, INT 3, PLW 3, SIM 3, FA 2, ICN 2, LOG 2, BLE 1, CPY 1, FAST 1, FLY 1, G 1, I 1, INP 1, PIE 1, SLF 1, W 1) and 190 Pylint rows. Most are `manual` by nature (naming `N8xx`, builtin shadowing `A00x`, missing docstrings `D1xx`, `ANN`, `FBT`, `BLE001`, `SLF001`, the `DOC` and `INT` sets, Pylint's design and docstring checks) and so wait on the same ceiling; the rest need a native rule (the table above).
 
-**Question for the decider:** may W-139's genuinely manual ports (exception `value`, `restructure` or `authored`) raise `packs/python`'s manual ceiling in `packs/fix-ladder.toml`, and by how much? Without that ruling the strand cannot land the 57 held rules or the manual tail.
+**Ruled 2026-11-05: no ceiling (step 2a).** ~~**Question for the decider:**~~ may W-139's genuinely manual ports (exception `value`, `restructure` or `authored`) raise `packs/python`'s manual ceiling in `packs/fix-ladder.toml`, and by how much? Without that ruling the strand cannot land the 57 held rules or the manual tail.
 ## Remaining — strand W-139-native (wound down 2026-11-05 on the decider's word)
 
 Landed by this strand: regexp 68 new + 3 links (9 held), the react/ts natives 8 of 13 (5 held), stylelint 19 of 79 (54 held, 6 layout), stylelint-scss 22 new + 5 links (13 held), html-validate 2 of 11 (9 held), markdownlint 3 of 5 (2 held), Oxlint's last 8: `js/branches-sharing-code` (7 react held), Biome's clamp — the native rows above; their slice rows count what was written, the held ones included. Left, for whoever resumes it:

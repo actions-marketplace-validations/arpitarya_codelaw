@@ -127,6 +127,7 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 | D-22 | **semver** | `semver` | version ranges (`requires`, packs, deps) | 1.0.28 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-25 | **libc** | `libc` | OS calls (signals, Unix sockets) | 0.2.191 | 1 | ratified 2026-10-26 — *"Ratify."* |
 | D-33 | **tree-sitter-scss (vendored)** | in-tree copy of `tree-sitter-scss` 1.0.0, commit `5da5ba7` (MIT, +`tree-sitter-language`, `cc` already counted) | the SCSS grammar (W-62; B-047) | vendored | 0 new | ratified 2026-10-26 — *"Own grammar / tree-sitter-scss"* (B-047, docket) |
+| D-52 | **Oxc formatters** | `oxc_formatter_css`, `oxc_formatter_markdown`, `oxc_formatter_yaml`, their parsers (`oxc-css-parser`, `oxc-markdown-parser`, `oxc-yaml-parser`), `oxc_formatter_core`, `oxc_allocator` (MIT; `publish = false`, not on crates.io) | formats CSS, SCSS, YAML and Markdown closer to Prettier (W-141, measured: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3%) | a git revision of `oxc-project/oxc`, pinned by W-141's build and written here (decision 4: the tree as pinned then) | counted at the build | ratified 2026-11-05 — *"Approve it."* |
 
 ### Rust — tests and build only
 

@@ -72,7 +72,7 @@ into a scan anyone can do at task end.
   record, an item file and an archived file are not rows.
 - Every other decision is judgment; decision 10's scan is the session's.
 
-- **Pack READMEs' fix-ladder table (W-156, 2026-11-05).** `scripts/rule-docs.py --write` also writes each `packs/<pack>/README.md`'s block between `<!-- rule-docs:fix-ladder -->` markers — rules per rung, `manual` per exception, those waiting to move up and the ceiling from `packs/fix-ladder.toml` ([L4](0006_LAW-4-every-rule-has-a-fix.md) decision 7) — and `--check` holds it.
+- **Pack READMEs' fix-ladder table (W-156, 2026-11-05).** `scripts/rule-docs.py --write` also writes each `packs/<pack>/README.md`'s block between `<!-- rule-docs:fix-ladder -->` markers — rules per rung, `manual` per exception, those waiting to move up and, until W-139 removes it (L4 decision 6, retired 2026-11-05), the ceiling from `packs/fix-ladder.toml` ([L4](0006_LAW-4-every-rule-has-a-fix.md) decision 7) — and `--check` holds it.
 
 ### Alternatives considered
 
