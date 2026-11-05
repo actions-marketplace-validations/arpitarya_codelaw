@@ -30,11 +30,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (15)
+## Open items (14)
 
-### build (9)
-
-🟡 **W-160** waits on **W-156** `agent` W-156's worktrees W-156-a6 and W-156-moves — ruled keep 11-05; they land with W-156. Filed by now-ledger.py (Claude Code). [detail](open/W-160-session-cleanup.md)
+### build (8)
 
 🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep 11-05; W-146, W-157 and four W-139 strands since landed and removed; left: W-139-native, W-145, W-156 (three). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
