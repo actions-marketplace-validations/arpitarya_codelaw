@@ -75,6 +75,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 - **The manual ceiling (W-139):** `packs/fix-ladder.toml` is gone, with `codelaw rules --fix-stats --check`'s ceiling test and the README column; `--fix-stats` still counts each pack's rules per rung and exception (SR-LAW-4 decision 6 retired).
 
+### Fixed
+
+- **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
+
 ## 0.4.3 — 2026-10-30
 
 **The `deps` pack's Fux index on PyPI.** The same engine and rules as

@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-170 closed: config completion in the top-level `[rules]`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-170 — three `codelaw-lsp` config-completion tests fail on main; find the cause, fix it, close.
+- **Done:** named the three (`completions_come_from_the_schema_and_the_packs`, `fix_offers_only_the_rule_s_own_rung_and_below`, `the_server_publishes_completes_and_fixes_a_config_as_typed`); cause W-158's `rootRules` schema node (`c0346694`), which `is_rules` did not recognise; fixed in `config.rs` (`rootRules` is a rules table, `require_reason` a key, not a rule); SR-EDITOR decision 9 notes it; W-170 archived.
+- **Decided / left open:** no assertion changed. `cargo clippy -p codelaw-lsp` stops on a pre-existing `type_complexity` error in `codelaw-config`, not this change's.
+- **Mistakes:** none.
+- **Next:** none for W-170.
+
+---
+
 ## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.

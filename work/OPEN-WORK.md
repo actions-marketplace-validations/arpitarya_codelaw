@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
 ### build (6)
 
@@ -57,9 +57,7 @@ here. Read that record before changing anything below it.
 
 ### cleanup (0)
 
-### testing (1)
-
-🟢🧨 **W-170** `agent` Three `codelaw-lsp` config-completion tests fail on main (found by W-166's build; CI `test` goes red). Next: name them, bisect today's config-key landings, fix the cause. Filed by Arpit (Claude Code). [detail](open/W-170-lsp-config-completion-tests.md)
+### testing (0)
 
 ### reporting and benchmarks (2)
 
