@@ -83,4 +83,15 @@
 #   experiments/guidance-vs-check/ without its owning item file, which the
 #   next landing 0778284 carries. It is pushed-under, so it is not reworded;
 #   75bcede is the first commit on main's first-parent line that holds it.
-75bcedeae4ffd7b291101aa3f02ca6865c744137
+# - 2026-11-05, the 30 Oct – 5 Nov parallel runs (W-105, W-129, W-139 and its
+#   strands, W-141, W-146, W-152, W-158, W-164, W-166, W-95, W-97): 75bcede ->
+#   ad870dc. Thirty-three commits since 75bcede fail the replay (CI run
+#   42053047689's `lint`): most are the kit's end-of-turn auto-land committing a
+#   change the commit-msg guard had refused ("landed at the end of a turn"), the
+#   rest item commits whose records came in the same item's later commits
+#   (c034669 W-158, 5fd9916 W-97, 00ccf04 W-152, 7669027 W-164, f7395b4 W-166,
+#   9be3ff9 W-139 step 2a). Every owning record is current on main. They are
+#   pushed or pushed-under, so they are not reworded; ad870dc (W-141) is the
+#   first commit on main's first-parent line that holds all thirty-three, and
+#   every commit after it passes.
+ad870dc54dcc2ff1f54167b5a6594bd7488f659e
