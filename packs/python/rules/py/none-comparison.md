@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "an object whose `__eq__` treats itself as equal to `None` would compare differently"
 stability: preview
-ported_from: [ruff/E711]
+ported_from: [ruff/E711, pylint/singleton-comparison]
 since: 0.1.0
 ---
 

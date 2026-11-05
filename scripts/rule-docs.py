@@ -736,7 +736,7 @@ def defaults_block(rid, fm):
 def scope_example(fm, packs):
     langs = fm.get("languages") or []
     ext = LANG[langs[0]][1] if langs and langs[0] in LANG else "*"
-    if any(p in ("js", "react", "ts", "node", "stencil", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "nextjs") for p in packs) and ext in ("js", "jsx", "ts", "tsx"):
+    if any(p in ("js", "react", "ts", "node", "stencil", "tanstack-query", "redux-toolkit", "security-js", "security-ts", "nextjs", "testing", "tailwind") for p in packs) and ext in ("js", "jsx", "ts", "tsx"):
         return "tests", None, "the `tests` scope `codelaw:js/recommended` ships (`**/*.test.*`, `**/*.spec.*`); naming it extends it, so its files stay"
     if "python" in packs or "security-python" in packs:
         return "tests", None, "the `tests` scope `codelaw:py/recommended` ships (`**/tests/**`, `**/test_*.py`, `**/*_test.py`); naming it extends it, so its files stay"

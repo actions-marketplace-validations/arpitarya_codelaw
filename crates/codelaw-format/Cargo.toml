@@ -10,6 +10,8 @@ publish.workspace = true
 # ENGINES_FINGERPRINT in src/lib.rs with any of them.
 [dependencies]
 codelaw-core.workspace = true
+# Where class lists are written (decision 9).
+codelaw-lang.workspace = true
 serde_json.workspace = true
 serde-saphyr.workspace = true
 toml.workspace = true

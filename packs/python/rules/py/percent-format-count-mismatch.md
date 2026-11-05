@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "which value is missing, or extra, can't be inferred"
 fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/F507]
+ported_from: [ruff/F507, pylint/too-many-format-args, pylint/too-few-format-args]
 since: 0.1.0
 ---
 

@@ -59,7 +59,7 @@
       "enum": ["error", "warn", "info", "off"]
     },
     "ruleSetting": {
-      "description": "A severity, or a severity and options.",
+      "description": "A severity, or a severity, options and a lowered fix.",
       "oneOf": [
         { "$ref": "#/definitions/severity" },
         {
@@ -67,7 +67,12 @@
           "additionalProperties": false,
           "properties": {
             "severity": { "$ref": "#/definitions/severity" },
-            "options": { "type": "object" }
+            "options": { "type": "object" },
+            "fix": {
+              "description": "Lower the rule's fix (SR-LAW-4 decision 16): `suggest` stops `codelaw fix`, save and the agent hook applying it; `manual` stops every surface applying it. At or below the rule's own rung; raising is a config error.",
+              "type": "string",
+              "enum": ["auto", "suggest", "manual"]
+            }
           }
         }
       ]
@@ -611,6 +616,24 @@
         "venv": {
           "description": "One virtual environment whose site-packages are the only Python place; `CODELAW_SITE_PACKAGES` and `$VIRTUAL_ENV` are then ignored. Unset: the launcher's paths, then `$VIRTUAL_ENV`, then `.venv/` in the config's folder. A folder that does not exist, or has no site-packages folder, is a config error.",
           "type": "string"
+        }
+      }
+    },
+    "providers": {
+      "x-codelaw-record": "SR-RULE-PACKS",
+      "description": "Providers: packages that build a pack's data table from a package installed in the project (SR-RULE-PACKS decision 19). Root config only.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "on_missing": { "description": "`skip` (default): the rules and the class sorting that need a provider's table are left out, with one note naming the package to install. `error`: the run stops with exit 2, as for a missing pack.", "enum": ["skip", "error"], "default": "skip" },
+        "tailwind": {
+          "description": "`@codelaw/provider-tailwind`, the tailwind pack's provider.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "on_missing": { "description": "Overrides `[providers] on_missing` for this provider.", "enum": ["skip", "error"], "default": "skip" },
+            "stylesheet": { "description": "The project's Tailwind CSS stylesheet, relative to the root config's folder. Unset: the first `.css` file under the root that imports \"tailwindcss\", else Tailwind's own theme.css.", "type": "string" }
+          }
         }
       }
     },

@@ -12,7 +12,7 @@ owns:
   - crates/codelaw-match
   - crates/codelaw-adapters
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-28T12:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ---
 
@@ -68,7 +68,7 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
 
 ### Decision
 
-1. **Languages and parsers.** Every grammar is MIT-licensed tree-sitter ([L2](0004_LAW-2-foss-dependencies.md)).
+1. **Languages and parsers.** Every grammar is MIT-licensed tree-sitter ([L2](0004_LAW-2-foss-dependencies.md)). `codelaw-lang` also says where a file writes class lists (`class_lists`, W-145), which [SR-FORMATTER](0105_formatter.md) decision 9 owns.
 
    | Language | Grammar | Built into ast-grep? |
    |---|---|---|

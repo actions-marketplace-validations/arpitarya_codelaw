@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (callers that relied on the shared object, or passed `None` on purpose, behave differently) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B006` |
+| **Ported from** | `ruff/B006`, `pylint/dangerous-default-value` |
 
 ## What it checks
 

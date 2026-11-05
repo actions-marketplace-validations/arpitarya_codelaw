@@ -1,0 +1,7 @@
+name = "@codelaw/rules-tailwind"
+version = "0.4.3"
+min_codelaw = "0.4.3"
+languages = ["javascript", "jsx", "typescript", "tsx", "html"]
+presets = ["tailwind/recommended"]
+providers = ["@codelaw/provider-tailwind"]
+description = "codelaw's Tailwind CSS rules: conflicting, unknown and misspelt classes; the class table comes from the project's own Tailwind through @codelaw/provider-tailwind (SR-RULE-PACKS)"

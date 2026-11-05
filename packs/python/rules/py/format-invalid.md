@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "whether the brace is a field or literal text has to be decided"
 fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/F521]
+ported_from: [ruff/F521, pylint/bad-format-string]
 since: 0.1.0
 ---
 

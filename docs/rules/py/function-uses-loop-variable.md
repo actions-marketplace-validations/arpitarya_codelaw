@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (binding the value now (a default argument, `functools.partial`) changes the function's signature) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B023` |
+| **Ported from** | `ruff/B023`, `pylint/cell-var-from-loop` |
 
 ## What it checks
 

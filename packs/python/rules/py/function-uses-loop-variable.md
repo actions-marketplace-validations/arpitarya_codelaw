@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "binding the value now (a default argument, `functools.partial`) changes the function's signature"
 fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/B023]
+ported_from: [ruff/B023, pylint/cell-var-from-loop]
 since: 0.1.0
 ---
 

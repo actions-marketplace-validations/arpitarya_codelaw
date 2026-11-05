@@ -6,27 +6,29 @@
 
 [ceiling]
 airflow = 4
-css = 94
+css = 40
 css-modules = 4
-data = 30
+data = 28
 deps = 4
 django = 7
 fastapi = 0
-html = 62
-js = 268
+html = 53
+js = 258
 nextjs = 22
 node = 18
 numpy = 3
 pandas = 5
 python = 93
-react = 123
+react = 112
 redux-toolkit = 12
-scss = 23
+scss = 10
 security-html = 12
 security-js = 49
-security-python = 44
+security-python = 43
 security-ts = 13
 spell = 2
 stencil = 14
+tailwind = 1
 tanstack-query = 5
-ts = 34
+testing = 82
+ts = 33

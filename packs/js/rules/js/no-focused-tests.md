@@ -6,7 +6,7 @@ severity: error
 fix: suggest
 fix_reason: "dropping the focus puts every other test in the file back in the run, and tests that were hidden behind it may fail; the author should see that"
 stability: preview
-ported_from: [biome/suspicious/noFocusedTests, eslint-plugin-jest/no-focused-tests, eslint-plugin-playwright/no-focused-test]
+ported_from: [biome/suspicious/noFocusedTests, eslint-plugin-jest/no-focused-tests, eslint-plugin-playwright/no-focused-test, eslint-plugin-sonarjs/no-exclusive-tests]
 since: 0.5.0
 ---
 

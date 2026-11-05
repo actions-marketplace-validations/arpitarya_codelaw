@@ -24,7 +24,7 @@ codelaw init --no-install
 # 3. Until the packs are published, link them from the clone:
 #    the npm packs into node_modules/, the PyPI-only ones where a Python install would put them
 mkdir -p node_modules/@codelaw .codelaw-packs
-for p in js ts react node stencil html css scss css-modules data tanstack-query redux-toolkit security-js security-ts security-html spell deps nextjs; do
+for p in js ts react node stencil html css scss css-modules data tanstack-query redux-toolkit security-js security-ts security-html spell deps nextjs testing tailwind; do
   ln -s "$OLDPWD/codelaw/packs/$p" "node_modules/@codelaw/rules-$p"
 done
 for p in python security-python django fastapi airflow numpy pandas; do
@@ -209,6 +209,18 @@ rules = { "js/max-lines" = { options = { max = 400 } } }
 ```
 
 `codelaw config --scopes` lists every scope with its files and where it is written, in the order they apply; `codelaw config --print --for <file>` names the scope each value came from. A scope name is lowercase letters, digits, `_` and `-`, and `default` is reserved.
+
+### Lowering a rule's fix
+
+Every rule has a fix class: `auto` (applied by `codelaw fix`, on save and by the agent hook), `suggest` (a diff to accept; `codelaw fix --unsafe` applies it) or `manual` (steps). A rule entry may lower it, never raise it:
+
+```toml
+[rules]
+"py/unused-import" = { severity = "error", fix = "suggest" }   # show the diff, don't apply it
+"js/no-debugger"   = { fix = "manual" }                        # nothing applies it; the finding spells out the edit
+```
+
+`fix = "auto"` on a `suggest` rule is a config error naming the rule's own class. `codelaw rules --why <id>` and `codelaw config --print` show the lowered class and the line that set it.
 
 ### Size limits
 

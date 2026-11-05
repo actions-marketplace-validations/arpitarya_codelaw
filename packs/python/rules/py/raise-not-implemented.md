@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "callers catching the `TypeError` the broken code raised would now see a different exception"
 stability: preview
-ported_from: [ruff/F901]
+ported_from: [ruff/F901, pylint/notimplemented-raised]
 since: 0.1.0
 ---
 

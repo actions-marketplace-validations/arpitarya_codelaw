@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the intended placeholder can't be inferred"
 fix_pending: "suggest-choices"
 stability: preview
-ported_from: [ruff/F501]
+ported_from: [ruff/F501, pylint/truncated-format-string]
 since: 0.1.0
 ---
 

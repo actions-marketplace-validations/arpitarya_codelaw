@@ -4,13 +4,15 @@
 //! The linter owns meaning; this crate owns layout. Every engine is
 //! compiled in and none is run as a program (L5, L6 decision 3).
 
+mod classes;
 pub mod editorconfig;
 pub mod import;
 mod engines;
 mod markers;
 mod options;
 
-pub use options::{ArrowParens, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
+pub use classes::sort_class_lists;
+pub use options::{ArrowParens, ClassSort, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
 
 use codelaw_core::Language;
 use std::fmt;
@@ -61,6 +63,13 @@ impl std::error::Error for FormatError {}
 /// Format one file's text with its language's engine. `path` refines the
 /// dialect (`.d.ts`, `.pyi`, `.jsonc`). No verification: see [`format`].
 pub fn format_unverified(language: Language, path: &str, text: &str, options: &FormatOptions) -> Result<String, FormatError> {
+    // Class lists are sorted before layout, as prettier-plugin-tailwindcss
+    // sorts them in the tree before printing (decision 9).
+    let sorted = match &options.class_sort {
+        Some(sort) => classes::sort_class_lists(language, text, sort)?,
+        None => None,
+    };
+    let text = sorted.as_deref().unwrap_or(text);
     let out = if options.end_of_line.is_some() {
         engines::format(language, path, text, options)?
     } else {

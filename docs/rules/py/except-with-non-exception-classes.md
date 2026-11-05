@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the exception class to catch is the author's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B030` |
+| **Ported from** | `ruff/B030`, `pylint/catching-non-exception` |
 
 ## What it checks
 

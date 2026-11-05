@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "callers that relied on the shared object, or passed `None` on purpose, behave differently"
 stability: preview
-ported_from: [ruff/B006]
+ported_from: [ruff/B006, pylint/dangerous-default-value]
 since: 0.1.0
 ---
 

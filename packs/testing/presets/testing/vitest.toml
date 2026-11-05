@@ -1,0 +1,18 @@
+description = "@vitest/eslint-plugin 1.6.28's `recommended`, reimplemented (W-139); `js/no-focused-tests` and `js/skipped-test` cover its focused- and disabled-test rules"
+
+[rules]
+"testing/expect-expect" = "warn"
+"testing/no-commented-out-tests" = "warn"
+"testing/no-conditional-expect" = "error"
+"testing/no-identical-title" = "error"
+"testing/no-import-node-test" = "error"
+"testing/no-interpolation-in-snapshots" = "error"
+"testing/no-mocks-import" = "error"
+"testing/no-standalone-expect" = "error"
+"testing/no-unneeded-async-expect-function" = "error"
+"testing/prefer-called-exactly-once-with" = "error"
+"testing/require-local-test-context-for-concurrent-snapshots" = "error"
+"testing/valid-describe-callback" = "error"
+"testing/valid-expect" = "error"
+"testing/valid-expect-in-promise" = "error"
+"testing/valid-title" = "error"

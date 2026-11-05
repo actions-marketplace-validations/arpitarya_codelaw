@@ -16,7 +16,7 @@ owns:
   - crates/codelaw-cli/tests/spell.rs
   - crates/codelaw-cli/src/spell_cmd.rs
 laws: [L2, L3, L4, L5, L6, L8, L10, L11]
-timestamp: 2026-11-05T00:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ratifies: "Arpit, 2026-10-27 (Cowork, voice), on the CSpell research: the typo list — \"Let's go with B.\" (codelaw builds its own from SCOWL); SCOWL and VarCon — \"Approve both.\"; the software-terms dictionary — \"Approve it.\"; packaging — \"want it as a separate package.\"; defaults and where the data lives — \"Go with the recommendation.\"; writing it up — \"go ahead\". W-103."
 ---
@@ -86,7 +86,7 @@ question its maintainers left open. The forks and the rulings are in
    registries: `@codelaw/rules-spell` on npm and `codelaw-rules-spell` on PyPI
    (the decider: *"want it as a separate package"*). Its matchers are `native:`
    rules in the engine ([SR-ARCHITECTURE](0108_architecture.md) decision 15b);
-   its word data is in the pack (decision 6). **`codelaw init` adds it**
+   its word data is in the pack (decision 6). (`init`'s choice of the `tailwind` pack and its provider, W-145, leaves what it does for spell unchanged.) **`codelaw init` adds it**
    (reversed 2026-10-28, W-112; until then it never did, as it never adds a
    security pack): it adds the pack and `codelaw:spell/recommended`, writes
    `.codelaw/spell/words.txt` from `templates/init/.codelaw/spell/words.txt`

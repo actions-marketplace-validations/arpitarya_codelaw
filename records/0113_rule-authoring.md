@@ -16,7 +16,7 @@ owns:
   - fixtures/port-rule
   - crates/codelaw-cli/tests/port_rule.rs
 laws: [L0, L3, L4, L5]
-timestamp: 2026-10-31T01:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ---
 
@@ -100,7 +100,7 @@ The decider asked that rules can be written manually or by an AI agent with a sk
 
    A file-scope rule's snippet whose first line names a file (`// path`, `# path` or `<!-- path -->`) is checked as a set of files too, so a native rule that reads the files around it (path, bytes, neighbours: [SR-ARCHITECTURE](0108_architecture.md) decision 15b) is tested on a virtual repo; "still parses" then counts each file in its own language. *(W-21, 2026-10-22.)*
 
-   A type rule ([SR-TYPES](0117_types.md)) is checked at the examples, cases and corpus levels only when a type program can answer: the TypeScript `CODELAW_TYPESCRIPT` names, with Node on `PATH`; without one it is reported as a warning, never a pass or a failure (W-105).
+   A type rule ([SR-TYPES](0117_types.md)) is checked at the examples, cases and corpus levels only when a type program can answer: the TypeScript `CODELAW_TYPESCRIPT` names, with Node on `PATH`; without one it is reported as a warning, never a pass or a failure (W-105). A rule that reads a provider's class table (its native rule names a provider; [SR-RULE-PACKS](0101_rule-packs.md) decision 19) is the same: checked only when `CODELAW_PROVIDER_ROOT` names a folder whose `node_modules` holds the provider and what it asks (`fixtures/tailwind`), otherwise a `not checked` warning (W-145).
 
    - **A multi-file example may name a plain-text config file** (W-132; [L3](0005_LAW-3-languages.md) decision 10): a `// CODEOWNERS` section (any name in `codelaw_core::TEXT_CONFIG_FILES`) is a file of the virtual repo, so a rule that reads one can be tested; the file is never linted.
 5. **Bugs become cases first.** A false positive or negative is fixed by adding the failing case, then changing the rule. The `codelaw-debug-rule` skill enforces that order.
@@ -125,6 +125,8 @@ The decider asked that rules can be written manually or by an AI agent with a sk
   - **`tanstack-query` joined the corpus (W-42, 2026-10-25):** `full-stack-fastapi-template`, `bulletproof-react` and TanStack Query's own repository (examples, docs and tests, MIT) run its rules, so the pack's new rules are counted before any enters `tanstack-query/recommended`. 13 repositories; `redux-toolkit` has no corpus yet.
 
 - **Choices in `codelaw test` (W-156, 2026-11-05; [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 11).** A rule with labelled choices is proved per choice: each `Don't` is fixed with that choice (`fix --unsafe` with `FixOptions::choice`) and compared with its `#### Fixed (<label>)` block, then checked as a fixpoint that parses; a choice with no such block fails. The port-rule fixture's `manual` rules name their exception.
+
+- **The tester runs each rule at its own rung (W-156, 2026-11-05).** `codelaw test` builds the rule's config with no lowered `fix` ([SR-CONFIG](0110_config.md) decision 11d), so an example proves the rule's own class.
 
 ### Alternatives considered
 

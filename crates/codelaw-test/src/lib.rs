@@ -79,7 +79,7 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     }
     let mut defaults = rule.default_options();
     defaults.extend(options.iter().map(|(k, v)| (k.clone(), v.clone())));
-    let default = RuleConfig { severity: Some(rule.severity), options: defaults };
+    let default = RuleConfig { severity: Some(rule.severity), options: defaults, fix: None };
     let lr = LoadedRule {
         rule: Arc::new(rule),
         default: Some(default),
@@ -95,7 +95,7 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     // A type rule's examples are answered by the TypeScript
     // `CODELAW_TYPESCRIPT` names, with Node from `PATH` (SR-TYPES).
     let env = EngineOptions::from_env();
-    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, ..Default::default() };
+    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, provider_root_env: env.provider_root_env, ..Default::default() };
     Project::from_parts(config, rules, options).expect("a single loaded rule compiles: it already passed load")
 }
 
@@ -155,11 +155,23 @@ impl<'a> Tester<'a> {
             Some(l) if self.plain.compiled.iter().any(|c| c.typed) => self.plain.types_unavailable(&format!("example.{}", l.extension()), *l),
             _ => None,
         };
-        let Some(why) = why else { return false };
+        let Some(why) = why else { return self.no_class_table(level) };
         self.report.warnings.push(Failure {
             level,
             at: level.name().into(),
             message: format!("not checked: {why}; set `CODELAW_TYPESCRIPT` to a `typescript` ≥ 7.1 package folder"),
+        });
+        true
+    }
+
+    /// A provider rule needs the provider's table: without one it finds
+    /// nothing, which says nothing about the rule (SR-RULE-PACKS decision 19).
+    fn no_class_table(&mut self, level: Level) -> bool {
+        let Some(why) = self.loaded.rule.native_id().and_then(|n| self.plain.provider_unavailable(n)) else { return false };
+        self.report.warnings.push(Failure {
+            level,
+            at: level.name().into(),
+            message: format!("not checked: {why}; set `CODELAW_PROVIDER_ROOT` to a folder whose node_modules hold the provider and what it asks (fixtures/tailwind)"),
         });
         true
     }

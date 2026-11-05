@@ -23,6 +23,7 @@ mod lint;
 mod new_code;
 mod query;
 mod project;
+pub mod providers;
 pub mod suppress;
 mod timings;
 mod types;
@@ -113,6 +114,11 @@ pub struct EngineOptions {
     /// installed from a file's folder up to the root (codelaw's own tests
     /// and its rule tester; SR-TYPES decision 5).
     pub typescript_env: Option<String>,
+    /// `CODELAW_PROVIDER_ROOT`: a folder whose `node_modules` holds every
+    /// first-party provider and what it asks, used in place of the
+    /// project's (codelaw's own tests and its rule tester; SR-RULE-PACKS
+    /// decision 19).
+    pub provider_root_env: Option<String>,
     /// The branch and pull-request variables each CI sets, for the `git/*`
     /// rules (W-146): only the names `hygiene::CI_VARS` lists are read.
     pub ci_vars: std::collections::BTreeMap<String, String>,
@@ -137,6 +143,7 @@ impl EngineOptions {
             profile_env: var("CODELAW_PROFILE"),
             ci_env: var("CI"),
             typescript_env: var("CODELAW_TYPESCRIPT"),
+            provider_root_env: var("CODELAW_PROVIDER_ROOT"),
             ci_vars: hygiene::CI_VARS.iter().filter_map(|k| var(k).map(|v| (k.to_string(), v))).collect(),
             ..Default::default()
         }
@@ -253,6 +260,8 @@ pub struct Project {
     pub(crate) aliases: Option<Aliases>,
     /// The type helpers and what the report says of them (SR-TYPES).
     pub(crate) types: types::Types,
+    /// The providers' tables (SR-RULE-PACKS decision 19).
+    pub(crate) providers: providers::Providers,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -337,7 +346,9 @@ impl Project {
         } else {
             DiskCache::new(Some(config.cache_dir(options.cache_dir_env.as_deref())))
         };
-        let formatting = Formatting::from_config(&config)?;
+        let mut formatting = Formatting::from_config(&config)?;
+        let providers = providers::load(&config, &rules, &options, &formatting.options.class_lists, (!options.no_cache && config.cache_enabled()).then(|| config.cache_dir(options.cache_dir_env.as_deref())), &mut warnings)?;
+        formatting.set_class_table(providers.table("tailwind"), &mut warnings);
         // `[adapters] enabled` names only adapters codelaw has, on every
         // surface, whether or not this one runs them.
         if let Err(e) = codelaw_adapters::selected(config.adapters_enabled()) {
@@ -370,6 +381,7 @@ impl Project {
             touched: std::sync::OnceLock::new(),
             aliases,
             types: types::Types::default(),
+            providers,
         })
     }
 

@@ -106,6 +106,11 @@ pub struct RawConfig {
     /// Root config only.
     #[serde(default)]
     pub packs: crate::packs::RawPacks,
+    /// SR-RULE-PACKS decision 19 (W-145): what happens when a pack's
+    /// provider cannot build its table, and each provider's own settings.
+    /// Root config only.
+    #[serde(default)]
+    pub providers: RawProviders,
     #[serde(default)]
     pub adapters: RawAdapters,
     #[serde(default)]
@@ -121,7 +126,7 @@ pub struct RawConfig {
     pub reviews: RawReviews,
 }
 
-/// A rule's severity, or its severity and options.
+/// A rule's severity, or its severity, options and lowered fix.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum RuleSetting {
@@ -130,6 +135,10 @@ pub enum RuleSetting {
         severity: Option<String>,
         #[serde(default)]
         options: BTreeMap<String, serde_json::Value>,
+        /// A rung at or below the rule's own (SR-LAW-4 decision 16):
+        /// `suggest` or `manual` lowers it; raising is a load error.
+        #[serde(default)]
+        fix: Option<String>,
     },
 }
 
@@ -145,6 +154,14 @@ impl RuleSetting {
         match self {
             RuleSetting::Severity(_) => None,
             RuleSetting::Full { options, .. } => Some(options),
+        }
+    }
+
+    /// The fix rung this entry lowers the rule to, as written.
+    pub fn fix(&self) -> Option<&str> {
+        match self {
+            RuleSetting::Severity(_) => None,
+            RuleSetting::Full { fix, .. } => fix.as_deref(),
         }
     }
 }
@@ -358,6 +375,39 @@ pub struct RawSpell {
     /// folder (W-112). Not a rule option: the loader reads the file.
     #[serde(skip_serializing)]
     pub words_file: Option<String>,
+}
+
+/// `on_missing`: what a run does when a provider cannot build its table
+/// (SR-RULE-PACKS decision 19).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum OnMissing {
+    /// Leave out the rules and the sorting that need the table, with one note.
+    Skip,
+    /// Stop the run, as a missing pack does.
+    Error,
+}
+
+/// `[providers]` (W-145, SR-RULE-PACKS decision 19).
+#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawProviders {
+    /// Every provider's; default `skip`.
+    pub on_missing: Option<OnMissing>,
+    /// `[providers.tailwind]`: `@codelaw/provider-tailwind`.
+    pub tailwind: Option<RawProviderTailwind>,
+}
+
+/// `[providers.tailwind]`.
+#[derive(Debug, Default, Clone, PartialEq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RawProviderTailwind {
+    /// Overrides `[providers] on_missing` for this provider.
+    pub on_missing: Option<OnMissing>,
+    /// The project's Tailwind stylesheet, relative to the root config's
+    /// folder. Unset: the first `.css` file that imports "tailwindcss", else
+    /// Tailwind's own theme.
+    pub stylesheet: Option<String>,
 }
 
 /// `[todo]`: what a TODO-style comment must carry (SR-CONFIG decision 11a,

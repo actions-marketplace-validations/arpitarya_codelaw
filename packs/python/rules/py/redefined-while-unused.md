@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "which definition is meant, and whether to rename or remove the other, needs a person"
 fix_pending: "auto-subset"
 stability: preview
-ported_from: [ruff/F811]
+ported_from: [ruff/F811, pylint/function-redefined]
 since: 0.1.0
 ---
 

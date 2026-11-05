@@ -1,0 +1,6 @@
+name = "@codelaw/rules-testing"
+version = "0.4.3"
+min_codelaw = "0.4.0"
+languages = ["javascript", "jsx", "typescript", "tsx"]
+presets = ["testing/jest", "testing/vitest", "testing/testing-library", "testing/playwright"]
+description = "codelaw's rules for test code — Jest, Vitest, Testing Library, Playwright; npm only (SR-RULE-PACKS)"

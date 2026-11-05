@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the expression was meant for needs a person) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/B018` |
+| **Ported from** | `ruff/B018`, `pylint/pointless-statement`, `pylint/expression-not-assigned` |
 
 ## What it checks
 

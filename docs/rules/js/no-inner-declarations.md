@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the function changes what it can see) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/no-inner-declarations` |
+| **Ported from** | `eslint/no-inner-declarations`, `eslint-plugin-sonarjs/no-function-declaration-in-block` |
 
 ## What it checks
 

@@ -214,8 +214,8 @@ a diff.
   choices (4: `fix: { choices }`, `NativeRule::choices_of`, `Fixed (<label>)`),
   `fix_exception` (5, refused at load; `fix_pending:` stands in on a rule
   waiting to move up), the ceiling (6: `packs/fix-ladder.toml`), `--fix-stats`
-  (7) and the engine rules' exceptions (15). Not yet built: the project's
-  lowering (16).
+  (7) and the engine rules' exceptions (15). The project's lowering (16)
+  was built 2026-11-05 ([SR-CONFIG](0110_config.md) decision 11d).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
   `manual` would fall from 577 to 147, and `auto` (always or for a stated

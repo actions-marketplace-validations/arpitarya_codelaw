@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which style the string should use is the author's choice) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F506` |
+| **Ported from** | `ruff/F506`, `pylint/mixed-format-string` |
 
 ## What it checks
 

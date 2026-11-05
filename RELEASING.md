@@ -2,9 +2,9 @@
 
 **One release, both registries, one version** ([L6](records/0008_LAW-6-python-and-node-packages.md)
 decision 9). What ships is [SR-PACKAGES](records/0107_packages.md) §1: npm
-`codelaw` + eight `@codelaw/cli-*` + eighteen `@codelaw/rules-*` (`js`, `ts`,
+`codelaw` + eight `@codelaw/cli-*` + nineteen `@codelaw/rules-*` (`js`, `ts`,
 `react`, `node`, `stencil`, `html`, `css`, `scss`, `css-modules`, `data`, `tanstack-query`,
-`redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps`, `nextjs`), PyPI `codelaw`
+`redux-toolkit`, `security-js`, `security-ts`, `security-html`, `spell`, `deps`, `nextjs`, `testing`), PyPI `codelaw`
 (eight wheels) + seventeen `codelaw-rules-*` (`js`, `react`, `html`, `css`, `scss`,
 `python`, `data`, `security-js`, `security-html`, `security-python`, `spell`, `deps`,
 `django`, `fastapi`, `airflow`, `numpy`, `pandas`). Which pack goes where is `FIRST_PARTY_PACKS` in

@@ -1,0 +1,10 @@
+@codelaw/rules-tailwind
+
+The rules are reimplementations written for codelaw. Their `ported_from:` fields
+name the eslint-plugin-tailwindcss (https://github.com/francoismassart/eslint-plugin-tailwindcss,
+MIT License) and eslint-plugin-better-tailwindcss
+(https://github.com/schoero/eslint-plugin-better-tailwindcss, MIT License) rules
+whose documented behaviour they reproduce; no code or documentation text of
+either is included. No part of Tailwind CSS is included: the class table is
+built at run time from the project's own `tailwindcss` by
+@codelaw/provider-tailwind.

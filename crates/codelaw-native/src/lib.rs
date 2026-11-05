@@ -69,6 +69,7 @@ mod html_extra;
 mod md_extra;
 mod oxlint_extra;
 mod stencil;
+mod tailwind;
 mod typescript;
 mod unused_vars;
 mod useless_assignment;
@@ -131,6 +132,12 @@ pub trait FileContext: Sync {
     /// the only date a rule may judge by. The engine records the question,
     /// so a cached result is reused only on the same date.
     fn as_of(&self) -> Option<String> {
+        None
+    }
+    /// The class table of the provider `short` (`tailwind`), when the
+    /// project has one (SR-RULE-PACKS decision 19). Its identity is in the
+    /// file's cache key, so the question is not recorded.
+    fn class_table(&self, _short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         None
     }
 }
@@ -207,6 +214,12 @@ pub trait NativeRule: Send + Sync {
     fn kinds(&self) -> &'static [&'static str];
     fn needs_semantic(&self) -> bool {
         false
+    }
+    /// The provider whose class table the rule reads (`tailwind`): without
+    /// the table it finds nothing, and the rule tester says its examples
+    /// were not checked (SR-RULE-PACKS decision 19).
+    fn provider(&self) -> Option<&'static str> {
+        None
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>);
     /// A config section whose keys the rule reads as its options (the
@@ -717,6 +730,14 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &redux_toolkit::ObjectShorthandMapDispatch,
     &redux_toolkit::PreferCreateSlice,
     &redux_toolkit::SliceKeyNames,
+    &tailwind::ImportantModifierSuffix,
+    &tailwind::NegativeArbitraryValues,
+    &tailwind::NoArbitraryValue,
+    &tailwind::NoRestrictedClasses,
+    &tailwind::NoUnknownClasses,
+    &tailwind::NoConflictingClasses,
+    &tailwind::CanonicalClassname,
+    &tailwind::NoConcatenatedClasses,
     &stencil::BanDefaultTrue,
     &stencil::BanExportedConstEnums,
     &stencil::BanPrefix,

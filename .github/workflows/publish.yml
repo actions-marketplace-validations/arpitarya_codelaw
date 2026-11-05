@@ -233,7 +233,8 @@ jobs:
         # @codelaw/skills depends on codelaw at its exact version (W-77), and the
         # dev-server plugins spawn it (W-150), so they go after codelaw, never
         # before the engine they need. The Fux index packages last: optional data
-        # nothing depends on (B-063). `package.py check` refuses a tarball in
+        # nothing depends on (B-063). The providers go with the binaries, before
+        # the packs that depend on them (W-145). `package.py check` refuses a tarball in
         # dist/npm that none of these tiers names (W-150).
         # Each tier uploads eight at a time and the next starts only when every
         # one of it is on npm (W-126): parallel within a tier, never across tiers.
@@ -270,7 +271,7 @@ jobs:
           export -f one
           export v tag
           tier() { printf '%s\n' "$@" | xargs -P 8 -I{} bash -eo pipefail -c 'one "$1"' _ {}; }
-          tier ./dist/npm/codelaw-cli-*.tgz
+          tier ./dist/npm/codelaw-cli-*.tgz ./dist/npm/codelaw-provider-*.tgz
           tier ./dist/npm/codelaw-rules-*.tgz
           tier ./dist/npm/codelaw-[0-9]*.tgz
           tier ./dist/npm/codelaw-skills-*.tgz ./dist/npm/codelaw-vite-plugin-*.tgz ./dist/npm/codelaw-webpack-plugin-*.tgz ./dist/npm/codelaw-next-*.tgz

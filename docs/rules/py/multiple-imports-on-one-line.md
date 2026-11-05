@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/E401` |
+| **Ported from** | `ruff/E401`, `pylint/multiple-imports` |
 
 ## What it checks
 

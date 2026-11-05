@@ -2,11 +2,10 @@
 id: js/no-new-wrappers
 title: "No primitive wrapper objects"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
+fix: suggest
 fix_reason: "dropping `new` changes the value from an object to a primitive, which the author confirms"
-fix_pending: "suggest"
 stability: preview
-ported_from: [eslint/no-new-wrappers]
+ported_from: [eslint/no-new-wrappers, eslint-plugin-sonarjs/no-primitive-wrappers]
 since: 0.5.0
 ---
 
@@ -22,11 +21,8 @@ constraints:
 where:
   $W: builtin
 message: "Do not use `$W` as a constructor"
+fix: "$W($$$A)"
 ```
-
-## How to fix
-
-1. Remove `new` to convert to the primitive, or use the literal.
 
 ## Examples
 

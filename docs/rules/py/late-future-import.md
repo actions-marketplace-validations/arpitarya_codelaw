@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving statements above it can change the order the module runs in) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F404` |
+| **Ported from** | `ruff/F404`, `pylint/misplaced-future` |
 
 ## What it checks
 

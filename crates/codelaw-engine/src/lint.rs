@@ -102,6 +102,28 @@ pub(crate) fn manual_exception(rule: &codelaw_rules::RuleFile) -> FixException {
     rule.fix_exception.unwrap_or(FixException::Value)
 }
 
+/// The step a finding lowered to `manual` shows (L4 decision 16): the edit
+/// the rule would have made, for a person or an agent to make by hand.
+fn lowered_step(edits: &[TextEdit], choices: &[FixChoice], text: &str) -> String {
+    let show = |e: &[TextEdit]| -> String {
+        e.iter()
+            .map(|x| {
+                let was = text.get(x.start..x.end).unwrap_or_default();
+                if was.is_empty() { format!("insert `{}`", x.text) } else if x.text.is_empty() { format!("delete `{was}`") } else { format!("replace `{was}` with `{}`", x.text) }
+            })
+            .collect::<Vec<_>>()
+            .join("; ")
+    };
+    if !choices.is_empty() {
+        let each: Vec<String> = choices.iter().map(|c| format!("{}: {}", c.label, show(&c.edits))).collect();
+        return format!("This project lowered the rule's fix to `manual`; make one of these edits by hand — {}.", each.join(" · "));
+    }
+    if edits.is_empty() {
+        return "This project lowered the rule's fix to `manual`; `codelaw explain` shows what the rule requires.".into();
+    }
+    format!("This project lowered the rule's fix to `manual`; make this edit by hand: {}.", show(edits))
+}
+
 const FALLBACK_STEP: &str = "Make the change by hand; `codelaw explain <rule>` shows what the rule requires.";
 
 /// An engine diagnostic's severity for one file: its default, then the
@@ -250,6 +272,8 @@ impl Project {
             // config fingerprint.
             .part(format!("{:?}", self.formatting.options_for(&entry.abs)))
             .part(format!("{:?}{:?}", self.options.languages, self.options.rules))
+            // The providers' tables the rules read (SR-RULE-PACKS decision 19).
+            .part(self.providers.key())
             // A dated `codelaw-ignore` is judged on the as-of date.
             .part(self.exception_key(&file.text))
             .part(match &types {
@@ -460,7 +484,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
     let crlf = dominant_crlf(text);
     // Every unit, regions included, sees the host file (decision 15b).
     let as_of = || project.as_of_text();
-    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of);
+    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers);
     let mut findings: Vec<Finding> = Vec::new();
     let mut comments: Vec<(usize, usize)> = Vec::new();
     // Type rules no program answered: they did not run (SR-TYPES decision 6).
@@ -585,11 +609,21 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
                 FixClass::Manual
             }
         };
-        let steps = if class == FixClass::Manual {
+        // A config entry may lower the rung, never raise it (L4 decision
+        // 16). Lowered to `suggest`, the edit is offered, not applied;
+        // lowered to `manual`, nothing applies it and it is the step to make.
+        let own = class;
+        let class = cfg.fix.map_or(class, |f| class.max(f));
+        let mut steps = if class == FixClass::Manual && own == FixClass::Manual {
             if rule.loaded.rule.steps.is_empty() { vec![FALLBACK_STEP.replace("<rule>", rule.id())] } else { rule.loaded.rule.steps.clone() }
         } else {
             Vec::new()
         };
+        if class == FixClass::Manual && own != FixClass::Manual {
+            steps.push(lowered_step(&edits, &choices, text));
+            edits.clear();
+            choices.clear();
+        }
         let fix_exception = (class == FixClass::Manual).then(|| manual_exception(&rule.loaded.rule));
         diagnostics.push(Diagnostic {
             rule: rule.id().to_owned(),

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which definition is meant, and whether to rename or remove the other, needs a person) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/F811` |
+| **Ported from** | `ruff/F811`, `pylint/function-redefined` |
 
 ## What it checks
 

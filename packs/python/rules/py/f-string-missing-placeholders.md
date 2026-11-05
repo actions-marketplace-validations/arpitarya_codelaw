@@ -4,7 +4,7 @@ title: "An f-string has a placeholder"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/F541]
+ported_from: [ruff/F541, pylint/f-string-without-interpolation]
 since: 0.1.0
 ---
 

@@ -1084,6 +1084,7 @@ dependencies = [
  "biome_json_parser",
  "biome_languages",
  "codelaw-core",
+ "codelaw-lang",
  "dprint-core",
  "dprint-plugin-markdown",
  "globset",

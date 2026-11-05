@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1492 rules in 25 packs, plus the engine's 27 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 1888 rules in 27 packs, plus the engine's 27 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,16 +35,16 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 464 | 12 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 496 | 12 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 64 | 2 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 140 | 8 |
 | [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
-| [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
-| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 146 | 83 |
-| [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
+| [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 76 | 19 |
+| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 92 | 36 |
+| [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 38 | 6 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
-| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 47 | 17 |
+| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 45 | 15 |
 | [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 13 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 66 | 4 |
@@ -53,23 +53,33 @@ remap = { error = "warn" }
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
-| [python](#python) | — | `codelaw-rules-python` | 173 | 14 |
+| [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
+| [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
+| [python](#python) | — | `codelaw-rules-python` | 449 | 14 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 2 | 0 |
-| [airflow](#airflow) | — | `codelaw-rules-airflow` | 4 | 0 |
+| [airflow](#airflow) | — | `codelaw-rules-airflow` | 5 | 0 |
 | [numpy](#numpy) | — | `codelaw-rules-numpy` | 4 | 0 |
 | [pandas](#pandas) | — | `codelaw-rules-pandas` | 12 | 0 |
 | [engine](engine.md) | in `codelaw` | in `codelaw` | 27 | 0 |
 
 ## js
 
-Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers` · `codelaw:js/jsdoc` · `codelaw:js/strict` · `codelaw:js/taste` · `codelaw:js/regexp`.
+Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conventions` · `codelaw:js/project` · `codelaw:js/size` · `codelaw:js/markers` · `codelaw:js/jsdoc` · `codelaw:js/strict` · `codelaw:js/taste` · `codelaw:js/sonarjs` · `codelaw:js/regexp`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`graph/no-unused-exports`](graph/no-unused-exports.md) | Exported symbols must be used somewhere | `suggest` | — | `js/project`, `py/project` |
 | [`js/accessor-pairs`](js/accessor-pairs.md) | A setter has a getter | `manual` | — | *[rules] only* |
+| [`js/arrow-body-style`](js/arrow-body-style.md) | No braces around a single returned expression | `auto` | — | *[rules] only* |
+| [`js/aws-ec2-rds-dms-public`](js/aws-ec2-rds-dms-public.md) | No publicly accessible instance or database | `suggest` | — | `js/sonarjs` |
+| [`js/aws-ec2-unencrypted-ebs-volume`](js/aws-ec2-unencrypted-ebs-volume.md) | EBS volumes are encrypted | `suggest` | — | `js/sonarjs` |
+| [`js/aws-efs-unencrypted`](js/aws-efs-unencrypted.md) | EFS file systems are encrypted | `suggest` | — | `js/sonarjs` |
+| [`js/aws-rds-unencrypted-databases`](js/aws-rds-unencrypted-databases.md) | RDS storage is encrypted | `suggest` | — | `js/sonarjs` |
+| [`js/aws-s3-bucket-insecure-http`](js/aws-s3-bucket-insecure-http.md) | S3 buckets enforce TLS | `suggest` | — | `js/sonarjs` |
+| [`js/aws-s3-bucket-public-access`](js/aws-s3-bucket-public-access.md) | No public-read S3 bucket | `suggest` | — | `js/sonarjs` |
+| [`js/aws-s3-bucket-versioning`](js/aws-s3-bucket-versioning.md) | S3 buckets are versioned | `suggest` | — | `js/sonarjs` |
 | [`js/branches-sharing-code`](js/branches-sharing-code.md) | No statement repeated at the start or end of both branches | `suggest` | — | *[rules] only* |
 | [`js/catch-error-name`](js/catch-error-name.md) | Name the caught error `error` | `suggest` | — | `js/strict` |
 | [`js/complexity`](js/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `count_optional_chain`, `ignore_names` | `js/size` |
@@ -80,10 +90,12 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/consistent-existence-index-check`](js/consistent-existence-index-check.md) | Check indexOf against -1 the same way | `manual` | — | `js/strict` |
 | [`js/consistent-json-file-read`](js/consistent-json-file-read.md) | Read JSON files as text | `manual` | — | `js/strict` |
 | [`js/constructor-super`](js/constructor-super.md) | A derived class's constructor calls super(); a base class's does not | `manual` | — | `js/recommended` |
+| [`js/content-security-policy`](js/content-security-policy.md) | Keep the Content-Security-Policy header | `suggest` | — | `js/sonarjs` |
+| [`js/cookie-no-httponly`](js/cookie-no-httponly.md) | Cookies are HttpOnly | `suggest` | — | `js/sonarjs` |
 | [`js/curly`](js/curly.md) | Braces around every if, else and loop body | `auto` | — | *[rules] only* |
 | [`js/custom-error-definition`](js/custom-error-definition.md) | Custom errors set name and extend Error | `manual` | — | *[rules] only* |
 | [`js/default-case`](js/default-case.md) | A switch has a default | `manual` | — | *[rules] only* |
-| [`js/default-case-last`](js/default-case-last.md) | default comes last | `manual` | — | *[rules] only* |
+| [`js/default-case-last`](js/default-case-last.md) | default comes last | `manual` | — | `js/sonarjs` |
 | [`js/default-param-last`](js/default-param-last.md) | Default parameters come last | `manual` | — | *[rules] only* |
 | [`js/dom-node-dataset`](js/dom-node-dataset.md) | Use dataset for data- attributes | `manual` | — | `js/strict` |
 | [`js/dot-notation`](js/dot-notation.md) | obj.key rather than obj\["key"\] | `auto` | — | *[rules] only* |
@@ -111,6 +123,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/import-no-nodejs-modules`](js/import-no-nodejs-modules.md) | No Node.js built-in modules | `manual` | — | *[rules] only* |
 | [`js/import-no-relative-parent-imports`](js/import-no-relative-parent-imports.md) | No imports from a parent folder | `manual` | — | *[rules] only* |
 | [`js/import-no-webpack-loader-syntax`](js/import-no-webpack-loader-syntax.md) | No webpack loaders in import paths | `manual` | — | *[rules] only* |
+| [`js/insecure-cookie`](js/insecure-cookie.md) | Cookies are secure | `suggest` | — | `js/sonarjs` |
+| [`js/inverted-assertion-arguments`](js/inverted-assertion-arguments.md) | Actual first, expected second | `suggest` | — | `js/sonarjs` |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `manual` | — | *[rules] only* |
 | [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `manual` | — | `js/jsdoc` |
@@ -159,6 +173,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/jsdoc-require-yields-type`](js/jsdoc-require-yields-type.md) | @yields has a type | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-ts-ban-ts-comment`](js/jsdoc-ts-ban-ts-comment.md) | No @ts-ignore or @ts-nocheck in JavaScript | `manual` | — | *[rules] only* |
 | [`js/jsdoc-ts-no-empty-object-type`](js/jsdoc-ts-no-empty-object-type.md) | No {} type in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/link-with-target-blank`](js/link-with-target-blank.md) | target="_blank" with rel="noopener" | `suggest` | — | `js/sonarjs` |
 | [`js/logical-assignment-operators`](js/logical-assignment-operators.md) | a \|\|= b rather than a = a \|\| b | `manual` | — | `js/strict` |
 | [`js/match-all-needs-global`](js/match-all-needs-global.md) | matchAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/max-classes-per-file`](js/max-classes-per-file.md) | One class per file | `manual` | — | *[rules] only* |
@@ -196,13 +211,14 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `manual` | — | *[rules] only* |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `manual` | — | `js/recommended` |
 | [`js/no-chained-comparison`](js/no-chained-comparison.md) | No a < b < c | `manual` | — | `js/strict` |
-| [`js/no-char-at-multichar-compare`](js/no-char-at-multichar-compare.md) | charAt() compared with a longer string | `manual` | — | *[rules] only* |
+| [`js/no-char-at-multichar-compare`](js/no-char-at-multichar-compare.md) | charAt() compared with a longer string | `manual` | — | `js/strict` |
 | [`js/no-class-assign`](js/no-class-assign.md) | A class name is not reassigned | `manual` | — | `js/recommended` |
+| [`js/no-collapsible-if`](js/no-collapsible-if.md) | Merge nested ifs | `auto` | — | *[rules] only* |
 | [`js/no-compare-neg-zero`](js/no-compare-neg-zero.md) | No comparisons against -0 | `manual` | — | `js/recommended` |
 | [`js/no-cond-assign`](js/no-cond-assign.md) | No assignment in a condition, unless doubly parenthesised | `manual` | — | `js/recommended` |
 | [`js/no-console`](js/no-console.md) | No console calls left in the code | `suggest` | `allow` | `js/recommended` |
 | [`js/no-console-spaces`](js/no-console-spaces.md) | No leading or trailing space in console arguments | `manual` | — | `js/strict` |
-| [`js/no-const-assign`](js/no-const-assign.md) | A const is not reassigned | `manual` | — | `js/recommended` |
+| [`js/no-const-assign`](js/no-const-assign.md) | A const is not reassigned | `manual` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-constant-binary-expression`](js/no-constant-binary-expression.md) | No binary expression whose result is fixed | `manual` | — | `js/recommended` |
 | [`js/no-constant-condition`](js/no-constant-condition.md) | No conditions that are always true or always false | `manual` | — | `js/recommended` |
 | [`js/no-constant-math-min-max-clamp`](js/no-constant-math-min-max-clamp.md) | No clamp with its bounds swapped | `suggest` | — | `js/recommended` |
@@ -236,7 +252,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-empty-static-block`](js/no-empty-static-block.md) | No empty static blocks | `auto` | — | `js/recommended` |
 | [`js/no-eq-null`](js/no-eq-null.md) | No == null | `manual` | — | *[rules] only* |
 | [`js/no-erasing-op`](js/no-erasing-op.md) | Multiplying by zero erases the value | `suggest` | — | *[rules] only* |
-| [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | *[rules] only* |
+| [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | `js/sonarjs` |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-extend-native`](js/no-extend-native.md) | No changes to built-in prototypes | `manual` | — | *[rules] only* |
 | [`js/no-extra-bind`](js/no-extra-bind.md) | No bind() on a function that does not use this | `auto` | — | *[rules] only* |
@@ -244,7 +260,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-extra-label`](js/no-extra-label.md) | No label that is not needed | `manual` | — | *[rules] only* |
 | [`js/no-fallthrough`](js/no-fallthrough.md) | A switch case does not fall through into the next by accident | `manual` | — | `js/recommended` |
 | [`js/no-flat-map-identity`](js/no-flat-map-identity.md) | flat, not flatMap of the identity | `suggest` | — | `js/recommended` |
-| [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers` |
+| [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers`, `js/sonarjs` |
 | [`js/no-for-each`](js/no-for-each.md) | for…of rather than forEach | `manual` | — | `js/strict` |
 | [`js/no-func-assign`](js/no-func-assign.md) | A function declaration is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-global-assign`](js/no-global-assign.md) | No assignment to built-in globals | `manual` | — | `js/recommended` |
@@ -270,19 +286,22 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-lonely-if`](js/no-lonely-if.md) | else { if } is else if | `auto` | — | `js/strict` |
 | [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `manual` | — | `js/recommended` |
 | [`js/no-map-spread`](js/no-map-spread.md) | No object spread of each item in map() | `suggest` | — | *[rules] only* |
+| [`js/no-mime-sniff`](js/no-mime-sniff.md) | Keep X-Content-Type-Options | `suggest` | — | `js/sonarjs` |
 | [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `manual` | — | `js/recommended` |
 | [`js/no-misrefactored-shorthand-assign`](js/no-misrefactored-shorthand-assign.md) | No compound assignment that repeats its target | `manual` | — | `js/recommended` |
 | [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `manual` | — | *[rules] only* |
 | [`js/no-multi-str`](js/no-multi-str.md) | No multiline strings with a backslash | `manual` | — | *[rules] only* |
+| [`js/no-named-default`](js/no-named-default.md) | import x rather than import { default as x } | `auto` | — | `js/strict` |
 | [`js/no-negated-condition`](js/no-negated-condition.md) | No negated condition with an else | `manual` | — | `js/strict` |
-| [`js/no-nested-ternary`](js/no-nested-ternary.md) | No nested conditional expressions | `manual` | — | *[rules] only* |
+| [`js/no-nested-ternary`](js/no-nested-ternary.md) | No nested conditional expressions | `manual` | — | `js/strict`, `js/sonarjs` |
 | [`js/no-new`](js/no-new.md) | No new for side effects | `manual` | — | *[rules] only* |
 | [`js/no-new-array`](js/no-new-array.md) | No new Array(n) | `manual` | — | `js/strict` |
 | [`js/no-new-buffer`](js/no-new-buffer.md) | Buffer.from rather than new Buffer | `auto` | — | `js/strict` |
 | [`js/no-new-func`](js/no-new-func.md) | No Function constructor | `manual` | — | *[rules] only* |
 | [`js/no-new-native-nonconstructor`](js/no-new-native-nonconstructor.md) | No new on Symbol or BigInt | `suggest` | — | `js/recommended` |
-| [`js/no-new-wrappers`](js/no-new-wrappers.md) | No primitive wrapper objects | `manual` | — | *[rules] only* |
+| [`js/no-new-wrappers`](js/no-new-wrappers.md) | No primitive wrapper objects | `suggest` | — | `js/sonarjs` |
 | [`js/no-nonoctal-decimal-escape`](js/no-nonoctal-decimal-escape.md) | No \8 or \9 escapes in strings | `manual` | — | `js/recommended` |
+| [`js/no-null`](js/no-null.md) | undefined rather than null | `suggest` | — | `js/strict` |
 | [`js/no-obj-calls`](js/no-obj-calls.md) | No calling Math, JSON, Reflect, Atomics or Intl as functions | `manual` | — | `js/recommended` |
 | [`js/no-object-as-default-parameter`](js/no-object-as-default-parameter.md) | No object literal as a parameter default | `manual` | — | `js/strict` |
 | [`js/no-object-constructor`](js/no-object-constructor.md) | {} rather than new Object() | `suggest` | — | *[rules] only* |
@@ -295,17 +314,19 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-prototype-builtins`](js/no-prototype-builtins.md) | No calling Object.prototype methods on the object itself | `suggest` | — | `js/recommended` |
 | [`js/no-redeclare`](js/no-redeclare.md) | No variable is declared twice | `manual` | — | `js/recommended` |
 | [`js/no-redundant-use-strict`](js/no-redundant-use-strict.md) | No redundant "use strict" | `auto` | — | `js/recommended` |
+| [`js/no-referrer-policy`](js/no-referrer-policy.md) | A strict Referrer-Policy | `suggest` | — | `js/sonarjs` |
 | [`js/no-regex-spaces`](js/no-regex-spaces.md) | No runs of spaces in a regular expression | `auto` | — | `js/recommended` |
 | [`js/no-restricted-exports`](js/no-restricted-exports.md) | No export named default | `manual` | — | *[rules] only* |
 | [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `manual` | — | *[rules] only* |
-| [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `manual` | — | `js/recommended` |
+| [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `manual` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-self-compare`](js/no-self-compare.md) | No comparing a value with itself | `manual` | — | *[rules] only* |
 | [`js/no-sequences`](js/no-sequences.md) | No comma operator | `manual` | — | *[rules] only* |
 | [`js/no-setter-return`](js/no-setter-return.md) | A setter does not return a value | `manual` | — | `js/recommended` |
-| [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `manual` | — | `js/recommended` |
+| [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `manual` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `manual` | — | `js/recommended` |
 | [`js/no-static-only-class`](js/no-static-only-class.md) | No class with only static members | `manual` | — | `js/strict` |
 | [`js/no-string-case-mismatch`](js/no-string-case-mismatch.md) | No comparison that case conversion makes impossible | `manual` | — | `js/recommended` |
+| [`js/no-subtraction-comparison`](js/no-subtraction-comparison.md) | a > b rather than a - b > 0 | `suggest` | — | `js/strict` |
 | [`js/no-template-curly-in-string`](js/no-template-curly-in-string.md) | No template placeholder in a plain string | `manual` | — | *[rules] only* |
 | [`js/no-ternary`](js/no-ternary.md) | No ternary | `manual` | — | `js/taste` |
 | [`js/no-thenable`](js/no-thenable.md) | No then property on an object or class | `manual` | — | `js/strict` |
@@ -323,6 +344,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `manual` | — | `js/recommended` |
 | [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | *[rules] only* |
 | [`js/no-unnecessary-array-flat-depth`](js/no-unnecessary-array-flat-depth.md) | No flat(1) | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-array-flat-map`](js/no-unnecessary-array-flat-map.md) | flat() rather than flatMap(x => x) | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-array-splice-count`](js/no-unnecessary-array-splice-count.md) | No length as splice count | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-await`](js/no-unnecessary-await.md) | No await on a value that is not a promise | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | Pass the function, not a wrapper | `suggest` | — | *[rules] only* |
 | [`js/no-unnecessary-slice-end`](js/no-unnecessary-slice-end.md) | No slice(a, x.length) | `auto` | — | `js/strict` |
@@ -333,6 +356,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `manual` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `manual` | — | `js/recommended` |
+| [`js/no-unthrown-error`](js/no-unthrown-error.md) | Throw the error you create | `suggest` | — | `js/sonarjs` |
 | [`js/no-unused-function-parameters`](js/no-unused-function-parameters.md) | No unused trailing parameter | `suggest` | — | `js/recommended` |
 | [`js/no-unused-imports`](js/no-unused-imports.md) | No unused imports | `suggest` | — | `js/recommended` |
 | [`js/no-unused-labels`](js/no-unused-labels.md) | Every label is used | `auto` | — | `js/recommended` |
@@ -342,11 +366,15 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-backreference`](js/no-useless-backreference.md) | No backreference that can only match the empty string | `manual` | — | `js/recommended` |
 | [`js/no-useless-call`](js/no-useless-call.md) | No needless call or apply | `manual` | — | *[rules] only* |
 | [`js/no-useless-catch`](js/no-useless-catch.md) | No catch that only rethrows | `manual` | — | `js/recommended` |
+| [`js/no-useless-coercion`](js/no-useless-coercion.md) | No String("literal") | `auto` | — | `js/strict` |
+| [`js/no-useless-collection-argument`](js/no-useless-collection-argument.md) | No new Set(\[\]) | `auto` | — | `js/strict` |
+| [`js/no-useless-compound-assignment`](js/no-useless-compound-assignment.md) | No x += 0 or x *= 1 | `suggest` | — | `js/strict` |
 | [`js/no-useless-computed-key`](js/no-useless-computed-key.md) | No computed key that is a literal | `auto` | — | *[rules] only* |
 | [`js/no-useless-concat`](js/no-useless-concat.md) | No concatenation of two literals | `manual` | — | `js/strict` |
 | [`js/no-useless-constructor`](js/no-useless-constructor.md) | No constructor that only calls super | `suggest` | — | *[rules] only* |
-| [`js/no-useless-continue`](js/no-useless-continue.md) | No continue at the end of a loop | `auto` | — | `js/strict` |
+| [`js/no-useless-continue`](js/no-useless-continue.md) | No continue at the end of a loop | `auto` | — | `js/strict`, `js/sonarjs` |
 | [`js/no-useless-continue-biome`](js/no-useless-continue-biome.md) | No continue at the end of a loop | `auto` | — | `js/recommended` |
+| [`js/no-useless-error-capture-stack-trace`](js/no-useless-error-capture-stack-trace.md) | No captureStackTrace in an Error subclass | `suggest` | — | `js/strict` |
 | [`js/no-useless-escape`](js/no-useless-escape.md) | No backslash that changes nothing | `auto` | — | `js/recommended` |
 | [`js/no-useless-fallback-in-spread`](js/no-useless-fallback-in-spread.md) | No \|\| {} in an object spread | `auto` | — | `js/strict` |
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
@@ -377,18 +405,26 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-code-point`](js/prefer-code-point.md) | codePointAt rather than charCodeAt | `suggest` | — | `js/strict` |
 | [`js/prefer-const`](js/prefer-const.md) | const for variables that are never reassigned | `auto` | — | `js/typescript` |
 | [`js/prefer-date-now`](js/prefer-date-now.md) | Date.now() rather than new Date().getTime() | `auto` | — | `js/strict` |
+| [`js/prefer-destructuring`](js/prefer-destructuring.md) | Destructure a property into a variable of its name | `suggest` | — | *[rules] only* |
+| [`js/prefer-direct-iteration`](js/prefer-direct-iteration.md) | for…of an array, not array.values() | `suggest` | — | `js/strict` |
 | [`js/prefer-dom-node-append`](js/prefer-dom-node-append.md) | append() rather than appendChild() | `suggest` | — | `js/strict` |
 | [`js/prefer-dom-node-remove`](js/prefer-dom-node-remove.md) | node.remove() rather than parent.removeChild(node) | `suggest` | — | `js/strict` |
+| [`js/prefer-dom-node-replace-children`](js/prefer-dom-node-replace-children.md) | replaceChildren() rather than innerHTML = "" | `auto` | — | `js/strict` |
 | [`js/prefer-dom-node-text-content`](js/prefer-dom-node-text-content.md) | textContent rather than innerText | `suggest` | — | `js/strict` |
 | [`js/prefer-event-target`](js/prefer-event-target.md) | EventTarget rather than EventEmitter | `manual` | — | `js/strict` |
 | [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
+| [`js/prefer-has-check`](js/prefer-has-check.md) | has() rather than get() !== undefined | `suggest` | — | `js/strict` |
 | [`js/prefer-import-meta-properties`](js/prefer-import-meta-properties.md) | import.meta.filename rather than fileURLToPath(import.meta.url) | `suggest` | — | *[rules] only* |
 | [`js/prefer-includes`](js/prefer-includes.md) | includes() rather than indexOf() !== -1 | `suggest` | — | `js/strict` |
+| [`js/prefer-iterable-in-constructor`](js/prefer-iterable-in-constructor.md) | new Set(x) rather than new Set(\[...x\]) | `auto` | — | `js/strict` |
 | [`js/prefer-keyboard-event-key`](js/prefer-keyboard-event-key.md) | event.key rather than keyCode | `manual` | — | `js/strict` |
 | [`js/prefer-location-assign`](js/prefer-location-assign.md) | location.assign rather than location = url | `auto` | — | `js/strict` |
 | [`js/prefer-logical-operator-over-ternary`](js/prefer-logical-operator-over-ternary.md) | a \|\| b rather than a ? a : b | `suggest` | — | `js/strict` |
+| [`js/prefer-math-abs`](js/prefer-math-abs.md) | Math.abs rather than a ternary | `suggest` | — | `js/strict` |
+| [`js/prefer-math-constants`](js/prefer-math-constants.md) | Math.SQRT2 rather than Math.sqrt(2) | `auto` | — | `js/strict` |
 | [`js/prefer-math-min-max`](js/prefer-math-min-max.md) | Math.min rather than a ternary | `suggest` | — | `js/strict` |
 | [`js/prefer-math-trunc`](js/prefer-math-trunc.md) | Math.trunc rather than \| 0 | `suggest` | — | `js/strict` |
+| [`js/prefer-minimal-ternary`](js/prefer-minimal-ternary.md) | f(c ? a : b) rather than c ? f(a) : f(b) | `suggest` | — | `js/strict` |
 | [`js/prefer-modern-dom-apis`](js/prefer-modern-dom-apis.md) | before/replaceWith rather than insertBefore/replaceChild | `suggest` | — | `js/strict` |
 | [`js/prefer-modern-math-apis`](js/prefer-modern-math-apis.md) | Math.log10 rather than Math.log(x) * Math.LOG10E | `auto` | — | `js/strict` |
 | [`js/prefer-named-capture-group`](js/prefer-named-capture-group.md) | Name capture groups | `manual` | — | *[rules] only* |
@@ -400,6 +436,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-object-spread`](js/prefer-object-spread.md) | { ...a } rather than Object.assign({}, a) | `suggest` | — | *[rules] only* |
 | [`js/prefer-optional-catch-binding`](js/prefer-optional-catch-binding.md) | Omit an unused catch binding | `auto` | — | `js/strict` |
 | [`js/prefer-promise-reject-errors`](js/prefer-promise-reject-errors.md) | Reject with an Error | `manual` | — | *[rules] only* |
+| [`js/prefer-promise-shorthand`](js/prefer-promise-shorthand.md) | Promise.resolve rather than new Promise(r => r(x)) | `suggest` | — | `js/sonarjs` |
 | [`js/prefer-prototype-methods`](js/prefer-prototype-methods.md) | Array.prototype.x rather than \[\].x | `auto` | — | `js/strict` |
 | [`js/prefer-query-selector`](js/prefer-query-selector.md) | querySelector rather than getElementById | `manual` | — | `js/strict` |
 | [`js/prefer-queue-microtask`](js/prefer-queue-microtask.md) | queueMicrotask rather than Promise.resolve().then | `suggest` | — | `js/strict` |
@@ -410,6 +447,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-single-call`](js/prefer-single-call.md) | One push() with several items | `manual` | — | `js/strict` |
 | [`js/prefer-spread`](js/prefer-spread.md) | Spread instead of .apply() | `auto` | — | `js/typescript` |
 | [`js/prefer-spread-unicorn`](js/prefer-spread-unicorn.md) | \[...x\] rather than Array.from(x) | `suggest` | — | `js/strict` |
+| [`js/prefer-string-repeat`](js/prefer-string-repeat.md) | s.repeat(n) rather than Array(n + 1).join(s) | `auto` | — | `js/strict` |
 | [`js/prefer-string-replace-all`](js/prefer-string-replace-all.md) | replaceAll() rather than replace with a /g regex | `auto` | — | `js/strict` |
 | [`js/prefer-string-slice`](js/prefer-string-slice.md) | slice() rather than substr() | `auto` | — | `js/strict` |
 | [`js/prefer-string-starts-ends-with`](js/prefer-string-starts-ends-with.md) | startsWith() rather than a ^ regex test | `manual` | — | `js/strict` |
@@ -417,6 +455,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-structured-clone`](js/prefer-structured-clone.md) | structuredClone rather than JSON round-trip | `suggest` | — | `js/strict` |
 | [`js/prefer-template`](js/prefer-template.md) | Template literal rather than string concatenation | `manual` | — | *[rules] only* |
 | [`js/prefer-top-level-await`](js/prefer-top-level-await.md) | Top-level await rather than an async IIFE | `manual` | — | `js/strict` |
+| [`js/prefer-while`](js/prefer-while.md) | while rather than for(;;) with only a condition | `auto` | — | `js/sonarjs` |
 | [`js/preserve-caught-error`](js/preserve-caught-error.md) | A rethrown error keeps the caught one as its cause | `suggest` | — | `js/recommended` |
 | [`js/promise-always-return`](js/promise-always-return.md) | A then callback returns or throws | `manual` | — | `js/recommended` |
 | [`js/promise-avoid-new`](js/promise-avoid-new.md) | No new Promise | `manual` | — | *[rules] only* |
@@ -431,14 +470,13 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/promise-no-return-wrap`](js/promise-no-return-wrap.md) | A then or catch callback returns the value, not Promise.resolve or Promise.reject | `manual` | — | `js/recommended` |
 | [`js/promise-param-names`](js/promise-param-names.md) | A promise executor names its parameters resolve and reject | `manual` | — | `js/recommended` |
 | [`js/promise-prefer-await-to-callbacks`](js/promise-prefer-await-to-callbacks.md) | async and await, not callbacks | `manual` | — | *[rules] only* |
-| [`js/promise-prefer-await-to-then`](js/promise-prefer-await-to-then.md) | await, not then | `manual` | — | *[rules] only* |
+| [`js/promise-prefer-await-to-then`](js/promise-prefer-await-to-then.md) | await, not then | `manual` | — | `js/strict` |
 | [`js/promise-prefer-catch`](js/promise-prefer-catch.md) | catch, not a second then argument | `suggest` | — | *[rules] only* |
 | [`js/promise-spec-only`](js/promise-spec-only.md) | Only standard Promise methods | `manual` | — | *[rules] only* |
 | [`js/promise-valid-params`](js/promise-valid-params.md) | Promise methods get the number of arguments they take | `manual` | — | `js/recommended` |
 | [`js/radix`](js/radix.md) | parseInt gets a radix | `suggest` | — | *[rules] only* |
 | [`js/regexp-confusing-quantifier`](js/regexp-confusing-quantifier.md) | No quantifier whose minimum is misleading | `suggest` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-control-character-escape`](js/regexp-control-character-escape.md) | Control characters are written with their control escape | `auto` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-grapheme-string-literal`](js/regexp-grapheme-string-literal.md) | String literals in a class hold one character each | `manual` | — | *[rules] only* |
 | [`js/regexp-hexadecimal-escape`](js/regexp-hexadecimal-escape.md) | Characters up to U+00FF are written as hexadecimal escapes | `auto` | — | *[rules] only* |
 | [`js/regexp-match-any`](js/regexp-match-any.md) | Any character is matched with `[\s\S]` | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-negation`](js/regexp-negation.md) | A negated class of one escape is the negated escape | `auto` | — | `js/recommended`, `js/regexp` |
@@ -446,16 +484,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/regexp-no-dupe-characters-character-class`](js/regexp-no-dupe-characters-character-class.md) | No character listed twice in a class | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-dupe-disjunctions`](js/regexp-no-dupe-disjunctions.md) | No alternative that repeats or is covered by an earlier one | `suggest` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-empty-alternative`](js/regexp-no-empty-alternative.md) | No empty alternative | `suggest` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-empty-capturing-group`](js/regexp-no-empty-capturing-group.md) | No capturing group that captures nothing | `manual` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-empty-character-class`](js/regexp-no-empty-character-class.md) | No character class that matches no character | `manual` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-empty-group`](js/regexp-no-empty-group.md) | No empty group | `auto` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-empty-lookarounds-assertion`](js/regexp-no-empty-lookarounds-assertion.md) | No lookaround that can match the empty string | `manual` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-empty-string-literal`](js/regexp-no-empty-string-literal.md) | No empty string literal in a class | `manual` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-escape-backspace`](js/regexp-no-escape-backspace.md) | No `[\b]` for a backspace | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-extra-lookaround-assertions`](js/regexp-no-extra-lookaround-assertions.md) | No lookaround nested at the edge of another of its kind | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-invisible-character`](js/regexp-no-invisible-character.md) | No invisible character written raw | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-lazy-ends`](js/regexp-no-lazy-ends.md) | No lazy quantifier at the end of the pattern | `suggest` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-legacy-features`](js/regexp-no-legacy-features.md) | No legacy `RegExp` static properties | `manual` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-misleading-capturing-group`](js/regexp-no-misleading-capturing-group.md) | No capturing group whose start the quantifier before it always takes | `suggest` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-misleading-unicode-character`](js/regexp-no-misleading-unicode-character.md) | No quantifier on part of a character | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-missing-g-flag`](js/regexp-no-missing-g-flag.md) | `replaceAll` and `matchAll` get a regular expression with the `g` flag | `suggest` | — | `js/recommended`, `js/regexp` |
@@ -463,10 +496,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/regexp-no-obscure-range`](js/regexp-no-obscure-range.md) | No obscure character range | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-octal`](js/regexp-no-octal.md) | No octal escape | `suggest` | — | *[rules] only* |
 | [`js/regexp-no-optional-assertion`](js/regexp-no-optional-assertion.md) | No optional assertion | `auto` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-potentially-useless-backreference`](js/regexp-no-potentially-useless-backreference.md) | No backreference to a group that may not take part | `manual` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-standalone-backslash`](js/regexp-no-standalone-backslash.md) | No backslash that stands for itself | `auto` | — | *[rules] only* |
 | [`js/regexp-no-super-linear-backtracking`](js/regexp-no-super-linear-backtracking.md) | No exponential backtracking | `auto` | — | `js/recommended`, `js/regexp` |
-| [`js/regexp-no-super-linear-move`](js/regexp-no-super-linear-move.md) | No unanchored pattern that starts with an unbounded quantifier | `manual` | — | *[rules] only* |
 | [`js/regexp-no-trivially-nested-assertion`](js/regexp-no-trivially-nested-assertion.md) | No lookaround around a single assertion | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-trivially-nested-quantifier`](js/regexp-no-trivially-nested-quantifier.md) | No quantifier nested trivially in another | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-no-unused-capturing-group`](js/regexp-no-unused-capturing-group.md) | No capturing group whose capture is never read | `auto` | — | `js/recommended`, `js/regexp` |
@@ -490,7 +521,6 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/regexp-prefer-escape-replacement-dollar-char`](js/regexp-prefer-escape-replacement-dollar-char.md) | A dollar sign in a replacement is written `$$` | `auto` | — | *[rules] only* |
 | [`js/regexp-prefer-lookaround`](js/regexp-prefer-lookaround.md) | A captured text put back unchanged is matched with a lookaround | `suggest` | — | *[rules] only* |
 | [`js/regexp-prefer-named-backreference`](js/regexp-prefer-named-backreference.md) | A named group is referred to by name | `auto` | — | *[rules] only* |
-| [`js/regexp-prefer-named-capture-group`](js/regexp-prefer-named-capture-group.md) | Capturing groups are named | `manual` | — | *[rules] only* |
 | [`js/regexp-prefer-named-replacement`](js/regexp-prefer-named-replacement.md) | A named group is put in a replacement by name | `auto` | — | *[rules] only* |
 | [`js/regexp-prefer-plus-quantifier`](js/regexp-prefer-plus-quantifier.md) | `{1,}` is written `+` | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/regexp-prefer-predefined-assertion`](js/regexp-prefer-predefined-assertion.md) | A lookaround that is a predefined assertion is written as one | `auto` | — | `js/recommended`, `js/regexp` |
@@ -516,17 +546,21 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/require-array-join-separator`](js/require-array-join-separator.md) | join() names its separator | `auto` | — | `js/strict` |
 | [`js/require-await`](js/require-await.md) | An async function awaits something | `manual` | — | *[rules] only* |
+| [`js/require-module-attributes`](js/require-module-attributes.md) | JSON imports say with { type: "json" } | `suggest` | — | `js/strict` |
 | [`js/require-number-to-fixed-digits-argument`](js/require-number-to-fixed-digits-argument.md) | toFixed() names its digits | `auto` | — | `js/strict` |
+| [`js/require-passive-events`](js/require-passive-events.md) | Touch and wheel listeners are passive | `suggest` | — | `js/strict` |
 | [`js/require-post-message-target-origin`](js/require-post-message-target-origin.md) | postMessage names its target origin | `manual` | — | *[rules] only* |
 | [`js/require-unicode-regexp`](js/require-unicode-regexp.md) | Regular expressions use the u or v flag | `manual` | — | *[rules] only* |
 | [`js/require-yield`](js/require-yield.md) | A generator function yields | `manual` | — | `js/recommended` |
-| [`js/skipped-test`](js/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `js/markers` |
+| [`js/skipped-test`](js/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `js/markers`, `js/sonarjs` |
 | [`js/strict`](js/strict.md) | No "use strict" in a module | `auto` | — | *[rules] only* |
+| [`js/strict-transport-security`](js/strict-transport-security.md) | Keep the HSTS header | `suggest` | — | `js/sonarjs` |
 | [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last case | `auto` | — | `js/taste` |
 | [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `manual` | — | *[rules] only* |
 | [`js/text-encoding-identifier-case`](js/text-encoding-identifier-case.md) | Write the encoding as "utf8" | `suggest` | — | `js/strict` |
 | [`js/throw-new-error`](js/throw-new-error.md) | throw new Error, not Error() | `auto` | — | `js/strict` |
-| [`js/todo-marker`](js/todo-marker.md) | JavaScript and TypeScript TODO comments carry a ticket and, when asked, a date | `manual` | — | `js/markers` |
+| [`js/todo-marker`](js/todo-marker.md) | JavaScript and TypeScript TODO comments carry a ticket and, when asked, a date | `manual` | — | `js/markers`, `js/strict`, `js/sonarjs` |
+| [`js/unverified-certificate`](js/unverified-certificate.md) | Verify TLS certificates | `suggest` | — | `js/sonarjs` |
 | [`js/use-instead`](js/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `js/recommended` |
 | [`js/use-isnan`](js/use-isnan.md) | Test for NaN with Number.isNaN | `manual` | — | `js/recommended` |
 | [`js/use-simple-number-keys`](js/use-simple-number-keys.md) | Plain decimal numbers as object keys | `manual` | — | `js/recommended` |
@@ -552,7 +586,6 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/explicit-function-return-type`](ts/explicit-function-return-type.md) | Functions declare their return type | `manual` | — | *[rules] only* |
 | [`ts/explicit-member-accessibility`](ts/explicit-member-accessibility.md) | Class members say public, protected or private | `auto` | — | *[rules] only* |
 | [`ts/explicit-module-boundary-types`](ts/explicit-module-boundary-types.md) | Exported functions declare their types | `manual` | — | *[rules] only* |
-| [`ts/member-ordering`](ts/member-ordering.md) | Class members are in a set order | `manual` | — | *[rules] only* |
 | [`ts/method-signature-style`](ts/method-signature-style.md) | Property signatures for methods | `auto` | — | *[rules] only* |
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
 | [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `manual` | — | *[rules] only* |
@@ -658,8 +691,6 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/error-boundaries`](react/error-boundaries.md) | Errors in children are caught by an Error Boundary, not try/catch | `manual` | — | `react/recommended` |
 | [`react/exhaustive-deps`](react/exhaustive-deps.md) | Effect and memo dependency lists name every value they read | `suggest` | — | `react/recommended` |
 | [`react/forbid-component-props`](react/forbid-component-props.md) | No className or style on a component | `manual` | — | *[rules] only* |
-| [`react/forbid-dom-props`](react/forbid-dom-props.md) | No prop the project forbids on DOM elements | `manual` | `forbid` | *[rules] only* |
-| [`react/forbid-elements`](react/forbid-elements.md) | No element the project forbids | `manual` | `forbid` | *[rules] only* |
 | [`react/forbid-foreign-prop-types`](react/forbid-foreign-prop-types.md) | No reading another component's propTypes | `manual` | — | *[rules] only* |
 | [`react/forbid-prop-types`](react/forbid-prop-types.md) | No PropTypes.any, array or object | `manual` | — | *[rules] only* |
 | [`react/forward-ref-uses-ref`](react/forward-ref-uses-ref.md) | A forwardRef callback takes the ref | `suggest` | — | *[rules] only* |
@@ -681,11 +712,8 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-no-comment-textnodes`](react/jsx-no-comment-textnodes.md) | No comment syntax as text inside JSX | `manual` | — | `react/recommended` |
 | [`react/jsx-no-constructed-context-values`](react/jsx-no-constructed-context-values.md) | A context value is not rebuilt on every render | `manual` | — | *[rules] only* |
 | [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `manual` | — | `react/recommended` |
-| [`react/jsx-no-jsx-as-prop`](react/jsx-no-jsx-as-prop.md) | No JSX element built in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-leaked-render`](react/jsx-no-leaked-render.md) | No && that can render 0 or "" | `suggest` | — | *[rules] only* |
 | [`react/jsx-no-literals`](react/jsx-no-literals.md) | No bare text in JSX | `manual` | — | *[rules] only* |
-| [`react/jsx-no-new-array-as-prop`](react/jsx-no-new-array-as-prop.md) | No array literal in a component's prop | `manual` | — | *[rules] only* |
-| [`react/jsx-no-new-object-as-prop`](react/jsx-no-new-object-as-prop.md) | No object literal in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-script-url`](react/jsx-no-script-url.md) | No javascript: URLs in JSX | `manual` | — | *[rules] only* |
 | [`react/jsx-no-target-blank`](react/jsx-no-target-blank.md) | Links that open a new tab set rel="noreferrer" | `auto` | — | `react/recommended` |
 | [`react/jsx-no-undef`](react/jsx-no-undef.md) | Components used in JSX are declared | `manual` | — | `react/recommended` |
@@ -702,7 +730,6 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-array-index-key`](react/no-array-index-key.md) | No array index as a key | `manual` | — | *[rules] only* |
 | [`react/no-arrow-function-lifecycle`](react/no-arrow-function-lifecycle.md) | Lifecycle methods are methods, not arrow fields | `auto` | — | *[rules] only* |
 | [`react/no-children-prop`](react/no-children-prop.md) | Children are passed as children, not as a prop | `manual` | — | `react/recommended` |
-| [`react/no-clone-element`](react/no-clone-element.md) | No `cloneElement` | `manual` | — | *[rules] only* |
 | [`react/no-context`](react/no-context.md) | No React context: no createContext, no useContext | `manual` | `use_instead` | *[rules] only* |
 | [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `manual` | — | `react/recommended` |
 | [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `manual` | — | `react/recommended` |
@@ -717,7 +744,6 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
 | [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
 | [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
-| [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
 | [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `manual` | — | `react/recommended` |
@@ -735,12 +761,9 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | *[rules] only* |
 | [`react/no-unused-class-component-methods`](react/no-unused-class-component-methods.md) | Every class component method is used | `suggest` | — | *[rules] only* |
 | [`react/no-unused-prop-types`](react/no-unused-prop-types.md) | No prop type a component never reads | `suggest` | — | *[rules] only* |
-| [`react/no-unused-state`](react/no-unused-state.md) | No state field a component never reads | `manual` | — | *[rules] only* |
 | [`react/no-will-update-set-state`](react/no-will-update-set-state.md) | No setState in componentWillUpdate | `manual` | — | *[rules] only* |
-| [`react/only-export-components`](react/only-export-components.md) | A module that exports components exports only components | `manual` | — | *[rules] only* |
 | [`react/prefer-es6-class`](react/prefer-es6-class.md) | Class components, not createReactClass | `manual` | — | *[rules] only* |
 | [`react/prefer-exact-props`](react/prefer-exact-props.md) | Prop types are exact | `auto` | `exact_wrappers` | *[rules] only* |
-| [`react/prefer-function-component`](react/prefer-function-component.md) | Components are functions | `manual` | — | *[rules] only* |
 | [`react/prefer-lazy-state-init`](react/prefer-lazy-state-init.md) | useState's initial value is not computed on every render | `suggest` | — | `react/recommended` |
 | [`react/prefer-read-only-props`](react/prefer-read-only-props.md) | Props types are readonly | `auto` | — | *[rules] only* |
 | [`react/prefer-stateless-function`](react/prefer-stateless-function.md) | A class with only render is a function | `manual` | — | *[rules] only* |
@@ -753,7 +776,6 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/rule-suppression`](react/rule-suppression.md) | The hooks rules are not switched off | `auto` | — | *[rules] only* |
 | [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `manual` | — | `react/recommended` |
 | [`react/self-closing-comp`](react/self-closing-comp.md) | An element with no children closes itself | `auto` | — | *[rules] only* |
-| [`react/sort-comp`](react/sort-comp.md) | Component class members are in a set order | `manual` | — | *[rules] only* |
 | [`react/sort-default-props`](react/sort-default-props.md) | Default props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
 | [`react/sort-prop-types`](react/sort-prop-types.md) | Prop types are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
 | [`react/state-in-constructor`](react/state-in-constructor.md) | State is set in the constructor | `manual` | — | *[rules] only* |
@@ -836,16 +858,13 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`html/allowed-links`](html/allowed-links.md) | Only the kinds of link the project allows | `manual` | `allow_external`, `allow_relative`, `allow_absolute` | *[rules] only* |
 | [`html/area-alt`](html/area-alt.md) | Image-map areas with a link have alt text | `manual` | `accessible` | `html/recommended`, `html/a11y` |
 | [`html/aria-hidden-body`](html/aria-hidden-body.md) | <body> is not aria-hidden | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/aria-label-misuse`](html/aria-label-misuse.md) | aria-label is used only where it names something | `manual` | `allowAnyNamable` | `html/recommended`, `html/a11y` |
-| [`html/attr-pattern`](html/attr-pattern.md) | Attribute names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/attribute-allowed-values`](html/attribute-allowed-values.md) | Attributes have values HTML allows | `manual` | — | `html/recommended` |
 | [`html/attribute-misuse`](html/attribute-misuse.md) | Attributes are used only where they take effect | `manual` | — | `html/recommended` |
 | [`html/autocomplete-password`](html/autocomplete-password.md) | Password fields say which password they want | `manual` | `preferred` | `html/recommended`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/button-type`](html/button-type.md) | <button> says what type it is | `suggest` | — | `html/recommended`, `html/a11y` |
-| [`html/class-pattern`](html/class-pattern.md) | Class names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/close-attr`](html/close-attr.md) | End tags have no attributes | `auto` | — | `html/recommended` |
 | [`html/close-order`](html/close-order.md) | Elements are closed, and in the order they were opened | `manual` | — | `html/recommended` |
 | [`html/deprecated`](html/deprecated.md) | No obsolete elements | `manual` | — | `html/recommended` |
@@ -866,7 +885,6 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/form-submit`](html/form-submit.md) | Forms have a submit button | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/heading-level`](html/heading-level.md) | Headings start at <h1> and go down one level at a time | `manual` | `allowMultipleH1`, `minInitialRank`, `sectioningRoots` | `html/document` |
 | [`html/hidden-focusable`](html/hidden-focusable.md) | Focusable elements are not aria-hidden | `manual` | — | `html/recommended`, `html/a11y` |
-| [`html/id-pattern`](html/id-pattern.md) | Ids follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/img-alt`](html/img-alt.md) | <img> has alt text | `manual` | `allowEmpty`, `alias` | `html/recommended`, `html/a11y` |
 | [`html/img-title`](html/img-title.md) | Decorative images have no title | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/input-attributes`](html/input-attributes.md) | Input attributes fit the input type | `suggest` | — | `html/recommended` |
@@ -880,7 +898,6 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/meta-refresh`](html/meta-refresh.md) | Meta refresh redirects at once | `manual` | `allowLongDelay` | `html/recommended`, `html/a11y`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/missing-doctype`](html/missing-doctype.md) | The document has a doctype | `suggest` | — | `html/document` |
 | [`html/multiple-labeled-controls`](html/multiple-labeled-controls.md) | A label labels one control | `manual` | — | `html/recommended`, `html/a11y` |
-| [`html/name-pattern`](html/name-pattern.md) | Form field names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/no-abstract-role`](html/no-abstract-role.md) | No abstract ARIA roles | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/no-autoplay`](html/no-autoplay.md) | Media does not play by itself | `suggest` | `include` | `html/recommended`, `html/a11y` |
 | [`html/no-conditional-comment`](html/no-conditional-comment.md) | No Internet Explorer conditional comments | `manual` | — | `html/recommended` |
@@ -898,14 +915,10 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/no-redundant-aria-label`](html/no-redundant-aria-label.md) | aria-label doesn't repeat the label | `auto` | — | `html/recommended`, `html/a11y` |
 | [`html/no-redundant-for`](html/no-redundant-for.md) | A wrapping label has no for | `auto` | — | `html/recommended`, `html/a11y` |
 | [`html/no-redundant-role`](html/no-redundant-role.md) | No role the element already has | `auto` | — | `html/recommended`, `html/a11y` |
-| [`html/no-style-tag`](html/no-style-tag.md) | No `<style>` element | `manual` | — | *[rules] only* |
-| [`html/no-unknown-attributes`](html/no-unknown-attributes.md) | No attribute the element doesn't have | `manual` | — | *[rules] only* |
-| [`html/no-unknown-elements`](html/no-unknown-elements.md) | No element HTML doesn't define | `manual` | — | *[rules] only* |
 | [`html/no-utf8-bom`](html/no-utf8-bom.md) | No UTF-8 byte-order mark | `manual` | — | `html/recommended` |
 | [`html/prefer-button`](html/prefer-button.md) | Buttons are <button> elements | `manual` | — | `html/recommended` |
 | [`html/prefer-native-element`](html/prefer-native-element.md) | Native elements instead of ARIA roles | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/prefer-tbody`](html/prefer-tbody.md) | Table rows are in <tbody> | `auto` | — | `html/recommended` |
-| [`html/require-csp-nonce`](html/require-csp-nonce.md) | Inline scripts and styles carry a nonce | `manual` | — | *[rules] only* |
 | [`html/require-sri`](html/require-sri.md) | Scripts and stylesheets carry an integrity hash | `manual` | `target` | `html/document`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/script-element`](html/script-element.md) | <script> has an end tag | `suggest` | — | `html/recommended` |
 | [`html/script-type`](html/script-type.md) | No type on JavaScript scripts | `auto` | — | `html/recommended` |
@@ -930,15 +943,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 |---|---|---|---|---|
 | [`css/alpha-value-notation`](css/alpha-value-notation.md) | Alpha values are percentages | `suggest` | `exceptProperties` | `css/standard` |
 | [`css/annotation-no-unknown`](css/annotation-no-unknown.md) | No unknown `!` annotations | `manual` | `ignoreAnnotations` | `css/recommended` |
-| [`css/at-rule-allowed-list`](css/at-rule-allowed-list.md) | Only at-rules the project allows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-descriptor-no-unknown`](css/at-rule-descriptor-no-unknown.md) | No unknown descriptors inside at-rules | `manual` | — | `css/recommended` |
 | [`css/at-rule-descriptor-value-no-unknown`](css/at-rule-descriptor-value-no-unknown.md) | No unknown keyword values for at-rule descriptors | `manual` | — | `css/recommended` |
-| [`css/at-rule-disallowed-list`](css/at-rule-disallowed-list.md) | No at-rule the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-no-deprecated`](css/at-rule-no-deprecated.md) | No deprecated at-rules | `auto` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `suggest` | `ignoreAtRules` | `css/standard` |
 | [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `manual` | `ignoreAtRules` | `css/recommended` |
-| [`css/at-rule-property-required-list`](css/at-rule-property-required-list.md) | At-rules hold the descriptors the project requires | `manual` | `list` | *[rules] only* |
 | [`css/block-no-redundant-nested-style-rules`](css/block-no-redundant-nested-style-rules.md) | No `& { … }` wrapper | `suggest` | — | `css/standard` |
 | [`css/color-function-alias-notation`](css/color-function-alias-notation.md) | `rgb()` and `hsl()`, not `rgba()` and `hsla()` | `suggest` | — | `css/standard` |
 | [`css/color-function-notation`](css/color-function-notation.md) | Space-separated colour functions | `suggest` | — | `css/standard` |
@@ -946,11 +956,8 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/color-hex-length`](css/color-hex-length.md) | Short hex colours | `auto` | — | `css/standard` |
 | [`css/color-named`](css/color-named.md) | No named colours | `auto` | — | *[rules] only* |
 | [`css/color-no-hex`](css/color-no-hex.md) | No hex colours | `auto` | — | *[rules] only* |
-| [`css/color-no-invalid-hex`](css/color-no-invalid-hex.md) | No invalid hex colour | `manual` | — | *[rules] only* |
 | [`css/comment-no-empty`](css/comment-no-empty.md) | No empty comments | `auto` | — | `css/recommended` |
-| [`css/comment-pattern`](css/comment-pattern.md) | Comments follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`css/comment-whitespace-inside`](css/comment-whitespace-inside.md) | A space inside comment delimiters | `auto` | — | *[rules] only* |
-| [`css/comment-word-disallowed-list`](css/comment-word-disallowed-list.md) | No word the project disallows in comments | `manual` | `list` | *[rules] only* |
 | [`css/container-name-pattern`](css/container-name-pattern.md) | Container names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/custom-media-pattern`](css/custom-media-pattern.md) | Custom media names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/custom-property-no-missing-var-function`](css/custom-property-no-missing-var-function.md) | Custom properties are read with `var()` | `suggest` | — | `css/recommended` |
@@ -959,11 +966,6 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
 | [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
 | [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `manual` | — | `css/recommended` |
-| [`css/declaration-property-max-values`](css/declaration-property-max-values.md) | No declaration with more values than the project allows | `manual` | `max` | *[rules] only* |
-| [`css/declaration-property-unit-allowed-list`](css/declaration-property-unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
-| [`css/declaration-property-unit-disallowed-list`](css/declaration-property-unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/declaration-property-value-allowed-list`](css/declaration-property-value-allowed-list.md) | Only values the project allows | `manual` | `list` | *[rules] only* |
-| [`css/declaration-property-value-disallowed-list`](css/declaration-property-value-disallowed-list.md) | No value the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-value-keyword-no-deprecated`](css/declaration-property-value-keyword-no-deprecated.md) | No deprecated keywords in property values | `suggest` | `ignoreKeywords` | `css/recommended` |
 | [`css/declaration-property-value-no-unknown`](css/declaration-property-value-no-unknown.md) | Keyword-valued properties use a known keyword | `manual` | — | `css/recommended` |
 | [`css/display-notation`](css/display-notation.md) | `display` in its short form | `auto` | — | *[rules] only* |
@@ -971,16 +973,10 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/font-family-no-duplicate-names`](css/font-family-no-duplicate-names.md) | No font family listed twice | `auto` | — | `css/recommended` |
 | [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `manual` | `ignoreFontFamilies` | `css/recommended` |
 | [`css/font-weight-notation`](css/font-weight-notation.md) | Font weights are numeric | `auto` | `mode` | *[rules] only* |
-| [`css/function-allowed-list`](css/function-allowed-list.md) | Only functions the project allows | `manual` | `list` | *[rules] only* |
 | [`css/function-calc-no-unspaced-operator`](css/function-calc-no-unspaced-operator.md) | Spaces around `+` and `-` in math functions | `suggest` | — | `css/recommended` |
-| [`css/function-disallowed-list`](css/function-disallowed-list.md) | No function the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/function-linear-gradient-no-nonstandard-direction`](css/function-linear-gradient-no-nonstandard-direction.md) | Gradient directions in the standard syntax | `auto` | — | *[rules] only* |
 | [`css/function-name-case`](css/function-name-case.md) | Function names in lower case | `auto` | — | *[rules] only* |
-| [`css/function-no-unknown`](css/function-no-unknown.md) | No unknown functions | `manual` | `ignore` | *[rules] only* |
-| [`css/function-url-no-scheme-relative`](css/function-url-no-scheme-relative.md) | No scheme-relative URLs | `manual` | — | *[rules] only* |
 | [`css/function-url-quotes`](css/function-url-quotes.md) | URLs are quoted | `auto` | `mode` | *[rules] only* |
-| [`css/function-url-scheme-allowed-list`](css/function-url-scheme-allowed-list.md) | Only URL schemes the project allows | `manual` | `list` | *[rules] only* |
-| [`css/function-url-scheme-disallowed-list`](css/function-url-scheme-disallowed-list.md) | No URL scheme the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/hue-degree-notation`](css/hue-degree-notation.md) | Hues are angles | `auto` | — | `css/standard` |
 | [`css/import-notation`](css/import-notation.md) | `@import` with `url()` | `auto` | — | `css/standard` |
 | [`css/keyframe-block-no-duplicate-selectors`](css/keyframe-block-no-duplicate-selectors.md) | No keyframe selector twice in one `@keyframes` | `manual` | — | `css/recommended` |
@@ -991,12 +987,8 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/length-zero-no-unit`](css/length-zero-no-unit.md) | No units on zero lengths | `auto` | `ignore` | `css/standard` |
 | [`css/lightness-notation`](css/lightness-notation.md) | Lightness is a percentage | `auto` | — | `css/standard` |
 | [`css/max-lines`](css/max-lines.md) | A stylesheet stays under a line limit | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `css/size` |
-| [`css/media-feature-name-allowed-list`](css/media-feature-name-allowed-list.md) | Only media features the project allows | `manual` | `list` | *[rules] only* |
-| [`css/media-feature-name-disallowed-list`](css/media-feature-name-disallowed-list.md) | No media feature the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-no-unknown`](css/media-feature-name-no-unknown.md) | No unknown media features | `manual` | `ignoreMediaFeatureNames` | `css/recommended` |
 | [`css/media-feature-name-no-vendor-prefix`](css/media-feature-name-no-vendor-prefix.md) | No vendor-prefixed media features | `manual` | — | `css/standard` |
-| [`css/media-feature-name-unit-allowed-list`](css/media-feature-name-unit-allowed-list.md) | Media features use the units the project allows | `manual` | `list` | *[rules] only* |
-| [`css/media-feature-name-value-allowed-list`](css/media-feature-name-value-allowed-list.md) | Media features use the values the project allows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-value-no-unknown`](css/media-feature-name-value-no-unknown.md) | Media features have valid values | `manual` | — | `css/recommended` |
 | [`css/media-feature-range-notation`](css/media-feature-range-notation.md) | Range syntax for media features | `auto` | — | `css/standard` |
 | [`css/media-query-no-invalid`](css/media-query-no-invalid.md) | Media queries follow the grammar | `manual` | `ignoreFunctions` | `css/recommended` |
@@ -1013,63 +1005,30 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `manual` | — | `css/recommended` |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
-| [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |
-| [`css/no-unknown-custom-media`](css/no-unknown-custom-media.md) | No custom media that isn't defined | `manual` | — | *[rules] only* |
-| [`css/no-unknown-custom-properties`](css/no-unknown-custom-properties.md) | No custom property that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-property`](css/no-unknown-property.md) | No unknown properties | `suggest` | `ignoreProperties`, `checkPrefixed` | `css/recommended` |
 | [`css/number-max-precision`](css/number-max-precision.md) | At most four decimal places | `suggest` | `precision`, `ignoreUnits` | `css/standard` |
-| [`css/property-allowed-list`](css/property-allowed-list.md) | Only propertys the project allows | `manual` | `list` | *[rules] only* |
-| [`css/property-disallowed-list`](css/property-disallowed-list.md) | No property the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/property-layout-mappings`](css/property-layout-mappings.md) | Flow-relative properties, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/property-no-deprecated`](css/property-no-deprecated.md) | No deprecated properties | `suggest` | `ignoreProperties` | `css/recommended` |
 | [`css/property-no-vendor-prefix`](css/property-no-vendor-prefix.md) | No vendor-prefixed properties | `suggest` | `ignoreProperties` | `css/standard` |
 | [`css/relative-selector-nesting-notation`](css/relative-selector-nesting-notation.md) | Nested relative selectors start with `&` | `auto` | — | *[rules] only* |
-| [`css/rule-nesting-at-rule-required-list`](css/rule-nesting-at-rule-required-list.md) | Nested rules sit inside the at-rules the project requires | `manual` | `list` | *[rules] only* |
-| [`css/rule-selector-property-disallowed-list`](css/rule-selector-property-disallowed-list.md) | No property the project disallows for a selector | `manual` | `list` | *[rules] only* |
 | [`css/selector-anb-no-unmatchable`](css/selector-anb-no-unmatchable.md) | No An+B selector that matches nothing | `manual` | — | `css/recommended` |
-| [`css/selector-attribute-name-disallowed-list`](css/selector-attribute-name-disallowed-list.md) | No attribute selector the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/selector-attribute-operator-allowed-list`](css/selector-attribute-operator-allowed-list.md) | Only attribute operators the project allows | `manual` | `list` | *[rules] only* |
-| [`css/selector-attribute-operator-disallowed-list`](css/selector-attribute-operator-disallowed-list.md) | No attribute operator the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-attribute-quotes`](css/selector-attribute-quotes.md) | Attribute selector values are quoted | `auto` | — | *[rules] only* |
 | [`css/selector-class-pattern`](css/selector-class-pattern.md) | Class selectors are kebab-case | `manual` | `pattern` | `css/standard` |
-| [`css/selector-combinator-allowed-list`](css/selector-combinator-allowed-list.md) | Only combinators the project allows | `manual` | `list` | *[rules] only* |
-| [`css/selector-combinator-disallowed-list`](css/selector-combinator-disallowed-list.md) | No combinator the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/selector-disallowed-list`](css/selector-disallowed-list.md) | No selector the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-id-pattern`](css/selector-id-pattern.md) | Id selectors are kebab-case | `manual` | `pattern` | `css/standard` |
-| [`css/selector-max-attribute`](css/selector-max-attribute.md) | No selector with too many attribute selectors | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-class`](css/selector-max-class.md) | No selector with too many classes | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-combinators`](css/selector-max-combinators.md) | No selector with too many combinators | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-compound-selectors`](css/selector-max-compound-selectors.md) | No selector with too many compound selectors | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-id`](css/selector-max-id.md) | No selector with too many id selectors | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-pseudo-class`](css/selector-max-pseudo-class.md) | No selector with too many pseudo-classes | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-specificity`](css/selector-max-specificity.md) | No selector more specific than allowed | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-type`](css/selector-max-type.md) | No selector with too many type selectors | `manual` | `max` | *[rules] only* |
-| [`css/selector-max-universal`](css/selector-max-universal.md) | No selector with too many universal selectors | `manual` | `max` | *[rules] only* |
-| [`css/selector-nested-pattern`](css/selector-nested-pattern.md) | Nested selectors follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`css/selector-no-deprecated`](css/selector-no-deprecated.md) | No deprecated selectors | `auto` | — | *[rules] only* |
-| [`css/selector-no-invalid`](css/selector-no-invalid.md) | No invalid selector | `manual` | — | *[rules] only* |
 | [`css/selector-no-qualifying-type`](css/selector-no-qualifying-type.md) | No class, id or attribute qualified by a type | `suggest` | — | *[rules] only* |
-| [`css/selector-no-unmatchable`](css/selector-no-unmatchable.md) | No selector that can never match | `manual` | — | *[rules] only* |
 | [`css/selector-no-vendor-prefix`](css/selector-no-vendor-prefix.md) | No vendor-prefixed selectors | `suggest` | `ignoreSelectors` | `css/standard` |
 | [`css/selector-not-notation`](css/selector-not-notation.md) | One `:not()` with a list | `suggest` | — | `css/standard` |
-| [`css/selector-pseudo-class-allowed-list`](css/selector-pseudo-class-allowed-list.md) | Only pseudo-classs the project allows | `manual` | `list` | *[rules] only* |
-| [`css/selector-pseudo-class-disallowed-list`](css/selector-pseudo-class-disallowed-list.md) | No pseudo-class the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-class-no-unknown`](css/selector-pseudo-class-no-unknown.md) | No unknown pseudo-classes | `manual` | `ignorePseudoClasses` | `css/recommended` |
-| [`css/selector-pseudo-element-allowed-list`](css/selector-pseudo-element-allowed-list.md) | Only pseudo-elements the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-element-colon-notation`](css/selector-pseudo-element-colon-notation.md) | Pseudo-elements with `::` | `auto` | — | `css/standard` |
-| [`css/selector-pseudo-element-disallowed-list`](css/selector-pseudo-element-disallowed-list.md) | No pseudo-element the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-element-no-unknown`](css/selector-pseudo-element-no-unknown.md) | No unknown pseudo-elements | `manual` | `ignorePseudoElements` | `css/recommended` |
 | [`css/selector-type-case`](css/selector-type-case.md) | Type selectors in lower case | `auto` | — | *[rules] only* |
 | [`css/selector-type-no-unknown`](css/selector-type-no-unknown.md) | No unknown type selectors | `manual` | `ignore`, `ignoreTypes` | `css/recommended` |
 | [`css/shorthand-property-no-redundant-values`](css/shorthand-property-no-redundant-values.md) | No repeated values in shorthands | `auto` | — | `css/standard` |
 | [`css/string-no-newline`](css/string-no-newline.md) | No line breaks inside selector strings | `manual` | `ignore` | `css/recommended` |
 | [`css/syntax-string-no-invalid`](css/syntax-string-no-invalid.md) | `@property` syntax strings are valid | `manual` | — | `css/recommended` |
-| [`css/time-min-milliseconds`](css/time-min-milliseconds.md) | No transition or animation too short to see | `manual` | `min` | *[rules] only* |
 | [`css/todo-marker`](css/todo-marker.md) | CSS TODO comments carry a ticket and, when asked, a date | `manual` | — | `css/markers` |
-| [`css/unit-allowed-list`](css/unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
-| [`css/unit-disallowed-list`](css/unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/unit-layout-mappings`](css/unit-layout-mappings.md) | Flow-relative units, not physical ones | `suggest` | — | *[rules] only* |
-| [`css/unit-no-unknown`](css/unit-no-unknown.md) | No unknown units | `manual` | `ignore` | *[rules] only* |
 | [`css/value-keyword-case`](css/value-keyword-case.md) | Keywords in lower case | `auto` | — | *[rules] only* |
 | [`css/value-keyword-layout-mappings`](css/value-keyword-layout-mappings.md) | Flow-relative keywords, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/value-no-vendor-prefix`](css/value-no-vendor-prefix.md) | No vendor-prefixed values | `suggest` | `ignoreValues` | `css/standard` |
@@ -1083,13 +1042,9 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 |---|---|---|---|---|
 | [`scss/at-extend-no-missing-placeholder`](scss/at-extend-no-missing-placeholder.md) | `@extend` targets a placeholder | `manual` | — | `scss/recommended`, `scss/strict` |
 | [`scss/at-function-named-arguments`](scss/at-function-named-arguments.md) | Function arguments are passed by name | `auto` | — | *[rules] only* |
-| [`scss/at-function-pattern`](scss/at-function-pattern.md) | Function names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`scss/at-if-no-null`](scss/at-if-no-null.md) | No comparing to `null` in `@if` | `auto` | — | `scss/recommended`, `scss/strict` |
-| [`scss/at-import-partial-extension-allowed-list`](scss/at-import-partial-extension-allowed-list.md) | `@import` extensions the project allows | `manual` | `list` | *[rules] only* |
-| [`scss/at-import-partial-extension-disallowed-list`](scss/at-import-partial-extension-disallowed-list.md) | No `@import` extension the project disallows | `manual` | `list` | *[rules] only* |
 | [`scss/at-mixin-argumentless-call-parentheses`](scss/at-mixin-argumentless-call-parentheses.md) | No parentheses on a mixin call without arguments | `auto` | — | *[rules] only* |
 | [`scss/at-mixin-named-arguments`](scss/at-mixin-named-arguments.md) | Mixin arguments are passed by name | `auto` | — | *[rules] only* |
-| [`scss/at-mixin-no-risky-nesting-selector`](scss/at-mixin-no-risky-nesting-selector.md) | No `&` after another selector inside a mixin | `manual` | — | *[rules] only* |
 | [`scss/at-mixin-pattern`](scss/at-mixin-pattern.md) | Mixin names are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/at-root-no-redundant`](scss/at-root-no-redundant.md) | No redundant `@at-root` | `auto` | — | *[rules] only* |
 | [`scss/at-rule-conditional-no-parentheses`](scss/at-rule-conditional-no-parentheses.md) | No parentheses around `@if` and `@while` conditions | `auto` | — | *[rules] only* |
@@ -1097,11 +1052,8 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/at-use-no-redundant-alias`](scss/at-use-no-redundant-alias.md) | No `@use` alias that repeats the module's name | `auto` | — | *[rules] only* |
 | [`scss/block-no-redundant-nesting`](scss/block-no-redundant-nesting.md) | No block that only holds one nested block | `auto` | — | *[rules] only* |
 | [`scss/comment-no-loud`](scss/comment-no-loud.md) | Silent comments, not loud ones | `suggest` | — | *[rules] only* |
-| [`scss/declaration-nested-properties`](scss/declaration-nested-properties.md) | No nested properties | `manual` | — | *[rules] only* |
-| [`scss/declaration-nested-properties-no-divided-groups`](scss/declaration-nested-properties-no-divided-groups.md) | Nested properties of one prefix are in one group | `manual` | — | `scss/recommended`, `scss/strict` |
 | [`scss/dimension-no-non-numeric-values`](scss/dimension-no-non-numeric-values.md) | No dimension built from interpolated text | `suggest` | — | *[rules] only* |
 | [`scss/dollar-variable-default`](scss/dollar-variable-default.md) | Top-level variables are `!default` | `suggest` | — | *[rules] only* |
-| [`scss/dollar-variable-first-in-block`](scss/dollar-variable-first-in-block.md) | Variables are declared first in their block | `manual` | — | *[rules] only* |
 | [`scss/dollar-variable-no-missing-interpolation`](scss/dollar-variable-no-missing-interpolation.md) | Variables in at-rule names are interpolated | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/dollar-variable-pattern`](scss/dollar-variable-pattern.md) | `$variables` are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/double-slash-comment-empty`](scss/double-slash-comment-empty.md) | No empty `//` comments | `auto` | — | `scss/recommended`, `scss/strict` |
@@ -1109,7 +1061,6 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/function-calculation-no-interpolation`](scss/function-calculation-no-interpolation.md) | No interpolation in CSS math functions | `auto` | — | *[rules] only* |
 | [`scss/function-color-channel`](scss/function-color-channel.md) | Colour channels are read with `color.channel()` | `suggest` | — | *[rules] only* |
 | [`scss/function-color-relative`](scss/function-color-relative.md) | No legacy relative colour functions | `suggest` | — | *[rules] only* |
-| [`scss/function-disallowed-list`](scss/function-disallowed-list.md) | No Sass function the project disallows | `manual` | `list` | *[rules] only* |
 | [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `manual` | `ignoreFunctions` | `scss/strict` |
 | [`scss/function-quote-no-quoted-strings-inside`](scss/function-quote-no-quoted-strings-inside.md) | No `quote()` of a quoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/function-unquote-no-unquoted-strings-inside`](scss/function-unquote-no-unquoted-strings-inside.md) | No `unquote()` of an unquoted string | `auto` | — | `scss/recommended`, `scss/strict` |
@@ -1117,20 +1068,15 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/load-partial-extension`](scss/load-partial-extension.md) | No file extension when loading a partial | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/map-keys-quotes`](scss/map-keys-quotes.md) | Map keys are quoted | `suggest` | — | *[rules] only* |
 | [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `manual` | `max` | `scss/strict` |
-| [`scss/media-feature-value-dollar-variable`](scss/media-feature-value-dollar-variable.md) | Media query values are variables | `manual` | — | *[rules] only* |
-| [`scss/no-dollar-variables`](scss/no-dollar-variables.md) | No Sass variables | `manual` | — | *[rules] only* |
 | [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `manual` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-duplicate-load-rules`](scss/no-duplicate-load-rules.md) | No module loaded twice | `suggest` | — | *[rules] only* |
 | [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `manual` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-global-function-names`](scss/no-global-function-names.md) | No global function names | `auto` | — | `scss/strict` |
 | [`scss/no-import`](scss/no-import.md) | No `@import` | `suggest` | — | `scss/strict` |
 | [`scss/no-slash-division`](scss/no-slash-division.md) | No `/` as division | `suggest` | — | `scss/strict` |
-| [`scss/no-unused-private-members`](scss/no-unused-private-members.md) | No private member that is never used | `manual` | — | *[rules] only* |
-| [`scss/partial-no-import`](scss/partial-no-import.md) | No `@import` in a partial | `manual` | — | *[rules] only* |
 | [`scss/percent-placeholder-pattern`](scss/percent-placeholder-pattern.md) | `%placeholder` names are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/selector-nest-combinators`](scss/selector-nest-combinators.md) | Combinators are written by nesting | `suggest` | — | *[rules] only* |
 | [`scss/selector-no-redundant-nesting-selector`](scss/selector-no-redundant-nesting-selector.md) | No redundant `&` | `auto` | — | *[rules] only* |
-| [`scss/selector-no-union-class-name`](scss/selector-no-union-class-name.md) | No class names built with `&` | `manual` | — | *[rules] only* |
 | [`scss/todo-marker`](scss/todo-marker.md) | SCSS TODO comments carry a ticket and, when asked, a date | `manual` | — | `scss/markers` |
 
 ## css-modules
@@ -1167,7 +1113,6 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/heading-increment`](md/heading-increment.md) | Heading levels go down one at a time | `suggest` | — | `md/recommended` |
 | [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `manual` | `ignore_case` | `md/recommended` |
 | [`md/link-image-reference-definitions`](md/link-image-reference-definitions.md) | Every reference definition is used, and defined once | `auto` | `ignored_definitions` | `md/recommended` |
-| [`md/link-image-style`](md/link-image-style.md) | Links and images in the styles the project allows | `manual` | `autolink`, `inline`, `full`, `collapsed`, `shortcut`, `url_inline` | `md/recommended` |
 | [`md/no-alt-text`](md/no-alt-text.md) | Images have alt text | `manual` | — | `md/recommended` |
 | [`md/no-bare-urls`](md/no-bare-urls.md) | URLs are links, not bare text | `auto` | — | `md/recommended` |
 | [`md/no-blanks-blockquote`](md/no-blanks-blockquote.md) | No blank line inside a blockquote | `suggest` | — | `md/recommended` |
@@ -1180,7 +1125,6 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/proper-names`](md/proper-names.md) | Proper names are spelled as the project spells them | `auto` | `names`, `code_blocks` | `md/recommended` |
 | [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `manual` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
 | [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `manual` | — | `md/recommended` |
-| [`md/required-headings`](md/required-headings.md) | Documents follow the required outline | `manual` | `headings` | `md/recommended` |
 | [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `manual` | `level` | `md/recommended` |
 | [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `manual` | — | `md/recommended` |
 | [`md/todo-marker`](md/todo-marker.md) | Markdown TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
@@ -1418,6 +1362,197 @@ Presets: `codelaw:next/recommended`.
 | [`next/no-typos`](next/no-typos.md) | Data-fetching functions are spelled right | `manual` | — | `next/recommended` |
 | [`next/no-unwanted-polyfillio`](next/no-unwanted-polyfillio.md) | No polyfill.io | `manual` | — | `next/recommended` |
 
+## testing
+
+Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/testing-library` · `codelaw:testing/playwright`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`testing/consistent-each-for`](testing/consistent-each-for.md) | `.for` over `.each` in Vitest | `manual` | — | *[rules] only* |
+| [`testing/consistent-test-filename`](testing/consistent-test-filename.md) | Test files named `*.test.*` | `manual` | — | *[rules] only* |
+| [`testing/consistent-test-it`](testing/consistent-test-it.md) | `test` at the top level, `it` inside `describe` | `auto` | — | *[rules] only* |
+| [`testing/consistent-vitest-vi`](testing/consistent-vitest-vi.md) | `vi`, not `vitest`, for Vitest's utilities | `auto` | — | *[rules] only* |
+| [`testing/expect-expect`](testing/expect-expect.md) | Every test asserts | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/hoisted-apis-on-top`](testing/hoisted-apis-on-top.md) | `vi.mock` and `vi.hoisted` at the top level | `suggest` | — | *[rules] only* |
+| [`testing/max-expects`](testing/max-expects.md) | At most five assertions in a test | `manual` | — | *[rules] only* |
+| [`testing/max-nested-describe`](testing/max-nested-describe.md) | At most five nested `describe` blocks | `manual` | — | *[rules] only* |
+| [`testing/no-alias-methods`](testing/no-alias-methods.md) | Matchers by their canonical names | `auto` | — | `testing/jest` |
+| [`testing/no-commented-out-tests`](testing/no-commented-out-tests.md) | No commented-out tests | `suggest` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-conditional-expect`](testing/no-conditional-expect.md) | No `expect` inside a condition | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-conditional-in-test`](testing/no-conditional-in-test.md) | No conditional logic in a test | `manual` | — | *[rules] only* |
+| [`testing/no-conditional-tests`](testing/no-conditional-tests.md) | No tests declared inside a condition | `manual` | — | *[rules] only* |
+| [`testing/no-confusing-set-timeout`](testing/no-confusing-set-timeout.md) | `jest.setTimeout` once, at the top of the file | `suggest` | — | *[rules] only* |
+| [`testing/no-deprecated-functions`](testing/no-deprecated-functions.md) | No deprecated Jest functions | `auto` | — | `testing/jest` |
+| [`testing/no-done-callback`](testing/no-done-callback.md) | No `done` callback in tests and hooks | `manual` | — | `testing/jest` |
+| [`testing/no-duplicate-hooks`](testing/no-duplicate-hooks.md) | One hook of each kind per block | `manual` | — | *[rules] only* |
+| [`testing/no-export`](testing/no-export.md) | No exports from a test file | `manual` | — | `testing/jest` |
+| [`testing/no-hooks`](testing/no-hooks.md) | No setup and teardown hooks | `manual` | — | *[rules] only* |
+| [`testing/no-identical-title`](testing/no-identical-title.md) | No two tests with one title | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-import-node-test`](testing/no-import-node-test.md) | No `node:test` in a Vitest suite | `auto` | — | `testing/vitest` |
+| [`testing/no-importing-vitest-globals`](testing/no-importing-vitest-globals.md) | No imports of Vitest's globals | `auto` | — | *[rules] only* |
+| [`testing/no-interpolation-in-snapshots`](testing/no-interpolation-in-snapshots.md) | No interpolation in an inline snapshot | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-jasmine-globals`](testing/no-jasmine-globals.md) | No Jasmine globals | `auto` | — | `testing/jest` |
+| [`testing/no-large-snapshots`](testing/no-large-snapshots.md) | No inline snapshot longer than 50 lines | `manual` | — | *[rules] only* |
+| [`testing/no-mocks-import`](testing/no-mocks-import.md) | No imports from `__mocks__` | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-restricted-jest-methods`](testing/no-restricted-jest-methods.md) | No `jest` methods the project restricts | `manual` | `methods` | *[rules] only* |
+| [`testing/no-restricted-matchers`](testing/no-restricted-matchers.md) | No matchers the project restricts | `manual` | `matchers` | *[rules] only* |
+| [`testing/no-restricted-vi-methods`](testing/no-restricted-vi-methods.md) | No `vi` methods the project restricts | `manual` | `methods` | *[rules] only* |
+| [`testing/no-standalone-expect`](testing/no-standalone-expect.md) | No `expect` outside a test or hook | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/no-test-prefixes`](testing/no-test-prefixes.md) | `.skip` and `.only`, not `x` and `f` prefixes | `auto` | — | `testing/jest` |
+| [`testing/no-test-return-statement`](testing/no-test-return-statement.md) | No `return` from a test | `manual` | — | *[rules] only* |
+| [`testing/no-unneeded-async-expect-function`](testing/no-unneeded-async-expect-function.md) | No async wrapper around an awaited promise in `expect` | `auto` | — | `testing/vitest` |
+| [`testing/no-untyped-mock-factory`](testing/no-untyped-mock-factory.md) | Typed `jest.mock` factories | `auto` | — | *[rules] only* |
+| [`testing/playwright-expect-expect`](testing/playwright-expect-expect.md) | Every test asserts | `manual` | — | `testing/playwright` |
+| [`testing/playwright-max-expects`](testing/playwright-max-expects.md) | At most five assertions in a test | `manual` | — | *[rules] only* |
+| [`testing/playwright-max-nested-describe`](testing/playwright-max-nested-describe.md) | At most five nested `describe` blocks | `manual` | — | `testing/playwright` |
+| [`testing/playwright-missing-playwright-await`](testing/playwright-missing-playwright-await.md) | `await` Playwright's async assertions and steps | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-action-timeout`](testing/playwright-no-action-timeout.md) | No `timeout` on an action | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-commented-out-tests`](testing/playwright-no-commented-out-tests.md) | No commented-out tests | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-conditional-expect`](testing/playwright-no-conditional-expect.md) | No `expect` inside a condition | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-conditional-in-test`](testing/playwright-no-conditional-in-test.md) | No conditional logic in a test | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-duplicate-hooks`](testing/playwright-no-duplicate-hooks.md) | One hook of each kind per block | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-duplicate-slow`](testing/playwright-no-duplicate-slow.md) | One `test.slow()` per test | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-element-handle`](testing/playwright-no-element-handle.md) | Locators, not element handles | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-eval`](testing/playwright-no-eval.md) | No `$eval` and `$$eval` | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-export`](testing/playwright-no-export.md) | No exports from a test file | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-force-option`](testing/playwright-no-force-option.md) | No `force: true` on actions | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-get-by-title`](testing/playwright-no-get-by-title.md) | No `getByTitle` | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-hooks`](testing/playwright-no-hooks.md) | No setup and teardown hooks | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-identical-title`](testing/playwright-no-identical-title.md) | No two tests with one title | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-magic-timeouts`](testing/playwright-no-magic-timeouts.md) | No literal timeout values | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-nested-step`](testing/playwright-no-nested-step.md) | No `test.step` inside a step | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-networkidle`](testing/playwright-no-networkidle.md) | No `networkidle` | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-nth-methods`](testing/playwright-no-nth-methods.md) | No `first()`, `last()` and `nth()` | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-page-pause`](testing/playwright-no-page-pause.md) | No `page.pause()` left in a test | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-raw-locators`](testing/playwright-no-raw-locators.md) | No CSS or XPath locators | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-restricted-locators`](testing/playwright-no-restricted-locators.md) | No locator methods the project restricts | `manual` | `locators` | *[rules] only* |
+| [`testing/playwright-no-restricted-matchers`](testing/playwright-no-restricted-matchers.md) | No matchers the project restricts | `manual` | `matchers` | *[rules] only* |
+| [`testing/playwright-no-restricted-roles`](testing/playwright-no-restricted-roles.md) | No `getByRole` roles the project restricts | `manual` | `roles` | *[rules] only* |
+| [`testing/playwright-no-slowed-test`](testing/playwright-no-slowed-test.md) | No `test.slow()` | `suggest` | — | *[rules] only* |
+| [`testing/playwright-no-standalone-expect`](testing/playwright-no-standalone-expect.md) | No `expect` outside a test or hook | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-template-literal-title`](testing/playwright-no-template-literal-title.md) | No template literal as a test title | `auto` | — | *[rules] only* |
+| [`testing/playwright-no-test-return-statement`](testing/playwright-no-test-return-statement.md) | No `return` from a test | `manual` | — | *[rules] only* |
+| [`testing/playwright-no-unnecessary-assertions`](testing/playwright-no-unnecessary-assertions.md) | No assertion on a constant | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-unused-locators`](testing/playwright-no-unused-locators.md) | No locator created and left unused | `manual` | — | `testing/playwright` |
+| [`testing/playwright-no-useless-await`](testing/playwright-no-useless-await.md) | No `await` on a locator | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-useless-not`](testing/playwright-no-useless-not.md) | No `.not` where a matcher says it | `auto` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-navigation`](testing/playwright-no-wait-for-navigation.md) | No `waitForNavigation` | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-selector`](testing/playwright-no-wait-for-selector.md) | No `waitForSelector` | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-wait-for-timeout`](testing/playwright-no-wait-for-timeout.md) | No fixed sleeps | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-comparison-matcher`](testing/playwright-prefer-comparison-matcher.md) | Comparison matchers for comparisons | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-ending-with-an-expect`](testing/playwright-prefer-ending-with-an-expect.md) | A test ends with an assertion | `manual` | — | *[rules] only* |
+| [`testing/playwright-prefer-equality-matcher`](testing/playwright-prefer-equality-matcher.md) | An equality matcher for an equality | `suggest` | — | *[rules] only* |
+| [`testing/playwright-prefer-hooks-in-order`](testing/playwright-prefer-hooks-in-order.md) | Hooks in the order they run | `manual` | — | `testing/playwright` |
+| [`testing/playwright-prefer-hooks-on-top`](testing/playwright-prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | `testing/playwright` |
+| [`testing/playwright-prefer-locator`](testing/playwright-prefer-locator.md) | Locator methods over `page` actions | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-lowercase-title`](testing/playwright-prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-strict-equal`](testing/playwright-prefer-strict-equal.md) | `toStrictEqual` over `toEqual` | `suggest` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-be`](testing/playwright-prefer-to-be.md) | `toBe` for primitives, `toBeNull`, `toBeUndefined`, `toBeNaN` | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-contain`](testing/playwright-prefer-to-contain.md) | `toContain` for an `includes` check | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-to-have-count`](testing/playwright-prefer-to-have-count.md) | `toHaveCount` for a locator's count | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-prefer-to-have-length`](testing/playwright-prefer-to-have-length.md) | `toHaveLength` for a length | `auto` | — | `testing/playwright` |
+| [`testing/playwright-prefer-web-first-assertions`](testing/playwright-prefer-web-first-assertions.md) | Web-first assertions over reading state | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-require-annotation-reason`](testing/playwright-require-annotation-reason.md) | Annotations give a reason | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-hook`](testing/playwright-require-hook.md) | Setup code in a hook | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-soft-assertions`](testing/playwright-require-soft-assertions.md) | Soft assertions | `suggest` | — | *[rules] only* |
+| [`testing/playwright-require-tags`](testing/playwright-require-tags.md) | Every test is tagged | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-to-pass-timeout`](testing/playwright-require-to-pass-timeout.md) | `toPass` with a timeout | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-to-throw-message`](testing/playwright-require-to-throw-message.md) | `toThrow` names the error | `manual` | — | *[rules] only* |
+| [`testing/playwright-require-top-level-describe`](testing/playwright-require-top-level-describe.md) | Tests inside a top-level `describe` | `manual` | — | *[rules] only* |
+| [`testing/playwright-valid-describe-callback`](testing/playwright-valid-describe-callback.md) | `describe` takes a plain synchronous callback | `manual` | — | `testing/playwright` |
+| [`testing/playwright-valid-expect`](testing/playwright-valid-expect.md) | `expect` is called right and awaited when async | `auto` | — | `testing/playwright` |
+| [`testing/playwright-valid-expect-in-promise`](testing/playwright-valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/playwright` |
+| [`testing/playwright-valid-test-tags`](testing/playwright-valid-test-tags.md) | Test tags start with `@` | `auto` | — | `testing/playwright` |
+| [`testing/playwright-valid-title`](testing/playwright-valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/playwright` |
+| [`testing/prefer-called-exactly-once-with`](testing/prefer-called-exactly-once-with.md) | `toHaveBeenCalledExactlyOnceWith` | `auto` | — | `testing/vitest` |
+| [`testing/prefer-called-once`](testing/prefer-called-once.md) | `toHaveBeenCalledOnce()` over `toHaveBeenCalledTimes(1)` | `auto` | — | *[rules] only* |
+| [`testing/prefer-called-times`](testing/prefer-called-times.md) | `toHaveBeenCalledTimes(1)` over `toHaveBeenCalledOnce()` | `auto` | — | *[rules] only* |
+| [`testing/prefer-called-with`](testing/prefer-called-with.md) | `toHaveBeenCalledWith` over `toHaveBeenCalled` | `manual` | — | *[rules] only* |
+| [`testing/prefer-comparison-matcher`](testing/prefer-comparison-matcher.md) | Comparison matchers for comparisons | `auto` | — | *[rules] only* |
+| [`testing/prefer-describe-function-title`](testing/prefer-describe-function-title.md) | `describe(fn)` for a block about an imported function | `auto` | — | *[rules] only* |
+| [`testing/prefer-each`](testing/prefer-each.md) | `test.each` over a loop of tests | `manual` | — | *[rules] only* |
+| [`testing/prefer-ending-with-an-expect`](testing/prefer-ending-with-an-expect.md) | A test ends with an assertion | `manual` | — | *[rules] only* |
+| [`testing/prefer-equality-matcher`](testing/prefer-equality-matcher.md) | An equality matcher for an equality | `suggest` | — | *[rules] only* |
+| [`testing/prefer-expect-assertions`](testing/prefer-expect-assertions.md) | Async tests count their assertions | `suggest` | — | *[rules] only* |
+| [`testing/prefer-expect-resolves`](testing/prefer-expect-resolves.md) | `await expect(p).resolves` over `expect(await p)` | `auto` | — | *[rules] only* |
+| [`testing/prefer-expect-type-of`](testing/prefer-expect-type-of.md) | `expectTypeOf` for a type check | `suggest` | — | *[rules] only* |
+| [`testing/prefer-hooks-in-order`](testing/prefer-hooks-in-order.md) | Hooks in the order they run | `manual` | — | *[rules] only* |
+| [`testing/prefer-hooks-on-top`](testing/prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | *[rules] only* |
+| [`testing/prefer-import-in-mock`](testing/prefer-import-in-mock.md) | `vi.mock(import("…"))` | `auto` | — | *[rules] only* |
+| [`testing/prefer-jest-mocked`](testing/prefer-jest-mocked.md) | `jest.mocked()` over a type assertion | `auto` | — | *[rules] only* |
+| [`testing/prefer-lowercase-title`](testing/prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
+| [`testing/prefer-mock-promise-shorthand`](testing/prefer-mock-promise-shorthand.md) | `mockResolvedValue` and `mockRejectedValue` | `auto` | — | *[rules] only* |
+| [`testing/prefer-mock-return-shorthand`](testing/prefer-mock-return-shorthand.md) | `mockReturnValue` for a constant | `auto` | — | *[rules] only* |
+| [`testing/prefer-snapshot-hint`](testing/prefer-snapshot-hint.md) | A hint on each of several snapshots | `manual` | — | *[rules] only* |
+| [`testing/prefer-spy-on`](testing/prefer-spy-on.md) | `spyOn` instead of overwriting a method | `auto` | — | *[rules] only* |
+| [`testing/prefer-strict-boolean-matchers`](testing/prefer-strict-boolean-matchers.md) | `toBe(true)` over `toBeTruthy()` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-strict-equal`](testing/prefer-strict-equal.md) | `toStrictEqual` over `toEqual` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-be`](testing/prefer-to-be.md) | `toBe` for primitives, `toBeNull`, `toBeUndefined`, `toBeNaN` | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-be-falsy`](testing/prefer-to-be-falsy.md) | `toBeFalsy()` over `toBe(false)` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-be-object`](testing/prefer-to-be-object.md) | `toBeInstanceOf(Object)` over an `instanceof` check | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-be-truthy`](testing/prefer-to-be-truthy.md) | `toBeTruthy()` over `toBe(true)` | `suggest` | — | *[rules] only* |
+| [`testing/prefer-to-contain`](testing/prefer-to-contain.md) | `toContain` for an `includes` check | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-been-called`](testing/prefer-to-have-been-called.md) | `not.toHaveBeenCalled()` for zero calls | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-been-called-times`](testing/prefer-to-have-been-called-times.md) | `toHaveBeenCalledTimes` for a call count | `auto` | — | *[rules] only* |
+| [`testing/prefer-to-have-length`](testing/prefer-to-have-length.md) | `toHaveLength` for a length | `auto` | — | *[rules] only* |
+| [`testing/prefer-vi-mocked`](testing/prefer-vi-mocked.md) | `vi.mocked()` over a type assertion | `auto` | — | *[rules] only* |
+| [`testing/require-awaited-expect-poll`](testing/require-awaited-expect-poll.md) | `expect.poll` is awaited | `auto` | — | *[rules] only* |
+| [`testing/require-hook`](testing/require-hook.md) | Setup code in a hook | `manual` | — | *[rules] only* |
+| [`testing/require-local-test-context-for-concurrent-snapshots`](testing/require-local-test-context-for-concurrent-snapshots.md) | Concurrent snapshot tests use their own `expect` | `manual` | — | `testing/vitest` |
+| [`testing/require-mock-type-parameters`](testing/require-mock-type-parameters.md) | `vi.fn` with a type parameter | `manual` | — | *[rules] only* |
+| [`testing/require-test-timeout`](testing/require-test-timeout.md) | Every test sets a timeout | `manual` | — | *[rules] only* |
+| [`testing/require-to-throw-message`](testing/require-to-throw-message.md) | `toThrow` names the error | `manual` | — | *[rules] only* |
+| [`testing/require-top-level-describe`](testing/require-top-level-describe.md) | Tests inside a top-level `describe` | `manual` | — | *[rules] only* |
+| [`testing/testing-library-await-async-events`](testing/testing-library-await-async-events.md) | `await` user-event calls | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-await-async-queries`](testing/testing-library-await-async-queries.md) | `await` `findBy` queries | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-await-async-utils`](testing/testing-library-await-async-utils.md) | `await` `waitFor` and its kin | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-consistent-data-testid`](testing/testing-library-consistent-data-testid.md) | `data-testid` values follow one pattern | `manual` | — | *[rules] only* |
+| [`testing/testing-library-no-await-sync-events`](testing/testing-library-no-await-sync-events.md) | No `await` on `fireEvent` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-await-sync-queries`](testing/testing-library-no-await-sync-queries.md) | No `await` on `getBy` and `queryBy` queries | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-container`](testing/testing-library-no-container.md) | No DOM queries through `container` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-debugging-utils`](testing/testing-library-no-debugging-utils.md) | No `debug()` left in a test | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-dom-import`](testing/testing-library-no-dom-import.md) | Import from your framework's Testing Library | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-global-regexp-flag-in-query`](testing/testing-library-no-global-regexp-flag-in-query.md) | No `g` flag on a regular expression in a query | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-no-manual-cleanup`](testing/testing-library-no-manual-cleanup.md) | No manual `cleanup` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-node-access`](testing/testing-library-no-node-access.md) | No DOM traversal in Testing Library tests | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-promise-in-fire-event`](testing/testing-library-no-promise-in-fire-event.md) | No promise passed to `fireEvent` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-no-render-in-lifecycle`](testing/testing-library-no-render-in-lifecycle.md) | No `render` in a setup hook | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-test-id-queries`](testing/testing-library-no-test-id-queries.md) | No queries by test id | `manual` | — | *[rules] only* |
+| [`testing/testing-library-no-unnecessary-act`](testing/testing-library-no-unnecessary-act.md) | No `act` around Testing Library calls | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-multiple-assertions`](testing/testing-library-no-wait-for-multiple-assertions.md) | One assertion per `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-side-effects`](testing/testing-library-no-wait-for-side-effects.md) | No side effects inside `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-no-wait-for-snapshot`](testing/testing-library-no-wait-for-snapshot.md) | No snapshot inside `waitFor` | `manual` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-explicit-assert`](testing/testing-library-prefer-explicit-assert.md) | An explicit assertion on a `getBy` query | `suggest` | — | *[rules] only* |
+| [`testing/testing-library-prefer-find-by`](testing/testing-library-prefer-find-by.md) | `findBy` over `waitFor` + `getBy` | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-implicit-assert`](testing/testing-library-prefer-implicit-assert.md) | A `getBy` query as its own assertion | `suggest` | — | *[rules] only* |
+| [`testing/testing-library-prefer-presence-queries`](testing/testing-library-prefer-presence-queries.md) | `getBy` for presence, `queryBy` for absence | `auto` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-query-by-disappearance`](testing/testing-library-prefer-query-by-disappearance.md) | `queryBy` in `waitForElementToBeRemoved` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-query-matchers`](testing/testing-library-prefer-query-matchers.md) | The query each matcher is meant for | `manual` | `get_matchers`, `query_matchers` | *[rules] only* |
+| [`testing/testing-library-prefer-screen-queries`](testing/testing-library-prefer-screen-queries.md) | Queries through `screen` | `suggest` | — | `testing/testing-library` |
+| [`testing/testing-library-prefer-user-event`](testing/testing-library-prefer-user-event.md) | `userEvent` over `fireEvent` | `manual` | — | *[rules] only* |
+| [`testing/testing-library-prefer-user-event-setup`](testing/testing-library-prefer-user-event-setup.md) | `userEvent.setup()` before user-event calls | `manual` | — | *[rules] only* |
+| [`testing/testing-library-render-result-naming-convention`](testing/testing-library-render-result-naming-convention.md) | The render result is called `view` or destructured | `suggest` | — | `testing/testing-library` |
+| [`testing/valid-describe-callback`](testing/valid-describe-callback.md) | `describe` takes a plain synchronous callback | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-expect`](testing/valid-expect.md) | `expect` is called right and awaited when async | `auto` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-expect-in-promise`](testing/valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-title`](testing/valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/jest`, `testing/vitest` |
+| [`testing/warn-todo`](testing/warn-todo.md) | No `test.todo` left behind | `manual` | — | *[rules] only* |
+
+## tailwind
+
+Presets: `codelaw:tailwind/recommended`.
+
+| Rule | What it checks | Fix | Options | Turned on by |
+|---|---|---|---|---|
+| [`tailwind/enforces-canonical-classname`](tailwind/enforces-canonical-classname.md) | Classes are written as Tailwind spells them | `auto` | — | *[rules] only* |
+| [`tailwind/enforces-negative-arbitrary-values`](tailwind/enforces-negative-arbitrary-values.md) | A negative arbitrary value keeps its minus inside the brackets | `auto` | — | `tailwind/recommended` |
+| [`tailwind/important-modifier-suffix`](tailwind/important-modifier-suffix.md) | The important modifier comes last | `auto` | — | `tailwind/recommended` |
+| [`tailwind/no-arbitrary-value`](tailwind/no-arbitrary-value.md) | No arbitrary values | `manual` | — | *[rules] only* |
+| [`tailwind/no-concatenated-classes`](tailwind/no-concatenated-classes.md) | Classes are not joined with + | `suggest` | — | `tailwind/recommended` |
+| [`tailwind/no-conflicting-classes`](tailwind/no-conflicting-classes.md) | No two classes set the same properties | `suggest` | — | `tailwind/recommended` |
+| [`tailwind/no-restricted-classes`](tailwind/no-restricted-classes.md) | No classes the project restricts | `suggest` | `restrict` | *[rules] only* |
+| [`tailwind/no-unknown-classes`](tailwind/no-unknown-classes.md) | Every class is one the project's Tailwind knows | `suggest` | `ignore` | `tailwind/recommended` |
+
 ## python
 
 Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/project` · `codelaw:py/size` · `codelaw:py/markers`.
@@ -1431,36 +1566,95 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/ambiguous-class-name`](py/ambiguous-class-name.md) | No classes named `l`, `O` or `I` | `manual` | — | `py/recommended` |
 | [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended` |
 | [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended` |
+| [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | *[rules] only* |
 | [`py/assert-false`](py/assert-false.md) | Don't `assert False` | `suggest` | — | `py/recommended` |
 | [`py/assert-raises-exception`](py/assert-raises-exception.md) | Tests don't expect a bare `Exception` | `manual` | — | `py/recommended` |
 | [`py/assert-tuple`](py/assert-tuple.md) | `assert` doesn't test a tuple | `manual` | — | `py/recommended` |
 | [`py/assert-with-print-message`](py/assert-with-print-message.md) | No print() as an assert message | `auto` | — | *[rules] only* |
+| [`py/assignment-default-in-stub`](py/assignment-default-in-stub.md) | Simple values only in stub assignments | `auto` | — | *[rules] only* |
 | [`py/assignment-in-assert`](py/assignment-in-assert.md) | No walrus inside assert | `manual` | — | *[rules] only* |
 | [`py/assignment-to-os-environ`](py/assignment-to-os-environ.md) | Don't assign to `os.environ` | `manual` | — | `py/recommended` |
+| [`py/async-zero-sleep`](py/async-zero-sleep.md) | lowlevel.checkpoint(), not sleep(0) | `auto` | — | *[rules] only* |
 | [`py/asyncio-dangling-task`](py/asyncio-dangling-task.md) | Keep a reference to every asyncio task | `manual` | — | *[rules] only* |
+| [`py/bad-classmethod-argument`](py/bad-classmethod-argument.md) | A classmethod's first parameter is cls | `suggest` | — | *[rules] only* |
+| [`py/bad-docstring-quotes`](py/bad-docstring-quotes.md) | Docstrings use triple double quotes | `auto` | — | *[rules] only* |
+| [`py/bad-mcs-classmethod-argument`](py/bad-mcs-classmethod-argument.md) | A metaclass classmethod's first parameter is mcs | `suggest` | — | *[rules] only* |
+| [`py/bad-mcs-method-argument`](py/bad-mcs-method-argument.md) | A metaclass method's first parameter is cls | `suggest` | — | *[rules] only* |
+| [`py/bad-thread-instantiation`](py/bad-thread-instantiation.md) | Thread(target=f), not Thread(f) | `suggest` | — | *[rules] only* |
 | [`py/batched-without-explicit-strict`](py/batched-without-explicit-strict.md) | `itertools.batched()` says `strict=` | `suggest` | `target_version` | `py/recommended` |
+| [`py/binary-op-exception`](py/binary-op-exception.md) | except (A, B), not except A or B | `suggest` | — | *[rules] only* |
+| [`py/bit-count`](py/bit-count.md) | int.bit_count(), not bin(x).count('1') | `suggest` | — | *[rules] only* |
+| [`py/blocking-sleep-in-async-function`](py/blocking-sleep-in-async-function.md) | No time.sleep in an async function | `suggest` | — | *[rules] only* |
+| [`py/boolean-chained-comparison`](py/boolean-chained-comparison.md) | a < b < c, not a < b and b < c | `auto` | — | *[rules] only* |
 | [`py/break-outside-loop`](py/break-outside-loop.md) | `break` only inside a loop | `manual` | — | `py/recommended` |
+| [`py/builtin-open`](py/builtin-open.md) | Path.open, not open() | `suggest` | — | *[rules] only* |
 | [`py/cached-instance-method`](py/cached-instance-method.md) | No `lru_cache` on methods | `manual` | — | `py/recommended` |
+| [`py/call-date-fromtimestamp`](py/call-date-fromtimestamp.md) | No date.fromtimestamp() | `suggest` | — | *[rules] only* |
+| [`py/call-date-today`](py/call-date-today.md) | No date.today() | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-fromtimestamp`](py/call-datetime-fromtimestamp.md) | fromtimestamp() with a time zone | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-now-without-tzinfo`](py/call-datetime-now-without-tzinfo.md) | datetime.now() with a time zone | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-strptime-without-zone`](py/call-datetime-strptime-without-zone.md) | strptime with %z, or a zone attached | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-today`](py/call-datetime-today.md) | No datetime.today() | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-utcfromtimestamp`](py/call-datetime-utcfromtimestamp.md) | fromtimestamp(ts, tz=utc), not utcfromtimestamp(ts) | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-utcnow`](py/call-datetime-utcnow.md) | datetime.now(timezone.utc), not utcnow() | `suggest` | — | *[rules] only* |
+| [`py/call-datetime-without-tzinfo`](py/call-datetime-without-tzinfo.md) | datetime() with a tzinfo | `suggest` | — | *[rules] only* |
+| [`py/chained-comparison-all-equal`](py/chained-comparison-all-equal.md) | a == b == c, not a == b and b == c | `auto` | — | *[rules] only* |
+| [`py/check-and-remove-from-set`](py/check-and-remove-from-set.md) | s.discard(x), not if x in s: s.remove(x) | `suggest` | — | *[rules] only* |
 | [`py/class-with-mixed-type-vars`](py/class-with-mixed-type-vars.md) | No Generic\[...\] base beside type parameters | `suggest` | — | *[rules] only* |
+| [`py/collapsible-else-if`](py/collapsible-else-if.md) | elif, not else: if | `suggest` | — | *[rules] only* |
 | [`py/collection-literal-concatenation`](py/collection-literal-concatenation.md) | Unpack into a literal instead of concatenating | `suggest` | — | *[rules] only* |
 | [`py/commented-out-code`](py/commented-out-code.md) | No commented-out code | `suggest` | — | *[rules] only* |
+| [`py/compare-with-tuple`](py/compare-with-tuple.md) | x in (a, b), not x == a or x == b | `auto` | — | *[rules] only* |
 | [`py/complexity`](py/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `ignore_names` | `py/size` |
+| [`py/consider-math-not-float`](py/consider-math-not-float.md) | math.inf, not float('inf') | `suggest` | — | *[rules] only* |
+| [`py/consider-using-min-builtin`](py/consider-using-min-builtin.md) | x = min(x, y), not if x > y: x = y | `suggest` | — | *[rules] only* |
+| [`py/consider-using-ternary`](py/consider-using-ternary.md) | b if a else c, not a and b or c | `suggest` | — | *[rules] only* |
+| [`py/consider-using-tuple`](py/consider-using-tuple.md) | Iterate a tuple literal, not a list literal | `auto` | — | *[rules] only* |
 | [`py/continue-outside-loop`](py/continue-outside-loop.md) | `continue` only inside a loop | `manual` | — | `py/recommended` |
 | [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | *[rules] only* |
+| [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | *[rules] only* |
+| [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | *[rules] only* |
+| [`py/debugger`](py/debugger.md) | No debugger calls | `suggest` | — | *[rules] only* |
 | [`py/decimal-from-float-literal`](py/decimal-from-float-literal.md) | Decimal from a string, not a float | `suggest` | — | *[rules] only* |
 | [`py/default-except-not-last`](py/default-except-not-last.md) | A bare `except:` is the last handler | `manual` | — | `py/recommended` |
 | [`py/default-factory-kwarg`](py/default-factory-kwarg.md) | defaultdict's factory is positional | `suggest` | — | *[rules] only* |
+| [`py/del-attr-with-constant`](py/del-attr-with-constant.md) | del obj.name, not delattr(obj, 'name') | `auto` | — | *[rules] only* |
+| [`py/delete-full-slice`](py/delete-full-slice.md) | x.clear(), not del x\[:\] | `suggest` | — | *[rules] only* |
+| [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | *[rules] only* |
+| [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | *[rules] only* |
+| [`py/deprecated-unittest-alias`](py/deprecated-unittest-alias.md) | No deprecated unittest assert aliases | `auto` | — | *[rules] only* |
+| [`py/dict-get-with-none-default`](py/dict-get-with-none-default.md) | d.get(k), not d.get(k, None) | `auto` | — | *[rules] only* |
+| [`py/direct-logger-instantiation`](py/direct-logger-instantiation.md) | logging.getLogger, not logging.Logger() | `suggest` | — | *[rules] only* |
+| [`py/docstring-in-stub`](py/docstring-in-stub.md) | No docstrings in stubs | `auto` | — | *[rules] only* |
+| [`py/double-negation`](py/double-negation.md) | No not not | `auto` | — | *[rules] only* |
+| [`py/duplicate-bases`](py/duplicate-bases.md) | No base class listed twice | `suggest` | — | *[rules] only* |
+| [`py/duplicate-class-field-definition`](py/duplicate-class-field-definition.md) | No class attribute assigned twice | `suggest` | — | *[rules] only* |
 | [`py/duplicate-dict-key`](py/duplicate-dict-key.md) | A dict literal doesn't repeat a literal key | `manual` | — | `py/recommended` |
 | [`py/duplicate-dict-key-variable`](py/duplicate-dict-key-variable.md) | A dict literal doesn't repeat a variable key | `manual` | — | `py/recommended` |
 | [`py/duplicate-entry-in-dunder-all`](py/duplicate-entry-in-dunder-all.md) | No name twice in __all__ | `auto` | — | *[rules] only* |
 | [`py/duplicate-handler-exception`](py/duplicate-handler-exception.md) | No exception listed twice in one handler | `auto` | — | `py/recommended` |
+| [`py/duplicate-isinstance-call`](py/duplicate-isinstance-call.md) | One isinstance call with a tuple | `auto` | — | *[rules] only* |
+| [`py/duplicate-literal-member`](py/duplicate-literal-member.md) | No value twice in a Literal | `auto` | — | *[rules] only* |
 | [`py/duplicate-set-value`](py/duplicate-set-value.md) | No duplicate items in a set literal | `auto` | — | `py/recommended` |
 | [`py/duplicate-try-block-exception`](py/duplicate-try-block-exception.md) | An exception is caught by one handler only | `manual` | — | `py/recommended` |
+| [`py/duplicate-union-member`](py/duplicate-union-member.md) | No type twice in a union | `suggest` | — | *[rules] only* |
+| [`py/ellipsis-in-non-empty-class-body`](py/ellipsis-in-non-empty-class-body.md) | No ... in a stub class with other members | `auto` | — | *[rules] only* |
+| [`py/empty-comment`](py/empty-comment.md) | No empty comments | `auto` | — | *[rules] only* |
 | [`py/empty-method-without-abstract-decorator`](py/empty-method-without-abstract-decorator.md) | Empty methods in an abstract base class are abstract | `manual` | — | `py/recommended` |
+| [`py/empty-type-checking-block`](py/empty-type-checking-block.md) | No empty TYPE_CHECKING block | `auto` | — | *[rules] only* |
+| [`py/eq-without-hash`](py/eq-without-hash.md) | A class with __eq__ defines __hash__ | `suggest` | — | *[rules] only* |
+| [`py/error-instead-of-exception`](py/error-instead-of-exception.md) | logger.exception in an except block | `suggest` | — | *[rules] only* |
+| [`py/exc-info-outside-except-handler`](py/exc-info-outside-except-handler.md) | No exc_info=True outside an except block | `suggest` | — | *[rules] only* |
 | [`py/except-with-empty-tuple`](py/except-with-empty-tuple.md) | No `except ():` | `manual` | — | `py/recommended` |
 | [`py/except-with-non-exception-classes`](py/except-with-non-exception-classes.md) | `except` names exception classes | `manual` | — | `py/recommended` |
 | [`py/explicit-f-string-repr-conversion`](py/explicit-f-string-repr-conversion.md) | `!r`, not repr() inside an f-string | `auto` | — | *[rules] only* |
 | [`py/explicit-f-string-type-conversion`](py/explicit-f-string-type-conversion.md) | A conversion flag, not str() inside an f-string | `auto` | — | *[rules] only* |
+| [`py/explicit-string-concatenation`](py/explicit-string-concatenation.md) | No + between two string literals | `auto` | — | *[rules] only* |
+| [`py/expr-and-false`](py/expr-and-false.md) | No `and False` in a condition | `auto` | — | *[rules] only* |
+| [`py/expr-and-not-expr`](py/expr-and-not-expr.md) | No x and not x | `auto` | — | *[rules] only* |
+| [`py/expr-or-not-expr`](py/expr-or-not-expr.md) | No x or not x | `auto` | — | *[rules] only* |
+| [`py/expr-or-true`](py/expr-or-true.md) | No `or True` in a condition | `auto` | — | *[rules] only* |
+| [`py/extraneous-parentheses`](py/extraneous-parentheses.md) | No double parentheses in a call | `auto` | — | *[rules] only* |
 | [`py/f-string-docstring`](py/f-string-docstring.md) | Docstrings aren't f-strings | `manual` | — | `py/recommended` |
 | [`py/f-string-missing-placeholders`](py/f-string-missing-placeholders.md) | An f-string has a placeholder | `auto` | — | `py/recommended` |
 | [`py/f-string-percent-format`](py/f-string-percent-format.md) | No % formatting of an f-string | `manual` | — | *[rules] only* |
@@ -1471,64 +1665,155 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/format-invalid`](py/format-invalid.md) | A `.format` string is well formed | `manual` | — | `py/recommended` |
 | [`py/format-missing-argument`](py/format-missing-argument.md) | Every `.format` field has an argument | `manual` | — | `py/recommended` |
 | [`py/format-mixed-numbering`](py/format-mixed-numbering.md) | A `.format` string doesn't mix `{}` and `{0}` | `manual` | — | `py/recommended` |
+| [`py/format-string-without-interpolation`](py/format-string-without-interpolation.md) | No .format() on a string with no fields | `auto` | — | *[rules] only* |
 | [`py/format-unused-named-argument`](py/format-unused-named-argument.md) | Every keyword passed to `.format` is used | `auto` | — | `py/recommended` |
 | [`py/format-unused-positional-argument`](py/format-unused-positional-argument.md) | Every positional argument to `.format` is used | `auto` | — | `py/recommended` |
 | [`py/forward-annotation-syntax-error`](py/forward-annotation-syntax-error.md) | A string annotation is valid Python | `manual` | — | `py/recommended` |
+| [`py/fromisoformat-replace-z`](py/fromisoformat-replace-z.md) | fromisoformat reads Z | `suggest` | — | *[rules] only* |
 | [`py/function-call-in-dataclass-default-argument`](py/function-call-in-dataclass-default-argument.md) | No call as a dataclass field default | `manual` | — | *[rules] only* |
 | [`py/function-call-in-default-argument`](py/function-call-in-default-argument.md) | No function calls in default arguments | `manual` | `extend_immutable_calls` | `py/recommended` |
 | [`py/function-uses-loop-variable`](py/function-uses-loop-variable.md) | Closures don't capture a loop variable by name | `manual` | — | `py/recommended` |
+| [`py/future-annotations-in-stub`](py/future-annotations-in-stub.md) | No __future__ annotations in stubs | `auto` | — | *[rules] only* |
 | [`py/getattr-with-constant`](py/getattr-with-constant.md) | No `getattr` with a constant name | `auto` | — | `py/recommended` |
+| [`py/global-at-module-level`](py/global-at-module-level.md) | No global at module level | `auto` | — | *[rules] only* |
+| [`py/global-variable-not-assigned`](py/global-variable-not-assigned.md) | No global for a name never assigned | `suggest` | — | *[rules] only* |
+| [`py/hashlib-digest-hex`](py/hashlib-digest-hex.md) | hexdigest(), not digest().hex() | `auto` | — | *[rules] only* |
+| [`py/if-else-block-instead-of-dict-get`](py/if-else-block-instead-of-dict-get.md) | d.get(k, default), not if k in d | `suggest` | — | *[rules] only* |
+| [`py/if-else-block-instead-of-if-exp`](py/if-else-block-instead-of-if-exp.md) | A conditional expression for a two-way assignment | `suggest` | — | *[rules] only* |
+| [`py/if-exp-instead-of-or-operator`](py/if-exp-instead-of-or-operator.md) | a or b, not a if a else b | `auto` | — | *[rules] only* |
+| [`py/if-expr-min-max`](py/if-expr-min-max.md) | min()/max(), not a conditional | `suggest` | — | *[rules] only* |
+| [`py/if-expr-with-false-true`](py/if-expr-with-false-true.md) | not c, not False if c else True | `auto` | — | *[rules] only* |
+| [`py/if-expr-with-true-false`](py/if-expr-with-true-false.md) | bool(c), not True if c else False | `auto` | — | *[rules] only* |
+| [`py/if-expr-with-twisted-arms`](py/if-expr-with-twisted-arms.md) | a if a else b, not b if not a else a | `auto` | — | *[rules] only* |
 | [`py/if-key-in-dict-del`](py/if-key-in-dict-del.md) | d.pop(k, None), not if k in d: del d\[k\] | `auto` | — | *[rules] only* |
+| [`py/if-stmt-min-max`](py/if-stmt-min-max.md) | x = max(x, y), not if x < y: x = y | `suggest` | — | *[rules] only* |
 | [`py/if-tuple`](py/if-tuple.md) | `if` doesn't test a tuple | `manual` | — | `py/recommended` |
 | [`py/implicit-class-var-in-dataclass`](py/implicit-class-var-in-dataclass.md) | A dataclass's unannotated attribute is not a field | `manual` | — | *[rules] only* |
+| [`py/implicit-cwd`](py/implicit-cwd.md) | Path.cwd(), not Path().resolve() | `suggest` | — | *[rules] only* |
 | [`py/implicit-optional`](py/implicit-optional.md) | Optional parameters say Optional | `suggest` | — | *[rules] only* |
+| [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | *[rules] only* |
+| [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | *[rules] only* |
 | [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `manual` | — | `py/recommended` |
+| [`py/in-dict-keys`](py/in-dict-keys.md) | k in d, not k in d.keys() | `suggest` | — | *[rules] only* |
 | [`py/in-empty-collection`](py/in-empty-collection.md) | No membership test on an empty literal | `manual` | — | *[rules] only* |
+| [`py/incorrect-dict-iterator`](py/incorrect-dict-iterator.md) | d.keys() or d.values(), not items() with a discarded half | `auto` | — | *[rules] only* |
 | [`py/incorrectly-parenthesized-tuple-in-subscript`](py/incorrectly-parenthesized-tuple-in-subscript.md) | No parentheses around a subscript tuple | `auto` | — | *[rules] only* |
+| [`py/int-on-sliced-str`](py/int-on-sliced-str.md) | int(s, 0), not int(s\[2:\], 16) | `suggest` | — | *[rules] only* |
+| [`py/invalid-all-object`](py/invalid-all-object.md) | __all__ holds names as strings | `suggest` | — | *[rules] only* |
 | [`py/invalid-assert-message-literal-argument`](py/invalid-assert-message-literal-argument.md) | No empty-collection assert message | `manual` | — | *[rules] only* |
+| [`py/invalid-envvar-default`](py/invalid-envvar-default.md) | os.getenv's default is a string | `suggest` | — | *[rules] only* |
+| [`py/invalid-escape-sequence`](py/invalid-escape-sequence.md) | No invalid escapes in strings | `auto` | — | *[rules] only* |
+| [`py/invalid-get-logger-argument`](py/invalid-get-logger-argument.md) | getLogger(__name__), not getLogger(__file__) | `suggest` | — | *[rules] only* |
 | [`py/invalid-index-type`](py/invalid-index-type.md) | Index with an int, not another literal | `manual` | — | *[rules] only* |
+| [`py/invalid-mock-access`](py/invalid-mock-access.md) | Mock assertions are called | `auto` | — | *[rules] only* |
+| [`py/invalid-pathlib-with-suffix`](py/invalid-pathlib-with-suffix.md) | with_suffix takes a leading dot | `suggest` | — | *[rules] only* |
 | [`py/invalid-print-syntax`](py/invalid-print-syntax.md) | No Python 2 `print >>` | `manual` | — | `py/recommended` |
 | [`py/is-literal`](py/is-literal.md) | Literals are compared with `==`, not `is` | `suggest` | — | `py/recommended` |
+| [`py/isinstance-type-none`](py/isinstance-type-none.md) | x is None, not isinstance(x, type(None)) | `auto` | — | *[rules] only* |
 | [`py/jump-statement-in-finally`](py/jump-statement-in-finally.md) | No `return`, `break` or `continue` in `finally` | `manual` | — | `py/recommended` |
 | [`py/lambda-assignment`](py/lambda-assignment.md) | Define functions with `def`, not a lambda | `suggest` | — | `py/recommended` |
 | [`py/late-future-import`](py/late-future-import.md) | `from __future__` imports come first | `manual` | — | `py/recommended` |
 | [`py/legacy-form-pytest-raises`](py/legacy-form-pytest-raises.md) | pytest.raises as a context manager | `manual` | — | *[rules] only* |
+| [`py/list-reverse-copy`](py/list-reverse-copy.md) | x.reverse(), not x = x\[::-1\] | `suggest` | — | *[rules] only* |
+| [`py/literal-membership`](py/literal-membership.md) | Test membership in a set literal | `suggest` | — | *[rules] only* |
+| [`py/log-exception-outside-except-handler`](py/log-exception-outside-except-handler.md) | logger.exception only in an except block | `suggest` | — | *[rules] only* |
 | [`py/logging-eager-conversion`](py/logging-eager-conversion.md) | No str() on a logging argument | `suggest` | — | *[rules] only* |
+| [`py/logging-exc-info`](py/logging-exc-info.md) | logger.exception, not error(exc_info=True) | `suggest` | — | *[rules] only* |
+| [`py/logging-percent-format`](py/logging-percent-format.md) | No % formatting in a logging call | `suggest` | — | *[rules] only* |
+| [`py/logging-redundant-exc-info`](py/logging-redundant-exc-info.md) | No exc_info=True on logger.exception | `auto` | — | *[rules] only* |
+| [`py/logging-warn`](py/logging-warn.md) | logging.warning, not warn | `auto` | — | *[rules] only* |
+| [`py/long-sleep-not-forever`](py/long-sleep-not-forever.md) | sleep_forever(), not a day-long sleep | `suggest` | — | *[rules] only* |
 | [`py/loop-variable-overrides-iterator`](py/loop-variable-overrides-iterator.md) | A loop variable doesn't replace what it iterates | `manual` | — | `py/recommended` |
+| [`py/lru-cache-with-maxsize-none`](py/lru-cache-with-maxsize-none.md) | functools.cache, not lru_cache(maxsize=None) | `auto` | — | *[rules] only* |
+| [`py/lru-cache-without-parameters`](py/lru-cache-without-parameters.md) | @lru_cache, not @lru_cache() | `auto` | — | *[rules] only* |
 | [`py/map-int-version-parsing`](py/map-int-version-parsing.md) | No map(int, version.split('.')) | `manual` | — | *[rules] only* |
 | [`py/map-without-explicit-strict`](py/map-without-explicit-strict.md) | `map()` over several iterables says `strict=` | `suggest` | `target_version` | `py/recommended` |
+| [`py/math-constant`](py/math-constant.md) | math.pi, not 3.14159 | `suggest` | — | *[rules] only* |
 | [`py/max-depth`](py/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `py/size` |
 | [`py/max-lines`](py/max-lines.md) | A module stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `skip_imports` | `py/size` |
 | [`py/max-lines-per-function`](py/max-lines-per-function.md) | A function stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `include_nested`, `ignore_names` | `py/size` |
 | [`py/max-params`](py/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `max_positional`, `count_varargs`, `ignore_self_cls`, `ignore_names`, `ignore_overrides`, `ignore_declarations` | `py/size` |
+| [`py/meta-class-abc-meta`](py/meta-class-abc-meta.md) | ABC, not metaclass=ABCMeta | `suggest` | — | *[rules] only* |
 | [`py/method-receiver-default`](py/method-receiver-default.md) | No default on self or cls | `auto` | — | *[rules] only* |
+| [`py/misplaced-format-function`](py/misplaced-format-function.md) | format() on the string, not on print() | `suggest` | — | *[rules] only* |
 | [`py/module-import-not-at-top`](py/module-import-not-at-top.md) | Module-level imports come first | `manual` | — | `py/recommended` |
 | [`py/multiple-imports-on-one-line`](py/multiple-imports-on-one-line.md) | One module per `import` statement | `auto` | — | `py/recommended` |
 | [`py/multiple-starred-expressions`](py/multiple-starred-expressions.md) | One starred target per assignment | `manual` | — | `py/recommended` |
+| [`py/multiple-starts-ends-with`](py/multiple-starts-ends-with.md) | One startswith with a tuple | `auto` | — | *[rules] only* |
 | [`py/mutable-class-default`](py/mutable-class-default.md) | Mutable class attribute is ClassVar | `manual` | — | *[rules] only* |
 | [`py/mutable-contextvar-default`](py/mutable-contextvar-default.md) | No mutable `ContextVar` defaults | `manual` | — | `py/recommended` |
 | [`py/mutable-dataclass-default`](py/mutable-dataclass-default.md) | No mutable default in a dataclass field | `manual` | — | *[rules] only* |
 | [`py/mutable-fromkeys-value`](py/mutable-fromkeys-value.md) | No mutable value in dict.fromkeys | `suggest` | — | *[rules] only* |
+| [`py/named-expr-without-context`](py/named-expr-without-context.md) | No walrus as a statement | `auto` | — | *[rules] only* |
+| [`py/nan-comparison`](py/nan-comparison.md) | math.isnan, not == nan | `suggest` | — | *[rules] only* |
+| [`py/native-literals`](py/native-literals.md) | Literals, not str() or int() of a literal | `auto` | — | *[rules] only* |
+| [`py/needless-bool`](py/needless-bool.md) | Return the condition, not True or False | `suggest` | — | *[rules] only* |
 | [`py/needless-else`](py/needless-else.md) | No empty else | `auto` | — | *[rules] only* |
+| [`py/negate-equal-op`](py/negate-equal-op.md) | a != b, not not a == b | `suggest` | — | *[rules] only* |
+| [`py/negate-not-equal-op`](py/negate-not-equal-op.md) | a == b, not not a != b | `suggest` | — | *[rules] only* |
+| [`py/nested-min-max`](py/nested-min-max.md) | One min() or max(), not nested | `auto` | — | *[rules] only* |
 | [`py/nested-star-import`](py/nested-star-import.md) | `import *` only at module level | `manual` | — | `py/recommended` |
 | [`py/never-union`](py/never-union.md) | No Never or NoReturn in a union | `suggest` | — | *[rules] only* |
 | [`py/no-bare-except`](py/no-bare-except.md) | No bare `except:` | `suggest` | — | `py/recommended` |
 | [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended` |
+| [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | *[rules] only* |
 | [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended` |
 | [`py/no-print`](py/no-print.md) | No `print()` in library code | `suggest` | — | `py/conventions` |
+| [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | *[rules] only* |
 | [`py/no-slots-in-namedtuple-subclass`](py/no-slots-in-namedtuple-subclass.md) | namedtuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-slots-in-str-subclass`](py/no-slots-in-str-subclass.md) | str subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-slots-in-tuple-subclass`](py/no-slots-in-tuple-subclass.md) | tuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-star-import`](py/no-star-import.md) | No `from module import *` | `manual` | — | `py/recommended` |
 | [`py/no-tunable-literals`](py/no-tunable-literals.md) | No hard-coded timeouts, limits or thresholds | `manual` | — | `py/conventions` |
+| [`py/non-augmented-assignment`](py/non-augmented-assignment.md) | x += 1, not x = x + 1 | `suggest` | — | *[rules] only* |
 | [`py/non-empty-init-module`](py/non-empty-init-module.md) | __init__.py holds imports only | `manual` | — | *[rules] only* |
+| [`py/non-empty-stub-body`](py/non-empty-stub-body.md) | A stub function has no body | `auto` | — | *[rules] only* |
 | [`py/non-octal-permissions`](py/non-octal-permissions.md) | File modes are octal | `suggest` | — | *[rules] only* |
+| [`py/non-pep585-annotation`](py/non-pep585-annotation.md) | list\[int\], not typing.List\[int\] | `suggest` | — | *[rules] only* |
+| [`py/non-pep604-annotation-optional`](py/non-pep604-annotation-optional.md) | X \| None, not Optional\[X\] | `suggest` | — | *[rules] only* |
+| [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | *[rules] only* |
+| [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | *[rules] only* |
 | [`py/none-comparison`](py/none-comparison.md) | Compare with `None` using `is` | `suggest` | — | `py/recommended` |
 | [`py/none-not-at-end-of-union`](py/none-not-at-end-of-union.md) | None goes last in a union | `manual` | — | *[rules] only* |
 | [`py/not-in-test`](py/not-in-test.md) | Write `x not in y` | `auto` | — | `py/recommended` |
 | [`py/not-is-test`](py/not-is-test.md) | Write `x is not y` | `auto` | — | `py/recommended` |
+| [`py/numeric-literal-too-long`](py/numeric-literal-too-long.md) | No long numeric literals in stubs | `auto` | — | *[rules] only* |
+| [`py/open-alias`](py/open-alias.md) | open(), not io.open() | `auto` | — | *[rules] only* |
+| [`py/os-chmod`](py/os-chmod.md) | pathlib, not os.chmod | `suggest` | — | *[rules] only* |
+| [`py/os-error-alias`](py/os-error-alias.md) | OSError, not its aliases | `auto` | — | *[rules] only* |
+| [`py/os-getcwd`](py/os-getcwd.md) | pathlib, not os.getcwd | `suggest` | — | *[rules] only* |
+| [`py/os-listdir`](py/os-listdir.md) | pathlib, not os.listdir | `suggest` | — | *[rules] only* |
+| [`py/os-makedirs`](py/os-makedirs.md) | pathlib, not os.makedirs | `suggest` | — | *[rules] only* |
+| [`py/os-mkdir`](py/os-mkdir.md) | pathlib, not os.mkdir | `suggest` | — | *[rules] only* |
+| [`py/os-path-abspath`](py/os-path-abspath.md) | pathlib, not os.path.abspath | `suggest` | — | *[rules] only* |
+| [`py/os-path-basename`](py/os-path-basename.md) | pathlib, not os.path.basename | `suggest` | — | *[rules] only* |
 | [`py/os-path-commonprefix`](py/os-path-commonprefix.md) | os.path.commonpath, not commonprefix | `suggest` | — | *[rules] only* |
+| [`py/os-path-dirname`](py/os-path-dirname.md) | pathlib, not os.path.dirname | `suggest` | — | *[rules] only* |
+| [`py/os-path-exists`](py/os-path-exists.md) | pathlib, not os.path.exists | `suggest` | — | *[rules] only* |
+| [`py/os-path-expanduser`](py/os-path-expanduser.md) | pathlib, not os.path.expanduser | `suggest` | — | *[rules] only* |
+| [`py/os-path-getatime`](py/os-path-getatime.md) | pathlib, not os.path.getatime | `suggest` | — | *[rules] only* |
+| [`py/os-path-getctime`](py/os-path-getctime.md) | pathlib, not os.path.getctime | `suggest` | — | *[rules] only* |
+| [`py/os-path-getmtime`](py/os-path-getmtime.md) | pathlib, not os.path.getmtime | `suggest` | — | *[rules] only* |
+| [`py/os-path-getsize`](py/os-path-getsize.md) | pathlib, not os.path.getsize | `suggest` | — | *[rules] only* |
+| [`py/os-path-isabs`](py/os-path-isabs.md) | pathlib, not os.path.isabs | `suggest` | — | *[rules] only* |
+| [`py/os-path-isdir`](py/os-path-isdir.md) | pathlib, not os.path.isdir | `suggest` | — | *[rules] only* |
+| [`py/os-path-isfile`](py/os-path-isfile.md) | pathlib, not os.path.isfile | `suggest` | — | *[rules] only* |
+| [`py/os-path-islink`](py/os-path-islink.md) | pathlib, not os.path.islink | `suggest` | — | *[rules] only* |
+| [`py/os-path-join`](py/os-path-join.md) | pathlib, not os.path.join | `suggest` | — | *[rules] only* |
+| [`py/os-path-samefile`](py/os-path-samefile.md) | pathlib, not os.path.samefile | `suggest` | — | *[rules] only* |
+| [`py/os-readlink`](py/os-readlink.md) | pathlib, not os.readlink | `suggest` | — | *[rules] only* |
+| [`py/os-remove`](py/os-remove.md) | pathlib, not os.remove | `suggest` | — | *[rules] only* |
+| [`py/os-rename`](py/os-rename.md) | pathlib, not os.rename | `suggest` | — | *[rules] only* |
+| [`py/os-replace`](py/os-replace.md) | pathlib, not os.replace | `suggest` | — | *[rules] only* |
+| [`py/os-rmdir`](py/os-rmdir.md) | pathlib, not os.rmdir | `suggest` | — | *[rules] only* |
+| [`py/os-stat`](py/os-stat.md) | pathlib, not os.stat | `suggest` | — | *[rules] only* |
+| [`py/os-symlink`](py/os-symlink.md) | pathlib, not os.symlink | `suggest` | — | *[rules] only* |
+| [`py/os-unlink`](py/os-unlink.md) | pathlib, not os.unlink | `suggest` | — | *[rules] only* |
+| [`py/p-print`](py/p-print.md) | No pprint left in code | `suggest` | — | *[rules] only* |
 | [`py/parenthesize-chained-operators`](py/parenthesize-chained-operators.md) | Parenthesize `and` inside `or` | `auto` | — | *[rules] only* |
+| [`py/pass-in-class-body`](py/pass-in-class-body.md) | No pass in a stub class with other members | `auto` | — | *[rules] only* |
+| [`py/pass-statement-stub-body`](py/pass-statement-stub-body.md) | `...`, not pass, in a stub body | `auto` | — | *[rules] only* |
+| [`py/path-constructor-current-directory`](py/path-constructor-current-directory.md) | Path(), not Path(".") | `auto` | — | *[rules] only* |
 | [`py/percent-format-count-mismatch`](py/percent-format-count-mismatch.md) | A `%` format string gets one value per placeholder | `manual` | — | `py/recommended` |
 | [`py/percent-format-expected-mapping`](py/percent-format-expected-mapping.md) | Named `%` placeholders get a mapping | `manual` | — | `py/recommended` |
 | [`py/percent-format-expected-sequence`](py/percent-format-expected-sequence.md) | Positional `%` placeholders get a tuple | `manual` | — | `py/recommended` |
@@ -1538,63 +1823,189 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/percent-format-star-requires-sequence`](py/percent-format-star-requires-sequence.md) | A `*` width in a `%` format takes a tuple | `manual` | — | `py/recommended` |
 | [`py/percent-format-unsupported-character`](py/percent-format-unsupported-character.md) | A `%` format uses known conversions | `manual` | — | `py/recommended` |
 | [`py/percent-format-unused-named-argument`](py/percent-format-unused-named-argument.md) | Every key given to `%` is used | `auto` | — | `py/recommended` |
+| [`py/pointless-string-statement`](py/pointless-string-statement.md) | No string as a statement | `suggest` | — | *[rules] only* |
 | [`py/post-init-default`](py/post-init-default.md) | No defaults on __post_init__ parameters | `manual` | — | *[rules] only* |
+| [`py/print-empty-string`](py/print-empty-string.md) | print(), not print('') | `auto` | — | *[rules] only* |
 | [`py/property-without-return`](py/property-without-return.md) | A property returns a value | `manual` | — | *[rules] only* |
+| [`py/pytest-deprecated-yield-fixture`](py/pytest-deprecated-yield-fixture.md) | @pytest.fixture, not yield_fixture | `auto` | — | *[rules] only* |
+| [`py/pytest-duplicate-parametrize-test-cases`](py/pytest-duplicate-parametrize-test-cases.md) | No duplicate parametrize cases | `suggest` | — | *[rules] only* |
+| [`py/pytest-erroneous-use-fixtures-on-fixture`](py/pytest-erroneous-use-fixtures-on-fixture.md) | No usefixtures mark on a fixture | `auto` | — | *[rules] only* |
+| [`py/pytest-extraneous-scope-function`](py/pytest-extraneous-scope-function.md) | No scope='function' on a fixture | `auto` | — | *[rules] only* |
+| [`py/pytest-fixture-incorrect-parentheses-style`](py/pytest-fixture-incorrect-parentheses-style.md) | @pytest.fixture, not @pytest.fixture() | `auto` | — | *[rules] only* |
+| [`py/pytest-incorrect-mark-parentheses-style`](py/pytest-incorrect-mark-parentheses-style.md) | @pytest.mark.x, not @pytest.mark.x() | `auto` | — | *[rules] only* |
 | [`py/pytest-raises-ambiguous-pattern`](py/pytest-raises-ambiguous-pattern.md) | pytest.raises(match=) escapes regex characters | `manual` | — | *[rules] only* |
+| [`py/pytest-unittest-assertion`](py/pytest-unittest-assertion.md) | assert, not self.assertEqual | `suggest` | — | *[rules] only* |
+| [`py/pytest-unittest-raises-assertion`](py/pytest-unittest-raises-assertion.md) | pytest.raises, not self.assertRaises | `suggest` | — | *[rules] only* |
+| [`py/pytest-unnecessary-asyncio-mark-on-fixture`](py/pytest-unnecessary-asyncio-mark-on-fixture.md) | No asyncio mark on a fixture | `auto` | — | *[rules] only* |
+| [`py/pytest-use-fixtures-without-parameters`](py/pytest-use-fixtures-without-parameters.md) | No usefixtures() with nothing in it | `auto` | — | *[rules] only* |
+| [`py/pytest-useless-yield-fixture`](py/pytest-useless-yield-fixture.md) | return, not yield, in a fixture with no teardown | `auto` | — | *[rules] only* |
 | [`py/quadratic-list-summation`](py/quadratic-list-summation.md) | No sum() over lists | `suggest` | — | *[rules] only* |
+| [`py/quoted-annotation-in-stub`](py/quoted-annotation-in-stub.md) | No quoted annotations in stubs | `auto` | — | *[rules] only* |
 | [`py/raise-literal`](py/raise-literal.md) | Raise exceptions, not literals | `manual` | — | `py/recommended` |
 | [`py/raise-not-implemented`](py/raise-not-implemented.md) | Raise `NotImplementedError`, not `NotImplemented` | `suggest` | — | `py/recommended` |
 | [`py/raise-without-from-inside-except`](py/raise-without-from-inside-except.md) | Raising in `except` says `from` | `manual` | — | `py/recommended` |
 | [`py/re-sub-positional-args`](py/re-sub-positional-args.md) | `re.sub` count and flags by keyword | `manual` | — | `py/recommended` |
+| [`py/readlines-in-for`](py/readlines-in-for.md) | Iterate the file, not readlines() | `auto` | — | *[rules] only* |
 | [`py/redefined-while-unused`](py/redefined-while-unused.md) | A definition isn't replaced before it is used | `manual` | — | `py/recommended` |
+| [`py/redundant-backslash`](py/redundant-backslash.md) | No backslash inside brackets | `auto` | — | *[rules] only* |
 | [`py/redundant-bool-literal`](py/redundant-bool-literal.md) | bool, not Literal\[True, False\] | `auto` | — | *[rules] only* |
+| [`py/redundant-log-base`](py/redundant-log-base.md) | math.log2(x), not math.log(x, 2) | `suggest` | — | *[rules] only* |
+| [`py/redundant-none-literal`](py/redundant-none-literal.md) | None, not Literal\[None\] | `suggest` | — | *[rules] only* |
+| [`py/redundant-numeric-union`](py/redundant-numeric-union.md) | float, not int \| float | `suggest` | — | *[rules] only* |
+| [`py/redundant-open-modes`](py/redundant-open-modes.md) | No default mode in open() | `auto` | — | *[rules] only* |
 | [`py/redundant-tuple-in-exception-handler`](py/redundant-tuple-in-exception-handler.md) | No one-element tuple in `except` | `auto` | — | `py/recommended` |
+| [`py/regex-flag-alias`](py/regex-flag-alias.md) | re.IGNORECASE, not re.I | `auto` | — | *[rules] only* |
+| [`py/reimplemented-builtin`](py/reimplemented-builtin.md) | any(), not a loop that returns True | `suggest` | — | *[rules] only* |
+| [`py/reimplemented-container-builtin`](py/reimplemented-container-builtin.md) | list, not lambda: \[\] | `auto` | — | *[rules] only* |
+| [`py/reimplemented-operator`](py/reimplemented-operator.md) | operator.itemgetter, not a lambda | `suggest` | — | *[rules] only* |
+| [`py/reimplemented-starmap`](py/reimplemented-starmap.md) | itertools.starmap, not a comprehension that unpacks | `suggest` | — | *[rules] only* |
+| [`py/reimported`](py/reimported.md) | No module imported twice | `auto` | — | *[rules] only* |
+| [`py/repeated-equality-comparison`](py/repeated-equality-comparison.md) | x in (a, b), not x == a or x == b | `auto` | — | *[rules] only* |
+| [`py/repeated-global`](py/repeated-global.md) | One global statement | `auto` | — | *[rules] only* |
+| [`py/replace-stdout-stderr`](py/replace-stdout-stderr.md) | capture_output=True, not stdout=PIPE, stderr=PIPE | `suggest` | — | *[rules] only* |
+| [`py/replace-universal-newlines`](py/replace-universal-newlines.md) | text=, not universal_newlines= | `auto` | — | *[rules] only* |
+| [`py/return-in-init`](py/return-in-init.md) | No return value in __init__ | `suggest` | — | *[rules] only* |
 | [`py/return-outside-function`](py/return-outside-function.md) | `return` only inside a function | `manual` | — | `py/recommended` |
 | [`py/reuse-of-groupby-generator`](py/reuse-of-groupby-generator.md) | A `groupby` group is used once | `manual` | — | `py/recommended` |
+| [`py/runtime-cast-value`](py/runtime-cast-value.md) | Quote the type in typing.cast | `auto` | — | *[rules] only* |
+| [`py/self-assigning-variable`](py/self-assigning-variable.md) | No x = x | `suggest` | — | *[rules] only* |
 | [`py/setattr-with-constant`](py/setattr-with-constant.md) | No `setattr` with a constant name | `auto` | — | `py/recommended` |
+| [`py/shallow-copy-environ`](py/shallow-copy-environ.md) | os.environ.copy(), not copy.copy(os.environ) | `suggest` | — | *[rules] only* |
 | [`py/shebang-missing-python`](py/shebang-missing-python.md) | A shebang names python | `manual` | — | *[rules] only* |
 | [`py/shebang-not-first-line`](py/shebang-not-first-line.md) | The shebang is the first line | `auto` | — | *[rules] only* |
+| [`py/simplifiable-condition`](py/simplifiable-condition.md) | No `and True` in a condition | `auto` | — | *[rules] only* |
+| [`py/single-item-membership-test`](py/single-item-membership-test.md) | x == y, not x in (y,) | `suggest` | — | *[rules] only* |
+| [`py/single-string-used-for-slots`](py/single-string-used-for-slots.md) | __slots__ is a tuple, not a string | `suggest` | — | *[rules] only* |
+| [`py/singledispatch-method`](py/singledispatch-method.md) | singledispatchmethod on methods | `suggest` | — | *[rules] only* |
+| [`py/singledispatchmethod-function`](py/singledispatchmethod-function.md) | singledispatch on plain functions | `suggest` | — | *[rules] only* |
 | [`py/skipped-test`](py/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `py/markers` |
+| [`py/slice-copy`](py/slice-copy.md) | x.copy(), not x\[:\] | `suggest` | — | *[rules] only* |
+| [`py/sorted-min-max`](py/sorted-min-max.md) | min(), not sorted()\[0\] | `suggest` | — | *[rules] only* |
 | [`py/star-arg-unpacking-after-keyword-arg`](py/star-arg-unpacking-after-keyword-arg.md) | No `*args` after a keyword argument | `manual` | — | `py/recommended` |
 | [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `manual` | — | `py/recommended` |
 | [`py/starmap-zip`](py/starmap-zip.md) | map(f, a, b), not starmap(f, zip(a, b)) | `suggest` | — | *[rules] only* |
 | [`py/static-key-dict-comprehension`](py/static-key-dict-comprehension.md) | A dict comprehension's key varies | `manual` | — | `py/recommended` |
+| [`py/str-or-repr-defined-in-stub`](py/str-or-repr-defined-in-stub.md) | No __str__ or __repr__ in stubs | `auto` | — | *[rules] only* |
+| [`py/string-or-bytes-too-long`](py/string-or-bytes-too-long.md) | No long string literals in stubs | `auto` | — | *[rules] only* |
 | [`py/strip-with-multi-characters`](py/strip-with-multi-characters.md) | `.strip()` isn't given a word | `manual` | — | `py/recommended` |
+| [`py/subclass-builtin`](py/subclass-builtin.md) | UserDict, not a dict subclass | `suggest` | — | *[rules] only* |
+| [`py/subprocess-run-without-check`](py/subprocess-run-without-check.md) | subprocess.run says check= | `suggest` | — | *[rules] only* |
+| [`py/super-call-with-parameters`](py/super-call-with-parameters.md) | super(), not super(Class, self) | `auto` | — | *[rules] only* |
+| [`py/super-without-brackets`](py/super-without-brackets.md) | super(), not super | `auto` | — | *[rules] only* |
+| [`py/swap-with-temporary-variable`](py/swap-with-temporary-variable.md) | a, b = b, a, not a temporary | `suggest` | — | *[rules] only* |
+| [`py/sys-exit-alias`](py/sys-exit-alias.md) | sys.exit(), not exit() | `suggest` | — | *[rules] only* |
+| [`py/sys-version-info-minor-cmp-int`](py/sys-version-info-minor-cmp-int.md) | Compare the version tuple, not .minor with an int | `suggest` | — | *[rules] only* |
+| [`py/sys-version-info0-eq3`](py/sys-version-info0-eq3.md) | sys.version_info >= (3,), not \[0\] == 3 | `suggest` | — | *[rules] only* |
+| [`py/sys-version-info1-cmp-int`](py/sys-version-info1-cmp-int.md) | Compare the version tuple, not \[1\] with an int | `suggest` | — | *[rules] only* |
+| [`py/sys-version-slice1`](py/sys-version-slice1.md) | sys.version_info\[0\], not sys.version\[:1\] | `suggest` | — | *[rules] only* |
+| [`py/sys-version-slice3`](py/sys-version-slice3.md) | sys.version_info, not sys.version\[:3\] | `suggest` | — | *[rules] only* |
+| [`py/sys-version0`](py/sys-version0.md) | sys.version_info\[0\], not sys.version\[0\] | `suggest` | — | *[rules] only* |
+| [`py/sys-version2`](py/sys-version2.md) | sys.version_info, not sys.version\[2\] | `suggest` | — | *[rules] only* |
+| [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | *[rules] only* |
 | [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers` |
 | [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended` |
+| [`py/trio-sync-call`](py/trio-sync-call.md) | Await trio's async functions | `suggest` | — | *[rules] only* |
 | [`py/true-false-comparison`](py/true-false-comparison.md) | Don't compare with `True` or `False` | `suggest` | — | `py/recommended` |
 | [`py/type-comparison`](py/type-comparison.md) | Don't compare types with `==` | `manual` | — | `py/recommended` |
+| [`py/type-none-comparison`](py/type-none-comparison.md) | x is None, not type(x) is type(None) | `auto` | — | *[rules] only* |
+| [`py/type-of-primitive`](py/type-of-primitive.md) | str, not type('') | `suggest` | — | *[rules] only* |
+| [`py/typed-argument-default-in-stub`](py/typed-argument-default-in-stub.md) | Simple defaults only in stubs | `auto` | — | *[rules] only* |
+| [`py/typevar-name-mismatch`](py/typevar-name-mismatch.md) | A TypeVar's name matches its variable | `suggest` | — | *[rules] only* |
+| [`py/typing-text-str-alias`](py/typing-text-str-alias.md) | str, not typing.Text | `suggest` | — | *[rules] only* |
 | [`py/unary-prefix-increment`](py/unary-prefix-increment.md) | No `++x` or `--x` | `manual` | — | `py/recommended` |
+| [`py/unconventional-import-alias`](py/unconventional-import-alias.md) | numpy is imported as np | `suggest` | — | *[rules] only* |
 | [`py/undefined-export`](py/undefined-export.md) | `__all__` names only defined names | `manual` | — | `py/recommended` |
 | [`py/undefined-future-feature`](py/undefined-future-feature.md) | `from __future__` names only real features | `manual` | — | `py/recommended` |
 | [`py/undefined-local`](py/undefined-local.md) | A local isn't read before the function assigns it | `manual` | — | `py/recommended` |
 | [`py/undefined-name`](py/undefined-name.md) | Every name read is defined | `manual` | `builtins` | `py/recommended` |
+| [`py/undocumented-warn`](py/undocumented-warn.md) | logging.WARNING, not logging.WARN | `auto` | — | *[rules] only* |
+| [`py/unicode-kind-prefix`](py/unicode-kind-prefix.md) | No u prefix on strings | `auto` | — | *[rules] only* |
 | [`py/unintentional-type-annotation`](py/unintentional-type-annotation.md) | No annotation where an assignment was meant | `manual` | — | `py/recommended` |
+| [`py/unnecessary-assign`](py/unnecessary-assign.md) | Return the value, not a name assigned just before | `auto` | — | *[rules] only* |
 | [`py/unnecessary-assign-before-yield`](py/unnecessary-assign-before-yield.md) | Yield the value, not a name assigned just before | `auto` | — | *[rules] only* |
+| [`py/unnecessary-builtin-import`](py/unnecessary-builtin-import.md) | No importing builtins | `auto` | — | *[rules] only* |
+| [`py/unnecessary-call-around-sorted`](py/unnecessary-call-around-sorted.md) | No list() around sorted() | `auto` | — | *[rules] only* |
 | [`py/unnecessary-cast-to-int`](py/unnecessary-cast-to-int.md) | No int() around what is already an int | `auto` | — | *[rules] only* |
+| [`py/unnecessary-class-parentheses`](py/unnecessary-class-parentheses.md) | class A:, not class A(): | `auto` | — | *[rules] only* |
+| [`py/unnecessary-collection-call`](py/unnecessary-collection-call.md) | {} , not dict() | `auto` | — | *[rules] only* |
+| [`py/unnecessary-comprehension`](py/unnecessary-comprehension.md) | list(y), not \[x for x in y\] | `auto` | — | *[rules] only* |
+| [`py/unnecessary-comprehension-in-call`](py/unnecessary-comprehension-in-call.md) | A generator, not a list, inside any() and all() | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-default-type-args`](py/unnecessary-default-type-args.md) | Generator\[int\], not Generator\[int, None, None\] | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-dict-comprehension-for-iterable`](py/unnecessary-dict-comprehension-for-iterable.md) | dict.fromkeys, not {k: v for k in keys} | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-dict-index-lookup`](py/unnecessary-dict-index-lookup.md) | Use the value from items(), not d\[k\] | `auto` | — | *[rules] only* |
+| [`py/unnecessary-double-cast-or-process`](py/unnecessary-double-cast-or-process.md) | No list() or tuple() inside a call that takes any iterable | `auto` | — | *[rules] only* |
+| [`py/unnecessary-ellipsis`](py/unnecessary-ellipsis.md) | No ... beside other statements | `auto` | — | *[rules] only* |
 | [`py/unnecessary-empty-iterable-within-deque-call`](py/unnecessary-empty-iterable-within-deque-call.md) | deque(), not deque(\[\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-encode-utf8`](py/unnecessary-encode-utf8.md) | No .encode('utf-8') on a literal | `auto` | — | *[rules] only* |
+| [`py/unnecessary-from-float`](py/unnecessary-from-float.md) | Decimal(x), not Decimal.from_float(x) | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-future-import`](py/unnecessary-future-import.md) | No __future__ imports Python 3 already has | `auto` | — | *[rules] only* |
+| [`py/unnecessary-generator-dict`](py/unnecessary-generator-dict.md) | A dict comprehension, not dict(generator of pairs) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-generator-list`](py/unnecessary-generator-list.md) | A list comprehension, not list(generator) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-generator-set`](py/unnecessary-generator-set.md) | A set comprehension, not set(generator) | `auto` | — | *[rules] only* |
 | [`py/unnecessary-if`](py/unnecessary-if.md) | No if whose body is pass | `auto` | — | *[rules] only* |
 | [`py/unnecessary-iterable-allocation-for-first-element`](py/unnecessary-iterable-allocation-for-first-element.md) | next(iter(x)), not list(x)\[0\] | `suggest` | — | *[rules] only* |
 | [`py/unnecessary-key-check`](py/unnecessary-key-check.md) | d.get(k), not k in d and d\[k\] | `auto` | — | *[rules] only* |
+| [`py/unnecessary-lambda`](py/unnecessary-lambda.md) | No lambda that only calls a function | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-list-call`](py/unnecessary-list-call.md) | No list() around a list comprehension | `auto` | — | *[rules] only* |
+| [`py/unnecessary-list-cast`](py/unnecessary-list-cast.md) | No list() around a loop's iterable | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-list-comprehension-dict`](py/unnecessary-list-comprehension-dict.md) | A dict comprehension, not dict(\[pairs\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-list-comprehension-set`](py/unnecessary-list-comprehension-set.md) | A set comprehension, not set(\[comprehension\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-list-index-lookup`](py/unnecessary-list-index-lookup.md) | Use the item from enumerate(), not xs\[i\] | `auto` | — | *[rules] only* |
+| [`py/unnecessary-literal-dict`](py/unnecessary-literal-dict.md) | A dict literal, not dict(\[(k, v)\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-literal-set`](py/unnecessary-literal-set.md) | A set literal, not set(\[...\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-literal-union`](py/unnecessary-literal-union.md) | One Literal, not a union of Literals | `auto` | — | *[rules] only* |
+| [`py/unnecessary-literal-within-dict-call`](py/unnecessary-literal-within-dict-call.md) | No dict() around a dict literal | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-literal-within-list-call`](py/unnecessary-literal-within-list-call.md) | A list literal, not list(\[...\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-literal-within-tuple-call`](py/unnecessary-literal-within-tuple-call.md) | A tuple literal, not tuple(\[...\]) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-map`](py/unnecessary-map.md) | A generator, not map(lambda ...) | `suggest` | — | *[rules] only* |
 | [`py/unnecessary-nested-literal`](py/unnecessary-nested-literal.md) | Literal\[a, b\], not Literal\[a, Literal\[b\]\] | `auto` | — | *[rules] only* |
+| [`py/unnecessary-paren-on-raise-exception`](py/unnecessary-paren-on-raise-exception.md) | raise ValueError, not raise ValueError() | `auto` | — | *[rules] only* |
+| [`py/unnecessary-placeholder`](py/unnecessary-placeholder.md) | No pass beside other statements | `auto` | — | *[rules] only* |
+| [`py/unnecessary-range-start`](py/unnecessary-range-start.md) | range(n), not range(0, n) | `auto` | — | *[rules] only* |
 | [`py/unnecessary-regular-expression`](py/unnecessary-regular-expression.md) | str.replace, not re.sub with a plain string | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-return-none`](py/unnecessary-return-none.md) | return, not return None, when nothing else is returned | `auto` | — | *[rules] only* |
 | [`py/unnecessary-round`](py/unnecessary-round.md) | No round() of an int | `auto` | — | *[rules] only* |
+| [`py/unnecessary-spread`](py/unnecessary-spread.md) | No spread of a dict literal | `auto` | — | *[rules] only* |
+| [`py/unnecessary-subscript-reversal`](py/unnecessary-subscript-reversal.md) | No \[::-1\] inside set() or sorted() | `auto` | — | *[rules] only* |
+| [`py/unnecessary-type-union`](py/unnecessary-type-union.md) | type\[A \| B\], not type\[A\] \| type\[B\] | `suggest` | — | *[rules] only* |
 | [`py/unraw-re-pattern`](py/unraw-re-pattern.md) | Regex patterns are raw strings | `suggest` | — | *[rules] only* |
+| [`py/unreachable`](py/unreachable.md) | No code after return or raise | `suggest` | — | *[rules] only* |
 | [`py/unreliable-callable-check`](py/unreliable-callable-check.md) | Test for callables with `callable()` | `suggest` | — | `py/recommended` |
 | [`py/unsorted-imports`](py/unsorted-imports.md) | Imports are sorted | `auto` | `known_first_party`, `line_length` | `py/recommended` |
+| [`py/unspecified-encoding`](py/unspecified-encoding.md) | open() in text mode names its encoding | `suggest` | — | *[rules] only* |
 | [`py/unused-annotation`](py/unused-annotation.md) | Every annotated local is used | `auto` | — | `py/recommended` |
 | [`py/unused-async`](py/unused-async.md) | async def awaits something | `manual` | — | *[rules] only* |
 | [`py/unused-import`](py/unused-import.md) | Every imported name is used | `suggest` | — | `py/recommended` |
 | [`py/unused-loop-control-variable`](py/unused-loop-control-variable.md) | Every loop variable is used in the loop | `suggest` | — | `py/recommended` |
 | [`py/unused-unpacked-variable`](py/unused-unpacked-variable.md) | Unused names from unpacking start with _ | `suggest` | — | *[rules] only* |
 | [`py/unused-variable`](py/unused-variable.md) | Every local variable is used | `suggest` | — | `py/recommended` |
+| [`py/use-implicit-booleaness-not-comparison`](py/use-implicit-booleaness-not-comparison.md) | if not x:, not if x == \[\] | `suggest` | — | *[rules] only* |
+| [`py/use-implicit-booleaness-not-comparison-to-zero`](py/use-implicit-booleaness-not-comparison-to-zero.md) | if not x:, not if x == 0 | `suggest` | — | *[rules] only* |
+| [`py/use-implicit-booleaness-not-len`](py/use-implicit-booleaness-not-len.md) | if x:, not if len(x): | `suggest` | — | *[rules] only* |
 | [`py/use-instead`](py/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `py/recommended` |
+| [`py/use-list-literal`](py/use-list-literal.md) | \[\], not list() | `auto` | — | *[rules] only* |
+| [`py/use-maxsplit-arg`](py/use-maxsplit-arg.md) | split(sep, maxsplit=1) when only the first part is used | `suggest` | — | *[rules] only* |
+| [`py/use-sequence-for-iteration`](py/use-sequence-for-iteration.md) | Iterate a tuple, not a set literal | `suggest` | — | *[rules] only* |
+| [`py/useless-class-metaclass-type`](py/useless-class-metaclass-type.md) | No metaclass=type | `auto` | — | *[rules] only* |
 | [`py/useless-comparison`](py/useless-comparison.md) | No comparison whose result is thrown away | `manual` | — | `py/recommended` |
 | [`py/useless-contextlib-suppress`](py/useless-contextlib-suppress.md) | `contextlib.suppress()` names an exception | `manual` | — | `py/recommended` |
+| [`py/useless-exception-statement`](py/useless-exception-statement.md) | Raise the exception you build | `suggest` | — | *[rules] only* |
 | [`py/useless-expression`](py/useless-expression.md) | No expression statement that does nothing | `manual` | — | `py/recommended` |
 | [`py/useless-finally`](py/useless-finally.md) | No empty finally | `auto` | — | *[rules] only* |
 | [`py/useless-if-else`](py/useless-if-else.md) | No conditional whose branches are equal | `suggest` | — | *[rules] only* |
+| [`py/useless-import-alias`](py/useless-import-alias.md) | No import x as x | `auto` | — | *[rules] only* |
+| [`py/useless-metaclass-type`](py/useless-metaclass-type.md) | No __metaclass__ = type | `auto` | — | *[rules] only* |
+| [`py/useless-object-inheritance`](py/useless-object-inheritance.md) | No explicit object base | `auto` | — | *[rules] only* |
+| [`py/useless-parent-delegation`](py/useless-parent-delegation.md) | No method that only calls super() | `suggest` | — | *[rules] only* |
+| [`py/useless-return`](py/useless-return.md) | No return None at the end | `auto` | — | *[rules] only* |
+| [`py/utf8-encoding-declaration`](py/utf8-encoding-declaration.md) | No coding: utf-8 comment | `auto` | — | *[rules] only* |
+| [`py/verbose-decimal-constructor`](py/verbose-decimal-constructor.md) | Decimal('1.5'), not Decimal('  1.5 ') | `auto` | — | *[rules] only* |
+| [`py/verbose-raise`](py/verbose-raise.md) | raise, not raise e | `auto` | — | *[rules] only* |
+| [`py/while-one`](py/while-one.md) | while True, not while 1 | `auto` | — | *[rules] only* |
+| [`py/yield-in-for-loop`](py/yield-in-for-loop.md) | yield from, not a loop that yields each item | `suggest` | — | *[rules] only* |
 | [`py/yield-outside-function`](py/yield-outside-function.md) | `yield` and `await` only inside a function | `manual` | — | `py/recommended` |
+| [`py/yoda-conditions`](py/yoda-conditions.md) | The variable goes first in a comparison | `suggest` | — | *[rules] only* |
+| [`py/zip-dict-keys-and-values`](py/zip-dict-keys-and-values.md) | d.items(), not zip(d.keys(), d.values()) | `suggest` | — | *[rules] only* |
 | [`py/zip-instead-of-pairwise`](py/zip-instead-of-pairwise.md) | itertools.pairwise, not zip(x, x\[1:\]) | `suggest` | — | *[rules] only* |
 | [`py/zip-without-explicit-strict`](py/zip-without-explicit-strict.md) | `zip()` says `strict=` | `suggest` | `target_version` | `py/recommended` |
 
@@ -1656,7 +2067,7 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | [`sec-py/no-xml-unsafe-parser`](sec-py/no-xml-unsafe-parser.md) | XML is parsed with `defusedxml` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xmlrpc`](sec-py/no-xmlrpc.md) | No `xmlrpc` without `defusedxml` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xpath-injection`](sec-py/no-xpath-injection.md) | XPath expressions are not built from strings | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
-| [`sec-py/paramiko-host-key`](sec-py/paramiko-host-key.md) | SSH host keys are checked | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/paramiko-host-key`](sec-py/paramiko-host-key.md) | SSH host keys are checked | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/password-hash-effort`](sec-py/password-hash-effort.md) | Passwords are hashed with a slow function | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/requests-timeout`](sec-py/requests-timeout.md) | HTTP requests have a timeout | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/tarfile-filter`](sec-py/tarfile-filter.md) | Archive extraction uses `filter="data"` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
@@ -1697,6 +2108,7 @@ Presets: `codelaw:airflow/recommended`.
 |---|---|---|---|---|
 | [`airflow/airflow-dag-no-schedule-argument`](airflow/airflow-dag-no-schedule-argument.md) | A DAG names its schedule | `manual` | — | `airflow/recommended` |
 | [`airflow/airflow-variable-get-outside-task`](airflow/airflow-variable-get-outside-task.md) | Variable.get inside a task | `manual` | — | *[rules] only* |
+| [`airflow/airflow-variable-name-task-id-mismatch`](airflow/airflow-variable-name-task-id-mismatch.md) | A task's variable is named like its task_id | `suggest` | — | *[rules] only* |
 | [`airflow/airflow-xcom-pull-in-template-string`](airflow/airflow-xcom-pull-in-template-string.md) | task.output, not xcom_pull in a template | `manual` | — | *[rules] only* |
 | [`airflow/airflow3-dag-dynamic-value`](airflow/airflow3-dag-dynamic-value.md) | No changing values in a DAG's arguments | `manual` | — | *[rules] only* |
 

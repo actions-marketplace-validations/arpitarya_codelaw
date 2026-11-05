@@ -4,7 +4,7 @@ title: "Every key given to `%` is used"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/F504]
+ported_from: [ruff/F504, pylint/unused-format-string-key]
 since: 0.1.0
 ---
 

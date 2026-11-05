@@ -11,8 +11,10 @@ owns:
   - crates/codelaw-format
   - scripts/format-parity.py
   - scripts/format-corpus.py
+  - scripts/tailwind-parity.py
+  - crates/codelaw-lang/src/class_lists.rs
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-30T18:00:00Z
+timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
 ---
 
@@ -164,9 +166,24 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    - **MCP:** a `format_snippet` tool: the bytes `fix <path>` would write, format step included.
    - **Generated agent instructions** say "don't format by hand; codelaw formats on save".
 
+9. **Tailwind class sorting** (W-145; the decider's ruling of 2026-10-30, *"I want the class sorting in the formatter."*). When a provider gives the project a class table ([SR-RULE-PACKS](0101_rule-packs.md) decision 19: the `tailwind` pack and `@codelaw/provider-tailwind` installed, and the project's own `tailwindcss` in `node_modules`), the formatter puts every class list in Tailwind's order before the engine lays the file out, as prettier-plugin-tailwindcss does in its tree before printing. Without a table nothing is sorted — plain Prettier does not sort — and the run's note is the provider's ([SR-RULE-PACKS](0101_rule-packs.md) decision 19's `on_missing`).
+   - **Where:** `class` and `className` attributes — in HTML, and in JSX/TSX, where every string and template literal inside a `{…}` value counts — and every string and template literal in the arguments of a call to a class function, through member accesses and calls (`cn(…)`, `tw.div(…)`, `cva(…)(…)`), and a template tagged by one. `crates/codelaw-lang/src/class_lists.rs` finds them, the same finder the `tailwind` rules use.
+   - **The order** is the table's, which is the project's Tailwind's (its version, `@theme`, `@utility` and plugins): classes the table does not know first, in their written order; then the known ones in Tailwind's order, ties in written order; `...` and `…` last. A known class written twice keeps its first place only. Whitespace runs become one space and a list loses its leading and trailing space, except where the list is joined to something else — by `+`, or by a `${…}` in a template, whose glued word also stays put. A list holding `{{` is left alone. `codelaw_core::class_table::sort_classes` is that algorithm, written fresh from prettier-plugin-tailwindcss 0.8.1's documented behaviour.
+   - **`[format.tailwind]`:** `sort` (`true` | `false`; unset sorts whenever there is a table, and `true` with no table only notes it), `attributes` (default `["class", "className"]`) and `functions` (default `["clsx", "cn", "cva", "tw"]`). The rules read the same two lists from their own `attributes` and `functions` options.
+   - **Why it is layout, not a lint fix.** Decision 3's token check compares a rule's examples; it is not run on the formatter, and a class string stays one string token whose text changes. The order of classes in a list has no effect in Tailwind: which class wins is decided by the order of Tailwind's generated CSS, never by the attribute, so reordering — and dropping a repeated class — changes no element's style. That makes it the formatter's, as quotes are (§1). It is not proved for a project's own CSS that selects on attribute text (`[class^="p-"]`); a project that has such selectors sets `[format.tailwind] sort = false`.
+   - **Cache keys:** the table's identity — the provider, its version, Tailwind's version and a digest of every file the provider read — is in each sorted file's format options, so a warm run reuses its results and starts no Node.
+   - **Parity, measured 2026-11-05 (W-145)** by `scripts/tailwind-parity.py` against prettier-plugin-tailwindcss 0.8.1 with Prettier 3.9.10 and Tailwind 4.3.3 (L11 D-48, D-49), default theme for both, `tailwindFunctions` codelaw's four:
+
+     | corpus (pinned, fetched outside the repo) | files | files the plugin re-sorts | sorting identical | `codelaw format` identical |
+     |---|--:|--:|--:|--:|
+     | shadcn/ui `apps/v4` (tag `shadcn@3.8.5`, `ad25490c`, MIT) | 2,420 | 84 | 2,420 (100.0 %) | 2,410 (99.6 %) |
+     | Headless UI `playgrounds/react` (tag `@headlessui/react@v2.2.10`, `d13526d0`, MIT) | 59 | 44 | 59 (100.0 %) | 59 (100.0 %) |
+
+     *Sorting* is codelaw's sorter alone on Prettier's own output (`codelaw debug sort-classes`), so the layouts match by construction: it is the measure of DoD 3 (≥ 98 %). *Format* is the whole `codelaw format`, whose ten differing files are Biome's layout, not the class order. The first run found one file sorted by Prettier and not by codelaw: tree-sitter rejects an `&` inside a JSX attribute string that Babel accepts, and the sorter then left the whole file alone; it now skips only the lists inside a part its parser could not read.
+
 ### What is built
 
-Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
+Built 2026-11-05 (`W-145`): decision 9. Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
 
 ### Consequences
 

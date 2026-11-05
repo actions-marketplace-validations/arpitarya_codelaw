@@ -8,7 +8,7 @@ use crate::pack::{ExtendsSpec, RulePack, first_party_npm, first_party_pypi, load
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, Stability};
 use codelaw_cache::{Key, KeyBuilder};
 use codelaw_config::{Config, Layer, PresetScope, RuleConfig, RuleSetting};
-use codelaw_core::Severity;
+use codelaw_core::{FixClass, Severity};
 use std::collections::{BTreeMap, VecDeque};
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -85,7 +85,27 @@ fn to_config(rule: &RuleFile, setting: Option<&RuleSetting>) -> Option<RuleConfi
     if let Some(o) = setting.and_then(|s| s.options()) {
         options.extend(o.iter().map(|(k, v)| (k.clone(), v.clone())));
     }
-    Some(RuleConfig { severity: Some(severity), options })
+    let fix = lowered(rule.fix, setting);
+    Some(RuleConfig { severity: Some(severity), options, fix })
+}
+
+/// The rung an entry lowers a rule of class `own` to (SR-LAW-4 decision 16);
+/// `None` when it names none, or names the rule's own.
+fn lowered(own: FixClass, setting: Option<&RuleSetting>) -> Option<FixClass> {
+    setting.and_then(|s| s.fix()).and_then(FixClass::parse).filter(|f| *f > own)
+}
+
+/// A `fix` that would raise the rule's class: exit 2, naming the rule's own
+/// rung (SR-LAW-4 decision 16).
+fn check_fix(id: &str, own: FixClass, setting: &RuleSetting, file: &std::path::Path, errors: &mut Vec<LoadError>) {
+    if let Some(f) = setting.fix().and_then(FixClass::parse)
+        && f < own
+    {
+        errors.push(LoadError::new(
+            Some(file.to_owned()),
+            format!("rule `{id}`: `fix = \"{f}\"` would raise its fix, which is `{own}`; a project may only lower a rule's fix (SR-LAW-4 decision 16)"),
+        ));
+    }
 }
 
 fn check_options(rule: &RuleFile, setting: &RuleSetting, file: &std::path::Path, errors: &mut Vec<LoadError>) {
@@ -371,12 +391,14 @@ impl RuleSet {
         // Every rule id the config names exists (SR-CONFIG decision 5).
         for f in &config.files {
             let mut check = |id: &str, setting: &RuleSetting| {
-                if engine_rule(id).is_some() {
+                if let Some(e) = engine_rule(id) {
+                    check_fix(id, e.fix, setting, &f.path, &mut errors);
                     return;
                 }
                 match merged.get(id) {
                     Some(r) => {
                         check_options(&r.rule, setting, &f.path, &mut errors);
+                        check_fix(id, r.rule.fix, setting, &f.path, &mut errors);
                         let w = format!("`{id}` is a preview rule and runs only with `preview = true`");
                         // Once, however many places (profiles included) name it.
                         if r.preview_blocked && setting.severity() != Some("off") && !warnings.contains(&w) {
@@ -450,7 +472,7 @@ impl RuleSet {
                 Some("off") => current = None,
                 Some(s) => {
                     let sev = Severity::parse(s).unwrap_or(rule.rule.severity);
-                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options() });
+                    let mut cfg = current.take().unwrap_or_else(|| RuleConfig { severity: None, options: rule.rule.default_options(), fix: None });
                     cfg.severity = Some(sev);
                     current = Some(cfg);
                 }
@@ -458,6 +480,11 @@ impl RuleSet {
             }
             if let (Some(cfg), Some(opts)) = (current.as_mut(), setting.options()) {
                 cfg.options.extend(opts.iter().map(|(k, v)| (k.clone(), v.clone())));
+            }
+            // A later layer may lower further, or set the rule's own rung
+            // back; it never rises above the rule's (SR-LAW-4 decision 16).
+            if let (Some(cfg), Some(f)) = (current.as_mut(), setting.fix().and_then(FixClass::parse)) {
+                cfg.fix = (f > rule.rule.fix).then_some(f);
             }
         }
         current

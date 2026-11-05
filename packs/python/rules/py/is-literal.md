@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "`==` calls the object's `__eq__`, which can behave differently from identity"
 stability: preview
-ported_from: [ruff/F632]
+ported_from: [ruff/F632, pylint/literal-comparison]
 since: 0.1.0
 ---
 

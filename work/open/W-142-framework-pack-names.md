@@ -6,7 +6,7 @@ item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Cowork (Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5), W-145"
 ball: arpit
 ---
 
@@ -39,6 +39,15 @@ ball: arpit
 | pandas | `codelaw-rules-pandas` | `codelaw-rules-pandas-fux-index` |
 
 Form values for each: owner `arpitarya` · repository `codelaw` · workflow `publish.yml` · environment `pypi`.
+
+**Added 2026-11-05 by W-145 (closed):** the `tailwind` pack and its provider need their names too, before the release that carries them —
+
+| package | registry | its Fux index |
+|---|---|---|
+| `codelaw-rules-tailwind` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | `codelaw-rules-tailwind-fux-index` |
+| `@codelaw/rules-tailwind` | npm (first publish by hand, as `nextjs`'s in § W-147) | `@codelaw/rules-tailwind-fux-index` |
+| `@codelaw/provider-tailwind` | npm (first publish by hand; `publish.yml` uploads it in the binaries' tier, before the packs) | — (holds no rules) |
+
 
 **PyPI only:** L6 ships `python` and `security-python` on PyPI alone (*"each registry carries only the packs its users install"*); these five follow them. Said by voice as also on npm (`@codelaw/rules-django` …) — not filed; say so if npm is wanted, and L6's table changes with it.
 

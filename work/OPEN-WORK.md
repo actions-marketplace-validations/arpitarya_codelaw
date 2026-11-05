@@ -22,28 +22,30 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
+| 🔴 **W-139: raise two manual ceilings, or leave 132 ports out?** ([W-139](open/W-139-rule-parity-build.md)): 75 js ports (59 SonarJS, 16 unicorn) and 57 Python ports (Ruff, Pylint) are written and green but `manual`; `js` is at its ceiling (259) and `python` at its (93), and only you may raise one (SR-LAW-4 decision 6). **Pick:** (1) *recommended* — leave them out (the ladder exists to push manual down; they would sit in opt-in presets); (2) raise js to ~334 and python to ~150. Specs kept in `target/w139js` and `target/w139py`. | 2026-11-05 |
+| ↳ **blocks:** W-139's 132 held rules | |
+| 🔴 **Oxc's formatter crates under L11** ([W-141](open/W-141-formatter-parity.md)): `oxc_formatter_css`, `_markdown`, `_yaml` and their parsers (MIT, a pinned git revision, not on crates.io) for CSS, SCSS, YAML and Markdown. Measured on the pinned corpus: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3% byte-identical to Prettier. **Ratify or refuse**; if refused, W-141 closes with the engine gaps named in SR-FORMATTER. | 2026-11-05 |
+| ↳ **blocks:** W-141 | |
 
-*Empty since 2026-11-05 — next gate: W-103's `spell` budget, put to Arpit once an agent reads the three `perf` runs' p95s.*
 
 ---
 
-## Open items (14)
+## Open items (13)
 
-### build (8)
+### build (7)
 
-🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep all eight 11-05; each lands with its item (W-139, W-145, W-146, W-156, W-157). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
+🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep 11-05; W-146, W-157 and four W-139 strands since landed and removed; left: W-139-native, W-145, W-156 (three). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30); tranche A on, rest opt-in. Landed: about 780 so far (per slice in the item: js, ts, React, regexp, CSS/SCSS/HTML/md, Python); nextjs + 5 PyPI. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🔴 **W-139** `arpit` Rule parity, wound down 11-05: js 345/828 rows, Ruff 349/708, Pylint 108/298, react/ts, testing 169/182, nextjs, 5 PyPI packs; 132 manual ports held at the ceilings (inbox); native strand landing; the rest in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Left: gaps inside Biome/markup_fmt; Oxc's crates wait on Arpit's L11 call. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
+🔴 **W-141** `arpit` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Next: Arpit's L11 call on Oxc's crates (inbox). Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine built 10-31: per-finding rung, choices, `fix_exception`, ceiling, `--fix-stats`. Next: lowering, then the moves pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); left: moving the ~530 `fix_pending:` rules up, pack by pack; Arpit rules on the capability-blocked ones. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 

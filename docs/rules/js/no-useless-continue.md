@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/strict` at `error` |
+| **Turned on by** | `codelaw:js/strict` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-unicorn/no-useless-continue` |
+| **Ported from** | `eslint-plugin-unicorn/no-useless-continue`, `eslint-plugin-sonarjs/no-redundant-jump` |
 
 ## What it checks
 

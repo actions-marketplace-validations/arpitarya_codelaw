@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an object whose `__eq__` treats itself as equal to `None` would compare differently) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `ruff/E711` |
+| **Ported from** | `ruff/E711`, `pylint/singleton-comparison` |
 
 ## What it checks
 

@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "which numbering the author wants has to be chosen"
 fix_pending: "suggest"
 stability: preview
-ported_from: [ruff/F525]
+ported_from: [ruff/F525, pylint/format-combined-specification]
 since: 0.1.0
 ---
 
