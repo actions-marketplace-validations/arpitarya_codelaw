@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: auto
 fix_reason: "Node resolves `fs` and `node:fs` to the same built-in module"
 stability: preview
-ported_from: [eslint-plugin-n/prefer-node-protocol]
+ported_from: [eslint-plugin-n/prefer-node-protocol, eslint-plugin-unicorn/prefer-node-protocol]
 since: 0.5.0
 ---
 
