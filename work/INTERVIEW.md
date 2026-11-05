@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**2026-11-05 (Claude Code): `main` pushed** — Arpit pushed to `d5006de0` (*"git push done"*), then the 19 commits after it were pushed to `3b53d1a8`. W-126's and W-105's runs are unblocked.
+
 **Ruled 2026-11-05 (Claude Code, multiple choice): W-162 and W-163.** W-162: *"Allow multi-file (Recommended)"* — a fix may edit several files, verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook; SR-LAW-4 decisions 10 and 12 amended (not built), W-162 🟢 `agent`. W-163: the proposal accepted as presented (`on_edit` per rule with its defaults; `[targets]`, Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule), call 1 *"Own table (Recommended)"* (codelaw's own ~250-row cited browser table; caniuse and MDN stay refused under L2), call 2 *"Target-gated (Recommended)"* (`py/lru-cache-with-maxsize-none` 3.9, `py/lru-cache-without-parameters` 3.8). Written into SR-LAW-4 decision 12, SR-CONFIG 11e–11f, SR-RULE-FORMAT 2b–2c (not built); W-163 closed, its build is W-166 (🟢 `agent`). [W-162](open/W-162-fix-capabilities-build.md) · [W-166](open/W-166-save-behaviour-and-targets-build.md)
 
 **Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (a demo, three `keep/` Fux-index branches, eight stale `lm/` handoff and save branches; listed in the item). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)

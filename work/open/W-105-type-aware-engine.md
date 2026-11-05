@@ -7,7 +7,7 @@ filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+ball: agent
 ---
 
 # W-105 — Type-aware TypeScript, and its version watch
