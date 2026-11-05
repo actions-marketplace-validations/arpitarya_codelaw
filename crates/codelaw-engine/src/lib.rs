@@ -278,6 +278,13 @@ impl Aliases {
     }
 }
 
+/// Where a project's packs are found (SR-PACK-LOOKUP): the one search the
+/// run uses, and the language server's completions of `codelaw.toml` too
+/// (W-157), so the two never list different packs.
+pub fn pack_search(config: &Config, options: &EngineOptions) -> PackSearch {
+    PackSearch::new(config, &options.pack_env())
+}
+
 fn pool(threads: Option<usize>) -> rayon::ThreadPool {
     // Deeply nested code recurses deeply; give workers room.
     let mut b = rayon::ThreadPoolBuilder::new().stack_size(64 << 20);
@@ -295,7 +302,7 @@ impl Project {
     }
 
     pub fn from_config(config: Config, options: EngineOptions) -> Result<Project, EngineError> {
-        let search = PackSearch::new(&config, &options.pack_env());
+        let search = pack_search(&config, &options);
         let known = |id: &str| codelaw_native::lookup(id).is_some() || id == codelaw_types::TYPE_ERROR_NATIVE;
         let rules = RuleSet::load(&config, &LoadOptions { search, known_native: &known }).map_err(EngineError::Load)?;
         Project::from_parts(config, rules, options)

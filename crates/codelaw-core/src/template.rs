@@ -170,7 +170,7 @@ mod tests {
         ("ci/gitlab/autofix-suggest-job.yml", &[("version", "0.0.0")]),
         ("ci/gitlab/codelaw-autofix.yml", &[("cron", "17 4 * * *"), ("version", "0.0.0"), ("suggest_job", "")]),
         ("init/codelaw-agents.toml", &[("targets", "\"claude\"")]),
-        ("init/codelaw.toml", &[("extends", ""), ("agents", "")]),
+        ("init/codelaw.toml", &[("schema", "./s.json"), ("extends", ""), ("agents", "")]),
         ("migrate/codelaw.toml", &[("tool", "eslint"), ("sources", ".eslintrc.json"), ("extends", ""), ("preview", ""), ("lint", ""), ("tables", "")]),
         ("migrate/lint.toml", &[("tool", "eslint"), ("aliases", "\"eslint\"")]),
         ("new-rule/example.md", &[("language", "Python"), ("ext", "py")]),

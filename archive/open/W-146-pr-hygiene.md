@@ -5,7 +5,7 @@ description: "Arpit, 2026-10-30 (voice): pull-request hygiene — commit message
 item: W-146
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
+updated: 2026-10-31
 updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
@@ -21,7 +21,8 @@ ball: agent
 | 3 | `git/branch-name` — `[branches]` pattern, ticket, length | findable branches | ✅ |
 | 4 | `git/pr-size` — warn above 400 changed lines, lockfiles and generated files excluded | reviewable PRs | ✅ |
 | 5 | `git/pr-description` — title, ticket link, template sections, from the CI's own event data | complete PRs | ✅ |
-| 6 | A `commit-msg` hook (`init --git-hooks commit-msg`), CI over the PR's commits, the agent hook | checked before, during and after | ✅ (agent hook: Claude Code `Bash`; other agents' shell tools ⏳) |
+| 6 | A `commit-msg` hook (`init --git-hooks commit-msg`), CI over the PR's commits, the agent hook | checked before, during and after | ✅ (agent hook: every agent's shell tool, 10-31) |
+| 7 | Share `[commits]`/`[branches]`/`[pr]` through a preset | one convention for many repos | ✅ 10-31 for the presets `extends` applies; team-pack presets → B-070 (the decider's) |
 
 **Arpit, 2026-10-30 (voice):** *"Pull request hygiene is something I would go for."* · *"want the commit convention to be configurable."* · on the example `[commits]` and `[branches]` keys: *"All this looks good."* · on widening the git rule and the defaults (Conventional Commits, a 400-line warning): *"Yes."* → *"file it."*
 
@@ -81,12 +82,12 @@ Defaults ruled: Conventional Commits on, a 400-line PR-size warning. Defaults ch
 | 2 · rules | the four rules, each `manual` with steps (a message is never rewritten silently); the error shows the message, what is wrong and a corrected example | ✅ |
 | 3 · where | `init --git-hooks commit-msg` (template in `templates/git-hooks/`, L10); `codelaw check --changed-since` checks the PR's commits; the agent hook checks a commit an agent makes | ✅ `check --commit-msg`; the GitHub Action already runs `--changed-since` on a PR; the Gate on Claude Code `Bash` |
 | 4 · PR data | GitHub (`GITHUB_EVENT_PATH`), GitLab (`CI_MERGE_REQUEST_TITLE`, `CI_MERGE_REQUEST_DESCRIPTION`); Bitbucket and Azure DevOps expose no description without an API call — title or branch only there, the rest reported as "not checked here", never fetched (L5) | ✅ |
-| 5 · config | SR-CONFIG `[commits]`, `[branches]`, `[pr]`; shareable through a pack | ✅ SR-CONFIG 11b; ⏳ pack sharing — a preset's `[rules]` settings do not reach engine rules today |
+| 5 · config | SR-CONFIG `[commits]`, `[branches]`, `[pr]`; shareable through a pack | ✅ SR-CONFIG 11b; a preset's `[rules]` sets the `git/*` rules (10-31). How a *team* pack names its preset in `extends` is unruled: B-070 |
 | 6 · tests | each preset; skips; the hook; each CI's data, from fixtures | ✅ `tests/pr_hygiene.rs`, `hygiene` unit tests |
 
 ## Blockers
 
-None — both open points ruled 2026-10-30.
+None. Closed 2026-10-31; the one fork left (how a team pack's preset is named in `extends`) is B-070 in the backlog, the decider's.
 
 ## Record affected
 
@@ -112,3 +113,12 @@ Landed: `crates/codelaw-engine/src/hygiene.rs` (the four rules), `git.rs` (commi
 3. `init --help`'s `--git-hooks` line still names two hooks (`init.rs` is also described by SR-SPELL; left for a change that touches both).
 
 Behaviour change to note in the changelog: with `--changed-since`, Conventional Commits is now enforced by default (`git/commit-message`, `error`) — a repository with free-form messages sets `[commits] preset = "off"` or turns the rule off.
+
+## Closed — 2026-10-31 (Claude Code)
+
+1. **Pack sharing.** A preset's `[rules]` may set the four `git/*` engine rules — severity, and options holding the table's keys — though no pack holds them (`pack.rs` allows `git/*` names in a preset; `RuleSet::engine_settings` carries them). Lowest first: the presets' in `extends` order, then the root's `[commits]`/`[branches]`/`[pr]`, then the project's `[rules]`, key by key (`hygiene.rs::git_options`). `git/pr-size` and `git/pr-description` now read their own options over `[pr]` too. Only presets `extends` applies count — the `codelaw:` ones; an `npm:`/`pypi:`/`path:` entry applies none of its pack's presets (SR-RULE-PACKS d11), so a team pack cannot carry them until the decider rules B-070. Test: `pr_hygiene.rs::a_preset_shares_the_git_rules_settings_and_the_project_table_wins`.
+2. **Other agents' shell tools.** `hook --pre` reads a shell command from Codex `Bash` (and `exec_command`, which matches as `Bash`), Gemini `run_shell_command`, Copilot/VS Code `toolArgs.command`, Windsurf `pre_run_command` `tool_info.command_line` and Cursor `beforeShellExecution` `command`; a `["bash", "-lc", …]` list too; a payload that names a file or holds a patch stays a write. The Codex template's `PreToolUse` matcher gains `Bash` (from Codex's hooks docs, 2026-10-31). Test: `pre.rs::every_agents_shell_command_is_read`.
+3. **`init --help`** names `commit-msg` (installed only when named) — e6a6be83.
+4. **W-141's CHANGELOG line** corrected: the comment and the next selector are no longer joined on one line — e6a6be83.
+
+Records: SR-CONFIG 11b, SR-RULE-PACKS 1, SR-RULE-FORMAT 1, SR-ARCHITECTURE 14, SR-AGENT-SURFACES 9, SR-CLI-MCP 11, SR-RULE-AUTHORING 4, SR-PACK-LOOKUP (Consequences).

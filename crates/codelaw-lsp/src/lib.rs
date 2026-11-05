@@ -24,6 +24,7 @@
 //! not here: this crate never writes a file.
 
 pub mod card;
+pub mod config;
 pub mod format;
 pub mod lens;
 pub mod position;
@@ -36,13 +37,14 @@ use lsp_types::notification::{
     DidChangeConfiguration, DidChangeTextDocument, DidChangeWatchedFiles, DidCloseTextDocument, DidOpenTextDocument, DidSaveTextDocument, LogMessage, Notification as _,
     PublishDiagnostics, ShowMessage,
 };
-use lsp_types::request::{ApplyWorkspaceEdit, CodeActionRequest, CodeLensRequest, ExecuteCommand, Formatting, HoverRequest, InlayHintRequest, RangeFormatting, Request as _};
+use lsp_types::request::{ApplyWorkspaceEdit, CodeActionRequest, CodeLensRequest, Completion, ExecuteCommand, Formatting, HoverRequest, InlayHintRequest, RangeFormatting, Request as _};
 use lsp_types::{
     ApplyWorkspaceEditParams, CodeAction, CodeActionKind, CodeActionOptions, CodeActionOrCommand, CodeActionParams, CodeActionProviderCapability, DiagnosticRelatedInformation,
     DiagnosticSeverity, DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams, DidSaveTextDocumentParams,
     DocumentFormattingParams, DocumentRangeFormattingParams, Hover, HoverContents, HoverParams, HoverProviderCapability, Location, LogMessageParams, MarkupContent, MarkupKind, MessageType,
     NumberOrString, OneOf, PositionEncodingKind, PublishDiagnosticsParams, Range, ServerCapabilities, ServerInfo, ShowMessageParams,
-    CodeLens, CodeLensOptions, CodeLensParams, ExecuteCommandOptions, ExecuteCommandParams, InlayHint, InlayHintParams,
+    CodeLens, CodeLensOptions, CodeLensParams, CompletionItem, CompletionItemKind, CompletionList, CompletionOptions, CompletionParams, CompletionResponse,
+    CompletionTextEdit, Documentation, ExecuteCommandOptions, ExecuteCommandParams, InlayHint, InlayHintParams,
     TextDocumentSyncCapability, TextDocumentSyncKind, TextDocumentSyncOptions, TextDocumentSyncSaveOptions, TextEdit, Uri, WorkspaceEdit,
 };
 use position::Utf16Index;
@@ -119,6 +121,11 @@ pub fn capabilities() -> ServerCapabilities {
         inlay_hint_provider: Some(OneOf::Left(true)),
         code_lens_provider: Some(CodeLensOptions { resolve_provider: Some(false) }),
         execute_command_provider: Some(ExecuteCommandOptions { commands: vec![lens::APPLY_FIXES.to_owned()], ..Default::default() }),
+        // W-157: codelaw's own config, completed as it is typed.
+        completion_provider: Some(CompletionOptions {
+            trigger_characters: Some(["\"", ".", "[", "/", ":", "="].map(str::to_owned).to_vec()),
+            ..Default::default()
+        }),
         document_formatting_provider: format::AVAILABLE.then_some(OneOf::Left(true)),
         document_range_formatting_provider: format::AVAILABLE.then_some(OneOf::Left(true)),
         ..Default::default()
@@ -188,6 +195,9 @@ struct Doc {
     /// decision 10), its project-relative path: `diagnostics` are then the
     /// copies of findings its L3 files reported into it.
     text_config: Option<String>,
+    /// For a config home, what the loader says of its text as typed
+    /// (W-157), in byte offsets of `text`.
+    config: Vec<config::Problem>,
 }
 
 impl Doc {
@@ -246,6 +256,9 @@ struct Server<'c> {
     copies: HashMap<String, BTreeMap<String, Vec<lsp_types::Diagnostic>>>,
     /// Requests the server has sent the editor (`workspace/applyEdit`).
     sent: u32,
+    /// What each project's pack search finds, for completing its config
+    /// (W-157); dropped on reload.
+    catalogues: HashMap<PathBuf, config::Catalogue>,
 }
 
 impl<'c> Server<'c> {
@@ -260,6 +273,7 @@ impl<'c> Server<'c> {
             said: HashSet::new(),
             copies: HashMap::new(),
             sent: 0,
+            catalogues: HashMap::new(),
         }
     }
 
@@ -311,7 +325,7 @@ impl<'c> Server<'c> {
             DidOpenTextDocument::METHOD => {
                 let p: DidOpenTextDocumentParams = serde_json::from_value(n.params)?;
                 let d = p.text_document;
-                let doc = Doc { uri: d.uri, version: d.version, text: d.text, target: None, diagnostics: vec![], tree: None, text_config: None };
+                let doc = Doc { uri: d.uri, version: d.version, text: d.text, target: None, diagnostics: vec![], tree: None, text_config: None, config: vec![] };
                 let key = doc.uri.as_str().to_owned();
                 self.docs.insert(key.clone(), doc);
                 self.check(&key)?;
@@ -385,6 +399,7 @@ impl<'c> Server<'c> {
     fn reload(&mut self, why: &str) -> Result<(), Error> {
         self.log_at(LogLevel::Info, format!("reloading projects: {why}"))?;
         self.projects.clear();
+        self.catalogues.clear();
         self.said.clear();
         let mut keys: Vec<String> = self.docs.keys().cloned().collect();
         keys.sort();
@@ -452,6 +467,11 @@ impl<'c> Server<'c> {
     fn check(&mut self, key: &str) -> Result<(), Error> {
         let started = Instant::now();
         let Some(doc) = self.docs.get(key) else { return Ok(()) };
+        // A config home: what the loader says of the text as typed (W-157).
+        let problems = match uri::to_path(key).map(|p| canonical(&p)) {
+            Some(path) if is_config_text(&path, &doc.text) => config_problems(&path, &doc.text),
+            _ => vec![],
+        };
         // Why a file gets nothing, when it does: said once per file per
         // reload, never per keystroke (decision 7).
         let mut why_not: Option<String> = None;
@@ -530,7 +550,10 @@ impl<'c> Server<'c> {
             .into_iter()
             .partition(|d| target.as_ref().is_some_and(|(_, e)| e.rel != d.file) && codelaw_core::is_text_config(&d.file));
         let copies = project.map(|p| copies_by_uri(p.root(), &copies)).unwrap_or_default();
-        let lsp = to_lsp(doc, target.as_ref().map(|t| &t.1), project, &diagnostics);
+        let mut lsp = to_lsp(doc, target.as_ref().map(|t| &t.1), project, &diagnostics);
+        let idx = Utf16Index::new(&doc.text);
+        lsp.extend(problems.iter().map(|p| problem_diagnostic(p, idx.range(p.start, p.end))));
+        doc.config = problems;
         let params = PublishDiagnosticsParams { uri: doc.uri.clone(), diagnostics: lsp, version: Some(doc.version) };
         let summary = format!(
             "check {}: {} rule(s), {} diagnostic(s), {} ms",
@@ -613,7 +636,11 @@ impl<'c> Server<'c> {
         let file = req.params.pointer("/textDocument/uri").and_then(|u| u.as_str()).and_then(uri::to_path).map(|p| p.display().to_string());
         let result = match req.method.as_str() {
             CodeActionRequest::METHOD => serde_json::from_value(req.params).map(|p| serde_json::to_value(self.code_actions(p))),
-            HoverRequest::METHOD => serde_json::from_value(req.params).map(|p| serde_json::to_value(self.hover(p))),
+            HoverRequest::METHOD => serde_json::from_value(req.params).map(|p: HoverParams| {
+                let card = self.hover(p.clone());
+                serde_json::to_value(card.or_else(|| self.config_hover(p)))
+            }),
+            Completion::METHOD => serde_json::from_value(req.params).map(|p| serde_json::to_value(self.completion(p))),
             InlayHintRequest::METHOD => serde_json::from_value(req.params).map(|p| serde_json::to_value(self.inlay_hints(p))),
             CodeLensRequest::METHOD => serde_json::from_value(req.params).map(|p| serde_json::to_value(self.code_lenses(p))),
             ExecuteCommand::METHOD => match serde_json::from_value(req.params) {
@@ -664,6 +691,23 @@ impl<'c> Server<'c> {
             None => doc.text_config.as_deref() == Some(d.file.as_str()),
         };
         let mut out = Vec::new();
+        // A config error's "did you mean" (W-157): its offsets are of the
+        // whole text, the loader's.
+        if wanted(CodeActionKind::QUICKFIX.as_str()) {
+            let (rs, re) = (idx.offset(p.range.start), idx.offset(p.range.end));
+            for pr in doc.config.iter().filter(|pr| pr.start <= re && pr.end >= rs) {
+                if let Some((s, e, near)) = config::fix(&doc.text, pr) {
+                    out.push(CodeActionOrCommand::CodeAction(CodeAction {
+                        title: format!("Change to `{near}`"),
+                        kind: Some(CodeActionKind::QUICKFIX),
+                        diagnostics: Some(vec![problem_diagnostic(pr, idx.range(pr.start, pr.end))]),
+                        edit: Some(workspace_edit(&doc.uri, vec![TextEdit { range: idx.range(s, e), new_text: near }])),
+                        is_preferred: Some(true),
+                        ..Default::default()
+                    }));
+                }
+            }
+        }
         if wanted(CodeActionKind::QUICKFIX.as_str()) {
             for d in doc.diagnostics.iter().filter(own) {
                 let fixable = matches!(d.fix, FixClass::Auto | FixClass::Suggest) && (!d.edits.is_empty() || !d.choices.is_empty());
@@ -750,6 +794,83 @@ impl<'c> Server<'c> {
         }
         let value = seen.into_values().collect::<Vec<_>>().join("\n\n---\n\n");
         Some(Hover { contents: HoverContents::Markup(MarkupContent { kind: MarkupKind::Markdown, value }), range: None })
+    }
+
+    /// What the project of a config finds installed, built once per
+    /// project and `extends` (W-157). The config is the text as typed when
+    /// it loads, else the one on disk, else the defaults.
+    fn catalogue_for(&mut self, path: &Path, text: &str) -> &config::Catalogue {
+        let dir = path.parent().unwrap_or(path);
+        let config = codelaw_config::find_config_with(dir, path, text)
+            .or_else(|_| codelaw_config::find_config(dir))
+            .unwrap_or_else(|_| codelaw_config::Config::defaults(dir.to_path_buf()));
+        let key = config.config_dir().to_path_buf();
+        if self.catalogues.get(&key).is_none_or(|c| c.extends != config.extends()) {
+            let search = codelaw_engine::pack_search(&config, &EngineOptions::from_env());
+            let project = self.projects.get(&key).and_then(|p| p.as_ref().ok());
+            let cat = config::catalogue(&config, &search, project);
+            let _ = self.log_at(
+                LogLevel::Debug,
+                format!("config completions for {}: {} rule(s), {} preset(s), {} pack(s) not installed", key.display(), cat.rules.len(), cat.presets.len(), cat.missing.len()),
+            );
+            self.catalogues.insert(key.clone(), cat);
+        }
+        &self.catalogues[&key]
+    }
+
+    /// Completions in a config home (W-157): keys and values from the
+    /// schema, rule ids, presets, scopes and options from the packs.
+    fn completion(&mut self, p: CompletionParams) -> Option<CompletionResponse> {
+        let at = &p.text_document_position;
+        let key = at.text_document.uri.as_str();
+        let path = canonical(&uri::to_path(key)?);
+        let home = config::home(&path)?;
+        let doc = self.docs.get(key)?;
+        let text = doc.text.clone();
+        let uri = doc.uri.clone();
+        let idx = Utf16Index::new(&text);
+        let offset = idx.offset(at.position);
+        let cat = self.catalogue_for(&path, &text);
+        let (place, items) = config::complete(&text, offset, home, cat)?;
+        let _ = uri;
+        let range = idx.range(place.token.0, place.token.1);
+        let items = items
+            .into_iter()
+            .enumerate()
+            .map(|(i, it)| CompletionItem {
+                label: it.label.clone(),
+                kind: Some(match it.kind {
+                    config::Kind::Key => CompletionItemKind::PROPERTY,
+                    config::Kind::Table => CompletionItemKind::MODULE,
+                    config::Kind::Rule => CompletionItemKind::REFERENCE,
+                    config::Kind::Preset => CompletionItemKind::MODULE,
+                    config::Kind::Value => CompletionItemKind::ENUM_MEMBER,
+                    config::Kind::Note => CompletionItemKind::TEXT,
+                }),
+                detail: it.detail,
+                documentation: it.doc.map(|d| Documentation::MarkupContent(MarkupContent { kind: MarkupKind::Markdown, value: d })),
+                sort_text: Some(format!("{i:05}")),
+                filter_text: Some(it.label),
+                text_edit: Some(CompletionTextEdit::Edit(TextEdit { range, new_text: it.insert })),
+                ..Default::default()
+            })
+            .collect();
+        Some(CompletionResponse::List(CompletionList { is_incomplete: false, items }))
+    }
+
+    /// In a config home with no finding under the cursor: a rule id's
+    /// card, a preset's pack, a key's description (W-157).
+    fn config_hover(&mut self, p: HoverParams) -> Option<Hover> {
+        let at = &p.text_document_position_params;
+        let key = at.text_document.uri.as_str();
+        let path = canonical(&uri::to_path(key)?);
+        let home = config::home(&path)?;
+        let text = self.docs.get(key)?.text.clone();
+        let idx = Utf16Index::new(&text);
+        let offset = idx.offset(at.position);
+        let cat = self.catalogue_for(&path, &text);
+        let (value, (s, e)) = config::hover(&text, offset, home, cat)?;
+        Some(Hover { contents: HoverContents::Markup(MarkupContent { kind: MarkupKind::Markdown, value }), range: Some(idx.range(s, e)) })
     }
 
     /// Each own diagnostic of a document: its range in the editor and its
@@ -901,6 +1022,58 @@ fn level_of(v: &serde_json::Value) -> Option<LogLevel> {
     v.get("logLevel").and_then(|l| l.as_str()).and_then(LogLevel::parse)
 }
 
+/// Whether a file is a config home that configures codelaw, or could: a
+/// `codelaw.toml` always, a `pyproject.toml` or `package.json` that
+/// mentions it (SR-CONFIG decision 1).
+fn is_config_text(path: &Path, text: &str) -> bool {
+    match config::home(path) {
+        Some(codelaw_config::Home::CodelawToml) => true,
+        Some(codelaw_config::Home::Pyproject) => text.contains("codelaw"),
+        Some(codelaw_config::Home::PackageJson) => text.contains("\"codelaw\""),
+        None => false,
+    }
+}
+
+/// What the loader says of a config's text as typed (W-157, SR-EDITOR
+/// decision 9): the run's own load — the config, the packs its `extends`
+/// names, the rules and options it sets — with this one file's text.
+fn config_problems(path: &Path, text: &str) -> Vec<config::Problem> {
+    let Some(dir) = path.parent() else { return vec![] };
+    let here = |file: Option<&Path>| file.is_none_or(|f| f == path);
+    let from_config = |e: &codelaw_config::ConfigError| {
+        if here(e.file.as_deref()) { config::problem(text, &e.message, None, true) } else { config::problem(text, &e.to_string(), None, true) }
+    };
+    let config = match codelaw_config::find_config_with(dir, path, text) {
+        Ok(c) => c,
+        Err(e) => return vec![from_config(&e)],
+    };
+    if !config.files.iter().any(|f| f.path == path) {
+        return vec![];
+    }
+    let options = EngineOptions { no_cache: true, profile_surface: Some(("local", "LSP")), ..EngineOptions::from_env() };
+    match Project::from_config(config, options) {
+        Ok(p) => p.warnings.iter().filter(|w| config::names_here(text, w)).map(|w| config::problem(text, w, None, false)).collect(),
+        Err(codelaw_engine::EngineError::Config(e)) => vec![from_config(&e)],
+        Err(codelaw_engine::EngineError::Load(list)) => list
+            .iter()
+            .map(|e| if here(e.file.as_deref()) { config::problem(text, &e.message, e.line, true) } else { config::problem(text, &e.to_string(), None, true) })
+            .collect(),
+        Err(codelaw_engine::EngineError::Usage(m)) => vec![config::problem(text, &m, None, true)],
+    }
+}
+
+/// A config problem as the editor shows it.
+fn problem_diagnostic(p: &config::Problem, range: Range) -> lsp_types::Diagnostic {
+    lsp_types::Diagnostic {
+        range,
+        severity: Some(if p.error { DiagnosticSeverity::ERROR } else { DiagnosticSeverity::WARNING }),
+        source: Some("codelaw config".into()),
+        message: p.message.clone(),
+        data: Some(serde_json::json!({ "kind": "code", "view": "code", "title": if p.error { "Config error" } else { "Config warning" }, "fix": if p.suggestion.is_some() { "suggest" } else { "manual" } })),
+        ..Default::default()
+    }
+}
+
 /// Saving these changes what every file's verdict may be.
 fn reloads(path: &Path) -> bool {
     let name = path.file_name().and_then(|n| n.to_str()).unwrap_or_default();
@@ -1019,3 +1192,7 @@ mod tests;
 #[cfg(test)]
 #[path = "../tests/unit/logging.rs"]
 mod log_tests;
+
+#[cfg(test)]
+#[path = "../tests/unit/config.rs"]
+mod config_tests;

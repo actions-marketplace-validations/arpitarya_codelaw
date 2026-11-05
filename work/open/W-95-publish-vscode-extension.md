@@ -1,13 +1,13 @@
 ---
 type: Handoff
 name: W-95
-description: "Arpit, 2026-10-27 (W-36 gap G2): the VS Code extension on the Visual Studio Marketplace (done) and Open VSX (was W-117: uploaded, inactive until the namespace claim is approved). Merged 2026-10-30."
+description: "Arpit, 2026-10-27 (W-36 gap G2): the VS Code extension on the Visual Studio Marketplace (done) and Open VSX (was W-117: live and verified, trusted publisher registered 2026-11-05; left: publish.yml's Open VSX step to trusted publishing, a VSCodium check). Merged 2026-10-30."
 item: W-95
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated: 2026-11-05
+updated_by: "Cowork (Opus 5.5)"
+ball: agent
 ---
 
 # W-95 — The editor extension on both stores
@@ -141,6 +141,14 @@ SR-EDITOR · SR-PACKAGES (a new published artifact) · RELEASING.md.
 - Marketplace tokens are long-lived secrets; scope them to the `vscode` environment with a `v*` tag rule, as `npm`/`pypi` are.
 - Zed and JetBrains are later items, not this one.
 
+## Open VSX approved; trusted publisher registered — 2026-11-05 (Cowork, built-in browser)
+
+- **Claim granted:** [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) closed with the label `granted`. `GET open-vsx.org/api/codelaw/codelaw-vscode` answers `version 0.4.0`, `verified: true`, 550 downloads; the page no longer says *"Namespace not verified"*.
+- **Found:** a trusted publisher already existed — `arpitarya/codelaw` · workflow `publish.yml`, **no environment**, created about 2026-10-31 (not recorded here). With no environment, any job in `publish.yml` could publish.
+- **Arpit, 2026-11-05:** *"for w-95 you have the access to browser add it as trusted publisher"*; asked whether to replace the entry with one naming the environment: *"Re-add with vscode (Recommended)"*.
+- **Done:** the old entry deleted and **`codelaw-vscode` → GitHub · `arpitarya` / `codelaw` · `publish.yml` · environment `vscode`** registered (Settings → Trusted Publishers, "Created: now"). Arpit signed in himself.
+- **Left (agent):** `publish.yml`'s Open VSX step still reads `OVSX_PAT` and skips without it — move it to trusted publishing (`ovsx publish --trusted-publishing`, ratified for this extension only: L2 decision 8, D-47), in the `vscode` environment with `id-token: write`; the next release proves it. Then the DoD's VSCodium install. Open: whether the 10-30 hand-upload token was revoked (Arpit, *Settings → Access Tokens*).
+
 ## Merged in: W-117
 
 <a id="merged-in-w-117"></a>
@@ -154,8 +162,8 @@ SR-EDITOR · SR-PACKAGES (a new published artifact) · RELEASING.md.
 | 1 | GitHub environment `vscode`, tag rule `v*` (as `npm`, `pypi`) | a place for the token that only release tags reach | ✅ 2026-10-29 — the environment `vscode` exists |
 | 2 | open-vsx.org → log in with GitHub → link an Eclipse account → sign the Publisher Agreement | the right to publish | ✅ 2026-10-29 — logged in; agreement signed |
 | 3 | An access token `codelaw-publish` → `gh secret set OVSX_PAT --env vscode -R arpitarya/codelaw` | CI can upload | ~~🔴~~ dropped — ruled 2026-10-30: trusted publishing, no token (below) |
-| 4 | Create the namespace `codelaw`; claim its ownership (a public GitHub issue) — required for trusted publishing | `codelaw.codelaw` on Open VSX | 🔄 created 2026-10-29; ⏳ claim [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) still **open**, no reply from Open VSX (checked 2026-10-30 10:30 IST) |
-| 5 | Agent: `publish.yml`'s Open VSX upload with `curl` (W-95's drafted job, its Open VSX half) | every release lands there | ⏳ after the claim is approved and Arpit adds the trusted publisher |
+| 4 | Create the namespace `codelaw`; claim its ownership (a public GitHub issue) — required for trusted publishing | `codelaw.codelaw` on Open VSX | ✅ claim [#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928) **closed, label `granted`**; the listing is `verified: true` (checked 2026-11-05 10:30 IST) |
+| 5 | Agent: `publish.yml`'s Open VSX upload with `curl` (W-95's drafted job, its Open VSX half) | every release lands there | 🟢 agent — the trusted publisher is registered (2026-11-05, below) |
 
 **Arpit, 2026-10-29 (voice docket):** on W-95, Open VSX now and the Marketplace by hand on release day: *"Yes."* Asked what Open VSX is (the Eclipse Foundation's store, used by Cursor, VSCodium, Windsurf and Gitpod) — then *"You have the access to the browser. We will go ahead and implement Open VSX You can go ahead and create the ID and everything."* and, the browser being out of reach of the voice call, *"That's okay. Let's put it as a work item and we'll work on it."*
 

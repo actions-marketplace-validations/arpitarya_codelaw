@@ -55,11 +55,10 @@ fn owned(v: &[&str]) -> Vec<String> {
     v.iter().map(|s| s.to_string()).collect()
 }
 
-/// A table's options: the root config's section, the rule's own options
-/// over it key by key (SR-CONFIG decision 11b).
-fn merged(section: BTreeMap<String, Value>, rule: Option<&BTreeMap<String, Value>>) -> Map<String, Value> {
-    let mut out: Map<String, Value> = section.into_iter().collect();
-    for (k, v) in rule.into_iter().flatten() {
+/// Lay `over` on `out` key by key; a table (`ticket`, `skip`) merges one
+/// level down (SR-CONFIG decision 11b).
+fn overlay(out: &mut Map<String, Value>, over: &BTreeMap<String, Value>) {
+    for (k, v) in over {
         match (out.get_mut(k), v) {
             (Some(Value::Object(a)), Value::Object(b)) => a.extend(b.clone()),
             _ => {
@@ -67,7 +66,6 @@ fn merged(section: BTreeMap<String, Value>, rule: Option<&BTreeMap<String, Value
             }
         }
     }
-    out
 }
 
 fn regex(key: &str, p: &str) -> Result<Regex, String> {
@@ -613,16 +611,38 @@ impl Project {
         if self.options.rules.as_ref().is_some_and(|o| !o.iter().any(|x| x == id)) {
             return None;
         }
-        crate::lint::meta_severity(&self.config.layers_for(&self.config.root_dir), id)
+        // The presets' settings first, in `extends` order: the lowest layers.
+        let mut layers: Vec<codelaw_config::Layer> =
+            self.rules.engine_settings.iter().map(|(label, rules)| codelaw_config::Layer { source: label.clone(), rules }).collect();
+        layers.extend(self.config.layers_for(&self.config.root_dir));
+        crate::lint::meta_severity(&layers, id)
     }
 
-    /// The rule's options from the root's layers, the last one that sets them.
-    fn git_rule_options(&self, id: &str) -> Option<BTreeMap<String, Value>> {
-        self.config.layers_for(&self.config.root_dir).iter().rev().find_map(|l| l.rules.get(id).and_then(|s| s.options()).filter(|o| !o.is_empty()).cloned())
+    /// The options a `git/*` rule reads, lowest first: what each preset
+    /// sets for `ids`, in `extends` order; the root config's `section`
+    /// table; the options the project's own layers give `ids`, the last
+    /// one that sets them. Each key by key (SR-CONFIG decision 11b).
+    fn git_options(&self, section: &str, ids: &[&str]) -> Map<String, Value> {
+        let mut out = Map::new();
+        for id in ids {
+            for (_, rules) in &self.rules.engine_settings {
+                if let Some(o) = rules.get(*id).and_then(|s| s.options()) {
+                    overlay(&mut out, o);
+                }
+            }
+        }
+        overlay(&mut out, &self.config.section_options(section));
+        for id in ids {
+            let own = self.config.layers_for(&self.config.root_dir).iter().rev().find_map(|l| l.rules.get(*id).and_then(|s| s.options()).filter(|o| !o.is_empty()).cloned());
+            if let Some(o) = own {
+                overlay(&mut out, &o);
+            }
+        }
+        out
     }
 
     pub fn commit_rules(&self) -> Result<CommitRules, String> {
-        CommitRules::from_options(&merged(self.config.section_options("commits"), self.git_rule_options(COMMIT_MESSAGE).as_ref()))
+        CommitRules::from_options(&self.git_options("commits", &[COMMIT_MESSAGE]))
     }
 
     /// `git/commit-message` over one message on its own: the `commit-msg`
@@ -654,7 +674,7 @@ impl Project {
             }
         };
         let types = commit_rules.as_ref().map(|r| r.types.clone()).unwrap_or_default();
-        let branch_rules = BranchRules::from_options(&merged(self.config.section_options("branches"), self.git_rule_options(BRANCH_NAME).as_ref()));
+        let branch_rules = BranchRules::from_options(&self.git_options("branches", &[BRANCH_NAME]));
         let needs_commits = self.git_rule(COMMIT_MESSAGE).is_some() && commit_rules.as_ref().is_some_and(|r| !r.off())
             || self.git_rule(BRANCH_NAME).is_some() && branch_rules.as_ref().is_ok_and(|b| b.match_commits);
         let commits = if needs_commits {
@@ -689,7 +709,7 @@ impl Project {
         let size = self.git_rule(PR_SIZE);
         let description = self.git_rule(PR_DESCRIPTION);
         if size.is_some() || description.is_some() {
-            match PrRules::from_options(&merged(self.config.section_options("pr"), None), &ticket) {
+            match PrRules::from_options(&self.git_options("pr", &[PR_SIZE, PR_DESCRIPTION]), &ticket) {
                 Err(e) => warnings.push(format!("[pr]: {e}")),
                 Ok(pr) => {
                     if let Some(severity) = size.filter(|_| pr.max_lines > 0) {

@@ -28,20 +28,18 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-97 itself | |
 | 🔴 **Reasons on `"off"` in `codelaw.toml`** ([W-158](open/W-158-codelawignore-every-rule.md)): `.codelawignore` and the inline comment now both demand a reason; a rule set to `"off"` in `[rules]` or a scope needs none. Recommended: a `reason` key on a rule entry that turns a rule off (`"py/no-print" = { severity = "off", reason = "CLI tool: print is the output" }`) plus `[rules] require_reason` (default `false`, so no config breaks). **Rule on it, or leave `codelaw.toml` as it is.** | 2026-10-31 |
 | ↳ **blocks:** W-158's last step | |
-| 🔴 **Open VSX — waiting on Open VSX** ([W-95](open/W-95-publish-vscode-extension.md), was W-117): the ownership claim is [EclipseFdn/open-vsx.org#14928](https://github.com/EclipseFdn/open-vsx.org/issues/14928), open. Ruled 2026-10-30: **no token — trusted publishing.** Nothing to do until the claim is approved; then you add the trusted publisher (`arpitarya` · `codelaw` · `publish.yml` · `vscode`). | 2026-10-29 |
-| ↳ **blocks:** W-95 (its Open VSX half) | |
 
 ---
 
-## Open items (16)
+## Open items (14)
 
-### build (10)
+### build (8)
 
 🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep all eight 11-05; each lands with its item (W-139, W-145, W-146, W-156, W-157). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30); tranche A on, rest opt-in. Landed: 17 promise, 36 jsx-a11y, 21 Biome, 45 ESLint, 28 TS, 48 jsdoc, 11 import, 24 n, 13 Oxlint+TSLint, 60 React, 7 react-hooks; nextjs + 5 PyPI. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Build all 2,572 ruled rules (10-30); tranche A on, rest opt-in. Landed: 17 promise, 36 jsx-a11y, 21 Biome, 85 ESLint, 28 TS, 112 unicorn, 48 jsdoc, 11 import, 24 n, 13 Oxlint+TSLint, 60 React, 7 react-hooks; nextjs + 5 PyPI. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-141** `agent` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Left: gaps inside Biome/markup_fmt; Oxc's crates wait on Arpit's L11 call. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
@@ -49,12 +47,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
-🟢 **W-146** `agent` PR hygiene: the four `git/*` rules, `[commits]`/`[branches]`/`[pr]`, commit-msg hook, CI and Gate landed 2026-10-30; left: sharing the tables through a pack preset, other agents' shell tools. Filed by Arpit (Cowork). [detail](open/W-146-pr-hygiene.md)
-
-
 🟢 **W-156** `agent` Fix ladder (L4). Engine built 10-31: per-finding rung, choices, `fix_exception`, ceiling, `--fix-stats`. Next: lowering, then the moves pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
-
-🟢 **W-157** `agent` codelaw completes and checks its own `codelaw.toml`: schema registered + `#:schema` from `init` now; then the LSP offers real rule ids, presets, options and the down-only `fix`, and shows config errors as you type. Filed by Arpit (Claude app). [detail](open/W-157-config-completion.md)
 
 🔴 **W-158** `arpit` `.codelawignore` covers every rule — built 10-31 (rule ids and namespaces per line, same stale/incomplete checks, `[codelawignore]`, unfixed by `fix`, grey in the editor). Left: Arpit's ruling on reasons for `"off"` in `codelaw.toml` (inbox). Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
@@ -62,7 +55,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split across parallel jobs, nothing waits on its verdict (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. Next: the `perf` matrix, then the measurement runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
-🔴 **W-95** `arpit` VS Code extension: Marketplace live (0.4.0); Open VSX (was W-117) uploaded by hand, inactive until claim #14928 is approved — then the trusted publisher and a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
+🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX verified, trusted publisher (env `vscode`) registered 11-05. Left: `publish.yml`'s Open VSX step to trusted publishing, then a VSCodium check. Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
 🔴 **W-97** `arpit` The Action (listed as **codelaw check**, `v0` at v0.4.0) and the pre-commit mirror (was W-64) both need a public repo: allow `gh repo create` in Claude Code, or create them (inbox). Filed by Arpit (Cowork). [detail](open/W-97-github-action.md)
 

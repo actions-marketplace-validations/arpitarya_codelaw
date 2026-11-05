@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (Node resolves `fs` and `node:fs` to the same built-in module) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-n/prefer-node-protocol` |
+| **Ported from** | `eslint-plugin-n/prefer-node-protocol`, `eslint-plugin-unicorn/prefer-node-protocol` |
 
 ## What it checks
 
