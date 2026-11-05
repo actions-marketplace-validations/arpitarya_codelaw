@@ -275,8 +275,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which class to compose is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -292,15 +292,15 @@
     }
    ],
    "options": {},
-   "dont": ".root { color: red; }",
-   "do": ".base { color: red; }",
+   "dont": ".primary { composes: bse from \"./base.module.css\"; }",
+   "do": ".primary { composes: base from \"./base.module.css\"; }",
    "fix_steps": [
     "Correct the class name or the path.",
     "Move `composes` into the rule whose selector is the one class that composes."
    ],
    "example": {
     "language": "css",
-    "dont": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.root { color: red; }",
+    "dont": "/* src/button.module.css */\n.primary { composes: bse from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }",
     "do": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }"
    },
    "ported_from": [],
