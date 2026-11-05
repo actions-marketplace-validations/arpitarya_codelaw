@@ -48,7 +48,7 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (4)
 
-🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl on js, x64 on react; the same commit passes on rerun). Next: a core dump and backtrace from CI, then the fix. Filed by Claude Code. [detail](open/W-169-rules-lint-segfault.md)
+🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl on js, x64 on react; the same commit passes on rerun). Next: a core dump and backtrace from CI, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05; first runs skipped it (arm64-musl red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
