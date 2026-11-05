@@ -13,6 +13,7 @@ owns:
   - crates/codelaw-cli/tests/react_no_context.rs
   - crates/codelaw-native/src/tailwind.rs
   - fixtures/tailwind
+  - crates/codelaw-rules/src/engine_rules.rs
 laws: [L0, L2, L3, L4, L5, L6, L7]
 timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
