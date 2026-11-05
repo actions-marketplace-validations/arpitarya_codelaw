@@ -48,6 +48,10 @@ pub enum Predicate {
     /// The node is a function, or in one, that contains a call to one of
     /// the rule's `call[]` option `option` (W-73).
     FunctionCalls { option: String, default: Vec<CallItem> },
+    /// The node's text — a string's contents without its quotes — is one of
+    /// the rule's `string[]` option `option` (W-139); `default` is the
+    /// rule's built-in list.
+    In { option: String, default: Vec<String> },
     Not(Box<Predicate>),
     All(Vec<Predicate>),
     Any(Vec<Predicate>),
@@ -55,7 +59,7 @@ pub enum Predicate {
 
 const NAMES: &[&str] = &[
     "unused", "undeclared", "shadowed", "reassigned", "imported-from", "write", "declaration", "redeclared", "binding", "builtin", "from_source",
-    "calls", "function_calls", "not", "all", "any",
+    "calls", "function_calls", "in", "not", "all", "any",
 ];
 
 impl Predicate {
@@ -65,7 +69,7 @@ impl Predicate {
     /// branches only).
     pub fn skips_unbound(&self) -> bool {
         match self {
-            Predicate::Calls { .. } | Predicate::FunctionCalls { .. } => true,
+            Predicate::Calls { .. } | Predicate::FunctionCalls { .. } | Predicate::In { .. } => true,
             Predicate::Not(p) => p.skips_unbound(),
             Predicate::All(ps) | Predicate::Any(ps) => ps.iter().all(Predicate::skips_unbound),
             _ => false,
@@ -135,6 +139,7 @@ fn parse(v: &Value, data: &BTreeMap<String, Arc<Value>>, opts: &BTreeMap<String,
             "imported-from" => Err("`imported-from` names a module: `{ imported-from: react }`".into()),
             "binding" => Err("`binding` names declaration kinds: `{ binding: [const, let] }`".into()),
             "calls" => Err("`calls` names a `call[]` option of the rule: `{ calls: sanitizers }`".into()),
+            "in" => Err("`in` names a `string[]` option of the rule: `{ in: matchers }`".into()),
             "function_calls" => Err("`function_calls` names a `call[]` option of the rule: `{ function_calls: validators }`".into()),
             "from_source" => Err("`from_source` names its sources: `{ from_source: { sources: [req.query], tables: [sources/express] } }`".into()),
             other => Err(unknown(other)),
@@ -173,6 +178,17 @@ fn parse(v: &Value, data: &BTreeMap<String, Arc<Value>>, opts: &BTreeMap<String,
                     let default = spec.default.as_ref().map(parse_call_items).transpose()?.unwrap_or_default();
                     let option = option.to_owned();
                     Ok(if key == "calls" { Predicate::Calls { option, default } } else { Predicate::FunctionCalls { option, default } })
+                }
+                "in" => {
+                    let option = arg.as_str().ok_or("`in` names one `string[]` option: `{ in: matchers }`")?;
+                    let Some(spec) = opts.get(option).filter(|s| s.kind == "string[]") else {
+                        return Err(format!("`in: {option}` names no `string[]` option of this rule (declare `{option}: {{ type: \"string[]\" }}` in `options:`)"));
+                    };
+                    let default = match &spec.default {
+                        Some(d) => strings(d, "in")?,
+                        None => Vec::new(),
+                    };
+                    Ok(Predicate::In { option: option.to_owned(), default })
                 }
                 "undeclared" => {
                     let Value::Object(o) = arg else { return Err("`undeclared` takes `{ globals: [...], tables: [...] }`".into()) };
@@ -287,6 +303,14 @@ impl Predicate {
             Predicate::FunctionCalls { option, default } => subject
                 .node
                 .is_some_and(|n| crate::calls::function_calls(n, subject.source, model, &resolve_calls(default, subject.options, option))),
+            Predicate::In { option, default } => subject.node.is_some_and(|n| {
+                let text = &subject.source[n.byte_range()];
+                let text = if n.kind() == "string" && text.len() >= 2 { &text[1..text.len() - 1] } else { text };
+                match subject.options.get(option).and_then(Value::as_array) {
+                    Some(list) => list.iter().any(|v| v.as_str() == Some(text)),
+                    None => default.iter().any(|d| d == text),
+                }
+            }),
             Predicate::Not(p) => !p.holds(model, subject),
             Predicate::All(ps) => ps.iter().all(|p| p.holds(model, subject)),
             Predicate::Any(ps) => ps.iter().any(|p| p.holds(model, subject)),
