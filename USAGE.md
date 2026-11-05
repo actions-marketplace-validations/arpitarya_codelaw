@@ -236,6 +236,22 @@ on_edit = false                                   # save and the hook apply no f
 
 Lowest first: the rule's own default, `[fix] on_edit`, `[rules]`, a scope, a profile. `codelaw rules --why <id>` shows `on edit:` and what set it; `codelaw config --print` lists every rule that is not the default `true` ([SR-CONFIG](records/0110_config.md) decision 11e).
 
+### Target versions
+
+Some fixes are safe only from a version on: `@functools.cache` needs Python 3.9. Such a fix is automatic only when codelaw knows the oldest version the code supports; otherwise it is a suggestion, and the finding names the line that would make it automatic.
+
+```toml
+[targets]
+python = "3.10"                                      # else requires-python's lower bound in the nearest pyproject.toml
+browsers = ["chrome >= 111", "firefox >= 113", "safari >= 16.4"]
+
+[scope.legacy]
+files = ["legacy/**"]
+targets = { python = "3.8" }                         # a scope's is over [targets]; a rule entry's `targets` over both
+```
+
+Browsers are `chrome`, `edge`, `firefox`, `safari`, `ios_saf` and `samsung`. A `browserslist` in `package.json` or `.browserslistrc` counts only when every query is `<browser> >= <version>`. `codelaw config --print` shows `targets.python` and `targets.browsers` with their source; `codelaw migrate ruff` copies Ruff's `target-version` ([SR-CONFIG](records/0110_config.md) decision 11f).
+
 ### Saying why a rule is off
 
 A rule entry that sets `severity = "off"`, in `[rules]` or a scope, may say why. `require_reason = true` makes the reason mandatory:

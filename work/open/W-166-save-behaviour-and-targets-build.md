@@ -18,8 +18,8 @@ ball: agent
 |---|---|---|---|
 | 0 | `[fix] on_edit` and `[fix] multi_file` in the loader and the schema — main was red on SR-CONFIG's veto test | main green | ✅ 2026-11-05 |
 | 1 | The `on_edit` rule key, its config (`[rules]`, scopes, profiles, `[fix] on_edit`), save and the agent hook honouring it, and the 14 rules' `false` defaults | a save or an agent edit never deletes work in progress | ✅ 2026-11-05 |
-| 2 | `[targets]`: Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule; `config --print` and `rules --why` show them | fixes know which versions the project supports | ⏳ |
-| 3 | The `fix_target` key on the twelve Python rules, `py/lru-cache-with-maxsize-none` and `py/lru-cache-without-parameters` among them | `auto` only where the target allows it | ⏳ |
+| 2 | `[targets]`: Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule; `config --print` and `rules --why` show them | fixes know which versions the project supports | ✅ 2026-11-05 |
+| 3 | The `fix_target` key on the twelve Python rules, `py/lru-cache-with-maxsize-none` and `py/lru-cache-without-parameters` among them | `auto` only where the target allows it | ✅ the two lru_cache rules; the other ten are `suggest` and take `fix_target:` as W-156 moves them |
 | 4 | codelaw's own browser-support table as its own data package, `@codelaw/data-browsers` / `codelaw-data-browsers` (L6 decision 15), starting with what the corpus finds; the nine CSS rules read it | CSS prefix fixes go `auto` for a project that states its browsers | ⏳ |
 | 5 | A weekly CI workflow: check the browsers' releases, open a pull request naming the rows to review | the table stays current; the engine never goes online | ⏳ |
 
@@ -38,7 +38,7 @@ The records' "Built: no" lines below become built: `on_edit`, `[targets]`, `fix_
 | DoD | what | state |
 |---|---|---|
 | 1 · on_edit | key loaded and traced; save and `codelaw hook` skip `on_edit: false`; `fix`, pre-commit and `fix --check` still apply it; the 14 defaults set | ✅ `tests/on_edit.rs`; multi-file forced `false` waits for W-162's multi-file fixes |
-| 2 · targets | `[targets]` in the loader and `codelaw.schema.json`, §1's map of SR-CONFIG; the PEP 440 lower bound shared with `[deps.runtime]`; unknown target → `suggest` with the line that would make it `auto` | ⏳ |
+| 2 · targets | `[targets]` in the loader and `codelaw.schema.json`, §1's map of SR-CONFIG; the PEP 440 lower bound shared with `[deps.runtime]`; unknown target → `suggest` with the line that would make it `auto` | ✅ `tests/targets.rs` |
 | 3 · rules | the twelve Python rules carry `fix_target`, proven on both sides by `codelaw test` | ⏳ |
 | 4 · table | the data package on both registries' layouts, a source per row and its NOTICE, its own version line named by `--version --json` and the cache key; the nine CSS rules gated by it | ⏳ |
 | 5 · ci | a scheduled weekly workflow checks the browsers' releases and opens a pull request naming the rows to review; no network in the engine | ⏳ |

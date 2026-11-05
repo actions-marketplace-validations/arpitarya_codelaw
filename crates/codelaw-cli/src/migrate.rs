@@ -101,6 +101,9 @@ struct Input {
     /// `<where>: <setting>` and why it has no codelaw equivalent.
     ignored: Vec<(String, String)>,
     format: Imported,
+    /// Ruff's `target-version` as `[targets] python` (SR-CONFIG decision
+    /// 11f): `"py310"` → `"3.10"`.
+    targets_python: Option<String>,
 }
 
 #[derive(Debug, Default)]
@@ -782,7 +785,14 @@ fn read_ruff(root: &Path, input: &mut Input) -> Result<(), String> {
             input.scopes.push(SourceScope { files, rules });
         }
     }
-    let read_keys = ["select", "extend-select", "ignore", "extend-ignore", "per-file-ignores", "extend-per-file-ignores", "line-length", "indent-width", "format", "lint"];
+    // `target-version = "py310"` is the oldest Python the code supports:
+    // `[targets] python` (SR-CONFIG decision 11f).
+    if let Some(tv) = table.get("target-version").and_then(toml::Value::as_str)
+        && let Some(digits) = tv.strip_prefix("py").filter(|d| d.len() >= 2 && d.chars().all(|c| c.is_ascii_digit()))
+    {
+        input.targets_python = Some(format!("{}.{}", &digits[..1], &digits[1..]));
+    }
+    let read_keys = ["select", "extend-select", "ignore", "extend-ignore", "per-file-ignores", "extend-per-file-ignores", "line-length", "indent-width", "format", "lint", "target-version"];
     for (k, v) in &table {
         if !read_keys.contains(&k.as_str()) {
             input.ignored.push((format!("{name}: {k} = {v}"), "codelaw has no setting for it".into()));
@@ -1194,6 +1204,11 @@ fn render(tool: Tool, input: &Input, plan: &Plan) -> Result<String, String> {
         }
         doc.insert("scope", toml_edit::Item::Table(scope));
     }
+    if let Some(py) = &input.targets_python {
+        let mut t = toml_edit::Table::new();
+        t.insert("python", toml_edit::value(py.as_str()));
+        doc.insert("targets", toml_edit::Item::Table(t));
+    }
     if !input.format.keys.is_empty() {
         let mut f = toml_edit::Table::new();
         for (key, v) in &input.format.keys {
@@ -1256,7 +1271,7 @@ fn merge(existing: &str, new: &str, kept: &mut Vec<String>) -> Result<String, St
     if add.get("preview").and_then(toml_edit::Item::as_bool) == Some(true) && doc.get("preview").is_none() {
         doc.insert("preview", toml_edit::value(true));
     }
-    for (section, depth) in [("lint", 0), ("rules", 1), ("scope", 1), ("format", 2)] {
+    for (section, depth) in [("lint", 0), ("rules", 1), ("scope", 1), ("targets", 1), ("format", 2)] {
         let Some(from) = add.get(section).and_then(toml_edit::Item::as_table) else { continue };
         let entry = doc.entry(section).or_insert_with(|| {
             let mut t = toml_edit::Table::new();

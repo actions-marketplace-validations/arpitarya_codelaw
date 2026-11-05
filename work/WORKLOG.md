@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-166 step 2: `[targets]` and `fix_target:`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 2 — `[targets]` per project, scope and rule; `fix_target:`; the two lru_cache rules target-gated.
+- **Done:** loader, schema, engine resolution (`targets.rs`, `browsers.rs` reader), the lint gate, cache key, `config --print`, `rules --why`, `migrate ruff`, USAGE; two rule files.
+- **Decided / left open:** only the two `auto` lru_cache rules take `fix_target:` now; the other ten of §2.1 are `suggest` and take it with W-156's moves (the coordinator scoped rule files to the 2).
+- **Mistakes:** step 1's SR-CLI-MCP line named `fix.on_edit` without citing SR-ARCHITECTURE and turned the schema veto test red; fixed in b9ed8528. End-of-turn landings again carried half-built code (8f8e94df, 50fe8c6a); this change completes it.
+- **Next:** W-166 step 3, the browser-support table.
+
+---
+
 ## 2026-11-05 — W-166 step 1: `on_edit`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 1 — `on_edit` per rule and `[fix] on_edit`; save and the hook honour it; the 14 defaults.
