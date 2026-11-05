@@ -22,23 +22,21 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-139: raise two manual ceilings, or leave 132 ports out?** ([W-139](open/W-139-rule-parity-build.md)): 75 js ports (59 SonarJS, 16 unicorn) and 57 Python ports (Ruff, Pylint) are written and green but `manual`; `js` is at its ceiling (259) and `python` at its (93), and only you may raise one (SR-LAW-4 decision 6). **Pick:** (1) *recommended* — leave them out (the ladder exists to push manual down; they would sit in opt-in presets); (2) raise js to ~334 and python to ~150. Specs kept in `target/w139js` and `target/w139py`. | 2026-11-05 |
-| ↳ **blocks:** W-139's 132 held rules | |
+| 🔴 **W-139: raise manual ceilings, or leave 231 ports out?** ([W-139](open/W-139-rule-parity-build.md)): 231 ports are written and green but `manual`: 75 js (SonarJS, unicorn), 57 Python (Ruff, Pylint), 99 from the native strand (regexp, stylelint, scss, html-validate, markdownlint, react). Their packs are at their ceilings, and only you may raise one (SR-LAW-4 decision 6). **Pick:** (1) *recommended* — leave them out (the ladder exists to push manual down; they would sit in opt-in presets); (2) raise the ceilings by each pack's held count. Specs kept outside the repo in `~/my_programs/codelaw-w139-held/`. | 2026-11-05 |
+| ↳ **blocks:** W-139's 231 held rules | |
 | 🔴 **Oxc's formatter crates under L11** ([W-141](open/W-141-formatter-parity.md)): `oxc_formatter_css`, `_markdown`, `_yaml` and their parsers (MIT, a pinned git revision, not on crates.io) for CSS, SCSS, YAML and Markdown. Measured on the pinned corpus: CSS 74.4% → 88.6%, SCSS 80.7% → 86.0%, YAML 89.9% → 97.3%, Markdown 93.3% → 97.3% byte-identical to Prettier. **Ratify or refuse**; if refused, W-141 closes with the engine gaps named in SR-FORMATTER. | 2026-11-05 |
 | ↳ **blocks:** W-141 | |
 
 
 ---
 
-## Open items (13)
+## Open items (12)
 
-### build (7)
-
-🟡 **W-159** waits on **W-139** `agent` Worktrees left by session 91fa9b84 — ruled keep 11-05; W-146, W-157 and four W-139 strands since landed and removed; left: W-139-native, W-145, W-156 (three). Filed by now-ledger.py (Claude Code). [detail](open/W-159-session-cleanup.md)
+### build (6)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🔴 **W-139** `arpit` Rule parity, wound down 11-05: js 345/828 rows, Ruff 349/708, Pylint 108/298, react/ts, testing 169/182, nextjs, 5 PyPI packs; 132 manual ports held at the ceilings (inbox); native strand landing; the rest in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🔴 **W-139** `arpit` Rule parity, wound down 11-05: js 345/828 rows, Ruff 349/708, Pylint 108/298, react/ts, testing 169/182, nextjs, 5 PyPI packs; 231 manual ports held (inbox); native strand landing; the rest in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🔴 **W-141** `arpit` Formatter vs Prettier. Built 10-30: CSS comment, HTML ` />` (HTML 18% → 69%), four Prettier keys, `format-corpus.py`. Next: Arpit's L11 call on Oxc's crates (inbox). Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 

@@ -7,7 +7,7 @@ filed: 2026-10-31
 filed_by: "now-ledger.py (Claude Code)"
 updated: 2026-11-05
 updated_by: "Claude Code (session 91fa9b84)"
-ball: agent
+ball: done
 ---
 
 # W-159 — Worktrees left by session 91fa9b84-153a-455b-834e-9548467dc213 would lose data if removed
@@ -34,6 +34,10 @@ These worktrees were left untouched. Rule per worktree: **keep** (merge it or co
 ## Ruling — 2026-11-05
 
 **Keep all eight.** Each is the unlanded work of an agent stopped by the weekly usage limit (W-139 strands js, native, py, testing; W-145; W-146; W-156; W-157), resumed 2026-11-05 under Arpit's standing direction (30 Oct: *"don't ask for approvals, implement everything that needs to be built out, close all of them"*). Keeping loses nothing; each worktree lands through lockmaster with its item, and the next cleanup removes it. W-159 closes when the last one has landed.
+
+## Closed — 2026-11-05
+
+Every kept worktree landed with its item (W-139 strands, W-145, W-146, W-156, W-157) and was removed once its only uncommitted files were `.fux` re-index output; each branch's changes were checked to be on `main` first. Four branches remain whose content is on main under squashed commits (`lm/W-145`, `lm/W-145-fix`, `lm/W-156-a6`, `lm/save-20261105-131348`); deleting them needs `git branch -D`, the decider's to run. Four empty folders under `.claude/worktrees/` hold only `.fux/runtime`.
 
 ## Record affected
 

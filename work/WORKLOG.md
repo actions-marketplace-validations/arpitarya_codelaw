@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — the parallel build run (30 Oct – 5 Nov): eleven items driven, nine closed or wound down  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"implement all build open items in parallel"*, W-143 queued behind W-139; then *"don't ask for approvals … implement everything … close all of them"*; finally *"merge whatever is done, do the clean up"* and *"update the open work file"*.
+- **Done:** closed W-105's slice (four type questions, version watch `7f3b41aa`), W-129 (`a1dc351a`), W-141's build (`1581a2a4`), W-146 (`970b6343`, `ea47f7eb`), W-152 (`262505a1`), W-155 (`ce3069e7`, `737bf74d`), W-157 (`1c1a365a`), W-158's build (`56ddc7f3`), W-145 (`8c18ff0d`, `5acdabc0`); W-156's engine and lowering (`89c67412`, `dff8ea25`); W-139 in five strands — about 1,300 rules, packs nextjs, django, fastapi, airflow, numpy, pandas, testing (`33d65ff2`) and the JS regex parser (`2e59371c`). Landed the decider's Cowork edits under the standing approval (`3277f5f0`, `953cca4f`). W-159 and W-160 filed by the ledger, ruled keep, closed. `cargo clean` at the end: 23 GB → 0.43 GB.
+- **Decided / left open:** the coordinator's calls under the decider's "don't wait" direction — `testing` as that pack's namespace (reversible by rename); keep for every live worktree. Put to the decider: W-139's 231 held manual ports (inbox), Oxc under L11 (W-141, inbox), W-156's capability-blocked rows, B-070 team-pack presets, Tailwind v3 (B-071), SchemaStore and the PyPI `#:schema` URL (W-157), `react/prop-types` noise.
+- **Mistakes:** eleven agents at once hit the 5-hour limit and then the weekly one, losing a day each time; the js strand spawned agents of its own until told not to. A shared cargo target swapped binaries between worktrees all run long, costing retries. Disk ran to 31 GB against a 5 GB budget, every GB approved. A `git mv` rename broke `lockmaster save` twice (lockmaster bug, unstaged to work around). The py strand killed a `corpus.py` run that may have been another strand's.
+- **Next:** the decider rules on the two inbox rows; then W-143 can start once W-139 closes.
+
+---
+
 ## 2026-11-05 — Inbox emptied: Open VSX trusted publisher, W-97 repos, W-102 and W-158 ruled  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"check what all items can be closed"* with the browser; then the inbox one by one (text, then voice); *"file it."*
