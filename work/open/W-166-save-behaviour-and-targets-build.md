@@ -16,6 +16,7 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
+| 0 | `[fix] on_edit` and `[fix] multi_file` in the loader and the schema — main was red on SR-CONFIG's veto test | main green | ✅ 2026-11-05 |
 | 1 | The `on_edit` rule key, its config (`[rules]`, scopes, profiles, `[fix] on_edit`), save and the agent hook honouring it, and the 14 rules' `false` defaults | a save or an agent edit never deletes work in progress | ⏳ |
 | 2 | `[targets]`: Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule; `config --print` and `rules --why` show them | fixes know which versions the project supports | ⏳ |
 | 3 | The `fix_target` key on the twelve Python rules, `py/lru-cache-with-maxsize-none` and `py/lru-cache-without-parameters` among them | `auto` only where the target allows it | ⏳ |

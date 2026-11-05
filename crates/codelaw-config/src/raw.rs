@@ -279,6 +279,23 @@ pub struct RawCache {
 #[serde(deny_unknown_fields)]
 pub struct RawFix {
     pub external_timeout: Option<Duration>,
+    /// SR-CONFIG decision 11e (W-166): whether every rule's `auto` fix runs
+    /// on save and from the agent hook, below the per-rule entries.
+    pub on_edit: Option<bool>,
+    /// SR-MULTI-FILE-FIXES decision 3 (SR-CONFIG decision 11g): whether a
+    /// fix may edit several files. Loaded and validated; W-162 builds what
+    /// it does.
+    pub multi_file: Option<MultiFile>,
+}
+
+/// `[fix] multi_file` and a rule entry's `multi_file`: SR-MULTI-FILE-FIXES
+/// decision 3.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MultiFile {
+    Auto,
+    Suggest,
+    Off,
 }
 
 /// `[adapters]`: SR-LINTER decision 2.
