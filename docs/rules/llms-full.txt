@@ -17394,7 +17394,7 @@ const all = [...base, ...(extra ? [x] : [])];
 ## `js/consistent-existence-index-check` — Check indexOf against -1 the same way
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/consistent-existence-index-check.md
 
@@ -18709,7 +18709,7 @@ it("syncs", function () {
 ## `js/dom-node-dataset` — Use dataset for data- attributes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do)
+- **Fix:** `suggest` (`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/dom-node-dataset.md
 
@@ -19045,13 +19045,13 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ## `js/eqeqeq` — === rather than ==
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`)
+- **Fix:** `suggest` (`===` compares without converting, so code that relied on `"1" == 1` changes behaviour; the author confirms the types match)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/eqeqeq.md
 
 ### What it checks
 
-`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix covers `==`; a `!=` finding is reported for the same reason.
+`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix writes the strict operator; it is `suggest`, as the result changes when the operands' types differ.
 
 **Why:** `==` converts types before comparing, so `"0" == 0` and `[] == false` are true.
 
@@ -19066,7 +19066,7 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ##### Don't
 
 ```js
-if (count == limit) {
+if (count == limit || state != "done") {
   stop();
 }
 ```
@@ -19074,7 +19074,7 @@ if (count == limit) {
 ##### Do
 
 ```js
-if (count === limit) {
+if (count === limit || state !== "done") {
   stop();
 }
 ```
@@ -19211,7 +19211,7 @@ throw new Error("config file is missing");
 ## `js/escape-case` — Upper-case hex digits in escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix upper-cases the digits, which a fix template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/escape-case.md
 
@@ -27642,7 +27642,7 @@ A JSX link to an external URL with `target="_blank"` has `rel="noopener"`.
 ## `js/logical-assignment-operators` — a ||= b rather than a = a || b
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of three patterns matched)
+- **Fix:** `suggest` (the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/logical-assignment-operators.md
 
@@ -32239,7 +32239,7 @@ function List({ items }: { items: string[] }) {
 ## `js/no-console-spaces` — No leading or trailing space in console arguments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (trimming the string is a computed edit a template cannot make)
+- **Fix:** `suggest` (the space may be deliberate (two spaces for alignment); the author confirms the output)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-console-spaces.md
 
@@ -33434,7 +33434,7 @@ cache = {};
 ## `js/no-div-regex` — No regex starting with =
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the edit inside the pattern is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-div-regex.md
 
@@ -33659,7 +33659,7 @@ await cookieStore.set('theme', 'dark');
 ## `js/no-double-comparison` — x > a || x === a is x >= a
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of four patterns matched)
+- **Fix:** `suggest` (`x >= y` and `x > y || x === y` differ when the operands have different types (`"1" >= 1` is true, the pair is false); the author confirms they match)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-double-comparison.md
 
@@ -35973,7 +35973,7 @@ if (user) {
 ## `js/no-extra-label` — No label that is not needed
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the label token from the statement is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-extra-label.md
 
@@ -37438,7 +37438,7 @@ try {
 ## `js/no-implicit-coercion` — Explicit conversions, not !!x or +x
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the call to write depends on the operator matched)
+- **Fix:** `suggest` (`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-implicit-coercion.md
 
@@ -41774,7 +41774,7 @@ const mode = 0o755;
 ## `js/no-octal-escape` — No octal escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the equivalent `\u` or `\x` escape is computed from the octal value)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-octal-escape.md
 
@@ -46079,7 +46079,7 @@ const rest = list.slice(1);
 ## `js/no-unneeded-ternary` — No x ? true : false
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern)
+- **Fix:** `suggest` (a condition that is not already a boolean becomes `Boolean(…)`, which the author may prefer to write another way)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unneeded-ternary.md
 
@@ -49793,7 +49793,7 @@ area = Math.PI * r * r;
 ## `js/no-zero-fractions` — No zero fraction on a number
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix strips characters from the literal, which a template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-zero-fractions.md
 
@@ -50018,7 +50018,7 @@ const hex = n.toString(16);
 ## `js/numeric-separators-style` — Group digits of long numbers
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the grouped literal is a computed edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/numeric-separators-style.md
 
@@ -50211,7 +50211,7 @@ const point = { x, y };
 ## `js/operator-assignment` — x += 1 rather than x = x + 1
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator token cannot be carried into a fix template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/operator-assignment.md
 
@@ -53298,7 +53298,7 @@ if (Number.isNaN(value)) {
 ## `js/prefer-numeric-literals` — 0b101 rather than parseInt("101", 2)
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the literal's prefix depends on the radix, which a template cannot choose)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-numeric-literals.md
 
@@ -53974,7 +53974,7 @@ const args = Array.prototype.slice.call(arguments);
 ## `js/prefer-query-selector` — querySelector rather than getElementById
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the selector string is built from the id, which a template cannot escape)
+- **Fix:** `suggest` (`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-query-selector.md
 
@@ -54996,7 +54996,7 @@ const ext = name.slice(-3);
 ## `js/prefer-string-starts-ends-with` — startsWith() rather than a ^ regex test
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the string literal is the pattern without its anchor, which a template cannot strip)
+- **Fix:** `suggest` (`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-string-starts-ends-with.md
 
@@ -65331,7 +65331,7 @@ if (Number.isNaN(price)) {
 ## `js/use-simple-number-keys` — Plain decimal numbers as object keys
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the decimal form has to be computed from the literal, which codelaw's fix templates cannot do)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/use-simple-number-keys.md
 

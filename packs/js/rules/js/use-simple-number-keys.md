@@ -2,9 +2,7 @@
 id: js/use-simple-number-keys
 title: "Plain decimal numbers as object keys"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the decimal form has to be computed from the literal, which codelaw's fix templates cannot do"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [biome/complexity/useSimpleNumberKeys]
 since: 0.5.0
@@ -22,6 +20,7 @@ match:
     kind: pair
     field: key
 message: "Write this key as a plain decimal number"
+fix: "$$MATCH|number(decimal)"
 ```
 
 ## How to fix
