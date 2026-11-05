@@ -24,16 +24,12 @@ here. Read that record before changing anything below it.
 |---|---|
 | 🔴 **`spell`'s L8 budget: 2,152 ms?** ([W-103](open/W-103-spell-pack.md)): the `spell` operation's p95 on the three `perf` runs on `main` is 1,383.3 / 1,434.2 / 1,429.5 ms (`ci` 41005346138, 41006814384, 41007205048; 1,004 files, 12 findings each). Your method (L8 decision 4): 1.5 × the worst, 1,434.2 → **2,152 ms**; no design target, so no guard. **Set it** (then a `spell` p95 over 2,152 ms fails CI) **or leave it unset** (reported only). | 2026-11-05 |
 | ↳ **blocks:** W-103 | |
-| 🔴 **W-162: may a fix edit several files?** ([proposal](proposals/fix-capabilities.md) §5): 22 rules rename across files (CSS classes, ids, custom properties, SCSS members, exports and their importers) or add a dependency to `package.json`. That amends L4 decisions 10 ("only their own range") and 12 (the hook). **Pick:** (1) *recommended*: allow it — verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook; (2) keep fixes single-file, and the 22 become `manual` `restructure`. | 2026-11-05 |
-| ↳ **blocks:** W-162 | |
-| 🔴 **W-163: rule on the save-and-targets proposal** ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule (14 `auto` rules default `false`; a move to `auto` in those kinds sets it), `[targets]` with Python from `requires-python`'s lower bound and explicit browser minimums, overridable per scope and rule. **Two calls:** (1) *recommended*: codelaw writes its own browser-support table (~250 cited rows, starting with what the corpus finds), since caniuse (CC-BY) and MDN (CC0) are refused under L2 — or no table, and nine CSS rules stay `suggest`; (2) *recommended*: `py/lru-cache-with-maxsize-none` (3.9) and `-without-parameters` (3.8), `auto` today, become target-gated as the ruling says — or assume Python ≥ 3.9, as Ruff does. | 2026-11-05 |
-| ↳ **blocks:** W-163 | |
 
 ---
 
 ## Open items (14)
 
-### build (7)
+### build (8)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules and the version watch built (its dispatch proof left); next profiling, corpus counts, the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -45,7 +41,9 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); 533 rules `fix_pending:`. Ruled 11-05: closes once only the capability-blocked rules are left, their markers naming W-162. Next: the moves, pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🔴 **W-162** `arpit` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Next: Arpit's multi-file call (inbox). Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): re-judge 37 rules first, then computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. Next: re-judge the 37. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+
+🟢 **W-166** `agent` Build W-163's save-and-targets design, ruled 11-05 ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule (14 default `false`), `[targets]`, codelaw's own browser table, the lru_cache rules target-gated. Filed by Arpit (Claude Code). [detail](open/W-166-save-behaviour-and-targets-build.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 
@@ -72,8 +70,7 @@ here. Read that record before changing anything below it.
 
 ### record update (0)
 
-### research (1)
+### research (0)
 
-🔴 **W-163** `arpit` Researched ([proposal](proposals/save-behaviour-and-targets.md)): `on_edit` per rule (14 default `false`), `[targets]` for 21 rules. Next: Arpit rules on it (inbox), then its build item. Filed by Arpit (Cowork). [detail](open/W-163-save-behaviour-and-targets.md)
 
 ---

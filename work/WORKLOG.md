@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — Rulings written back: W-162 multi-file fixes, W-163 save and targets  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) write back Arpit's three multiple-choice picks of 11-05: W-162 *"Allow multi-file (Recommended)"*; W-163 *"Own table (Recommended)"* and *"Target-gated (Recommended)"*, the rest of the proposal accepted as presented.
+- **Done:** SR-LAW-4 decisions 10 and 12 amended; SR-CONFIG 11e (`on_edit` entries), 11f (`[targets]`); SR-RULE-FORMAT 2b (`on_edit:`), 2c (`fix_target:`, the browser table) — each "Built: no". Both inbox rows and sub-rows removed; W-162 🟢 `agent`; W-163 closed and archived; W-166 filed (the build, 🟢 `agent`).
+- **Decided / left open:** CLAUDE.md's L4 line left as is — still true. `[targets]` is not in SR-CONFIG §1's map yet: the schema test reads that map, so W-166 adds it with the schema. `[fix] on_edit` and the data table land in SR-ARCHITECTURE and SR-RULE-PACKS with the build.
+- **Mistakes:** none. Waited for Cowork's W-161/W-163 hand-over to land first; the rulings sit on it.
+- **Next:** W-162 step 0, re-judge the 37 rules.
+
 ## 2026-11-05 — W-95: Open VSX upload moved to trusted publishing  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) switch `publish.yml`'s Open VSX step to trusted publishing with `curl`, validate, no release; then the VSCodium check.
