@@ -171,6 +171,9 @@ pub struct RuleConfig {
     /// `None` is `off`.
     pub severity: Option<codelaw_core::Severity>,
     pub options: BTreeMap<String, serde_json::Value>,
+    /// The rung a config entry lowered the rule's fix to (SR-LAW-4
+    /// decision 16); `None` keeps the rule's own.
+    pub fix: Option<codelaw_core::FixClass>,
 }
 
 fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(), ConfigError> {
@@ -182,6 +185,12 @@ fn validate_severity(file: &Path, id: &str, setting: &RuleSetting) -> Result<(),
             Some(file.to_owned()),
             format!("rule `{id}`: invalid severity `{s}`{near} (one of error, warn, info, off)"),
         ));
+    }
+    if let Some(f) = setting.fix()
+        && codelaw_core::FixClass::parse(f).is_none()
+    {
+        let near = did_you_mean(f, ["auto", "suggest", "manual"]).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
+        return Err(ConfigError::new(Some(file.to_owned()), format!("rule `{id}`: invalid `fix = \"{f}\"`{near} (one of suggest, manual; a rule's fix can only be lowered)")));
     }
     Ok(())
 }

@@ -239,6 +239,7 @@ The research ([W-03](../archive/open/W-03-rule-packs.md)) found that porting the
 13. **Every rule, in any pack, obeys [L4](0006_LAW-4-every-rule-has-a-fix.md).** Every rule goes through the same load-time checks and `codelaw test`. A pack whose rules fail to load is refused as a whole, with the failing rule named.
 
 13a. **The manual ceiling (W-156, 2026-10-31; [L4](0006_LAW-4-every-rule-has-a-fix.md) decisions 6 and 7).** `packs/fix-ladder.toml`'s `[ceiling]` names, for every first-party pack folder, the most `manual` rules it may ship, set at each pack's count on 2026-10-31 (W-139's ports included). `codelaw rules --fix-stats --packs packs --check` exits 1 for a pack over its ceiling or with none; `crates/codelaw-cli/tests/laws.rs` runs it, so a new pack adds its line. A `manual` rule still waiting for its W-156 move carries `fix_pending:` ([SR-RULE-FORMAT](0112_rule-format.md) decision 2) and counts against the ceiling like any other.
+    A rule a project lowers (SR-CONFIG decision 11d) counts as the pack ships it. Moves up the ladder land pack by pack, each lowering its pack's ceiling in the same change (first: `pandas`, `ts`, `react`, `js`, `security-python`, W-156).
 14. **Precedence, highest first:**
     1. local `.codelaw/rules/`;
     2. packs, in `extends` order (later wins), first-party and third-party alike.

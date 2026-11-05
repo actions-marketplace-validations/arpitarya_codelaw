@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the known host keys come from is deployment-specific) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`RejectPolicy` refuses an unknown host, which breaks a connection that relied on accepting it; where the known keys come from (`load_system_host_keys`, a known_hosts file) is deployment-specific) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-295 · OWASP A07:2025 · security severity `high` |
@@ -119,12 +119,6 @@ codelaw check --rule sec-py/paramiko-host-key  # only this rule
 codelaw config --print --for <file>            # the resolved setting, and where it came from
 ```
 
-## How to fix
-
-1. Call `client.load_system_host_keys()` or `load_host_keys(path)`.
-2. Use `client.set_missing_host_key_policy(paramiko.RejectPolicy())`.
-3. Put the server's key in `known_hosts` ahead of time.
-
 ## Examples
 
 ### Python
@@ -133,6 +127,12 @@ codelaw config --print --for <file>            # the resolved setting, and where
 
 ```py
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+```
+
+#### Fixed
+
+```py
+client.set_missing_host_key_policy(paramiko.RejectPolicy())
 ```
 
 #### Do

@@ -44,7 +44,7 @@ impl Project {
             return None;
         }
         let mut loaded = rule.loaded.clone();
-        loaded.default = Some(RuleConfig { severity: Some(loaded.rule.severity), options: loaded.rule.default_options() });
+        loaded.default = Some(RuleConfig { severity: Some(loaded.rule.severity), options: loaded.rule.default_options(), fix: None });
         self.rules.effective(&loaded, layers)
     }
 

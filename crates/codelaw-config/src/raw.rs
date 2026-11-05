@@ -121,7 +121,7 @@ pub struct RawConfig {
     pub reviews: RawReviews,
 }
 
-/// A rule's severity, or its severity and options.
+/// A rule's severity, or its severity, options and lowered fix.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 #[serde(untagged)]
 pub enum RuleSetting {
@@ -130,6 +130,10 @@ pub enum RuleSetting {
         severity: Option<String>,
         #[serde(default)]
         options: BTreeMap<String, serde_json::Value>,
+        /// A rung at or below the rule's own (SR-LAW-4 decision 16):
+        /// `suggest` or `manual` lowers it; raising is a load error.
+        #[serde(default)]
+        fix: Option<String>,
     },
 }
 
@@ -145,6 +149,14 @@ impl RuleSetting {
         match self {
             RuleSetting::Severity(_) => None,
             RuleSetting::Full { options, .. } => Some(options),
+        }
+    }
+
+    /// The fix rung this entry lowers the rule to, as written.
+    pub fn fix(&self) -> Option<&str> {
+        match self {
+            RuleSetting::Severity(_) => None,
+            RuleSetting::Full { fix, .. } => fix.as_deref(),
         }
     }
 }

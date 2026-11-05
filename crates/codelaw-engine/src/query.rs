@@ -58,6 +58,11 @@ pub struct RuleWhy {
     pub enabled_by: Option<String>,
     pub default: String,
     pub preview: bool,
+    /// The rule's own fix rung.
+    pub fix: String,
+    /// The rung a config entry lowered it to, and the entry that did
+    /// (SR-LAW-4 decision 16): for `--for`'s file, else the project root.
+    pub fix_lowered: Option<(String, String)>,
     pub for_file: Option<WhyForFile>,
 }
 
@@ -159,13 +164,35 @@ impl Project {
             enabled_by: r.enabled_by.clone(),
             default: severity_name(&r.default),
             preview: r.preview_blocked,
+            fix: r.rule.fix.name().to_owned(),
+            fix_lowered: None,
             for_file: None,
         };
-        let Some(file) = file else { return Ok(why) };
+        let lowered = |layers: &[codelaw_config::Layer]| -> Option<(String, String)> {
+            let cfg = self.rules.effective(&r, layers)?;
+            let f = cfg.fix?;
+            let source = layers.iter().rev().find(|l| l.rules.get(id).and_then(|s| s.fix()).is_some()).map(|l| l.source.clone()).unwrap_or_default();
+            Some((f.name().to_owned(), source))
+        };
+        let Some(file) = file else {
+            why.fix_lowered = lowered(&self.config.layers_for(self.root()));
+            return Ok(why);
+        };
         let (abs, rel, language) = self.locate(file)?;
         let layers = self.config.layers_for(&abs);
-        let set_by =
-            layers.iter().filter(|l| l.rules.contains_key(id)).map(|l| (l.source.clone(), l.rules[id].severity().unwrap_or("(options)").to_owned())).collect();
+        why.fix_lowered = lowered(&layers);
+        let set_by = layers
+            .iter()
+            .filter(|l| l.rules.contains_key(id))
+            .map(|l| {
+                let s = &l.rules[id];
+                let mut v = s.severity().unwrap_or("(options)").to_owned();
+                if let Some(f) = s.fix() {
+                    v.push_str(&format!(", fix = {f}"));
+                }
+                (l.source.clone(), v)
+            })
+            .collect();
         let applies = self.compiled.iter().find(|c| c.id() == id).is_some_and(|c| c.applies_to_language(language) && c.applies_to_path(&rel));
         let severity = if applies { severity_name(&self.rules.effective(&r, &layers)) } else { "off".into() };
         let is_match = self.compiled.iter().any(|c| c.id() == id && matches!(c.matcher, crate::Matcher::Match(_)));

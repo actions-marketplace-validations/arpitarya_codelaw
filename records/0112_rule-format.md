@@ -161,6 +161,8 @@ The decider asked for a record of the rule-file template. The format so far exis
    - **When no type program answers** (no Node, no TypeScript ≥ 7.1, a cold hook): the rule does not run, and the report says so in a note; it never reports a guess (SR-TYPES decisions 6 and 8).
    - **Fix forms of a `match:` block (W-156).** `fix: { choices: [{ label, default?, fix }] }` — two or more labelled edits, at most one `default: true`, each `fix` a template or primitive list — is a `fix: suggest` rule's labelled alternatives (L4 decision 4); a label is a few words without `)`. `auto_when:`, an ast-grep rule object (with the block's `utils`), says where an `auto` rule's findings stay `auto`: a match outside it is reported as `suggest` (L4 decision 2), and `auto_when:` on a rule that is not `auto` is a load error. A native rule gives the same two per finding through `NativeRule::rung_of` and `choices_of`.
 
+   - **A config entry's `fix` (W-156, 2026-11-05).** The rule set refuses a rule entry whose `fix` is above the rule's own `fix:` ([SR-CONFIG](0110_config.md) decision 11d), an engine rule's too; a lower one becomes the rule's `RuleConfig.fix` for the files the entry covers.
+
 4. **Body sections, in this order:**
    1. One summary paragraph.
    2. `**Why:**`

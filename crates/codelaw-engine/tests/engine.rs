@@ -252,6 +252,31 @@ fn per_finding_rung_and_choices() {
     assert_eq!(p.fix_source("b.js", Language::Javascript, src, false).fixed, src, "choices are never applied without --unsafe");
 }
 
+/// SR-LAW-4 decision 16: a rule entry's `fix` lowers the rung, never raises it.
+#[test]
+fn a_project_lowers_a_fix_and_cannot_raise_it() {
+    let r = Repo::new("lower");
+    let auto = rule("acme/no-var", &[Language::Javascript], "auto", "match:\n  kind: variable_declaration\nmessage: \"no var\"\nfix: \"let x = 1;\"", &[(Language::Javascript, "var x = 1;", "let x = 1;")]);
+    r.file(".codelaw/rules/acme/no-var.md", &auto).file("a.js", "var x = 1;\n");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-var\" = { severity = \"error\", fix = \"suggest\" }\n");
+    let d = r.check();
+    assert_eq!((d[0].fix, d[0].edits.len()), (FixClass::Suggest, 1), "lowered to suggest: still a diff");
+    let fixed = r.project().unwrap().fix(&[], &FixOptions::default()).unwrap();
+    assert!(fixed.files.iter().all(|f| !f.written) && r.read("a.js") == "var x = 1;\n", "plain `fix` no longer applies it");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-var\" = { severity = \"error\", fix = \"manual\" }\n");
+    let d = r.check();
+    assert_eq!(d[0].fix, FixClass::Manual);
+    assert!(d[0].edits.is_empty() && d[0].steps.iter().any(|s| s.contains("make this edit by hand: replace `var x = 1;` with `let x = 1;`")), "{:?}", d[0].steps);
+    let suggest = rule("acme/no-dbg", &[Language::Javascript], "suggest", "match:\n  kind: debugger_statement\nmessage: \"x\"\nfix: \"\"", &[(Language::Javascript, "debugger;", "")]);
+    r.file(".codelaw/rules/acme/no-dbg.md", &suggest);
+    r.file("codelaw.toml", "[rules]\n\"acme/no-dbg\" = { severity = \"error\", fix = \"auto\" }\n");
+    let e = r.project().err().unwrap().to_string();
+    assert!(e.contains("`fix = \"auto\"` would raise its fix, which is `suggest`"), "{e}");
+    r.file("codelaw.toml", "[rules]\n\"acme/no-dbg\" = { severity = \"error\", fix = \"never\" }\n");
+    let e = r.project().err().unwrap().to_string();
+    assert!(e.contains("invalid `fix = \"never\"`"), "{e}");
+}
+
 #[test]
 fn a_kind_no_grammar_has_is_refused() {
     let r = Repo::new("badkind");

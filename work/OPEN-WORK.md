@@ -43,7 +43,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-145** `agent` A `tailwind` pack, class sorting, and `@codelaw/provider-tailwind` (ruled 10-30: the order from the project's Tailwind; D-48, D-49 ratified). Records and the provider first; the pack's registration after W-139's packs land. Nothing built. Filed by Arpit (Cowork). [detail](open/W-145-tailwind-pack-and-class-sorting.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine built 10-31: per-finding rung, choices, `fix_exception`, ceiling, `--fix-stats`. Next: lowering, then the moves pack by pack. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine, exceptions and lowering built (11-05); left: moving the ~530 `fix_pending:` rules up, pack by pack; Arpit rules on the capability-blocked ones. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-158** `agent` `.codelawignore` covers every rule — built 10-31. Ruled 11-05: an optional `reason` on a rule set to `"off"` in `[rules]` or a scope, plus `[rules] require_reason` (default `false`); left: build it. Filed by Arpit (Claude app). [detail](open/W-158-codelawignore-every-rule.md)
 

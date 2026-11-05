@@ -33,6 +33,7 @@ impl Project {
             let r = &c.loaded;
             let id = &r.rule.id;
             let effective = self.rules.effective(r, &layers);
+            let lowered = effective.as_ref().and_then(|e| e.fix);
             let sources = self.config.rule_setting_sources(abs.as_deref(), id);
             let source = if r.preview_blocked {
                 "preview rule: runs only with `preview = true`".to_owned()
@@ -49,6 +50,11 @@ impl Project {
                 None => Value::String(severity),
             };
             out.push(Traced { key: format!("rules.{}", serde_json::to_string(id).expect("a string")), value, source });
+            // A lowered fix and the entry that lowered it (SR-LAW-4 decision 16).
+            if let Some(f) = lowered {
+                let at = sources.iter().rev().find(|(_, s)| s.fix().is_some()).map(|(s, _)| s.clone()).unwrap_or_default();
+                out.push(Traced { key: format!("rules.{}.fix", serde_json::to_string(id).expect("a string")), value: json!(f.name()), source: at });
+            }
         }
         out
     }

@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (dropping `new` changes the value from an object to a primitive, which the author confirms) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (dropping `new` changes the value from an object to a primitive, which the author confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-new-wrappers` |
@@ -121,10 +121,6 @@ codelaw explain js/no-new-wrappers       # what it wants, why, how to fix
 codelaw check --rule js/no-new-wrappers  # only this rule
 codelaw config --print --for <file>      # the resolved setting, and where it came from
 ```
-
-## How to fix
-
-1. Remove `new` to convert to the primitive, or use the literal.
 
 ## Examples
 

@@ -29483,7 +29483,7 @@ const id = Symbol("id");
 ## `js/no-new-wrappers` — No primitive wrapper objects
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (dropping `new` changes the value from an object to a primitive, which the author confirms)
+- **Fix:** `suggest` (dropping `new` changes the value from an object to a primitive, which the author confirms)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-new-wrappers.md
 
@@ -29492,10 +29492,6 @@ const id = Symbol("id");
 `String`, `Number` and `Boolean` are not called with `new`.
 
 **Why:** `new Boolean(false)` is an object, so it is truthy; wrapper objects behave unlike their primitives everywhere.
-
-### How to fix
-
-1. Remove `new` to convert to the primitive, or use the literal.
 
 ### Examples
 
@@ -79094,7 +79090,7 @@ nodes = tree.xpath("//user[@name=$name]", name=name)
 ## `sec-py/paramiko-host-key` — SSH host keys are checked
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (where the known host keys come from is deployment-specific)
+- **Fix:** `suggest` (`RejectPolicy` refuses an unknown host, which breaks a connection that relied on accepting it; where the known keys come from (`load_system_host_keys`, a known_hosts file) is deployment-specific)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/paramiko-host-key.md
 
@@ -79104,12 +79100,6 @@ nodes = tree.xpath("//user[@name=$name]", name=name)
 
 **Why:** A connection to an impostor goes through unnoticed, and the credentials are handed to it (CWE-295).
 
-### How to fix
-
-1. Call `client.load_system_host_keys()` or `load_host_keys(path)`.
-2. Use `client.set_missing_host_key_policy(paramiko.RejectPolicy())`.
-3. Put the server's key in `known_hosts` ahead of time.
-
 ### Examples
 
 #### Python
@@ -79118,6 +79108,12 @@ nodes = tree.xpath("//user[@name=$name]", name=name)
 
 ```py
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+```
+
+##### Fixed
+
+```py
+client.set_missing_host_key_policy(paramiko.RejectPolicy())
 ```
 
 ##### Do

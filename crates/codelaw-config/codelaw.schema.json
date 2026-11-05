@@ -59,7 +59,7 @@
       "enum": ["error", "warn", "info", "off"]
     },
     "ruleSetting": {
-      "description": "A severity, or a severity and options.",
+      "description": "A severity, or a severity, options and a lowered fix.",
       "oneOf": [
         { "$ref": "#/definitions/severity" },
         {
@@ -67,7 +67,12 @@
           "additionalProperties": false,
           "properties": {
             "severity": { "$ref": "#/definitions/severity" },
-            "options": { "type": "object" }
+            "options": { "type": "object" },
+            "fix": {
+              "description": "Lower the rule's fix (SR-LAW-4 decision 16): `suggest` stops `codelaw fix`, save and the agent hook applying it; `manual` stops every surface applying it. At or below the rule's own rung; raising is a config error.",
+              "type": "string",
+              "enum": ["auto", "suggest", "manual"]
+            }
           }
         }
       ]
