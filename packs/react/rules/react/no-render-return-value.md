@@ -2,9 +2,8 @@
 id: react/no-render-return-value
 title: "The return value of ReactDOM.render is not used"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "code that used the instance needs a ref instead"
-fix_pending: "auto-subset"
+fix: suggest
+fix_reason: "a `const x = ReactDOM.render(…)` statement drops the binding and keeps the call; the reviewer confirms the binding is never read (otherwise a ref must be threaded in); other uses carry no edit"
 stability: preview
 ported_from: [eslint-plugin-react/no-render-return-value]
 since: 0.1.0
@@ -21,10 +20,18 @@ match:
     stopBy: neighbor
     any:
       - kind: variable_declarator
+        inside:
+          stopBy: neighbor
+          all:
+            - pattern: $DECL
+            - pattern: 'const $V = ReactDOM.render($$$B);'
+      - kind: variable_declarator
       - kind: return_statement
       - kind: assignment_expression
       - kind: arguments
 message: "Don't use what `ReactDOM.render` returns; use a ref"
+fix:
+  - replace: {target: $DECL, with: 'ReactDOM.render($$$A);'}
 ```
 
 ## How to fix
@@ -41,6 +48,12 @@ message: "Don't use what `ReactDOM.render` returns; use a ref"
 const app = ReactDOM.render(<App />, root);
 ```
 
+#### Fixed
+
+```js
+ReactDOM.render(<App />, root);
+```
+
 #### Do
 
 ```js
@@ -55,6 +68,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 const app = ReactDOM.render(<App />, root);
 ```
 
+#### Fixed
+
+```jsx
+ReactDOM.render(<App />, root);
+```
+
 #### Do
 
 ```jsx
@@ -67,6 +86,12 @@ ReactDOM.render(<App ref={appRef} />, root);
 
 ```tsx
 const app = ReactDOM.render(<App />, root);
+```
+
+#### Fixed
+
+```tsx
+ReactDOM.render(<App />, root);
 ```
 
 #### Do

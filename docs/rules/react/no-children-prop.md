@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the children changes the element's shape by hand) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a self-closing element whose last attribute is children={...} moves it into the body with identical output; the createElement form and other placements stay suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-children-prop` |
@@ -135,6 +135,12 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 const a = <Panel children={<p>Hi</p>} />;
 ```
 
+#### Fixed
+
+```js
+const a = <Panel >{<p>Hi</p>}</Panel>;
+```
+
 #### Do
 
 ```js
@@ -151,6 +157,12 @@ const a = <Panel>
 const a = <Panel children={<p>Hi</p>} />;
 ```
 
+#### Fixed
+
+```jsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
+```
+
 #### Do
 
 ```jsx
@@ -165,6 +177,12 @@ const a = <Panel>
 
 ```tsx
 const a = <Panel children={<p>Hi</p>} />;
+```
+
+#### Fixed
+
+```tsx
+const a = <Panel >{<p>Hi</p>}</Panel>;
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (either the element should be hidden from everyone or not hidden at all; the author decides) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (removing aria-hidden exposes the element to assistive technology while tabIndex -1 keeps it hidden but unfocusable; the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-aria-hidden-on-focusable` |
@@ -136,6 +136,18 @@ codelaw config --print --for <file>                          # the resolved sett
 const b = <button aria-hidden="true">Close</button>;
 ```
 
+#### Fixed (remove aria-hidden)
+
+```js
+const b = <button >Close</button>;
+```
+
+#### Fixed (take out of tab order)
+
+```js
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
+```
+
 #### Do
 
 ```js
@@ -150,6 +162,18 @@ const b = <button>Close</button>;
 const b = <button aria-hidden="true">Close</button>;
 ```
 
+#### Fixed (remove aria-hidden)
+
+```jsx
+const b = <button >Close</button>;
+```
+
+#### Fixed (take out of tab order)
+
+```jsx
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
+```
+
 #### Do
 
 ```jsx
@@ -162,6 +186,18 @@ const b = <button>Close</button>;
 
 ```tsx
 const b = <button aria-hidden="true">Close</button>;
+```
+
+#### Fixed (remove aria-hidden)
+
+```tsx
+const b = <button >Close</button>;
+```
+
+#### Fixed (take out of tab order)
+
+```tsx
+const b = <button tabIndex={-1} aria-hidden="true">Close</button>;
 ```
 
 #### Do

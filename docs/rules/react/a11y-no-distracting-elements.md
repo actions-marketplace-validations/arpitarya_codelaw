@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement depends on what the element was for) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`<blink>` is unsupported by current browsers and renders as an inline span, so `span` changes nothing; `<marquee>` still scrolls, so its `div` replacement is only suggested) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/no-distracting-elements` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                      # the resolved setting,
 const m = <marquee>Sale!</marquee>;
 ```
 
+#### Fixed
+
+```js
+const m = <div>Sale!</div>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +153,12 @@ const m = <p>Sale!</p>;
 const m = <marquee>Sale!</marquee>;
 ```
 
+#### Fixed
+
+```jsx
+const m = <div>Sale!</div>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const m = <p>Sale!</p>;
 
 ```tsx
 const m = <marquee>Sale!</marquee>;
+```
+
+#### Fixed
+
+```tsx
+const m = <div>Sale!</div>;
 ```
 
 #### Do

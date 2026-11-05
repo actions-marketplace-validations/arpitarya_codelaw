@@ -2,9 +2,8 @@
 id: react/a11y-anchor-is-valid
 title: "A link goes somewhere"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the fix is a real URL or a `<button>`, and which one is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a button takes the click without navigating, so the reviewer confirms the link runs an action rather than needing a real URL"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/anchor-is-valid]
 since: 0.5.0
@@ -20,18 +19,27 @@ match:
   - any:
     - {kind: jsx_opening_element}
     - {kind: jsx_self_closing_element}
-  - has: {field: name, regex: ^a$}
+  - has: {field: name, regex: ^a$, pattern: $N}
+  - any:
+    - {kind: jsx_self_closing_element}
+    - inside:
+        kind: jsx_element
+        has: {field: close_tag, has: {field: name, regex: ^a$, pattern: $CN}}
   - not:
       has: {kind: jsx_expression}
   - any:
-    - has: {kind: jsx_attribute, regex: '^href=(\{\s*)?["''`](#|javascript:)'}
+    - has: {kind: jsx_attribute, regex: '^href=(\{\s*)?["''`](#|javascript:)', pattern: $H}
       not:
         has: {kind: jsx_attribute, regex: '^href=(\{\s*)?["''`]#[^"''`]'}
-    - has: {kind: jsx_attribute, regex: '^href=(\{\s*)?["''`]javascript:'}
+    - has: {kind: jsx_attribute, regex: '^href=(\{\s*)?["''`]javascript:', pattern: $H}
     - not:
         has: {kind: jsx_attribute, regex: ^href\b}
       has: {kind: jsx_attribute, regex: ^onClick\b}
 message: This link goes nowhere; give it a real `href`, or use a `<button>`
+fix:
+  - replace: { target: $N, with: 'button type="button"' }
+  - remove: $H
+  - replace: { target: $CN, with: "button" }
 ```
 
 ## How to fix
@@ -48,6 +56,12 @@ message: This link goes nowhere; give it a real `href`, or use a `<button>`
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+#### Fixed
+
+```js
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 #### Do
 
 ```js
@@ -62,6 +76,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 const a = <a href="#" onClick={open}>Open</a>;
 ```
 
+#### Fixed
+
+```jsx
+const a = <button type="button"  onClick={open}>Open</button>;
+```
+
 #### Do
 
 ```jsx
@@ -74,6 +94,12 @@ const a = <button type="button" onClick={open}>Open</button>;
 
 ```tsx
 const a = <a href="#" onClick={open}>Open</a>;
+```
+
+#### Fixed
+
+```tsx
+const a = <button type="button"  onClick={open}>Open</button>;
 ```
 
 #### Do

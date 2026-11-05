@@ -4,7 +4,7 @@ title: "A role is a real ARIA role"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the intended role is the author's"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-role]
 since: 0.5.0

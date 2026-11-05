@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the intended name is read off the message; there is no template that recases a name) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (each miscased name has one spelling in React's own list; the reviewer confirms the member was meant to be that lifecycle or static) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-react/no-typos` |
@@ -139,6 +139,15 @@ class A extends Component {
 A.PropTypes = {};
 ```
 
+#### Fixed
+
+```js
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
+```
+
 #### Do
 
 ```js
@@ -159,6 +168,15 @@ class A extends Component {
 A.PropTypes = {};
 ```
 
+#### Fixed
+
+```jsx
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
+```
+
 #### Do
 
 ```jsx
@@ -177,6 +195,15 @@ class A extends Component {
   componentdidmount() {}
 }
 A.PropTypes = {};
+```
+
+#### Fixed
+
+```tsx
+class A extends Component {
+  componentDidMount() {}
+}
+A.propTypes = {};
 ```
 
 #### Do

@@ -2,9 +2,8 @@
 id: react/a11y-no-interactive-element-to-noninteractive-role
 title: "Interactive elements keep an interactive role"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "use a non-interactive element instead, or drop the role; which is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "removing the role keeps the interactive element and drops the semantics it claimed; the reviewer confirms the control is meant to stay, or swaps in a non-interactive element"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-interactive-element-to-noninteractive-role]
 since: 0.5.0
@@ -21,8 +20,9 @@ match:
     - {kind: jsx_opening_element}
     - {kind: jsx_self_closing_element}
   - has: {field: name, regex: ^(a|button|input|select|textarea|option)$}
-  - has: {kind: jsx_attribute, regex: '^role=["''](article|banner|complementary|contentinfo|definition|dialog|document|feed|figure|form|group|heading|img|list|listitem|log|main|marquee|math|navigation|none|note|presentation|region|status|table|term|timer|toolbar|tooltip)["'']'}
+  - has: {kind: jsx_attribute, pattern: $R, regex: '^role=["''](article|banner|complementary|contentinfo|definition|dialog|document|feed|figure|form|group|heading|img|list|listitem|log|main|marquee|math|navigation|none|note|presentation|region|status|table|term|timer|toolbar|tooltip)["'']'}
 message: Do not give an interactive element a non-interactive role
+fix: [remove: $R]
 ```
 
 ## How to fix
@@ -39,6 +39,12 @@ message: Do not give an interactive element a non-interactive role
 const b = <button role="heading">Title</button>;
 ```
 
+#### Fixed
+
+```js
+const b = <button >Title</button>;
+```
+
 #### Do
 
 ```js
@@ -53,6 +59,12 @@ const b = <h2>Title</h2>;
 const b = <button role="heading">Title</button>;
 ```
 
+#### Fixed
+
+```jsx
+const b = <button >Title</button>;
+```
+
 #### Do
 
 ```jsx
@@ -65,6 +77,12 @@ const b = <h2>Title</h2>;
 
 ```tsx
 const b = <button role="heading">Title</button>;
+```
+
+#### Fixed
+
+```tsx
+const b = <button >Title</button>;
 ```
 
 #### Do

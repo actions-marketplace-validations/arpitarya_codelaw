@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended value is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (for the true/false-typed attributes the reviewer picks `true` or `false`; attributes that take other tokens or numbers get no edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/aria-proptypes` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+#### Fixed (true)
+
+```js
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```js
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const b = <button aria-pressed="true">Bold</button>;
 const b = <button aria-pressed="yes">Bold</button>;
 ```
 
+#### Fixed (true)
+
+```jsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```jsx
+const b = <button aria-pressed="false">Bold</button>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +183,18 @@ const b = <button aria-pressed="true">Bold</button>;
 
 ```tsx
 const b = <button aria-pressed="yes">Bold</button>;
+```
+
+#### Fixed (true)
+
+```tsx
+const b = <button aria-pressed="true">Bold</button>;
+```
+
+#### Fixed (false)
+
+```tsx
+const b = <button aria-pressed="false">Bold</button>;
 ```
 
 #### Do

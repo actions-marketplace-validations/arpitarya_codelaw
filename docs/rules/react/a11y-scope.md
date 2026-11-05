@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the cell may need to become a `<th>`, which changes the table's markup) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (scope is inert on any element but a td, so removing it changes nothing there; on a td the cell may need to become a `<th>`, so those findings stay suggest) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/scope` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ## How to fix
 
-1. Make the cell a `<th>`, or remove `scope`.
+1. On a `<td>`, make the cell a `<th>`, or remove `scope`.
 
 ## Examples
 
@@ -131,6 +131,12 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ```js
 const c = <td scope="row">Total</td>;
+```
+
+#### Fixed
+
+```js
+const c = <td >Total</td>;
 ```
 
 #### Do
@@ -147,6 +153,12 @@ const c = <th scope="row">Total</th>;
 const c = <td scope="row">Total</td>;
 ```
 
+#### Fixed
+
+```jsx
+const c = <td >Total</td>;
+```
+
 #### Do
 
 ```jsx
@@ -159,6 +171,12 @@ const c = <th scope="row">Total</th>;
 
 ```tsx
 const c = <td scope="row">Total</td>;
+```
+
+#### Fixed
+
+```tsx
+const c = <td >Total</td>;
 ```
 
 #### Do

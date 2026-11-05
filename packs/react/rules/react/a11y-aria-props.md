@@ -4,7 +4,7 @@ title: "ARIA attributes are real ones"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the intended attribute is the author's to pick"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/aria-props]
 since: 0.5.0

@@ -66468,8 +66468,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "only the author knows what the image shows",
+   "fix": "auto",
+   "fix_reason": "an `<img>` hidden with aria-hidden is decorative, so an empty `alt` changes nothing for assistive technology; any other image needs an `alt` that says what it shows, so the reviewer confirms it is decorative",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -66618,8 +66618,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix is a real URL or a `<button>`, and which one is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "a button takes the click without navigating, so the reviewer confirms the link runs an action rather than needing a real URL",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -66671,8 +66671,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the element joins the tab order (`0`) or not (`-1`) is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "whether the element joins the tab order (0) or is focused from code only (-1) is the reviewer's choice",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -66777,8 +66777,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's",
+   "fix": "suggest",
+   "fix_reason": "for the true/false-typed attributes the reviewer picks `true` or `false`; attributes that take other tokens or numbers get no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -66883,8 +66883,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the attribute was meant for another element, and which one is the author's call",
+   "fix": "auto",
+   "fix_reason": "the element is never rendered or has no role, so removing the attribute changes nothing for assistive technology",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -66989,8 +66989,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the right keys and behaviour depend on what the element does — usually a `<button>` is the better fix",
+   "fix": "suggest",
+   "fix_reason": "a button changes the element's markup and styling, and the copied key handler assumes Enter and Space should click it; the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67298,8 +67298,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to add `tabIndex` or switch to a native control is the author's call",
+   "fix": "suggest",
+   "fix_reason": "adding tabIndex 0 or -1 changes focus behaviour, and a native control may fit better; the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67351,8 +67351,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which control the label belongs to is the author's",
+   "fix": "suggest",
+   "fix_reason": "htmlFor ties the label to the next sibling control that has a static id, which the reviewer confirms is the intended one; a label with no such sibling gets no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67501,8 +67501,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the focus handler's behaviour is the author's",
+   "fix": "suggest",
+   "fix_reason": "the focus handler receives a FocusEvent, so the reviewer confirms the copied mouse handler does not read mouse coordinates",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67554,8 +67554,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the shortcut may need another way to reach the element",
+   "fix": "suggest",
+   "fix_reason": "removing the shortcut may leave the element without another way to reach it, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67607,8 +67607,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "either the element should be hidden from everyone or not hidden at all; the author decides",
+   "fix": "suggest",
+   "fix_reason": "removing aria-hidden exposes the element to assistive technology while tabIndex -1 keeps it hidden but unfocusable; the reviewer picks",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67651,8 +67651,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "some dialogs need initial focus, set deliberately in code",
+   "fix": "suggest",
+   "fix_reason": "removing autoFocus drops initial focus, so the reviewer confirms the element needs none or moves focus from the open handler",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67704,8 +67704,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement depends on what the element was for",
+   "fix": "auto",
+   "fix_reason": "`<blink>` is unsupported by current browsers and renders as an inline span, so `span` changes nothing; `<marquee>` still scrolls, so its `div` replacement is only suggested",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67757,8 +67757,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "use a non-interactive element instead, or drop the role; which is the author's call",
+   "fix": "suggest",
+   "fix_reason": "removing the role keeps the interactive element and drops the semantics it claimed; the reviewer confirms the control is meant to stay, or swaps in a non-interactive element",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67810,8 +67810,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix is a native control or an interactive role with focus, and that is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the handler moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; an element with no children gets no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67863,8 +67863,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix is the native control, which changes the markup",
+   "fix": "suggest",
+   "fix_reason": "for role button the role is dropped and the onClick moves onto a new inner button, which changes markup, styling and focus order, so the reviewer confirms it; other roles get no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67916,8 +67916,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the element either needs an interactive role and behaviour, or no `tabIndex`",
+   "fix": "suggest",
+   "fix_reason": "removing tabIndex takes the element out of the tab order, while -1 keeps it focusable from code only; the reviewer picks, or gives the element an interactive role instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67969,8 +67969,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the role is safe, but whether the element is the one meant is for the author to confirm",
+   "fix": "auto",
+   "fix_reason": "removing a role the element already has is exact for every role but img, whose element role depends on alt, so img findings stay suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67988,9 +67988,7 @@
    "options": {},
    "dont": "const b = <button role=\"button\">Save</button>;",
    "do": "const b = <button>Save</button>;",
-   "fix_steps": [
-    "Remove the `role` attribute."
-   ],
+   "fix_steps": [],
    "example": {
     "language": "javascript",
     "dont": "const b = <button role=\"button\">Save</button>;",
@@ -68119,8 +68117,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the attribute's value is the element's state, which the author wires up",
+   "fix": "auto",
+   "fix_reason": "a non-heading element given role=heading gets aria-level=\"2\", ARIA's default level; the other roles need the element's live state, so they carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -68136,15 +68134,15 @@
     }
    ],
    "options": {},
-   "dont": "const c = <span role=\"checkbox\" tabIndex={0} />;",
-   "do": "const c = <span role=\"checkbox\" aria-checked={on} tabIndex={0} />;",
+   "dont": "const c = <div role=\"heading\">Title</div>;",
+   "do": "const c = <div role=\"heading\" aria-level={level}>Title</div>;",
    "fix_steps": [
-    "Add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state."
+    "A `role=\"heading\"` gets `aria-level=\"2\"` from the fix. For the other roles, add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state."
    ],
    "example": {
     "language": "javascript",
-    "dont": "const c = <span role=\"checkbox\" tabIndex={0} />;",
-    "do": "const c = <span role=\"checkbox\" aria-checked={on} tabIndex={0} />;"
+    "dont": "const c = <div role=\"heading\">Title</div>;",
+    "do": "const c = <div role=\"heading\" aria-level={level}>Title</div>;"
    },
    "ported_from": [
     "eslint-plugin-jsx-a11y/role-has-required-aria-props"
@@ -68172,8 +68170,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "either the role or the attribute is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "either the role or the attribute is wrong; the reviewer picks removing the attribute or changing the role to one that supports it",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -68225,8 +68223,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the cell may need to become a `<th>`, which changes the table's markup",
+   "fix": "auto",
+   "fix_reason": "scope is inert on any element but a td, so removing it changes nothing there; on a td the cell may need to become a `<th>`, so those findings stay suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -68245,7 +68243,7 @@
    "dont": "const c = <td scope=\"row\">Total</td>;",
    "do": "const c = <th scope=\"row\">Total</th>;",
    "fix_steps": [
-    "Make the cell a `<th>`, or remove `scope`."
+    "On a `<td>`, make the cell a `<th>`, or remove `scope`."
    ],
    "example": {
     "language": "javascript",
@@ -70828,8 +70826,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the children changes the element's shape by hand",
+   "fix": "auto",
+   "fix_reason": "a self-closing element whose last attribute is children={...} moves it into the body with identical output; the createElement form and other placements stay suggest",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -70971,8 +70969,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which content the element should have needs the author",
+   "fix": "suggest",
+   "fix_reason": "the element keeps either its children or its injected HTML; the reviewer picks which to drop",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -70987,7 +70985,7 @@
    "dont": "const a = <div dangerouslySetInnerHTML={{ __html: html }}>Fallback</div>;",
    "do": "const a = <div dangerouslySetInnerHTML={{ __html: html }} />;",
    "fix_steps": [
-    "Keep either the HTML or the children, not both."
+    "Keep either the HTML or the children, not both: drop the children, or drop `dangerouslySetInnerHTML`."
    ],
    "example": {
     "language": "javascript",
@@ -71020,8 +71018,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each deprecated API has its own replacement",
+   "fix": "suggest",
+   "fix_reason": "the UNSAFE_ alias is exact for a legacy lifecycle, but the reviewer confirms React is 16.3 or later and nothing calls the method by name; the other APIs carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -71033,17 +71031,17 @@
     }
    ],
    "options": {},
-   "dont": "ReactDOM.render(<App />, root);",
-   "do": "createRoot(root).render(<App />);",
+   "dont": "componentWillMount() {",
+   "do": "componentDidMount() {",
    "fix_steps": [
-    "Replace `ReactDOM.render` with `createRoot(el).render(…)` and `hydrate` with `hydrateRoot`.",
+    "A legacy lifecycle takes its `UNSAFE_` name from the fix; the others are by hand. Replace `ReactDOM.render` with `createRoot(el).render(…)` and `hydrate` with `hydrateRoot`.",
     "Rename legacy lifecycles to their `UNSAFE_` names, or move their work to `componentDidMount`/`componentDidUpdate`.",
     "Use the `prop-types` package instead of `React.PropTypes`."
    ],
    "example": {
     "language": "javascript",
-    "dont": "ReactDOM.render(<App />, root);",
-    "do": "createRoot(root).render(<App />);"
+    "dont": "class Card extends React.Component {\n  componentWillMount() {\n    this.load();\n  }\n}",
+    "do": "class Card extends React.Component {\n  componentDidMount() {\n    this.load();\n  }\n}"
    },
    "ported_from": [
     "eslint-plugin-react/no-deprecated"
@@ -71204,8 +71202,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten as a `setState` call",
+   "fix": "suggest",
+   "fix_reason": "a plain `this.state.k = e` becomes `this.setState({ k: e })`, which is batched; the reviewer confirms nothing reads the value on the next line; updater-form and nested writes carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -71217,15 +71215,15 @@
     }
    ],
    "options": {},
-   "dont": "this.state.count = this.state.count + 1;",
-   "do": "this.setState((s) => ({ count: s.count + 1 }));",
+   "dont": "this.state.open = true;",
+   "do": "this.setState({ open: true });",
    "fix_steps": [
     "Replace the assignment with `this.setState(…)`; use the updater form when the new state depends on the old."
    ],
    "example": {
     "language": "javascript",
-    "dont": "class Counter extends React.Component {\n  inc() {\n    this.state.count = this.state.count + 1;\n  }\n}",
-    "do": "class Counter extends React.Component {\n  inc() {\n    this.setState((s) => ({ count: s.count + 1 }));\n  }\n}"
+    "dont": "class Menu extends React.Component {\n  open() {\n    this.state.open = true;\n  }\n}",
+    "do": "class Menu extends React.Component {\n  open() {\n    this.setState({ open: true });\n  }\n}"
    },
    "ported_from": [
     "eslint-plugin-react/no-direct-mutation-state"
@@ -71347,8 +71345,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the callback has to be cancelled where it starts",
+   "fix": "suggest",
+   "fix_reason": "a guard with only a block of statements and no else is dropped, keeping the block (a setState after unmount is a no-op); the reviewer confirms the callback needs no cancellation instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -71720,8 +71718,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "code that used the instance needs a ref instead",
+   "fix": "suggest",
+   "fix_reason": "a `const x = ReactDOM.render(…)` statement drops the binding and keeps the call; the reviewer confirms the binding is never read (otherwise a ref must be threaded in); other uses carry no edit",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72018,8 +72016,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the title is the author's, or the SVG is decorative and should be hidden — the author decides which",
+   "fix": "suggest",
+   "fix_reason": "adds aria-hidden=\"true\", which is right only when the SVG is decorative; the reviewer confirms that, or writes a title instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -72111,8 +72109,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "value: the intended name is read off the message; there is no template that recases a name",
+   "fix": "suggest",
+   "fix_reason": "each miscased name has one spelling in React's own list; the reviewer confirms the member was meant to be that lifecycle or static",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",

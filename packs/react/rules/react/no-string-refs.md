@@ -4,7 +4,7 @@ title: "No string refs"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the ref object has to be created where the component can reach it"
-fix_pending: "auto-subset"
+fix_pending: "auto-subset; needs scope-rename (W-162)"
 stability: preview
 ported_from: [eslint-plugin-react/no-string-refs]
 since: 0.1.0

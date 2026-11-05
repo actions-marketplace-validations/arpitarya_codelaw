@@ -2,9 +2,8 @@
 id: react/a11y-role-has-required-aria-props
 title: "A role carries the ARIA attributes it requires"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the attribute's value is the element's state, which the author wires up"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a non-heading element given role=heading gets aria-level=\"2\", ARIA's default level; the other roles need the element's live state, so they carry no edit"
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/role-has-required-aria-props]
 since: 0.5.0
@@ -36,17 +35,21 @@ match:
       not:
         has: {kind: jsx_attribute, regex: ^aria-expanded\b}
     - all:
-      - has: {kind: jsx_attribute, regex: '^role=["'']heading["'']'}
+      - has: {kind: jsx_attribute, regex: '^role=["'']heading["'']', pattern: $ROLE}
       - not:
           has: {field: name, regex: '^h[1-6]$'}
       - not:
           has: {kind: jsx_attribute, regex: ^aria-level\b}
 message: This role requires ARIA state the element does not carry
+fix:
+  - insert-after: {target: $ROLE, text: ' aria-level="2"'}
+auto_when:
+  has: {kind: jsx_attribute, regex: '^role=["'']heading["'']'}
 ```
 
 ## How to fix
 
-1. Add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
+1. A `role="heading"` gets `aria-level="2"` from the fix. For the other roles, add the required attribute (`aria-checked`, `aria-valuenow`, `aria-expanded` or `aria-level`) and keep it in step with the element's state.
 
 ## Examples
 
@@ -55,13 +58,19 @@ message: This role requires ARIA state the element does not carry
 #### Don't
 
 ```js
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```js
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```js
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ### JSX
@@ -69,13 +78,19 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 #### Don't
 
 ```jsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```jsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```jsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
 
 ### TSX
@@ -83,11 +98,17 @@ const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
 #### Don't
 
 ```tsx
-const c = <span role="checkbox" tabIndex={0} />;
+const c = <div role="heading">Title</div>;
+```
+
+#### Fixed
+
+```tsx
+const c = <div role="heading" aria-level="2">Title</div>;
 ```
 
 #### Do
 
 ```tsx
-const c = <span role="checkbox" aria-checked={on} tabIndex={0} />;
+const c = <div role="heading" aria-level={level}>Title</div>;
 ```
