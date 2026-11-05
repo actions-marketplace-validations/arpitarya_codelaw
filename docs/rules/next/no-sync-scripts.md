@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`async`, `defer` or `next/script` each change when the script runs) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`defer` and `async` change when the script runs; the reviewer picks one (moving to `next/script` stays by hand)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/no-sync-scripts` |
@@ -132,6 +132,18 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 const s = <script src="/a.js" />;
 ```
 
+#### Fixed (defer)
+
+```js
+const s = <script src="/a.js" defer />;
+```
+
+#### Fixed (async)
+
+```js
+const s = <script src="/a.js" async />;
+```
+
 #### Do
 
 ```js
@@ -146,6 +158,18 @@ const s = <script src="/a.js" defer />;
 const s = <script src="/a.js" />;
 ```
 
+#### Fixed (defer)
+
+```jsx
+const s = <script src="/a.js" defer />;
+```
+
+#### Fixed (async)
+
+```jsx
+const s = <script src="/a.js" async />;
+```
+
 #### Do
 
 ```jsx
@@ -158,6 +182,18 @@ const s = <script src="/a.js" defer />;
 
 ```tsx
 const s = <script src="/a.js" />;
+```
+
+#### Fixed (defer)
+
+```tsx
+const s = <script src="/a.js" defer />;
+```
+
+#### Fixed (async)
+
+```tsx
+const s = <script src="/a.js" async />;
 ```
 
 #### Do

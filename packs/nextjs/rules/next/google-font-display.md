@@ -4,7 +4,7 @@ title: "Google Fonts load with display=swap or optional"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "`swap` and `optional` trade layout shift against fallback text differently; the author picks"
-fix_pending: "suggest-choices"
+fix_pending: "suggest-choices; needs computed-edit (W-162)"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/google-font-display"]
 since: 0.5.0

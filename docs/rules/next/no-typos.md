@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended name is almost always obvious, but renaming an export is confirmed by the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the name is mapped to the one data function it differs from only in case or a final `s`; the reviewer confirms the rename of the export) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/pages/**` |

@@ -67127,7 +67127,7 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swa
 ## `next/google-font-preconnect` — fonts.gstatic.com is preconnected
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the link's purpose is the author's to confirm)
+- **Fix:** `suggest` (the reviewer confirms the link is a preconnect hint and not, say, a stylesheet (offered only for a link with just an `href`))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/google-font-preconnect.md
 
@@ -67819,7 +67819,7 @@ const p = <Head><title>Home</title></Head>;
 ## `next/no-head-import-in-document` — No next/head in _document
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the import is replaced by the document's own `Head`)
+- **Fix:** `suggest` (the reviewer confirms `Head` in the document is the one `next/document` exports (offered only for a plain `import Head from`))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-head-import-in-document.md
 
@@ -68156,7 +68156,7 @@ const inter = Inter({ subsets: ["latin"] });
 ## `next/no-script-component-in-head` — No next/script inside next/head
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the script moves to the page body)
+- **Fix:** `suggest` (the self-closing `<Script />` moves to a fragment beside `<Head>`; the reviewer confirms that is where it belongs (a `<Script>` with children carries no edit))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-script-component-in-head.md
 
@@ -68180,6 +68180,12 @@ const inter = Inter({ subsets: ["latin"] });
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+##### Fixed
+
+```js
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 ##### Do
 
 ```js
@@ -68194,6 +68200,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 const p = <Head><Script src="/a.js" /></Head>;
 ```
 
+##### Fixed
+
+```jsx
+const p = <><Head></Head><Script src="/a.js" /></>;
+```
+
 ##### Do
 
 ```jsx
@@ -68206,6 +68218,12 @@ const p = <><Head /><Script src="/a.js" /></>;
 
 ```tsx
 const p = <Head><Script src="/a.js" /></Head>;
+```
+
+##### Fixed
+
+```tsx
+const p = <><Head></Head><Script src="/a.js" /></>;
 ```
 
 ##### Do
@@ -68278,7 +68296,7 @@ const d = <Html><Head /></Html>;
 ## `next/no-sync-scripts` — No synchronous scripts
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (`async`, `defer` or `next/script` each change when the script runs)
+- **Fix:** `suggest` (`defer` and `async` change when the script runs; the reviewer picks one (moving to `next/script` stays by hand))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-sync-scripts.md
 
@@ -68302,6 +68320,18 @@ A `<script>` with a `src` is `async` or `defer` (or a module).
 const s = <script src="/a.js" />;
 ```
 
+##### Fixed (defer)
+
+```js
+const s = <script src="/a.js" defer />;
+```
+
+##### Fixed (async)
+
+```js
+const s = <script src="/a.js" async />;
+```
+
 ##### Do
 
 ```js
@@ -68316,6 +68346,18 @@ const s = <script src="/a.js" defer />;
 const s = <script src="/a.js" />;
 ```
 
+##### Fixed (defer)
+
+```jsx
+const s = <script src="/a.js" defer />;
+```
+
+##### Fixed (async)
+
+```jsx
+const s = <script src="/a.js" async />;
+```
+
 ##### Do
 
 ```jsx
@@ -68328,6 +68370,18 @@ const s = <script src="/a.js" defer />;
 
 ```tsx
 const s = <script src="/a.js" />;
+```
+
+##### Fixed (defer)
+
+```tsx
+const s = <script src="/a.js" defer />;
+```
+
+##### Fixed (async)
+
+```tsx
+const s = <script src="/a.js" async />;
 ```
 
 ##### Do
@@ -68400,7 +68454,7 @@ const d = <Head><meta charSet="utf-8" /></Head>;
 ## `next/no-typos` — Data-fetching functions are spelled right
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the intended name is almost always obvious, but renaming an export is confirmed by the author)
+- **Fix:** `suggest` (the name is mapped to the one data function it differs from only in case or a final `s`; the reviewer confirms the rename of the export)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-typos.md
 
@@ -68495,7 +68549,7 @@ Names differing only in case or a missing final `s` are caught; the source also 
 ## `next/no-unwanted-polyfillio` — No polyfill.io
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (what to keep depends on which features the script was polyfilling)
+- **Fix:** `suggest` (removing the script drops its polyfills; the reviewer confirms Next.js already covers the features it served (offered for a self-closing script written as a child element))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-unwanted-polyfillio.md
 
@@ -68516,13 +68570,13 @@ No script is loaded from `polyfill.io` (or `cdn.polyfill.io`).
 ##### Don't
 
 ```js
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 ##### Do
 
 ```js
-const s = null;
+const s = <div></div>;
 ```
 
 #### JSX
@@ -68530,13 +68584,13 @@ const s = null;
 ##### Don't
 
 ```jsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 ##### Do
 
 ```jsx
-const s = null;
+const s = <div></div>;
 ```
 
 #### TSX
@@ -68544,13 +68598,13 @@ const s = null;
 ##### Don't
 
 ```tsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 ##### Do
 
 ```tsx
-const s = null;
+const s = <div></div>;
 ```
 
 ### Differences from the source

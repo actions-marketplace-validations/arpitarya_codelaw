@@ -2,9 +2,8 @@
 id: next/no-unwanted-polyfillio
 title: "No polyfill.io"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "what to keep depends on which features the script was polyfilling"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "removing the script drops its polyfills; the reviewer confirms Next.js already covers the features it served (offered for a self-closing script written as a child element)"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-unwanted-polyfillio"]
 since: 0.5.0
@@ -22,7 +21,14 @@ match:
     - {kind: jsx_self_closing_element}
   - has: {field: name, regex: ^(script|Script)$}
   - has: {kind: jsx_attribute, regex: ^src=.*polyfill\.io}
+  - any:
+    - kind: jsx_self_closing_element
+      pattern: $S
+      inside: {kind: jsx_element}
+    - any: [{kind: jsx_opening_element}, {kind: jsx_self_closing_element}]
 message: Do not load scripts from polyfill.io
+fix:
+  - remove: $S
 ```
 
 ## How to fix
@@ -36,13 +42,13 @@ message: Do not load scripts from polyfill.io
 #### Don't
 
 ```js
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```js
-const s = null;
+const s = <div></div>;
 ```
 
 ### JSX
@@ -50,13 +56,13 @@ const s = null;
 #### Don't
 
 ```jsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```jsx
-const s = null;
+const s = <div></div>;
 ```
 
 ### TSX
@@ -64,13 +70,13 @@ const s = null;
 #### Don't
 
 ```tsx
-const s = <script src="https://cdn.polyfill.io/v3/polyfill.min.js" />;
+const s = <div><script src="https://cdn.polyfill.io/v3/polyfill.min.js" /></div>;
 ```
 
 #### Do
 
 ```tsx
-const s = null;
+const s = <div></div>;
 ```
 
 ## Differences from the source
