@@ -27,7 +27,7 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
-- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)).
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)).
 - **Decided / left open:** none yet.
 - **Mistakes:** none.
 - **Next:** the next pack.

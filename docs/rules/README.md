@@ -1260,7 +1260,7 @@ Presets: `codelaw:css-modules/recommended` · `codelaw:css-modules/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`css-modules/class-naming`](css-modules/class-naming.md) | CSS Module class names can be read as styles.name | `manual` | `style` | `css-modules/strict` |
-| [`css-modules/composes-valid`](css-modules/composes-valid.md) | composes points at a class that exists | `manual` | — | `css-modules/recommended`, `css-modules/strict` |
+| [`css-modules/composes-valid`](css-modules/composes-valid.md) | composes points at a class that exists | `suggest` | — | `css-modules/recommended`, `css-modules/strict` |
 | [`css-modules/no-global`](css-modules/no-global.md) | A CSS Module stays local | `manual` | — | `css-modules/strict` |
 | [`css-modules/no-undefined-class`](css-modules/no-undefined-class.md) | A CSS Module class that is read exists | `manual` | — | `css-modules/recommended`, `css-modules/strict` |
 | [`css-modules/no-unused-class`](css-modules/no-unused-class.md) | A CSS Module class is read somewhere | `suggest` | — | `css-modules/recommended`, `css-modules/strict` |

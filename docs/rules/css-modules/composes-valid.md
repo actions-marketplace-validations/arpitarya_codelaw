@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css-modules/recommended` at `error` · `codelaw:css-modules/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which class to compose is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 
@@ -134,9 +134,18 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```css files
 /* src/button.module.css */
+.primary { composes: bse from "./base.module.css"; }
+/* src/base.module.css */
+.base { color: red; }
+```
+
+#### Fixed
+
+```css files
+/* src/button.module.css */
 .primary { composes: base from "./base.module.css"; }
 /* src/base.module.css */
-.root { color: red; }
+.base { color: red; }
 ```
 
 #### Do
@@ -154,6 +163,15 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```scss files
 /* src/button.module.scss */
+.base { color: red; }
+.primary { composes: bsae; }
+```
+
+#### Fixed
+
+```scss files
+/* src/button.module.scss */
+.base { color: red; }
 .primary { composes: base; }
 ```
 
