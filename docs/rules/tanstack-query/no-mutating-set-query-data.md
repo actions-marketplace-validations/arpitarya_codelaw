@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:tanstack-query/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the update has to be rewritten to build a new value) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 
@@ -144,6 +144,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+#### Fixed
+
+```js
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 #### Do
 
 ```js
@@ -163,6 +169,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+#### Fixed
+
+```jsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 #### Do
@@ -186,6 +198,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+#### Fixed
+
+```ts
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 #### Do
 
 ```ts
@@ -205,6 +223,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+#### Fixed
+
+```tsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 #### Do

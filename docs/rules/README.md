@@ -896,7 +896,7 @@ Presets: `codelaw:node/recommended`.
 | [`node/hashbang`](node/hashbang.md) | Commands start with a Node.js hashbang, and nothing else has one | `suggest` | — | `node/recommended` |
 | [`node/no-async-express-handler`](node/no-async-express-handler.md) | No async Express route handlers | `manual` | — | *[rules] only* |
 | [`node/no-callback-literal`](node/no-callback-literal.md) | Pass an Error, not a string, to the callback | `suggest` | — | *[rules] only* |
-| [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `manual` | — | `node/recommended` |
+| [`node/no-deprecated-api`](node/no-deprecated-api.md) | No deprecated Node.js APIs | `auto` | — | `node/recommended` |
 | [`node/no-exports-assign`](node/no-exports-assign.md) | No assigning to exports | `suggest` | — | `node/recommended` |
 | [`node/no-extraneous-import`](node/no-extraneous-import.md) | Imported packages must be declared | `manual` | — | `node/recommended` |
 | [`node/no-extraneous-require`](node/no-extraneous-require.md) | Required packages must be declared | `manual` | — | `node/recommended` |
@@ -1260,7 +1260,7 @@ Presets: `codelaw:css-modules/recommended` · `codelaw:css-modules/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`css-modules/class-naming`](css-modules/class-naming.md) | CSS Module class names can be read as styles.name | `manual` | `style` | `css-modules/strict` |
-| [`css-modules/composes-valid`](css-modules/composes-valid.md) | composes points at a class that exists | `manual` | — | `css-modules/recommended`, `css-modules/strict` |
+| [`css-modules/composes-valid`](css-modules/composes-valid.md) | composes points at a class that exists | `suggest` | — | `css-modules/recommended`, `css-modules/strict` |
 | [`css-modules/no-global`](css-modules/no-global.md) | A CSS Module stays local | `manual` | — | `css-modules/strict` |
 | [`css-modules/no-undefined-class`](css-modules/no-undefined-class.md) | A CSS Module class that is read exists | `manual` | — | `css-modules/recommended`, `css-modules/strict` |
 | [`css-modules/no-unused-class`](css-modules/no-unused-class.md) | A CSS Module class is read somewhere | `suggest` | — | `css-modules/recommended`, `css-modules/strict` |
@@ -1329,11 +1329,11 @@ Presets: `codelaw:tanstack-query/recommended`.
 | [`tanstack-query/exhaustive-deps`](tanstack-query/exhaustive-deps.md) | A query key names every value its query function reads | `suggest` | `allowlist` | `tanstack-query/recommended` |
 | [`tanstack-query/infinite-query-property-order`](tanstack-query/infinite-query-property-order.md) | An infinite query's `queryFn` comes before its page-param callbacks | `auto` | — | `tanstack-query/recommended` |
 | [`tanstack-query/mutation-property-order`](tanstack-query/mutation-property-order.md) | A mutation's `onMutate` comes before `onError` and `onSettled` | `auto` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-mutating-set-query-data`](tanstack-query/no-mutating-set-query-data.md) | A `setQueryData` updater does not change the cached data in place | `manual` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-removed-v4-options`](tanstack-query/no-removed-v4-options.md) | A query takes no option TanStack Query v5 removed | `manual` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-mutating-set-query-data`](tanstack-query/no-mutating-set-query-data.md) | A `setQueryData` updater does not change the cached data in place | `suggest` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-removed-v4-options`](tanstack-query/no-removed-v4-options.md) | A query takes no option TanStack Query v5 removed | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-renamed-v4-options`](tanstack-query/no-renamed-v4-options.md) | An option uses its TanStack Query v5 name | `auto` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-rest-destructuring`](tanstack-query/no-rest-destructuring.md) | No rest destructuring of a query result | `manual` | — | `tanstack-query/recommended` |
-| [`tanstack-query/no-unstable-deps`](tanstack-query/no-unstable-deps.md) | A query hook's result is not a React hook dependency | `manual` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-rest-destructuring`](tanstack-query/no-rest-destructuring.md) | No rest destructuring of a query result | `suggest` | — | `tanstack-query/recommended` |
+| [`tanstack-query/no-unstable-deps`](tanstack-query/no-unstable-deps.md) | A query hook's result is not a React hook dependency | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-unsupported-suspense-options`](tanstack-query/no-unsupported-suspense-options.md) | A suspense query takes no `enabled`, `placeholderData` or `throwOnError` | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-void-query-fn`](tanstack-query/no-void-query-fn.md) | A query function returns its data | `manual` | — | `tanstack-query/recommended` |
 | [`tanstack-query/object-syntax`](tanstack-query/object-syntax.md) | A TanStack Query call takes one options object | `suggest` | — | `tanstack-query/recommended` |

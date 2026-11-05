@@ -2,9 +2,9 @@
 id: tanstack-query/no-unstable-deps
 title: "A query hook's result is not a React hook dependency"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the fields to list depend on what the effect, callback or memo reads"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual"
+fix_exception: restructure
 stability: preview
 ported_from: ["@tanstack/eslint-plugin-query/no-unstable-deps"]
 since: 0.1.0

@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
 ### build (6)
 
@@ -39,7 +39,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done (11-05); 186 native rules (Rust per rule) left to move. Next: their fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css-modules landed): 180 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits tiers 1–2 built (19 `js/*` moved; 84 still wait). Next: tier 3 (`edit-text`, `unwrap-block`, `move`), then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
@@ -57,9 +57,7 @@ here. Read that record before changing anything below it.
 
 ### cleanup (0)
 
-### testing (1)
-
-🟢🧨 **W-170** `agent` Three `codelaw-lsp` config-completion tests fail on main (found by W-166's build; CI `test` goes red). Next: name them, bisect today's config-key landings, fix the cause. Filed by Arpit (Claude Code). [detail](open/W-170-lsp-config-completion-tests.md)
+### testing (0)
 
 ### reporting and benchmarks (2)
 

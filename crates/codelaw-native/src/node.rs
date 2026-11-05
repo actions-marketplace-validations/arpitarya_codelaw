@@ -7,7 +7,7 @@
 //! `node/hashbang`: a command `package.json`'s `bin` names starts with a
 //! Node.js hashbang, and no other file has one.
 
-use crate::util::{named_children, string_value, text};
+use crate::util::{ancestor, named_children, remove_list_item, remove_statement, string_value, text};
 use crate::{NativeContext, NativeFinding, NativeRule};
 use codelaw_core::{Language, TextEdit};
 use codelaw_lang::SyntaxNode;
@@ -19,6 +19,65 @@ pub struct NoDeprecatedApi;
 
 fn module_key(source: &str) -> &str {
     source.strip_prefix("node:").unwrap_or(source)
+}
+
+/// A deprecated API that is the same function as another, so the edit
+/// cannot change behaviour (the subset `fix_reason:` names): a global
+/// (`util.isArray` is `Array.isArray`) or a member of the same module
+/// under its current name (`os.tmpDir` is `os.tmpdir`).
+#[derive(Clone, Copy)]
+enum Same {
+    Global(&'static str),
+    Member(&'static str),
+}
+
+const SAME: &[(&str, &str, Same)] = &[
+    ("util", "isArray", Same::Global("Array.isArray")),
+    ("util", "isBuffer", Same::Global("Buffer.isBuffer")),
+    ("os", "tmpDir", Same::Member("tmpdir")),
+    ("os", "getNetworkInterfaces", Same::Member("networkInterfaces")),
+    ("path", "_makeLong", Same::Member("toNamespacedPath")),
+    ("crypto", "rng", Same::Member("randomBytes")),
+    ("crypto", "prng", Same::Member("randomBytes")),
+    ("crypto", "pseudoRandomBytes", Same::Member("randomBytes")),
+];
+
+fn same(module: &str, member: &str) -> Option<Same> {
+    SAME.iter().find(|(m, n, _)| *m == module_key(module) && *n == member).map(|(_, _, s)| *s)
+}
+
+/// The edits replacing every read of `sym` with `with`, or `None` when a
+/// read can't take an expression (a shorthand property, an export).
+fn replace_reads(model: &codelaw_semantic::SemanticModel, root: Node<'_>, sym: usize, with: &str) -> Option<Vec<TextEdit>> {
+    let mut out = Vec::new();
+    for &r in &model.symbol(sym).refs {
+        let reference = &model.references[r];
+        let id = root.descendant_for_byte_range(reference.start, reference.end)?;
+        let parent = id.parent()?;
+        if matches!(parent.kind(), "shorthand_property_identifier" | "export_specifier" | "export_clause") || id.kind() == "shorthand_property_identifier" {
+            return None;
+        }
+        out.push(TextEdit::new(reference.start, reference.end, with));
+    }
+    Some(out)
+}
+
+/// The edit removing one binding of a declaration — an import specifier or
+/// a destructured property — with the whole statement when it is the only
+/// one.
+fn remove_binding(item: Node<'_>, src: &str) -> Option<TextEdit> {
+    let list = item.parent()?;
+    if named_children(list).len() > 1 {
+        return Some(remove_list_item(item, src));
+    }
+    let stmt = ancestor(list, &["import_statement", "lexical_declaration", "variable_declaration"])?;
+    if stmt.kind() != "import_statement" && named_children(stmt).len() > 1 {
+        return None;
+    }
+    if stmt.kind() == "import_statement" && named_children(stmt).iter().any(|c| c.kind() == "import_clause" && named_children(*c).len() > 1) {
+        return None;
+    }
+    Some(remove_statement(stmt, src))
 }
 
 fn lookup<'d>(table: &'d serde_json::Map<String, Value>, module: &str, member: &str) -> Option<&'d str> {
@@ -52,20 +111,33 @@ impl NativeRule for NoDeprecatedApi {
         let Some(Value::Object(table)) = ctx.data.get("node/deprecated-api").map(|v| v.as_ref()) else { return };
         let root = node.get_inner_node();
         let src = ctx.source;
-        let mut report = |start: usize, end: usize, what: String, instead: &str| {
-            out.push(NativeFinding { start, end, message: format!("`{what}` is deprecated; use {instead}"), edits: Vec::new() });
+        let mut report = |start: usize, end: usize, what: String, instead: &str, edits: Option<Vec<TextEdit>>| {
+            out.push(NativeFinding { start, end, message: format!("`{what}` is deprecated; use {instead}"), edits: edits.unwrap_or_default() });
         };
         // Bindings of whole modules: `import fs from`, `import * as fs`, `const fs = require()`.
         let mut module_bindings: Vec<(usize, String)> = Vec::new();
         for i in &model.imports {
             if let Some(instead) = lookup(table, &i.source, "*") {
-                report(i.start, i.end, module_key(&i.source).to_owned(), instead);
+                report(i.start, i.end, module_key(&i.source).to_owned(), instead, None);
                 continue;
             }
             match (&i.imported, i.local) {
-                (Imported::Named(name), _) => {
+                (Imported::Named(name), local) => {
                     if let Some(instead) = lookup(table, &i.source, name) {
-                        report(i.start, i.end, format!("{}.{name}", module_key(&i.source)), instead);
+                        let spec = root.descendant_for_byte_range(i.start, i.end).and_then(|n| ancestor(n, &["import_specifier"]));
+                        let edits = spec.zip(same(&i.source, name)).and_then(|(spec, s)| match s {
+                            Same::Global(g) => {
+                                let mut e = replace_reads(model, root, local?, g)?;
+                                e.push(remove_binding(spec, src)?);
+                                Some(e)
+                            }
+                            Same::Member(m) => {
+                                let name_node = spec.child_by_field_name("name")?;
+                                let with = if spec.child_by_field_name("alias").is_some() { m.to_owned() } else { format!("{m} as {name}") };
+                                Some(vec![TextEdit::new(name_node.start_byte(), name_node.end_byte(), with)])
+                            }
+                        });
+                        report(i.start, i.end, format!("{}.{name}", module_key(&i.source)), instead, edits);
                     }
                 }
                 (Imported::Default | Imported::Namespace, Some(local)) => module_bindings.push((local, i.source.clone())),
@@ -81,7 +153,7 @@ impl NativeRule for NoDeprecatedApi {
             {
                 let Some(name) = n.child_by_field_name("name") else { continue };
                 if let Some(instead) = lookup(table, &m, "*") {
-                    report(n.start_byte(), n.end_byte(), module_key(&m).to_owned(), instead);
+                    report(n.start_byte(), n.end_byte(), module_key(&m).to_owned(), instead, None);
                 } else if name.kind() == "identifier" {
                     if let Some(id) = model.declared_at(name.start_byte()) {
                         module_bindings.push((id, m));
@@ -96,7 +168,23 @@ impl NativeRule for NoDeprecatedApi {
                         if let Some(k) = key
                             && let Some(instead) = lookup(table, &m, k)
                         {
-                            report(p.start_byte(), p.end_byte(), format!("{}.{k}", module_key(&m)), instead);
+                            let edits = same(&m, k).and_then(|s| match (s, p.kind()) {
+                                (Same::Global(g), _) => {
+                                    let local = if p.kind() == "pair_pattern" { p.child_by_field_name("value")? } else { p };
+                                    if local.kind() != "identifier" && local.kind() != "shorthand_property_identifier_pattern" {
+                                        return None;
+                                    }
+                                    let mut e = replace_reads(model, root, model.declared_at(local.start_byte())?, g)?;
+                                    e.push(remove_binding(p, src)?);
+                                    Some(e)
+                                }
+                                (Same::Member(mm), "shorthand_property_identifier_pattern") => Some(vec![TextEdit::new(p.start_byte(), p.end_byte(), format!("{mm}: {k}"))]),
+                                (Same::Member(mm), _) => {
+                                    let key = p.child_by_field_name("key")?;
+                                    Some(vec![TextEdit::new(key.start_byte(), key.end_byte(), mm)])
+                                }
+                            });
+                            report(p.start_byte(), p.end_byte(), format!("{}.{k}", module_key(&m)), instead, edits);
                         }
                     }
                 }
@@ -108,20 +196,38 @@ impl NativeRule for NoDeprecatedApi {
                     let name = text(c, src);
                     let global = model.reference_at(c.start_byte()).is_some_and(|r| r.symbol.is_none());
                     if global && let Some(instead) = lookup(table, "globals", name) {
-                        report(n.start_byte(), n.end_byte(), format!("{name}()"), instead);
+                        report(n.start_byte(), n.end_byte(), format!("{name}()"), instead, None);
                     }
                 }
             }
         }
         // `fs.exists(...)` through a whole-module binding.
         for (sym, m) in module_bindings {
+            let only = model.symbol(sym).refs.len() == 1;
             for &r in &model.symbol(sym).refs {
                 let reference = &model.references[r];
                 let Some(id) = root.descendant_for_byte_range(reference.start, reference.end) else { continue };
                 let Some(member) = id.parent().filter(|p| p.kind() == "member_expression" && p.child_by_field_name("object").is_some_and(|o| o.id() == id.id())) else { continue };
                 let Some(prop) = member.child_by_field_name("property") else { continue };
                 if let Some(instead) = lookup(table, &m, text(prop, src)) {
-                    report(member.start_byte(), member.end_byte(), format!("{}.{}", module_key(&m), text(prop, src)), instead);
+                    let edits = same(&m, text(prop, src)).map(|s| match s {
+                        Same::Global(g) => {
+                            let mut e = vec![TextEdit::new(member.start_byte(), member.end_byte(), g)];
+                            // The module's binding, read only here, goes with it.
+                            let decl = model.symbol(sym).decls.first().and_then(|&(s, e)| root.descendant_for_byte_range(s, e));
+                            let stmt = decl.and_then(|d| ancestor(d, &["import_statement", "lexical_declaration", "variable_declaration"]));
+                            if only
+                                && let Some(stmt) = stmt
+                                && (stmt.kind() == "import_statement" && model.imports.iter().filter(|i| i.start >= stmt.start_byte() && i.end <= stmt.end_byte()).count() == 1
+                                    || stmt.kind() != "import_statement" && named_children(stmt).len() == 1)
+                            {
+                                e.push(remove_statement(stmt, src));
+                            }
+                            e
+                        }
+                        Same::Member(mm) => vec![TextEdit::new(prop.start_byte(), prop.end_byte(), mm)],
+                    });
+                    report(member.start_byte(), member.end_byte(), format!("{}.{}", module_key(&m), text(prop, src)), instead, edits);
                 }
             }
         }

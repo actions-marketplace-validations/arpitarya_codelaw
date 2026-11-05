@@ -1,5 +1,6 @@
 //! Helpers the native rules share.
 
+use codelaw_core::TextEdit;
 use tree_sitter::Node;
 
 pub fn named_children<'t>(n: Node<'t>) -> Vec<Node<'t>> {
@@ -187,4 +188,93 @@ pub fn returns_value(n: &Node<'_>) -> bool {
         }
         _ => false,
     }
+}
+
+/// The edit removing one item of a comma-separated list (arguments,
+/// import specifiers, object members, array elements) with its comma: the
+/// comma after it, or before it when it is the last.
+pub fn remove_list_item(item: Node<'_>, src: &str) -> TextEdit {
+    let (start, end) = (item.start_byte(), item.end_byte());
+    let after = &src[end..];
+    let ws = after.len() - after.trim_start().len();
+    if after[ws..].starts_with(',') {
+        let rest = &after[ws + 1..];
+        let ws2 = rest.len() - rest.trim_start_matches([' ', '\t']).len();
+        let stop = end + ws + 1 + ws2;
+        // A trailing comma closing the list goes with its item only when
+        // another item stays before it.
+        let next = src[stop..].trim_start();
+        if next.starts_with([')', ']', '}']) {
+            let before = src[..start].trim_end();
+            if let Some(b) = before.strip_suffix(',') {
+                return TextEdit::delete(b.len(), stop - ws2);
+            }
+        }
+        return TextEdit::delete(start, stop);
+    }
+    let before = src[..start].trim_end();
+    if let Some(b) = before.strip_suffix(',') {
+        return TextEdit::delete(b.len(), end);
+    }
+    TextEdit::delete(start, end)
+}
+
+/// The edit removing a whole statement, with its line when nothing else
+/// shares it.
+pub fn remove_statement(stmt: Node<'_>, src: &str) -> TextEdit {
+    let (s, e) = whole_lines(src, stmt.start_byte(), stmt.end_byte());
+    TextEdit::delete(s, e)
+}
+
+/// The nearest ancestor of `n` (or `n`) whose kind is one of `kinds`.
+pub fn ancestor<'t>(n: Node<'t>, kinds: &[&str]) -> Option<Node<'t>> {
+    let mut cur = Some(n);
+    while let Some(c) = cur {
+        if kinds.contains(&c.kind()) {
+            return Some(c);
+        }
+        cur = c.parent();
+    }
+    None
+}
+
+/// Levenshtein distance, for nearest-name choices.
+#[allow(dead_code)]
+pub fn edit_distance(a: &str, b: &str) -> usize {
+    let a: Vec<char> = a.chars().collect();
+    let b: Vec<char> = b.chars().collect();
+    let mut prev: Vec<usize> = (0..=b.len()).collect();
+    for i in 1..=a.len() {
+        let mut cur = vec![i; b.len() + 1];
+        for j in 1..=b.len() {
+            let cost = usize::from(a[i - 1] != b[j - 1]);
+            cur[j] = (prev[j] + 1).min(cur[j - 1] + 1).min(prev[j - 1] + cost);
+        }
+        prev = cur;
+    }
+    prev[b.len()]
+}
+
+/// The names of `candidates` nearest to `name` — within `max` edits, at
+/// most three, nearest first, ties in the candidates' order.
+#[allow(dead_code)]
+pub fn nearest<'c>(name: &str, candidates: impl IntoIterator<Item = &'c str>, max: usize) -> Vec<&'c str> {
+    let mut scored: Vec<(usize, usize, &str)> = candidates
+        .into_iter()
+        .enumerate()
+        .filter(|(_, c)| *c != name)
+        .map(|(i, c)| (edit_distance(&name.to_lowercase(), &c.to_lowercase()), i, c))
+        .filter(|(d, _, _)| *d <= max)
+        .collect();
+    scored.sort();
+    scored.dedup_by(|a, b| a.2 == b.2);
+    scored.into_iter().take(3).map(|(_, _, c)| c).collect()
+}
+
+/// One labelled choice per name in `names`, each replacing `start..end`
+/// with it (the first the default), as [`crate::choice_edits`] carries
+/// them.
+#[allow(dead_code)]
+pub fn name_choices(names: &[&str], start: usize, end: usize, fmt: &dyn Fn(&str) -> String) -> Vec<TextEdit> {
+    crate::choice_edits(names.iter().enumerate().map(|(i, n)| crate::choice(*n, i == 0, vec![TextEdit::new(start, end, fmt(n))])).collect())
 }
