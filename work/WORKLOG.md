@@ -54,6 +54,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 21 (51 rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 to closure.
+- **Done:** slice 20 landed (`02994cae`); slice 21 — 51 `py/*` rules (flake8-pyi 20, Pylint-in-Ruff 14, flake8-return 4, gettext 3, CPY001, TID252, pytest-style 4, pathlib 4): 4 auto, 4 suggest, 43 manual; 15 Pylint rows linked. `codelaw test packs/python` 658 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written.
+- **Decided / left open:** the four unused-private-name stub rules are native (module-level names are never `unused` in the semantic model); upstream rows whose exemptions could not be confirmed offline listed in the item.
+- **Mistakes:** none new.
+- **Next:** the rest of the strand is mostly native or unconfirmable rows; Pylint's own rows next (links and the simple checks).
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: slice 20 (48 rows)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the python half of W-139 after slice 19; resume where the usage limit was thought to have stopped it, merge main, land, continue to closure.
