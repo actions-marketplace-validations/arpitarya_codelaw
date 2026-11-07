@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the image is decorative or informative is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -134,6 +134,18 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ```html
 <img src="logo.png" alt="" title="Acme">
+```
+
+#### Fixed (remove the title)
+
+```html
+<img src="logo.png" alt="">
+```
+
+#### Fixed (title as alt)
+
+```html
+<img src="logo.png" alt="Acme">
 ```
 
 #### Do

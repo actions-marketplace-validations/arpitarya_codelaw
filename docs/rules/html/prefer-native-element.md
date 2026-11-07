@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (swapping the element changes its styles and scripts) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the element becomes the native one its role names, the role and an implied `tabindex="0"` dropped (a button gets `type="button"`); its styles and scripts may target the old tag, which the reviewer checks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |

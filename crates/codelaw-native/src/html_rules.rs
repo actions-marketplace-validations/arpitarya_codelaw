@@ -1,6 +1,6 @@
 //! `html/*` rules on attributes, ids, character references and forms.
 
-use crate::html_dom::{finding, finding_with, flag, html_hidden, inert, is_dynamic, remove_attr, tokens_with_offsets, Child, Dom, Meta, TextKind};
+use crate::html_dom::{finding, finding_with, flag, html_hidden, inert, is_dynamic, remove_attr, remove_elem, rename_elem, set_attr, tokens_with_offsets, Child, Dom, Meta, TextKind};
 use crate::html_rule;
 use codelaw_core::TextEdit;
 use regex::Regex;
@@ -64,7 +64,14 @@ html_rule!(NoDuplicateId, "html/no-duplicate-id", |dom, meta, ctx, out| {
         let group = dom.ancestors(i).find(|&j| dom.elems[j].is("template"));
         let id = a.value_or_empty().to_owned();
         if !seen.entry(group).or_default().insert(id.clone()) {
-            out.push(finding(a.value_start, a.value_end, format!("The id `{id}` is already used in this document")));
+            let src = ctx.source;
+            let taken: BTreeSet<String> = dom.elems.iter().filter_map(|x| x.attr("id")).map(|x| x.value_or_empty().to_owned()).collect();
+            let fresh = (2..).map(|n| format!("{id}-{n}")).find(|c| !taken.contains(c)).expect("an unused id");
+            let mut choices = vec![crate::choice("drop the id", false, vec![remove_attr(src, a)])];
+            if a.quoted {
+                choices.push(crate::choice("rename", false, vec![TextEdit::new(a.value_start, a.value_end, fresh)]));
+            }
+            out.push(finding_with(a.value_start, a.value_end, format!("The id `{id}` is already used in this document"), crate::choice_edits(choices)));
         }
     }
 });
@@ -206,11 +213,14 @@ html_rule!(UnrecognizedCharRef, "html/unrecognized-char-ref", |dom, meta, ctx, o
                 let legacy_name = if !is_attr && require_semicolon { legacy.iter().find(|l| name.starts_with(l.as_str())).map(|l| l.len()) } else { None };
                 let len = legacy_name.or_else(|| (found || entities.contains(&with_semi)).then_some(raw.len()));
                 if let Some(len) = len {
-                    out.push(finding(at, at + len, format!("End the character reference `{}` with `;`", &raw[..len])));
+                    out.push(finding_with(at, at + len, format!("End the character reference `{}` with `;`", &raw[..len]), vec![TextEdit::insert(at + len, ";")]));
                 }
                 continue;
             }
-            out.push(finding(at, at + raw.len() + 1, format!("`{raw};` is not a character reference HTML knows")));
+            let wanted = name.trim_start_matches('&').to_owned();
+            let known = entities.iter().filter(|e| e.ends_with(';')).map(|e| e.trim_start_matches('&').trim_end_matches(';'));
+            let near = crate::util::nearest(&wanted, known, 2);
+            out.push(finding_with(at, at + raw.len() + 1, format!("`{raw};` is not a character reference HTML knows"), crate::as_suggestion(crate::util::name_choices(&near, at + 1, at + raw.len(), &|c| c.to_owned()))));
         }
     };
     for t in &dom.texts {
@@ -244,7 +254,7 @@ html_rule!(MapDupName, "html/map-dup-name", |dom, meta, ctx, out| {
     for i in dom.by_tag("map") {
         let Some(a) = dom.elems[i].attr("name").filter(|a| !a.value_or_empty().is_empty() && !a.is_dynamic()) else { continue };
         if !seen.insert(a.value_or_empty().to_owned()) {
-            out.push(finding(a.name_start, a.name_end, format!("Another <map> is already named `{}`", a.value_or_empty())));
+            out.push(finding_with(a.name_start, a.name_end, format!("Another <map> is already named `{}`", a.value_or_empty()), vec![remove_elem(ctx.source, &dom.elems[i])]));
         }
     }
 });
@@ -256,7 +266,15 @@ html_rule!(MapIdName, "html/map-id-name", |dom, meta, ctx, out| {
         if id.is_dynamic() || name.is_dynamic() || id.value == name.value {
             continue;
         }
-        out.push(finding(id.value_start, id.value_end.max(id.value_start), "A <map>'s `id` and `name` must be the same"));
+        let edits = if id.quoted && name.quoted {
+            crate::choice_edits(vec![
+                crate::choice("name follows id", false, vec![set_attr(name, id.value_or_empty())]),
+                crate::choice("id follows name", false, vec![set_attr(id, name.value_or_empty())]),
+            ])
+        } else {
+            Vec::new()
+        };
+        out.push(finding_with(id.value_start, id.value_end.max(id.value_start), "A <map>'s `id` and `name` must be the same", edits));
     }
 });
 
@@ -390,7 +408,18 @@ html_rule!(PreferButton, "html/prefer-button", |dom, meta, ctx, out| {
         let Some(a) = dom.elems[i].attr("type").filter(|a| !a.is_dynamic()) else { continue };
         let ty = a.value_or_empty().to_ascii_lowercase();
         if matches!(ty.as_str(), "button" | "submit" | "reset" | "image") {
-            out.push(finding(a.value_start, a.value_end, format!("Use a <button> instead of <input type=\"{ty}\">")));
+            // `<input type=submit value=V>` is `<button type=submit value=V>V</button>`.
+            let e = &dom.elems[i];
+            let src = ctx.source;
+            let label = e.attr("value").filter(|v| !v.is_dynamic() && !v.value_or_empty().is_empty()).map(|v| v.value_or_empty().to_owned());
+            let edits = match label.filter(|_| ty != "image") {
+                Some(label) => {
+                    let attrs: Vec<&str> = e.attrs.iter().map(|x| &src[x.start..x.end]).collect();
+                    vec![TextEdit::new(e.start, e.open_end, format!("<button {}>{label}</button>", attrs.join(" ")))]
+                }
+                None => Vec::new(),
+            };
+            out.push(finding_with(a.value_start, a.value_end, format!("Use a <button> instead of <input type=\"{ty}\">"), edits));
         }
     }
 });
@@ -465,14 +494,19 @@ html_rule!(NoConditionalComment, "html/no-conditional-comment", |dom, meta, ctx,
     for &(s, t) in &dom.comments {
         let body = ctx.source[s..t].trim_start_matches("<!--").trim_start();
         if body.starts_with("[if") || body.starts_with("<![endif]") || ctx.source[s..t].starts_with("<![") {
-            out.push(finding(s, t, "Conditional comments only ever worked in old Internet Explorer"));
+            // Hidden from other browsers, the whole comment goes; a marker
+            // around content every browser shows goes alone.
+            let (a, b) = crate::util::whole_lines(ctx.source, s, t);
+            out.push(finding_with(s, t, "Conditional comments only ever worked in old Internet Explorer", vec![TextEdit::delete(a, b)]));
         }
     }
 });
 
 html_rule!(NoMultipleMain, "html/no-multiple-main", |dom, meta, ctx, out| {
     for i in dom.by_tag("main").filter(|&i| !dom.elems[i].has("hidden")).skip(1) {
-        out.push(dom.at_elem(i, "Only one visible <main> per document; hide the others with `hidden`"));
+        let mut f = dom.at_elem(i, "Only one visible <main> per document; hide the others with `hidden`");
+        f.edits = rename_elem(ctx.source, &dom.elems[i], "div");
+        out.push(f);
     }
 });
 
@@ -483,7 +517,19 @@ html_rule!(ValidFor, "html/valid-for", |dom, meta, ctx, out| {
         if meta.elem(&dom.elems[target].tag).is_none() || flag(dom, meta, target, "labelable") {
             continue;
         }
-        out.push(finding(f.value_start, f.value_end, format!("`for` points at {}, which is not a form control a label can name", lt(&dom.elems[target].tag))));
+        // The labelable controls' ids, nearest the written one first.
+        let mut ids: Vec<(usize, String)> = dom
+            .all()
+            .filter(|&j| flag(dom, meta, j, "labelable"))
+            .filter_map(|j| dom.elems[j].attr("id").filter(|a| !a.is_dynamic()).map(|a| a.value_or_empty().to_owned()))
+            .filter(|v| !v.is_empty())
+            .map(|v| (crate::util::edit_distance(f.value_or_empty(), &v), v))
+            .collect();
+        ids.sort();
+        ids.dedup();
+        let names: Vec<&str> = ids.iter().take(3).map(|(_, v)| v.as_str()).collect();
+        let edits = if f.quoted { crate::util::name_choices(&names, f.value_start, f.value_end, &|c| c.to_owned()) } else { Vec::new() };
+        out.push(finding_with(f.value_start, f.value_end, format!("`for` points at {}, which is not a form control a label can name", lt(&dom.elems[target].tag)), edits));
     }
 });
 

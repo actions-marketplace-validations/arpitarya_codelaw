@@ -1007,7 +1007,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         }
                     };
                     let choices = if wants_fix { choices } else { Vec::new() };
-                    let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then_some(f.edits);
+                    let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then(|| codelaw_native::plain_edits(f.edits));
                     out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also, rung, choices });
                 }
             }

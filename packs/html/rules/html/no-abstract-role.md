@@ -2,9 +2,9 @@
 id: html/no-abstract-role
 title: "No abstract ARIA roles"
 languages: [html]
-fix: manual
-fix_reason: "the concrete role depends on what the element is"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/no-abstract-role]
 tags: [a11y]
@@ -31,6 +31,18 @@ native: html/no-abstract-role
 
 ```html
 <div role="landmark">News</div>
+```
+
+#### Fixed (remove)
+
+```html
+<div>News</div>
+```
+
+#### Fixed (concrete role)
+
+```html
+<div role="region">News</div>
 ```
 
 #### Do

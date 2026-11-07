@@ -2,9 +2,9 @@
 id: html/aria-label-misuse
 title: "aria-label is used only where it names something"
 languages: [html]
-fix: manual
-fix_reason: "whether to move the label, add a role or use another element is a design decision"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are removing the label, which nothing reads, or `role=\"img\"`, which gives the element a name to carry; which was meant is the reviewer's call"
+fix_exception: authored
 stability: preview
 options:
   allowAnyNamable: { type: "boolean", default: false, description: "accept the label on any element ARIA lets be named, even where support is poor" }
@@ -34,6 +34,18 @@ native: html/aria-label-misuse
 
 ```html
 <span aria-label="Close">×</span>
+```
+
+#### Fixed (remove)
+
+```html
+<span>×</span>
+```
+
+#### Fixed (role img)
+
+```html
+<span role="img" aria-label="Close">×</span>
 ```
 
 #### Do

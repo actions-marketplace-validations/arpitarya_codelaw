@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to unhide it, take it out of the tab order or remove it depends on the design) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `tabindex="-1"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -134,6 +134,24 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ```html
 <a href="/home" aria-hidden="true">Home</a>
+```
+
+#### Fixed (tabindex -1)
+
+```html
+<a tabindex="-1" href="/home" aria-hidden="true">Home</a>
+```
+
+#### Fixed (remove aria-hidden)
+
+```html
+<a href="/home">Home</a>
+```
+
+#### Fixed (inert)
+
+```html
+<a inert href="/home" aria-hidden="true">Home</a>
 ```
 
 #### Do

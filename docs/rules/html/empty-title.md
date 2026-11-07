@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the page title needs a human) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -133,6 +133,14 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ```html
 <title></title>
+<h1>Release notes</h1>
+```
+
+#### Fixed
+
+```html
+<title>Release notes</title>
+<h1>Release notes</h1>
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which one is the main content is a design decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/no-multiple-main` |
@@ -133,6 +133,13 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```html
 <main>Feed</main>
 <main>Sidebar</main>
+```
+
+#### Fixed
+
+```html
+<main>Feed</main>
+<div>Sidebar</div>
 ```
 
 #### Do
