@@ -2,9 +2,9 @@
 id: sec-html/no-javascript-url
 title: "No javascript: URLs"
 languages: [html]
-fix: manual
-fix_reason: "the script has to move out of the URL into a listener or a real link"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an `<a href=\"javascript:void(0)\">` runs nothing and becomes `<button type=\"button\">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0
@@ -31,6 +31,12 @@ native: sec-html/no-javascript-url
 
 ```html
 <a href="javascript:void(0)">Menu</a>
+```
+
+#### Fixed
+
+```html
+<button type="button">Menu</button>
 ```
 
 #### Do

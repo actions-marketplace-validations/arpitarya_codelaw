@@ -76624,8 +76624,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the page's scripts have to be given nonces or hashes, or moved to files",
+   "fix": "suggest",
+   "fix_reason": "`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76743,8 +76743,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which framed sites deserve the permission is the owner's decision",
+   "fix": "suggest",
+   "fix_reason": "the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76852,8 +76852,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "where the credential should live is the author's decision",
+   "fix": "suggest",
+   "fix_reason": "the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76910,8 +76910,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which origin the page may use is a decision for its owner",
+   "fix": "suggest",
+   "fix_reason": "the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76931,7 +76931,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<base href=\"https://cdn.example.com/app/\">",
+    "dont": "<base href=\"https://cdn.example.com/app/\">\n<link rel=\"stylesheet\" href=\"app.css\">",
     "do": "<base href=\"/app/\">"
    },
    "ported_from": [],
@@ -77020,8 +77020,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the script has to move out of the URL into a listener or a real link",
+   "fix": "suggest",
+   "fix_reason": "an `<a href=\"javascript:void(0)\">` runs nothing and becomes `<button type=\"button\">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77133,8 +77133,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "what replaces the plugin depends on what it showed",
+   "fix": "suggest",
+   "fix_reason": "an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77146,7 +77146,7 @@
     }
    ],
    "options": {},
-   "dont": "<embed src=\"movie.swf\">",
+   "dont": "<embed src=\"movie.mp4\">",
    "do": "<video src=\"movie.mp4\" controls></video>",
    "fix_steps": [
     "Use `<img>`, `<video>` or `<audio>` for media.",
@@ -77155,7 +77155,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<embed src=\"movie.swf\">",
+    "dont": "<embed src=\"movie.mp4\">",
     "do": "<video src=\"movie.mp4\" controls></video>"
    },
    "ported_from": [],
@@ -77295,8 +77295,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the framed document has to become a file or be sandboxed",
+   "fix": "suggest",
+   "fix_reason": "the choices are an empty `sandbox` (the default), or `sandbox=\"allow-scripts\"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77353,8 +77353,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is trusted, and how to sanitise it, is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77411,8 +77411,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is trusted, and how to sanitise it, is the author's call",
+   "fix": "suggest",
+   "fix_reason": "`{{{ x }}}` becomes `{{ x }}`, `|safe` goes and `<%- x %>` becomes `<%= x %>`, so the template escapes the value; markup the value was meant to carry then shows as text, which the reviewer confirms. `autoescape off` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",

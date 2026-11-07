@@ -23,3 +23,13 @@
 ```expect
 (none)
 ```
+
+### case: a Flash movie has no element to become
+
+```html
+<embed src="movie.swf">
+```
+
+```expect
+1:1 sec-html/no-plugin-embed
+```

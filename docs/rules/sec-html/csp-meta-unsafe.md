@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the page's scripts have to be given nonces or hashes, or moved to files) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-693 · OWASP A02:2025 · security severity `medium` |
@@ -134,6 +134,12 @@ codelaw config --print --for <file>            # the resolved setting, and where
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+```
+
+#### Fixed
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'">
 ```
 
 #### Do

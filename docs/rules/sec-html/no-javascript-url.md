@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the script has to move out of the URL into a listener or a real link) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an `<a href="javascript:void(0)">` runs nothing and becomes `<button type="button">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```html
 <a href="javascript:void(0)">Menu</a>
+```
+
+#### Fixed
+
+```html
+<button type="button">Menu</button>
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which framed sites deserve the permission is the owner's decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-250 · OWASP A02:2025 · security severity `low` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                  # the resolved setting, and
 
 ```html
 <iframe src="https://meet.example.com/room" allow="camera; microphone"></iframe>
+```
+
+#### Fixed
+
+```html
+<iframe src="https://meet.example.com/room"></iframe>
 ```
 
 #### Do
