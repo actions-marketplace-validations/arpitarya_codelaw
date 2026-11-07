@@ -111,13 +111,37 @@ fn toml_pre_process(query: &str) -> Cow<'_, str> {
     Cow::Owned(out)
 }
 
+/// Run `f` on a copy of `name` that is followed by a NUL byte (W-169).
+///
+/// Tree-sitter looks a node kind or field name up with
+/// `strncmp(symbol, name, len)`. The `strncmp` linked into the musl binaries
+/// (maturin builds them with zig) reads `name[len]` when the first `len`
+/// bytes agree, one past the end of the string; when the string's allocation
+/// ends at the end of a page — musl's allocator does that — the read faults
+/// and the process dies with SIGSEGV. Every lookup goes through here, so the
+/// byte past `len` is always this copy's NUL.
+fn with_nul<R>(name: &str, f: impl FnOnce(&str) -> R) -> R {
+    const STACK: usize = 128;
+    let n = name.len();
+    if n < STACK {
+        let mut buf = [0u8; STACK];
+        buf[..n].copy_from_slice(name.as_bytes());
+        f(std::str::from_utf8(&buf[..n]).expect("a copy of a str"))
+    } else {
+        let mut buf = String::with_capacity(n + 1);
+        buf.push_str(name);
+        buf.push('\0');
+        f(&buf[..n])
+    }
+}
+
 impl AgLanguage for Grammar {
     fn kind_to_id(&self, kind: &str) -> u16 {
-        self.get_ts_language().id_for_node_kind(kind, true)
+        with_nul(kind, |k| self.get_ts_language().id_for_node_kind(k, true))
     }
 
     fn field_to_id(&self, field: &str) -> Option<u16> {
-        self.get_ts_language().field_id_for_name(field).map(|f| f.get())
+        with_nul(field, |f| self.get_ts_language().field_id_for_name(f)).map(|f| f.get())
     }
 
     fn expando_char(&self) -> char {
@@ -142,5 +166,34 @@ impl LanguageExt for Grammar {
             return tree_sitter_scss::LANGUAGE.into();
         }
         delegate!(self, g => g.get_ts_language(), toml => toml_language())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// W-169: the name tree-sitter reads is a copy whose next byte is a NUL,
+    /// short or long, so a `strncmp` that reads one past `len` reads that.
+    #[test]
+    fn a_name_lookup_reads_a_nul_terminated_copy() {
+        for name in ["identifier", "x", "", &"k".repeat(127), &"k".repeat(128), &"k".repeat(300)] {
+            let (same, len, next) = with_nul(name, |c| {
+                // SAFETY: `with_nul` hands out a prefix of a buffer one byte
+                // longer than it, so `c.len()` is in bounds of that buffer.
+                let next = unsafe { *c.as_ptr().add(c.len()) };
+                (c == name, c.len(), next)
+            });
+            assert!(same && len == name.len(), "the copy of a {}-byte name", name.len());
+            assert_eq!(next, 0, "the byte after a {}-byte name", name.len());
+        }
+    }
+
+    #[test]
+    fn lookups_still_find_kinds_and_fields() {
+        assert_ne!(Grammar::JavaScript.kind_to_id("identifier"), 0);
+        assert_eq!(Grammar::JavaScript.kind_to_id("no_such_kind"), 0);
+        assert!(Grammar::JavaScript.field_to_id("body").is_some());
+        assert!(Grammar::JavaScript.field_to_id("no_such_field").is_none());
     }
 }

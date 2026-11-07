@@ -1071,6 +1071,7 @@ dependencies = [
  "ast-grep-core",
  "ast-grep-language",
  "codelaw-core",
+ "libc",
  "tree-sitter",
  "tree-sitter-md",
  "tree-sitter-scss",
