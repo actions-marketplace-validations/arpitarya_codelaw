@@ -318,3 +318,32 @@ fn move_after_takes_the_targets_lines() {
     assert_eq!(out.text, "const a = 1;\n\nfunction f() {}\n");
     assert!(parse_fix(&serde_json::json!([{ "move": { "before": "$A", "after": "$B" } }])).unwrap_err().contains("one of"));
 }
+
+#[test]
+fn rename_symbol_renames_one_binding_to_a_fresh_name() {
+    // W-162: `rename-symbol` and `$FRESH` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: identifier\n  regex: ^undefined$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: \"$FRESH(_$$MATCH)\", scope: binding }";
+    let out = fix(Language::Javascript, block, "function f(undefined) {\n  const _undefined = 1;\n  return undefined;\n}\nconst undefinedish = undefined;\n");
+    assert_eq!(out.text, "function f(_undefined2) {\n  const _undefined = 1;\n  return _undefined2;\n}\nconst undefinedish = undefined;\n");
+}
+
+#[test]
+fn rename_symbol_refuses_a_taken_name_and_a_shorthand() {
+    let block = "match:\n  kind: identifier\n  regex: ^ok$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: resolve }";
+    let (rule, compiled) = matcher(Language::Javascript, block);
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    for src in ["new Promise((ok) => resolve(ok));\n", "function f(ok) { return { ok }; }\n"] {
+        let root = codelaw_lang::parse(Language::Javascript, src);
+        let model = codelaw_semantic::build(Language::Javascript, &root, src);
+        let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: model.as_ref() };
+        let m = find(Language::Javascript, &compiled, &root, src);
+        assert!(edits_for(&spec, &m[0], &ctx).is_err(), "{src}");
+    }
+}
+
+#[test]
+fn edit_text_patterns_name_captures_escaped() {
+    let block = "match:\n  kind: for_statement\n  has: { field: condition, pattern: '$I < $A.length' }\nmessage: m\nfix:\n  - edit-text: { pattern: '$A\\[$I\\]', replace: \"$FRESH(item)\" }";
+    let out = fix(Language::Javascript, block, "for (let i = 0; i < a.b.length; i++) f(a.b[i], axb[i]);\nconst item = 1;\n");
+    assert_eq!(out.text, "for (let i = 0; i < a.b.length; i++) f(item2, axb[i]);\nconst item = 1;\n");
+}

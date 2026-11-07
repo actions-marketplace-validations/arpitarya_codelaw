@@ -42,6 +42,12 @@ pub enum Primitive {
     /// Rename a symbol and every reference to it in this file. Refused for
     /// an exported symbol: importers elsewhere would break.
     RenameSymbolLocal { target: Target, to: String },
+    /// `rename-symbol: { target, to, scope: binding }`: the binding the
+    /// target names, its declarations and the references that resolve to
+    /// it, and nothing else. Refused for an exported symbol, when `to` is
+    /// already a name in the file, and when a declaration or reference is
+    /// a shorthand property (`{ a }`), whose key would change (W-162).
+    RenameSymbol { target: Target, to: String },
     /// A regular-expression edit inside the target's text: every match of
     /// `pattern` becomes `replace` (`$1`, `${name}` name its groups; a
     /// capture's `$NAME` is interpolated first). Consecutive `edit-text`
@@ -105,7 +111,7 @@ impl FixSpec {
 }
 
 const PRIMITIVES: &[&str] =
-    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "edit-text", "unwrap-block", "move", "merge-into"];
+    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "rename-symbol", "edit-text", "unwrap-block", "move", "merge-into"];
 
 fn target(v: &Value) -> Result<Target, String> {
     match v.as_str() {
@@ -200,6 +206,16 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
             let Value::Object(o) = arg else { return Err("`rename-symbol-local` takes `{ target, to }`".into()) };
             only_keys(o, &["target", "to"], name)?;
             Primitive::RenameSymbolLocal { target: target(field(o, "target", name)?)?, to: string(field(o, "to", name)?, "to")? }
+        }
+        "rename-symbol" => {
+            let Value::Object(o) = arg else { return Err("`rename-symbol` takes `{ target, to, scope? }`".into()) };
+            only_keys(o, &["target", "to", "scope"], name)?;
+            if let Some(s) = o.get("scope")
+                && s.as_str() != Some("binding")
+            {
+                return Err("`rename-symbol`: `scope` is `binding`".into());
+            }
+            Primitive::RenameSymbol { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), to: string(field(o, "to", name)?, "to")? }
         }
         "unwrap-block" => match arg {
             Value::String(_) => Primitive::UnwrapBlock { target: target(arg)?, within: target(arg)? },
@@ -435,6 +451,7 @@ fn unbound(p: &Primitive, m: &Match) -> bool {
         | Primitive::InsertBefore { target, .. }
         | Primitive::InsertAfter { target, .. }
         | Primitive::EditText { target, .. }
+        | Primitive::RenameSymbol { target, .. }
         | Primitive::UnwrapBlock { target, .. } => target,
         Primitive::Move { target, to: MoveTo::Before(other) | MoveTo::After(other) } => {
             let gone = |t: &Target| matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none());
@@ -456,7 +473,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
     match p {
         Primitive::Replace { target, with } => {
             let (s, e) = range(target, m)?;
-            out.push(TextEdit::new(s, e, try_interpolate(with, m, ctx.source)?));
+            out.push(TextEdit::new(s, e, tpl(with, m, ctx)?));
         }
         Primitive::Remove { target } => {
             let (s, e) = range(target, m)?;
@@ -465,7 +482,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
         }
         Primitive::InsertBefore { target, text, line } => {
             let (s, _) = range(target, m)?;
-            let text = try_interpolate(text, m, ctx.source)?;
+            let text = tpl(text, m, ctx)?;
             if *line {
                 let src = ctx.source;
                 let at = src[..s].rfind('\n').map(|i| i + 1).unwrap_or(0);
@@ -476,7 +493,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
         }
         Primitive::InsertAfter { target, text, line } => {
             let (s, e) = range(target, m)?;
-            let text = try_interpolate(text, m, ctx.source)?;
+            let text = tpl(text, m, ctx)?;
             if *line {
                 let src = ctx.source;
                 let (at, lead) = match src[e..].find('\n') {
@@ -516,11 +533,35 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             if symbol.exported {
                 return Err(format!("`{}` is exported; renaming it would break importers", symbol.name));
             }
-            let new = try_interpolate(to, m, ctx.source)?;
+            let new = tpl(to, m, ctx)?;
             let mut ranges: Vec<(usize, usize)> = symbol.decls.clone();
             ranges.extend(symbol.refs.iter().map(|&r| (model.references[r].start, model.references[r].end)));
             ranges.sort();
             ranges.dedup();
+            out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
+        }
+        Primitive::RenameSymbol { target, to } => {
+            let (s, _) = range(target, m)?;
+            let model = ctx.semantic.ok_or("`rename-symbol` needs a language with a semantic model")?;
+            let id = model.symbol_at(s).ok_or("`rename-symbol`: the target names no symbol")?;
+            let symbol = model.symbol(id);
+            if symbol.exported {
+                return Err(format!("`{}` is exported; renaming it would break importers", symbol.name));
+            }
+            let new = tpl(to, m, ctx)?;
+            if new != symbol.name && names_in(ctx).contains(&new) {
+                return Err(format!("`rename-symbol`: `{new}` is already a name in the file"));
+            }
+            let mut ranges: Vec<(usize, usize)> = symbol.decls.clone();
+            ranges.extend(symbol.refs.iter().map(|&r| (model.references[r].start, model.references[r].end)));
+            ranges.sort();
+            ranges.dedup();
+            for &(s, e) in &ranges {
+                let kind = ctx.root.root().get_inner_node().descendant_for_byte_range(s, e).map(|n| n.kind()).unwrap_or("");
+                if kind.starts_with("shorthand_property") {
+                    return Err(format!("`rename-symbol`: `{}` is a shorthand property, whose key would change", symbol.name));
+                }
+            }
             out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
         }
         Primitive::CollectIntoBlock { .. } => {}
@@ -638,6 +679,72 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
     Ok(())
 }
 
+/// Every identifier-like word the file spells, with the language's globals
+/// and keywords: what `$FRESH` and `rename-symbol` must not collide with.
+fn names_in(ctx: &FixContext<'_>) -> std::collections::BTreeSet<String> {
+    let mut names = std::collections::BTreeSet::new();
+    let root = ctx.root.root().get_inner_node();
+    let mut c = root.walk();
+    let mut stack = vec![root];
+    while let Some(n) = stack.pop() {
+        if n.child_count() == 0 {
+            let t = &ctx.source[n.byte_range()];
+            if t.chars().next().is_some_and(|c| c.is_alphabetic() || c == '_' || c == '$') {
+                names.insert(t.to_owned());
+            }
+        }
+        stack.extend(n.children(&mut c));
+    }
+    let globals: &[&str] = if ctx.language == Language::Python { codelaw_semantic::PYTHON_BUILTINS } else { codelaw_semantic::ES_GLOBALS };
+    names.extend(globals.iter().map(|g| (*g).to_owned()));
+    names.extend(["arguments", "await", "yield", "let", "static", "enum", "self", "cls"].map(str::to_owned));
+    names
+}
+
+/// A fix template with each `$FRESH(<base>)` replaced by the first of
+/// `base`, `base2`, … that is no name in the file (`base` is a template
+/// itself), then interpolated (W-162).
+fn tpl(template: &str, m: &Match, ctx: &FixContext<'_>) -> Result<String, String> {
+    let mut text = template.to_owned();
+    let mut names: Option<std::collections::BTreeSet<String>> = None;
+    while let Some(at) = text.find("$FRESH(") {
+        let close = text[at..].find(')').map(|i| at + i).ok_or("`$FRESH(` has no `)`")?;
+        let base = try_interpolate(&text[at + 7..close], m, ctx.source)?;
+        if base.is_empty() || !base.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '$') {
+            return Err(format!("`$FRESH({base})`: the base is not a name"));
+        }
+        let names = names.get_or_insert_with(|| names_in(ctx));
+        let fresh = std::iter::once(base.clone()).chain((2..).map(|i| format!("{base}{i}"))).find(|n| !names.contains(n)).expect("a free name");
+        text.replace_range(at..=close, &fresh);
+    }
+    try_interpolate(&text, m, ctx.source)
+}
+
+/// An `edit-text` pattern with each `$NAME` of a capture the match bound
+/// replaced by that capture's text, escaped: the pattern can name what the
+/// rule captured (W-162).
+fn escaped_captures(pattern: &str, m: &Match, src: &str) -> String {
+    let mut out = String::new();
+    let mut rest = pattern;
+    while let Some(i) = rest.find('$') {
+        out.push_str(&rest[..i]);
+        let after = &rest[i + 1..];
+        let len = after.bytes().take_while(|b| b.is_ascii_uppercase() || b.is_ascii_digit() || *b == b'_').count();
+        match m.single.get(&after[..len]).filter(|_| len > 0 && after.as_bytes()[0].is_ascii_uppercase()) {
+            Some(c) => {
+                out.push_str(&regex::escape(&src[c.start..c.end]));
+                rest = &after[len..];
+            }
+            None => {
+                out.push('$');
+                rest = after;
+            }
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 /// Text written as lines of its own, each at `indent` plus the indentation
 /// it has in the text, each ending in a newline.
 fn own_lines(text: &str, indent: &str) -> String {
@@ -706,8 +813,8 @@ fn text_edits(steps: &[&Primitive], m: &Match, ctx: &FixContext<'_>, out: &mut V
                 texts.len() - 1
             }
         };
-        let re = regex::Regex::new(pattern).map_err(|e| format!("`edit-text`: {e}"))?;
-        let with = try_interpolate(replace, m, ctx.source)?;
+        let re = regex::Regex::new(&escaped_captures(pattern, m, ctx.source)).map_err(|e| format!("`edit-text`: {e}"))?;
+        let with = tpl(replace, m, ctx)?;
         texts[at].1 = re.replace_all(&texts[at].1, with.as_str()).into_owned();
     }
     for ((s, e), new) in texts {
