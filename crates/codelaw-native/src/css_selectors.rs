@@ -52,10 +52,13 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
         let list = sheet.selectors(i, src);
         // The same selector twice in one list.
         let mut in_list = BTreeSet::new();
-        for c in list.iter() {
+        for (k, c) in list.iter().enumerate() {
             let t = normalize_selector(text(src, (c.start, c.end)));
             if !in_list.insert(t.clone()) {
-                out.push(finding(c.start, c.end, format!("`{t}` appears twice in this selector list")));
+                // The same selector twice selects nothing more: it goes, with
+                // the comma before it.
+                let edits = if k > 0 { vec![TextEdit::delete(list[k - 1].end, c.end)] } else { Vec::new() };
+                out.push(crate::css_syntax::fixed(c.start, c.end, format!("`{t}` appears twice in this selector list"), edits));
             }
         }
         let mut all: Vec<String> = resolved(sheet, i, src).into_iter().map(|x| x.0).collect();
@@ -66,7 +69,26 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
         match ctx_map.get(&key) {
             Some(&first) => {
                 let sel = text(src, n.name);
-                out.push(finding(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first))));
+                // Two rules side by side cascade as one: the second's
+                // declarations join the end of the first.
+                let edits = sheet.nodes.iter().position(|x| x.start == first && x.kind == Kind::Rule).and_then(|f| {
+                    let fr = &sheet.nodes[f];
+                    let ((_, fclose), (sopen, sclose)) = (fr.block?, n.block?);
+                    if !src[fr.end..n.start].trim().is_empty() || fr.parent != n.parent || fclose >= src.len() || sclose >= src.len() {
+                        return None;
+                    }
+                    let inner = src[sopen + 1..sclose].trim_end();
+                    let head = src[..fclose].trim_end_matches([' ', '	']).len();
+                    let (a, b) = crate::util::whole_lines(src, n.start, n.end);
+                    Some(vec![TextEdit::insert(head, inner.trim_start_matches(['
+']).to_owned().replace("", "").chars().collect::<String>()).clone(), TextEdit::delete(a, b)])
+                        .map(|mut v| {
+                            v[0] = TextEdit::insert(head, format!("{}{}", if inner.starts_with('
+') { "" } else { " " }, inner));
+                            v
+                        })
+                });
+                out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first))), edits.unwrap_or_default()));
             }
             None => {
                 ctx_map.insert(key, n.start);
