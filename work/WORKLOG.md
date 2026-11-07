@@ -24,6 +24,46 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) finish the python half of W-139's remaining ports and close W-139 if DoD 1 is met.
+- **Done:** slices 19–22 landed (`3b9710f4`, `02994cae`, `7f6ae3e9`, `e6bb810a`): 200 new `py/*` rules. The strand's tally is in the item: 272 python-side rows left, each with its reason.
+- **Decided / left open:** W-139 stays open — DoD 1 is not met (python 272 rows, js 284, both mostly native, type-aware or waiting on W-162's add-import); W-143, W-142 and W-102 stay waiting on it.
+- **Mistakes:** none new.
+- **Next:** the rows that wait on W-162's add-import, once it lands; the natives with the W-139-native strand.
+
+---
+
+## 2026-11-07 — W-139 strand W-139-py, second pass: slices 21 landed, 22 (48 Pylint rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 to closure.
+- **Done:** slice 21 landed by the end-of-turn hook (`7f6ae3e9`) once its checks passed; slice 22 — 48 `py/*` rules from Pylint's own checks, all `manual`. `codelaw test packs/python` 706 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written, one rule narrowed. Every Pylint row this strand does not write is in the item with its reason.
+- **Decided / left open:** Pylint rows whose twin is an older rule are not linked: adding `ported_from:` to existing rules waits until W-156 and W-162 stop editing them.
+- **Mistakes:** none new.
+- **Next:** what is left of the strand is native, type-inference or unconfirmable rows; close-out tally against DoD 1.
+
+---
+
+## 2026-11-07 — W-173 closed: Ruff 0.0.21, `zip` 9.4.1  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) on Arpit's ruling, bump Ruff to `=0.0.21`, record it in SR-LAW-11, prove it, close W-173.
+- **Done:** five pins `=0.0.21` in `codelaw-format`, `Cargo.lock` moved only D-02's tree (`zip` 9.4.1); SR-LAW-11 D-02 ratified again with the decider's words, count 162, ledger lines regenerated; SR-FORMATTER pins; inbox row removed; item archived; IMPLEMENTATION, CHANGELOG (Security).
+- **Decided / left open:** the W-141 corpus has no Python, so 756 Python files (3.14 stdlib + the repo's) stood in: byte-identical under both release builds. Only D-02's ledger lines regenerated — `print_ledger` also rewrites D-01's (stale, not this change's). Alerts close on the push.
+- **Mistakes:** the inbox row named four new crates; the tree also takes `r-efi@6` (and three already in the lock) — written into D-02 and the item.
+- **Next:** none for W-173; the push closes the alerts.
+
+---
+
+## 2026-11-07 — Docket, inbox only: W-105's budgets ruled unset  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"explain me the blockers 1 by one"*, then *"yes"* to the write-back.
+- **Done:** two inbox cards. W-105 ruled *"Leave unset"*: the inbox row and its sub-row removed, W-105 🔴 `arpit` → 🟣 `agent` (the 11-10 RC re-pin), the item file, INTERVIEW §1, the registry rows. The inbox is empty.
+- **Decided / left open:** W-173 ruled *"Bump to 0.0.21 (Recommended)"* here, but Claude Code had already taken the same ruling and landed it (`5f472943`) mid-docket; its files left to that session.
+- **Mistakes:** the cards were read before the 17:32 landing; caught by `git log` before writing.
+- **Next:** W-105's RC re-pin on 2026-11-10.
+
+---
+
 ## 2026-11-07 — W-169: the segfault caught by the capture, and fixed  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) watch CI on the pushed `main`, dispatch until a build leg crashes, read `crash-<key>`, fix with a regression test.
@@ -31,6 +71,26 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Decided / left open:** step 3 (five green runs) waits on the decider's push. The crash twin came out byte-identical, i.e. stripped — the frames were named by disassembly; fixing the twin is open.
 - **Mistakes:** none new.
 - **Next:** after the push, five green runs of every build leg.
+
+---
+
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 21 (51 rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 to closure.
+- **Done:** slice 20 landed (`02994cae`); slice 21 — 51 `py/*` rules (flake8-pyi 20, Pylint-in-Ruff 14, flake8-return 4, gettext 3, CPY001, TID252, pytest-style 4, pathlib 4): 4 auto, 4 suggest, 43 manual; 15 Pylint rows linked. `codelaw test packs/python` 658 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written.
+- **Decided / left open:** the four unused-private-name stub rules are native (module-level names are never `unused` in the semantic model); upstream rows whose exemptions could not be confirmed offline listed in the item.
+- **Mistakes:** none new.
+- **Next:** the rest of the strand is mostly native or unconfirmable rows; Pylint's own rows next (links and the simple checks).
+
+---
+
+## 2026-11-07 — W-139 slice 20: unicorn and SonarJS, last expressible rows (js strand, second pass)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the js half of W-139's remaining port rows, slice by slice.
+- **Done:** 17 `js/*` rules (7 `auto`, 4 `suggest`, 6 `manual`); presets `js/strict` +7, `js/sonarjs` +7; the strand's remaining 284 rows recorded in the item as not written, each under its reason (offline-unconfirmable 104, flow 55, native 42, graph 29, no default 17, covered by an existing rule 19, types 15, layout 2, reports nothing 1).
+- **Decided / left open:** rows written in the narrowest form whose fix is certain; corpus counts not run (no corpus on this machine).
+- **Mistakes:** the editor turned `\u2028` in a spec into a real line separator, which broke the YAML; the escapes were rewritten by script. Before that, an end-of-turn landing (`0fb16657`) put slice 19's first draft, with load errors, on main; slice 19's submit replaced it within the hour.
+- **Next:** the js strand is done for what can be written now; what is left waits on native rules, the project graph, types (W-105) or the decider's call on the offline-unconfirmable rows.
 
 ---
 
@@ -73,6 +133,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Next:** scope rename and `$FRESH`.
 
 ---
+
+## 2026-11-07 — W-156 step 4: the last native moves  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) finish W-156: first run `cargo test -p codelaw-native` and `-p codelaw-engine` after the previous agent's marker edits and fix what broke, then move the 60 native rules left (css 8, python 52), one pack per change, and close the item.
+- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)).
+- **Decided / left open:** `string-no-newline` offers a space or `\A`, not a `\` continuation: the CSS grammar refuses the continuation, so the engine never applies it.
+- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack.
+- **Next:** python's 52 native rules.
 
 ## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
 

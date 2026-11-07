@@ -2,9 +2,9 @@
 id: css/keyframe-block-no-duplicate-selectors
 title: "No keyframe selector twice in one `@keyframes`"
 languages: [css, scss]
-fix: manual
-fix_reason: "which keyframe was meant can't be known from the code"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are merging the two blocks in source order (the default: what browsers render today, the later declarations winning), keeping the first or keeping the last; the author often meant another offset, which the code doesn't say, and a selector shared with other keyframes in one block is manual"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/keyframe-block-no-duplicate-selectors]
 since: 0.1.0
@@ -40,6 +40,40 @@ native: css/keyframe-block-no-duplicate-selectors
 }
 ```
 
+#### Fixed (merge)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+#### Fixed (keep first)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+#### Fixed (keep last)
+
+```css
+@keyframes fade {
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
 #### Do
 
 ```css
@@ -62,6 +96,40 @@ native: css/keyframe-block-no-duplicate-selectors
   0% {
     opacity: 0;
   }
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
+#### Fixed (merge)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+#### Fixed (keep first)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+#### Fixed (keep last)
+
+```scss
+@keyframes fade {
 
   0% {
     opacity: 1;

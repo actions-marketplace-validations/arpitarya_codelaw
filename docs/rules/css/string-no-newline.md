@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignore` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the line break was meant is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are a space or an escaped line break (`\A`) the string keeps; each makes a selector the browser drops today start to match, and only the author knows which was meant) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/string-no-newline` |
@@ -182,6 +182,22 @@ two"] {
 }
 ```
 
+#### Fixed (space)
+
+```css
+[title="one two"] {
+  color: red;
+}
+```
+
+#### Fixed (escape)
+
+```css
+[title="one\A two"] {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -196,6 +212,22 @@ two"] {
 ```scss
 [title="one
 two"] {
+  color: red;
+}
+```
+
+#### Fixed (space)
+
+```scss
+[title="one two"] {
+  color: red;
+}
+```
+
+#### Fixed (escape)
+
+```scss
+[title="one\A two"] {
   color: red;
 }
 ```

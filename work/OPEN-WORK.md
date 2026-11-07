@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **`check_types_cold` / `check_types_warm` L8 budgets: 14,602 ms and 8,663 ms?** ([W-105](open/W-105-type-aware-engine.md)): p95 on three `perf` runs on `main` of the batched helper (`ci` 42316894936 on `3b53d1a8`, its nightly and two re-runs of the job; ubuntu-24.04, 2,200 files, TypeScript 7.1.0-beta): cold 9,734.3 / 5,185.9 / 6,010.8 ms, warm 5,775.1 / 5,286.0 / 5,005.8 ms. Your method (L8 decision 4): 1.5 × the worst → **cold 14,602 ms, warm 8,663 ms**; no design target, so no guard. The cold spread is the runner (same commit, same binary). **Set them** (a p95 over fails CI) **or leave them unset** (reported only). | 2026-11-07 |
-| ↳ **blocks:** W-105 | |
+
+*Empty since 2026-11-07 — next gate: 2026-11-10, the TypeScript 7.1 RC re-pin (W-105).*
 
 ---
 
@@ -31,15 +31,15 @@ here. Read that record before changing anything below it.
 
 ### build (6)
 
-🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets in the inbox (cold 14,602, warm 8,663 ms); next the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done; L8 → W-172. DoD 1 under way: js slices 18–19 (104 rules), py slices 19–20 (101). Next: more js and py rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: DoD 1 — js slices 18–20 (121; 284 rows not written, reasons in item), py 19–22 (200; 272 rows left: native, types, W-162). Next: natives, graph, types. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets on the reference runner (11-07): `check_cold_10k` 13,465 > 13,118 ms, `peak_memory_10k` 124 > 72 MiB, `mcp_rules_for_path` 129 > 65 ms; green 11-05. Next: bisect, optimise. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css landed): 60 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css done): 52 rules left to move, all python. Next: python's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits done: 64 moved, 39 re-judged `manual`. 58 still wait (scope rename 10, add-import 9, purity 2, cross-file 36, SHAs 1), 6 more on W-105. Next: scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 

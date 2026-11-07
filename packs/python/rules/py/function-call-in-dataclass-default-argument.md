@@ -19,7 +19,7 @@ match:
   has: {field: type, kind: type}
   all:
     - any:
-        - has: {field: right, kind: call, has: {field: arguments, regex: '^\(\s*\)$'}, has: {field: function, pattern: $FN}, pattern: $BARE}
+        - has: {field: right, kind: call, all: [{has: {field: arguments, regex: '^\(\s*\)$'}}, {has: {field: function, pattern: $FN}}], pattern: $BARE}
         - has: {field: right, kind: call, not: {has: {field: arguments, regex: '^\(\s*\)$'}}, pattern: $CALL}
     - has:
         field: right

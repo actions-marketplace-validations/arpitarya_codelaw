@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAtRules` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended prelude is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an identifier where a dashed one belongs is dashed (`@property size` becomes `--size`), a single-quoted `@charset` double-quoted, and a prelude on an at-rule that takes none removed; the at-rule is dropped today and starts to apply. Any other prelude is manual, as the intended one is a value the code doesn't hold) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/at-rule-prelude-no-invalid` |

@@ -48,6 +48,7 @@ const p = <head><title>Home</title></head>;
 
 ```js path=pages/index.js
 import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -63,6 +64,7 @@ const p = <head><title>Home</title></head>;
 
 ```jsx path=pages/index.jsx
 import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -78,5 +80,6 @@ const p = <head><title>Home</title></head>;
 
 ```tsx path=pages/index.tsx
 import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```

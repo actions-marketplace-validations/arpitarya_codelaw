@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which keyframe was meant can't be known from the code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are merging the two blocks in source order (the default: what browsers render today, the later declarations winning), keeping the first or keeping the last; the author often meant another offset, which the code doesn't say, and a selector shared with other keyframes in one block is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/keyframe-block-no-duplicate-selectors` |
@@ -141,6 +141,40 @@ codelaw config --print --for <file>                             # the resolved s
 }
 ```
 
+#### Fixed (merge)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+#### Fixed (keep first)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+#### Fixed (keep last)
+
+```css
+@keyframes fade {
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
 #### Do
 
 ```css
@@ -163,6 +197,40 @@ codelaw config --print --for <file>                             # the resolved s
   0% {
     opacity: 0;
   }
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
+#### Fixed (merge)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+#### Fixed (keep first)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+#### Fixed (keep last)
+
+```scss
+@keyframes fade {
 
   0% {
     opacity: 1;

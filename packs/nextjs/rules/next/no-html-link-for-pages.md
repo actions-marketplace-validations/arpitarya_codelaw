@@ -52,6 +52,7 @@ const a = <a href="/about">About</a>;
 
 ```js path=pages/index.js
 import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -67,6 +68,7 @@ const a = <a href="/about">About</a>;
 
 ```jsx path=pages/index.jsx
 import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -82,6 +84,7 @@ const a = <a href="/about">About</a>;
 
 ```tsx path=pages/index.tsx
 import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
