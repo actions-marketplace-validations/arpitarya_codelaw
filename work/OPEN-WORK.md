@@ -62,7 +62,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🔴 **W-168** `agent` Steps 1–5 done 11-07: `codelaw bench --graph`, per-stage `--timings`, 10k–1M measured ([results](../experiments/graph-scale/RESULTS.md)) — first to break: the one-file hook (2.0 s at 10k vs 300 ms), then the cache's 512 MB default past ~200k. Waits on the decider's step 6 (budgets). Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
+🔴 **W-168** `agent` Steps 1–5 done 11-07: `codelaw bench --graph`, per-stage `--timings`, 10k–1M measured ([results](../experiments/graph-scale/RESULTS.md)) — first to break: the one-file hook (2.0 s at 10k vs 300 ms), then the 512 MB cache default past ~200k. Waits on step 6 (budgets). Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 

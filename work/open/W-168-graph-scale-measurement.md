@@ -7,7 +7,7 @@ filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-07
 updated_by: "Claude Code (Opus 5.5)"
-ball: agent
+ball: arpit
 ---
 
 # W-168 — Measure the graph on very large repos: 10k, 50k, 100k, 500k, 1M files
