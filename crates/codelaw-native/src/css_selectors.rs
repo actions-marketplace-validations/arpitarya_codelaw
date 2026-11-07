@@ -78,17 +78,12 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
                         return None;
                     }
                     let inner = src[sopen + 1..sclose].trim_end();
-                    let head = src[..fclose].trim_end_matches([' ', '	']).len();
+                    let head = src[..fclose].trim_end_matches([' ', '\t']).len();
                     let (a, b) = crate::util::whole_lines(src, n.start, n.end);
-                    Some(vec![TextEdit::insert(head, inner.trim_start_matches(['
-']).to_owned().replace("", "").chars().collect::<String>()).clone(), TextEdit::delete(a, b)])
-                        .map(|mut v| {
-                            v[0] = TextEdit::insert(head, format!("{}{}", if inner.starts_with('
-') { "" } else { " " }, inner));
-                            v
-                        })
+                    let sep = if inner.starts_with('\n') { "" } else { " " };
+                    Some(vec![TextEdit::insert(head, format!("{sep}{inner}")), TextEdit::delete(a, b)])
                 });
-                out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first))), edits.unwrap_or_default()));
+                out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first)), edits.unwrap_or_default()));
             }
             None => {
                 ctx_map.insert(key, n.start);

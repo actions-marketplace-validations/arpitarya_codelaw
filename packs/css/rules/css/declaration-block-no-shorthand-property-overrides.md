@@ -2,9 +2,8 @@
 id: css/declaration-block-no-shorthand-property-overrides
 title: "No shorthand after a longhand it resets"
 languages: [css, scss]
-fix: manual
-fix_reason: "which value is meant can't be known from the code"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are deleting the overridden longhand (the default, which renders the same) or moving it after the shorthand, which makes it apply"
 stability: preview
 ported_from: [stylelint/declaration-block-no-shorthand-property-overrides]
 since: 0.1.0
@@ -35,6 +34,12 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+XX
+```
+
 #### Do
 
 ```css
@@ -52,6 +57,12 @@ a {
   padding-left: 10px;
   padding: 20px;
 }
+```
+
+#### Fixed
+
+```scss
+XX
 ```
 
 #### Do

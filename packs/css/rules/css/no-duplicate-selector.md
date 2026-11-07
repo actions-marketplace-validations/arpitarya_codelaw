@@ -2,9 +2,9 @@
 id: css/no-duplicate-selector
 title: "No selector declared twice"
 languages: [css, scss]
-fix: manual
-fix_reason: "merging the rules depends on cascade order"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for a selector repeated in its own list, which goes, and for two rules side by side with the same selector, which cascade as one and merge; rules apart are manual, since moving declarations past others changes the cascade"
+fix_exception: restructure
 stability: preview
 ported_from: [stylelint/no-duplicate-selectors]
 since: 0.1.0
@@ -39,6 +39,16 @@ native: css/no-duplicate-selector
 }
 ```
 
+#### Fixed
+
+```css
+.card {
+  color: red;
+
+  margin: 0;}
+
+```
+
 #### Do
 
 ```css
@@ -59,6 +69,17 @@ native: css/no-duplicate-selector
 .card {
   margin: 0;
 }
+```
+
+#### Fixed
+
+```scss
+.card {
+  color: red;
+
+  margin: 0;}
+
+
 ```
 
 #### Do
