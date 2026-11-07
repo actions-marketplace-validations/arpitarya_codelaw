@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/dom-node-dataset` |

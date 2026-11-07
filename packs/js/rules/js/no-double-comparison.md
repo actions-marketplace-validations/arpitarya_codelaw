@@ -2,9 +2,8 @@
 id: js/no-double-comparison
 title: "x > a || x === a is x >= a"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the operator of the rewrite depends on which of four patterns matched"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`x >= y` and `x > y || x === y` differ when the operands have different types (`\"1\" >= 1` is true, the pair is false); the author confirms they match"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-double-comparison]
 since: 0.5.0
@@ -23,7 +22,9 @@ match:
     - pattern: $X < $Y || $X === $Y
     - pattern: $X === $Y || $X > $Y
     - pattern: $X === $Y || $X < $Y
+  has: { kind: binary_expression, has: { field: operator, regex: '^[<>]$', pattern: $$OP } }
 message: "These two comparisons are one: use `>=` or `<=`"
+fix: "$X $OP= $Y"
 ```
 
 ## How to fix
