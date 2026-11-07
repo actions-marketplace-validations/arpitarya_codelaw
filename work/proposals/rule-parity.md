@@ -322,7 +322,7 @@ Pack by pack: codelaw's rules when this proposal was written, the count it propo
 | tanstack-query | 13 | 14 | 1 | 0 | 13 |
 | testing | 0 | 182 | 182 | 169 | 169 |
 | ts | 27 | 66 | 40 | 34 | 65 |
-| **all** | **689** | **3263** | **2590** | **1670** | **2296** |
+| **all** | **689** | **3263** | **2590** | **1670** | **2395** |
 
 - **The gap:** 920 rows not answered yet (after the js strand's slice 20, 2026-11-07), nearly all in `js` (329) and `python` (481) — unicorn's and Ruff's long tails, the jsdoc type-expression rows and the natives W-139's *Remaining* tables name. Many `python` and `js` rows were met by linking an existing rule (`ported_from:`), so *rules today* rises less than *built*.
 - **Corpus (step 3):** every pack's `corpus.toml` holds the 233 rules of 2026-11-05. Two rules narrowed on what the corpus showed — `md/no-empty-links` (on in `md/recommended`: 254 findings on `[x](#anchor)` and `[x](<a b.md>)` links, now 0) and `js/no-undefined` (TypeScript's `undefined` type rewritten to `void 0`, not a fixpoint). Every other new count belongs to a `preview` rule in no on-by-default preset; the loud ones (`css/no-unknown-custom-properties` 782, `scss/no-dollar-variables` 1,864, `ts/member-ordering` 1,683, `py/unused-function-argument` 541) are for review before any promotion.
