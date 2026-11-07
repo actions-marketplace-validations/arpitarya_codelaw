@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-168 steps 1–5: the graph measured at 10k–1M files  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-168 — a graph workload for `codelaw bench`, per-stage timings, 10k/50k/100k/500k/1M cold, warm and one-file hook with memory and cache size, real repos where on disk, the write-up for W-167; no budgets (step 6 to the inbox). Resumed 11-07 after the usage limit stopped the session on 11-05.
+- **Done:** `bench --graph`, the `graph-*` `--timings` phases, all five sizes run one at a time under the scratchpad and deleted after each (the 11-05 runner survived the stop and finished 1M at 11-07 10:34), ionic-framework and tanstack-query timed from the corpus checkout; `experiments/graph-scale/RESULTS.md`, six unset rows in `perf/budgets.toml`, SR-CLI-MCP and SR-PROJECT-GRAPH notes; the inbox row.
+- **Decided / left open:** the workload de-exports all but each module's helper (first draft left every export unused: 55k findings at 10k, which made `graph-rules` look like the break). Left open: which sizes get a budget (inbox); a 50k+ real repo pin (DoD 4) and the CI `perf` job (DoD 5) wait on that ruling.
+- **Mistakes:** none found; numbers are from a loaded machine (load 12–60 for 10k–100k) and 500k/1M are one sample each — said so in the results.
+- **Next:** the decider rules W-168 step 6; W-167 reads RESULTS.md.
+
+---
+
 ## 2026-11-07 — W-162 change 3: `unwrap-block` and `move`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue W-162: finish computed edits, then the proposal's order; restore `.fux` before each submit.
