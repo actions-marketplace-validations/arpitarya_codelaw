@@ -1,7 +1,7 @@
 //! CSS rules about media queries, with a small reader for their grammar
 //! (Media Queries level 5).
 
-use crate::css_syntax::{Feature, Kind, Range, Sheet, css_rule, dimension, finding, fixed, ident_end, matches_any, opt_list, set, skip_comment, skip_string, split_commas, table, text, unprefixed, vendor_prefix};
+use crate::css_syntax::{Feature, Kind, Range, Sheet, css_rule, dimension, fixed, ident_end, matches_any, opt_list, set, skip_comment, skip_string, split_commas, table, text, unprefixed, vendor_prefix};
 use codelaw_core::TextEdit;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -517,7 +517,16 @@ css_rule!(MediaFeatureNameNoVendorPrefix, "css/media-feature-name-no-vendor-pref
             let lower = name.to_ascii_lowercase();
             if vendor_prefix(&lower).is_some() && lower.contains("device-pixel-ratio") {
                 let standard = unprefixed(&lower).replace("device-pixel-ratio", "resolution");
-                out.push(finding(f.name.0, f.name.1, format!("`{name}` has a vendor prefix; use `{standard}` with a `dppx` value")));
+                // A plain number of device pixels per CSS pixel is that many
+                // `dppx`; a browser that knows only the prefixed feature
+                // (Safari before 16) stops matching, so it is a suggestion.
+                let edits = match f.value.map(|v| (v, text(src, v))) {
+                    Some((v, t)) if !t.is_empty() && t.bytes().all(|b| b.is_ascii_digit() || b == b'.') && t.parse::<f64>().is_ok() && f.range_values.is_empty() => {
+                        vec![TextEdit::new(f.name.0, f.name.1, standard.clone()), TextEdit::new(v.0, v.1, format!("{t}dppx"))]
+                    }
+                    _ => Vec::new(),
+                };
+                out.push(fixed(f.name.0, f.name.1, format!("`{name}` has a vendor prefix; use `{standard}` with a `dppx` value"), edits));
             }
         }
     });

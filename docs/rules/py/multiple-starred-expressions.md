@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which target should collect the rest has to be chosen) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (one choice per starred target: it keeps its star and the others lose theirs; a SyntaxError today, and which target collects the rest is the author's call, so none is the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F622`, `pylint/star-needs-assignment-target` |
@@ -130,6 +130,18 @@ codelaw config --print --for <file>                   # the resolved setting, an
 
 ```py
 *head, *tail = values
+```
+
+#### Fixed (keep *head)
+
+```py
+*head, tail = values
+```
+
+#### Fixed (keep *tail)
+
+```py
+head, *tail = values
 ```
 
 #### Do

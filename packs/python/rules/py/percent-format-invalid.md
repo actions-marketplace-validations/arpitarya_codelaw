@@ -2,9 +2,9 @@
 id: py/percent-format-invalid
 title: "A `%` format string is complete"
 languages: [python]
-fix: manual
-fix_reason: "the intended placeholder can't be inferred"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the string raises ValueError today: the choices are escaping the `%` as `%%` (it was text) and, for a key left open, closing it as `%(key)s`; neither is the default. A string with escapes or an f-prefix is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F501, pylint/truncated-format-string]
 since: 0.1.0
@@ -30,6 +30,18 @@ native: py/percent-format-invalid
 
 ```py
 message = "%(name" % {"name": "Ada"}
+```
+
+#### Fixed (escape)
+
+```py
+message = "%%(name" % {"name": "Ada"}
+```
+
+#### Fixed (close)
+
+```py
+message = "%(name)s" % {"name": "Ada"}
 ```
 
 #### Do

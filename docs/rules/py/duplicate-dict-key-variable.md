@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value should win can't be known from the code) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F602` |
@@ -131,6 +131,12 @@ codelaw config --print --for <file>                  # the resolved setting, and
 
 ```py
 scores = {player: 1, player: 2}
+```
+
+#### Fixed
+
+```py
+scores = {player: 2}
 ```
 
 #### Do

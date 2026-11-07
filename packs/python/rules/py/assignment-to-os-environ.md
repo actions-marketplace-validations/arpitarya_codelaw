@@ -2,9 +2,9 @@
 id: py/assignment-to-os-environ
 title: "Don't assign to `os.environ`"
 languages: [python]
-fix: manual
-fix_reason: "whether to clear the environment first or only update it needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are replacing the environment (`os.environ.clear()` then `.update()`) and adding to it (`.update()`); either now changes the real process environment, so neither is the default. An assignment inside another statement is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B003]
 since: 0.1.0
@@ -32,6 +32,23 @@ native: py/assignment-to-os-environ
 import os
 
 os.environ = {"PATH": "/bin"}
+```
+
+#### Fixed (replace)
+
+```py
+import os
+
+os.environ.clear()
+os.environ.update({"PATH": "/bin"})
+```
+
+#### Fixed (update)
+
+```py
+import os
+
+os.environ.update({"PATH": "/bin"})
 ```
 
 #### Do

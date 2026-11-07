@@ -2,9 +2,9 @@
 id: py/undefined-name
 title: "Every name read is defined"
 languages: [python]
-fix: manual
-fix_reason: "whether to import, define or correct the name needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the names in scope and the builtins within two edits are choices, the nearest the default; the NameError becomes a read of that name. A name with none near is manual, as the right one is a value the code doesn't hold"
+fix_exception: value
 stability: preview
 options:
   builtins: { type: "string[]", default: [], description: "extra names to treat as builtins" }

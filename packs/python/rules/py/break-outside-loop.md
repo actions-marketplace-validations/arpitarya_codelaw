@@ -2,9 +2,8 @@
 id: py/break-outside-loop
 title: "`break` only inside a loop"
 languages: [python]
-fix: manual
-fix_reason: "what should happen instead (return, raise) is the author's choice"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `return`, in a function, and deleting the `break` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default"
 stability: preview
 ported_from: [ruff/F701, pylint/not-in-loop]
 since: 0.1.0
@@ -31,6 +30,20 @@ native: py/break-outside-loop
 ```py
 def stop():
     break
+```
+
+#### Fixed (return)
+
+```py
+def stop():
+    return
+```
+
+#### Fixed (delete)
+
+```py
+def stop():
+    pass
 ```
 
 #### Do

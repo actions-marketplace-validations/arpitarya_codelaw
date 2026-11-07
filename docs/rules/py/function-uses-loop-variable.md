@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (binding the value now (a default argument, `functools.partial`) changes the function's signature) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the loop variables the function reads become keyword-only defaults (`*, name=name`), bound when the function is made: the late binding becomes early, which is the fix and a change. A function that already takes `*`, `**` or `/` is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B023`, `pylint/cell-var-from-loop` |
@@ -132,6 +132,14 @@ codelaw config --print --for <file>                  # the resolved setting, and
 callbacks = []
 for name in ["a", "b"]:
     callbacks.append(lambda: print(name))
+```
+
+#### Fixed
+
+```py
+callbacks = []
+for name in ["a", "b"]:
+    callbacks.append(lambda *, name=name: print(name))
 ```
 
 #### Do

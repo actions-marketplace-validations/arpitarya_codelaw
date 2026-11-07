@@ -2,9 +2,9 @@
 id: py/except-with-non-exception-classes
 title: "`except` names exception classes"
 languages: [python]
-fix: manual
-fix_reason: "the exception class to catch is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a string naming a builtin exception becomes that exception, and another literal in a tuple with classes goes; any exception reaching the handler raised `TypeError` before, so what it catches changes. Anything else is manual, as the class meant is a value the code doesn't hold"
+fix_exception: value
 stability: preview
 ported_from: [ruff/B030, pylint/catching-non-exception]
 since: 0.1.0
@@ -31,7 +31,16 @@ native: py/except-with-non-exception-classes
 ```py
 try:
     run()
-except "error":
+except "ValueError":
+    log()
+```
+
+#### Fixed
+
+```py
+try:
+    run()
+except ValueError:
     log()
 ```
 

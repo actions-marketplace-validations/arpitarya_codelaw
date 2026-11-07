@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the surrounding code has to be restructured) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a SyntaxError today, so nothing ran: the `return` goes (`pass` when its block empties), and a value that does something stays as a statement; wrapping it in a function would need a name the code doesn't hold) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F706` |
@@ -131,6 +131,13 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 ```py
 class Config:
     return None
+```
+
+#### Fixed
+
+```py
+class Config:
+    pass
 ```
 
 #### Do

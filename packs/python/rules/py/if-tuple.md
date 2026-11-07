@@ -2,9 +2,9 @@
 id: py/if-tuple
 title: "`if` doesn't test a tuple"
 languages: [python]
-fix: manual
-fix_reason: "the intended condition can't be inferred from the tuple"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are testing the first item or all of them joined with `and`; the condition is always true today, so either changes what runs. A tuple with a starred item or a comment is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F634]
 since: 0.1.0
@@ -30,6 +30,20 @@ native: py/if-tuple
 
 ```py
 if (ready, "waiting"):
+    start()
+```
+
+#### Fixed (first item)
+
+```py
+if ready:
+    start()
+```
+
+#### Fixed (all items)
+
+```py
+if ready and "waiting":
     start()
 ```
 

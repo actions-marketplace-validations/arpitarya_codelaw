@@ -2,9 +2,8 @@
 id: py/except-with-empty-tuple
 title: "No `except ():`"
 languages: [python]
-fix: manual
-fix_reason: "the exceptions to catch are the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the handler never runs, so it goes; the only handler of a `try` without `finally` takes the `try` with it (its body, then its `else`, dedented). The code runs the same but loses what signals a bug, so review it"
 stability: preview
 ported_from: [ruff/B029]
 since: 0.1.0
@@ -33,6 +32,12 @@ try:
     run()
 except ():
     log()
+```
+
+#### Fixed
+
+```py
+run()
 ```
 
 #### Do

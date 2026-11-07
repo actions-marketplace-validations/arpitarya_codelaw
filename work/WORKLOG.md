@@ -177,10 +177,10 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-07 — W-156 step 4: the last native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish W-156: first run `cargo test -p codelaw-native` and `-p codelaw-engine` after the previous agent's marker edits and fix what broke, then move the 60 native rules left (css 8, python 52), one pack per change, and close the item.
-- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)).
+- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)). python landed (python: auto 170 → 181, suggest 233 → 274, manual 255 → 203 (pending 73 → 21, all capability-blocked)): eleven to `auto` within their subsets, forty-one to `suggest`, choices where the code gives several. `css/media-feature-name-no-vendor-prefix`, still marked for the closed W-166, moved to `suggest`. W-156 closed and archived; W-171 too (its last worktree, W-156's, landed and was removed).
 - **Decided / left open:** `string-no-newline` offers a space or `\A`, not a `\` continuation: the CSS grammar refuses the continuation, so the engine never applies it.
-- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack.
-- **Next:** python's 52 native rules.
+- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack. `python_util::decorators` returns a decorator's expression, not its `@`: `cached-instance-method`'s first edit inserted after the `@`, the engine refused it as a syntax error and the test showed only "not a fixpoint"; found with a debug print, fixed to insert at the `@`. Once the shared binary was another worktree's build (caught by grepping the copy for a new string).
+- **Next:** W-162's 42 capability-blocked rules (its own item).
 
 ## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
 

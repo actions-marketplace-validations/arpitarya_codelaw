@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether an increment or a plain value was meant needs a person) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (as a statement the choices are `x += 1` (`-=` for `--`) and deleting it; inside an expression the two signs go. `++x` is a no-op today, but `__pos__` may not be (Decimal), so none is automatic or the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B002`, `pylint/nonexistent-operator` |
@@ -131,6 +131,19 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 ```py
 count = 1
 ++count
+```
+
+#### Fixed (increment)
+
+```py
+count = 1
+count += 1
+```
+
+#### Fixed (delete)
+
+```py
+count = 1
 ```
 
 #### Do

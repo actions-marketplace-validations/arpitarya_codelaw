@@ -2,9 +2,8 @@
 id: py/duplicate-dict-key
 title: "A dict literal doesn't repeat a literal key"
 languages: [python]
-fix: manual
-fix_reason: "which value should win can't be known from the code"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs"
 stability: preview
 ported_from: [ruff/F601, pylint/duplicate-key]
 since: 0.1.0
@@ -31,6 +30,12 @@ native: py/duplicate-dict-key
 
 ```py
 colors = {"red": 1, "red": 2}
+```
+
+#### Fixed
+
+```py
+colors = {"red": 2}
 ```
 
 #### Do

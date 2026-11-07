@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether an assignment or an assertion was meant needs a person) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are an assignment (`==` written for `=`), an `assert`, and deleting the statement; each changes what runs (an assignment, a check, or no `__eq__` call), so none is the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B015` |
@@ -132,6 +132,27 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```py
 def reset(state):
     state.count == 0
+```
+
+#### Fixed (assign)
+
+```py
+def reset(state):
+    state.count = 0
+```
+
+#### Fixed (assert)
+
+```py
+def reset(state):
+    assert state.count == 0
+```
+
+#### Fixed (delete)
+
+```py
+def reset(state):
+    pass
 ```
 
 #### Do

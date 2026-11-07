@@ -2,9 +2,9 @@
 id: py/format-mixed-numbering
 title: "A `.format` string doesn't mix `{}` and `{0}`"
 languages: [python]
-fix: manual
-fix_reason: "which numbering the author wants has to be chosen"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "each `{}` is numbered by its place among the fields, its evident meaning; the string raises ValueError today, so it starts to format. A string with nested fields or escapes is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F525, pylint/format-combined-specification]
 since: 0.1.0
