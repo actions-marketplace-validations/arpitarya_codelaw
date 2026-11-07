@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-172: L8's three red budgets — cause found, engine side built, two still over  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-172 to closure — reproduce with `codelaw bench`, bisect 11-05 → main, optimise the cause, never loosen, prove each budget under locally.
+- **Done:** cause found without a commit bisect (the two weeks' engines and packs do not load each other): a per-rule cost on every loaded rule — 1,581 loaded, 474 on; regexes compiled once per grammar, rule files copied, every pack re-parsed per MCP call. Built: packs kept per process by file stamps, rules shared not copied, dormant matchers dropped after the load-time compile and rebuilt on first use, one-thread compile, the per-file settings lookup only for rules that can be on, `where:` before captures; SR-ARCHITECTURE 15 and SR-CACHE 8 amended. `codelaw bench`, same packs: `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB; cold within noise. `codelaw test` 9 packs 0 failed; release tests green.
+- **Decided / left open:** W-172 stays open — peak memory and `check_cold_10k` are what the newly-on rules cost (their regexes, `identifier` + `inside:` matchers); re-anchoring them is packs/js work (W-139-js, W-162 hold those files). CI's proof waits on pushing `main`.
+- **Mistakes:** `git stash pop` took W-162's stash (the stack is shared by every worktree); put back with `git stash store` before W-162 popped — LESSONS 2026-11-07. Parallel compile looked faster and cost 10 MB; reverted.
+- **Next:** push `main` (the decider) and read the runner's numbers; then re-anchor the hot `js/*` rules.
+
+---
+
 ## 2026-11-07 — W-169: the crash twin carries symbols  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) make `crash-capture.sh`'s unstripped twin actually unstripped, verified locally.

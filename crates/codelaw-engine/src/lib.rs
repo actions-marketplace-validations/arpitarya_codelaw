@@ -338,8 +338,9 @@ impl Project {
                 }
             }
         }
+        let pool = pool(options.threads);
         let compile_started = std::time::Instant::now();
-        let (compiled, mut warnings) = compile::compile_cached(&rules, &config).map_err(EngineError::Load)?;
+        let (compiled, mut warnings) = pool.install(|| compile::compile_cached(&rules, &config)).map_err(EngineError::Load)?;
         let timings = options.timings.then(|| timings::Timings::new(compiled.len()));
         if let Some(t) = &timings {
             t.add(timings::Phase::Compile, compile_started);
@@ -364,7 +365,6 @@ impl Project {
         let tests = new_code::load(&config)?;
         let ignore = codelawignore::load(&config, &rules, &mut warnings)?;
         let aliases = Aliases::load(&config, &rules);
-        let pool = pool(options.threads);
         let adapters = std::sync::OnceLock::new();
         Ok(Project {
             config,

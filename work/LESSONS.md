@@ -17,6 +17,33 @@ named here only as the failure that produced it. A lesson whose remedy is
 
 ---
 
+## 2026-11-07 — `git stash` is one stack for every worktree; `pop` takes whoever's is on top
+
+W-172 stashed its eight files to merge `main`, and while the merge ran W-162,
+in another worktree, stashed too. `git stash pop` took the top entry — W-162's
+(`On lm/W-162: w162-change5`, 40 pack files and 19 untracked ones) — applied it
+in W-172's worktree and dropped it. Caught at once by `git status`; put back
+with `git stash store` of the dropped commit before W-162 popped, and W-172's
+own entry applied by its hash. **In a repository with parallel worktrees, never
+`pop` by position: `git stash push -m <item>` and `git stash apply <hash>`, or
+commit to the branch and merge instead** — lockmaster's end-of-turn landing
+commits the claim anyway.
+
+## 2026-11-07 — a rule nobody turns on still costs memory and time, once per process
+
+W-139 grew the packs a project extends from ~440 rules to ~1,600, most of them
+in no preset the project uses. Every one was parsed, compiled for each of its
+grammars — ast-grep builds each `regex:` once per grammar, about 16 KB apiece —
+and kept, and every file asked each one for its settings: peak memory 60 →
+124 MiB and `rules_for_path` 40 → 129 ms on the reference runner, with no
+engine commit to bisect to. **A per-rule cost scales with the packs, not with
+the code: measure one binary against packs with and without the rules, and
+read a heap profile by call site (`heap --sortBySize`, `malloc_history
+-callTree -invert`), before bisecting.** Two packs from different weeks do not
+load into each other's engine, so a commit bisect mixes both arms.
+
+---
+
 ## 2026-10-26 — a `skip_serializing_if` on a cached type silently turns every entry into a miss
 
 `Diagnostic.data` (W-61) was `skip_serializing_if = "Option::is_none"`; the cache's codec (W-67) is positional, so a skipped field shifts every later one and the entry never decodes. A corrupt entry reads as a miss by design, so nothing failed: warm runs re-linted every file with a finding and `check_warm_10k` went from 220 ms to 1.4 s. A cached type must serialize the same fields every time; the cache's test now round-trips a `Diagnostic` with and without `data`. Look at the cache hit/miss line of `--timings` first when a warm run slows.

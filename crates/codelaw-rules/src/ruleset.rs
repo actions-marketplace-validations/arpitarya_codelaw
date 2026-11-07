@@ -4,7 +4,7 @@
 use crate::LoadError;
 use crate::engine_rules::engine_rule;
 use crate::search::PackSearch;
-use crate::pack::{ExtendsSpec, RulePack, first_party_npm, first_party_pypi, load_pack_from, load_rules_dir};
+use crate::pack::{ExtendsSpec, RulePack, first_party_npm, first_party_pypi, load_pack_cached, load_rules_dir};
 use crate::rule::{RESERVED_NAMESPACES, RuleFile, Stability};
 use codelaw_cache::{Key, KeyBuilder};
 use codelaw_config::{Config, Layer, PresetScope, RuleConfig, RuleSetting};
@@ -189,9 +189,8 @@ impl RuleSet {
             };
             let pack = match loaded_packs.iter().find(|(d, _)| *d == dir) {
                 Some((_, p)) => p.clone(),
-                None => match load_pack_from(&dir, first_party_origin) {
+                None => match load_pack_cached(&dir, first_party_origin) {
                     Ok(p) => {
-                        let p = Arc::new(p);
                         key.push(p.label());
                         key.push(p.data_hash.0);
                         loaded_packs.push((dir.clone(), p.clone()));
@@ -231,12 +230,14 @@ impl RuleSet {
                 let preview_blocked = rule.stability == Stability::Preview && !config.preview();
                 // A `graph/` rule two first-party packs ship is one rule over
                 // both packs' languages (SR-RULE-PACKS decision 2).
+                // Shared with the pack, not copied (W-172), unless merged.
                 let mut rule = rule.clone();
                 if let Some(e) = entry
                     && rule.namespace() == "graph"
                     && pack.first_party
                     && matches!(&e.source, RuleSource::Pack { first_party: true, .. })
                 {
+                    let rule = Arc::make_mut(&mut rule);
                     let mut languages = e.rule.languages.clone();
                     languages.extend(rule.languages.iter().filter(|l| !e.rule.languages.contains(l)));
                     let mut examples = e.rule.examples.clone();
@@ -250,7 +251,7 @@ impl RuleSet {
                 merged.insert(
                     rule.id.clone(),
                     LoadedRule {
-                        rule: Arc::new(rule.clone()),
+                        rule,
                         source: source.clone(),
                         default: None,
                         enabled_by: None,
