@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended value is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the feature's keywords within two edits are choices, nearest first; a value with none near is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/media-feature-name-value-no-unknown` |
@@ -130,7 +130,7 @@ codelaw config --print --for <file>                           # the resolved set
 #### Don't
 
 ```css
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -151,7 +151,7 @@ codelaw config --print --for <file>                           # the resolved set
 #### Don't
 
 ```scss
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }

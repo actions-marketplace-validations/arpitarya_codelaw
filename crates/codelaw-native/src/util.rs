@@ -318,3 +318,10 @@ pub fn duplicate_key_edits(first: (Node<'_>, &str), later: (Node<'_>, &str), las
     }
     crate::choice_edits(vec![crate::choice("keep last", last_wins, vec![remove(first.0)]), crate::choice("keep first", false, vec![remove(later.0)])])
 }
+
+/// One choice per name of `known` within two edits of `name`, each
+/// replacing `start..end` with it, nearest first (the default).
+pub fn near_choices<'k>(known: impl IntoIterator<Item = &'k String>, name: &str, start: usize, end: usize) -> Vec<TextEdit> {
+    let names = nearest(&name.to_ascii_lowercase(), known.into_iter().map(String::as_str), 2);
+    name_choices(&names, start, end, &|c| c.to_owned())
+}

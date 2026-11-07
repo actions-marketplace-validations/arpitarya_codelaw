@@ -2,9 +2,9 @@
 id: css/no-invalid-position-declaration
 title: "Declarations sit inside rules"
 languages: [css, scss]
-fix: manual
-fix_reason: "the selector it was meant for is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule"
+fix_exception: restructure
 stability: stable
 ported_from: [stylelint/no-invalid-position-declaration]
 since: 0.1.0
@@ -30,6 +30,17 @@ native: css/no-invalid-position-declaration
 
 ```css
 color: red;
+a {
+  color: blue;
+}
+```
+
+#### Fixed
+
+```css
+a {
+  color: blue;
+}
 ```
 
 #### Do
@@ -45,6 +56,17 @@ a {
 
 ```scss
 color: red;
+a {
+  color: blue;
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  color: blue;
+}
 ```
 
 #### Do

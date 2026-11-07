@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended value is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the property's keywords within two edits are choices, nearest first; a value with none near is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/declaration-property-value-no-unknown`, `stylelint-scss/declaration-property-value-no-unknown` |
@@ -133,7 +133,7 @@ codelaw config --print --for <file>                             # the resolved s
 
 ```css
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -151,7 +151,7 @@ a {
 
 ```scss
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 

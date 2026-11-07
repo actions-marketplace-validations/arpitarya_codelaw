@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended parent selector is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/nesting-selector-no-missing-scoping-root` |
@@ -135,6 +135,14 @@ codelaw config --print --for <file>                                # the resolve
 }
 ```
 
+#### Fixed
+
+```css
+.item {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -150,6 +158,14 @@ codelaw config --print --for <file>                                # the resolve
 
 ```scss
 & .item {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+.item {
   color: red;
 }
 ```

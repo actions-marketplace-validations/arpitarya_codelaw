@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the selector it was meant for is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/no-invalid-position-declaration` |
@@ -131,6 +131,17 @@ codelaw config --print --for <file>                       # the resolved setting
 
 ```css
 color: red;
+a {
+  color: blue;
+}
+```
+
+#### Fixed
+
+```css
+a {
+  color: blue;
+}
 ```
 
 #### Do
@@ -146,6 +157,17 @@ a {
 
 ```scss
 color: red;
+a {
+  color: blue;
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  color: blue;
+}
 ```
 
 #### Do

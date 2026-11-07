@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignore`, `ignoreTypes` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended element is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/selector-type-no-unknown` |
@@ -194,6 +194,14 @@ tabel {
 }
 ```
 
+#### Fixed
+
+```css
+label {
+  border-collapse: collapse;
+}
+```
+
 #### Do
 
 ```css
@@ -207,6 +215,14 @@ table {
 
 ```scss
 tabel {
+  border-collapse: collapse;
+}
+```
+
+#### Fixed
+
+```scss
+label {
   border-collapse: collapse;
 }
 ```

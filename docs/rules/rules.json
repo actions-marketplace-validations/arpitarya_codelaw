@@ -533,8 +533,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended annotation is the author's call",
+   "fix": "suggest",
+   "fix_reason": "an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -636,8 +636,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to remove or move the declaration is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -685,8 +685,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -698,14 +698,14 @@
     }
    ],
    "options": {},
-   "dont": "font-display: quick;",
+   "dont": "font-display: swp;",
    "do": "font-display: swap;",
    "fix_steps": [
     "Replace the value with one the descriptor accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: quick;\n}",
+    "dont": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: swp;\n}",
     "do": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: swap;\n}"
    },
    "ported_from": [
@@ -833,8 +833,8 @@
    "languages": [
     "css"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended at-rule is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -1796,8 +1796,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win can't be known from the code",
+   "fix": "auto",
+   "fix_reason": "the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -2297,8 +2297,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the property's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -2310,14 +2310,14 @@
     }
    ],
    "options": {},
-   "dont": "position: centre;",
+   "dont": "position: relativ;",
    "do": "position: relative;",
    "fix_steps": [
     "Replace the value with one the property accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "a {\n  position: centre;\n}",
+    "dont": "a {\n  position: relativ;\n}",
     "do": "a {\n  position: relative;\n}"
    },
    "ported_from": [
@@ -3647,8 +3647,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended feature is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -3847,8 +3847,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the feature's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -3860,14 +3860,14 @@
     }
    ],
    "options": {},
-   "dont": "@media (orientation: sideways) {",
+   "dont": "@media (orientation: portait) {",
    "do": "@media (orientation: portrait) {",
    "fix_steps": [
     "Use a value the media feature accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "@media (orientation: sideways) {\n  a {\n    color: red;\n  }\n}",
+    "dont": "@media (orientation: portait) {\n  a {\n    color: red;\n  }\n}",
     "do": "@media (orientation: portrait) {\n  a {\n    color: red;\n  }\n}"
    },
    "ported_from": [
@@ -3994,8 +3994,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the media features that describe the device are the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4013,14 +4013,14 @@
      "description": "media types to accept"
     }
    },
-   "dont": "@media tv {",
+   "dont": "@media tv, print {",
    "do": "@media screen {",
    "fix_steps": [
     "Replace the media type with `screen`, `print` or `all`, adding media features that describe the device."
    ],
    "example": {
     "language": "css",
-    "dont": "@media tv {\n  a {\n    color: red;\n  }\n}",
+    "dont": "@media tv, print {\n  a {\n    color: red;\n  }\n}",
     "do": "@media screen {\n  a {\n    color: red;\n  }\n}"
    },
    "ported_from": [
@@ -4097,8 +4097,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended parent selector is the author's call",
+   "fix": "suggest",
+   "fix_reason": "a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4388,8 +4388,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector or layer that should win instead is a design call",
+   "fix": "suggest",
+   "fix_reason": "`!important` goes; the declaration may then lose to another, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -4437,8 +4437,8 @@
    "languages": [
     "css"
    ],
-   "fix": "manual",
-   "fix_reason": "turning it into a comment changes what applies",
+   "fix": "auto",
+   "fix_reason": "a `//` line read as a declaration is dropped by the browser, as a comment is, so it becomes `/* … */`; a `//` that breaks a rule is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4538,8 +4538,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector it was meant for is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4551,14 +4551,14 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "a {",
+   "dont": "color: blue;",
+   "do": null,
    "fix_steps": [
     "Move the declaration into the style rule it belongs to."
    ],
    "example": {
     "language": "css",
-    "dont": "color: red;",
+    "dont": "color: red;\na {\n  color: blue;\n}",
     "do": "a {\n  color: red;\n}"
    },
    "ported_from": [
@@ -5260,8 +5260,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended position is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -5273,14 +5273,14 @@
     }
    ],
    "options": {},
-   "dont": "li:nth-child(0) {",
+   "dont": "li:nth-child(0),",
    "do": "li:nth-child(1) {",
    "fix_steps": [
     "Use the position that was meant; the first element is `1`."
    ],
    "example": {
     "language": "css",
-    "dont": "li:nth-child(0) {\n  color: red;\n}",
+    "dont": "li:nth-child(0),\nli.first {\n  color: red;\n}",
     "do": "li:nth-child(1) {\n  color: red;\n}"
    },
    "ported_from": [
@@ -6609,8 +6609,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended pseudo-class is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -6807,8 +6807,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended pseudo-element is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -6902,8 +6902,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended element is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",

@@ -2,9 +2,9 @@
 id: css/annotation-no-unknown
 title: "No unknown `!` annotations"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended annotation is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual"
+fix_exception: value
 stability: stable
 options:
   ignoreAnnotations: { type: "string[]", default: [], description: "annotations to accept; `/regex/` for a pattern" }

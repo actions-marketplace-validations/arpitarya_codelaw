@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended position is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/selector-anb-no-unmatchable` |
@@ -130,7 +130,16 @@ codelaw config --print --for <file>                   # the resolved setting, an
 #### Don't
 
 ```css
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+#### Fixed
+
+```css
+li.first {
   color: red;
 }
 ```
@@ -147,7 +156,16 @@ li:nth-child(1) {
 #### Don't
 
 ```scss
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+li.first {
   color: red;
 }
 ```

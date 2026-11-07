@@ -39,7 +39,9 @@ css_rule!(AtRuleDescriptorNoUnknown, "css/at-rule-descriptor-no-unknown", |sheet
         if lower.starts_with("--") || !crate::css_syntax::standard_property(name) || allowed.contains(&lower) {
             continue;
         }
-        out.push(finding(n.name.0, n.name.1, format!("`{name}` is not a descriptor of `@{at}`")));
+        let mut choices: Vec<codelaw_core::FixChoice> = crate::util::nearest(&lower, allowed.iter().map(String::as_str), 2).into_iter().enumerate().map(|(k, d)| crate::choice(d, k == 0, vec![codelaw_core::TextEdit::new(n.name.0, n.name.1, d)])).collect();
+        choices.push(crate::choice("delete", choices.is_empty(), vec![crate::util::remove_css_statement(src, n.start, n.end)]));
+        out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{name}` is not a descriptor of `@{at}`"), crate::choice_edits(choices)));
     }
 });
 
@@ -106,7 +108,8 @@ css_rule!(AtRuleDescriptorValueNoUnknown, "css/at-rule-descriptor-value-no-unkno
         }
         let kw = first.text(src).to_ascii_lowercase();
         if !allowed.iter().any(|a| a.as_str() == Some(kw.as_str())) {
-            out.push(finding(first.start, first.end, format!("`{}` is not a value of `{name}` in `@{at}`", first.text(src))));
+            let names: Vec<String> = allowed.iter().filter_map(|a| a.as_str().map(str::to_owned)).collect();
+            out.push(crate::css_syntax::fixed(first.start, first.end, format!("`{}` is not a value of `{name}` in `@{at}`", first.text(src)), crate::util::near_choices(&names, &kw, first.start, first.end)));
         }
     }
 });
@@ -160,7 +163,7 @@ css_rule!(AtRuleNoUnknown, "css/at-rule-no-unknown", |sheet, src, ctx, out| {
         if raw.is_empty() || raw.eq_ignore_ascii_case("charset") || known.contains(&sheet.at_name(i, src)) || matches_any(&ignore, raw) {
             continue;
         }
-        out.push(finding(n.start, n.name.1, format!("Unknown at-rule `@{raw}`")));
+        out.push(crate::css_syntax::fixed(n.start, n.name.1, format!("Unknown at-rule `@{raw}`"), crate::util::near_choices(&known, raw, n.name.0, n.name.1)));
     }
 });
 

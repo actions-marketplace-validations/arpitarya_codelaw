@@ -2,9 +2,9 @@
 id: css/declaration-block-no-duplicate-custom-properties
 title: "No custom property declared twice in one block"
 languages: [css, scss]
-fix: manual
-fix_reason: "which value should win can't be known from the code"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/declaration-block-no-duplicate-custom-properties]
 since: 0.1.0

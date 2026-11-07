@@ -637,7 +637,7 @@ Ported with stylelint-config-standard's setting, `percentage`; the `number` sett
 ## `css/annotation-no-unknown` — No unknown `!` annotations
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended annotation is the author's call)
+- **Fix:** `suggest` (an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/annotation-no-unknown.md
 
@@ -774,7 +774,7 @@ Every at-rule is in the `list` option. With no option set, the rule does nothing
 ## `css/at-rule-descriptor-no-unknown` — No unknown descriptors inside at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (whether to remove or move the declaration is the author's call)
+- **Fix:** `suggest` (the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-descriptor-no-unknown.md
 
@@ -835,7 +835,7 @@ Inside `@font-face`, `@counter-style`, `@property`, `@font-palette-values`, `@pa
 ## `css/at-rule-descriptor-value-no-unknown` — No unknown keyword values for at-rule descriptors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-descriptor-value-no-unknown.md
 
@@ -859,7 +859,7 @@ Descriptors that take a fixed set of keywords — `font-display`, `system`, `inh
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -881,7 +881,7 @@ Descriptors that take a fixed set of keywords — `font-display`, `system`, `inh
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -1044,7 +1044,7 @@ Only `@nest` has a fix (drop the keyword); `@viewport` and `@document` are repor
 ## `css/at-rule-no-unknown` — No unknown at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS
-- **Fix:** `manual` (the intended at-rule is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-no-unknown.md
 
@@ -2231,7 +2231,7 @@ Custom property names (after `--`), in declarations, `var()` and `@property`, ma
 ## `css/declaration-block-no-duplicate-custom-properties` — No custom property declared twice in one block
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `auto` (the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-block-no-duplicate-custom-properties.md
 
@@ -2875,7 +2875,7 @@ a {
 ## `css/declaration-property-value-no-unknown` — Keyword-valued properties use a known keyword
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the property's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-property-value-no-unknown.md
 
@@ -2897,7 +2897,7 @@ A property whose value is one keyword from a fixed set — `position`, `display`
 
 ```css
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -2915,7 +2915,7 @@ a {
 
 ```scss
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -5215,7 +5215,7 @@ No media feature named in the `list` option is used. With no option set, the rul
 ## `css/media-feature-name-no-unknown` — No unknown media features
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended feature is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-feature-name-no-unknown.md
 
@@ -5504,7 +5504,7 @@ A media feature named in `list` takes only its listed values: `{ "min-width": ["
 ## `css/media-feature-name-value-no-unknown` — Media features have valid values
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the feature's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-feature-name-value-no-unknown.md
 
@@ -5525,7 +5525,7 @@ A media feature with a fixed set of values (`orientation`, `hover`, `prefers-col
 ##### Don't
 
 ```css
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -5546,7 +5546,7 @@ A media feature with a fixed set of values (`orientation`, `hover`, `prefers-col
 ##### Don't
 
 ```scss
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -5675,7 +5675,7 @@ Every query in `@media` and `@custom-media` is grammatical under Media Queries l
 ## `css/media-type-no-deprecated` — No deprecated media types
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the media features that describe the device are the author's call)
+- **Fix:** `auto` (auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-type-no-deprecated.md
 
@@ -5702,7 +5702,17 @@ Media queries use no media type the specifications deprecated: `tv`, `handheld`,
 ##### Don't
 
 ```css
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed
+
+```css
+@media print {
   a {
     color: red;
   }
@@ -5723,7 +5733,17 @@ Media queries use no media type the specifications deprecated: `tv`, `handheld`,
 ##### Don't
 
 ```scss
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed
+
+```scss
+@media print {
   a {
     color: red;
   }
@@ -5806,7 +5826,7 @@ a {
 ## `css/nesting-selector-no-missing-scoping-root` — Nesting selectors have a parent
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended parent selector is the author's call)
+- **Fix:** `suggest` (a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/nesting-selector-no-missing-scoping-root.md
 
@@ -5832,6 +5852,14 @@ The nesting selector `&` is used only inside a style rule (or under `@scope`), w
 }
 ```
 
+##### Fixed
+
+```css
+.item {
+  color: red;
+}
+```
+
 ##### Do
 
 ```css
@@ -5847,6 +5875,14 @@ The nesting selector `&` is used only inside a style rule (or under `@scope`), w
 
 ```scss
 & .item {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+.item {
   color: red;
 }
 ```
@@ -6148,7 +6184,7 @@ a {
 ## `css/no-important` — No `!important`
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the selector or layer that should win instead is a design call)
+- **Fix:** `suggest` (`!important` goes; the declaration may then lose to another, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/conventions` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-important.md
 
@@ -6176,6 +6212,14 @@ a {
 }
 ```
 
+##### Fixed
+
+```css
+a {
+  color: red;
+}
+```
+
 ##### Do
 
 ```css
@@ -6193,6 +6237,14 @@ a {
 }
 ```
 
+##### Fixed
+
+```scss
+a {
+  color: red;
+}
+```
+
 ##### Do
 
 ```scss
@@ -6204,7 +6256,7 @@ a.highlight {
 ## `css/no-invalid-double-slash-comments` — No `//` comments
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS
-- **Fix:** `manual` (turning it into a comment changes what applies)
+- **Fix:** `auto` (a `//` line read as a declaration is dropped by the browser, as a comment is, so it becomes `/* … */`; a `//` that breaks a rule is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-invalid-double-slash-comments.md
 
@@ -6290,7 +6342,7 @@ a {
 ## `css/no-invalid-position-declaration` — Declarations sit inside rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the selector it was meant for is the author's call)
+- **Fix:** `suggest` (the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-invalid-position-declaration.md
 
@@ -6312,6 +6364,17 @@ A declaration sits inside a style rule, in an at-rule nested inside one, or in a
 
 ```css
 color: red;
+a {
+  color: blue;
+}
+```
+
+##### Fixed
+
+```css
+a {
+  color: blue;
+}
 ```
 
 ##### Do
@@ -6327,6 +6390,17 @@ a {
 
 ```scss
 color: red;
+a {
+  color: blue;
+}
+```
+
+##### Fixed
+
+```scss
+a {
+  color: blue;
+}
 ```
 
 ##### Do
@@ -7206,7 +7280,7 @@ a {
 ## `css/selector-anb-no-unmatchable` — No An+B selector that matches nothing
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended position is the author's call)
+- **Fix:** `suggest` (the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-anb-no-unmatchable.md
 
@@ -7227,7 +7301,16 @@ a {
 ##### Don't
 
 ```css
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+##### Fixed
+
+```css
+li.first {
   color: red;
 }
 ```
@@ -7244,7 +7327,16 @@ li:nth-child(1) {
 ##### Don't
 
 ```scss
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+li.first {
   color: red;
 }
 ```
@@ -9010,7 +9102,7 @@ a:hover {
 ## `css/selector-pseudo-class-no-unknown` — No unknown pseudo-classes
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended pseudo-class is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-pseudo-class-no-unknown.md
 
@@ -9263,7 +9355,7 @@ a::before {
 ## `css/selector-pseudo-element-no-unknown` — No unknown pseudo-elements
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended pseudo-element is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-pseudo-element-no-unknown.md
 
@@ -9374,7 +9466,7 @@ a {
 ## `css/selector-type-no-unknown` — No unknown type selectors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended element is the author's call)
+- **Fix:** `suggest` (the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-type-no-unknown.md
 
@@ -9407,6 +9499,14 @@ tabel {
 }
 ```
 
+##### Fixed
+
+```css
+label {
+  border-collapse: collapse;
+}
+```
+
 ##### Do
 
 ```css
@@ -9420,6 +9520,14 @@ table {
 
 ```scss
 tabel {
+  border-collapse: collapse;
+}
+```
+
+##### Fixed
+
+```scss
+label {
   border-collapse: collapse;
 }
 ```

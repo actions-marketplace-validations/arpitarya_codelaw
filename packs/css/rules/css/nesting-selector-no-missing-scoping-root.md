@@ -2,9 +2,9 @@
 id: css/nesting-selector-no-missing-scoping-root
 title: "Nesting selectors have a parent"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended parent selector is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual"
+fix_exception: restructure
 stability: stable
 ported_from: [stylelint/nesting-selector-no-missing-scoping-root]
 since: 0.1.0
@@ -34,6 +34,14 @@ native: css/nesting-selector-no-missing-scoping-root
 }
 ```
 
+#### Fixed
+
+```css
+.item {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -49,6 +57,14 @@ native: css/nesting-selector-no-missing-scoping-root
 
 ```scss
 & .item {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+.item {
   color: red;
 }
 ```

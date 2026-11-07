@@ -73,7 +73,8 @@ css_rule!(AnnotationNoUnknown, "css/annotation-no-unknown", |sheet, src, ctx, ou
         // Sass's own flags: `!default`, `!global`, `!optional`.
         let sass = sheet.scss && matches!(word.to_ascii_lowercase().as_str(), "default" | "global" | "optional");
         if !word.eq_ignore_ascii_case("important") && !sass && !matches_any(&ignore, word) {
-            out.push(finding(s, e, format!("Unknown annotation `!{word}`; the only one CSS has is `!important`")));
+            let edits = if crate::util::edit_distance(&word.to_ascii_lowercase(), "important") <= 2 { vec![codelaw_core::TextEdit::new(s, e, "!important")] } else { Vec::new() };
+            out.push(crate::css_syntax::fixed(s, e, format!("Unknown annotation `!{word}`; the only one CSS has is `!important`"), edits));
         }
     }
 });
@@ -142,12 +143,18 @@ css_rule!(CustomPropertyNoMissingVarFunction, "css/custom-property-no-missing-va
 
 css_rule!(DeclarationBlockNoDuplicateCustomProperties, "css/declaration-block-no-duplicate-custom-properties", |sheet, src, ctx, out| {
     for block in blocks(sheet) {
-        let mut seen = BTreeSet::new();
+        let mut seen: BTreeMap<&str, usize> = BTreeMap::new();
         for i in block {
             let p = prop(sheet, i, src);
-            if p.starts_with("--") && !seen.insert(p) {
+            if !p.starts_with("--") {
+                continue;
+            }
+            if let Some(first) = seen.insert(p, i) {
+                // The earlier value is never used, unless the later one reads it.
                 let r = sheet.nodes[i].name;
-                out.push(finding(r.0, r.1, format!("`{p}` is declared twice in this block; the earlier value is never used")));
+                let later = text(src, sheet.nodes[i].params);
+                let edits = if later.contains(p) { Vec::new() } else { vec![crate::util::remove_css_statement(src, sheet.nodes[first].start, sheet.nodes[first].end)] };
+                out.push(crate::css_syntax::fixed(r.0, r.1, format!("`{p}` is declared twice in this block; the earlier value is never used"), edits));
             }
         }
     }
@@ -316,7 +323,8 @@ css_rule!(DeclarationPropertyValueNoUnknown, "css/declaration-property-value-no-
         if wide.contains(&lower) || allowed.iter().any(|a| a.as_str().is_some_and(|a| a.eq_ignore_ascii_case(&lower))) {
             continue;
         }
-        out.push(finding(r.0, r.1, format!("`{v}` is not a value of `{p}`")));
+        let names: Vec<String> = allowed.iter().filter_map(|a| a.as_str().map(str::to_owned)).collect();
+        out.push(crate::css_syntax::fixed(r.0, r.1, format!("`{v}` is not a value of `{p}`"), crate::util::near_choices(&names, &lower, r.0, r.1)));
     }
 });
 
@@ -531,7 +539,7 @@ css_rule!(NoInvalidPositionDeclaration, "css/no-invalid-position-declaration", |
         };
         if !ok {
             let n = &sheet.nodes[i];
-            out.push(finding(n.start, n.end, "A declaration here applies to nothing; put it inside a style rule"));
+            out.push(crate::css_syntax::fixed(n.start, n.end, "A declaration here applies to nothing; put it inside a style rule", vec![crate::util::remove_css_statement(src, n.start, n.end)]));
         }
     }
 });
@@ -597,7 +605,8 @@ css_rule!(NoImportant, "css/no-important", |sheet, src, ctx, out| {
         if let Some((s, e)) = sheet.nodes[i].important
             && src[s + 1..e].trim().eq_ignore_ascii_case("important")
         {
-            out.push(finding(s, e, "`!important` overrides the cascade; raise the selector's specificity or use a cascade layer instead"));
+            let before = src[..s].trim_end_matches([' ', '\t']).len();
+            out.push(crate::css_syntax::fixed(s, e, "`!important` overrides the cascade; raise the selector's specificity or use a cascade layer instead", vec![codelaw_core::TextEdit::delete(before, e)]));
         }
     }
 });

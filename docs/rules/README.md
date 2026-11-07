@@ -1049,13 +1049,13 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`css/alpha-value-notation`](css/alpha-value-notation.md) | Alpha values are percentages | `auto` | `exceptProperties` | `css/standard` |
-| [`css/annotation-no-unknown`](css/annotation-no-unknown.md) | No unknown `!` annotations | `manual` | `ignoreAnnotations` | `css/recommended` |
+| [`css/annotation-no-unknown`](css/annotation-no-unknown.md) | No unknown `!` annotations | `suggest` | `ignoreAnnotations` | `css/recommended` |
 | [`css/at-rule-allowed-list`](css/at-rule-allowed-list.md) | Only at-rules the project allows | `manual` | `list` | *[rules] only* |
-| [`css/at-rule-descriptor-no-unknown`](css/at-rule-descriptor-no-unknown.md) | No unknown descriptors inside at-rules | `manual` | — | `css/recommended` |
-| [`css/at-rule-descriptor-value-no-unknown`](css/at-rule-descriptor-value-no-unknown.md) | No unknown keyword values for at-rule descriptors | `manual` | — | `css/recommended` |
+| [`css/at-rule-descriptor-no-unknown`](css/at-rule-descriptor-no-unknown.md) | No unknown descriptors inside at-rules | `suggest` | — | `css/recommended` |
+| [`css/at-rule-descriptor-value-no-unknown`](css/at-rule-descriptor-value-no-unknown.md) | No unknown keyword values for at-rule descriptors | `suggest` | — | `css/recommended` |
 | [`css/at-rule-disallowed-list`](css/at-rule-disallowed-list.md) | No at-rule the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/at-rule-no-deprecated`](css/at-rule-no-deprecated.md) | No deprecated at-rules | `auto` | `ignoreAtRules` | `css/recommended` |
-| [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `manual` | `ignoreAtRules` | `css/recommended` |
+| [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `auto` | `ignoreAtRules` | `css/standard` |
 | [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `manual` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-property-required-list`](css/at-rule-property-required-list.md) | At-rules hold the descriptors the project requires | `manual` | `list` | *[rules] only* |
@@ -1075,7 +1075,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/custom-media-pattern`](css/custom-media-pattern.md) | Custom media names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/custom-property-no-missing-var-function`](css/custom-property-no-missing-var-function.md) | Custom properties are read with `var()` | `suggest` | — | `css/recommended` |
 | [`css/custom-property-pattern`](css/custom-property-pattern.md) | Custom property names are kebab-case | `manual` | `pattern` | `css/standard` |
-| [`css/declaration-block-no-duplicate-custom-properties`](css/declaration-block-no-duplicate-custom-properties.md) | No custom property declared twice in one block | `manual` | — | `css/recommended` |
+| [`css/declaration-block-no-duplicate-custom-properties`](css/declaration-block-no-duplicate-custom-properties.md) | No custom property declared twice in one block | `auto` | — | `css/recommended` |
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
 | [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
 | [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `manual` | — | `css/recommended` |
@@ -1085,7 +1085,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/declaration-property-value-allowed-list`](css/declaration-property-value-allowed-list.md) | Only values the project allows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-value-disallowed-list`](css/declaration-property-value-disallowed-list.md) | No value the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-value-keyword-no-deprecated`](css/declaration-property-value-keyword-no-deprecated.md) | No deprecated keywords in property values | `suggest` | `ignoreKeywords` | `css/recommended` |
-| [`css/declaration-property-value-no-unknown`](css/declaration-property-value-no-unknown.md) | Keyword-valued properties use a known keyword | `manual` | — | `css/recommended` |
+| [`css/declaration-property-value-no-unknown`](css/declaration-property-value-no-unknown.md) | Keyword-valued properties use a known keyword | `suggest` | — | `css/recommended` |
 | [`css/display-notation`](css/display-notation.md) | `display` in its short form | `auto` | — | *[rules] only* |
 | [`css/font-family-name-quotes`](css/font-family-name-quotes.md) | Font family names are quoted where they should be | `auto` | — | *[rules] only* |
 | [`css/font-family-no-duplicate-names`](css/font-family-no-duplicate-names.md) | No font family listed twice | `auto` | — | `css/recommended` |
@@ -1113,25 +1113,25 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/max-lines`](css/max-lines.md) | A stylesheet stays under a line limit | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `css/size` |
 | [`css/media-feature-name-allowed-list`](css/media-feature-name-allowed-list.md) | Only media features the project allows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-disallowed-list`](css/media-feature-name-disallowed-list.md) | No media feature the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/media-feature-name-no-unknown`](css/media-feature-name-no-unknown.md) | No unknown media features | `manual` | `ignoreMediaFeatureNames` | `css/recommended` |
+| [`css/media-feature-name-no-unknown`](css/media-feature-name-no-unknown.md) | No unknown media features | `suggest` | `ignoreMediaFeatureNames` | `css/recommended` |
 | [`css/media-feature-name-no-vendor-prefix`](css/media-feature-name-no-vendor-prefix.md) | No vendor-prefixed media features | `manual` | — | `css/standard` |
 | [`css/media-feature-name-unit-allowed-list`](css/media-feature-name-unit-allowed-list.md) | Media features use the units the project allows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-value-allowed-list`](css/media-feature-name-value-allowed-list.md) | Media features use the values the project allows | `manual` | `list` | *[rules] only* |
-| [`css/media-feature-name-value-no-unknown`](css/media-feature-name-value-no-unknown.md) | Media features have valid values | `manual` | — | `css/recommended` |
+| [`css/media-feature-name-value-no-unknown`](css/media-feature-name-value-no-unknown.md) | Media features have valid values | `suggest` | — | `css/recommended` |
 | [`css/media-feature-range-notation`](css/media-feature-range-notation.md) | Range syntax for media features | `auto` | — | `css/standard` |
 | [`css/media-query-no-invalid`](css/media-query-no-invalid.md) | Media queries follow the grammar | `manual` | `ignoreFunctions` | `css/recommended` |
-| [`css/media-type-no-deprecated`](css/media-type-no-deprecated.md) | No deprecated media types | `manual` | `ignoreMediaTypes` | `css/recommended` |
+| [`css/media-type-no-deprecated`](css/media-type-no-deprecated.md) | No deprecated media types | `auto` | `ignoreMediaTypes` | `css/recommended` |
 | [`css/named-grid-areas-no-invalid`](css/named-grid-areas-no-invalid.md) | Named grid areas are rectangles | `manual` | — | `css/recommended` |
-| [`css/nesting-selector-no-missing-scoping-root`](css/nesting-selector-no-missing-scoping-root.md) | Nesting selectors have a parent | `manual` | — | `css/recommended` |
+| [`css/nesting-selector-no-missing-scoping-root`](css/nesting-selector-no-missing-scoping-root.md) | Nesting selectors have a parent | `suggest` | — | `css/recommended` |
 | [`css/no-descending-specificity`](css/no-descending-specificity.md) | Less specific selectors come first | `manual` | `ignore` | `css/recommended` |
 | [`css/no-duplicate-at-import-rules`](css/no-duplicate-at-import-rules.md) | No stylesheet imported twice | `suggest` | — | `css/recommended` |
 | [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `manual` | — | `css/recommended` |
 | [`css/no-empty-block`](css/no-empty-block.md) | No empty blocks | `auto` | — | `css/recommended` |
 | [`css/no-empty-source`](css/no-empty-source.md) | No empty stylesheets | `manual` | — | `css/recommended` |
-| [`css/no-important`](css/no-important.md) | No `!important` | `manual` | — | `css/conventions` |
-| [`css/no-invalid-double-slash-comments`](css/no-invalid-double-slash-comments.md) | No `//` comments | `manual` | — | `css/recommended` |
+| [`css/no-important`](css/no-important.md) | No `!important` | `suggest` | — | `css/conventions` |
+| [`css/no-invalid-double-slash-comments`](css/no-invalid-double-slash-comments.md) | No `//` comments | `auto` | — | `css/recommended` |
 | [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `manual` | `ignoreAtRules` | `css/recommended` |
-| [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `manual` | — | `css/recommended` |
+| [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `suggest` | — | `css/recommended` |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
 | [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-custom-media`](css/no-unknown-custom-media.md) | No custom media that isn't defined | `manual` | — | *[rules] only* |
@@ -1146,7 +1146,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/relative-selector-nesting-notation`](css/relative-selector-nesting-notation.md) | Nested relative selectors start with `&` | `auto` | — | *[rules] only* |
 | [`css/rule-nesting-at-rule-required-list`](css/rule-nesting-at-rule-required-list.md) | Nested rules sit inside the at-rules the project requires | `manual` | `list` | *[rules] only* |
 | [`css/rule-selector-property-disallowed-list`](css/rule-selector-property-disallowed-list.md) | No property the project disallows for a selector | `manual` | `list` | *[rules] only* |
-| [`css/selector-anb-no-unmatchable`](css/selector-anb-no-unmatchable.md) | No An+B selector that matches nothing | `manual` | — | `css/recommended` |
+| [`css/selector-anb-no-unmatchable`](css/selector-anb-no-unmatchable.md) | No An+B selector that matches nothing | `suggest` | — | `css/recommended` |
 | [`css/selector-attribute-name-disallowed-list`](css/selector-attribute-name-disallowed-list.md) | No attribute selector the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/selector-attribute-operator-allowed-list`](css/selector-attribute-operator-allowed-list.md) | Only attribute operators the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-attribute-operator-disallowed-list`](css/selector-attribute-operator-disallowed-list.md) | No attribute operator the project disallows | `manual` | `list` | *[rules] only* |
@@ -1174,13 +1174,13 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/selector-not-notation`](css/selector-not-notation.md) | One `:not()` with a list | `suggest` | — | `css/standard` |
 | [`css/selector-pseudo-class-allowed-list`](css/selector-pseudo-class-allowed-list.md) | Only pseudo-classs the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-class-disallowed-list`](css/selector-pseudo-class-disallowed-list.md) | No pseudo-class the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/selector-pseudo-class-no-unknown`](css/selector-pseudo-class-no-unknown.md) | No unknown pseudo-classes | `manual` | `ignorePseudoClasses` | `css/recommended` |
+| [`css/selector-pseudo-class-no-unknown`](css/selector-pseudo-class-no-unknown.md) | No unknown pseudo-classes | `suggest` | `ignorePseudoClasses` | `css/recommended` |
 | [`css/selector-pseudo-element-allowed-list`](css/selector-pseudo-element-allowed-list.md) | Only pseudo-elements the project allows | `manual` | `list` | *[rules] only* |
 | [`css/selector-pseudo-element-colon-notation`](css/selector-pseudo-element-colon-notation.md) | Pseudo-elements with `::` | `auto` | — | `css/standard` |
 | [`css/selector-pseudo-element-disallowed-list`](css/selector-pseudo-element-disallowed-list.md) | No pseudo-element the project disallows | `manual` | `list` | *[rules] only* |
-| [`css/selector-pseudo-element-no-unknown`](css/selector-pseudo-element-no-unknown.md) | No unknown pseudo-elements | `manual` | `ignorePseudoElements` | `css/recommended` |
+| [`css/selector-pseudo-element-no-unknown`](css/selector-pseudo-element-no-unknown.md) | No unknown pseudo-elements | `suggest` | `ignorePseudoElements` | `css/recommended` |
 | [`css/selector-type-case`](css/selector-type-case.md) | Type selectors in lower case | `auto` | — | *[rules] only* |
-| [`css/selector-type-no-unknown`](css/selector-type-no-unknown.md) | No unknown type selectors | `manual` | `ignore`, `ignoreTypes` | `css/recommended` |
+| [`css/selector-type-no-unknown`](css/selector-type-no-unknown.md) | No unknown type selectors | `suggest` | `ignore`, `ignoreTypes` | `css/recommended` |
 | [`css/shorthand-property-no-redundant-values`](css/shorthand-property-no-redundant-values.md) | No repeated values in shorthands | `auto` | — | `css/standard` |
 | [`css/string-no-newline`](css/string-no-newline.md) | No line breaks inside selector strings | `manual` | `ignore` | `css/recommended` |
 | [`css/syntax-string-no-invalid`](css/syntax-string-no-invalid.md) | `@property` syntax strings are valid | `manual` | — | `css/recommended` |

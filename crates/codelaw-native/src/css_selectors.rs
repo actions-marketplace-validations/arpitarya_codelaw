@@ -153,7 +153,11 @@ css_rule!(NestingSelectorNoMissingScopingRoot, "css/nesting-selector-no-missing-
         let mut simples = Vec::new();
         all_simples(src, &list, &mut simples);
         for x in simples.iter().filter(|x| x.kind == SKind::Nesting) {
-            out.push(finding(x.start, x.end, "`&` has no parent rule to stand for here"));
+            // `& .item` at the top level is `.item`.
+            let rest = &src[x.end..];
+            let ws = rest.len() - rest.trim_start().len();
+            let edits = if ws > 0 && !rest.trim_start().starts_with(['{', ',']) { vec![TextEdit::delete(x.start, x.end + ws)] } else { Vec::new() };
+            out.push(crate::css_syntax::fixed(x.start, x.end, "`&` has no parent rule to stand for here", edits));
         }
     }
 });
@@ -192,7 +196,25 @@ css_rule!(SelectorAnbNoUnmatchable, "css/selector-anb-no-unmatchable", |sheet, s
             let Some((a, b)) = x.args else { continue };
             let end = find_of(src, a, b).map_or(b, |o| o - 2);
             if anb(&src[a..end]) == Some((0, 0)) {
-                out.push(finding(x.start, x.end, format!("`{}` matches no element: positions start at 1", &src[x.start..x.end])));
+                // The selector holding it matches nothing: it goes from its
+                // list, or with its rule when it is the only one.
+                let list = sheet.selectors(i, src);
+                let edits = match list.iter().position(|c| c.start <= x.start && x.end <= c.end) {
+                    Some(_) if list.len() == 1 => {
+                        let (s, e) = crate::util::whole_lines(src, n.start, n.end);
+                        vec![TextEdit::delete(s, e)]
+                    }
+                    Some(k) => {
+                        let (cs, ce) = (list[k].start, list[k].end);
+                        if k + 1 < list.len() {
+                            vec![TextEdit::delete(cs, list[k + 1].start)]
+                        } else {
+                            vec![TextEdit::delete(list[k - 1].end, ce)]
+                        }
+                    }
+                    None => Vec::new(),
+                };
+                out.push(crate::css_syntax::fixed(x.start, x.end, format!("`{}` matches no element: positions start at 1", &src[x.start..x.end]), edits));
             }
         }
     }
@@ -253,7 +275,7 @@ css_rule!(SelectorPseudoClassNoUnknown, "css/selector-pseudo-class-no-unknown", 
             }
             let prefixed = vendor_prefix(&name).is_some();
             if elements.contains(&name) && !prefixed {
-                out.push(finding(x.start, x.name.1, format!("`:{raw}` is a pseudo-element; write `::{raw}`")));
+                out.push(crate::css_syntax::fixed(x.start, x.name.1, format!("`:{raw}` is a pseudo-element; write `::{raw}`"), vec![TextEdit::insert(x.start, ":")]));
                 return;
             }
             if prefixed || classes.contains(&name) {
@@ -263,7 +285,7 @@ css_rule!(SelectorPseudoClassNoUnknown, "css/selector-pseudo-class-no-unknown", 
             if prev_element(c, x).is_some_and(|p| vendor_prefix(text(src, p.name)).is_some()) {
                 return;
             }
-            out.push(finding(x.start, x.name.1, format!("Unknown pseudo-class `:{raw}`")));
+            out.push(crate::css_syntax::fixed(x.start, x.name.1, format!("Unknown pseudo-class `:{raw}`"), crate::util::near_choices(&classes, raw, x.name.0, x.name.1)));
         });
     }
 });
@@ -277,7 +299,7 @@ css_rule!(SelectorPseudoElementNoUnknown, "css/selector-pseudo-element-no-unknow
         each_selector_simple(src, &list, &mut |_, x| {
             let raw = text(src, x.name);
             if x.kind == SKind::PseudoElement && vendor_prefix(raw).is_none() && !elements.contains(&raw.to_ascii_lowercase()) && !matches_any(&ignore, raw) {
-                out.push(finding(x.start, x.name.1, format!("Unknown pseudo-element `::{raw}`")));
+                out.push(crate::css_syntax::fixed(x.start, x.name.1, format!("Unknown pseudo-element `::{raw}`"), crate::util::near_choices(&elements, raw, x.name.0, x.name.1)));
             }
         });
     }
@@ -320,7 +342,8 @@ css_rule!(SelectorTypeNoUnknown, "css/selector-type-no-unknown", |sheet, src, ct
             if local.as_bytes()[0].is_ascii_digit() || lower == "from" || lower == "to" {
                 continue;
             }
-            out.push(finding(x.start, x.end, format!("Unknown type selector `{local}`")));
+            let edits = if ns.is_none() { crate::util::near_choices(&known, local, x.start, x.end) } else { Vec::new() };
+            out.push(crate::css_syntax::fixed(x.start, x.end, format!("Unknown type selector `{local}`"), edits));
         }
     }
 });

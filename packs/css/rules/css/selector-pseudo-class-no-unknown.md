@@ -2,9 +2,9 @@
 id: css/selector-pseudo-class-no-unknown
 title: "No unknown pseudo-classes"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended pseudo-class is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second"
+fix_exception: value
 stability: stable
 options:
   ignorePseudoClasses: { type: "string[]", default: [], description: "pseudo-classes to accept; `/regex/` for a pattern" }

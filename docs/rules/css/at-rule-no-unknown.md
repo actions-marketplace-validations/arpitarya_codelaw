@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAtRules` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended at-rule is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the known names within two edits are choices, nearest first; a name with none near is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/at-rule-no-unknown` |
