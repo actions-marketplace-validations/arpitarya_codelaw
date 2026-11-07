@@ -2,9 +2,9 @@
 id: scss/at-rule-no-unknown
 title: "No unknown at-rules (SCSS)"
 languages: [scss]
-fix: manual
-fix_reason: "the intended at-rule is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual"
+fix_exception: value
 stability: preview
 options:
   ignoreAtRules: { type: "string[]", default: [], description: "at-rules to accept, such as a framework's; `/regex/` for a pattern" }
@@ -33,6 +33,14 @@ native: scss/at-rule-no-unknown
 
 ```scss
 @mixn button {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+@mixin button {
   color: red;
 }
 ```

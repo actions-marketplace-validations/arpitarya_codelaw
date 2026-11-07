@@ -102643,7 +102643,7 @@ a {
 ## `scss/at-rule-no-unknown` — No unknown at-rules (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended at-rule is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/at-rule-no-unknown.md
 
@@ -102672,6 +102672,14 @@ Every at-rule is one CSS or Sass defines: `@mixin`, `@include`, `@use`, `@if`, `
 
 ```scss
 @mixn button {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+@mixin button {
   color: red;
 }
 ```
@@ -103300,7 +103308,7 @@ a {
 ## `scss/function-no-unknown` — No unknown functions (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended function is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/function-no-unknown.md
 
@@ -103330,6 +103338,14 @@ Every function called is a CSS function, a Sass built-in (global or `module.name
 ```scss
 .a {
   width: percentag(0.5);
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  width: percentage(0.5);
 }
 ```
 
@@ -103511,7 +103527,7 @@ $sizes: ("small": 1px);
 ## `scss/max-nesting-depth` — Limit nesting depth
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (flattening a selector is the author's call)
+- **Fix:** `suggest` (a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/max-nesting-depth.md
 
@@ -103546,6 +103562,20 @@ A style rule nests at most `max` levels inside other style rules (default 3): `.
         .e {
           color: red;
         }
+      }
+    }
+  }
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  .b {
+    .c {
+      .d .e {
+        color: red;
       }
     }
   }
@@ -103649,7 +103679,7 @@ a {
 ## `scss/no-duplicate-dollar-variables` — No duplicate `$variables`
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which declaration wins is the author's call)
+- **Fix:** `auto` (auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-dollar-variables.md
 
@@ -103672,6 +103702,12 @@ A `$variable` is declared once per scope. A later `!default` declaration is not 
 
 ```scss
 $gap: 4px;
+$gap: 8px;
+```
+
+##### Fixed
+
+```scss
 $gap: 8px;
 ```
 
@@ -103723,7 +103759,7 @@ A file doesn't `@use`, `@forward` or `@import` the same URL twice.
 ## `scss/no-duplicate-mixins` — No duplicate mixins
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which definition should stay is the author's call)
+- **Fix:** `auto` (auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-mixins.md
 
@@ -103747,6 +103783,14 @@ A mixin is defined once per scope.
 @mixin shadow {
   box-shadow: none;
 }
+@mixin shadow {
+  box-shadow: 0 0 1px;
+}
+```
+
+##### Fixed
+
+```scss
 @mixin shadow {
   box-shadow: 0 0 1px;
 }

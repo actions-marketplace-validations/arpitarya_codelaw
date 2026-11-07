@@ -74781,8 +74781,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended at-rule is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75545,8 +75545,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended function is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75838,8 +75838,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "flattening a selector is the author's call",
+   "fix": "suggest",
+   "fix_reason": "a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75976,8 +75976,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which declaration wins is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -76070,8 +76070,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which definition should stay is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",

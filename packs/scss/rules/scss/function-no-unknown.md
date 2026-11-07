@@ -2,9 +2,9 @@
 id: scss/function-no-unknown
 title: "No unknown functions (SCSS)"
 languages: [scss]
-fix: manual
-fix_reason: "the intended function is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual"
+fix_exception: value
 stability: preview
 options:
   ignoreFunctions: { type: "string[]", default: [], description: "functions to accept; `/regex/` for a pattern" }
@@ -34,6 +34,14 @@ native: scss/function-no-unknown
 ```scss
 .a {
   width: percentag(0.5);
+}
+```
+
+#### Fixed
+
+```scss
+.a {
+  width: percentage(0.5);
 }
 ```
 

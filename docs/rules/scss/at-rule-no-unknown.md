@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAtRules` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended at-rule is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/at-rule-no-unknown` |
@@ -179,6 +179,14 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 
 ```scss
 @mixn button {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+@mixin button {
   color: red;
 }
 ```
