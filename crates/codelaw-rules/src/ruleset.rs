@@ -442,7 +442,7 @@ impl RuleSet {
             key.push(format!("engine {label} {settings:?}"));
         }
         Ok(RuleSet {
-            rules: merged.into_values().filter(|r| std::env::var_os("XX_DROP").is_none() || r.default.is_some()).collect(), // XX-EXPERIMENT
+            rules: merged.into_values().collect(),
             preset_scopes,
             engine_settings,
             packs: loaded_packs.iter().map(|(d, p)| (p.label(), d.clone())).collect(),

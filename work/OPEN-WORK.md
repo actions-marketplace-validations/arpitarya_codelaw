@@ -37,7 +37,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done (proposal §13); L8 → W-172. DoD 1 under way: js second pass, slice 18 — 48 unicorn rules (1,596 of 2,590 built). Next: more js rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-172** `agent` main over three L8 budgets on the reference runner (11-07): `check_cold_10k` 13,465 > 13,118 ms, `peak_memory_10k` 124 > 72 MiB, `mcp_rules_for_path` 129 > 65 ms; green 11-05. Next: bisect, optimise. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+🟢 **W-172** `agent` main over three L8 budgets (11-07). Steps 1–2 done: a per-rule cost on every loaded rule; `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB locally (over 72). Next: push main for CI; re-anchor hot `js/*` rules. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 

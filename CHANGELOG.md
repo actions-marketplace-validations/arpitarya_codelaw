@@ -100,6 +100,8 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Fixed
 
+- **A rule nobody turns on costs almost nothing again (W-172):** a project's packs ship ~1,600 rules and turn on about 470; every one was compiled and kept, its regexes once per grammar, and every file asked each one for its settings, so peak memory and the MCP `rules_for_path` call roughly doubled when the packs grew (L8 over on `peak_memory_10k`, `mcp_rules_for_path` and `check_cold_10k`). Now every rule is still checked at load, but only a rule a preset turns on keeps its compiled matcher, a warm process (`mcp`, `lsp`, `daemon`) keeps loaded packs until a file in them changes, and a `where:` clause is asked before captures are copied. On the reference workload: `rules_for_path` 112 → 11 ms, peak memory 159 → 107 MiB; `check_cold_10k` and peak memory are not yet back under their budgets.
+
 - **Two rules stop reporting what is not there (W-139):** `md/no-empty-links` (on in `md/recommended`) no longer reports links to an anchor (`[x](#install)`) or a bracketed path (`[x](<release notes.md>)`), which it had done since its fix was added on 11-05; `js/no-undefined` no longer reports, or rewrites to `void 0`, TypeScript's `undefined` type (`string | undefined`).
 - **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
 
