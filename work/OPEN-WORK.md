@@ -22,12 +22,12 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-168: which graph sizes get an L8 budget?** ([results](../experiments/graph-scale/RESULTS.md)) Measured on the loaded Mac: the one-file hook is 2.0 s at 10k (SR-PROJECT-GRAPH's target is 300 ms — not met: hook mode rebuilds the whole graph), full `check` 6.3 s cold / 2.3 s warm at 10k, 56 s / 14 s at 100k, ~20 min at 1M, where the 512 MB cache default makes warm nearly cold. **Pick:** (1) *recommended*: no budget yet — the six `graph_*` rows stay context until W-167's design is built, then budget 10k and 100k on CI; (2) budget 10k now from CI's numbers (decision 4's method), 100k+ context; (3) another set of sizes. | 2026-11-07 |
-| ↳ **blocks:** W-168 | |
+
+*Empty since 2026-11-07 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
-## Open items (13)
+## Open items (12)
 
 ### build (6)
 
@@ -60,9 +60,7 @@ here. Read that record before changing anything below it.
 
 ### testing (0)
 
-### reporting and benchmarks (2)
-
-🔴 **W-168** `agent` Steps 1–5 done 11-07: `codelaw bench --graph`, per-stage `--timings`, 10k–1M measured ([results](../experiments/graph-scale/RESULTS.md)) — first to break: the one-file hook (2.0 s at 10k vs 300 ms), then the 512 MB cache default past ~200k. Waits on step 6 (budgets). Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
+### reporting and benchmarks (1)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 

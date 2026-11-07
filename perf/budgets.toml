@@ -129,7 +129,9 @@ set_on = 2026-11-05
 measured_p95 = 1434.2
 
 # THE GRAPH ROWS (W-168, 2026-11-07): context, never gated, until the decider
-# rules which sizes, if any, get an L8 budget (W-168 step 6, in the inbox).
+# rules which sizes, if any, get an L8 budget. RULED 2026-11-07 (Arpit, W-168
+# step 6): "No budget yet (Recommended)" — context-only until W-167's design is
+# built; then 10k and 100k get budgets from CI runs (decision 4's method).
 # `codelaw bench --graph --files <n>`; measured on a LOADED developer Mac, not
 # the reference machine — experiments/graph-scale/RESULTS.md has every size.
 # Each comment is the 10k median / p95 (10 runs, first discarded).

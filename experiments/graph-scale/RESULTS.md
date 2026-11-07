@@ -10,7 +10,7 @@ L8 budget, which is measured on CI's ubuntu-24.04 runner (L8 decision 2).
 The raw reports are the `graph-<n>.json` files beside this one.
 
 Read by [W-167](../../work/open/W-167-graph-architecture-design.md) (step 3).
-The decider rules which sizes, if any, get an L8 budget (W-168 step 6).
+Ruled 2026-11-07 (Arpit, W-168 step 6): *"No budget yet (Recommended)"* — context-only until W-167's design is built; then 10k and 100k get budgets from CI runs.
 
 ## Method
 
