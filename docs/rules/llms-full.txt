@@ -259,7 +259,7 @@ The bundler's `localsConvention` (`[css] modules_convention`) counts: under `cam
 ## `css-modules/composes-valid` — composes points at a class that exists
 
 - **Pack:** `@codelaw/rules-css-modules` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which class to compose is the author's call)
+- **Fix:** `suggest` (the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css-modules/recommended` at `error` · `codelaw:css-modules/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css-modules/composes-valid.md
 
@@ -284,9 +284,18 @@ It reports `composes: a from "./b.module.css"` when `b.module.css` does not exis
 
 ```css files
 /* src/button.module.css */
+.primary { composes: bse from "./base.module.css"; }
+/* src/base.module.css */
+.base { color: red; }
+```
+
+##### Fixed
+
+```css files
+/* src/button.module.css */
 .primary { composes: base from "./base.module.css"; }
 /* src/base.module.css */
-.root { color: red; }
+.base { color: red; }
 ```
 
 ##### Do
@@ -304,6 +313,15 @@ It reports `composes: a from "./b.module.css"` when `b.module.css` does not exis
 
 ```scss files
 /* src/button.module.scss */
+.base { color: red; }
+.primary { composes: bsae; }
+```
+
+##### Fixed
+
+```scss files
+/* src/button.module.scss */
+.base { color: red; }
 .primary { composes: base; }
 ```
 
@@ -17376,7 +17394,7 @@ const all = [...base, ...(extra ? [x] : [])];
 ## `js/consistent-existence-index-check` — Check indexOf against -1 the same way
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/consistent-existence-index-check.md
 
@@ -18691,7 +18709,7 @@ it("syncs", function () {
 ## `js/dom-node-dataset` — Use dataset for data- attributes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do)
+- **Fix:** `suggest` (`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/dom-node-dataset.md
 
@@ -19027,13 +19045,13 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ## `js/eqeqeq` — === rather than ==
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`)
+- **Fix:** `suggest` (`===` compares without converting, so code that relied on `"1" == 1` changes behaviour; the author confirms the types match)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/eqeqeq.md
 
 ### What it checks
 
-`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix covers `==`; a `!=` finding is reported for the same reason.
+`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix writes the strict operator; it is `suggest`, as the result changes when the operands' types differ.
 
 **Why:** `==` converts types before comparing, so `"0" == 0` and `[] == false` are true.
 
@@ -19048,7 +19066,7 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ##### Don't
 
 ```js
-if (count == limit) {
+if (count == limit || state != "done") {
   stop();
 }
 ```
@@ -19056,7 +19074,7 @@ if (count == limit) {
 ##### Do
 
 ```js
-if (count === limit) {
+if (count === limit || state !== "done") {
   stop();
 }
 ```
@@ -19193,7 +19211,7 @@ throw new Error("config file is missing");
 ## `js/escape-case` — Upper-case hex digits in escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix upper-cases the digits, which a fix template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/escape-case.md
 
@@ -22499,7 +22517,7 @@ function clearCache() {}
 ## `js/jsdoc-check-syntax` — No Closure optional syntax in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`))
+- **Fix:** `suggest` (`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-syntax.md
 
@@ -22607,7 +22625,7 @@ function greet(name) {}
 ## `js/jsdoc-check-types` — Primitive type names in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`))
+- **Fix:** `suggest` (a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-types.md
 
@@ -22823,7 +22841,7 @@ function parseDate() {}
 ## `js/jsdoc-convert-to-jsdoc-comments` — Functions documented in JSDoc, not // comments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`))
+- **Fix:** `suggest` (a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-convert-to-jsdoc-comments.md
 
@@ -23030,7 +23048,7 @@ function reset() {}
 ## `js/jsdoc-escape-inline-tags` — A bare @word in a description is escaped
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks))
+- **Fix:** `suggest` (the word may be a tag the author meant TypeScript to read; they confirm it is text)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-escape-inline-tags.md
 
@@ -23341,7 +23359,7 @@ function total() {}
 ## `js/jsdoc-multiline-blocks` — /** and */ on their own lines
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-multiline-blocks.md
 
@@ -23548,7 +23566,7 @@ function run() {}
 ## `js/jsdoc-no-defaults` — Defaults in the signature, not in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `suggest` (the default leaves the documentation; the author checks the signature carries the same one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-defaults.md
 
@@ -23656,7 +23674,7 @@ function greet(name = "you") {}
 ## `js/jsdoc-no-multi-asterisks` — One asterisk per JSDoc line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-multi-asterisks.md
 
@@ -23755,7 +23773,7 @@ function start() {}
 ## `js/jsdoc-no-types` — No JSDoc types in TypeScript
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed))
+- **Fix:** `suggest` (the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-types.md
 
@@ -27624,7 +27642,7 @@ A JSX link to an external URL with `target="_blank"` has `rel="noopener"`.
 ## `js/logical-assignment-operators` — a ||= b rather than a = a || b
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of three patterns matched)
+- **Fix:** `suggest` (the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/logical-assignment-operators.md
 
@@ -32221,7 +32239,7 @@ function List({ items }: { items: string[] }) {
 ## `js/no-console-spaces` — No leading or trailing space in console arguments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (trimming the string is a computed edit a template cannot make)
+- **Fix:** `suggest` (the space may be deliberate (two spaces for alignment); the author confirms the output)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-console-spaces.md
 
@@ -33416,7 +33434,7 @@ cache = {};
 ## `js/no-div-regex` — No regex starting with =
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the edit inside the pattern is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-div-regex.md
 
@@ -33641,7 +33659,7 @@ await cookieStore.set('theme', 'dark');
 ## `js/no-double-comparison` — x > a || x === a is x >= a
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of four patterns matched)
+- **Fix:** `suggest` (`x >= y` and `x > y || x === y` differ when the operands have different types (`"1" >= 1` is true, the pair is false); the author confirms they match)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-double-comparison.md
 
@@ -35955,7 +35973,7 @@ if (user) {
 ## `js/no-extra-label` — No label that is not needed
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the label token from the statement is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-extra-label.md
 
@@ -37420,7 +37438,7 @@ try {
 ## `js/no-implicit-coercion` — Explicit conversions, not !!x or +x
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the call to write depends on the operator matched)
+- **Fix:** `suggest` (`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-implicit-coercion.md
 
@@ -41756,7 +41774,7 @@ const mode = 0o755;
 ## `js/no-octal-escape` — No octal escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the equivalent `\u` or `\x` escape is computed from the octal value)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-octal-escape.md
 
@@ -46061,7 +46079,7 @@ const rest = list.slice(1);
 ## `js/no-unneeded-ternary` — No x ? true : false
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern)
+- **Fix:** `suggest` (a condition that is not already a boolean becomes `Boolean(…)`, which the author may prefer to write another way)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unneeded-ternary.md
 
@@ -49775,7 +49793,7 @@ area = Math.PI * r * r;
 ## `js/no-zero-fractions` — No zero fraction on a number
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix strips characters from the literal, which a template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-zero-fractions.md
 
@@ -50000,7 +50018,7 @@ const hex = n.toString(16);
 ## `js/numeric-separators-style` — Group digits of long numbers
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the grouped literal is a computed edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/numeric-separators-style.md
 
@@ -50193,7 +50211,7 @@ const point = { x, y };
 ## `js/operator-assignment` — x += 1 rather than x = x + 1
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator token cannot be carried into a fix template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/operator-assignment.md
 
@@ -53280,7 +53298,7 @@ if (Number.isNaN(value)) {
 ## `js/prefer-numeric-literals` — 0b101 rather than parseInt("101", 2)
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the literal's prefix depends on the radix, which a template cannot choose)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-numeric-literals.md
 
@@ -53956,7 +53974,7 @@ const args = Array.prototype.slice.call(arguments);
 ## `js/prefer-query-selector` — querySelector rather than getElementById
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the selector string is built from the id, which a template cannot escape)
+- **Fix:** `suggest` (`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-query-selector.md
 
@@ -54978,7 +54996,7 @@ const ext = name.slice(-3);
 ## `js/prefer-string-starts-ends-with` — startsWith() rather than a ^ regex test
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the string literal is the pattern without its anchor, which a template cannot strip)
+- **Fix:** `suggest` (`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-string-starts-ends-with.md
 
@@ -65313,7 +65331,7 @@ if (Number.isNaN(price)) {
 ## `js/use-simple-number-keys` — Plain decimal numbers as object keys
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the decimal form has to be computed from the literal, which codelaw's fix templates cannot do)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/use-simple-number-keys.md
 
@@ -69345,7 +69363,7 @@ function find(id, cb) {
 ## `node/no-deprecated-api` — No deprecated Node.js APIs
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each deprecated API has its own replacement)
+- **Fix:** `auto` (auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-deprecated-api.md
 
@@ -69360,6 +69378,8 @@ Code doesn't use Node.js APIs the documentation deprecates — `new Buffer()`, `
 ### How to fix
 
 1. Replace the call with the API the message names.
+
+`codelaw fix` renames the aliases itself, and drops an import nothing else reads.
 
 ### Examples
 
@@ -118013,7 +118033,7 @@ option's value is a function, a method or a name.
 ## `tanstack-query/no-mutating-set-query-data` — A `setQueryData` updater does not change the cached data in place
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the update has to be rewritten to build a new value)
+- **Fix:** `suggest` (an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-mutating-set-query-data.md
 
@@ -118050,6 +118070,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```js
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```js
@@ -118069,6 +118095,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+##### Fixed
+
+```jsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 ##### Do
@@ -118092,6 +118124,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```ts
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```ts
@@ -118113,6 +118151,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```tsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```tsx
@@ -118132,7 +118176,7 @@ is recognised by its name, on any object.
 ## `tanstack-query/no-removed-v4-options` — A query takes no option TanStack Query v5 removed
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument)
+- **Fix:** `suggest` (suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-removed-v4-options.md
 
@@ -118443,7 +118487,7 @@ recognised only when it is imported from a `@tanstack/*-query` package; a QueryC
 ## `tanstack-query/no-rest-destructuring` — No rest destructuring of a query result
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which fields the component needs is a choice only its author can make)
+- **Fix:** `suggest` (when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-rest-destructuring.md
 
@@ -118471,7 +118515,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118495,7 +118539,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118519,7 +118563,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118543,7 +118587,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118566,7 +118610,7 @@ also finds a query result by its type when typed linting is on; codelaw has no t
 ## `tanstack-query/no-unstable-deps` — A query hook's result is not a React hook dependency
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fields to list depend on what the effect, callback or memo reads)
+- **Fix:** `suggest` (when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-unstable-deps.md
 
@@ -136142,7 +136186,7 @@ enum Color { Red,
 ## `ts/no-duplicate-enum-values` — No two enum members share a value
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which value is right needs the author)
+- **Fix:** `suggest` (the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-duplicate-enum-values.md
 
@@ -136170,6 +136214,24 @@ enum Color {
 }
 ```
 
+##### Fixed (alias)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = 2,
+}
+```
+
 ##### Do
 
 ```ts
@@ -136187,6 +136249,24 @@ enum Color {
 enum Color {
   Red = 1,
   Green = 1,
+}
+```
+
+##### Fixed (alias)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = 2,
 }
 ```
 
@@ -137714,7 +137794,7 @@ handler(1);
 ## `ts/no-unsafe-declaration-merging` — No interface that merges with a class of the same name
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether to rename or to move the members into the class needs the author)
+- **Fix:** `auto` (auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unsafe-declaration-merging.md
 
@@ -137744,6 +137824,15 @@ class Point {
 }
 ```
 
+##### Fixed
+
+```ts
+class Point {
+  declare z: number;
+  x = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -137764,6 +137853,15 @@ interface Point {
   z: number;
 }
 class Point {
+  x = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+class Point {
+  declare z: number;
   x = 0;
 }
 ```
@@ -137950,7 +138048,7 @@ is declared `any` or `unknown` is reported too; typescript-eslint allows it.
 ## `ts/no-unused-expressions` — No expression statements that do nothing
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether a call, an assignment or nothing was meant needs the author)
+- **Fix:** `suggest` (the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-expressions.md
 
@@ -137977,6 +138075,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```ts
@@ -137995,6 +138108,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -138006,7 +138134,7 @@ function close(conn: Connection) {
 ## `ts/no-unused-vars` — Every declared name is used
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (removing a declaration can drop the side effects of its initialiser)
+- **Fix:** `auto` (auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-vars.md
 

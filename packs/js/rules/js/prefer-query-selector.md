@@ -2,9 +2,8 @@
 id: js/prefer-query-selector
 title: "querySelector rather than getElementById"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the selector string is built from the id, which a template cannot escape"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-query-selector]
 since: 0.5.0
@@ -17,7 +16,11 @@ since: 0.5.0
 ```codelaw
 match:
   pattern: "document.getElementById($I)"
+transform:
+  Q: { substring: { source: $I, endChar: 1 } }
+  ID: { substring: { source: $I, startChar: 1, endChar: -1 } }
 message: "Use `.querySelector()`"
+fix: "document.querySelector($Q|map(':', \":\")#$ID|escape(css-ident)|escape(js-string)$Q)"
 ```
 
 ## How to fix

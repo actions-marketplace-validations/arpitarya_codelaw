@@ -11,14 +11,14 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`===` compares without converting, so code that relied on `"1" == 1` changes behaviour; the author confirms the types match) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/eqeqeq` |
 
 ## What it checks
 
-`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix covers `==`; a `!=` finding is reported for the same reason.
+`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix writes the strict operator; it is `suggest`, as the result changes when the operands' types differ.
 
 **Why:** `==` converts types before comparing, so `"0" == 0` and `[] == false` are true.
 
@@ -133,7 +133,7 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 #### Don't
 
 ```js
-if (count == limit) {
+if (count == limit || state != "done") {
   stop();
 }
 ```
@@ -141,7 +141,7 @@ if (count == limit) {
 #### Do
 
 ```js
-if (count === limit) {
+if (count === limit || state !== "done") {
   stop();
 }
 ```

@@ -23,25 +23,26 @@ here. Read that record before changing anything below it.
 | what the decider decides | filed |
 |---|---|
 
-*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+*Empty since 2026-11-07 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
-## Open items (14)
+## Open items (13)
 
 ### build (6)
+
+🟢 **W-171** `agent` Six worktrees (W-139, W-141, W-156, W-162, W-168, W-169) hold unlanded work of agents stopped by the usage limit 11-05. Ruled 11-07: keep; each lands with its item. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-05: manual ceiling removed, the 231 held ports landed. Next: step 3 — corpus counts, L8 budgets. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-141** `agent` Formatter vs Prettier. Oxc built behind the formatter 11-05 (D-52): CSS 74→89%, SCSS 81→86%, YAML 90→97%, Markdown 93→95%, faster, binary −2.3 MB. Left: DoD 3's ≥ 98% — the rest is in Biome (JS/TS), markup_fmt (HTML) and Oxc. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done (11-05); 186 native rules (Rust per rule) left to move. Next: their fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (ts landed): 176 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)): computed edits (57), scope rename, add-import, purity, types, cross-file. Ruled 11-05: multi-file fixes allowed. 37 re-judged by W-156. Next: computed edits. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: filters, `transform:` and `edit-text` built (27 `js/*` moved; 76 still wait). Next: `unwrap-block`, `move`, native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 
 
@@ -57,9 +58,7 @@ here. Read that record before changing anything below it.
 
 ### cleanup (0)
 
-### testing (1)
-
-🟢🧨 **W-170** `agent` Three `codelaw-lsp` config-completion tests fail on main (found by W-166's build; CI `test` goes red). Next: name them, bisect today's config-key landings, fix the cause. Filed by Arpit (Claude Code). [detail](open/W-170-lsp-config-completion-tests.md)
+### testing (0)
 
 ### reporting and benchmarks (2)
 

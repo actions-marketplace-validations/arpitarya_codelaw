@@ -24,6 +24,54 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 2: `edit-text`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) resume W-162 after the usage-limit stop (W-171 kept the worktree): re-derive status, merge main, land each capability as a complete change.
+- **Done:** the stop had left `edit-text`'s code auto-committed on `lm/W-162` (a0875296, not on main) and eight rule files uncommitted; merged main, finished the change: `edit-text` (SR-RULE-FORMAT 3c), eight `js/jsdoc-*` rules moved, docs regenerated. `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `jsdoc-empty-tags`, `implements-on-classes` and `prefer-import-tag` move text between lines or nodes; they wait on `move`. The `.fux/index` files fux re-indexed in the worktree are not this change's and stay unstaged.
+- **Mistakes:** none new.
+- **Next:** W-162 change 3 — `unwrap-block` (`no-else-return`, `py/max-depth`).
+
+---
+
+## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)).
+- **Decided / left open:** none yet.
+- **Mistakes:** none.
+- **Next:** the next pack.
+
+---
+
+## 2026-11-05 — W-170 closed: config completion in the top-level `[rules]`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-170 — three `codelaw-lsp` config-completion tests fail on main; find the cause, fix it, close.
+- **Done:** named the three (`completions_come_from_the_schema_and_the_packs`, `fix_offers_only_the_rule_s_own_rung_and_below`, `the_server_publishes_completes_and_fixes_a_config_as_typed`); cause W-158's `rootRules` schema node (`c0346694`), which `is_rules` did not recognise; fixed in `config.rs` (`rootRules` is a rules table, `require_reason` a key, not a rule); SR-EDITOR decision 9 notes it; W-170 archived.
+- **Decided / left open:** no assertion changed. `cargo clippy -p codelaw-lsp` stops on a pre-existing `type_complexity` error in `codelaw-config`, not this change's.
+- **Mistakes:** none.
+- **Next:** none for W-170.
+
+---
+
+## 2026-11-05 — W-162 change 1: computed edits, tiers 1–2  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-162 — build the fix capabilities W-161 designed, computed edits first, moving the rules waiting on each; land each capability as its own change.
+- **Done:** ast-grep's `transform:` beside `match:`; the template filters (`map`, `number`, `escape`, `unescape-octal`, `count`, `upper`, `lower`, `upper-first`) with a strict `try_interpolate` so a refusing filter offers no fix; operator tokens captured with `$$OP`. 19 `js/*` rules moved (SR-RULE-FORMAT 3b's Built note lists them). `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `prefer-template` and `no-useless-concat` wait on native fixes (a chain of any length; mixed quotes); `prefer-keyboard-event-key` needs an edit outside its match. Tier 3 (`edit-text`, `unwrap-block`, `move`) next.
+- **Mistakes:** a binary copied over an existing one in place was SIGKILLed by macOS (code signature cache); copy to a removed path instead.
+- **Next:** W-162 change 2 — tier 3 primitives, starting with `edit-text` for the eleven `jsdoc-*` rules.
+
+---
+
+## 2026-11-05 — W-141 closed: formatter differences fixed or named  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-141 — rerun the corpus, group the differences per language by cause, fix the ones codelaw's own code controls, name the engines' ones in SR-FORMATTER (DoD 3), close W-141 if met.
+- **Done:** four fixes in `crates/codelaw-format/src/engines.rs` — JavaScript retried as a script (Babel's retry), a `<script>` body's width counted once, blank `<script>`/`<style>` emptied with empty elements' closing tags kept on their line, the doctype as Prettier writes it; two tests checked against Prettier 3.9.10's output. Markdown 94.7 → 96.7 %, HTML 69.4 → 73.5 %; the rest named in SR-FORMATTER Consequences per engine (Oxc, markup_fmt, Biome), each with an example and its file count. W-141 archived; W-148 step 4 already lives in W-139's DoD 2d.
+- **Decided / left open:** `<!DOCTYPE HTML>` is written `<!doctype html>` at once, where Prettier keeps the keyword and changes it on its own second run — codelaw's output must be stable (decision 4). Oxc refuses to dispatch a fence whose code starts with U+FEFF (by design); left named, not worked around.
+- **Mistakes:** the shared `CARGO_TARGET_DIR` linked another worktree's `codelaw-core` into this build (`pattern does not mention field transform`); built in a lane target dir in the session scratchpad instead (2 GB, deleted at the end). A first BOM fix in Oxc's dispatcher was dead code (Oxc never calls it for such a block) and was removed.
+- **Next:** none for W-141; a Biome or Oxc pin bump reruns `format-parity.py --corpus` and updates SR-FORMATTER's named list.
+
 ## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.

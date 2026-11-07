@@ -2,9 +2,8 @@
 id: js/prefer-string-starts-ends-with
 title: "startsWith() rather than a ^ regex test"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the string literal is the pattern without its anchor, which a template cannot strip"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-string-starts-ends-with]
 since: 0.5.0
@@ -19,7 +18,10 @@ A regex test of a plain literal prefix (`/^abc/.test(s)`) is written `s.startsWi
 match:
   pattern: $R.test($S)
   has: { field: function, has: { field: object, kind: regex, not: { has: { kind: regex_flags } }, has: { kind: regex_pattern, regex: '^\^[A-Za-z0-9 _-]+$', pattern: $P } } }
+transform:
+  Q: { substring: { source: $P, startChar: 1 } }
 message: "Use `.startsWith()` for a fixed prefix"
+fix: '$S.startsWith("$Q")'
 ```
 
 ## How to fix

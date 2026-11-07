@@ -185,7 +185,7 @@ What the differences are, from the samples read:
 - **R1 — which tranches W-139 builds.** Recommended: **A** (84) and **C** (513) now; **D** (591) by linter, pydocstyle as an opt-in preset; **B** (unicorn, 366) only as B-048's opt-in `js/strict`; **E** (136) waits until upstream calls them stable.
 - **R2 — where new rules go.** Recommended: tranche A joins each pack's `recommended` preset (as its source recommends); C and D land `preview`, in `strict` presets or off; nothing new is on by default without a corpus run (SR-RULE-AUTHORING decision 6).
 - **R3 — Prettier's 11 options.** Add `[format]` keys for the four people set most (`arrowParens`, `bracketSpacing`, `jsxSingleQuote`, `quoteProps`), and keep Prettier's default for the rest — or keys for all eleven.
-- **R4 — the formatter gaps (§7).** Filed as [W-141](../open/W-141-formatter-parity.md): the CSS comment defect and HTML void elements first, then Markdown, CSS, JS/TS until each language is within 2% of Prettier on this corpus.
+- **R4 — the formatter gaps (§7).** Filed as [W-141](../../archive/open/W-141-formatter-parity.md): the CSS comment defect and HTML void elements first, then Markdown, CSS, JS/TS until each language is within 2% of Prettier on this corpus.
 
 ## 10 · What is in `rule-parity/`
 

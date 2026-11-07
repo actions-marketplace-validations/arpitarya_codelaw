@@ -2,9 +2,9 @@
 id: node/no-deprecated-api
 title: "No deprecated Node.js APIs"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "each deprecated API has its own replacement"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-n/no-deprecated-api]
 since: 0.1.0
@@ -23,6 +23,8 @@ native: node/no-deprecated-api
 ## How to fix
 
 1. Replace the call with the API the message names.
+
+`codelaw fix` renames the aliases itself, and drops an import nothing else reads.
 
 ## Examples
 

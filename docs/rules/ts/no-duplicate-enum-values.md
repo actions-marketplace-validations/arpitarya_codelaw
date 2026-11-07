@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value is right needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-duplicate-enum-values` |
@@ -136,6 +136,24 @@ enum Color {
 }
 ```
 
+#### Fixed (alias)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+#### Fixed (next value)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = 2,
+}
+```
+
 #### Do
 
 ```ts
@@ -153,6 +171,24 @@ enum Color {
 enum Color {
   Red = 1,
   Green = 1,
+}
+```
+
+#### Fixed (alias)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+#### Fixed (next value)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = 2,
 }
 ```
 

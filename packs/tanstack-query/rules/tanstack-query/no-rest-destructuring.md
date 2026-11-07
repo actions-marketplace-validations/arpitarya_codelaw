@@ -2,9 +2,9 @@
 id: tanstack-query/no-rest-destructuring
 title: "No rest destructuring of a query result"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which fields the component needs is a choice only its author can make"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual"
+fix_exception: restructure
 stability: preview
 ported_from: ["@tanstack/eslint-plugin-query/no-rest-destructuring"]
 since: 0.1.0
@@ -36,7 +36,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -60,7 +60,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -84,7 +84,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -108,7 +108,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 

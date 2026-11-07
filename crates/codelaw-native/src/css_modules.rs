@@ -218,6 +218,25 @@ fn js_names(class: &str, convention: &str) -> Vec<String> {
     }
 }
 
+/// One labelled choice per defined class nearest `name` (within two
+/// edits), each naming it in `name`'s place in the `composes` value.
+fn retarget<'c>(src: &str, params: (usize, usize), name: &str, defined: impl IntoIterator<Item = &'c str>) -> Vec<codelaw_core::TextEdit> {
+    let value = &src[params.0..params.1];
+    let mut at = 0;
+    let start = loop {
+        let Some(i) = value[at..].find(name) else { return Vec::new() };
+        let s = at + i;
+        let before = value[..s].chars().next_back();
+        let after = value[s + name.len()..].chars().next();
+        if before.is_none_or(char::is_whitespace) && after.is_none_or(char::is_whitespace) {
+            break s;
+        }
+        at = s + name.len();
+    };
+    let names = crate::util::nearest(name, defined, 2);
+    crate::util::name_choices(&names, params.0 + start, params.0 + start + name.len(), &|c| c.to_owned())
+}
+
 module_rule!(ComposesValid, "css-modules/composes-valid", |sheet, src, ctx, out| {
     let (here, here_incomplete) = local_classes(sheet, src);
     let here: BTreeSet<&str> = here.iter().map(|c| c.name.as_str()).collect();
@@ -252,7 +271,9 @@ module_rule!(ComposesValid, "css-modules/composes-valid", |sheet, src, ctx, out|
             None => {
                 if !here_incomplete {
                     for name in names.iter().filter(|nm| !here.contains(*nm)) {
-                        out.push(finding(n.params.0, n.params.1, format!("`composes: {name}`: this file defines no `.{name}`")));
+                        let mut f = finding(n.params.0, n.params.1, format!("`composes: {name}`: this file defines no `.{name}`"));
+                        f.edits = retarget(src, n.params, name, here.iter().copied());
+                        out.push(f);
                     }
                 }
             }
@@ -282,7 +303,9 @@ module_rule!(ComposesValid, "css-modules/composes-valid", |sheet, src, ctx, out|
                 }
                 let defined: BTreeSet<&str> = classes.iter().map(|c| c.name.as_str()).collect();
                 for name in names.iter().filter(|nm| !defined.contains(*nm)) {
-                    out.push(finding(n.params.0, n.params.1, format!("`composes: {name} from \"{link}\"`: `{path}` defines no `.{name}`")));
+                    let mut f = finding(n.params.0, n.params.1, format!("`composes: {name} from \"{link}\"`: `{path}` defines no `.{name}`"));
+                    f.edits = retarget(src, n.params, name, defined.iter().copied());
+                    out.push(f);
                 }
             }
         }
