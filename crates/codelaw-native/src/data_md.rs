@@ -214,10 +214,16 @@ impl NativeRule for SingleH1 {
         let doc = node.get_inner_node();
         let level = ctx.options.get("level").and_then(|v| v.as_u64()).unwrap_or(1) as usize;
         let mut has_title = front_matter_title(doc, ctx.source);
-        for h in headings(doc).into_iter().filter(|h| h.level == level) {
+        let all = headings(doc);
+        for (i, h) in all.iter().enumerate().filter(|(_, h)| h.level == level) {
             if has_title {
                 let end = h.content.map(|c| c.end_byte()).unwrap_or(h.node.end_byte());
-                out.push(finding(h.node.start_byte(), end, "The document already has a title; make this a lower-level heading"));
+                // This heading and its subsection, one level down.
+                let section: Vec<&Heading> = std::iter::once(h).chain(all[i + 1..].iter().take_while(|x| x.level > level)).collect();
+                let edits: Option<Vec<TextEdit>> = section.iter().map(|x| (!x.setext && x.level < 6).then(|| x.marker.map(|m| TextEdit::new(m.start_byte(), m.end_byte(), "#".repeat(x.level + 1)))).flatten()).collect();
+                let mut f = finding(h.node.start_byte(), end, "The document already has a title; make this a lower-level heading");
+                f.edits = edits.unwrap_or_default();
+                out.push(f);
             }
             has_title = true;
         }
@@ -305,7 +311,24 @@ impl NativeRule for FirstLineHeading {
             return;
         }
         let line_end = src[first.start_byte()..].find('\n').map(|i| first.start_byte() + i).unwrap_or(first.end_byte()).min(first.end_byte());
-        out.push(finding(first.start_byte(), line_end, format!("Start the document with a level-{level} heading that names it")));
+        let mut choices = Vec::new();
+        // A first heading of another level becomes the title.
+        if let Some(h) = heading(*first).filter(|h| !h.setext)
+            && let Some(m) = h.marker
+        {
+            choices.push(crate::choice("promote", true, vec![TextEdit::new(m.start_byte(), m.end_byte(), "#".repeat(level))]));
+        }
+        // A title further down moves to the top.
+        if let Some(t) = blocks.iter().filter_map(|n| heading(*n)).find(|h| h.level == level && !h.setext) {
+            let line = text(t.node, src).trim_end();
+            if !line.contains('\n') {
+                let (a, b) = crate::util::whole_lines(src, t.node.start_byte(), t.node.start_byte() + line.len());
+                choices.push(crate::choice("move the title up", choices.is_empty(), vec![TextEdit::insert(first.start_byte(), format!("{line}\n\n")), TextEdit::delete(a, b)]));
+            }
+        }
+        let mut f = finding(first.start_byte(), line_end, format!("Start the document with a level-{level} heading that names it"));
+        f.edits = crate::choice_edits(choices);
+        out.push(f);
     }
 }
 
@@ -382,7 +405,12 @@ impl NativeRule for TableColumnCount {
             if got != want {
                 let what = if got < want { "fewer" } else { "more" };
                 let end = row.start_byte() + text(*row, ctx.source).trim_end().len();
-                out.push(finding(row.start_byte(), end, format!("This row has {got} cells, {what} than the header's {want}")));
+                let mut f = finding(row.start_byte(), end, format!("This row has {got} cells, {what} than the header's {want}"));
+                // A short row ending in `|` gets the empty cells GFM renders.
+                if got < want && ctx.source[..end].ends_with('|') {
+                    f.edits = vec![TextEdit::insert(end, " |".repeat(want - got))];
+                }
+                out.push(f);
             }
         }
     }
@@ -408,6 +436,38 @@ fn start_tags(t: &str) -> Vec<(usize, String)> {
     out
 }
 
+/// The Markdown an inline element is: `<em>x</em>` (and `<i>`) as `*x*`,
+/// `<strong>x</strong>` (and `<b>`) as `**x**`, `<code>x</code>` as
+/// `` `x` ``, and a `<br>` ending its line as `\`. The tag carries no
+/// attribute, its content no markup of its own.
+fn markdown_for(src: &str, tag: Node<'_>, name: &str) -> Option<Vec<TextEdit>> {
+    let open = text(tag, src);
+    let (s, e) = (tag.start_byte(), tag.end_byte());
+    if name == "br" {
+        if !matches!(open.to_ascii_lowercase().replace(' ', "").as_str(), "<br>" | "<br/>") {
+            return None;
+        }
+        return src[e..].starts_with('\n').then(|| vec![TextEdit::new(s, e, "\\")]);
+    }
+    if !open.eq_ignore_ascii_case(&format!("<{name}>")) {
+        return None;
+    }
+    let (mark, forbidden) = match name {
+        "em" | "i" => ("*", "*_<\n"),
+        "strong" | "b" => ("**", "*_<\n"),
+        "code" => ("`", "`<\n"),
+        _ => return None,
+    };
+    let close = format!("</{name}>");
+    let rest = &src[e..];
+    let at = rest.to_ascii_lowercase().find(&close)?;
+    let inner = &rest[..at];
+    if inner.is_empty() || inner.contains(|c| forbidden.contains(c)) || inner.trim() != inner {
+        return None;
+    }
+    Some(vec![TextEdit::new(s, e + at + close.len(), format!("{mark}{inner}{mark}"))])
+}
+
 impl NativeRule for NoInlineHtml {
     fn id(&self) -> &'static str {
         "md/no-inline-html"
@@ -431,7 +491,11 @@ impl NativeRule for NoInlineHtml {
                 continue;
             }
             let start = n.start_byte() + at;
-            out.push(finding(start, start + 1 + name.len(), format!("`<{name}>` is raw HTML; use Markdown, or allow the element")));
+            let mut f = finding(start, start + 1 + name.len(), format!("`<{name}>` is raw HTML; use Markdown, or allow the element"));
+            if n.kind() == "html_tag" {
+                f.edits = markdown_for(ctx.source, n, &name.to_ascii_lowercase()).unwrap_or_default();
+            }
+            out.push(f);
         }
     }
 }
@@ -622,7 +686,21 @@ impl NativeRule for NoEmphasisAsHeading {
         if plain.trim().chars().last().is_none_or(|c| punctuation.contains(c)) {
             return;
         }
-        out.push(finding(inline.start_byte(), inline.end_byte(), format!("\"{}\" is emphasis standing in for a heading; use a heading", plain.trim())));
+        // The heading it stands for: one level under the heading above it,
+        // or that heading's level.
+        let doc = std::iter::successors(Some(p), |x| x.parent()).last().unwrap_or(p);
+        let above = headings(doc).into_iter().filter(|h| h.node.start_byte() < p.start_byte()).last().map(|h| h.level).unwrap_or(1);
+        let marks = if only.kind() == "strong_emphasis" { 2 } else { 1 };
+        let inner = raw.trim_end();
+        let words = &inner[marks..inner.len().saturating_sub(marks)];
+        let mut choices = Vec::new();
+        if above < 6 {
+            choices.push(crate::choice("one level under", true, vec![TextEdit::new(inline.start_byte(), inline.start_byte() + inner.len(), format!("{} {words}", "#".repeat(above + 1)))]));
+        }
+        choices.push(crate::choice("same level", choices.is_empty(), vec![TextEdit::new(inline.start_byte(), inline.start_byte() + inner.len(), format!("{} {words}", "#".repeat(above)))]));
+        let mut f = finding(inline.start_byte(), inline.end_byte(), format!("\"{}\" is emphasis standing in for a heading; use a heading", plain.trim()));
+        f.edits = if words.is_empty() { Vec::new() } else { crate::choice_edits(choices) };
+        out.push(f);
     }
 }
 
@@ -760,7 +838,17 @@ impl NativeRule for ReferenceLinksImages {
                 if (shortcut && !shortcuts) || label.is_empty() || defined.contains(&label) || ignored.contains(&label) {
                     continue;
                 }
-                out.push(finding(base + n.start_byte(), base + n.end_byte(), format!("No definition `[{label}]: …` in this document; the reference renders as plain text")));
+                let near = crate::util::nearest(&label, defined.iter().map(String::as_str), 2);
+                let label_node = named_children(n).into_iter().find(|c| c.kind() == "link_label");
+                let edits = match (n.kind(), label_node) {
+                    ("full_reference_link", Some(l)) => crate::util::name_choices(&near, base + l.start_byte(), base + l.end_byte(), &|c| format!("[{c}]")),
+                    ("collapsed_reference_link", _) if isrc[..n.end_byte()].ends_with("[]") => crate::util::name_choices(&near, base + n.end_byte() - 2, base + n.end_byte(), &|c| format!("[{c}]")),
+                    ("shortcut_link", _) => crate::util::name_choices(&near, base + n.end_byte(), base + n.end_byte(), &|c| format!("[{c}]")),
+                    _ => Vec::new(),
+                };
+                let mut f = finding(base + n.start_byte(), base + n.end_byte(), format!("No definition `[{label}]: …` in this document; the reference renders as plain text"));
+                f.edits = edits;
+                out.push(f);
             }
         }
     }
@@ -932,7 +1020,7 @@ impl NativeRule for LinkFragments {
         html_anchors(src, &mut anchors);
         anchors.insert("top".into());
         let anchors_folded: BTreeSet<String> = anchors.iter().map(|a| a.to_lowercase()).collect();
-        let mut check = |dest: &str, start: usize, end: usize| {
+        let mut check = |dest: &str, start: usize, end: usize, dest_at: Option<usize>| {
             let Some(fragment) = dest.trim_start_matches('<').trim_end_matches('>').strip_prefix('#') else { return };
             if fragment.is_empty() || line_anchor(fragment) {
                 return;
@@ -941,20 +1029,33 @@ impl NativeRule for LinkFragments {
             let ok = anchors.contains(&f) || (ignore_case && anchors_folded.contains(&f.to_lowercase()));
             if !ok {
                 let hint = if anchors_folded.contains(&f.to_lowercase()) { "; anchors are lower-case" } else { "" };
-                out.push(finding(start, end, format!("No heading or anchor in this document has the id `{f}`{hint}")));
+                let mut finding_ = finding(start, end, format!("No heading or anchor in this document has the id `{f}`{hint}"));
+                if let Some(at) = dest_at {
+                    // The fragment's place in the source: after its `#`.
+                    let hash = dest.find('#').map(|h| at + h + 1);
+                    let raw_end = hash.map(|h| h + fragment.len());
+                    if let (Some(h), Some(e)) = (hash, raw_end) {
+                        let exact = anchors.iter().find(|a| **a == slug(&f) || a.to_lowercase() == f.to_lowercase());
+                        finding_.edits = match exact {
+                            Some(a) => vec![TextEdit::new(h, e, a.clone())],
+                            None => crate::util::name_choices(&crate::util::nearest(&f, anchors.iter().map(String::as_str), 2), h, e, &|c| c.to_owned()),
+                        };
+                    }
+                }
+                out.push(finding_);
             }
         };
         for (base, tree) in inline_trees(doc, src, &["(#", "(<#"]) {
             let isrc = tree.get_text();
             for n in preorder(tree.root().get_inner_node()).into_iter().filter(|n| n.kind() == "inline_link") {
                 if let Some(d) = named_children(n).into_iter().find(|c| c.kind() == "link_destination") {
-                    check(text(d, isrc), base + n.start_byte(), base + n.end_byte());
+                    check(text(d, isrc), base + n.start_byte(), base + n.end_byte(), Some(base + d.start_byte()));
                 }
             }
         }
         for d in definitions(doc, src) {
             if let Some(dest) = &d.dest {
-                check(dest, d.start, d.end);
+                check(dest, d.start, d.end, None);
             }
         }
     }
@@ -984,6 +1085,35 @@ fn relative_target(dest: &str) -> Option<String> {
 
 pub struct RelativeLinks;
 
+/// The links a missing relative target could have meant, written as the
+/// link wrote it: files beside where it points whose names are within two
+/// edits, then files of the same name elsewhere in the project.
+fn retarget(ctx: &NativeContext<'_>, from: &str, target: &str, path: &str) -> Vec<String> {
+    let (dir, name) = path.rsplit_once('/').unwrap_or(("", path));
+    let (tdir, _) = target.rsplit_once('/').map(|(d, n)| (format!("{d}/"), n)).unwrap_or((String::new(), target));
+    let mut out: Vec<String> = Vec::new();
+    if let Some(list) = ctx.file.list(dir) {
+        for n in crate::util::nearest(name, list.iter().map(String::as_str), 2) {
+            out.push(format!("{tdir}{n}"));
+        }
+    }
+    if let Some(files) = ctx.file.project_files() {
+        let here: Vec<&str> = from.split('/').collect();
+        let here = &here[..here.len() - 1];
+        for f in files.iter().filter(|f| f.rsplit('/').next() == Some(name)) {
+            let there: Vec<&str> = f.split('/').collect();
+            let common = here.iter().zip(&there).take_while(|(a, b)| a == b).count();
+            let up = "../".repeat(here.len() - common);
+            let rel = format!("{up}{}", there[common..].join("/"));
+            if !out.contains(&rel) && out.len() < 3 {
+                out.push(rel);
+            }
+        }
+    }
+    out.truncate(3);
+    out
+}
+
 impl NativeRule for RelativeLinks {
     fn id(&self) -> &'static str {
         "md/relative-links"
@@ -1001,25 +1131,33 @@ impl NativeRule for RelativeLinks {
             return;
         }
         let from = ctx.file.path();
-        let mut check = |dest: &str, start: usize, end: usize| {
+        let mut check = |dest: &str, start: usize, end: usize, dest_at: Option<usize>| {
             let Some(target) = relative_target(dest) else { return };
             // A link that leaves the project can't be checked from inside it.
             let Some(path) = crate::resolve_path(from, &target) else { return };
             if !ctx.file.exists(&path) {
-                out.push(finding(start, end, format!("Relative link to `{target}`, which doesn't exist (`{}`)", if path.is_empty() { "." } else { &path })));
+                let mut f = finding(start, end, format!("Relative link to `{target}`, which doesn't exist (`{}`)", if path.is_empty() { "." } else { &path }));
+                if let Some(at) = dest_at
+                    && let Some(off) = dest.find(target.as_str())
+                {
+                    let near = retarget(ctx, from, &target, &path);
+                    let names: Vec<&str> = near.iter().map(String::as_str).collect();
+                    f.edits = crate::util::name_choices(&names, at + off, at + off + target.len(), &|c| c.to_owned());
+                }
+                out.push(f);
             }
         };
         for (base, tree) in inline_trees(doc, src, &["]("]) {
             let isrc = tree.get_text();
             for n in preorder(tree.root().get_inner_node()).into_iter().filter(|n| matches!(n.kind(), "inline_link" | "image")) {
                 if let Some(d) = named_children(n).into_iter().find(|c| c.kind() == "link_destination") {
-                    check(text(d, isrc), base + n.start_byte(), base + n.end_byte());
+                    check(text(d, isrc), base + n.start_byte(), base + n.end_byte(), Some(base + d.start_byte()));
                 }
             }
         }
         for d in definitions(doc, src) {
             if let Some(dest) = &d.dest {
-                check(dest, d.start, d.end);
+                check(dest, d.start, d.end, None);
             }
         }
     }

@@ -2,9 +2,9 @@
 id: md/no-inline-html
 title: "No raw HTML in Markdown"
 languages: [markdown]
-fix: manual
-fix_reason: "the Markdown equivalent, if there is one, needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for an inline element Markdown writes the same way — `<em>` and `<i>` as `*x*`, `<strong>` and `<b>` as `**x**`, `<code>` as a code span, a line-ending `<br>` as `\\` — with no attribute and plain content; any other HTML is manual"
+fix_exception: restructure
 stability: preview
 options:
   allowed_elements: { type: "string[]", default: [], description: "element names that may be used, such as `details` or `kbd`" }

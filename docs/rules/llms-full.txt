@@ -65739,7 +65739,7 @@ if (role === "admin") {
 ## `json/no-duplicate-keys` — No key twice in one JSON object
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** JSON
-- **Fix:** `manual` (which of the two values was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what JSON.parse and Python read) or the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/json/no-duplicate-keys.md
 
@@ -65763,6 +65763,15 @@ Each key appears once in a JSON object. Keys are compared by value, so `"a"` and
 ```json
 {
   "name": "app",
+  "version": "1.0.0",
+  "name": "web-app"
+}
+```
+
+##### Fixed
+
+```json
+{
   "version": "1.0.0",
   "name": "web-app"
 }
@@ -66197,7 +66206,7 @@ npm install codelaw
 ## `md/first-line-heading` — A document starts with its title heading
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (the title text needs the author)
+- **Fix:** `suggest` (the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/first-line-heading.md
 
@@ -66229,6 +66238,15 @@ The first block of a document, after any front matter and HTML comments, is a le
 This tool formats code.
 
 # Formatter
+````
+
+##### Fixed
+
+````md
+# Formatter
+
+This tool formats code.
+
 ````
 
 ##### Do
@@ -66283,7 +66301,7 @@ The fix renumbers the whole outline at once: a raised heading's subsections move
 ## `md/link-fragments` — In-page links point at a heading or anchor that exists
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which section the link meant needs the author)
+- **Fix:** `auto` (auto when a heading's anchor is the fragment written as an anchor (`#Install` is `#install`); otherwise the anchors within two edits are choices, nearest first; a fragment with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/link-fragments.md
 
@@ -66587,7 +66605,7 @@ Configure it.
 ## `md/no-emphasis-as-heading` — Headings are headings, not bold lines
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which heading level the line should become depends on the outline)
+- **Fix:** `suggest` (the choices are a heading one level under the heading above it (the default) or at that heading's level, written with the emphasised words; the outline changes, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-emphasis-as-heading.md
 
@@ -66687,7 +66705,7 @@ See [the changelog](CHANGELOG.md).
 ## `md/no-inline-html` — No raw HTML in Markdown
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (the Markdown equivalent, if there is one, needs the author)
+- **Fix:** `auto` (auto for an inline element Markdown writes the same way — `<em>` and `<i>` as `*x*`, `<strong>` and `<b>` as `**x**`, `<code>` as a code span, a line-ending `<br>` as `\` — with no attribute and plain content; any other HTML is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/conventions` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-inline-html.md
 
@@ -66839,7 +66857,7 @@ Written in JavaScript.
 ## `md/reference-links-images` — Reference links use a label that is defined
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (where the reference should point needs the author)
+- **Fix:** `suggest` (the defined labels within two edits of the missing one are choices, nearest first; a label with none near needs its definition written, and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/reference-links-images.md
 
@@ -66868,7 +66886,17 @@ A reference link or image — `[text][label]`, `[label][]`, `![alt][label]` — 
 ##### Don't
 
 ````md
+Read [the spec][spek].
+
+[spec]: https://spec.commonmark.org/
+````
+
+##### Fixed
+
+````md
 Read [the spec][spec].
+
+[spec]: https://spec.commonmark.org/
 ````
 
 ##### Do
@@ -66882,7 +66910,7 @@ Read [the spec][spec].
 ## `md/relative-links` — Relative links point at a file that exists
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (whether the file moved, was renamed or was never written needs the author)
+- **Fix:** `suggest` (the files beside the target whose names are within two edits, then files of the same name elsewhere in the project, are choices, nearest first; a link with none is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/relative-links.md
 
@@ -66905,19 +66933,32 @@ A link or image whose destination is a path, not a URL, names a file or folder o
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./faq.md).
 <!-- docs/setup.md -->
 # Setup
+<!-- docs/FAQ.md -->
+# FAQ
+````
+
+##### Fixed
+
+````md
+<!-- docs/guide.md -->
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
+<!-- docs/setup.md -->
+# Setup
+<!-- docs/FAQ.md -->
+# FAQ
 ````
 
 ##### Do
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
 <!-- docs/setup.md -->
 # Setup
-<!-- FAQ.md -->
+<!-- docs/FAQ.md -->
 # FAQ
 ````
 
@@ -66971,7 +67012,7 @@ The document's headings follow `headings`, a list such as `["# Title", "## Usage
 ## `md/single-h1` — One level-1 heading per document
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which heading is the title, and what level the others become, needs the author)
+- **Fix:** `suggest` (a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/single-h1.md
 
@@ -67027,7 +67068,7 @@ markdownlint applies the rule only when the first line of the file is the level-
 ## `md/table-column-count` — Table rows have as many cells as the header
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which cell is missing or extra needs the author)
+- **Fix:** `auto` (a row ending in `|` with fewer cells than the header gets empty ones, which GFM already renders, so nothing changes on the page; a row with more cells loses content either way and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/table-column-count.md
 
@@ -67049,9 +67090,17 @@ Every row of a pipe table has the same number of cells as its header row.
 ##### Don't
 
 ````md
-| Name | Type |
-| ---- | ---- |
-| id | number | required |
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number |
+````
+
+##### Fixed
+
+````md
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number | |
 ````
 
 ##### Do
@@ -135307,7 +135356,7 @@ A list with comments in it is reported without a fix, because the comments would
 ## `toml/no-duplicate-keys` — No key or table defined twice in TOML
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** TOML
-- **Fix:** `manual` (which of the two definitions was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the first or the last, since TOML refuses both and only the author knows which was meant. A table defined twice is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/toml/no-duplicate-keys.md
 
@@ -135332,7 +135381,15 @@ A key is defined once in its table, and a `[table]` header appears once. That co
 [tool.pytest]
 addopts = "-q"
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-q"
+```
+
+##### Fixed
+
+```toml
+[tool.pytest]
+addopts = "-q"
+testpaths = ["tests"]
 ```
 
 ##### Do
@@ -139563,7 +139620,7 @@ The idea comes from the YAML 1.1 and 1.2 specifications. `y` and `n` are not rep
 ## `yaml/no-ambiguous-numbers` — No numbers that YAML 1.1 and 1.2 read differently
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author)
+- **Fix:** `suggest` (the choices are quoting it (the default: the string YAML 1.2 reads, for a time), the number YAML 1.2 reads, or the number YAML 1.1 reads, each now read the same by both)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-ambiguous-numbers.md
 
@@ -139590,6 +139647,14 @@ ports:
   - 22:22
 ```
 
+##### Fixed
+
+```yaml
+mode: "0755"
+ports:
+  - "22:22"
+```
+
 ##### Do
 
 ```yaml
@@ -139605,7 +139670,7 @@ The idea comes from the YAML 1.1 and 1.2 specifications.
 ## `yaml/no-duplicate-keys` — No key twice in one YAML mapping
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (which of the two values was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what most YAML readers keep) or the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-duplicate-keys.md
 
@@ -139633,6 +139698,14 @@ service:
   image: caddy
 ```
 
+##### Fixed
+
+```yaml
+service:
+  restart: always
+  image: caddy
+```
+
 ##### Do
 
 ```yaml
@@ -139644,7 +139717,7 @@ service:
 ## `yaml/no-undeclared-alias` — Every alias refers to an anchor defined before it
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (whether the anchor is missing, misspelt or defined too late needs the author)
+- **Fix:** `suggest` (the anchors defined before the alias within two edits are choices, nearest first; an alias whose anchor comes later, or with none near, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-undeclared-alias.md
 
@@ -139666,11 +139739,21 @@ An alias `*name` refers to an anchor `&name` defined earlier in the same documen
 ##### Don't
 
 ```yaml
+defaults: &defaults
+  port: 443
+production:
+  <<: *default
+  host: example.com
+```
+
+##### Fixed
+
+```yaml
+defaults: &defaults
+  port: 443
 production:
   <<: *defaults
   host: example.com
-defaults: &defaults
-  port: 443
 ```
 
 ##### Do

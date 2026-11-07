@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `punctuation` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which heading level the line should become depends on the outline) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are a heading one level under the heading above it (the default) or at that heading's level, written with the emphasised words; the outline changes, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD036` |

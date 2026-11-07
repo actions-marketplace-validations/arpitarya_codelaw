@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignored_labels`, `shortcut_syntax` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the reference should point needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the defined labels within two edits of the missing one are choices, nearest first; a label with none near needs its definition written, and is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD052` |
@@ -191,7 +191,17 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 #### Don't
 
 ````md
+Read [the spec][spek].
+
+[spec]: https://spec.commonmark.org/
+````
+
+#### Fixed
+
+````md
 Read [the spec][spec].
+
+[spec]: https://spec.commonmark.org/
 ````
 
 #### Do

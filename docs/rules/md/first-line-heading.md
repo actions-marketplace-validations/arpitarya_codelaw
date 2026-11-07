@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `level`, `allow_preamble` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the title text needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD041` |
@@ -194,6 +194,15 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 This tool formats code.
 
 # Formatter
+````
+
+#### Fixed
+
+````md
+# Formatter
+
+This tool formats code.
+
 ````
 
 #### Do

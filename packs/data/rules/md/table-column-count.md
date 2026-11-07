@@ -2,9 +2,9 @@
 id: md/table-column-count
 title: "Table rows have as many cells as the header"
 languages: [markdown]
-fix: manual
-fix_reason: "which cell is missing or extra needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a row ending in `|` with fewer cells than the header gets empty ones, which GFM already renders, so nothing changes on the page; a row with more cells loses content either way and is manual"
+fix_exception: value
 stability: preview
 ported_from: [markdownlint/MD056]
 since: 0.1.0
@@ -30,9 +30,17 @@ native: md/table-column-count
 #### Don't
 
 ````md
-| Name | Type |
-| ---- | ---- |
-| id | number | required |
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number |
+````
+
+#### Fixed
+
+````md
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number | |
 ````
 
 #### Do
@@ -42,3 +50,4 @@ native: md/table-column-count
 | ---- | ---- | ---- |
 | id | number | required |
 ````
+

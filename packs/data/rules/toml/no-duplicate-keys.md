@@ -2,9 +2,9 @@
 id: toml/no-duplicate-keys
 title: "No key or table defined twice in TOML"
 languages: [toml]
-fix: manual
-fix_reason: "which of the two definitions was meant can't be known from the file"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the first or the last, since TOML refuses both and only the author knows which was meant. A table defined twice is manual"
+fix_exception: value
 stability: preview
 since: 0.1.0
 ---
@@ -32,7 +32,15 @@ native: toml/no-duplicate-keys
 [tool.pytest]
 addopts = "-q"
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-q"
+```
+
+#### Fixed
+
+```toml
+[tool.pytest]
+addopts = "-q"
+testpaths = ["tests"]
 ```
 
 #### Do
