@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 20 (48 rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 after slice 19; resume where the usage limit was thought to have stopped it, merge main, land, continue to closure.
+- **Done:** slice 19 landed (`3b9710f4`); slice 20 — 48 `py/*` rules (pydocstyle 20, flake8-async 10, flake8-annotations 9, refurb 7, pyupgrade 2): 6 auto, 15 suggest, 27 manual. `codelaw test packs/python` 607 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts for the 48 written from one run of only the new rules.
+- **Decided / left open:** D210 not built (the formatter already does it); the return-type rules offer `-> None` only where the function returns nothing, else the finding is manual; whitespace-only and docstring-section rows listed as native.
+- **Mistakes:** none new.
+- **Next:** slice 21 — flake8-pyi, Pylint's PLC/PLR rows, flake8-return, the gettext and copyright rows.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: slice 19 (53 Ruff/Pylint rows)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build the python half of W-139's remaining ports — Ruff's remaining sets and Pylint's — in slices of 30–60, each green, in parallel with the js strand, W-156, W-162 and W-172.
