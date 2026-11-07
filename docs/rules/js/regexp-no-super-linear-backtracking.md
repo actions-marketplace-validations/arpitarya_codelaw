@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/regexp` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` · `codelaw:js/regexp` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when one alternative of a repeated alternation matches a subset of another (it is removed, the language is the same); a repeated sequence with an unbounded quantifier is reported without an edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-regexp/no-super-linear-backtracking` |
+| **Ported from** | `eslint-plugin-regexp/no-super-linear-backtracking`, `eslint-plugin-sonarjs/super-linear-regex` |
 
 ## What it checks
 

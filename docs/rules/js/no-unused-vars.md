@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing a declaration can drop the side effects of its initialiser) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-unused-vars` |
+| **Ported from** | `eslint/no-unused-vars`, `eslint-plugin-sonarjs/no-unused-function-argument` |
 
 ## What it checks
 

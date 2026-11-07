@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (two imports of `{ … }` names only are merged automatically, a name both hold kept once; an import with a default or namespace binding is merged by hand, since the two can't always share one statement) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/no-duplicate-imports` |
+| **Ported from** | `eslint/no-duplicate-imports`, `eslint-plugin-import/no-duplicates` |
 
 ## What it checks
 

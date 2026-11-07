@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/sonarjs` at `error` |
+| **Turned on by** | `codelaw:js/strict` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-sonarjs/prefer-single-boolean-return` |
+| **Ported from** | `eslint-plugin-sonarjs/prefer-single-boolean-return`, `eslint-plugin-unicorn/prefer-boolean-return` |
 
 ## What it checks
 
@@ -35,11 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**Then extend a preset that turns it on** — `codelaw:js/sonarjs` sets it to `error`:
+**Then extend a preset that turns it on** — `codelaw:js/strict` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/sonarjs"]
+extends = ["codelaw:js/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

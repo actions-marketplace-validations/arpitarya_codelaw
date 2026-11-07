@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the target is repeated on the right, so either the compound form or the long form was meant: both are offered and the reviewer picks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `biome/suspicious/noMisrefactoredShorthandAssign` |
+| **Ported from** | `biome/suspicious/noMisrefactoredShorthandAssign`, `eslint-plugin-unicorn/no-misrefactored-assignment` |
 
 ## What it checks
 
