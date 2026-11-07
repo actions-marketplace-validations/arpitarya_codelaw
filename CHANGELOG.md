@@ -109,6 +109,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 - **Two rules stop reporting what is not there (W-139):** `md/no-empty-links` (on in `md/recommended`) no longer reports links to an anchor (`[x](#install)`) or a bracketed path (`[x](<release notes.md>)`), which it had done since its fix was added on 11-05; `js/no-undefined` no longer reports, or rewrites to `void 0`, TypeScript's `undefined` type (`string | undefined`).
 - **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
 
+### Security
+
+- **`zip` 9 in place of 8.6.0 (W-173):** the Python formatter's Ruff crates move to 0.0.21 (Ruff 0.17.4), whose `ruff_db` takes `zip` 9.4.1 — closing Dependabot's five `zip` 8.6.0 advisories (GHSA-m665-v7pm-7grj critical; GHSA-q7v9-x93c-xqv3, GHSA-hjqx-j4rw-g7xv, GHSA-9hj8-73fh-9963 high; GHSA-8hxf-qr8p-62x4 moderate). codelaw never read a ZIP archive through it, so no release was exposed; Python formatting is unchanged.
+
 ## 0.4.3 — 2026-10-30
 
 **The `deps` pack's Fux index on PyPI.** The same engine and rules as

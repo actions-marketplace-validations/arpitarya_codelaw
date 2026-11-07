@@ -24,6 +24,26 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-173 closed: Ruff 0.0.21, `zip` 9.4.1  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) on Arpit's ruling, bump Ruff to `=0.0.21`, record it in SR-LAW-11, prove it, close W-173.
+- **Done:** five pins `=0.0.21` in `codelaw-format`, `Cargo.lock` moved only D-02's tree (`zip` 9.4.1); SR-LAW-11 D-02 ratified again with the decider's words, count 162, ledger lines regenerated; SR-FORMATTER pins; inbox row removed; item archived; IMPLEMENTATION, CHANGELOG (Security).
+- **Decided / left open:** the W-141 corpus has no Python, so 756 Python files (3.14 stdlib + the repo's) stood in: byte-identical under both release builds. Only D-02's ledger lines regenerated — `print_ledger` also rewrites D-01's (stale, not this change's). Alerts close on the push.
+- **Mistakes:** the inbox row named four new crates; the tree also takes `r-efi@6` (and three already in the lock) — written into D-02 and the item.
+- **Next:** none for W-173; the push closes the alerts.
+
+---
+
+## 2026-11-07 — Docket, inbox only: W-105's budgets ruled unset  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"explain me the blockers 1 by one"*, then *"yes"* to the write-back.
+- **Done:** two inbox cards. W-105 ruled *"Leave unset"*: the inbox row and its sub-row removed, W-105 🔴 `arpit` → 🟣 `agent` (the 11-10 RC re-pin), the item file, INTERVIEW §1, the registry rows. The inbox is empty.
+- **Decided / left open:** W-173 ruled *"Bump to 0.0.21 (Recommended)"* here, but Claude Code had already taken the same ruling and landed it (`5f472943`) mid-docket; its files left to that session.
+- **Mistakes:** the cards were read before the 17:32 landing; caught by `git log` before writing.
+- **Next:** W-105's RC re-pin on 2026-11-10.
+
+---
+
 ## 2026-11-07 — W-169: the segfault caught by the capture, and fixed  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) watch CI on the pushed `main`, dispatch until a build leg crashes, read `crash-<key>`, fix with a regression test.
