@@ -274,8 +274,10 @@ pub const GRAPH_DIGEST_10K: &str = "fdccaee5e97504da";
 /// barrel re-exporting each module's helper), and each script and Python
 /// module importing across folders: a workspace package by name (through
 /// its barrel), a `@ts/*` path alias, a relative `../` import, and in
-/// Python a dotted import of another package's module; each Python
-/// package's `__init__.py` re-exports its modules' helpers. Same seed, same
+/// Python a dotted import of another folder's module (`services/py<n>/`, a
+/// namespace package: the reference generator puts each folder's
+/// `__init__.py` in `services/s<n>/`, so none has a module to re-export).
+/// Same seed, same
 /// bytes. The files come out sorted by path; the count is `files` plus a
 /// `package.json` and a barrel per script folder and the two root files.
 pub fn generate_graph(seed: u64, files: usize) -> Vec<File> {
@@ -857,7 +859,12 @@ mod tests {
         assert!(has("from \"@bench/") && has("from \"@ts/") && has("from \"../") && has("from services."));
         assert!(set.iter().any(|f| f.path == "packages/ts/ts0/index.ts" && f.text.contains("export { helper0 } from \"./m0\";")));
         assert!(set.iter().any(|f| f.path == "packages/ts/ts0/package.json" && f.text.contains("\"@bench/ts0\"")));
-        assert!(set.iter().any(|f| f.path == "services/s0/__init__.py" && f.text.starts_with("from .m1 import helper_1\n")));
+        // The reference generator puts a folder's `__init__.py` in `services/s<n>/`
+        // and its modules in `services/py<n>/`: the modules are namespace
+        // packages, imported by their dotted path, and no `__init__.py` has a
+        // module to re-export (the shape W-168 measured).
+        assert!(has("from services.py"));
+        assert!(set.iter().filter(|f| f.path.ends_with("/__init__.py")).all(|f| !f.text.contains("from .m")));
         let mut paths: Vec<&str> = set.iter().map(|f| f.path.as_str()).collect();
         paths.dedup();
         assert_eq!(paths.len(), set.len(), "a path is generated twice");

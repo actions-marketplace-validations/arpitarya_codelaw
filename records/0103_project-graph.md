@@ -156,6 +156,7 @@ A symbol reachable from an entry point is **never** unused:
   3. Report project rules for the symbols the file declares, plus a note for symbols the edit just left unused.
 
   Target: under 300 ms on a 10,000-file repo with a warm cache.
+- **Measured (W-168, 2026-11-07; a release build on the decider's loaded Mac; [results](../experiments/graph-scale/RESULTS.md)):** the hook target is **not met** — `codelaw hook <file>` on the 10k graph workload (`codelaw bench --graph`) takes 2.0 s median, 4.5 s p95, because hook mode is not built as written: every hook re-reads every file, looks up every file's facts, relinks the whole graph and runs every project rule. Full `check` with `js/project` and `py/project`: 6.3 s cold and 2.3 s warm at 10k, 56 s and 14 s at 100k, 1,186 s and 955 s at 1M; peak memory about 6 KiB a file (6.1 GiB at 1M). Past ~200k files the default `[cache] max_size` ([SR-CACHE](0109_cache.md) decision 6, 512 MB) prunes facts a warm run needs, so warm runs re-extract. Each stage is reported apart by `--timings` ([SR-CLI-MCP](0115_cli-and-mcp.md) decision 2). No budget is set; the decider rules which sizes get one ([L8](0010_LAW-8-performance-budgets.md)).
 - **Determinism ([L5](0007_LAW-5-no-model-in-the-engine.md)):** the graph is a pure function of the files and config. A cache hit and a cold build must give identical results; a test enforces this.
 
 #### 6. How a project rule is written
