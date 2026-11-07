@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-105: check_types_* timed on the batched helper; budgets to the inbox  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator, after the push to `7cdb480b`) read `check_types_*` from the CI `perf` runs, or trigger them, and file the budget proposal by L8's method without setting it.
+- **Done:** `perf-plan` fails on `7cdb480b` (the `graph_*` operations are in no group; reported for W-126). Three timings come from `ci` 42316894936 on `3b53d1a8`, which has the batched helper: its nightly plus two re-runs of each `perf types-*` job. p95 cold 9,734 / 5,186 / 6,011 ms, warm 5,775 / 5,286 / 5,006 ms. Inbox row: cold 14,602 ms, warm 8,663 ms.
+- **Decided / left open:** setting the budgets is the decider's. Job re-runs of one commit stand in for three separate runs; the row says so.
+- **Mistakes:** none.
+- **Next:** the decider rules on the two budgets; the RC re-pin on 11-10.
+
+---
+
 ## 2026-11-07 — W-173: `zip` unreachable, not removable; Ruff 0.0.21 to the decider  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-173 — the five Dependabot advisories on `zip` 8.6.0: exposure, removal first, else the bump to the decider.

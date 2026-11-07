@@ -22,6 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
+| 🔴 **`check_types_cold` / `check_types_warm` L8 budgets: 14,602 ms and 8,663 ms?** ([W-105](open/W-105-type-aware-engine.md)): p95 on three `perf` runs on `main` of the batched helper (`ci` 42316894936 on `3b53d1a8`, its nightly and two re-runs of the job; ubuntu-24.04, 2,200 files, TypeScript 7.1.0-beta): cold 9,734.3 / 5,185.9 / 6,010.8 ms, warm 5,775.1 / 5,286.0 / 5,005.8 ms. Your method (L8 decision 4): 1.5 × the worst → **cold 14,602 ms, warm 8,663 ms**; no design target, so no guard. The cold spread is the runner (same commit, same binary). **Set them** (a p95 over fails CI) **or leave them unset** (reported only). | 2026-11-07 |
+| ↳ **blocks:** W-105 | |
 | 🔴 **Ratify Ruff `=0.0.21` under L11 (W-173)** — the only fix for `zip` 8.6.0's five advisories (1 critical). Not reachable from codelaw (we call only `format_module_source`; `zip` sits behind ruff_db's vendored typeshed), but no feature drops it. **(a, recommended)** bump D-02's five crates to `=0.0.21`: `zip` → 9.4.1, `typed-path` → 0.13, new `getrandom` 0.4 and `nix` 0.31 (macOS), `psm`/`stacker` gone, all permissive; then the Python corpus re-run (0.0.21 may restyle). **(b)** stay on 0.0.18 and dismiss the alerts as unreachable. **(c)** a `[patch]` fork — no. | 2026-11-07 |
 | ↳ **blocks:** W-173 | |
 
@@ -31,7 +33,7 @@ here. Read that record before changing anything below it.
 
 ### build (6)
 
-🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets in the inbox (cold 14,602, warm 8,663 ms); next the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done — 27 packs 0 failed, corpus counted, 2 rules narrowed, proposal §13 (1,548 of 2,590 built). L8 → W-172. Next: DoD 1. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
