@@ -2,9 +2,9 @@
 id: sec-html/no-plugin-embed
 title: "No <object>, <embed> or <applet>"
 languages: [html]
-fix: manual
-fix_reason: "what replaces the plugin depends on what it showed"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual"
+fix_exception: restructure
 stability: preview
 security: { owasp: ["A02:2025"], severity: low }
 since: 0.2.0
@@ -31,7 +31,7 @@ native: sec-html/no-plugin-embed
 #### Don't
 
 ```html
-<embed src="movie.swf">
+<embed src="movie.mp4">
 ```
 
 #### Do

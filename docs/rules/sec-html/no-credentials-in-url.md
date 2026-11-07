@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the credential should live is the author's decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-522 · OWASP A07:2025 · security severity `high` |

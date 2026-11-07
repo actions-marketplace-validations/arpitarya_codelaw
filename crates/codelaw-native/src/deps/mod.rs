@@ -19,7 +19,7 @@ pub mod pep440;
 pub mod range;
 mod rules;
 mod runtime;
-mod sha256;
+pub(crate) mod sha256;
 pub mod snapshot;
 pub mod spdx;
 mod sync;

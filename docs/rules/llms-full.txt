@@ -104415,7 +104415,7 @@ In a page that uses AngularJS, `href="{{…}}"` and `src="{{…}}"` are written 
 ## `sec-html/csp-meta-unsafe` — A meta Content Security Policy does not allow unsafe script
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the page's scripts have to be given nonces or hashes, or moved to files)
+- **Fix:** `suggest` (`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/csp-meta-unsafe.md
 
@@ -104439,6 +104439,12 @@ A `<meta http-equiv="Content-Security-Policy">` does not allow `'unsafe-inline'`
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+```
+
+##### Fixed
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'">
 ```
 
 ##### Do
@@ -104490,7 +104496,7 @@ A `<form method="post">` has a hidden anti-forgery field, or a template tag that
 ## `sec-html/iframe-allow-powerful` — A cross-origin iframe is not given a powerful feature
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (which framed sites deserve the permission is the owner's decision)
+- **Fix:** `suggest` (the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/iframe-allow-powerful.md
 
@@ -104513,6 +104519,12 @@ An `<iframe>` whose `src` is on another origin does not list `camera`, `micropho
 
 ```html
 <iframe src="https://meet.example.com/room" allow="camera; microphone"></iframe>
+```
+
+##### Fixed
+
+```html
+<iframe src="https://meet.example.com/room"></iframe>
 ```
 
 ##### Do
@@ -104553,7 +104565,7 @@ An `<iframe>` has a `sandbox` attribute, and one that allows scripts does not al
 ## `sec-html/no-credentials-in-url` — No username and password in a URL
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (where the credential should live is the author's decision)
+- **Fix:** `suggest` (the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-credentials-in-url.md
 
@@ -104587,7 +104599,7 @@ A URL attribute does not carry `user:password@` in front of its host.
 ## `sec-html/no-external-base` — <base> stays on this origin
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (which origin the page may use is a decision for its owner)
+- **Fix:** `suggest` (the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-external-base.md
 
@@ -104610,6 +104622,13 @@ A `<base href>` is a path, not a URL on another origin.
 
 ```html
 <base href="https://cdn.example.com/app/">
+<link rel="stylesheet" href="app.css">
+```
+
+##### Fixed
+
+```html
+<link rel="stylesheet" href="https://cdn.example.com/app/app.css">
 ```
 
 ##### Do
@@ -104656,7 +104675,7 @@ No element has an inline event handler (`onclick`, `onerror`, `onload`, …).
 ## `sec-html/no-javascript-url` — No javascript: URLs
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the script has to move out of the URL into a listener or a real link)
+- **Fix:** `suggest` (an `<a href="javascript:void(0)">` runs nothing and becomes `<button type="button">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-javascript-url.md
 
@@ -104679,6 +104698,12 @@ An `href`, `src`, `action`, `formaction`, `xlink:href` or `<object data>` is nev
 
 ```html
 <a href="javascript:void(0)">Menu</a>
+```
+
+##### Fixed
+
+```html
+<button type="button">Menu</button>
 ```
 
 ##### Do
@@ -104719,7 +104744,7 @@ A `src`, a form `action`, a stylesheet or script `href` and a download link neve
 ## `sec-html/no-plugin-embed` — No <object>, <embed> or <applet>
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (what replaces the plugin depends on what it showed)
+- **Fix:** `suggest` (an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-plugin-embed.md
 
@@ -104742,7 +104767,7 @@ The page does not use `<object>`, `<embed>` or `<applet>` (an `<object>` that ho
 ##### Don't
 
 ```html
-<embed src="movie.swf">
+<embed src="movie.mp4">
 ```
 
 ##### Do
@@ -104818,7 +104843,7 @@ An HTML comment does not hold a password, key, token, private IP address, intern
 ## `sec-html/no-srcdoc-script` — An iframe's srcdoc holds no script
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the framed document has to become a file or be sandboxed)
+- **Fix:** `suggest` (the choices are an empty `sandbox` (the default), or `sandbox="allow-scripts"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-srcdoc-script.md
 
@@ -104843,6 +104868,18 @@ An `<iframe srcdoc>` does not contain a `<script>`, an event handler or a `javas
 <iframe srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
 ```
 
+##### Fixed (sandbox)
+
+```html
+<iframe sandbox srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+##### Fixed (sandbox, scripts allowed)
+
+```html
+<iframe sandbox="allow-scripts" srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
 ##### Do
 
 ```html
@@ -104852,7 +104889,7 @@ An `<iframe srcdoc>` does not contain a `<script>`, an event handler or a `javas
 ## `sec-html/no-template-html-sink` — No template binding that writes HTML
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the value is trusted, and how to sanitise it, is the author's call)
+- **Fix:** `suggest` (the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-template-html-sink.md
 
@@ -104877,6 +104914,12 @@ A template does not bind a value as HTML: Angular `[innerHTML]` and `[outerHTML]
 <div [innerHTML]="comment"></div>
 ```
 
+##### Fixed
+
+```html
+<div [textContent]="comment"></div>
+```
+
 ##### Do
 
 ```html
@@ -104886,7 +104929,7 @@ A template does not bind a value as HTML: Angular `[innerHTML]` and `[outerHTML]
 ## `sec-html/no-unsafe-template-interpolation` — No template syntax that turns escaping off
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the value is trusted, and how to sanitise it, is the author's call)
+- **Fix:** `suggest` (`{{{ x }}}` becomes `{{ x }}`, `|safe` goes and `<%- x %>` becomes `<%= x %>`, so the template escapes the value; markup the value was meant to carry then shows as text, which the reviewer confirms. `autoescape off` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-unsafe-template-interpolation.md
 

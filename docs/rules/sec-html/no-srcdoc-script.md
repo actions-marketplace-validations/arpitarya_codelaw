@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the framed document has to become a file or be sandboxed) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are an empty `sandbox` (the default), or `sandbox="allow-scripts"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ```html
 <iframe srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+#### Fixed (sandbox)
+
+```html
+<iframe sandbox srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+#### Fixed (sandbox, scripts allowed)
+
+```html
+<iframe sandbox="allow-scripts" srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
 ```
 
 #### Do

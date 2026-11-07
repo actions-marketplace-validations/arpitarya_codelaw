@@ -4,7 +4,7 @@
 //! attribute, one comment or one run of template syntax. A value that is
 //! template code (`{{ }}`, `<% %>`) is only judged by its literal prefix.
 
-use crate::html_dom::{finding, finding_with, is_dynamic, tokens_with_offsets, Attr, Elem};
+use crate::html_dom::{finding, finding_with, is_dynamic, remove_attr, tokens_with_offsets, Attr, Elem};
 use crate::html_rule;
 use codelaw_core::TextEdit;
 use regex::Regex;
@@ -83,12 +83,28 @@ html_rule!(NoInlineEventHandler, "sec-html/no-inline-event-handler", |dom, meta,
 
 const SCRIPT_URL_ATTRS: &[&str] = &["href", "src", "action", "formaction", "xlink:href"];
 
+/// Whether `ts..te` is a plain `</a>`.
+fn src_is_end_a(src: &str, ts: usize, te: usize) -> bool {
+    src[ts..te].eq_ignore_ascii_case("</a>")
+}
+
 html_rule!(NoJavascriptUrl, "sec-html/no-javascript-url", |dom, meta, ctx, out| {
     for e in &dom.elems {
         for a in &e.attrs {
             let named = SCRIPT_URL_ATTRS.contains(&a.name.as_str()) || (a.name == "data" && e.is("object"));
             if named && scheme_form(a.value_or_empty()).starts_with("javascript:") {
-                out.push(finding(a.start, a.end, format!("`{}` is a `javascript:` URL, which runs script from markup; use a real URL or a button with a listener", a.name)));
+                // `<a href="javascript:void(0)">` runs nothing: it is a
+                // button styled as a link.
+                let body = scheme_form(a.value_or_empty())["javascript:".len()..].trim().trim_end_matches(';').replace(' ', "");
+                let inert = matches!(body.as_str(), "" | "void(0)" | "void0");
+                let edits = match (inert && e.is("a") && a.name == "href", e.end_tag) {
+                    (true, Some((ts, te))) if src_is_end_a(ctx.source, ts, te) => {
+                        let name_end = after_tag_name(ctx.source, e.start);
+                        vec![TextEdit::new(e.start + 1, name_end, "button"), TextEdit::new(a.start, a.end, "type=\"button\""), TextEdit::new(ts, te, "</button>")]
+                    }
+                    _ => Vec::new(),
+                };
+                out.push(finding_with(a.start, a.end, format!("`{}` is a `javascript:` URL, which runs script from markup; use a real URL or a button with a listener", a.name), edits));
             }
         }
     }
@@ -202,6 +218,55 @@ html_rule!(IframeSandbox, "sec-html/iframe-sandbox", |dom, meta, ctx, out| {
 
 // ------------------------------------------------------------------ CSP in meta
 
+/// Standard base64 of `bytes`.
+fn base64(bytes: &[u8]) -> String {
+    const A: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    let mut out = String::new();
+    for chunk in bytes.chunks(3) {
+        let b = [chunk[0], *chunk.get(1).unwrap_or(&0), *chunk.get(2).unwrap_or(&0)];
+        let n = (u32::from(b[0]) << 16) | (u32::from(b[1]) << 8) | u32::from(b[2]);
+        for i in 0..4 {
+            if i <= chunk.len() {
+                out.push(A[(n >> (18 - 6 * i) & 63) as usize] as char);
+            } else {
+                out.push('=');
+            }
+        }
+    }
+    out
+}
+
+/// The edit that replaces `'unsafe-inline'` with a `'sha256-…'` hash of
+/// each inline `<script>` of the document — when no element has an
+/// inline event handler, which a hash does not allow.
+fn csp_hashes(dom: &crate::html_dom::Dom, c: &Attr, src: &str) -> Option<Vec<TextEdit>> {
+    if dom.elems.iter().any(|e| e.attrs.iter().any(|a| a.name.starts_with("on"))) {
+        return None;
+    }
+    let mut hashes = Vec::new();
+    for i in dom.by_tag("script") {
+        let e = &dom.elems[i];
+        if e.attr("src").is_some() {
+            continue;
+        }
+        let (ts, _) = e.end_tag?;
+        let hex = crate::deps::sha256::hex(src[e.open_end..ts].as_bytes());
+        let bytes: Vec<u8> = (0..hex.len()).step_by(2).map(|k| u8::from_str_radix(&hex[k..k + 2], 16)).collect::<Result<_, _>>().ok()?;
+        let h = format!("'sha256-{}'", base64(&bytes));
+        if !hashes.contains(&h) {
+            hashes.push(h);
+        }
+    }
+    let value = &src[c.value_start..c.value_end];
+    let at = value.to_ascii_lowercase().find("'unsafe-inline'")?;
+    let (s, e) = (c.value_start + at, c.value_start + at + "'unsafe-inline'".len());
+    if hashes.is_empty() {
+        let before = src[..s].trim_end_matches([' ', '\t']).len();
+        return Some(vec![TextEdit::delete(before, e)]);
+    }
+    Some(vec![TextEdit::new(s, e, hashes.join(" "))])
+}
+
 html_rule!(CspMetaUnsafe, "sec-html/csp-meta-unsafe", |dom, meta, ctx, out| {
     for i in dom.by_tag("meta") {
         let e = &dom.elems[i];
@@ -235,22 +300,124 @@ html_rule!(CspMetaUnsafe, "sec-html/csp-meta-unsafe", |dom, meta, ctx, out| {
             }
         }
         if !bad.is_empty() {
-            out.push(finding(c.start, c.end, format!("This Content Security Policy lets scripts load from `{}`, which defeats it; use nonces or hashes", bad.join("`, `"))));
+            let edits = if bad == ["'unsafe-inline'"] { csp_hashes(dom, c, ctx.source).unwrap_or_default() } else { Vec::new() };
+            out.push(finding_with(c.start, c.end, format!("This Content Security Policy lets scripts load from `{}`, which defeats it; use nonces or hashes", bad.join("`, `")), edits));
         }
     }
 });
 
 // ------------------------------------------------------------------ <base>
 
+/// `link` resolved against `base` (an absolute `scheme://host/…` URL):
+/// `None` for one it can't resolve plainly (a dot segment, a template).
+fn resolve(base: &str, link: &str) -> Option<String> {
+    let scheme_end = base.find("://")?;
+    let after = &base[scheme_end + 3..];
+    let host_end = after.find(['/', '?', '#']).map(|i| scheme_end + 3 + i).unwrap_or(base.len());
+    let origin = &base[..host_end];
+    let path = &base[host_end..];
+    let path = path.split(['?', '#']).next().unwrap_or("");
+    let dir = match path.rfind('/') {
+        Some(i) => &path[..=i],
+        None => "/",
+    };
+    if link.split(['?', '#']).next().unwrap_or("").split('/').any(|seg| seg == "." || seg == "..") {
+        return None;
+    }
+    Some(if link.is_empty() {
+        base.split('#').next().unwrap_or(base).to_owned()
+    } else if link.starts_with("//") {
+        format!("{}:{link}", &base[..scheme_end])
+    } else if link.starts_with('/') {
+        format!("{origin}{link}")
+    } else if link.starts_with('#') {
+        format!("{}{link}", base.split('#').next().unwrap_or(base))
+    } else if link.starts_with('?') {
+        format!("{origin}{path}{link}")
+    } else {
+        format!("{origin}{dir}{link}")
+    })
+}
+
+/// The edits that delete the `<base>` element `i` and write every
+/// relative URL of the document absolute against its `href`, so each
+/// still goes where it went; `None` when one can't be resolved plainly
+/// (a template, a `srcset`, a dot segment) or a second `<base>` exists.
+fn absolutise(dom: &crate::html_dom::Dom, i: usize, base: &str, src: &str) -> Option<Vec<TextEdit>> {
+    if dom.by_tag("base").count() != 1 {
+        return None;
+    }
+    let mut edits = Vec::new();
+    for e in &dom.elems {
+        for a in &e.attrs {
+            if a.name == "srcset" || a.name == "imagesrcset" {
+                return None;
+            }
+            if !URL_ATTRS.contains(&a.name.as_str()) || e.is("base") {
+                continue;
+            }
+            let Some(v) = a.value.as_deref() else { continue };
+            if a.is_dynamic() {
+                return None;
+            }
+            let t = v.trim();
+            let has_scheme = t.split_once(':').is_some_and(|(sch, _)| !sch.is_empty() && sch.chars().all(|c| c.is_ascii_alphanumeric() || "+-.".contains(c)) && sch.chars().next().is_some_and(|c| c.is_ascii_alphabetic()));
+            if has_scheme {
+                continue;
+            }
+            let abs = resolve(base, t)?;
+            if !a.quoted {
+                return None;
+            }
+            edits.push(TextEdit::new(a.value_start, a.value_end, abs));
+        }
+    }
+    let el = &dom.elems[i];
+    let end = el.end_tag.map_or(el.open_end, |(_, te)| te);
+    let (s, e) = crate::util::whole_lines(src, el.start, end);
+    edits.push(TextEdit::delete(s, e));
+    Some(edits)
+}
+
 html_rule!(NoExternalBase, "sec-html/no-external-base", |dom, meta, ctx, out| {
     for i in dom.by_tag("base") {
         if let Some(a) = dom.elems[i].attr("href").filter(|a| is_cross_origin(a.value_or_empty())) {
-            out.push(finding(a.start, a.end, "`<base href>` points at another origin, so every relative URL on the page resolves there; use a path or drop the `<base>`"));
+            let edits = absolutise(dom, i, a.value_or_empty(), ctx.source).unwrap_or_default();
+            out.push(finding_with(a.start, a.end, "`<base href>` points at another origin, so every relative URL on the page resolves there; use a path or drop the `<base>`", edits));
         }
     }
 });
 
 // --------------------------------------------------------------------- plugins
+
+/// The media element an `<embed>` of a picture, a video or a sound
+/// stands for: `<img>`, `<video controls>`, `<audio controls>`, by its
+/// `type` or its file's extension, the other attributes kept.
+fn media_element(e: &Elem, src: &str) -> Option<Vec<TextEdit>> {
+    if !e.is("embed") {
+        return None;
+    }
+    let url = e.attr("src").filter(|a| !a.is_dynamic())?.value_or_empty().to_ascii_lowercase();
+    let ext = url.split(['?', '#']).next().unwrap_or("").rsplit('.').next().unwrap_or("");
+    let ty = e.value_lower("type").unwrap_or_default();
+    let tag = if ty.starts_with("video/") || matches!(ext, "mp4" | "webm" | "ogv" | "mov" | "m4v") {
+        "video"
+    } else if ty.starts_with("audio/") || matches!(ext, "mp3" | "ogg" | "oga" | "wav" | "m4a" | "flac" | "opus") {
+        "audio"
+    } else if matches!(ext, "png" | "jpg" | "jpeg" | "gif" | "webp" | "avif" | "svg") {
+        "img"
+    } else {
+        return None;
+    };
+    let attrs: Vec<&str> = e.attrs.iter().filter(|a| a.name != "type").map(|a| &src[a.start..a.end]).collect();
+    let attrs = attrs.join(" ");
+    let out = match tag {
+        "img" => format!("<img {attrs}>"),
+        t => format!("<{t} {attrs} controls></{t}>"),
+    };
+    let end = e.end_tag.map_or(e.open_end, |(_, te)| te);
+    Some(vec![TextEdit::new(e.start, end, out)])
+}
 
 html_rule!(NoPluginEmbed, "sec-html/no-plugin-embed", |dom, meta, ctx, out| {
     for i in dom.all() {
@@ -261,7 +428,9 @@ html_rule!(NoPluginEmbed, "sec-html/no-plugin-embed", |dom, meta, ctx, out| {
         if e.value_lower("type").is_some_and(|t| t.starts_with("image/")) {
             continue;
         }
-        out.push(dom.at_elem(i, format!("<{}> runs a plugin or an external document with the page's trust; use <img>, <video>, <audio> or a sandboxed <iframe>", e.tag)));
+        let mut f = dom.at_elem(i, format!("<{}> runs a plugin or an external document with the page's trust; use <img>, <video>, <audio> or a sandboxed <iframe>", e.tag));
+        f.edits = media_element(e, ctx.source).unwrap_or_default();
+        out.push(f);
     }
 });
 
@@ -275,7 +444,9 @@ html_rule!(NoCredentialsInUrl, "sec-html/no-credentials-in-url", |dom, meta, ctx
     for e in &dom.elems {
         for a in e.attrs.iter().filter(|a| URL_ATTRS.contains(&a.name.as_str())) {
             if CREDENTIALS.is_match(a.value_or_empty()) {
-                out.push(finding(a.start, a.end, format!("`{}` has a username and password in the URL; they show in history, logs and referrers, so keep credentials out of markup", a.name)));
+                let v = a.value_or_empty();
+                let edits = v.find("//").and_then(|sl| v[sl + 2..].find('@').map(|at| TextEdit::delete(a.value_start + sl + 2, a.value_start + sl + 2 + at + 1))).filter(|_| a.value_end - a.value_start == v.len()).into_iter().collect();
+                out.push(finding_with(a.start, a.end, format!("`{}` has a username and password in the URL; they show in history, logs and referrers, so keep credentials out of markup", a.name), edits));
             }
         }
     }
@@ -288,7 +459,16 @@ const HTML_SINKS: &[&str] = &["[innerhtml]", "[outerhtml]", "bind-innerhtml", "b
 html_rule!(NoTemplateHtmlSink, "sec-html/no-template-html-sink", |dom, meta, ctx, out| {
     for e in &dom.elems {
         for a in e.attrs.iter().filter(|a| HTML_SINKS.contains(&a.name.as_str())) {
-            out.push(finding(a.start, a.end, format!("`{}` writes its value as HTML, so a value a user controls is cross-site scripting; bind text (`{{{{ }}}}`, `textContent`) or sanitise first", a.name)));
+            let text = match a.name.as_str() {
+                "[innerhtml]" => Some("[textContent]"),
+                "v-html" => Some("v-text"),
+                "x-html" => Some("x-text"),
+                "bind-innerhtml" => Some("bind-textContent"),
+                "ng-bind-html-unsafe" => Some("ng-bind"),
+                _ => None,
+            };
+            let edits = text.map(|t| TextEdit::new(a.name_start, a.name_end, t)).into_iter().collect();
+            out.push(finding_with(a.start, a.end, format!("`{}` writes its value as HTML, so a value a user controls is cross-site scripting; bind text (`{{{{ }}}}`, `textContent`) or sanitise first", a.name), edits));
         }
     }
 });
@@ -329,9 +509,22 @@ static SRCDOC_ACTIVE: LazyLock<Regex> = LazyLock::new(|| re(r#"(?is)<\s*script\b
 
 html_rule!(NoSrcdocScript, "sec-html/no-srcdoc-script", |dom, meta, ctx, out| {
     for i in dom.by_tag("iframe") {
-        let Some(a) = dom.elems[i].attr("srcdoc").filter(|a| !a.is_dynamic()) else { continue };
-        if SRCDOC_ACTIVE.is_match(&decode_entities(a.value_or_empty())) {
-            out.push(finding(a.start, a.end, "`srcdoc` holds a `<script>` or an event handler, which runs with this page's origin unless the iframe is sandboxed; move it to a separate file in a sandboxed iframe"));
+        let e = &dom.elems[i];
+        let Some(a) = e.attr("srcdoc").filter(|a| !a.is_dynamic()) else { continue };
+        // A sandbox without `allow-same-origin` gives the framed document
+        // an opaque origin of its own.
+        let sandboxed = e.attr("sandbox").is_some_and(|sb| !sb.value_or_empty().to_ascii_lowercase().split_ascii_whitespace().any(|t| t == "allow-same-origin"));
+        if !sandboxed && SRCDOC_ACTIVE.is_match(&decode_entities(a.value_or_empty())) {
+            let edits = if e.attr("sandbox").is_none() {
+                let at = after_tag_name(ctx.source, e.start);
+                crate::choice_edits(vec![
+                    crate::choice("sandbox", true, vec![TextEdit::insert(at, " sandbox")]),
+                    crate::choice("sandbox, scripts allowed", false, vec![TextEdit::insert(at, " sandbox=\"allow-scripts\"")]),
+                ])
+            } else {
+                Vec::new()
+            };
+            out.push(finding_with(a.start, a.end, "`srcdoc` holds a `<script>` or an event handler, which runs with this page's origin unless the iframe is sandboxed; move it to a separate file in a sandboxed iframe", edits));
         }
     }
 });
@@ -463,14 +656,24 @@ html_rule!(NoUnsafeTemplateInterpolation, "sec-html/no-unsafe-template-interpola
         if m.start() > 0 && src.as_bytes()[m.start() - 1] == b'{' {
             continue;
         }
-        out.push(finding(m.start(), m.end(), msg("`{{{ }}}`")));
+        let inner = &src[m.start() + 3..m.end() - 3];
+        out.push(finding_with(m.start(), m.end(), msg("`{{{ }}}`"), vec![TextEdit::new(m.start(), m.end(), format!("{{{{{inner}}}}}"))]));
     }
     for c in JINJA_SAFE.captures_iter(src) {
         let m = c.get(0).expect("whole match");
         if c["e"].trim_start().starts_with(['"', '\'']) {
             continue;
         }
-        out.push(finding(m.start(), m.end(), msg("`|safe`")));
+        let whole = m.as_str();
+        let edits = whole.find('|').and_then(|bar| {
+            let after = &whole[bar + 1..];
+            let ws = after.len() - after.trim_start().len();
+            after[ws..].starts_with("safe").then(|| {
+                let start = m.start() + whole[..bar].trim_end().len();
+                TextEdit::delete(start, m.start() + bar + 1 + ws + 4)
+            })
+        });
+        out.push(finding_with(m.start(), m.end(), msg("`|safe`"), edits.into_iter().collect()));
     }
     for m in AUTOESCAPE_OFF.find_iter(src) {
         out.push(finding(m.start(), m.end(), msg("`autoescape off`")));
@@ -483,7 +686,7 @@ html_rule!(NoUnsafeTemplateInterpolation, "sec-html/no-unsafe-template-interpola
         if !c["c"].is_empty() || RUBY.contains(&first) || is_dynamic(&c["e"]) {
             continue;
         }
-        out.push(finding(m.start(), m.end(), msg("`<%-`")));
+        out.push(finding_with(m.start(), m.end(), msg("`<%-`"), vec![TextEdit::new(m.start(), m.start() + 3, "<%=")]));
     }
 });
 
@@ -509,7 +712,10 @@ html_rule!(IframeAllowPowerful, "sec-html/iframe-allow-powerful", |dom, meta, ct
             }
         }
         if !granted.is_empty() {
-            out.push(finding(allow.start, allow.end, format!("This iframe from another origin may use the {}; grant it only to a framed page you trust, or drop it from `allow`", granted.join(", "))));
+            let kept: Vec<&str> = allow.value_or_empty().split(';').map(str::trim).filter(|d| !d.is_empty() && !d.split_ascii_whitespace().next().is_some_and(|f| granted.contains(&f.to_ascii_lowercase()))).collect();
+            let edit = if kept.is_empty() { remove_attr(ctx.source, allow) } else { TextEdit::new(allow.value_start, allow.value_end, kept.join("; ")) };
+            let edits = if allow.quoted || kept.is_empty() { vec![edit] } else { Vec::new() };
+            out.push(finding_with(allow.start, allow.end, format!("This iframe from another origin may use the {}; grant it only to a framed page you trust, or drop it from `allow`", granted.join(", ")), edits));
         }
     }
 });

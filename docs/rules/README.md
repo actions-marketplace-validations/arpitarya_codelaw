@@ -1461,21 +1461,21 @@ Presets: `codelaw:sec-html/recommended` · `codelaw:sec-html/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`sec-html/angularjs-url-expression`](sec-html/angularjs-url-expression.md) | AngularJS URLs use ng-href and ng-src | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/csp-meta-unsafe`](sec-html/csp-meta-unsafe.md) | A meta Content Security Policy does not allow unsafe script | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/csp-meta-unsafe`](sec-html/csp-meta-unsafe.md) | A meta Content Security Policy does not allow unsafe script | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/form-csrf-token`](sec-html/form-csrf-token.md) | A POST form carries a CSRF token | `manual` | `names` | `sec-html/strict` |
-| [`sec-html/iframe-allow-powerful`](sec-html/iframe-allow-powerful.md) | A cross-origin iframe is not given a powerful feature | `manual` | — | `sec-html/strict` |
+| [`sec-html/iframe-allow-powerful`](sec-html/iframe-allow-powerful.md) | A cross-origin iframe is not given a powerful feature | `suggest` | — | `sec-html/strict` |
 | [`sec-html/iframe-sandbox`](sec-html/iframe-sandbox.md) | An iframe is sandboxed | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-credentials-in-url`](sec-html/no-credentials-in-url.md) | No username and password in a URL | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-external-base`](sec-html/no-external-base.md) | <base> stays on this origin | `manual` | — | `sec-html/strict` |
+| [`sec-html/no-credentials-in-url`](sec-html/no-credentials-in-url.md) | No username and password in a URL | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-external-base`](sec-html/no-external-base.md) | <base> stays on this origin | `suggest` | — | `sec-html/strict` |
 | [`sec-html/no-inline-event-handler`](sec-html/no-inline-event-handler.md) | No inline event handlers | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-javascript-url`](sec-html/no-javascript-url.md) | No javascript: URLs | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-javascript-url`](sec-html/no-javascript-url.md) | No javascript: URLs | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/no-mixed-content`](sec-html/no-mixed-content.md) | Subresources and forms load over HTTPS | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-plugin-embed`](sec-html/no-plugin-embed.md) | No <object>, <embed> or <applet> | `manual` | — | `sec-html/strict` |
+| [`sec-html/no-plugin-embed`](sec-html/no-plugin-embed.md) | No <object>, <embed> or <applet> | `suggest` | — | `sec-html/strict` |
 | [`sec-html/no-secret-in-hidden-input`](sec-html/no-secret-in-hidden-input.md) | No secret in a hidden input | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/no-sensitive-comments`](sec-html/no-sensitive-comments.md) | No comment that exposes a secret or an internal host | `auto` | — | `sec-html/strict` |
-| [`sec-html/no-srcdoc-script`](sec-html/no-srcdoc-script.md) | An iframe's srcdoc holds no script | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-template-html-sink`](sec-html/no-template-html-sink.md) | No template binding that writes HTML | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-unsafe-template-interpolation`](sec-html/no-unsafe-template-interpolation.md) | No template syntax that turns escaping off | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-srcdoc-script`](sec-html/no-srcdoc-script.md) | An iframe's srcdoc holds no script | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-template-html-sink`](sec-html/no-template-html-sink.md) | No template binding that writes HTML | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-unsafe-template-interpolation`](sec-html/no-unsafe-template-interpolation.md) | No template syntax that turns escaping off | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/password-form-post`](sec-html/password-form-post.md) | A form with a password sends it with POST over HTTPS | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/referrer-policy`](sec-html/referrer-policy.md) | No referrer policy that leaks full URLs | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/sri-crossorigin`](sec-html/sri-crossorigin.md) | A script or stylesheet with an integrity hash has crossorigin | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |

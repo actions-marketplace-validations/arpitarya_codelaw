@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value is trusted, and how to sanitise it, is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                  # the resolved setting, and
 
 ```html
 <div [innerHTML]="comment"></div>
+```
+
+#### Fixed
+
+```html
+<div [textContent]="comment"></div>
 ```
 
 #### Do
