@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended layout is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (rows of unequal length are padded with empty `.` cells when every area is then a rectangle, which makes the template valid again with a layout the author may not have meant; an empty row or an area that is not a rectangle is manual, as the intended layout is the author's call) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/named-grid-areas-no-invalid` |
@@ -138,6 +138,16 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+a {
+  grid-template-areas:
+    "head head ."
+    "side main main";
+}
+```
+
 #### Do
 
 ```css
@@ -155,6 +165,16 @@ a {
 a {
   grid-template-areas:
     "head head"
+    "side main main";
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  grid-template-areas:
+    "head head ."
     "side main main";
 }
 ```

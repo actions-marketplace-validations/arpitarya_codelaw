@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-156 step 4: the last native moves  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) finish W-156: first run `cargo test -p codelaw-native` and `-p codelaw-engine` after the previous agent's marker edits and fix what broke, then move the 60 native rules left (css 8, python 52), one pack per change, and close the item.
+- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)).
+- **Decided / left open:** `string-no-newline` offers a space or `\A`, not a `\` continuation: the CSS grammar refuses the continuation, so the engine never applies it.
+- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack.
+- **Next:** python's 52 native rules.
+
 ## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build the js half of W-139's remaining port rows, ~30–60 rules per change, `codelaw test` 0 failed, `rules lint` 0, `--fix-stats --check`.

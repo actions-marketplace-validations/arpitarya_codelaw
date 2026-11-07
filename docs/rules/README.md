@@ -1105,7 +1105,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/at-rule-no-deprecated`](css/at-rule-no-deprecated.md) | No deprecated at-rules | `auto` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-unknown`](css/at-rule-no-unknown.md) | No unknown at-rules | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-no-vendor-prefix`](css/at-rule-no-vendor-prefix.md) | No vendor-prefixed at-rules | `auto` | `ignoreAtRules` | `css/standard` |
-| [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `manual` | `ignoreAtRules` | `css/recommended` |
+| [`css/at-rule-prelude-no-invalid`](css/at-rule-prelude-no-invalid.md) | At-rule preludes follow their grammar | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/at-rule-property-required-list`](css/at-rule-property-required-list.md) | At-rules hold the descriptors the project requires | `manual` | `list` | *[rules] only* |
 | [`css/block-no-redundant-nested-style-rules`](css/block-no-redundant-nested-style-rules.md) | No `& { … }` wrapper | `suggest` | — | `css/standard` |
 | [`css/color-function-alias-notation`](css/color-function-alias-notation.md) | `rgb()` and `hsl()`, not `rgba()` and `hsla()` | `auto` | — | `css/standard` |
@@ -1125,7 +1125,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/custom-property-pattern`](css/custom-property-pattern.md) | Custom property names are kebab-case | `manual` | `pattern` | `css/standard` |
 | [`css/declaration-block-no-duplicate-custom-properties`](css/declaration-block-no-duplicate-custom-properties.md) | No custom property declared twice in one block | `auto` | — | `css/recommended` |
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
-| [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
+| [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `auto` | — | `css/standard` |
 | [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `suggest` | — | `css/recommended` |
 | [`css/declaration-property-max-values`](css/declaration-property-max-values.md) | No declaration with more values than the project allows | `manual` | `max` | *[rules] only* |
 | [`css/declaration-property-unit-allowed-list`](css/declaration-property-unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
@@ -1151,7 +1151,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/function-url-scheme-disallowed-list`](css/function-url-scheme-disallowed-list.md) | No URL scheme the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/hue-degree-notation`](css/hue-degree-notation.md) | Hues are angles | `auto` | — | `css/standard` |
 | [`css/import-notation`](css/import-notation.md) | `@import` with `url()` | `auto` | — | `css/standard` |
-| [`css/keyframe-block-no-duplicate-selectors`](css/keyframe-block-no-duplicate-selectors.md) | No keyframe selector twice in one `@keyframes` | `manual` | — | `css/recommended` |
+| [`css/keyframe-block-no-duplicate-selectors`](css/keyframe-block-no-duplicate-selectors.md) | No keyframe selector twice in one `@keyframes` | `suggest` | — | `css/recommended` |
 | [`css/keyframe-declaration-no-important`](css/keyframe-declaration-no-important.md) | No `!important` in keyframes | `suggest` | — | `css/recommended` |
 | [`css/keyframe-selector-notation`](css/keyframe-selector-notation.md) | Percentages for keyframe selectors | `auto` | — | `css/standard` |
 | [`css/keyframes-name-pattern`](css/keyframes-name-pattern.md) | Keyframes names are kebab-case | `manual` | `pattern` | `css/standard` |
@@ -1167,11 +1167,11 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/media-feature-name-value-allowed-list`](css/media-feature-name-value-allowed-list.md) | Media features use the values the project allows | `manual` | `list` | *[rules] only* |
 | [`css/media-feature-name-value-no-unknown`](css/media-feature-name-value-no-unknown.md) | Media features have valid values | `suggest` | — | `css/recommended` |
 | [`css/media-feature-range-notation`](css/media-feature-range-notation.md) | Range syntax for media features | `auto` | — | `css/standard` |
-| [`css/media-query-no-invalid`](css/media-query-no-invalid.md) | Media queries follow the grammar | `manual` | `ignoreFunctions` | `css/recommended` |
+| [`css/media-query-no-invalid`](css/media-query-no-invalid.md) | Media queries follow the grammar | `suggest` | `ignoreFunctions` | `css/recommended` |
 | [`css/media-type-no-deprecated`](css/media-type-no-deprecated.md) | No deprecated media types | `auto` | `ignoreMediaTypes` | `css/recommended` |
-| [`css/named-grid-areas-no-invalid`](css/named-grid-areas-no-invalid.md) | Named grid areas are rectangles | `manual` | — | `css/recommended` |
+| [`css/named-grid-areas-no-invalid`](css/named-grid-areas-no-invalid.md) | Named grid areas are rectangles | `suggest` | — | `css/recommended` |
 | [`css/nesting-selector-no-missing-scoping-root`](css/nesting-selector-no-missing-scoping-root.md) | Nesting selectors have a parent | `suggest` | — | `css/recommended` |
-| [`css/no-descending-specificity`](css/no-descending-specificity.md) | Less specific selectors come first | `manual` | `ignore` | `css/recommended` |
+| [`css/no-descending-specificity`](css/no-descending-specificity.md) | Less specific selectors come first | `auto` | `ignore` | `css/recommended` |
 | [`css/no-duplicate-at-import-rules`](css/no-duplicate-at-import-rules.md) | No stylesheet imported twice | `suggest` | — | `css/recommended` |
 | [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `auto` | — | `css/recommended` |
 | [`css/no-empty-block`](css/no-empty-block.md) | No empty blocks | `auto` | — | `css/recommended` |
@@ -1230,8 +1230,8 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/selector-type-case`](css/selector-type-case.md) | Type selectors in lower case | `auto` | — | *[rules] only* |
 | [`css/selector-type-no-unknown`](css/selector-type-no-unknown.md) | No unknown type selectors | `suggest` | `ignore`, `ignoreTypes` | `css/recommended` |
 | [`css/shorthand-property-no-redundant-values`](css/shorthand-property-no-redundant-values.md) | No repeated values in shorthands | `auto` | — | `css/standard` |
-| [`css/string-no-newline`](css/string-no-newline.md) | No line breaks inside selector strings | `manual` | `ignore` | `css/recommended` |
-| [`css/syntax-string-no-invalid`](css/syntax-string-no-invalid.md) | `@property` syntax strings are valid | `manual` | — | `css/recommended` |
+| [`css/string-no-newline`](css/string-no-newline.md) | No line breaks inside selector strings | `suggest` | `ignore` | `css/recommended` |
+| [`css/syntax-string-no-invalid`](css/syntax-string-no-invalid.md) | `@property` syntax strings are valid | `suggest` | — | `css/recommended` |
 | [`css/time-min-milliseconds`](css/time-min-milliseconds.md) | No transition or animation too short to see | `manual` | `min` | *[rules] only* |
 | [`css/todo-marker`](css/todo-marker.md) | CSS TODO comments carry a ticket and, when asked, a date | `manual` | — | `css/markers` |
 | [`css/unit-allowed-list`](css/unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |

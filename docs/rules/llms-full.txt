@@ -1160,7 +1160,7 @@ At-rules a build tool prefixes, such as `@-webkit-keyframes`, are written withou
 ## `css/at-rule-prelude-no-invalid` — At-rule preludes follow their grammar
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended prelude is the author's call)
+- **Fix:** `suggest` (an identifier where a dashed one belongs is dashed (`@property size` becomes `--size`), a single-quoted `@charset` double-quoted, and a prelude on an at-rule that takes none removed; the at-rule is dropped today and starts to apply. Any other prelude is manual, as the intended one is a value the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-prelude-no-invalid.md
 
@@ -2351,7 +2351,7 @@ a {
 ## `css/declaration-block-no-redundant-longhand-properties` — Shorthands instead of complete sets of longhands
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (combining longhands into a shorthand value needs the shorthand's grammar)
+- **Fix:** `auto` (auto for a box-model shorthand (margin, padding, inset, gap, border-width, -style and -color, overflow, overscroll-behavior, place-*, their block and inline forms, scroll-margin and scroll-padding) when each longhand is set once with one value and no var() or env(), all or none !important, the shorthand not in the block and nothing between them that overlaps: the shorthand takes the last longhand's place with their values in its order; other shorthands reset longhands the set doesn't name, so they stay manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-block-no-redundant-longhand-properties.md
 
@@ -3913,7 +3913,7 @@ Ported with stylelint-config-standard's setting, `url`.
 ## `css/keyframe-block-no-duplicate-selectors` — No keyframe selector twice in one `@keyframes`
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which keyframe was meant can't be known from the code)
+- **Fix:** `suggest` (the choices are merging the two blocks in source order (the default: what browsers render today, the later declarations winning), keeping the first or keeping the last; the author often meant another offset, which the code doesn't say, and a selector shared with other keyframes in one block is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/keyframe-block-no-duplicate-selectors.md
 
@@ -3945,6 +3945,40 @@ A `@keyframes` block names each keyframe selector once.
 }
 ```
 
+##### Fixed (merge)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+##### Fixed (keep first)
+
+```css
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+##### Fixed (keep last)
+
+```css
+@keyframes fade {
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
 ##### Do
 
 ```css
@@ -3967,6 +4001,40 @@ A `@keyframes` block names each keyframe selector once.
   0% {
     opacity: 0;
   }
+
+  0% {
+    opacity: 1;
+  }
+}
+```
+
+##### Fixed (merge)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+    opacity: 1;
+  }
+
+}
+```
+
+##### Fixed (keep first)
+
+```scss
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+}
+```
+
+##### Fixed (keep last)
+
+```scss
+@keyframes fade {
 
   0% {
     opacity: 1;
@@ -5623,7 +5691,7 @@ Ported with stylelint-config-standard's setting, `context`. The fix does not mer
 ## `css/media-query-no-invalid` — Media queries follow the grammar
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended query is the author's call)
+- **Fix:** `suggest` (three conditions joined by both `and` and `or` get the two groupings as choices, `(a and b) or c` and `a and (b or c)`; the query matches nothing today and each grouping changes which media apply, so neither is the default. Any other invalid query is manual, as the intended query is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-query-no-invalid.md
 
@@ -5657,6 +5725,26 @@ Every query in `@media` and `@custom-media` is grammatical under Media Queries l
 }
 ```
 
+##### Fixed (group left)
+
+```css
+@media ((color) and (hover)) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed (group right)
+
+```css
+@media (color) and ((hover) or (width >= 600px)) {
+  a {
+    color: red;
+  }
+}
+```
+
 ##### Do
 
 ```css
@@ -5672,6 +5760,26 @@ Every query in `@media` and `@custom-media` is grammatical under Media Queries l
 
 ```scss
 @media (color) and (hover) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed (group left)
+
+```scss
+@media ((color) and (hover)) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed (group right)
+
+```scss
+@media (color) and ((hover) or (width >= 600px)) {
   a {
     color: red;
   }
@@ -5779,7 +5887,7 @@ Media queries use no media type the specifications deprecated: `tv`, `handheld`,
 ## `css/named-grid-areas-no-invalid` — Named grid areas are rectangles
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended layout is the author's call)
+- **Fix:** `suggest` (rows of unequal length are padded with empty `.` cells when every area is then a rectangle, which makes the template valid again with a layout the author may not have meant; an empty row or an area that is not a rectangle is manual, as the intended layout is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/named-grid-areas-no-invalid.md
 
@@ -5808,6 +5916,16 @@ a {
 }
 ```
 
+##### Fixed
+
+```css
+a {
+  grid-template-areas:
+    "head head ."
+    "side main main";
+}
+```
+
 ##### Do
 
 ```css
@@ -5825,6 +5943,16 @@ a {
 a {
   grid-template-areas:
     "head head"
+    "side main main";
+}
+```
+
+##### Fixed
+
+```scss
+a {
+  grid-template-areas:
+    "head head ."
     "side main main";
 }
 ```
@@ -5916,7 +6044,7 @@ The nesting selector `&` is used only inside a style rule (or under `@scope`), w
 ## `css/no-descending-specificity` — Less specific selectors come first
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (reordering rules can change which declarations win)
+- **Fix:** `auto` (auto when the more specific rule comes right before, nothing but whitespace between, each with one selector and only declarations: between two rules whose specificities differ, specificity decides and not order, so the swap changes nothing; a rule further up is manual, as moving one past others can change which declarations win)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-descending-specificity.md
 
@@ -9628,7 +9756,7 @@ a {
 ## `css/string-no-newline` — No line breaks inside selector strings
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (whether the line break was meant is the author's call)
+- **Fix:** `suggest` (the choices are a space or an escaped line break (`\A`) the string keeps; each makes a selector the browser drops today start to match, and only the author knows which was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/string-no-newline.md
 
@@ -9661,6 +9789,22 @@ two"] {
 }
 ```
 
+##### Fixed (space)
+
+```css
+[title="one two"] {
+  color: red;
+}
+```
+
+##### Fixed (escape)
+
+```css
+[title="one\A two"] {
+  color: red;
+}
+```
+
 ##### Do
 
 ```css
@@ -9679,6 +9823,22 @@ two"] {
 }
 ```
 
+##### Fixed (space)
+
+```scss
+[title="one two"] {
+  color: red;
+}
+```
+
+##### Fixed (escape)
+
+```scss
+[title="one\A two"] {
+  color: red;
+}
+```
+
 ##### Do
 
 ```scss
@@ -9690,7 +9850,7 @@ two"] {
 ## `css/syntax-string-no-invalid` — `@property` syntax strings are valid
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended type is the author's call)
+- **Fix:** `suggest` (an unknown type name gets the names it is written for (`<size>` is `<length>` or `<length-percentage>`) or the names within two edits as choices, the first the default; `@property` is dropped today, so registering it changes behaviour. A string with another problem is manual, as the intended syntax is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/syntax-string-no-invalid.md
 
@@ -9718,6 +9878,26 @@ The `syntax` of a `@property` rule is `"*"` or a `|`-separated list of supported
 }
 ```
 
+##### Fixed (length)
+
+```css
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+##### Fixed (length-percentage)
+
+```css
+@property --size {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
 ##### Do
 
 ```css
@@ -9734,6 +9914,26 @@ The `syntax` of a `@property` rule is `"*"` or a `|`-separated list of supported
 ```scss
 @property --size {
   syntax: "<size>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+##### Fixed (length)
+
+```scss
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+##### Fixed (length-percentage)
+
+```scss
+@property --size {
+  syntax: "<length-percentage>";
   inherits: false;
   initial-value: 0px;
 }
