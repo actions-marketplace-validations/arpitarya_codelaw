@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the name comes from the file name, which the rule does not read) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the name the function or class should have is the author's; the file name is only one guess at it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-anonymous-default-export` |

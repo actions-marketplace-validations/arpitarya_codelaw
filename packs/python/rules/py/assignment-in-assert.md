@@ -2,9 +2,8 @@
 id: py/assignment-in-assert
 title: "No walrus inside assert"
 languages: [python]
-fix: manual
-fix_reason: "the binding moves to its own statement before the assert"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the value is now computed even when asserts are stripped (`python -O`), which is the point but runs its code there too; a binding that is not the first thing the assert evaluates is moved by hand"
 stability: preview
 ported_from: [ruff/RUF018]
 since: 0.5.0
@@ -18,7 +17,22 @@ An `assert` does not bind a name with `:=`.
 match:
   kind: named_expression
   inside: {kind: assert_statement, stopBy: end}
+  any:
+    - all:
+        - has: { field: name, pattern: $N }
+        - has: { field: value, pattern: $V }
+        - inside:
+            kind: parenthesized_expression
+            nthChild: 1
+            pattern: $PAR
+            any:
+              - inside: { kind: assert_statement, pattern: $A }
+              - inside: { kind: comparison_operator, nthChild: 1, inside: { kind: assert_statement, pattern: $A } }
+    - regex: ''
 message: "This name is unbound when asserts are stripped (`python -O`)"
+fix:
+  - insert-before: { target: $A, text: "$N = $V", line: true }
+  - replace: { target: $PAR, with: "$N" }
 ```
 
 ## How to fix

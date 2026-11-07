@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the joined literal has to be written out) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (two strings in the same quotes are joined automatically; a template literal, quotes that differ, or a numeric escape before the join (`'\0' + '1'` would become an octal escape) are left as they are) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-useless-concat`, `eslint-plugin-unicorn/no-useless-concat` |

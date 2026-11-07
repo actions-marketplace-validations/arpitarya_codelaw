@@ -2,9 +2,8 @@
 id: js/grouped-accessor-pairs
 title: "A getter and its setter sit together"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "moving a method reorders the class body"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the setter moves below its getter; a comment or decorator above the setter stays where it was, and a class whose members are read in order (a decorator that lists them) changes"
 stability: preview
 ported_from: [eslint/grouped-accessor-pairs]
 since: 0.5.0
@@ -33,6 +32,7 @@ match:
       stopBy: end
       kind: method_definition
       regex: ^(static\s+)?get\s
+      pattern: $G
       has:
         field: name
         pattern: $N
@@ -40,6 +40,7 @@ match:
       stopBy: end
       kind: method_definition
       regex: ^(static\s+)?get\s
+      pattern: $G
       has:
         field: name
         pattern: $N
@@ -52,6 +53,8 @@ match:
           field: name
           pattern: $N
 message: Put the setter of `$N` next to its getter
+fix:
+  - move: { after: $G }
 ```
 
 ## How to fix

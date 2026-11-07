@@ -3,8 +3,8 @@ id: js/jsdoc-prefer-import-tag
 title: "@import a type instead of inline import()"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
-fix_reason: "an `@import` tag is added and each `import(\"…\").Name` renamed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_reason: "the type comes in once by a new file-level `@import` block, whose place among the file's imports, and whose name against the names the file already binds, are the author's to decide"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-jsdoc/prefer-import-tag]
 since: 0.5.0

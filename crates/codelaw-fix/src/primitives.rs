@@ -27,8 +27,12 @@ pub enum Place {
 pub enum Primitive {
     Replace { target: Target, with: String },
     Remove { target: Target },
-    InsertBefore { target: Target, text: String },
-    InsertAfter { target: Target, text: String },
+    /// With `line`, the text is a line of its own: above the line the
+    /// target starts on (`insert-before`) or below the line it ends on
+    /// (`insert-after`), at the indentation of the line the target starts
+    /// on (W-162).
+    InsertBefore { target: Target, text: String, line: bool },
+    InsertAfter { target: Target, text: String, line: bool },
     StripExportKeyword { target: Target },
     /// Gathers the names every match declares into one block. `$$$NAMES`
     /// in `block` is the value names; `$$$TYPE_NAMES` in `type_block` the
@@ -52,9 +56,26 @@ pub enum Primitive {
     /// whose text re-indenting would change (W-162).
     UnwrapBlock { target: Target, within: Target },
     /// Move the target onto a line of its own above the line `before`
-    /// starts on, at that line's indentation; the target and the blank
-    /// space before it leave their place (W-162).
-    Move { target: Target, before: Target },
+    /// starts on, at that line's indentation, or below the line `after`
+    /// ends on, at the indentation of the line `after` starts on; the
+    /// target and the blank space before it leave their place. A target
+    /// alone on its lines takes them, and the blank lines above it, with it,
+    /// and those blank lines are written between it and its new neighbour
+    /// (W-162).
+    Move { target: Target, to: MoveTo },
+    /// Write the items of the list `target` (an argument list, a `{ … }`
+    /// of import specifiers, an array) into the list `into`, after its last
+    /// item; with `unique`, an item whose text `into` already holds is left
+    /// out. The target stays where it is: a `remove` step takes it away
+    /// (W-162).
+    MergeInto { target: Target, into: Target, unique: bool },
+}
+
+/// Where `move` puts its target.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum MoveTo {
+    Before(Target),
+    After(Target),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -84,7 +105,7 @@ impl FixSpec {
 }
 
 const PRIMITIVES: &[&str] =
-    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "edit-text", "unwrap-block", "move"];
+    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "edit-text", "unwrap-block", "move", "merge-into"];
 
 fn target(v: &Value) -> Result<Target, String> {
     match v.as_str() {
@@ -142,15 +163,20 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
         "remove" => Primitive::Remove { target: target_or_match(arg)? },
         "strip-export-keyword" => Primitive::StripExportKeyword { target: target_or_match(arg)? },
         "insert-before" | "insert-after" => {
-            let (t, text) = match arg {
-                Value::String(s) => (Target::Match, s.clone()),
+            let (t, text, line) = match arg {
+                Value::String(s) => (Target::Match, s.clone(), false),
                 Value::Object(o) => {
-                    only_keys(o, &["target", "text"], name)?;
-                    (target(field(o, "target", name)?)?, string(field(o, "text", name)?, "text")?)
+                    only_keys(o, &["target", "text", "line"], name)?;
+                    let line = match o.get("line") {
+                        None => false,
+                        Some(Value::Bool(b)) => *b,
+                        Some(_) => return Err(format!("`{name}`: `line` is `true` or `false`")),
+                    };
+                    (o.get("target").map(target).transpose()?.unwrap_or(Target::Match), string(field(o, "text", name)?, "text")?, line)
                 }
-                _ => return Err(format!("`{name}` takes text, or `{{ target, text }}`")),
+                _ => return Err(format!("`{name}` takes text, or `{{ target?, text, line? }}`")),
             };
-            if name == "insert-before" { Primitive::InsertBefore { target: t, text } } else { Primitive::InsertAfter { target: t, text } }
+            if name == "insert-before" { Primitive::InsertBefore { target: t, text, line } } else { Primitive::InsertAfter { target: t, text, line } }
         }
         "collect-into-block" => {
             let Value::Object(o) = arg else { return Err("`collect-into-block` takes `{ block, type_block, position }`".into()) };
@@ -185,9 +211,24 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
             _ => return Err("`unwrap-block` takes a capture, or `{ target, within? }`".into()),
         },
         "move" => {
-            let Value::Object(o) = arg else { return Err("`move` takes `{ target?, before }`".into()) };
-            only_keys(o, &["target", "before"], name)?;
-            Primitive::Move { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), before: target(field(o, "before", name)?)? }
+            let Value::Object(o) = arg else { return Err("`move` takes `{ target?, before | after }`".into()) };
+            only_keys(o, &["target", "before", "after"], name)?;
+            let to = match (o.get("before"), o.get("after")) {
+                (Some(b), None) => MoveTo::Before(target(b)?),
+                (None, Some(a)) => MoveTo::After(target(a)?),
+                _ => return Err("`move` takes one of `before` and `after`".into()),
+            };
+            Primitive::Move { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), to }
+        }
+        "merge-into" => {
+            let Value::Object(o) = arg else { return Err("`merge-into` takes `{ target?, into, unique? }`".into()) };
+            only_keys(o, &["target", "into", "unique"], name)?;
+            let unique = match o.get("unique") {
+                None => false,
+                Some(Value::Bool(b)) => *b,
+                Some(_) => return Err("`merge-into`: `unique` is `true` or `false`".into()),
+            };
+            Primitive::MergeInto { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), into: target(field(o, "into", name)?)?, unique }
         }
         "edit-text" => {
             let Value::Object(o) = arg else { return Err("`edit-text` takes `{ target?, pattern, replace }`".into()) };
@@ -310,6 +351,20 @@ fn node_at(root: &Root, start: usize, end: usize) -> Option<tree_sitter::Node<'_
     (n.start_byte() == start && n.end_byte() == end).then_some(n)
 }
 
+/// The innermost node spanning exactly `start..end`: the list itself, not
+/// a clause that holds only it (`import_clause` around `named_imports`).
+fn list_at(root: &Root, start: usize, end: usize) -> Option<tree_sitter::Node<'_>> {
+    let mut n = node_at(root, start, end)?;
+    loop {
+        let mut c = n.walk();
+        let kids: Vec<_> = n.named_children(&mut c).collect();
+        match kids.as_slice() {
+            [only] if only.start_byte() == start && only.end_byte() == end => n = *only,
+            _ => return Some(n),
+        }
+    }
+}
+
 /// Widen a removal so the file stays tidy: a separating comma goes with
 /// the item, and a node alone on its lines takes the lines with it.
 fn removal(src: &str, node: Option<tree_sitter::Node<'_>>, mut start: usize, mut end: usize) -> (usize, usize) {
@@ -380,8 +435,15 @@ fn unbound(p: &Primitive, m: &Match) -> bool {
         | Primitive::InsertBefore { target, .. }
         | Primitive::InsertAfter { target, .. }
         | Primitive::EditText { target, .. }
-        | Primitive::UnwrapBlock { target, .. }
-        | Primitive::Move { target, .. } => target,
+        | Primitive::UnwrapBlock { target, .. } => target,
+        Primitive::Move { target, to: MoveTo::Before(other) | MoveTo::After(other) } => {
+            let gone = |t: &Target| matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none());
+            return gone(target) || gone(other);
+        }
+        Primitive::MergeInto { target, into, .. } => {
+            let gone = |t: &Target| matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none());
+            return gone(target) || gone(into);
+        }
         _ => return false,
     };
     matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none())
@@ -401,13 +463,30 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             let (s, e) = removal(ctx.source, node_at(ctx.root, s, e), s, e);
             out.push(TextEdit::delete(s, e));
         }
-        Primitive::InsertBefore { target, text } => {
+        Primitive::InsertBefore { target, text, line } => {
             let (s, _) = range(target, m)?;
-            out.push(TextEdit::insert(s, try_interpolate(text, m, ctx.source)?));
+            let text = try_interpolate(text, m, ctx.source)?;
+            if *line {
+                let src = ctx.source;
+                let at = src[..s].rfind('\n').map(|i| i + 1).unwrap_or(0);
+                out.push(TextEdit::insert(at, own_lines(&text, &line_indent(src, s))));
+            } else {
+                out.push(TextEdit::insert(s, text));
+            }
         }
-        Primitive::InsertAfter { target, text } => {
-            let (_, e) = range(target, m)?;
-            out.push(TextEdit::insert(e, try_interpolate(text, m, ctx.source)?));
+        Primitive::InsertAfter { target, text, line } => {
+            let (s, e) = range(target, m)?;
+            let text = try_interpolate(text, m, ctx.source)?;
+            if *line {
+                let src = ctx.source;
+                let (at, lead) = match src[e..].find('\n') {
+                    Some(i) => (e + i + 1, ""),
+                    None => (src.len(), "\n"),
+                };
+                out.push(TextEdit::insert(at, format!("{lead}{}", own_lines(&text, &line_indent(src, s)))));
+            } else {
+                out.push(TextEdit::insert(e, text));
+            }
         }
         Primitive::StripExportKeyword { target } => {
             let (s, e) = range(target, m)?;
@@ -466,22 +545,112 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             let text = if body.is_empty() { String::new() } else { format!("\n{body}") };
             out.push(TextEdit::new(start, we, text));
         }
-        Primitive::Move { target, before } => {
-            let (s, e) = range(target, m)?;
-            let (bs, _) = range(before, m)?;
+        Primitive::MergeInto { target, into, unique } => {
+            let (ts, te) = range(target, m)?;
+            let (is, ie) = range(into, m)?;
+            if ts < ie && is < te {
+                return Err("`merge-into`: the target and `into` overlap".into());
+            }
+            let from = list_at(ctx.root, ts, te).ok_or("`merge-into`: no node at the target")?;
+            let to = list_at(ctx.root, is, ie).ok_or("`merge-into`: no node at `into`")?;
+            let items = |n: tree_sitter::Node<'_>| -> Vec<(usize, usize)> {
+                let mut c = n.walk();
+                n.named_children(&mut c).filter(|k| k.kind() != "comment").map(|k| (k.start_byte(), k.end_byte())).collect()
+            };
             let src = ctx.source;
-            let line_start = src[..bs].rfind('\n').map(|i| i + 1).unwrap_or(0);
-            if line_start >= s {
+            let held: Vec<&str> = items(to).iter().map(|&(s, e)| &src[s..e]).collect();
+            let mut new: Vec<&str> = Vec::new();
+            for (s, e) in items(from) {
+                let text = &src[s..e];
+                if *unique && (held.contains(&text) || new.contains(&text)) {
+                    continue;
+                }
+                new.push(text);
+            }
+            if new.is_empty() {
+                return Ok(());
+            }
+            match items(to).last() {
+                Some(&(_, last)) => out.push(TextEdit::insert(last, format!(", {}", new.join(", ")))),
+                None => {
+                    let open = to.child(0).filter(|c| !c.is_named()).ok_or("`merge-into`: `into` is not a delimited list")?;
+                    out.push(TextEdit::insert(open.end_byte(), new.join(", ")));
+                }
+            }
+        }
+        Primitive::Move { target, to } => {
+            let (s, mut e) = range(target, m)?;
+            let src = ctx.source;
+            // A `;` that ends the target, when the grammar keeps it apart
+            // (a TypeScript member signature), goes with it.
+            if let Some(semi) = node_at(ctx.root, s, e).and_then(|n| n.next_sibling()).filter(|n| n.kind() == ";" && n.start_byte() == e) {
+                e = semi.end_byte();
+            }
+            let text = src[s..e].to_owned();
+            // What leaves: the target and the blank space before it, or,
+            // for a target alone on its lines, those lines and the blank
+            // lines above them.
+            let line_start = src[..s].rfind('\n').map(|i| i + 1).unwrap_or(0);
+            let rest_end = src[e..].find('\n').map(|i| e + i + 1).unwrap_or(src.len());
+            let alone = src[line_start..s].trim().is_empty() && src[e..rest_end].trim().is_empty();
+            let (gone_s, gone_e) = if alone {
+                let mut from = line_start;
+                while from > 0 {
+                    let prev = src[..from - 1].rfind('\n').map(|i| i + 1).unwrap_or(0);
+                    if !src[prev..from - 1].trim().is_empty() {
+                        break;
+                    }
+                    from = prev;
+                }
+                (from, rest_end)
+            } else {
+                (s - src[..s].bytes().rev().take_while(|b| *b == b' ' || *b == b'\t').count(), e)
+            };
+            let (at, indent) = match to {
+                MoveTo::Before(b) => {
+                    let (bs, _) = range(b, m)?;
+                    (src[..bs].rfind('\n').map(|i| i + 1).unwrap_or(0), line_indent(src, bs))
+                }
+                MoveTo::After(a) => {
+                    let (as_, ae) = range(a, m)?;
+                    (src[ae..].find('\n').map(|i| ae + i + 1).unwrap_or(src.len()), line_indent(src, as_))
+                }
+            };
+            if at > gone_s && at < gone_e {
+                return Err("`move`: the target holds the place it moves to".into());
+            }
+            if matches!(to, MoveTo::Before(_)) && !alone && at >= s {
                 return Err("`move`: the target is not after the line it moves above".into());
             }
-            let indent = line_indent(src, bs);
-            let text = src[s..e].to_owned();
-            let gap = src[..s].bytes().rev().take_while(|b| *b == b' ' || *b == b'\t').count();
-            out.push(TextEdit::insert(line_start, format!("{indent}{text}\n")));
-            out.push(TextEdit::delete(s - gap, e));
+            let lead = if at == src.len() && !src.ends_with('\n') { "\n" } else { "" };
+            // The blank lines that left with a target alone on its lines
+            // keep it apart from its new neighbour: below it when it moves
+            // up, above it when it moves down.
+            let blanks = if alone { "\n".repeat(src[gone_s..line_start].matches('\n').count()) } else { String::new() };
+            let moved = match to {
+                MoveTo::Before(_) => format!("{lead}{indent}{text}\n{blanks}"),
+                MoveTo::After(_) => format!("{lead}{blanks}{indent}{text}\n"),
+            };
+            out.push(TextEdit::insert(at, moved));
+            out.push(TextEdit::delete(gone_s, gone_e));
         }
     }
     Ok(())
+}
+
+/// Text written as lines of its own, each at `indent` plus the indentation
+/// it has in the text, each ending in a newline.
+fn own_lines(text: &str, indent: &str) -> String {
+    let text = text.trim_end_matches('\n');
+    let mut out = String::new();
+    for (i, l) in text.split('\n').enumerate() {
+        if i == 0 || !l.trim().is_empty() {
+            out.push_str(indent);
+        }
+        out.push_str(l);
+        out.push('\n');
+    }
+    out
 }
 
 /// The whitespace a line starts with, for the line `offset` is on.
@@ -593,7 +762,8 @@ pub fn edits_for(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<
 }
 
 /// Each labelled choice's edits for one match (SR-LAW-4 decision 4). A
-/// choice whose edits can't be built is left out; none left is an error.
+/// choice whose edits can't be built, or that has none (every step acts on
+/// a capture this match did not bind), is left out; none left is an error.
 pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<FixChoice>, String> {
     let FixSpec::Choices(choices) = spec else { return Err("not a `choices:` fix".into()) };
     let mut out = Vec::new();
@@ -601,6 +771,9 @@ pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<V
     for c in choices {
         let mut edits = Vec::new();
         match all_step_edits(&c.steps, m, ctx, &mut edits) {
+            Ok(()) if edits.is_empty() => {
+                first_error.get_or_insert_with(|| format!("the choice `{}` changes nothing for this match", c.label));
+            }
             Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits) }),
             Err(e) => {
                 first_error.get_or_insert(e);

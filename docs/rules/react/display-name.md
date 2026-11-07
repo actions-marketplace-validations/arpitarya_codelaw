@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the name is the author's choice) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a component held by a `const` at the top of the module gets `displayName` set to that name, which changes nothing but what DevTools and error messages show; one held anywhere else is named by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/display-name` |
@@ -138,9 +138,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```js
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ### JSX
@@ -154,9 +153,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```jsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ### TSX
@@ -170,9 +168,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```tsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ## Differences from the source

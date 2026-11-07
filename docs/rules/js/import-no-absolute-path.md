@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the relative path depends on where this file sits, which the rule does not see) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the absolute path names a place on the machine it was written on; which project file it means, and so the relative path, is the author's to say) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-import/no-absolute-path` |

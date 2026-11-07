@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended role is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the nearest valid role by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a role with no single near one is fixed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsx-a11y/aria-role` |
@@ -130,13 +130,13 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 #### Don't
 
 ```js
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 #### Do
 
 ```js
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 ### JSX
@@ -144,13 +144,13 @@ const d = <div role="dialog" />;
 #### Don't
 
 ```jsx
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 #### Do
 
 ```jsx
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 ### TSX
@@ -158,13 +158,13 @@ const d = <div role="dialog" />;
 #### Don't
 
 ```tsx
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 #### Do
 
 ```tsx
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 ---

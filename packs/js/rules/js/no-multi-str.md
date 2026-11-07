@@ -2,9 +2,7 @@
 id: js/no-multi-str
 title: "No multiline strings with a backslash"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "a template literal keeps the indentation of the next line, so the author chooses the form"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/no-multi-str]
 since: 0.5.0
@@ -19,6 +17,8 @@ match:
   kind: string
   regex: '\\\r?\n'
 message: "Use a template literal or `+` instead of a backslash at the end of the line"
+fix:
+  - edit-text: { pattern: '\\\r?\n', replace: '' }
 ```
 
 ## How to fix
@@ -39,8 +39,7 @@ two';
 #### Do
 
 ```js
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### JSX
@@ -55,8 +54,7 @@ two';
 #### Do
 
 ```jsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### TypeScript
@@ -71,8 +69,7 @@ two';
 #### Do
 
 ```ts
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### TSX
@@ -87,6 +84,5 @@ two';
 #### Do
 
 ```tsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```

@@ -2,9 +2,8 @@
 id: ts/adjacent-overload-signatures
 title: "Overloads of one name sit together"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "restructure: the overloads have to be moved next to each other, and the order between them is the author's"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "each overload moves up below the one before it, keeping their order; a comment above it stays where it was"
 stability: preview
 ported_from: [typescript-eslint/adjacent-overload-signatures]
 since: 0.5.0
@@ -32,12 +31,15 @@ match:
         stopBy: end
         matches: member
         has: { field: name, pattern: $N }
+        pattern: $PREV
     - not:
         follows:
           stopBy: { not: { any: [{ regex: '^[;,]$' }, { kind: comment }] } }
           matches: member
           has: { field: name, pattern: $N }
 message: "The overloads of `$N` are not next to each other"
+fix:
+  - move: { after: $PREV }
 ```
 
 ## How to fix

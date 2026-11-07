@@ -2,9 +2,8 @@
 id: js/prefer-single-call
 title: "One push() with several items"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "merging two statements is a cross-statement edit"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the receiver is evaluated once instead of twice, and a value the first push's arguments read is now computed before the second's: a getter or a call with effects can tell"
 stability: preview
 ported_from: [eslint-plugin-unicorn/prefer-single-call]
 since: 0.5.0
@@ -19,13 +18,18 @@ Consecutive `push` calls on the same array are merged. Upstream also covers `cla
 match:
   kind: expression_statement
   pattern: $A.push($$$X);
-  precedes: { pattern: $A.push($$$Y); }
+  all:
+    - has: { kind: call_expression, has: { field: arguments, pattern: $INTO } }
+    - precedes: { all: [{ pattern: $A.push($$$Y); }, { pattern: $NEXT }, { has: { kind: call_expression, has: { field: arguments, pattern: $FROM } } }] }
 message: "Push both values in one call: `$A.push(a, b)`"
+fix:
+  - merge-into: { target: $FROM, into: $INTO }
+  - remove: $NEXT
 ```
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second call's arguments into the first call, after its own, and delete the second statement.
 
 ## Examples
 
