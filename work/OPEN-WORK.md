@@ -41,7 +41,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css done): 52 rules left to move, all python. Next: python's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 47 wait (cross-file 36, SHAs 1, ten new `py/*`), 6 on W-105. Next: the `py/*`, then cross-file. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 37 wait (cross-file 36, SHAs 1), 6 on W-105. Next: SHAs, then cross-file. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 
 

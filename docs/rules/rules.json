@@ -56952,8 +56952,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -58515,8 +58515,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -62359,23 +62359,23 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the return type becomes `Iterator`, which may need importing",
+   "fix": "suggest",
+   "fix_reason": "the type becomes the iterator it returns, which is what `iter()` promises; a bare `Iterator` is imported from where the file imports `Iterable`, and a file that imports neither is fixed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
    "presets": [],
    "options": {},
-   "dont": "def __iter__(self) -> Iterable[int]: ...",
-   "do": "def __iter__(self) -> Iterator[int]: ...",
+   "dont": "from typing import Iterable",
+   "do": "from typing import Iterable, Iterator",
    "fix_steps": [
     "Annotate the return as `Iterator[...]` (`AsyncIterator[...]` for `__aiter__`), importing it from `collections.abc`."
    ],
    "example": {
     "language": "python",
-    "dont": "class Rows:\n    def __iter__(self) -> Iterable[int]: ...",
-    "do": "class Rows:\n    def __iter__(self) -> Iterator[int]: ..."
+    "dont": "from typing import Iterable\n\n\nclass Rows:\n    def __iter__(self) -> Iterable[int]: ...",
+    "do": "from typing import Iterable, Iterator\n\n\nclass Rows:\n    def __iter__(self) -> Iterator[int]: ..."
    },
    "ported_from": [
     "ruff/PYI045"
@@ -69350,8 +69350,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the assert is split into one per condition, each on its own line at the assert's indentation",
+   "fix": "suggest",
+   "fix_reason": "each condition becomes its own assert, so a failure names the one that failed; the second is now asserted only if the first held, as before, but an assert with a message is split by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -70773,8 +70773,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73516,8 +73516,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73557,8 +73557,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73598,8 +73598,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73639,8 +73639,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -79332,8 +79332,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the handler, and the `try` when nothing else is left, re-indents its body",
+   "fix": "suggest",
+   "fix_reason": "the `try` goes and its body moves up one level; a `try` with an `else` or `finally`, or another handler that does something, keeps its structure and is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",

@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 7: the ten new `py/*` rules  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the ten `py/*` rules W-139 filed under W-162, then SHAs, then cross-file, then close.
+- **Done:** all ten to `suggest` on `unwrap-block` (now Python too), line inserts, `$FRESH` and a gated `ensure-import`.
+- **Decided / left open:** an `elif` after a jump is left by hand (it would become an `if`).
+- **Mistakes:** none new.
+- **Next:** action SHAs.
+
+---
+
 ## 2026-11-07 — W-162 change 6: scope rename, purity, add-import  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue W-162 to closure after change 5 landed.

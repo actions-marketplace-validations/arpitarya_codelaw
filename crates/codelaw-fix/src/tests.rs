@@ -373,3 +373,11 @@ fn ensure_import_refuses_a_name_taken_by_something_else() {
     let m = find(Language::Python, &compiled, &root, src);
     assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("already a name"));
 }
+
+#[test]
+fn unwrap_block_dedents_a_python_block() {
+    // W-162: `unwrap-block` on a Python `block`.
+    let block = "match:\n  kind: else_clause\n  has: { field: body, pattern: $B }\nmessage: m\nfix:\n  - unwrap-block: { target: $B, within: $$MATCH }";
+    let out = fix(Language::Python, block, "def f(x):\n    if x:\n        return 1\n    else:\n        # two\n        y = 2\n        return y\n");
+    assert_eq!(out.text, "def f(x):\n    if x:\n        return 1\n    # two\n    y = 2\n    return y\n");
+}

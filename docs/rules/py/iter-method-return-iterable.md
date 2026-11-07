@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the return type becomes `Iterator`, which may need importing) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the type becomes the iterator it returns, which is what `iter()` promises; a bare `Iterator` is imported from where the file imports `Iterable`, and a file that imports neither is fixed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/*.pyi` |
@@ -133,6 +133,8 @@ codelaw config --print --for <file>                  # the resolved setting, and
 #### Don't
 
 ```python path=api.pyi
+from typing import Iterable
+
 class Rows:
     def __iter__(self) -> Iterable[int]: ...
 ```
@@ -140,6 +142,8 @@ class Rows:
 #### Do
 
 ```python path=api.pyi
+from typing import Iterable, Iterator
+
 class Rows:
     def __iter__(self) -> Iterator[int]: ...
 ```

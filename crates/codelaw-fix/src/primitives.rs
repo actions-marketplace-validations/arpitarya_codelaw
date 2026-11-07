@@ -80,7 +80,9 @@ pub enum Primitive {
     /// has, or a new import goes after the last one. `name: default` with
     /// `as: X` is a default import; in Python, no `name` is `import module`.
     /// Refused when the name the import binds is already a name in the file.
-    EnsureImport { module: String, name: Option<String>, alias: Option<String> },
+    /// A `target` only gates the step: it is skipped when the match did
+    /// not bind it.
+    EnsureImport { target: Option<Target>, module: String, name: Option<String>, alias: Option<String> },
 }
 
 /// Where `move` puts its target.
@@ -255,13 +257,13 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
         }
         "ensure-import" => {
             let Value::Object(o) = arg else { return Err("`ensure-import` takes `{ module, name?, as? }`".into()) };
-            only_keys(o, &["module", "name", "as"], name)?;
+            only_keys(o, &["target", "module", "name", "as"], name)?;
             let get = |k: &str| o.get(k).map(|v| string(v, k)).transpose();
             let (module, n, alias) = (string(field(o, "module", name)?, "module")?, get("name")?, get("as")?);
             if n.as_deref() == Some("default") && alias.is_none() {
                 return Err("`ensure-import`: a `default` import needs `as`".into());
             }
-            Primitive::EnsureImport { module, name: n, alias }
+            Primitive::EnsureImport { target: o.get("target").map(target).transpose()?, module, name: n, alias }
         }
         "merge-into" => {
             let Value::Object(o) = arg else { return Err("`merge-into` takes `{ target?, into, unique? }`".into()) };
@@ -479,6 +481,7 @@ fn unbound(p: &Primitive, m: &Match) -> bool {
         | Primitive::InsertAfter { target, .. }
         | Primitive::EditText { target, .. }
         | Primitive::RenameSymbol { target, .. }
+        | Primitive::EnsureImport { target: Some(target), .. }
         | Primitive::UnwrapBlock { target, .. } => target,
         Primitive::Move { target, to: MoveTo::Before(other) | MoveTo::After(other) } => {
             let gone = |t: &Target| matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none());
@@ -591,7 +594,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             }
             out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
         }
-        Primitive::EnsureImport { module, name, alias } => ensure_import(ctx, module, name.as_deref(), alias.as_deref(), out)?,
+        Primitive::EnsureImport { module, name, alias, .. } => ensure_import(ctx, module, name.as_deref(), alias.as_deref(), out)?,
         Primitive::CollectIntoBlock { .. } => {}
         Primitive::EditText { .. } => unreachable!("edit-text steps run in `text_edits`"),
         Primitive::UnwrapBlock { target, within } => {
@@ -604,6 +607,9 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             let src = ctx.source;
             let (open, close) = (src[bs..be].find('{'), src[bs..be].rfind('}'));
             let (inner_s, inner_e) = match (open, close) {
+                // A Python block has no braces: its lines are its body.
+                // (from the line after `within`'s first, comments there kept).
+                _ if block.kind() == "block" => (src[ws..].find('\n').map(|i| ws + i + 1).filter(|h| *h <= bs).unwrap_or(bs), be),
                 (Some(o), Some(c)) if o < c => (bs + o + 1, bs + c),
                 _ => return Err("`unwrap-block`: the target is not a braced block".into()),
             };
@@ -611,7 +617,13 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             let body = reindent(&src[inner_s..inner_e], &indent);
             // The blank space before `within` goes with it.
             let start = ws - src[..ws].bytes().rev().take_while(|b| *b == b' ' || *b == b'\t').count();
-            let text = if body.is_empty() { String::new() } else { format!("\n{body}") };
+            let text = match () {
+                _ if body.is_empty() => String::new(),
+                // `within` starts its line: the body takes its place there.
+                _ if start == 0 || src[..start].ends_with('\n') => body.trim_start().to_owned(),
+                _ => format!("\n{body}"),
+            };
+            let start = if text.starts_with('\n') || text.is_empty() { start } else { ws };
             out.push(TextEdit::new(start, we, text));
         }
         Primitive::MergeInto { target, into, unique } => {
