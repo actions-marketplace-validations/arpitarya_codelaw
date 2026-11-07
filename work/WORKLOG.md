@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-169: the crash twin carries symbols  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) make `crash-capture.sh`'s unstripped twin actually unstripped, verified locally.
+- **Done:** the twin builds with `--strip false` and `-C strip=none` on the final crate only. Locally (musl, zig) its `.text` is byte-identical to the shipped build's, with 120,192 symbols, and only `codelaw-cli` relinks. `collect` ran end to end. SR-PACKAGES decision 11 and the item are updated.
+- **Decided / left open:** a profile override (`profile.release.strip`) was rejected: it rebuilds every crate and the code moves. Step 3 still waits on the push.
+- **Mistakes:** none new.
+- **Next:** after the push, five green runs of every build leg.
+
+---
+
 ## 2026-11-07 — W-162 change 8: action SHAs  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) action SHAs after the `py/*` rules.
