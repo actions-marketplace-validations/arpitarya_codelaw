@@ -1345,15 +1345,15 @@ Presets: `codelaw:redux-toolkit/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`redux-toolkit/no-blind-payload-return`](redux-toolkit/no-blind-payload-return.md) | A reducer builds its state, not the action's payload | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-blind-payload-return`](redux-toolkit/no-blind-payload-return.md) | A reducer builds its state, not the action's payload | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-immutable-js`](redux-toolkit/no-immutable-js.md) | State is plain JavaScript, not Immutable.js | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-legacy-create-store`](redux-toolkit/no-legacy-create-store.md) | The store is made with configureStore | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-mutating-reducer`](redux-toolkit/no-mutating-reducer.md) | A hand-written reducer doesn't change its state in place | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-mutating-reducer`](redux-toolkit/no-mutating-reducer.md) | A hand-written reducer doesn't change its state in place | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-non-serializable-state`](redux-toolkit/no-non-serializable-state.md) | State holds only serializable values | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-object-selector`](redux-toolkit/no-object-selector.md) | useSelector selects one value per call | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-object-selector`](redux-toolkit/no-object-selector.md) | useSelector selects one value per call | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-sequential-dispatch`](redux-toolkit/no-sequential-dispatch.md) | One event is one action, not a run of dispatches | `manual` | `max` | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-side-effects-in-reducer`](redux-toolkit/no-side-effects-in-reducer.md) | A reducer has no side effects | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/object-shorthand-mapdispatch`](redux-toolkit/object-shorthand-mapdispatch.md) | connect's mapDispatch is an object of action creators | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-side-effects-in-reducer`](redux-toolkit/no-side-effects-in-reducer.md) | A reducer has no side effects | `suggest` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/object-shorthand-mapdispatch`](redux-toolkit/object-shorthand-mapdispatch.md) | connect's mapDispatch is an object of action creators | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/prefer-create-slice`](redux-toolkit/prefer-create-slice.md) | Reducers are written with createSlice | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/prefer-hooks-api`](redux-toolkit/prefer-hooks-api.md) | Components read the store with hooks, not connect | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/slice-key-names`](redux-toolkit/slice-key-names.md) | State slices are named after their data | `manual` | — | `redux-toolkit/recommended` |
