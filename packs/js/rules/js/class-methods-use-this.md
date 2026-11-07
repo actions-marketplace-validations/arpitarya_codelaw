@@ -27,7 +27,7 @@ utils:
 match:
   kind: method_definition
   inside: { kind: class_body }
-  has: { field: body }
+  has: { field: body, kind: statement_block }
   not:
     any:
       - regex: '^(?:@[^\n]*\s+)*(?:(?:public|private|protected|readonly|async|override|abstract|declare)\s+)*static\b'

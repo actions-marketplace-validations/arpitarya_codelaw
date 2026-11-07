@@ -21,7 +21,7 @@ utils:
     not:
       any:
         - regex: '^export\s+(default|type|\*)\b'
-        - has: { field: source }
+        - has: { field: source, kind: string }
         - has: { field: declaration, any: [{ kind: type_alias_declaration }, { kind: interface_declaration }] }
 match:
   matches: named

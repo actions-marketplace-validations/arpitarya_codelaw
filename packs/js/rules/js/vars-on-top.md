@@ -35,6 +35,7 @@ utils:
       - kind: import_statement
       - kind: comment
       - kind: empty_statement
+      - regex: '^\{$'
       - kind: expression_statement
         has: { kind: string }
 match:

@@ -16,7 +16,7 @@ A `static` field that is public and has a value is marked `readonly`.
 ```codelaw
 match:
   kind: public_field_definition
-  has: { field: value }
+  has: { field: value, regex: '(?s).' }
   all:
     - regex: '(^|\s)static\s'
   not:

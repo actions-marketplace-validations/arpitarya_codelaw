@@ -19,7 +19,7 @@ match:
   any:
     - kind: import_statement
       not: { has: { kind: import_clause } }
-      has: { field: source }
+      has: { field: source, kind: string }
     - kind: expression_statement
       pattern: "require($S);"
 message: "This import binds nothing; import what it provides"

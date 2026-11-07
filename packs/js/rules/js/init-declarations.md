@@ -19,7 +19,7 @@ match:
   kind: variable_declarator
   not:
     any:
-      - has: { field: value }
+      - has: { field: value, regex: '(?s).' }
       - inside: { kind: for_in_statement, stopBy: end }
       - inside: { kind: ambient_declaration, stopBy: end }
 message: "Give this variable its starting value here"

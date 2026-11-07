@@ -18,12 +18,12 @@ A function expression with a name, assigned to a variable, a property or an obje
 match:
   any:
     - kind: variable_declarator
-      has: { field: value, kind: function_expression, has: { field: name } }
+      has: { field: value, kind: function_expression, has: { field: name, kind: identifier } }
       not: { pattern: { context: "var $X = function $X($$$P) { $$$S }", selector: variable_declarator } }
     - pattern: "$O.$A = function $B($$$P) { $$$S }"
       not: { pattern: "$Q.$X = function $X($$$R) { $$$T }" }
     - kind: pair
-      has: { field: value, kind: function_expression, has: { field: name } }
+      has: { field: value, kind: function_expression, has: { field: name, kind: identifier } }
       not: { pattern: { context: "({ $X: function $X($$$P) { $$$S } })", selector: pair } }
 message: "The function's name differs from the name it is assigned to"
 ```

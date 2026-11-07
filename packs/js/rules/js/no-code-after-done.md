@@ -18,11 +18,11 @@ In a test that takes a `done` callback, no statement follows the `done()` call i
 match:
   kind: expression_statement
   pattern: "done();"
-  precedes: { not: { kind: comment } }
+  precedes: { not: { any: [{ kind: comment }, { regex: '^\}$' }] } }
   inside:
     stopBy: end
     any: [{ kind: arrow_function }, { kind: function_expression }]
-    has: { field: parameters, has: { kind: identifier, regex: '^done$' } }
+    has: { field: parameters, has: { stopBy: end, kind: identifier, regex: '^done$' } }
 message: "Code after `done()` runs after the test has ended"
 ```
 

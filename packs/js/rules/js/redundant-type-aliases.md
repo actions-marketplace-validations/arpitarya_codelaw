@@ -18,7 +18,7 @@ A type alias does not only rename a built-in type: `type Name = string` adds a n
 match:
   kind: type_alias_declaration
   has: { field: value, kind: predefined_type }
-  not: { has: { field: type_parameters } }
+  not: { has: { field: type_parameters, kind: type_parameters } }
 message: "This alias only renames a built-in type"
 ```
 

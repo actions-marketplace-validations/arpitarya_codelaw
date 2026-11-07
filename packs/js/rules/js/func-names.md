@@ -19,7 +19,7 @@ match:
   kind: function_expression
   not:
     any:
-      - has: { field: name }
+      - has: { field: name, kind: identifier }
       - inside: { kind: export_statement }
 message: "Give this function expression a name"
 ```

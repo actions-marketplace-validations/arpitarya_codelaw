@@ -21,7 +21,7 @@ utils:
     not:
       any:
         - regex: '^export\s+(default|type|\*)\b'
-        - has: { field: source }
+        - has: { field: source, kind: string }
 match:
   matches: named
   follows: { stopBy: end, matches: named }

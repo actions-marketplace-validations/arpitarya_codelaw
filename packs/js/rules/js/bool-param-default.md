@@ -18,7 +18,7 @@ An optional parameter typed `boolean` (`flag?: boolean`) is given a default valu
 match:
   kind: optional_parameter
   has: { kind: type_annotation, has: { kind: predefined_type, regex: '^boolean$' } }
-  not: { has: { field: value } }
+  not: { has: { field: value, regex: '(?s).' } }
 message: "Give this optional boolean a default value"
 ```
 
