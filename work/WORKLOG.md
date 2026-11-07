@@ -74,6 +74,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 23 (14 native rules)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the strand's native rows, in Rust in `crates/codelaw-native`.
+- **Done:** slice 22 landed (`cdd67331`). Slice 23 — 14 native `js/*` rules in a new `js_parity.rs`: complexity and nesting measures, sort order with an in-place permutation fix, file-wide duplicates (strings, functions, union types), escape rewrites, braceless-block indentation. `cargo test -p codelaw-native` 276 passed.
+- **Decided / left open:** `js/sort-keys` reports one finding per object (the first key out of order) and sorts the whole object, where ESLint reports each key; `js/sort-imports` checks member order only. `js/prefer-unicode-code-point-escapes` leaves printable ASCII to `js/prefer-literal-ascii`, so the two never rewrite one escape back and forth.
+- **Mistakes:** the preset counts given in slices 21–22 counted the description line; corrected in the item.
+- **Next:** the other 37 natives (the jsdoc set, `prefer-continue`/`prefer-early-return`, `one-var`, `no-redundant-comparison`, …).
+
 ## 2026-11-07 — W-139 strand W-139-js, third pass: slice 22 (37 SonarJS and unicorn rules read from source, 2 links)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) as slice 21: the rest of the rows once "not confirmable offline".
