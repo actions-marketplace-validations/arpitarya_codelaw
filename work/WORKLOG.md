@@ -34,6 +34,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 3: `unwrap-block` and `move`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162: finish computed edits, then the proposal's order; restore `.fux` before each submit.
+- **Done:** `unwrap-block` and `move` (SR-RULE-FORMAT 3c); `js/no-else-return`, `js/no-inline-comments`, `js/no-useless-spread` moved. The landed change-2 worktree was removed by hand as `lockmaster doctor` advised (`git worktree remove`, `git branch -d`), after `lockmaster abandon` was refused by the permission classifier.
+- **Decided / left open:** an empty spread and a block holding a multi-line string offer no fix. `no-duplicate-imports` waits on `merge-into` (it edits the earlier import).
+- **Mistakes:** none new.
+- **Next:** `merge-into`, then the native fixes.
+
+---
+
 ## 2026-11-07 — W-162 change 2: `edit-text`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) resume W-162 after the usage-limit stop (W-171 kept the worktree): re-derive status, merge main, land each capability as a complete change.
@@ -47,7 +57,7 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
-- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)).
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)). scss landed (scss: auto 18 → 20, suggest 10 → 13, manual 23 → 18 (pending 9 → 4)).
 - **Decided / left open:** none yet.
 - **Mistakes:** none.
 - **Next:** the next pack.

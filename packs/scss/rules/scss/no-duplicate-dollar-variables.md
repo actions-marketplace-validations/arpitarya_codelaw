@@ -2,9 +2,9 @@
 id: scss/no-duplicate-dollar-variables
 title: "No duplicate `$variables`"
 languages: [scss]
-fix: manual
-fix_reason: "which declaration wins is the author's call"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's"
+fix_exception: value
 stability: preview
 ported_from: [stylelint-scss/no-duplicate-dollar-variables]
 since: 0.3.0
@@ -31,6 +31,12 @@ native: scss/no-duplicate-dollar-variables
 
 ```scss
 $gap: 4px;
+$gap: 8px;
+```
+
+#### Fixed
+
+```scss
 $gap: 8px;
 ```
 

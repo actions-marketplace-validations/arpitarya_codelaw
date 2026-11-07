@@ -274,7 +274,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-dynamic-namespace-import-access`](js/no-dynamic-namespace-import-access.md) | No computed access on a namespace import | `manual` | — | `js/recommended` |
-| [`js/no-else-return`](js/no-else-return.md) | No else after return | `manual` | — | `js/strict` |
+| [`js/no-else-return`](js/no-else-return.md) | No else after return | `suggest` | — | `js/strict` |
 | [`js/no-empty`](js/no-empty.md) | No empty blocks | `auto` | — | `js/recommended` |
 | [`js/no-empty-character-class`](js/no-empty-character-class.md) | No empty character classes in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-empty-file`](js/no-empty-file.md) | No empty file | `manual` | — | `js/strict` |
@@ -312,7 +312,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-impossible-length-comparison`](js/no-impossible-length-comparison.md) | No length < 0 | `manual` | — | `js/strict` |
 | [`js/no-incorrect-template-string-interpolation`](js/no-incorrect-template-string-interpolation.md) | No ${} in a plain string | `manual` | — | `js/strict` |
-| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `manual` | — | `js/taste` |
+| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `suggest` | — | `js/taste` |
 | [`js/no-inner-declarations`](js/no-inner-declarations.md) | No function declaration in a nested block | `manual` | — | *[rules] only* |
 | [`js/no-instanceof-builtins`](js/no-instanceof-builtins.md) | Array.isArray rather than instanceof Array | `suggest` | — | `js/strict` |
 | [`js/no-invalid-regexp`](js/no-invalid-regexp.md) | RegExp() is given a valid pattern and flags | `manual` | — | `js/recommended` |
@@ -440,7 +440,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
 | [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
-| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `manual` | — | `js/strict` |
+| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `auto` | — | `js/strict` |
 | [`js/no-useless-string-raw`](js/no-useless-string-raw.md) | No String.raw without an escape | `auto` | — | `js/recommended` |
 | [`js/no-useless-switch-case`](js/no-useless-switch-case.md) | No empty case before default | `suggest` | — | `js/strict` |
 | [`js/no-useless-template-literals`](js/no-useless-template-literals.md) | No template literal without substitutions | `manual` | — | `js/strict` |
@@ -1213,7 +1213,7 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/at-mixin-pattern`](scss/at-mixin-pattern.md) | Mixin names are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/at-root-no-redundant`](scss/at-root-no-redundant.md) | No redundant `@at-root` | `auto` | — | *[rules] only* |
 | [`scss/at-rule-conditional-no-parentheses`](scss/at-rule-conditional-no-parentheses.md) | No parentheses around `@if` and `@while` conditions | `auto` | — | *[rules] only* |
-| [`scss/at-rule-no-unknown`](scss/at-rule-no-unknown.md) | No unknown at-rules (SCSS) | `manual` | `ignoreAtRules` | `scss/recommended`, `scss/strict` |
+| [`scss/at-rule-no-unknown`](scss/at-rule-no-unknown.md) | No unknown at-rules (SCSS) | `suggest` | `ignoreAtRules` | `scss/recommended`, `scss/strict` |
 | [`scss/at-use-no-redundant-alias`](scss/at-use-no-redundant-alias.md) | No `@use` alias that repeats the module's name | `auto` | — | *[rules] only* |
 | [`scss/block-no-redundant-nesting`](scss/block-no-redundant-nesting.md) | No block that only holds one nested block | `auto` | — | *[rules] only* |
 | [`scss/comment-no-loud`](scss/comment-no-loud.md) | Silent comments, not loud ones | `suggest` | — | *[rules] only* |
@@ -1230,18 +1230,18 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/function-color-channel`](scss/function-color-channel.md) | Colour channels are read with `color.channel()` | `suggest` | — | *[rules] only* |
 | [`scss/function-color-relative`](scss/function-color-relative.md) | No legacy relative colour functions | `suggest` | — | *[rules] only* |
 | [`scss/function-disallowed-list`](scss/function-disallowed-list.md) | No Sass function the project disallows | `manual` | `list` | *[rules] only* |
-| [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `manual` | `ignoreFunctions` | `scss/strict` |
+| [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `suggest` | `ignoreFunctions` | `scss/strict` |
 | [`scss/function-quote-no-quoted-strings-inside`](scss/function-quote-no-quoted-strings-inside.md) | No `quote()` of a quoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/function-unquote-no-unquoted-strings-inside`](scss/function-unquote-no-unquoted-strings-inside.md) | No `unquote()` of an unquoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/load-no-partial-leading-underscore`](scss/load-no-partial-leading-underscore.md) | No leading underscore in a loaded partial | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/load-partial-extension`](scss/load-partial-extension.md) | No file extension when loading a partial | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/map-keys-quotes`](scss/map-keys-quotes.md) | Map keys are quoted | `suggest` | — | *[rules] only* |
-| [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `manual` | `max` | `scss/strict` |
+| [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `suggest` | `max` | `scss/strict` |
 | [`scss/media-feature-value-dollar-variable`](scss/media-feature-value-dollar-variable.md) | Media query values are variables | `manual` | — | *[rules] only* |
 | [`scss/no-dollar-variables`](scss/no-dollar-variables.md) | No Sass variables | `manual` | — | *[rules] only* |
-| [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-duplicate-load-rules`](scss/no-duplicate-load-rules.md) | No module loaded twice | `suggest` | — | *[rules] only* |
-| [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-global-function-names`](scss/no-global-function-names.md) | No global function names | `auto` | — | `scss/strict` |
 | [`scss/no-import`](scss/no-import.md) | No `@import` | `suggest` | — | `scss/strict` |
 | [`scss/no-slash-division`](scss/no-slash-division.md) | No `/` as division | `suggest` | — | `scss/strict` |

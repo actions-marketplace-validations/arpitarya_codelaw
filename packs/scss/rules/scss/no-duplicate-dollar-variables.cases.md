@@ -47,3 +47,15 @@ x.$a: 1;
 ```expect
 (none)
 ```
+
+### case: a value read before it is declared again is not dropped
+
+```scss
+$gap: 4px;
+.a { margin: $gap; }
+$gap: 8px;
+```
+
+```expect
+3:1 scss/no-duplicate-dollar-variables
+```
