@@ -94,7 +94,7 @@ Every door gets the same answer, because they all call the same engine.
 | **A rule's documentation** | kept apart from the code that runs it | the rule file itself, tested against its own examples |
 | **AI agents** | read your instructions file | ask codelaw for the rules, and are checked after every edit |
 
-You keep the rules you know: **492 rules are reimplemented from ESLint and its plugins, typescript-eslint, Ruff, Bandit, stylelint, html-validate and markdownlint**, and none of those tools needs to be installed.
+You keep the rules you know: **1,947 rules are reimplemented from ESLint and its plugins, typescript-eslint, Biome, Oxlint, Ruff, Pylint, Bandit, stylelint, html-validate and markdownlint**, and none of those tools needs to be installed.
 
 **A warning on your laptop, an error in CI** — one config, no second file for the pipeline. codelaw runs the `ci` profile when `CI` is set, `local` otherwise, and an AI agent's hook runs `ci`, so an agent never leaves behind what CI would fail. A glob can be told never to fail the run, or never to warn ([usage guide](USAGE.md#warn-on-a-laptop-fail-in-ci)):
 
@@ -202,7 +202,7 @@ def greet(names=None):
 | 🧱 **Fixes can restructure code** | Fix primitives move and regroup code, for example gathering every `export` into one block at the end of the file. A plain node-for-node replace can't do that. |
 | 🔁 **Deterministic** | Same files and config in, same output out, with or without an AI agent. Every fix is re-parsed and checked before it's written, and a fix that would break the file is rolled back. |
 | 🤖 **Built for AI coding agents** | `--format agent` gives one line per finding with its fix, ready to feed back to an agent after every edit. |
-| 📦 **Standard rules included** | 2122 rules reimplemented or written new: 492 ported from ESLint and its plugins, typescript-eslint, Ruff, Bandit, stylelint, html-validate and markdownlint, and 160 of codelaw's own — so your team's rules sit on top of a familiar base. |
+| 📦 **Standard rules included** | 2122 rules reimplemented or written new: 1,947 ported from ESLint and its plugins, typescript-eslint, Biome, Oxlint, Ruff, Pylint, Bandit, stylelint, html-validate and markdownlint, and 175 of codelaw's own — so your team's rules sit on top of a familiar base. |
 
 **For the person who owns the codebase:** the review comment you keep writing becomes a rule file, once. From then on a person, a CI job and every AI agent get the same answer — and the answer can be audited, because it is a file in your repo and not a model's opinion.
 
@@ -247,6 +247,7 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 <!-- /docs-sync:packs -->
 
 - **Reimplemented, not wrapped.** Each rule is written fresh in codelaw's format, and its `ported_from:` field names the original. You don't need ESLint, Ruff or stylelint installed.
+- **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,122 today; 1,548 of the 2,590 rules on the ruled port list are answered so far. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13.
 - **Differences are written down.** Each pack's README lists where a port behaves differently from the original, and which rules weren't ported and why.
 - **Layout rules are left out on purpose.** Indentation, spacing and quotes are the formatter's job (`codelaw format`).
 - **32,975 example checks, all green.** `codelaw test packs/<pack>` runs them.

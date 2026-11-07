@@ -4,9 +4,13 @@
 [findings]
 "scss/at-extend-no-missing-placeholder" = 21
 "scss/at-function-named-arguments" = 45
+"scss/at-function-pattern" = 0
 "scss/at-if-no-null" = 20
+"scss/at-import-partial-extension-allowed-list" = 0
+"scss/at-import-partial-extension-disallowed-list" = 0
 "scss/at-mixin-argumentless-call-parentheses" = 87
 "scss/at-mixin-named-arguments" = 48
+"scss/at-mixin-no-risky-nesting-selector" = 6
 "scss/at-mixin-pattern" = 6
 "scss/at-root-no-redundant" = 0
 "scss/at-rule-conditional-no-parentheses" = 15
@@ -14,8 +18,11 @@
 "scss/at-use-no-redundant-alias" = 0
 "scss/block-no-redundant-nesting" = 29
 "scss/comment-no-loud" = 298
+"scss/declaration-nested-properties" = 0
+"scss/declaration-nested-properties-no-divided-groups" = 0
 "scss/dimension-no-non-numeric-values" = 829
 "scss/dollar-variable-default" = 613
+"scss/dollar-variable-first-in-block" = 40
 "scss/dollar-variable-no-missing-interpolation" = 0
 "scss/dollar-variable-pattern" = 5
 "scss/double-slash-comment-empty" = 227
@@ -23,6 +30,7 @@
 "scss/function-calculation-no-interpolation" = 69
 "scss/function-color-channel" = 6
 "scss/function-color-relative" = 36
+"scss/function-disallowed-list" = 0
 "scss/function-no-unknown" = 96
 "scss/function-quote-no-quoted-strings-inside" = 1
 "scss/function-unquote-no-unquoted-strings-inside" = 0
@@ -30,13 +38,18 @@
 "scss/load-partial-extension" = 0
 "scss/map-keys-quotes" = 18
 "scss/max-nesting-depth" = 15
+"scss/media-feature-value-dollar-variable" = 21
+"scss/no-dollar-variables" = 1864
 "scss/no-duplicate-dollar-variables" = 9
 "scss/no-duplicate-load-rules" = 0
 "scss/no-duplicate-mixins" = 0
 "scss/no-global-function-names" = 191
 "scss/no-import" = 197
 "scss/no-slash-division" = 10
+"scss/no-unused-private-members" = 2
+"scss/partial-no-import" = 84
 "scss/percent-placeholder-pattern" = 1
 "scss/selector-nest-combinators" = 136
 "scss/selector-no-redundant-nesting-selector" = 2
+"scss/selector-no-union-class-name" = 0
 "scss/todo-marker" = 6

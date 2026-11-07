@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 steps 3–4: checks, corpus counts, L8, before/after  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-139 step 3 — `codelaw test` on every pack, corpus counts for the 233 rules of 11-05, the L8 budgets; then step 4; resumed after the usage limit (W-171).
+- **Done:** merged main into `lm/W-139` (`72832b42`). 27 packs 0 failed. Shallow corpus (387 MB), run one pack at a time, then deleted; every `corpus.toml` written. `md/no-empty-links` narrowed (254 false findings on anchor and bracketed links, from W-156's patterns) and `js/no-undefined` narrowed (TypeScript's `undefined` type; the corpus fixpoint failed), each with cases. Proposal §13 and the README carry the before/after. L8: the 233 cost nothing measurable beside the Mac's noise, but main is over three set budgets on the reference runner. Filed W-172.
+- **Decided / left open:** W-139 stays open: DoD 1 has about 1,042 rows to build. The loud preview rules are listed in the item for review before any promotion.
+- **Mistakes:** the first bench pass used `--out` for `--output` and was re-run. An attribution bench against 10-30's packs could not run, because those packs predate `fix_exception`.
+- **Next:** W-172's bisect, then DoD 1's remaining rows.
+
 ## 2026-11-07 — W-168 closed: step 6 ruled, no budget yet  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) write Arpit's step-6 ruling, close and archive W-168, name the budgeting follow-up, remove the worktree.
