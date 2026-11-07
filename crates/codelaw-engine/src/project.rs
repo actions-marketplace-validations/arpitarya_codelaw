@@ -7,6 +7,7 @@
 //! content like the facts (SR-SPELL decision 5).
 
 use crate::compile::{CompiledRule, Matcher};
+use crate::timings::Phase;
 use crate::lint::comment_ranges;
 use crate::{EngineError, Project, suppress};
 use codelaw_cache::KeyBuilder;
@@ -64,6 +65,15 @@ impl Project {
 
     /// Every file of the project root the graph reads, from disk.
     pub(crate) fn graph_sources(&mut self) -> Result<Vec<Source>, EngineError> {
+        let reading = std::time::Instant::now();
+        let out = self.graph_sources_untimed()?;
+        if let Some(t) = &self.timings {
+            t.add(crate::timings::Phase::GraphRead, reading);
+        }
+        Ok(out)
+    }
+
+    fn graph_sources_untimed(&mut self) -> Result<Vec<Source>, EngineError> {
         let files = crate::discover::discover_with(self, &[], false)?.0;
         let mut out: Vec<Source> = Vec::new();
         let mut dirs: BTreeSet<PathBuf> = BTreeSet::new();
@@ -110,18 +120,36 @@ impl Project {
 
     /// Link the graph over a set of sources.
     pub(crate) fn build_graph(&self, sources: &[Source], config: GraphConfig) -> Graph {
-        let facts = self.pool.install(|| sources.par_iter().map(|s| self.source_facts(s)).collect());
+        let facts = self.all_facts(sources.par_iter());
         self.link_graph(sources, facts, config)
+    }
+
+    /// The graph facts of each source, in parallel (`graph-facts`).
+    pub(crate) fn all_facts<'a>(&self, sources: impl IndexedParallelIterator<Item = &'a Source> + Send) -> Vec<Option<codelaw_graph::FileFacts>> {
+        let started = std::time::Instant::now();
+        let facts = self.pool.install(|| sources.map(|s| self.source_facts(s)).collect());
+        if let Some(t) = &self.timings {
+            t.add(Phase::GraphFacts, started);
+        }
+        facts
     }
 
     /// One source's graph facts, from the cache when it has them.
     pub(crate) fn source_facts(&self, s: &Source) -> Option<codelaw_graph::FileFacts> {
         let language = s.language.filter(|l| codelaw_graph::reads(*l))?;
         let key = KeyBuilder::new("graph-facts").part(codelaw_graph::FACTS_VERSION).part(language.name()).part(&s.text).part(codelaw_lang::GRAMMARS_FINGERPRINT).key();
-        if let Some(f) = self.cache.get(&key) {
+        let cached = {
+            let _timed = self.timings.as_ref().map(|t| t.guard(Phase::GraphCacheRead));
+            self.cache.get(&key)
+        };
+        if let Some(f) = cached {
             return Some(f);
         }
-        let f = std::panic::catch_unwind(|| codelaw_graph::extract(language, &s.text)).ok().flatten()?;
+        let f = {
+            let _timed = self.timings.as_ref().map(|t| t.guard(Phase::GraphExtract));
+            std::panic::catch_unwind(|| codelaw_graph::extract(language, &s.text)).ok().flatten()?
+        };
+        let _timed = self.timings.as_ref().map(|t| t.guard(Phase::GraphCacheWrite));
         self.cache.put(&key, &f);
         Some(f)
     }
@@ -137,7 +165,12 @@ impl Project {
             }
             inputs.push(GraphInput { path: s.rel.clone(), facts: f });
         }
-        Graph::build(inputs, &manifests, config)
+        let Some(t) = &self.timings else { return Graph::build(inputs, &manifests, config) };
+        let (graph, times) = Graph::build_timed(inputs, &manifests, config);
+        t.add_nanos(Phase::GraphIndex, times.index_nanos, 1);
+        t.add_nanos(Phase::GraphResolve, times.resolve_nanos, times.resolve_calls);
+        t.add_nanos(Phase::GraphLink, times.link_nanos, 1);
+        graph
     }
 
     /// The project graph of the whole root (`codelaw graph …`).
@@ -162,6 +195,7 @@ impl Project {
         if rules.is_empty() {
             return Vec::new();
         }
+        let _timed = self.timings.as_ref().map(|t| t.guard(Phase::GraphRules));
         let by_rel: BTreeMap<&str, &Source> = sources.iter().map(|s| (s.rel.as_str(), s)).collect();
         let mut per_file: BTreeMap<String, Vec<Diagnostic>> = BTreeMap::new();
         // The flag analysis runs once per set of options, for every flag rule.

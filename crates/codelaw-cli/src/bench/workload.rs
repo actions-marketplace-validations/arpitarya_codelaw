@@ -251,6 +251,204 @@ pub fn write_repo(src: &Path, dir: &Path, packs: &Path) -> Result<usize, String>
     Ok(files)
 }
 
+/// The graph workload's config (`codelaw bench --graph`, W-168): the two
+/// project presets alone, preview rules on, so what is timed is the
+/// project stage (SR-ARCHITECTURE decision 4, step 4) and not the file
+/// rules, which the reference workload already times.
+pub const GRAPH_CONFIG: &str = "preview = true\nextends = [\"codelaw:js/project\", \"codelaw:py/project\"]\n";
+
+/// The graph workload's root `package.json`: every script folder a
+/// workspace package.
+const GRAPH_ROOT_PACKAGE: &str = "{\n  \"name\": \"bench-root\",\n  \"private\": true,\n  \"workspaces\": [\"packages/ts/*\", \"packages/js/*\"]\n}\n";
+
+/// The graph workload's `tsconfig.json`: a `paths` alias the resolver
+/// tries before the workspace packages.
+const GRAPH_TSCONFIG: &str = "{\n  \"compilerOptions\": {\n    \"baseUrl\": \".\",\n    \"paths\": { \"@ts/*\": [\"packages/ts/*\"] }\n  }\n}\n";
+
+/// The pinned digest of `generate_graph(SEED, FILES)`.
+pub const GRAPH_DIGEST_10K: &str = "fdccaee5e97504da";
+
+/// The graph workload (W-168): [`generate`]'s files, then the shape that
+/// makes the project graph work — every TypeScript and JavaScript folder a
+/// workspace package (`package.json` named `@bench/<folder>`, an `index`
+/// barrel re-exporting each module's helper), and each script and Python
+/// module importing across folders: a workspace package by name (through
+/// its barrel), a `@ts/*` path alias, a relative `../` import, and in
+/// Python a dotted import of another package's module; each Python
+/// package's `__init__.py` re-exports its modules' helpers. Same seed, same
+/// bytes. The files come out sorted by path; the count is `files` plus a
+/// `package.json` and a barrel per script folder and the two root files.
+pub fn generate_graph(seed: u64, files: usize) -> Vec<File> {
+    let mut out = generate(seed, files);
+    // Each script and Python folder, and how many modules it holds.
+    let mut folders: std::collections::BTreeMap<String, usize> = std::collections::BTreeMap::new();
+    for f in &out {
+        if let Some((dir, name)) = f.path.rsplit_once('/')
+            && (f.path.starts_with("packages/") || f.path.starts_with("services/"))
+            && name.starts_with('m')
+        {
+            *folders.entry(dir.to_owned()).or_default() += 1;
+        }
+    }
+    // A folder another one imports from holds m1 at least.
+    let script: Vec<(&str, usize)> = folders.iter().filter(|(d, n)| d.starts_with("packages/") && **n >= 2).map(|(d, n)| (d.as_str(), *n)).collect();
+    let ts: Vec<(&str, usize)> = script.iter().copied().filter(|(d, _)| d.starts_with("packages/ts/")).collect();
+    let py: Vec<(&str, usize)> = folders.iter().filter(|(d, n)| d.starts_with("services/") && **n >= 1).map(|(d, n)| (d.as_str(), *n)).collect();
+    let mut rng = Rng(seed ^ 0x6772_6170_6800);
+    for f in out.iter_mut() {
+        let Some((dir, name)) = f.path.rsplit_once('/') else { continue };
+        let Some(ext) = name.rsplit_once('.').map(|(_, e)| e) else { continue };
+        let own = |d: &str| d == dir;
+        if matches!(ext, "ts" | "tsx" | "js" | "jsx") && !script.is_empty() {
+            let mut head = String::new();
+            let mut tail = String::new();
+            // A workspace package, through its barrel.
+            let (d, n) = script[rng.range(0, script.len() - 1)];
+            if !own(d) {
+                let k = rng.range(0, n - 1);
+                let pkg = d.rsplit('/').next().unwrap_or(d);
+                let _ = writeln!(head, "import {{ helper{k} as {pkg}h{k} }} from \"@bench/{pkg}\";");
+                let _ = writeln!(tail, "const via{pkg}h{k} = {pkg}h{k};");
+            }
+            // A `@ts/*` alias, one in two.
+            if rng.chance(1, 2) && !ts.is_empty() {
+                let (d, n) = ts[rng.range(0, ts.len() - 1)];
+                if !own(d) {
+                    let k = rng.range(0, n - 1);
+                    let pkg = d.rsplit('/').next().unwrap_or(d);
+                    let _ = writeln!(head, "import {{ helper{k} as {pkg}a{k} }} from \"@ts/{pkg}/m{k}\";");
+                    let _ = writeln!(tail, "const alias{pkg}a{k} = {pkg}a{k};");
+                }
+            }
+            // A relative import of a folder beside it, one in four.
+            if rng.chance(1, 4) {
+                let area = dirname_of(dir);
+                let near: Vec<&(&str, usize)> = script.iter().filter(|(d, _)| dirname_of(d) == area && !own(d)).collect();
+                if !near.is_empty() {
+                    let (d, n) = *near[rng.range(0, near.len() - 1)];
+                    let k = rng.range(0, n - 1);
+                    let pkg = d.rsplit('/').next().unwrap_or(d);
+                    let _ = writeln!(head, "import {{ helper{k} as {pkg}r{k} }} from \"../{pkg}/m{k}\";");
+                    let _ = writeln!(tail, "const rel{pkg}r{k} = {pkg}r{k};");
+                }
+            }
+            // Most of a real repo's exports are used: only each module's
+            // helper stays exported, and the one-in-eight finding.
+            let body: String = f
+                .text
+                .lines()
+                .map(|l| match l.strip_prefix("export ") {
+                    Some(rest) if !KEPT_EXPORTS.iter().any(|k| rest.starts_with(k)) => format!("{rest}\n"),
+                    _ => format!("{l}\n"),
+                })
+                .collect();
+            f.text = if head.is_empty() { body } else { format!("{head}{body}\n{tail}") };
+        } else if ext == "py" && name != "__init__.py" && !py.is_empty() {
+            // The module's own names, read by its helper: used in their own
+            // module, so kept, as most of a real repo's are (the finding's
+            // `risky` and `same` are left unused).
+            let mut names: Vec<String> = f
+                .text
+                .lines()
+                .filter_map(|l| l.strip_prefix("def ").or_else(|| l.strip_prefix("class ")))
+                .filter_map(|l| l.split(['(', ':']).next())
+                .filter(|n| !n.starts_with("helper_") && *n != "risky" && *n != "same")
+                .map(str::to_owned)
+                .collect();
+            let (d, n) = py[rng.range(0, py.len() - 1)];
+            if !own(d) {
+                let k = rng.range(1, n);
+                let module = d.replace('/', ".");
+                let pkg = d.rsplit('/').next().unwrap_or(d);
+                f.text = f.text.replacen("import os\n", &format!("import os\n\nfrom {module}.m{k} import helper_{k} as {pkg}_h{k}\n"), 1);
+                names.push(format!("{pkg}_h{k}"));
+            }
+            if !names.is_empty()
+                && let Some(at) = f.text.find("\ndef helper_").and_then(|i| f.text[i + 1..].find('\n').map(|j| i + 1 + j + 1)) {
+                f.text.insert_str(at, &format!("    _ = ({},)\n", names.join(", ")));
+            }
+        }
+    }
+    // The barrels and manifests.
+    for f in out.iter_mut().filter(|f| f.path.ends_with("/__init__.py")) {
+        let dir = dirname_of(&f.path);
+        let n = folders.get(dir).copied().unwrap_or(0);
+        let mut text = String::new();
+        for k in 1..=n {
+            let _ = writeln!(text, "from .m{k} import helper_{k}");
+        }
+        f.text = format!("{text}\n{}", f.text);
+    }
+    for (dir, n) in &script {
+        let pkg = dir.rsplit('/').next().unwrap_or(dir);
+        let index = if dir.starts_with("packages/ts/") { "ts" } else { "js" };
+        let mut barrel = String::new();
+        for k in 0..*n {
+            let _ = writeln!(barrel, "export {{ helper{k} }} from \"./m{k}\";");
+        }
+        out.push(File { path: format!("{dir}/index.{index}"), text: barrel });
+        out.push(File {
+            path: format!("{dir}/package.json"),
+            text: format!("{{\n  \"name\": \"@bench/{pkg}\",\n  \"private\": true,\n  \"main\": \"index.{index}\"\n}}\n"),
+        });
+    }
+    out.push(File { path: "package.json".into(), text: GRAPH_ROOT_PACKAGE.into() });
+    out.push(File { path: "tsconfig.json".into(), text: GRAPH_TSCONFIG.into() });
+    out.sort_by(|a, b| a.path.cmp(&b.path));
+    out
+}
+
+/// The script exports the graph workload keeps: each module's helper, and
+/// the one-in-eight finding nothing imports.
+const KEPT_EXPORTS: &[&str] = &["function helper", "function debugHere", "function check(", "function loose"];
+
+fn dirname_of(path: &str) -> &str {
+    path.rsplit_once('/').map(|(d, _)| d).unwrap_or("")
+}
+
+/// The digest of the graph workload: its config and its files.
+pub fn graph_digest(files: &[File]) -> String {
+    digest_with(&[GRAPH_CONFIG], files)
+}
+
+/// Write the graph workload into `dir` with the packs from `packs`, as
+/// [`write`] does the reference one. A folder whose marker names this
+/// digest is reused. Returns the digest and the file count.
+pub fn write_graph(dir: &Path, packs: &Path, seed: u64, files: usize) -> Result<(String, usize), String> {
+    let set = generate_graph(seed, files);
+    let digest = graph_digest(&set);
+    let marker = format!("graph\nseed {seed}\nfiles {files}\ndigest {digest}\npacks {}\n", codelaw_rules::FIRST_PARTY_PACKS.len());
+    if std::fs::read_to_string(dir.join(MARKER)).is_ok_and(|m| m == marker) {
+        return Ok((digest, set.len()));
+    }
+    if dir.exists() {
+        let ours = dir.join(MARKER).is_file();
+        let empty = std::fs::read_dir(dir).map(|mut d| d.next().is_none()).unwrap_or(false);
+        if !ours && !empty {
+            return Err(format!("{} is not empty and holds no workload; name another folder with --workload", codelaw_core::normalize_path(dir)));
+        }
+        std::fs::remove_dir_all(dir).map_err(|e| format!("cannot clear {}: {e}", codelaw_core::normalize_path(dir)))?;
+    }
+    let io = |e: std::io::Error| format!("cannot write the graph workload in {}: {e}", codelaw_core::normalize_path(dir));
+    for f in &set {
+        let path = dir.join(&f.path);
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).map_err(io)?;
+        }
+        std::fs::write(&path, &f.text).map_err(io)?;
+    }
+    std::fs::write(dir.join("codelaw.toml"), GRAPH_CONFIG).map_err(io)?;
+    for pack in codelaw_rules::FIRST_PARTY_PACKS {
+        let from = packs.join(pack.short);
+        if !from.join("codelaw-pack.toml").is_file() {
+            return Err(format!("no rule pack in {}; name the packs folder with --packs", codelaw_core::normalize_path(&from)));
+        }
+        copy_dir(&from, &dir.join(install_path(pack))).map_err(io)?;
+    }
+    std::fs::write(dir.join(MARKER), marker).map_err(io)?;
+    Ok((digest, set.len()))
+}
+
 /// The `spell` operation's config (SR-SPELL decision 9, ruled 2026-10-29):
 /// the spell pack's `recommended` preset alone, preview rules on, so what is
 /// timed is the spell pass and not the shared workload's rules.
@@ -646,6 +844,23 @@ mod tests {
         let set = generate(SEED, FILES);
         assert_eq!(set.len(), FILES);
         assert_eq!(digest(&set), REFERENCE_DIGEST, "the reference workload changed: every L8 budget must be re-measured on it");
+    }
+
+    /// The graph workload is pinned too (W-168): its numbers bind one set
+    /// of bytes. Its imports resolve across folders and packages.
+    #[test]
+    fn the_graph_workload_is_pinned_and_crosses_packages() {
+        let set = generate_graph(SEED, FILES);
+        assert_eq!(graph_digest(&set), GRAPH_DIGEST_10K, "the graph workload changed: W-168's numbers must be re-measured on it");
+        assert_eq!(digest(&generate_graph(SEED, 600)), digest(&generate_graph(SEED, 600)));
+        let has = |needle: &str| set.iter().any(|f| f.text.contains(needle));
+        assert!(has("from \"@bench/") && has("from \"@ts/") && has("from \"../") && has("from services."));
+        assert!(set.iter().any(|f| f.path == "packages/ts/ts0/index.ts" && f.text.contains("export { helper0 } from \"./m0\";")));
+        assert!(set.iter().any(|f| f.path == "packages/ts/ts0/package.json" && f.text.contains("\"@bench/ts0\"")));
+        assert!(set.iter().any(|f| f.path == "services/s0/__init__.py" && f.text.starts_with("from .m1 import helper_1\n")));
+        let mut paths: Vec<&str> = set.iter().map(|f| f.path.as_str()).collect();
+        paths.dedup();
+        assert_eq!(paths.len(), set.len(), "a path is generated twice");
     }
 
     #[test]
