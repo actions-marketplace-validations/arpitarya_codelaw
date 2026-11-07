@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-168 closed: step 6 ruled, no budget yet  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) write Arpit's step-6 ruling, close and archive W-168, name the budgeting follow-up, remove the worktree.
+- **Done:** ruling in the item, INTERVIEW, `perf/budgets.toml`, RESULTS.md; inbox row and sub-row removed; W-168 archived; W-167 step 6 added (budget 10k and 100k from CI once the design is built); the old W-168 worktree's `.fux` re-index output restored and deleted, worktree and branch removed.
+- **Decided / left open:** Arpit, 2026-11-07: *"No budget yet (Recommended)"*. Left: W-167 step 6.
+- **Mistakes:** none.
+- **Next:** W-167 (Cowork) reads RESULTS.md.
+
+---
+
 ## 2026-11-07 — W-168 steps 1–5: the graph measured at 10k–1M files  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-168 — a graph workload for `codelaw bench`, per-stage timings, 10k/50k/100k/500k/1M cold, warm and one-file hook with memory and cache size, real repos where on disk, the write-up for W-167; no budgets (step 6 to the inbox). Resumed 11-07 after the usage limit stopped the session on 11-05.

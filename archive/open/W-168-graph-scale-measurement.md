@@ -7,7 +7,7 @@ filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-07
 updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+ball: done
 ---
 
 # W-168 — Measure the graph on very large repos: 10k, 50k, 100k, 500k, 1M files
@@ -21,7 +21,7 @@ ball: arpit
 | 3 | Run it at 10k, 50k, 100k, 500k and 1M files: cold, warm, one edited file (hook), peak memory, cache size on disk | the scaling curve | ✅ all five sizes (loaded Mac) |
 | 4 | Check the curve on real repos at the sizes that exist | proof the generated repo is not flattering us | ✅ ionic-framework 10.5k, tanstack-query 3.7k: totals within 1.2×, resolve and link 4–11× heavier per file |
 | 5 | Write up the table and the first stage to break; hand it to W-167 | the numbers the design is built on | ✅ [RESULTS.md](../../experiments/graph-scale/RESULTS.md) |
-| 6 | The decider says which sizes get an L8 budget | budgets, or context rows only | 🔴 decider decides — in the inbox, 2026-11-07 |
+| 6 | The decider says which sizes get an L8 budget | budgets, or context rows only | ✅ ruled 2026-11-07: no budget yet |
 
 **Arpit, 2026-11-05:** *"add few work items — 2. measurement for very large repos 10k, 50k, 100k, 500k, 1million"* — after *"is it performant for very large repo??"*
 
@@ -29,7 +29,9 @@ ball: arpit
 
 ## State (2026-11-07, Claude Code)
 
-**Steps 1–5 are done; the item waits on step 6.** The numbers, the method and
+**Closed 2026-11-07.** **Ruled 2026-11-07 (Arpit, Claude Code, multiple choice): W-168 step 6** — *"No budget yet (Recommended)"*: the six `graph_*` rows stay context-only until W-167's design is built; then 10k and 100k get budgets from CI runs (L8 decision 4's method). The budgeting follow-up is W-167's step 6.
+
+**Steps 1–5 are done.** The numbers, the method and
 the first stages to break are in [`experiments/graph-scale/RESULTS.md`](../../experiments/graph-scale/RESULTS.md):
 the one-file hook is 2.0 s at 10k (target 300 ms) because hook mode rebuilds
 the whole graph; past ~200k files the 512 MB cache default prunes what a warm
@@ -41,7 +43,7 @@ Left from the DoD, named so they are not lost: **DoD 4** — no real repo of
 50k+ files was on disk and none was cloned, so the two largest corpus repos
 stood in (ionic-framework 10.5k, tanstack-query 3.7k); no new `corpus.json`
 pin. **DoD 5** — the `--graph` runs are not yet a job in CI's `perf` group.
-Both wait on step 6: a budget needs CI numbers; context rows do not.
+Both move with the budgeting follow-up (W-167 step 6): a budget needs CI numbers; context rows do not.
 
 ## Goal
 
