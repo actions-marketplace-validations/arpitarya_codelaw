@@ -17,6 +17,72 @@ fn model<'a>(ctx: &'a NativeContext<'_>) -> Option<&'a SemanticModel> {
     ctx.semantic
 }
 
+/// The lines `start..end` (from the start of `start`'s line) with `by`
+/// bytes of indentation taken off each: `None` when a line has less, or a
+/// string spans lines (dedenting would change it).
+fn dedented(src: &str, start: usize, end: usize, by: usize) -> Option<String> {
+    let from = src[..start].rfind('\n').map_or(0, |i| i + 1);
+    let chunk = &src[from..end];
+    if chunk.contains("\"\"\"") || chunk.contains("'''") || chunk.contains('\\') {
+        return None;
+    }
+    let mut out = Vec::new();
+    for line in chunk.split('\n') {
+        if line.trim().is_empty() {
+            out.push("");
+        } else if line.len() >= by && line[..by].trim().is_empty() {
+            out.push(&line[by..]);
+        } else {
+            return None;
+        }
+    }
+    Some(out.join("\n"))
+}
+
+/// A statement's whole lines: from its line's start to after its last line.
+fn whole_stmt_lines(src: &str, start: usize, end: usize) -> (usize, usize) {
+    let s = src[..start].rfind('\n').map_or(0, |i| i + 1);
+    let e = src[end..].find('\n').map_or(src.len(), |i| end + i + 1);
+    (s, e)
+}
+
+/// How the module names `name` of `module` (`abstractmethod` of `abc`),
+/// and the edits importing it when it doesn't: added to a `from module
+/// import …` there is, or a new `from module import name` above the first
+/// statement that isn't a docstring or a `__future__` import. `None` when
+/// the name is taken by something else.
+fn imported_name(root: Node<'_>, m: &SemanticModel, src: &str, module: &str, name: &str) -> Option<(String, Vec<TextEdit>)> {
+    let q = format!("{module}.{name}");
+    for (k, ids) in &m.scopes[0].bindings {
+        for &id in ids {
+            if m.import_of(id).is_some() && m.imported_from(id, module, Some(name)) {
+                return Some((k.clone(), Vec::new()));
+            }
+            if k == module && m.imported_from(id, module, None) {
+                return Some((q.clone(), Vec::new()));
+            }
+        }
+    }
+    if m.scopes[0].bindings.contains_key(name) {
+        return None;
+    }
+    let stmts = statements(root);
+    for st in &stmts {
+        if st.kind() == "import_from_statement"
+            && st.child_by_field_name("module_name").is_some_and(|mn| text(mn, src) == module)
+            && !kids(*st).iter().any(|c| c.kind() == "wildcard_import" || c.kind() == "comment")
+            && !text(*st, src).contains('(')
+        {
+            return Some((name.to_owned(), vec![TextEdit::insert(st.end_byte(), format!(", {name}"))]));
+        }
+    }
+    let first = stmts.iter().enumerate().find(|(i, x)| !(x.kind() == "future_import_statement" || (*i == 0 && is_docstring_stmt(**x)) || x.kind() == "comment")).map(|(_, x)| *x)?;
+    if !starts_line(src, first.start_byte()) || first.start_byte() != src[..first.start_byte()].rfind('\n').map_or(0, |i| i + 1) {
+        return None;
+    }
+    Some((name.to_owned(), vec![TextEdit::insert(first.start_byte(), format!("from {module} import {name}\n"))]))
+}
+
 fn unary_prefix_increment(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let (Some(op), Some(arg)) = (n.child_by_field_name("operator"), n.child_by_field_name("argument")) else { return };
     let op = text(op, ctx.source);
@@ -26,7 +92,26 @@ fn unary_prefix_increment(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
         && n.parent().is_none_or(|p| p.kind() != "unary_operator" || p.child_by_field_name("operator").is_none_or(|o| text(o, ctx.source) != op))
     {
         let what = if op == "+" { "increment" } else { "decrement" };
-        out.push(hit(n, format!("Python has no `{op}{op}` {what} operator; this applies unary `{op}` twice")));
+        let src = ctx.source;
+        let target = arg.child_by_field_name("argument");
+        // A statement: `x += 1` (or `-=`) or deleted; inside an expression,
+        // the two signs dropped. `++x` is a no-op today, but `__pos__` may
+        // not be (Decimal), so none is automatic.
+        let edits = match (n.parent().filter(|p| p.kind() == "expression_statement" && p.named_child_count() == 1), target) {
+            (Some(stmt), Some(t)) => {
+                let mut choices = Vec::new();
+                if matches!(t.kind(), "identifier" | "attribute" | "subscript") {
+                    choices.push(crate::choice(what, false, vec![TextEdit::new(n.start_byte(), n.end_byte(), format!("{} {op}= 1", text(t, src)))]));
+                }
+                if let Some(del) = crate::python_util::remove_stmt(stmt, src) {
+                    choices.push(crate::choice("delete", false, del));
+                }
+                crate::choice_edits(choices)
+            }
+            (None, Some(t)) => vec![TextEdit::new(n.start_byte(), n.end_byte(), text(t, src))],
+            _ => Vec::new(),
+        };
+        out.push(hit_fix(n, format!("Python has no `{op}{op}` {what} operator; this applies unary `{op}` twice"), edits));
     }
 }
 py_rule!(UnaryPrefixIncrementDecrement, "py/unary-prefix-increment", ["unary_operator"], false, unary_prefix_increment);
@@ -35,7 +120,21 @@ fn assignment_to_os_environ(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<
     let Some(m) = model(ctx) else { return };
     let Some(left) = n.child_by_field_name("left") else { return };
     if left.kind() == "attribute" && names_one_of(left, m, ctx.source, &["os.environ"]) {
-        out.push(hit(left, "Assigning to `os.environ` replaces the mapping but doesn't change the process environment"));
+        // Replace the environment (clear, then update) or add to it; either
+        // now changes the real process environment.
+        let src = ctx.source;
+        let edits = match (n.child_by_field_name("right"), n.parent()) {
+            (Some(v), Some(stmt)) if stmt.kind() == "expression_statement" && n.child_by_field_name("type").is_none() && v.kind() != "assignment" && starts_line(src, n.start_byte()) => {
+                let (env, val) = (text(left, src), text(v, src));
+                let indent = indent_at(src, n.start_byte());
+                crate::choice_edits(vec![
+                    crate::choice("replace", false, vec![TextEdit::new(n.start_byte(), n.end_byte(), format!("{env}.clear()\n{indent}{env}.update({val})"))]),
+                    crate::choice("update", false, vec![TextEdit::new(n.start_byte(), n.end_byte(), format!("{env}.update({val})"))]),
+                ])
+            }
+            _ => Vec::new(),
+        };
+        out.push(hit_fix(left, "Assigning to `os.environ` replaces the mapping but doesn't change the process environment", edits));
     }
 }
 py_rule!(AssignmentToOsEnviron, "py/assignment-to-os-environ", ["assignment"], true, assignment_to_os_environ);
@@ -75,7 +174,28 @@ fn strip_with_multi_characters(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
     let chars: Vec<char> = v.chars().collect();
     let unique: BTreeSet<char> = chars.iter().copied().collect();
     if chars.len() > 1 && unique.len() != chars.len() {
-        out.push(hit(n, format!("`.{method}()` removes a set of characters, not a prefix or suffix; the repeated characters suggest a string was meant")));
+        // `removeprefix`/`removesuffix` (Python 3.9+), what a repeated
+        // character suggests was meant; or the set without repeats, which
+        // strips the same.
+        let src = ctx.source;
+        let arg = args.positional[0];
+        let raw = text(arg, src);
+        let mut choices = Vec::new();
+        let affix = match method {
+            "lstrip" => Some("removeprefix"),
+            "rstrip" => Some("removesuffix"),
+            _ => None,
+        };
+        if let (Some(a), Some(attr)) = (affix, f.child_by_field_name("attribute")) {
+            choices.push(crate::choice(a, false, vec![TextEdit::new(attr.start_byte(), attr.end_byte(), a)]));
+        }
+        let quote = raw.chars().find(|c| *c == '"' || *c == '\'');
+        if let Some(q) = quote.filter(|_| arg.kind() == "string" && !raw.contains('\\') && raw.starts_with(['"', '\'']) && !raw.starts_with("\"\"\"") && !raw.starts_with("'''")) {
+            let mut seen = BTreeSet::new();
+            let set: String = chars.iter().filter(|c| seen.insert(**c)).collect();
+            choices.push(crate::choice("deduplicate", false, vec![TextEdit::new(arg.start_byte(), arg.end_byte(), format!("{q}{set}{q}"))]));
+        }
+        out.push(hit_fix(n, format!("`.{method}()` removes a set of characters, not a prefix or suffix; the repeated characters suggest a string was meant"), crate::choice_edits(choices)));
     }
 }
 py_rule!(StripWithMultiCharacters, "py/strip-with-multi-characters", ["call"], false, strip_with_multi_characters);
@@ -199,12 +319,41 @@ py_rule!(MutableArgumentDefault, "py/no-mutable-default", ["function_definition"
 
 fn function_call_in_default_argument(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let extra = extra_immutable(ctx);
-    for (_, _, value) in defaults(n) {
+    let src = ctx.source;
+    for (p, name, value) in defaults(n) {
         let mut calls = Vec::new();
         suspicious_calls(value, ctx, &extra, &mut calls);
+        let whole = calls.len() == 1 && unparen(value).id() == calls[0].id() && !text(value, src).contains('\n');
         for c in calls {
             let f = c.child_by_field_name("function").map(|f| text(f, ctx.source)).unwrap_or("");
-            out.push(hit(c, format!("`{f}()` runs once, when the function is defined, not on every call")));
+            // `None` and the call in the body (it runs on every call, as was
+            // likely meant), or the call as a module constant (it runs once,
+            // as now, and says so).
+            let mut choices = Vec::new();
+            if whole {
+                let nm = text(name, src);
+                if p.kind() == "default_parameter"
+                    && let Some((at, indent)) = body_insertion(n, src)
+                {
+                    choices.push(crate::choice(
+                        "None default",
+                        false,
+                        vec![TextEdit::new(value.start_byte(), value.end_byte(), "None"), TextEdit::insert(at, format!("{indent}if {nm} is None:\n{indent}    {nm} = {}\n", text(value, src)))],
+                    ));
+                }
+                let stmt = n.parent().filter(|d| d.kind() == "decorated_definition").unwrap_or(n);
+                let func = n.child_by_field_name("name").map(|x| text(x, src)).unwrap_or("");
+                let constant = format!("_{}_{}_DEFAULT", func.to_ascii_uppercase(), nm.to_ascii_uppercase());
+                let free = model(ctx).is_some_and(|m| !m.symbols.iter().any(|s| s.name == constant));
+                if stmt.parent().is_some_and(|x| x.kind() == "module") && free && starts_line(src, stmt.start_byte()) {
+                    choices.push(crate::choice(
+                        "module constant",
+                        false,
+                        vec![TextEdit::insert(stmt.start_byte(), format!("{constant} = {}\n\n\n", text(value, src))), TextEdit::new(value.start_byte(), value.end_byte(), constant.clone())],
+                    ));
+                }
+            }
+            out.push(hit_fix(c, format!("`{f}()` runs once, when the function is defined, not on every call"), crate::choice_edits(choices)));
         }
     }
 }
@@ -220,7 +369,33 @@ fn mutable_contextvar_default(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Ve
     let mut calls = Vec::new();
     suspicious_calls(default, ctx, &extra_immutable(ctx), &mut calls);
     if is_mutable(default, ctx) || !calls.is_empty() {
-        out.push(hit(default, "A `ContextVar` default is shared by every context; don't make it mutable or computed"));
+        // Its immutable twin: a list a tuple, a set a frozenset. Code that
+        // changes the value in place stops working, so it is a suggestion;
+        // a dict or a computed value is manual.
+        let src = ctx.source;
+        let d = unparen(default);
+        let inner = |n: Node<'_>| &src[n.start_byte() + 1..n.end_byte() - 1];
+        let new = match d.kind() {
+            "list" if kids(d).iter().all(|c| c.kind() != "comment") => {
+                let items = kids(d);
+                let trailing = children(d).iter().rev().nth(1).is_some_and(|c| c.kind() == ",");
+                Some(if items.len() == 1 && !trailing { format!("({},)", inner(d)) } else { format!("({})", inner(d)) })
+            }
+            "set" => Some(format!("frozenset({})", text(d, src))),
+            "list_comprehension" => Some(format!("tuple({})", inner(d))),
+            "set_comprehension" => Some(format!("frozenset({})", inner(d))),
+            "call" if calls.is_empty() => {
+                let f = d.child_by_field_name("function").map(|f| text(f, src));
+                match f {
+                    Some("list") => Some(format!("tuple{}", d.child_by_field_name("arguments").map(|a| text(a, src)).unwrap_or("()"))),
+                    Some("set") => Some(format!("frozenset{}", d.child_by_field_name("arguments").map(|a| text(a, src)).unwrap_or("()"))),
+                    _ => None,
+                }
+            }
+            _ => None,
+        };
+        let edits = new.map(|t| vec![TextEdit::new(d.start_byte(), d.end_byte(), t)]).unwrap_or_default();
+        out.push(hit_fix(default, "A `ContextVar` default is shared by every context; don't make it mutable or computed", edits));
     }
 }
 py_rule!(MutableContextvarDefault, "py/mutable-contextvar-default", ["call"], true, mutable_contextvar_default);
@@ -338,7 +513,8 @@ fn jump_statement_in_finally(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec
             "for_statement" | "while_statement" if !is_return && p.child_by_field_name("body") == Some(cur) => return,
             "finally_clause" => {
                 let kw = text(n, ctx.source).split_whitespace().next().unwrap_or("return");
-                out.push(hit(n, format!("`{kw}` in a `finally` block silently discards any exception being raised")));
+                let edits = finally_jump_move(n, p, ctx.source).unwrap_or_default();
+                out.push(hit_fix(n, format!("`{kw}` in a `finally` block silently discards any exception being raised"), edits));
                 return;
             }
             _ => {}
@@ -346,6 +522,33 @@ fn jump_statement_in_finally(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec
         cur = p;
     }
 }
+/// The `return`, `break` or `continue` ending a `finally` block, moved to
+/// right after its `try`: an exception now propagates instead of being
+/// swallowed, which is the fix and a change. The `finally` goes when the
+/// jump was all it held and a handler stays; otherwise `pass` takes its
+/// place. Only for the block's last statement, directly in it.
+fn finally_jump_move(n: Node<'_>, fin: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let block = n.parent().filter(|b| b.kind() == "block" && b.parent().is_some_and(|f| f.id() == fin.id()))?;
+    let stmts = statements(block);
+    if stmts.last().map(|l| l.id()) != Some(n.id()) || text(n, src).contains('\n') || !starts_line(src, n.start_byte()) {
+        return None;
+    }
+    let try_ = fin.parent().filter(|t| t.kind() == "try_statement")?;
+    let (_, try_end) = whole_stmt_lines(src, try_.start_byte(), try_.end_byte());
+    if !src[try_.end_byte()..try_end].trim().is_empty() || !starts_line(src, try_.start_byte()) {
+        return None;
+    }
+    let indent = indent_at(src, try_.start_byte());
+    let mut edits = if stmts.len() == 1 && kids(try_).iter().any(|c| c.kind() == "except_clause") {
+        let (a, b) = whole_stmt_lines(src, fin.start_byte(), fin.end_byte());
+        vec![TextEdit::delete(a, b)]
+    } else {
+        crate::python_util::remove_stmt(n, src)?
+    };
+    edits.push(TextEdit::insert(try_end, format!("{indent}{}\n", text(n, src))));
+    Some(edits)
+}
+
 py_rule!(JumpStatementInFinally, "py/jump-statement-in-finally", ["return_statement", "break_statement", "continue_statement"], false, jump_statement_in_finally);
 
 /// The exception expression of an `except` clause (without `as`).
@@ -403,21 +606,42 @@ fn duplicate_handler_exception(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
 }
 py_rule!(DuplicateHandlerException, "py/duplicate-handler-exception", ["except_clause"], false, duplicate_handler_exception);
 
-fn useless_comparison(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn useless_comparison(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if let Some(e) = n.named_child(0)
         && n.named_child_count() == 1
         && e.kind() == "comparison_operator"
     {
-        out.push(hit(e, "This comparison's result is thrown away; did you mean `=` or `assert`?"));
+        // An assignment (`==` written for `=`), an assert, or nothing:
+        // each changes what runs.
+        let src = ctx.source;
+        let mut choices = Vec::new();
+        let ops: Vec<Node> = children(e).into_iter().filter(|c| !c.is_named()).collect();
+        let operands = kids(e);
+        if let ([op], [l, _]) = (&ops[..], &operands[..])
+            && text(*op, src) == "=="
+            && matches!(l.kind(), "identifier" | "attribute" | "subscript")
+        {
+            choices.push(crate::choice("assign", false, vec![TextEdit::new(op.start_byte(), op.end_byte(), "=")]));
+        }
+        if starts_line(src, n.start_byte()) {
+            choices.push(crate::choice("assert", false, vec![TextEdit::insert(n.start_byte(), "assert ")]));
+        }
+        if let Some(del) = crate::python_util::remove_stmt(n, src) {
+            choices.push(crate::choice("delete", false, del));
+        }
+        out.push(hit_fix(e, "This comparison's result is thrown away; did you mean `=` or `assert`?", crate::choice_edits(choices)));
     }
 }
 py_rule!(UselessComparison, "py/useless-comparison", ["expression_statement"], false, useless_comparison);
 
-fn raise_literal(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn raise_literal(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if let Some(e) = kids(n).first().map(|e| unparen(*e))
         && matches!(e.kind(), "string" | "concatenated_string" | "integer" | "float" | "true" | "false")
     {
-        out.push(hit(e, "Only exceptions can be raised; raising a literal is a `TypeError`"));
+        // Wrapped in `RuntimeError`: it raised `TypeError` before, so a
+        // handler for that no longer catches it.
+        let edits = vec![TextEdit::new(e.start_byte(), e.end_byte(), format!("RuntimeError({})", text(e, ctx.source)))];
+        out.push(hit_fix(e, "Only exceptions can be raised; raising a literal is a `TypeError`", edits));
     }
 }
 py_rule!(RaiseLiteral, "py/raise-literal", ["raise_statement"], false, raise_literal);
@@ -474,7 +698,20 @@ fn useless_expression(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<Nativ
         _ => is_pure(inner),
     };
     if flagged {
-        out.push(hit(e, "This expression does nothing; assign it, use it, or remove it"));
+        // Deleted, or returned when it ends a function; an attribute read
+        // can run a property, so neither is automatic.
+        let src = _ctx.source;
+        let mut choices = Vec::new();
+        if let Some(del) = crate::python_util::remove_stmt(n, src) {
+            choices.push(crate::choice("delete", false, del));
+        }
+        let ends_function = n.parent().filter(|b| b.kind() == "block").is_some_and(|b| {
+            b.parent().is_some_and(|d| d.kind() == "function_definition") && statements(b).last().map(|l| l.id()) == Some(n.id())
+        });
+        if ends_function {
+            choices.push(crate::choice("return", false, vec![TextEdit::insert(n.start_byte(), "return ")]));
+        }
+        out.push(hit_fix(e, "This expression does nothing; assign it, use it, or remove it", crate::choice_edits(choices)));
     }
 }
 py_rule!(UselessExpression, "py/useless-expression", ["expression_statement"], false, useless_expression);
@@ -501,9 +738,28 @@ fn cached_instance_method(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
     if static_or_class {
         return;
     }
+    let first = decs.first().copied();
     for d in decs {
         if names_one_of(decorator_target(d), m, ctx.source, &["functools.lru_cache", "functools.cache"]) {
-            out.push(hit(d, "Caching a method keeps every `self` alive in the cache; cache a function or a `staticmethod` instead"));
+            // A method that never reads `self` becomes a `staticmethod`: the
+            // cache is then shared by every instance, and a subclass's
+            // override no longer replaces it for calls through the base.
+            let src = ctx.source;
+            let edits = (|| {
+                let params = n.child_by_field_name("parameters")?;
+                let p0 = *kids(params).first()?;
+                if p0.kind() != "identifier" || text(params, src).contains('\n') {
+                    return None;
+                }
+                let sym = m.declared_at(p0.start_byte())?;
+                if !m.symbol(sym).refs.is_empty() {
+                    return None;
+                }
+                let at = first?.start_byte();
+                Some(vec![TextEdit::insert(at, format!("@staticmethod\n{}", indent_at(src, at))), crate::util::remove_list_item(p0, src)])
+            })()
+            .unwrap_or_default();
+            out.push(hit_fix(d, "Caching a method keeps every `self` alive in the cache; cache a function or a `staticmethod` instead", edits));
         }
     }
 }
@@ -542,11 +798,18 @@ fn loop_variable_overrides_iterator(n: Node<'_>, ctx: &NativeContext<'_>, out: &
     for t in targets {
         let name = text(t, ctx.source);
         if used.contains(name) {
-            out.push(hit(t, format!("The loop variable `{name}` replaces the value being iterated over")));
+            // Renamed in the loop: the singular of the name, else
+            // `<name>_item` (`auto` where `loop_rename` proves it).
+            let new = match name.strip_suffix('s') {
+                Some(one) if one.len() > 1 && !one.ends_with('s') => one.to_owned(),
+                _ => format!("{name}_item"),
+            };
+            let edits = model(ctx).and_then(|m| m.declared_at(t.start_byte()).map(|sym| crate::python_pyflakes::loop_rename(n, m, sym, &new, ctx.source))).unwrap_or_default();
+            out.push(hit_fix(t, format!("The loop variable `{name}` replaces the value being iterated over"), edits));
         }
     }
 }
-py_rule!(LoopVariableOverridesIterator, "py/loop-variable-overrides-iterator", ["for_statement"], false, loop_variable_overrides_iterator);
+py_rule!(LoopVariableOverridesIterator, "py/loop-variable-overrides-iterator", ["for_statement"], true, loop_variable_overrides_iterator);
 
 fn fstring_docstring(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let body = if n.kind() == "module" { Some(n) } else { n.child_by_field_name("body") };
@@ -557,7 +820,19 @@ fn fstring_docstring(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeF
         && is_string(s)
         && is_fstring(s, ctx.source)
     {
-        out.push(hit(s, "An f-string is not a docstring; Python leaves `__doc__` empty"));
+        // The `f` dropped and `{{ }}` undoubled: the text becomes the
+        // docstring, placeholders as written.
+        let t = text(s, ctx.source);
+        let plen = t.find(['"', '\'']).unwrap_or(0);
+        let (prefix, body) = t.split_at(plen);
+        let q = &body[..1];
+        let interpolated_quote = kids(s).iter().filter(|c| c.kind() == "interpolation").any(|c| text(*c, ctx.source).contains(q));
+        let edits = if kids(s).iter().any(|c| c.kind() == "interpolation" && text(*c, ctx.source).contains('\n')) || interpolated_quote {
+            Vec::new()
+        } else {
+            vec![TextEdit::new(s.start_byte(), s.end_byte(), format!("{}{}", prefix.replace(['f', 'F'], ""), body.replace("{{", "{").replace("}}", "}")))]
+        };
+        out.push(hit_fix(s, "An f-string is not a docstring; Python leaves `__doc__` empty", edits));
     }
 }
 py_rule!(FStringDocstring, "py/f-string-docstring", ["module", "function_definition", "class_definition"], false, fstring_docstring);
@@ -570,7 +845,22 @@ fn useless_contextlib_suppress(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
     if call.child_by_field_name("function").is_some_and(|f| names_one_of(f, m, ctx.source, &["contextlib.suppress"])) {
         let a = call_args(call, ctx.source);
         if a.positional.is_empty() && a.keywords.is_empty() && !a.starred {
-            out.push(hit(call, "`contextlib.suppress()` with no exceptions suppresses nothing"));
+            // The `with` line goes and its body is dedented: it suppressed
+            // nothing, but the exception the author forgot is gone from view.
+            let src = ctx.source;
+            let edits = (|| {
+                let clause = n.parent().filter(|c| c.kind() == "with_clause" && c.named_child_count() == 1)?;
+                let with = clause.parent().filter(|w| w.kind() == "with_statement")?;
+                let body = with.child_by_field_name("body")?;
+                if v.kind() == "as_pattern" || !starts_line(src, with.start_byte()) || src[clause.end_byte()..body.start_byte()].trim() != ":" || !starts_line(src, body.start_byte()) {
+                    return None;
+                }
+                let by = indent_at(src, body.start_byte()).len().checked_sub(indent_at(src, with.start_byte()).len())?;
+                let from = src[..with.start_byte()].rfind('\n').map_or(0, |i| i + 1);
+                Some(vec![TextEdit::new(from, body.end_byte(), dedented(src, body.start_byte(), body.end_byte(), by)?)])
+            })()
+            .unwrap_or_default();
+            out.push(hit_fix(call, "`contextlib.suppress()` with no exceptions suppresses nothing", edits));
         }
     }
 }
@@ -671,6 +961,7 @@ fn function_uses_loop_variable(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
         }
         let fscope = m.scope_at(f.child_by_field_name("body").map(|b| b.start_byte()).unwrap_or(f.start_byte()));
         let mut reported = BTreeSet::new();
+        let first = out.len();
         for r in &m.references {
             if !(f.start_byte() <= r.start && r.start < f.end_byte() && r.read && bound.contains(&r.name)) {
                 continue;
@@ -700,6 +991,36 @@ fn function_uses_loop_variable(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
                 edits: Vec::new(),
             });
         }
+        // The values bound when the function is made: keyword-only defaults
+        // (`*, name=name`), on the function's first finding.
+        if out.len() > first
+            && let Some(e) = bind_early(f, &reported, src)
+        {
+            out[first].edits = e;
+        }
+    }
+}
+
+/// The edit adding `*, name=name, …` to a function's or lambda's
+/// parameters; none when it already has `*`, `**` or `/`.
+fn bind_early(f: Node<'_>, names: &BTreeSet<String>, src: &str) -> Option<Vec<TextEdit>> {
+    let defaults = names.iter().map(|n| format!("{n}={n}")).collect::<Vec<_>>().join(", ");
+    match f.child_by_field_name("parameters") {
+        Some(p) => {
+            if kids(p).iter().any(|c| matches!(c.kind(), "list_splat_pattern" | "dictionary_splat_pattern" | "keyword_separator" | "positional_separator" | "comment")) {
+                return None;
+            }
+            match kids(p).last() {
+                Some(last) => Some(vec![TextEdit::insert(last.end_byte(), format!(", *, {defaults}"))]),
+                None if f.kind() == "function_definition" => Some(vec![TextEdit::insert(p.start_byte() + 1, format!("*, {defaults}"))]),
+                None => None,
+            }
+        }
+        None if f.kind() == "lambda" => {
+            let kw = children(f).into_iter().find(|c| c.kind() == "lambda")?;
+            Some(vec![TextEdit::insert(kw.end_byte(), format!(" *, {defaults}"))])
+        }
+        None => None,
     }
 }
 py_rule!(FunctionUsesLoopVariable, "py/function-uses-loop-variable", ["for_statement", "while_statement", "list_comprehension", "set_comprehension", "dictionary_comprehension", "generator_expression"], true, function_uses_loop_variable);
