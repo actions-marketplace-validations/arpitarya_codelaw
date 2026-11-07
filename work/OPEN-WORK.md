@@ -51,7 +51,7 @@ here. Read that record before changing anything below it.
 
 🔴🧨 **W-173** `arpit` Dependabot: five advisories (1 critical) on `zip` 8.6.0, via ruff_db ← ruff_python_formatter. 11-07: unreachable from codelaw; no feature drops it; ruff_db 0.0.21 takes zip ^9.0.5. Waits on the inbox ruling (bump D-02 to `=0.0.21`). Filed by Arpit (Claude Code). [detail](open/W-173-zip-advisories.md)
 
-🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 

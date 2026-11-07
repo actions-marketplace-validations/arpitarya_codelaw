@@ -104,6 +104,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Fixed
 
+- **A rare crash on Linux musl (W-169):** `codelaw` could die with a segmentation fault, with nothing printed, while loading rules on the musl builds (`linux-x64-musl`, `linux-arm64-musl`). Looking up a node kind or field name could read one byte past the name, and that faulted when the name ended at the end of a memory page. Each name is now looked up from a copy that ends in a NUL byte.
 - **Two rules stop reporting what is not there (W-139):** `md/no-empty-links` (on in `md/recommended`) no longer reports links to an anchor (`[x](#install)`) or a bracketed path (`[x](<release notes.md>)`), which it had done since its fix was added on 11-05; `js/no-undefined` no longer reports, or rewrites to `void 0`, TypeScript's `undefined` type (`string | undefined`).
 - **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
 

@@ -83,6 +83,8 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    | TOML | `tree-sitter-toml` | **no**: registered by codelaw as a custom language |
    | Markdown | `tree-sitter-markdown` (block + inline) | yes |
 
+   Every node-kind and field-name lookup (`kind_to_id`, `field_to_id`, which ast-grep and the rule compiler both call) hands tree-sitter a copy of the name followed by a NUL byte (W-169, 2026-11-07). Tree-sitter compares names with `strncmp(symbol, name, len)`, and the `strncmp` in the musl binaries (linked by maturin's zig) reads `name[len]` when the first `len` bytes agree; a name whose allocation ended at the end of a page made `rules lint` and `test` die with SIGSEGV on the musl build legs. `crates/codelaw-lang/tests/name_lookup_guard_page.rs` looks names up flush against an unreadable page.
+
    `codelaw-lang`'s `reparse` applies one edit to a parsed text through tree-sitter's edit API, for the warm processes' incremental re-parse ([SR-ARCHITECTURE](0108_architecture.md) decision 23).
 
    `codelaw-lang`'s `token_stream` is a text's tokens through these grammars — what [SR-FORMATTER](0105_formatter.md) decision 3 compares to decide that a rule only changes layout. What it counts as a token in each grammar (comments, words no node holds, the depth that carries indentation, embedded regions) is that decision's, not this one's.
