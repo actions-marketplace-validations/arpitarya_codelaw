@@ -7,7 +7,7 @@ filed: 2026-11-05
 filed_by: "Claude Code (session 0a172e1f)"
 updated: 2026-11-07
 updated_by: "Claude Code (session 0a172e1f)"
-ball: arpit
+ball: agent
 ---
 
 # W-169 — `rules lint` segfaults in CI, intermittently
