@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the component should change the prop needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/strict-mutable` |
@@ -137,6 +137,16 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
+}
+```
+
 #### Do
 
 ```ts
@@ -159,6 +169,16 @@ export class Card {
 export class Card {
   /** The count. */
   @Prop({ mutable: true }) count = 0;
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
 }
 ```
 

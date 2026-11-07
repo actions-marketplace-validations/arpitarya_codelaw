@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the slot's description, or whether it should exist, needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Ported from** | `stencil/enforce-slot-jsdoc` |
@@ -136,6 +136,23 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 ```tsx
 /**
  * A card.
+ * @slot header - The card's title row.
+ * @slot footer - The card's actions.
+ */
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return <slot name="header" />;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+/**
+ * A card.
+ * @slot header - The card's title row.
  */
 @Component({ tag: 'my-card' })
 export class Card {

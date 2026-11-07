@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the attributes move into `render()` by hand) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/host-data-deprecated` |
@@ -138,6 +138,17 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -158,6 +169,17 @@ export class Card {
 export class Card {
   hostData() {
     return { class: 'card' };
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
   }
 }
 ```

@@ -935,19 +935,19 @@ Presets: `codelaw:stencil/recommended` · `codelaw:stencil/conventions`.
 | [`stencil/ban-exported-const-enums`](stencil/ban-exported-const-enums.md) | No exported const enums | `auto` | — | `stencil/recommended` |
 | [`stencil/ban-prefix`](stencil/ban-prefix.md) | A component tag doesn't use a reserved prefix | `manual` | `prefixes` | `stencil/recommended` |
 | [`stencil/ban-side-effects`](stencil/ban-side-effects.md) | No calls at a module's top level | `manual` | `allow` | `stencil/recommended` |
-| [`stencil/decorators-context`](stencil/decorators-context.md) | Stencil decorators only inside @Component classes | `manual` | — | `stencil/recommended` |
-| [`stencil/enforce-slot-jsdoc`](stencil/enforce-slot-jsdoc.md) | Every slot a component renders has a @slot tag, and every @slot tag a slot | `manual` | — | `stencil/recommended` |
-| [`stencil/host-data-deprecated`](stencil/host-data-deprecated.md) | No hostData() | `manual` | — | `stencil/recommended` |
-| [`stencil/methods-must-be-public`](stencil/methods-must-be-public.md) | @Method() members are public | `manual` | — | `stencil/recommended` |
-| [`stencil/no-unused-watch`](stencil/no-unused-watch.md) | @Watch watches a @Prop or @State | `manual` | — | `stencil/recommended` |
+| [`stencil/decorators-context`](stencil/decorators-context.md) | Stencil decorators only inside @Component classes | `suggest` | — | `stencil/recommended` |
+| [`stencil/enforce-slot-jsdoc`](stencil/enforce-slot-jsdoc.md) | Every slot a component renders has a @slot tag, and every @slot tag a slot | `suggest` | — | `stencil/recommended` |
+| [`stencil/host-data-deprecated`](stencil/host-data-deprecated.md) | No hostData() | `auto` | — | `stencil/recommended` |
+| [`stencil/methods-must-be-public`](stencil/methods-must-be-public.md) | @Method() members are public | `auto` | — | `stencil/recommended` |
+| [`stencil/no-unused-watch`](stencil/no-unused-watch.md) | @Watch watches a @Prop or @State | `suggest` | — | `stencil/recommended` |
 | [`stencil/own-methods-must-be-private`](stencil/own-methods-must-be-private.md) | A component's own methods are private | `auto` | — | `stencil/recommended` |
 | [`stencil/own-props-must-be-private`](stencil/own-props-must-be-private.md) | A component's own fields are private | `auto` | — | `stencil/recommended` |
-| [`stencil/prefer-vdom-listener`](stencil/prefer-vdom-listener.md) | DOM events are handled in render(), not with @Listen | `manual` | — | `stencil/recommended` |
+| [`stencil/prefer-vdom-listener`](stencil/prefer-vdom-listener.md) | DOM events are handled in render(), not with @Listen | `suggest` | — | `stencil/recommended` |
 | [`stencil/prop-readonly`](stencil/prop-readonly.md) | @Prop() members are readonly unless mutable | `auto` | — | `stencil/recommended` |
-| [`stencil/props-must-be-public`](stencil/props-must-be-public.md) | @Prop() members are public | `manual` | — | `stencil/recommended` |
+| [`stencil/props-must-be-public`](stencil/props-must-be-public.md) | @Prop() members are public | `auto` | — | `stencil/recommended` |
 | [`stencil/required-jsdoc`](stencil/required-jsdoc.md) | Public members have JSDoc | `manual` | — | `stencil/recommended` |
 | [`stencil/reserved-member-names`](stencil/reserved-member-names.md) | Public members don't reuse HTML element names | `manual` | — | `stencil/recommended` |
-| [`stencil/strict-mutable`](stencil/strict-mutable.md) | mutable: true only on props the component changes | `manual` | — | `stencil/recommended` |
+| [`stencil/strict-mutable`](stencil/strict-mutable.md) | mutable: true only on props the component changes | `auto` | — | `stencil/recommended` |
 | [`stencil/tag-prefix`](stencil/tag-prefix.md) | Component tags start with the project's prefix | `manual` | `prefix` | `stencil/conventions` |
 
 ## html

@@ -2,9 +2,8 @@
 id: stencil/props-must-be-public
 title: "@Prop() members are public"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "whether the field is public API needs the author"
-fix_pending: "auto"
+fix: auto
+fix_reason: "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time"
 stability: preview
 ported_from: [stencil/props-must-be-public]
 since: 0.1.0
