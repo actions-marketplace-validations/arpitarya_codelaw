@@ -2,9 +2,9 @@
 id: js/no-misleading-character-class
 title: "No character class holding a character made of several code points"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether an alternation or a different class was meant needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are writing each several-code-point character as an alternative beside the class (the default), or the `u` flag when the class holds astral characters; either changes what the pattern matches, to what it shows"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-misleading-character-class]
 since: 0.1.0

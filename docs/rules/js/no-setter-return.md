@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the returned expression was meant as a side effect needs a reader) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a setter's return value is thrown away, so `return e;` becomes `e; return;`, a last `return` goes, and a value that can do nothing goes with it; behaviour is unchanged) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-setter-return` |

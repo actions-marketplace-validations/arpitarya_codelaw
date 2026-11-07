@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the lines were meant to join can only be known from intent) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-unexpected-multiline` |
@@ -137,6 +137,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+#### Fixed (split)
+
+```js
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```js
+const total = sum(items).forEach(log);
+```
+
 #### Do
 
 ```js
@@ -151,6 +164,19 @@ const total = sum;
 ```jsx
 const total = sum
 (items).forEach(log);
+```
+
+#### Fixed (split)
+
+```jsx
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```jsx
+const total = sum(items).forEach(log);
 ```
 
 #### Do
@@ -169,6 +195,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+#### Fixed (split)
+
+```ts
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```ts
+const total = sum(items).forEach(log);
+```
+
 #### Do
 
 ```ts
@@ -183,6 +222,19 @@ const total = sum;
 ```tsx
 const total = sum
 (items).forEach(log);
+```
+
+#### Fixed (split)
+
+```tsx
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```tsx
+const total = sum(items).forEach(log);
 ```
 
 #### Do

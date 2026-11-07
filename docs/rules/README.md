@@ -101,7 +101,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/consistent-existence-index-check`](js/consistent-existence-index-check.md) | Check indexOf against -1 the same way | `auto` | — | `js/strict` |
 | [`js/consistent-json-file-read`](js/consistent-json-file-read.md) | Read JSON files as text | `manual` | — | `js/strict` |
 | [`js/consistent-return`](js/consistent-return.md) | return undefined explicitly beside valued returns | `suggest` | — | *[rules] only* |
-| [`js/constructor-super`](js/constructor-super.md) | A derived class's constructor calls super(); a base class's does not | `manual` | — | `js/recommended` |
+| [`js/constructor-super`](js/constructor-super.md) | A derived class's constructor calls super(); a base class's does not | `suggest` | — | `js/recommended` |
 | [`js/content-security-policy`](js/content-security-policy.md) | Keep the Content-Security-Policy header | `suggest` | — | `js/sonarjs` |
 | [`js/cookie-no-httponly`](js/cookie-no-httponly.md) | Cookies are HttpOnly | `suggest` | — | `js/sonarjs` |
 | [`js/cors`](js/cors.md) | No wildcard CORS origin | `manual` | — | `js/sonarjs` |
@@ -130,7 +130,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/function-name`](js/function-name.md) | Function names in camelCase | `manual` | — | *[rules] only* |
 | [`js/future-reserved-words`](js/future-reserved-words.md) | No variable named after a reserved word | `manual` | — | `js/sonarjs` |
 | [`js/generator-without-yield`](js/generator-without-yield.md) | A generator yields | `manual` | — | `js/sonarjs` |
-| [`js/getter-return`](js/getter-return.md) | A getter returns a value on every path | `manual` | — | `js/recommended` |
+| [`js/getter-return`](js/getter-return.md) | A getter returns a value on every path | `suggest` | — | `js/recommended` |
 | [`js/grouped-accessor-pairs`](js/grouped-accessor-pairs.md) | A getter and its setter sit together | `manual` | — | *[rules] only* |
 | [`js/guard-for-in`](js/guard-for-in.md) | for-in is filtered | `suggest` | — | *[rules] only* |
 | [`js/hardcoded-secret-signatures`](js/hardcoded-secret-signatures.md) | No hard-coded JWT secret | `manual` | — | `js/sonarjs` |
@@ -250,7 +250,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-console`](js/no-console.md) | No console calls left in the code | `suggest` | `allow` | `js/recommended` |
 | [`js/no-console-spaces`](js/no-console-spaces.md) | No leading or trailing space in console arguments | `suggest` | — | `js/strict` |
 | [`js/no-const-assign`](js/no-const-assign.md) | A const is not reassigned | `manual` | — | `js/recommended`, `js/sonarjs` |
-| [`js/no-constant-binary-expression`](js/no-constant-binary-expression.md) | No binary expression whose result is fixed | `manual` | — | `js/recommended` |
+| [`js/no-constant-binary-expression`](js/no-constant-binary-expression.md) | No binary expression whose result is fixed | `suggest` | — | `js/recommended` |
 | [`js/no-constant-condition`](js/no-constant-condition.md) | No conditions that are always true or always false | `manual` | — | `js/recommended` |
 | [`js/no-constant-math-min-max-clamp`](js/no-constant-math-min-max-clamp.md) | No clamp with its bounds swapped | `suggest` | — | `js/recommended` |
 | [`js/no-constant-zero-expression`](js/no-constant-zero-expression.md) | No multiply by zero | `manual` | — | `js/strict` |
@@ -266,10 +266,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-document-cookie-biome`](js/no-document-cookie-biome.md) | No direct writes to document.cookie | `manual` | — | `js/recommended` |
 | [`js/no-double-comparison`](js/no-double-comparison.md) | x > a \|\| x === a is x >= a | `suggest` | — | `js/strict` |
 | [`js/no-dupe-args`](js/no-dupe-args.md) | No two parameters share a name | `manual` | — | `js/recommended` |
-| [`js/no-dupe-class-members`](js/no-dupe-class-members.md) | No two class members share a name | `manual` | — | `js/recommended` |
+| [`js/no-dupe-class-members`](js/no-dupe-class-members.md) | No two class members share a name | `suggest` | — | `js/recommended` |
 | [`js/no-dupe-else-if`](js/no-dupe-else-if.md) | No two conditions in an if/else-if chain are the same | `manual` | — | `js/recommended` |
-| [`js/no-dupe-keys`](js/no-dupe-keys.md) | No two keys in an object literal are the same | `manual` | — | `js/recommended` |
-| [`js/no-duplicate-case`](js/no-duplicate-case.md) | No two case labels in a switch are the same | `manual` | — | `js/recommended` |
+| [`js/no-dupe-keys`](js/no-dupe-keys.md) | No two keys in an object literal are the same | `suggest` | — | `js/recommended` |
+| [`js/no-duplicate-case`](js/no-duplicate-case.md) | No two case labels in a switch are the same | `suggest` | — | `js/recommended` |
 | [`js/no-duplicate-imports`](js/no-duplicate-imports.md) | One import per module | `manual` | — | *[rules] only* |
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
@@ -291,7 +291,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-extra-bind`](js/no-extra-bind.md) | No bind() on a function that does not use this | `auto` | — | *[rules] only* |
 | [`js/no-extra-boolean-cast`](js/no-extra-boolean-cast.md) | No needless !! or Boolean() in a condition | `auto` | — | `js/recommended` |
 | [`js/no-extra-label`](js/no-extra-label.md) | No label that is not needed | `auto` | — | *[rules] only* |
-| [`js/no-fallthrough`](js/no-fallthrough.md) | A switch case does not fall through into the next by accident | `manual` | — | `js/recommended` |
+| [`js/no-fallthrough`](js/no-fallthrough.md) | A switch case does not fall through into the next by accident | `suggest` | — | `js/recommended` |
 | [`js/no-flat-map-identity`](js/no-flat-map-identity.md) | flat, not flatMap of the identity | `suggest` | — | `js/recommended` |
 | [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers`, `js/sonarjs` |
 | [`js/no-for-each`](js/no-for-each.md) | for…of rather than forEach | `manual` | — | `js/strict` |
@@ -328,11 +328,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-literal-call`](js/no-literal-call.md) | No call on a literal | `manual` | — | `js/sonarjs` |
 | [`js/no-lone-blocks`](js/no-lone-blocks.md) | No needless nested blocks | `auto` | — | *[rules] only* |
 | [`js/no-lonely-if`](js/no-lonely-if.md) | else { if } is else if | `auto` | — | `js/strict` |
-| [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `manual` | — | `js/recommended` |
+| [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `suggest` | — | `js/recommended` |
 | [`js/no-magic-array-flat-depth`](js/no-magic-array-flat-depth.md) | Name the depth given to flat() | `manual` | — | `js/strict` |
 | [`js/no-map-spread`](js/no-map-spread.md) | No object spread of each item in map() | `suggest` | — | *[rules] only* |
 | [`js/no-mime-sniff`](js/no-mime-sniff.md) | Keep X-Content-Type-Options | `suggest` | — | `js/sonarjs` |
-| [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `manual` | — | `js/recommended` |
+| [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `suggest` | — | `js/recommended` |
 | [`js/no-misrefactored-shorthand-assign`](js/no-misrefactored-shorthand-assign.md) | No compound assignment that repeats its target | `suggest` | — | `js/recommended` |
 | [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `auto` | — | *[rules] only* |
 | [`js/no-multi-str`](js/no-multi-str.md) | No multiline strings with a backslash | `manual` | — | *[rules] only* |
@@ -376,11 +376,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `suggest` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-self-compare`](js/no-self-compare.md) | No comparing a value with itself | `auto` | — | *[rules] only* |
 | [`js/no-sequences`](js/no-sequences.md) | No comma operator | `auto` | — | *[rules] only* |
-| [`js/no-setter-return`](js/no-setter-return.md) | A setter does not return a value | `manual` | — | `js/recommended` |
+| [`js/no-setter-return`](js/no-setter-return.md) | A setter does not return a value | `auto` | — | `js/recommended` |
 | [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `manual` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-single-promise-in-promise-methods`](js/no-single-promise-in-promise-methods.md) | No Promise.all(\[single\]) | `manual` | — | `js/strict` |
 | [`js/no-sonar-comments`](js/no-sonar-comments.md) | No NOSONAR comment | `manual` | — | *[rules] only* |
-| [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `manual` | — | `js/recommended` |
+| [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `suggest` | — | `js/recommended` |
 | [`js/no-static-only-class`](js/no-static-only-class.md) | No class with only static members | `manual` | — | `js/strict` |
 | [`js/no-string-case-mismatch`](js/no-string-case-mismatch.md) | No comparison that case conversion makes impossible | `manual` | — | `js/recommended` |
 | [`js/no-subtraction-comparison`](js/no-subtraction-comparison.md) | a > b rather than a - b > 0 | `suggest` | — | `js/strict` |
@@ -389,7 +389,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-ternary`](js/no-ternary.md) | No ternary | `manual` | — | `js/taste` |
 | [`js/no-thenable`](js/no-thenable.md) | No then property on an object or class | `manual` | — | `js/strict` |
 | [`js/no-this-assignment`](js/no-this-assignment.md) | No this alias | `manual` | — | `js/strict` |
-| [`js/no-this-before-super`](js/no-this-before-super.md) | this is not used before super() in a derived constructor | `manual` | — | `js/recommended` |
+| [`js/no-this-before-super`](js/no-this-before-super.md) | this is not used before super() in a derived constructor | `suggest` | — | `js/recommended` |
 | [`js/no-this-in-exported-function`](js/no-this-in-exported-function.md) | No this in an exported function | `manual` | — | *[rules] only* |
 | [`js/no-this-in-static`](js/no-this-in-static.md) | The class name, not this, in a static method | `suggest` | — | `js/recommended` |
 | [`js/no-throw-literal`](js/no-throw-literal.md) | Throw Error objects | `suggest` | — | *[rules] only* |
@@ -399,7 +399,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-undefined`](js/no-undefined.md) | No undefined identifier | `suggest` | — | `js/taste` |
 | [`js/no-underscore-dangle`](js/no-underscore-dangle.md) | No leading or trailing underscore in names | `manual` | — | *[rules] only* |
-| [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `manual` | — | `js/recommended` |
+| [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `suggest` | — | `js/recommended` |
 | [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | *[rules] only* |
 | [`js/no-unnecessary-array-flat-depth`](js/no-unnecessary-array-flat-depth.md) | No flat(1) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-array-flat-map`](js/no-unnecessary-array-flat-map.md) | flat() rather than flatMap(x => x) | `auto` | — | `js/strict` |
@@ -413,7 +413,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unreadable-array-destructuring`](js/no-unreadable-array-destructuring.md) | No consecutive holes in array destructuring | `manual` | — | `js/strict` |
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
-| [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `manual` | — | `js/recommended` |
+| [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `suggest` | — | `js/recommended` |
 | [`js/no-unthrown-error`](js/no-unthrown-error.md) | Throw the error you create | `suggest` | — | `js/sonarjs` |
 | [`js/no-unused-builtin-method-return`](js/no-unused-builtin-method-return.md) | Use the result of a method that returns a new value | `manual` | — | `js/strict` |
 | [`js/no-unused-function-parameters`](js/no-unused-function-parameters.md) | No unused trailing parameter | `suggest` | — | `js/recommended` |
@@ -421,8 +421,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unused-labels`](js/no-unused-labels.md) | Every label is used | `auto` | — | `js/recommended` |
 | [`js/no-unused-private-class-members`](js/no-unused-private-class-members.md) | Every private class member is read | `manual` | — | `js/recommended` |
 | [`js/no-unused-vars`](js/no-unused-vars.md) | Every declared name is used | `manual` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `js/recommended` |
-| [`js/no-useless-assignment`](js/no-useless-assignment.md) | No value is stored that nothing reads | `manual` | — | `js/recommended` |
-| [`js/no-useless-backreference`](js/no-useless-backreference.md) | No backreference that can only match the empty string | `manual` | — | `js/recommended` |
+| [`js/no-useless-assignment`](js/no-useless-assignment.md) | No value is stored that nothing reads | `auto` | — | `js/recommended` |
+| [`js/no-useless-backreference`](js/no-useless-backreference.md) | No backreference that can only match the empty string | `suggest` | — | `js/recommended` |
 | [`js/no-useless-call`](js/no-useless-call.md) | No needless call or apply | `auto` | — | *[rules] only* |
 | [`js/no-useless-catch`](js/no-useless-catch.md) | No catch that only rethrows | `auto` | — | `js/recommended` |
 | [`js/no-useless-coercion`](js/no-useless-coercion.md) | No String("literal") | `auto` | — | `js/strict` |

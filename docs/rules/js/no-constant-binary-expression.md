@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended grouping or comparison needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are dropping the operand that never decides the result (the default, behaviour-preserving) or regrouping, `a + b ?? c` as `a + (b ?? c)`; a constant comparison is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-constant-binary-expression` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>                    # the resolved setting, a
 const total = price + tax ?? 0;
 ```
 
+#### Fixed
+
+```js
+const total = price + tax;
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ const total = price + (tax ?? 0);
 
 ```jsx
 const total = price + tax ?? 0;
+```
+
+#### Fixed
+
+```jsx
+const total = price + tax;
 ```
 
 #### Do
@@ -164,6 +176,12 @@ const total = price + (tax ?? 0);
 const total = price + tax ?? 0;
 ```
 
+#### Fixed
+
+```ts
+const total = price + tax;
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const total = price + (tax ?? 0);
 
 ```tsx
 const total = price + tax ?? 0;
+```
+
+#### Fixed
+
+```tsx
+const total = price + tax;
 ```
 
 #### Do

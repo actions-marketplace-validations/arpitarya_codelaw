@@ -147,7 +147,21 @@ impl NativeRule for NoUselessAssignment {
                 };
                 if overwritten || never_read {
                     let why = if overwritten { "is overwritten before anything reads it" } else { "is never read" };
-                    out.push(NativeFinding { start, end, message: format!("The value assigned to `{}` here {why}", s.name), edits: Vec::new() });
+                    // A literal initialiser overwritten before any read goes:
+                    // `let sum = 0;` becomes `let sum;`.
+                    let edits = (overwritten && start == ds)
+                        .then(|| ident.parent().filter(|p| p.kind() == "variable_declarator"))
+                        .flatten()
+                        .and_then(|d| {
+                            let v = d.child_by_field_name("value")?;
+                            let literal = matches!(v.kind(), "number" | "string" | "true" | "false" | "null" | "undefined")
+                                || (matches!(v.kind(), "array" | "object") && v.named_child_count() == 0)
+                                || (v.kind() == "template_string" && v.named_child_count() == 0);
+                            let from = d.child_by_field_name("type").map_or(ident.end_byte(), |t| t.end_byte());
+                            literal.then(|| vec![codelaw_core::TextEdit::delete(from, v.end_byte())])
+                        })
+                        .unwrap_or_default();
+                    out.push(NativeFinding { start, end, message: format!("The value assigned to `{}` here {why}", s.name), edits });
                 }
             }
         }

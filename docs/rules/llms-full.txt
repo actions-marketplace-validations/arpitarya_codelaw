@@ -17663,7 +17663,7 @@ function find(list, id) {
 ## `js/constructor-super` — A derived class's constructor calls super(); a base class's does not
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (what `super()` must receive depends on the base class)
+- **Fix:** `suggest` (the choices are `super(...arguments)` first in the constructor (the default: what an implicit constructor does) or `super()`; which the parent needs is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/constructor-super.md
 
@@ -17694,6 +17694,17 @@ class Cat extends Animal {
 }
 ```
 
+##### Fixed
+
+```js
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
+    this.lives = 9;
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -17712,6 +17723,17 @@ class Cat extends Animal {
 ```jsx
 class Cat extends Animal {
   constructor() {
+    this.lives = 9;
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
     this.lives = 9;
   }
 }
@@ -20461,7 +20483,7 @@ function* ids() {
 ## `js/getter-return` — A getter returns a value on every path
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (the value a getter should return is the author's decision)
+- **Fix:** `suggest` (the path that falls off the end gets `return undefined;`, which it already returns; the reviewer confirms that is the value meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/getter-return.md
 
@@ -20493,6 +20515,19 @@ const box = {
 };
 ```
 
+##### Fixed
+
+```js
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
+  },
+};
+```
+
 ##### Do
 
 ```js
@@ -20513,6 +20548,19 @@ const box = {
     if (this.items) {
       return this.items.length;
     }
+  },
+};
+```
+
+##### Fixed
+
+```jsx
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
   },
 };
 ```
@@ -32366,7 +32414,7 @@ total = 1;
 ## `js/no-constant-binary-expression` — No binary expression whose result is fixed
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the intended grouping or comparison needs the author)
+- **Fix:** `suggest` (the choices are dropping the operand that never decides the result (the default, behaviour-preserving) or regrouping, `a + b ?? c` as `a + (b ?? c)`; a constant comparison is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-constant-binary-expression.md
 
@@ -32393,6 +32441,12 @@ operator precedence.
 const total = price + tax ?? 0;
 ```
 
+##### Fixed
+
+```js
+const total = price + tax;
+```
+
 ##### Do
 
 ```js
@@ -32405,6 +32459,12 @@ const total = price + (tax ?? 0);
 
 ```jsx
 const total = price + tax ?? 0;
+```
+
+##### Fixed
+
+```jsx
+const total = price + tax;
 ```
 
 ##### Do
@@ -32421,6 +32481,12 @@ const total = price + (tax ?? 0);
 const total = price + tax ?? 0;
 ```
 
+##### Fixed
+
+```ts
+const total = price + tax;
+```
+
 ##### Do
 
 ```ts
@@ -32433,6 +32499,12 @@ const total = price + (tax ?? 0);
 
 ```tsx
 const total = price + tax ?? 0;
+```
+
+##### Fixed
+
+```tsx
+const total = price + tax;
 ```
 
 ##### Do
@@ -33806,7 +33878,7 @@ function add(a, b, c) {
 ## `js/no-dupe-class-members` — No two class members share a name
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (which of the two members to keep is a decision)
+- **Fix:** `suggest` (the later member is the one the class keeps, so the choices are deleting the earlier (the default, which keeps behaviour) or the later)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-dupe-class-members.md
 
@@ -33839,6 +33911,16 @@ class Cart {
 }
 ```
 
+##### Fixed
+
+```js
+class Cart {
+  total() {
+    return 2;
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -33861,6 +33943,16 @@ class Cart {
   total() {
     return 1;
   }
+  total() {
+    return 2;
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class Cart {
   total() {
     return 2;
   }
@@ -33991,7 +34083,7 @@ if (isAdmin) {
 ## `js/no-dupe-keys` — No two keys in an object literal are the same
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `suggest` (the later key is the one the object keeps, so the choices are deleting the earlier (the default, which keeps the value; its own evaluation goes with it) or the later)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-dupe-keys.md
 
@@ -34020,6 +34112,14 @@ const user = {
 };
 ```
 
+##### Fixed
+
+```js
+const user = {
+  name: "Grace",
+};
+```
+
 ##### Do
 
 ```js
@@ -34040,6 +34140,14 @@ const user = {
 };
 ```
 
+##### Fixed
+
+```jsx
+const user = {
+  name: "Grace",
+};
+```
+
 ##### Do
 
 ```jsx
@@ -34052,7 +34160,7 @@ const user = {
 ## `js/no-duplicate-case` — No two case labels in a switch are the same
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which label was meant is a decision)
+- **Fix:** `suggest` (no value reaches the later case: the whole clause goes when the clause before it exits, otherwise only its label, so what falls through still runs; the reviewer confirms the case was not meant to test another value)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-duplicate-case.md
 
@@ -34084,6 +34192,16 @@ switch (status) {
 }
 ```
 
+##### Fixed
+
+```js
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 ##### Do
 
 ```js
@@ -34108,6 +34226,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+##### Fixed
+
+```jsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -34140,6 +34268,16 @@ switch (status) {
 }
 ```
 
+##### Fixed
+
+```ts
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 ##### Do
 
 ```ts
@@ -34164,6 +34302,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+##### Fixed
+
+```tsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -36064,7 +36212,7 @@ outer: for (const x of xs) {
 ## `js/no-fallthrough` — A switch case does not fall through into the next by accident
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the fall-through is intended needs the author)
+- **Fix:** `suggest` (the choices are `break;` ending the case, which stops the fall-through, or a `// falls through` comment saying it is meant, which keeps behaviour; only the author knows which)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-fallthrough.md
 
@@ -36090,6 +36238,32 @@ through` before the next case.
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (break)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -36134,6 +36308,32 @@ switch (kind) {
 }
 ```
 
+##### Fixed (break)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -36172,6 +36372,32 @@ switch (kind) {
 }
 ```
 
+##### Fixed (break)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 ##### Do
 
 ```ts
@@ -36204,6 +36430,32 @@ switch (kind) {
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (break)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -39306,7 +39558,7 @@ if (a) {
 ## `js/no-loss-of-precision` — Number literals keep their value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to use a BigInt, a string or a rounder value depends on how the number is used)
+- **Fix:** `suggest` (the choices are the literal the engine already stores (behaviour-preserving) or, for an integer, a BigInt, which keeps every digit but is another type)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-loss-of-precision.md
 
@@ -39332,6 +39584,18 @@ mean what it says.
 const id = 9007199254740993;
 ```
 
+##### Fixed (the value it holds)
+
+```js
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```js
+const id = 9007199254740993n;
+```
+
 ##### Do
 
 ```js
@@ -39344,6 +39608,18 @@ const id = 9007199254740993n;
 
 ```jsx
 const id = 9007199254740993;
+```
+
+##### Fixed (the value it holds)
+
+```jsx
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```jsx
+const id = 9007199254740993n;
 ```
 
 ##### Do
@@ -39360,6 +39636,18 @@ const id = 9007199254740993n;
 const id = 9007199254740993;
 ```
 
+##### Fixed (the value it holds)
+
+```ts
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```ts
+const id = 9007199254740993n;
+```
+
 ##### Do
 
 ```ts
@@ -39372,6 +39660,18 @@ const id = 9007199254740993n;
 
 ```tsx
 const id = 9007199254740993;
+```
+
+##### Fixed (the value it holds)
+
+```tsx
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```tsx
+const id = 9007199254740993n;
 ```
 
 ##### Do
@@ -39624,7 +39924,7 @@ app.use(helmet({  }));
 ## `js/no-misleading-character-class` — No character class holding a character made of several code points
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether an alternation or a different class was meant needs the author)
+- **Fix:** `suggest` (the choices are writing each several-code-point character as an alternative beside the class (the default), or the `u` flag when the class holds astral characters; either changes what the pattern matches, to what it shows)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-misleading-character-class.md
 
@@ -43546,7 +43846,7 @@ b = 2;
 ## `js/no-setter-return` — A setter does not return a value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (whether the returned expression was meant as a side effect needs a reader)
+- **Fix:** `auto` (a setter's return value is thrown away, so `return e;` becomes `e; return;`, a last `return` goes, and a value that can do nothing goes with it; behaviour is unchanged)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-setter-return.md
 
@@ -43852,7 +44152,7 @@ run(x);
 ## `js/no-sparse-arrays` — No holes in array literals
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether a value is missing or a comma is extra needs a reader)
+- **Fix:** `suggest` (the choices are deleting the extra comma, shortening the array, or filling the hole with `undefined`, keeping its length; which was meant is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-sparse-arrays.md
 
@@ -43878,6 +44178,18 @@ methods.
 const colors = ["red", , "blue"];
 ```
 
+##### Fixed (delete the extra comma)
+
+```js
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```js
+const colors = ["red", undefined, "blue"];
+```
+
 ##### Do
 
 ```js
@@ -43890,6 +44202,18 @@ const colors = ["red", "green", "blue"];
 
 ```jsx
 const colors = ["red", , "blue"];
+```
+
+##### Fixed (delete the extra comma)
+
+```jsx
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```jsx
+const colors = ["red", undefined, "blue"];
 ```
 
 ##### Do
@@ -43906,6 +44230,18 @@ const colors = ["red", "green", "blue"];
 const colors = ["red", , "blue"];
 ```
 
+##### Fixed (delete the extra comma)
+
+```ts
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```ts
+const colors = ["red", undefined, "blue"];
+```
+
 ##### Do
 
 ```ts
@@ -43918,6 +44254,18 @@ const colors = ["red", "green", "blue"];
 
 ```tsx
 const colors = ["red", , "blue"];
+```
+
+##### Fixed (delete the extra comma)
+
+```tsx
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```tsx
+const colors = ["red", undefined, "blue"];
 ```
 
 ##### Do
@@ -44601,7 +44949,7 @@ items.forEach((x) => {
 ## `js/no-this-before-super` — this is not used before super() in a derived constructor
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (moving statements across `super()` can change what the base class sees)
+- **Fix:** `suggest` (the `super(…)` call moves above the first statement using `this` when its arguments read neither `this` nor anything declared in between; the parent's constructor then runs earlier, which is the fix but is a change)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-this-before-super.md
 
@@ -45496,7 +45844,7 @@ const cache = new Map();
 ## `js/no-unexpected-multiline` — A line break doesn't silently join two lines into one expression
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the lines were meant to join can only be known from intent)
+- **Fix:** `suggest` (the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unexpected-multiline.md
 
@@ -45524,6 +45872,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+##### Fixed (split)
+
+```js
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```js
+const total = sum(items).forEach(log);
+```
+
 ##### Do
 
 ```js
@@ -45538,6 +45899,19 @@ const total = sum;
 ```jsx
 const total = sum
 (items).forEach(log);
+```
+
+##### Fixed (split)
+
+```jsx
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```jsx
+const total = sum(items).forEach(log);
 ```
 
 ##### Do
@@ -45556,6 +45930,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+##### Fixed (split)
+
+```ts
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```ts
+const total = sum(items).forEach(log);
+```
+
 ##### Do
 
 ```ts
@@ -45570,6 +45957,19 @@ const total = sum;
 ```tsx
 const total = sum
 (items).forEach(log);
+```
+
+##### Fixed (split)
+
+```tsx
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```tsx
+const total = sum(items).forEach(log);
 ```
 
 ##### Do
@@ -46586,7 +46986,7 @@ if (!(key in cache)) {
 ## `js/no-unsafe-optional-chaining` — No ?. chain used where undefined throws
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the right fallback value depends on the code)
+- **Fix:** `suggest` (the choices are a fallback (`?? {}` for destructuring, `?? []` for spreading, `?.` carried through a call or access), the default, or plain `.` when the value is always there)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unsafe-optional-chaining.md
 
@@ -47277,7 +47677,7 @@ export const load = (path) => readFile(path);
 ## `js/no-useless-assignment` — No value is stored that nothing reads
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the store is dead or the read is missing needs the author)
+- **Fix:** `auto` (auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-assignment.md
 
@@ -47307,6 +47707,16 @@ function total(items) {
 }
 ```
 
+##### Fixed
+
+```js
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 ##### Do
 
 ```js
@@ -47323,6 +47733,16 @@ function total(items) {
 ```jsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+##### Fixed
+
+```jsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -47349,6 +47769,16 @@ function total(items) {
 }
 ```
 
+##### Fixed
+
+```ts
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 ##### Do
 
 ```ts
@@ -47365,6 +47795,16 @@ function total(items) {
 ```tsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+##### Fixed
+
+```tsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -47387,7 +47827,7 @@ last assignment outside any loop. A variable a nested function touches is skippe
 ## `js/no-useless-backreference` — No backreference that can only match the empty string
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the reference was meant to repeat needs the author)
+- **Fix:** `suggest` (the backreference, with its quantifier, always matches the empty string, so it goes; the reviewer confirms the pattern was not meant to match more)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-backreference.md
 
@@ -47414,6 +47854,12 @@ always matches the empty string.
 const re = /\1(a)/;
 ```
 
+##### Fixed
+
+```js
+const re = /(a)/;
+```
+
 ##### Do
 
 ```js
@@ -47426,6 +47872,12 @@ const re = /(a)\1/;
 
 ```jsx
 const re = /\1(a)/;
+```
+
+##### Fixed
+
+```jsx
+const re = /(a)/;
 ```
 
 ##### Do
@@ -47442,6 +47894,12 @@ const re = /(a)\1/;
 const re = /\1(a)/;
 ```
 
+##### Fixed
+
+```ts
+const re = /(a)/;
+```
+
 ##### Do
 
 ```ts
@@ -47454,6 +47912,12 @@ const re = /(a)\1/;
 
 ```tsx
 const re = /\1(a)/;
+```
+
+##### Fixed
+
+```tsx
+const re = /(a)/;
 ```
 
 ##### Do

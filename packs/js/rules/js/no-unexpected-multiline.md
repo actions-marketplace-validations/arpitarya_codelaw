@@ -2,9 +2,8 @@
 id: js/no-unexpected-multiline
 title: "A line break doesn't silently join two lines into one expression"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the lines were meant to join can only be known from intent"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant"
 stability: preview
 ported_from: [eslint/no-unexpected-multiline]
 since: 0.1.0
@@ -36,6 +35,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+#### Fixed (split)
+
+```js
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```js
+const total = sum(items).forEach(log);
+```
+
 #### Do
 
 ```js
@@ -50,6 +62,19 @@ const total = sum;
 ```jsx
 const total = sum
 (items).forEach(log);
+```
+
+#### Fixed (split)
+
+```jsx
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```jsx
+const total = sum(items).forEach(log);
 ```
 
 #### Do
@@ -68,6 +93,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+#### Fixed (split)
+
+```ts
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```ts
+const total = sum(items).forEach(log);
+```
+
 #### Do
 
 ```ts
@@ -82,6 +120,19 @@ const total = sum;
 ```tsx
 const total = sum
 (items).forEach(log);
+```
+
+#### Fixed (split)
+
+```tsx
+const total = sum;
+(items).forEach(log);
+```
+
+#### Fixed (join)
+
+```tsx
+const total = sum(items).forEach(log);
 ```
 
 #### Do

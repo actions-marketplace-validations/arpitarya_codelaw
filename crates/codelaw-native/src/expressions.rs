@@ -6,7 +6,7 @@
 
 use crate::util::{children, named_children, text};
 use crate::{NativeContext, NativeFinding, NativeRule};
-use codelaw_core::Language;
+use codelaw_core::{Language, TextEdit};
 use codelaw_lang::SyntaxNode;
 use tree_sitter::Node;
 
@@ -98,7 +98,25 @@ impl NativeRule for NoConstantBinaryExpression {
             _ => None,
         };
         if let Some(m) = message {
-            out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message: m.into(), edits: Vec::new() });
+            // What the expression always evaluates to: one side of it.
+            let kept = match op {
+                "??" => nullishness(left, src).map(|never| if never { left } else { right }),
+                "||" => truthiness(left, src).map(|t| if t { left } else { right }),
+                "&&" => truthiness(left, src).map(|t| if t { right } else { left }),
+                _ => None,
+            };
+            let mut choices = Vec::new();
+            if let Some(k) = kept {
+                choices.push(crate::choice("drop the dead operand", true, vec![TextEdit::new(n.start_byte(), n.end_byte(), text(k, src))]));
+            }
+            // `a + b ?? c` meant `a + (b ?? c)`.
+            let l = unwrap_parens(left);
+            if matches!(op, "??" | "||" | "&&") && l.id() == left.id() && l.kind() == "binary_expression"
+                && let Some(lr) = l.child_by_field_name("right")
+            {
+                choices.push(crate::choice("regroup", false, vec![TextEdit::new(lr.start_byte(), n.end_byte(), format!("({} {op} {})", text(lr, src), text(right, src)))]));
+            }
+            out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message: m.into(), edits: crate::choice_edits(choices) });
         }
     }
 }
@@ -166,12 +184,32 @@ impl NativeRule for NoUnsafeOptionalChaining {
         if let Some(t) = target
             && optional_chain(t)
         {
-            out.push(NativeFinding {
-                start: t.start_byte(),
-                end: t.end_byte(),
-                message: format!("`{}` can be undefined here, and using it this way throws a TypeError", text(t, src)),
-                edits: Vec::new(),
-            });
+            let shown = text(t, src);
+            let mut choices = Vec::new();
+            // A fallback for what is destructured or spread.
+            let fallback = match n.kind() {
+                "variable_declarator" | "assignment_expression" => {
+                    let pattern = n.child_by_field_name("name").or_else(|| n.child_by_field_name("left"));
+                    pattern.map(|p| if p.kind() == "object_pattern" { "{}" } else { "[]" })
+                }
+                "spread_element" | "for_in_statement" => Some("[]"),
+                _ => None,
+            };
+            if let Some(empty) = fallback {
+                let wrapped = if n.kind() == "spread_element" || n.kind() == "for_in_statement" { format!("({shown} ?? {empty})") } else { format!("{shown} ?? {empty}") };
+                choices.push(crate::choice("fallback", true, vec![TextEdit::new(t.start_byte(), t.end_byte(), wrapped)]));
+            }
+            // `(a?.b)()` and `(a?.b).c` short-circuit as a whole: `a?.b?.()`.
+            if matches!(n.kind(), "call_expression" | "member_expression" | "subscript_expression") && t.kind() == "parenthesized_expression"
+                && let Some(inner) = t.named_child(0)
+            {
+                let after = &src[t.end_byte()..];
+                let joined = if after.starts_with('.') { format!("{}?", text(inner, src)) } else { format!("{}?.", text(inner, src)) };
+                choices.push(crate::choice("fallback", true, vec![TextEdit::new(t.start_byte(), t.end_byte(), joined)]));
+            }
+            // Or say the value is always there: `.` for `?.`.
+            choices.push(crate::choice("drop ?.", choices.is_empty(), vec![TextEdit::new(t.start_byte(), t.end_byte(), shown.replace("?.(", "(").replace("?.[", "[").replace("?.", "."))]));
+            out.push(NativeFinding { start: t.start_byte(), end: t.end_byte(), message: format!("`{shown}` can be undefined here, and using it this way throws a TypeError", ), edits: crate::choice_edits(choices) });
         }
     }
 }

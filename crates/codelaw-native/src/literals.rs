@@ -25,18 +25,32 @@ impl NativeRule for NoSparseArrays {
     fn kinds(&self) -> &'static [&'static str] {
         &["array"]
     }
-    fn check(&self, node: SyntaxNode<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let n = node.get_inner_node();
-        let mut prev = "";
+        let mut prev: Option<tree_sitter::Node<'_>> = None;
+        // Each hole is a comma after `[` or another comma.
+        let mut holes = Vec::new();
         for c in children(n) {
             if c.is_extra() {
                 continue;
             }
-            if c.kind() == "," && (prev == "[" || prev == ",") {
-                out.push(finding(n.start_byte(), n.end_byte(), "Unexpected hole in an array literal", Vec::new()));
-                return;
+            if c.kind() == "," && prev.is_some_and(|p| p.kind() == "[" || p.kind() == ",") {
+                holes.push(c);
             }
-            prev = c.kind();
+            prev = Some(c);
+        }
+        if !holes.is_empty() {
+            let src = ctx.source;
+            let extra = holes
+                .iter()
+                .map(|c| {
+                    let rest = &src[c.end_byte()..];
+                    TextEdit::delete(c.start_byte(), c.end_byte() + rest.len() - rest.trim_start_matches([' ', '\t']).len())
+                })
+                .collect();
+            let fill = holes.iter().map(|c| TextEdit::insert(c.start_byte(), "undefined")).collect();
+            let edits = crate::choice_edits(vec![crate::choice("delete the extra comma", false, extra), crate::choice("fill with undefined", false, fill)]);
+            out.push(finding(n.start_byte(), n.end_byte(), "Unexpected hole in an array literal", edits));
         }
     }
 }
@@ -103,8 +117,23 @@ impl NativeRule for NoLossOfPrecision {
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let n = node.get_inner_node();
-        if loses_precision(text(n, ctx.source)) {
-            out.push(finding(n.start_byte(), n.end_byte(), "This number can't be represented exactly; it loses precision", Vec::new()));
+        let t = text(n, ctx.source);
+        if loses_precision(t) {
+            let mut choices = Vec::new();
+            // The literal the engine already reads it as.
+            if let Ok(v) = t.replace('_', "").parse::<f64>()
+                && v.is_finite()
+            {
+                let shortest = if v.fract() == 0.0 && v.abs() < 1e21 { format!("{v:.0}") } else { format!("{v}") };
+                if !loses_precision(&shortest) {
+                    choices.push(crate::choice("the value it holds", false, vec![TextEdit::new(n.start_byte(), n.end_byte(), shortest)]));
+                }
+            }
+            // An integer kept exact as a BigInt.
+            if t.bytes().all(|b| b.is_ascii_digit() || b == b'_') {
+                choices.push(crate::choice("BigInt", false, vec![TextEdit::insert(n.end_byte(), "n")]));
+            }
+            out.push(finding(n.start_byte(), n.end_byte(), "This number can't be represented exactly; it loses precision", crate::choice_edits(choices)));
         }
     }
 }
@@ -211,11 +240,22 @@ impl NativeRule for NoUnexpectedMultiline {
             return;
         }
         if line_of(src, tail.start_byte()) > line_of(src, head.end_byte()) {
+            // Split: a `;` ends the first line. Join: the second line moves
+            // up, keeping what JavaScript parses today.
+            let gap = (head.end_byte(), tail.start_byte());
+            let edits = if src[gap.0..gap.1].trim().is_empty() {
+                crate::choice_edits(vec![
+                    crate::choice("split", false, vec![TextEdit::insert(head.end_byte(), ";")]),
+                    crate::choice("join", false, vec![TextEdit::delete(gap.0, gap.1)]),
+                ])
+            } else {
+                Vec::new()
+            };
             out.push(finding(
                 tail.start_byte(),
                 tail.start_byte() + 1,
                 format!("This line break joins two lines into {what}; end the first line with a semicolon if that isn't meant"),
-                Vec::new(),
+                edits,
             ));
         }
     }
@@ -334,7 +374,12 @@ impl NativeRule for NoFallthrough {
                 continue;
             }
             let kw_end = next.start_byte() + text(next, ctx.source).find([' ', ':']).unwrap_or(4);
-            out.push(finding(next.start_byte(), kw_end, "The case above falls through into this one; end it with `break`, or say `// falls through`", Vec::new()));
+            let pad = crate::python_util::indent_at(ctx.source, last.start_byte());
+            let edits = crate::choice_edits(vec![
+                crate::choice("break", false, vec![TextEdit::insert(last.end_byte(), format!("\n{pad}break;"))]),
+                crate::choice("falls through", false, vec![TextEdit::insert(last.end_byte(), format!("\n{pad}// falls through"))]),
+            ]);
+            out.push(finding(next.start_byte(), kw_end, "The case above falls through into this one; end it with `break`, or say `// falls through`", edits));
         }
     }
 }

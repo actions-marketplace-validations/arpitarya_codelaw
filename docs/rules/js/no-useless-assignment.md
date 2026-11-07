@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the store is dead or the read is missing needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-useless-assignment` |
@@ -139,6 +139,16 @@ function total(items) {
 }
 ```
 
+#### Fixed
+
+```js
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 #### Do
 
 ```js
@@ -155,6 +165,16 @@ function total(items) {
 ```jsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+#### Fixed
+
+```jsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -181,6 +201,16 @@ function total(items) {
 }
 ```
 
+#### Fixed
+
+```ts
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 #### Do
 
 ```ts
@@ -197,6 +227,16 @@ function total(items) {
 ```tsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+#### Fixed
+
+```tsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }

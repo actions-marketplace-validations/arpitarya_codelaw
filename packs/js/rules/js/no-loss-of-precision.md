@@ -2,9 +2,9 @@
 id: js/no-loss-of-precision
 title: "Number literals keep their value"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether to use a BigInt, a string or a rounder value depends on how the number is used"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are the literal the engine already stores (behaviour-preserving) or, for an integer, a BigInt, which keeps every digit but is another type"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-loss-of-precision, eslint-plugin-unicorn/no-loss-of-precision]
 since: 0.1.0
@@ -34,6 +34,18 @@ native: js/no-loss-of-precision
 const id = 9007199254740993;
 ```
 
+#### Fixed (the value it holds)
+
+```js
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```js
+const id = 9007199254740993n;
+```
+
 #### Do
 
 ```js
@@ -46,6 +58,18 @@ const id = 9007199254740993n;
 
 ```jsx
 const id = 9007199254740993;
+```
+
+#### Fixed (the value it holds)
+
+```jsx
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```jsx
+const id = 9007199254740993n;
 ```
 
 #### Do
@@ -62,6 +86,18 @@ const id = 9007199254740993n;
 const id = 9007199254740993;
 ```
 
+#### Fixed (the value it holds)
+
+```ts
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```ts
+const id = 9007199254740993n;
+```
+
 #### Do
 
 ```ts
@@ -74,6 +110,18 @@ const id = 9007199254740993n;
 
 ```tsx
 const id = 9007199254740993;
+```
+
+#### Fixed (the value it holds)
+
+```tsx
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```tsx
+const id = 9007199254740993n;
 ```
 
 #### Do

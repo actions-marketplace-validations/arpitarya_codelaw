@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which label was meant is a decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (no value reaches the later case: the whole clause goes when the clause before it exits, otherwise only its label, so what falls through still runs; the reviewer confirms the case was not meant to test another value) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-duplicate-case` |
@@ -141,6 +141,16 @@ switch (status) {
 }
 ```
 
+#### Fixed
+
+```js
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 #### Do
 
 ```js
@@ -165,6 +175,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+#### Fixed
+
+```jsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -197,6 +217,16 @@ switch (status) {
 }
 ```
 
+#### Fixed
+
+```ts
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 #### Do
 
 ```ts
@@ -221,6 +251,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+#### Fixed
+
+```tsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```

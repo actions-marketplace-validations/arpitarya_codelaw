@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether a value is missing or a comma is extra needs a reader) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are deleting the extra comma, shortening the array, or filling the hole with `undefined`, keeping its length; which was meant is the author's) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-sparse-arrays` |
@@ -135,6 +135,18 @@ codelaw config --print --for <file>       # the resolved setting, and where it c
 const colors = ["red", , "blue"];
 ```
 
+#### Fixed (delete the extra comma)
+
+```js
+const colors = ["red", "blue"];
+```
+
+#### Fixed (fill with undefined)
+
+```js
+const colors = ["red", undefined, "blue"];
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const colors = ["red", "green", "blue"];
 
 ```jsx
 const colors = ["red", , "blue"];
+```
+
+#### Fixed (delete the extra comma)
+
+```jsx
+const colors = ["red", "blue"];
+```
+
+#### Fixed (fill with undefined)
+
+```jsx
+const colors = ["red", undefined, "blue"];
 ```
 
 #### Do
@@ -163,6 +187,18 @@ const colors = ["red", "green", "blue"];
 const colors = ["red", , "blue"];
 ```
 
+#### Fixed (delete the extra comma)
+
+```ts
+const colors = ["red", "blue"];
+```
+
+#### Fixed (fill with undefined)
+
+```ts
+const colors = ["red", undefined, "blue"];
+```
+
 #### Do
 
 ```ts
@@ -175,6 +211,18 @@ const colors = ["red", "green", "blue"];
 
 ```tsx
 const colors = ["red", , "blue"];
+```
+
+#### Fixed (delete the extra comma)
+
+```tsx
+const colors = ["red", "blue"];
+```
+
+#### Fixed (fill with undefined)
+
+```tsx
+const colors = ["red", undefined, "blue"];
 ```
 
 #### Do

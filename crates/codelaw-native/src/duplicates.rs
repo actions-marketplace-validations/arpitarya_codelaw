@@ -3,7 +3,7 @@
 
 use crate::util::{children, has_token, named_children, property_name, text};
 use crate::{NativeContext, NativeFinding, NativeRule};
-use codelaw_core::Language;
+use codelaw_core::{Language, TextEdit};
 use codelaw_lang::SyntaxNode;
 use std::collections::BTreeMap;
 
@@ -39,13 +39,21 @@ fn accessor(n: tree_sitter::Node<'_>) -> Accessor {
 
 /// Report the second and later declaration of a name, unless the two are a
 /// getter and a setter.
-fn report(seen: &mut BTreeMap<String, Vec<Accessor>>, name: String, acc: Accessor, at: tree_sitter::Node<'_>, what: &str, out: &mut Vec<NativeFinding>) {
+fn report<'t>(seen: &mut BTreeMap<String, Vec<(Accessor, tree_sitter::Node<'t>)>>, name: String, acc: Accessor, at: tree_sitter::Node<'_>, member: tree_sitter::Node<'t>, what: &str, src: &str, out: &mut Vec<NativeFinding>) {
     let prev = seen.entry(name.clone()).or_default();
-    let clash = prev.iter().any(|p| !matches!((p, acc), (Accessor::Get, Accessor::Set) | (Accessor::Set, Accessor::Get)));
-    if clash {
-        out.push(finding(at, format!("Duplicate {what} `{name}`")));
+    let clash = prev.iter().find(|(p, _)| !matches!((p, acc), (Accessor::Get, Accessor::Set) | (Accessor::Set, Accessor::Get)));
+    if let Some(&(_, first)) = clash {
+        // The later one wins, so the choices are which to keep.
+        let remove = |n: tree_sitter::Node<'_>| {
+            let e = if n.parent().is_some_and(|p| p.kind() == "object") { crate::util::remove_list_item(n, src) } else { TextEdit::delete(n.start_byte(), n.end_byte()) };
+            let (s, t) = crate::util::whole_lines(src, e.start, e.end);
+            TextEdit::delete(s, t)
+        };
+        let mut f = finding(at, format!("Duplicate {what} `{name}`"));
+        f.edits = crate::choice_edits(vec![crate::choice("delete the earlier", true, vec![remove(first)]), crate::choice("delete the later", false, vec![remove(member)])]);
+        out.push(f);
     }
-    prev.push(acc);
+    prev.push((acc, member));
 }
 
 pub struct NoDupeKeys;
@@ -71,7 +79,7 @@ impl NativeRule for NoDupeKeys {
             };
             let Some(key) = key else { continue };
             let Some(name) = property_name(key, ctx.source) else { continue };
-            report(&mut seen, name, acc, key, "key", out);
+            report(&mut seen, name, acc, key, member, "key", ctx.source, out);
         }
     }
 }
@@ -103,7 +111,7 @@ impl NativeRule for NoDupeClassMembers {
             let Some(name) = property_name(key, ctx.source) else { continue };
             let is_static = has_token(member, "static");
             let name = if is_static { format!("static {name}") } else { name };
-            report(&mut seen, name, acc, key, "class member", out);
+            report(&mut seen, name, acc, key, member, "class member", ctx.source, out);
         }
     }
 }
@@ -161,6 +169,22 @@ impl NativeRule for NoDupeArgs {
     }
 }
 
+/// The edit for a case no value can reach: the whole clause when the
+/// clause before it exits, so nothing falls into it; otherwise only its
+/// label, so what falls through still runs.
+fn drop_case(case: tree_sitter::Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let prev = case.prev_named_sibling().filter(|p| matches!(p.kind(), "switch_case" | "switch_default"))?;
+    let last = named_children(prev).into_iter().filter(|c| c.kind() != "comment").last()?;
+    if crate::util::exits(&last) {
+        let (s, e) = crate::util::whole_lines(src, case.start_byte(), case.end_byte());
+        return Some(vec![TextEdit::delete(s, e)]);
+    }
+    let after = case.child_by_field_name("value")?.end_byte();
+    let colon = src[after..].find(':').map(|i| after + i + 1)?;
+    let (s, e) = crate::util::whole_lines(src, case.start_byte(), colon);
+    Some(vec![TextEdit::delete(s, e)])
+}
+
 pub struct NoDuplicateCase;
 
 impl NativeRule for NoDuplicateCase {
@@ -177,9 +201,12 @@ impl NativeRule for NoDuplicateCase {
         let mut seen: BTreeMap<String, ()> = BTreeMap::new();
         for case in named_children(node.get_inner_node()) {
             let Some(value) = case.child_by_field_name("value") else { continue };
+            let case = value.parent().unwrap_or(case);
             let (key, shown) = normalised(value, ctx.source);
             if seen.insert(key, ()).is_some() {
-                out.push(finding(value, format!("Duplicate case label `{shown}`")));
+                let mut f = finding(value, format!("Duplicate case label `{shown}`"));
+                f.edits = drop_case(case, ctx.source).unwrap_or_default();
+                out.push(f);
             }
         }
     }

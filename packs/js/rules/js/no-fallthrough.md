@@ -2,9 +2,8 @@
 id: js/no-fallthrough
 title: "A switch case does not fall through into the next by accident"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the fall-through is intended needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `break;` ending the case, which stops the fall-through, or a `// falls through` comment saying it is meant, which keeps behaviour; only the author knows which"
 stability: preview
 ported_from: [eslint/no-fallthrough]
 since: 0.1.0
@@ -34,6 +33,32 @@ native: js/no-fallthrough
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (break)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -78,6 +103,32 @@ switch (kind) {
 }
 ```
 
+#### Fixed (break)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 #### Do
 
 ```jsx
@@ -116,6 +167,32 @@ switch (kind) {
 }
 ```
 
+#### Fixed (break)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 #### Do
 
 ```ts
@@ -148,6 +225,32 @@ switch (kind) {
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (break)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
