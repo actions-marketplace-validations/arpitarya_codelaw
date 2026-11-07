@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-126: `perf-plan` red on W-168's graph rows; a `graph` group  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) three measurement runs of the `perf` matrix on `7cdb480b`; then: fix `perf-plan`, red because W-168's six `graph_*` rows are in no group.
+- **Done:** dispatched `ci` 42348089566 and 42348205785 beside push 42347941992 — all on the red plan, so no `perf` numbers. Added the `graph` group (`--graph`); records and RELEASING at eight groups.
+- **Decided / left open:** graph rows stay ungated (unset, ruled 11-07). `spell` plans as gated now that its budget is set.
+- **Mistakes:** none of this session's; the plan's completeness check did its job.
+- **Next:** Arpit pushes; three runs; times into W-126.
+
 ## 2026-11-07 — W-162 change 4: 33 rules re-judged `manual`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue W-162 to closure; re-judge the waiting rules whose reason is an author's decision.

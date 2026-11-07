@@ -51,7 +51,7 @@ here. Read that record before changing anything below it.
 
 🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05; first runs skipped it (arm64-musl red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
