@@ -275,8 +275,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which class to compose is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -292,15 +292,15 @@
     }
    ],
    "options": {},
-   "dont": ".root { color: red; }",
-   "do": ".base { color: red; }",
+   "dont": ".primary { composes: bse from \"./base.module.css\"; }",
+   "do": ".primary { composes: base from \"./base.module.css\"; }",
    "fix_steps": [
     "Correct the class name or the path.",
     "Move `composes` into the rule whose selector is the one class that composes."
    ],
    "example": {
     "language": "css",
-    "dont": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.root { color: red; }",
+    "dont": "/* src/button.module.css */\n.primary { composes: bse from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }",
     "do": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }"
    },
    "ported_from": [],
@@ -14200,8 +14200,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -14862,8 +14862,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do",
+   "fix": "suggest",
+   "fix_reason": "`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -15050,23 +15050,23 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`",
+   "fix": "suggest",
+   "fix_reason": "`===` compares without converting, so code that relied on `\"1\" == 1` changes behaviour; the author confirms the types match",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
    "presets": [],
    "options": {},
-   "dont": "if (count == limit) {",
-   "do": "if (count === limit) {",
+   "dont": "if (count == limit || state != \"done\") {",
+   "do": "if (count === limit || state !== \"done\") {",
    "fix_steps": [
     "Write `===` for `==` and `!==` for `!=`; check that both sides have the same type first."
    ],
    "example": {
     "language": "javascript",
-    "dont": "if (count == limit) {\n  stop();\n}",
-    "do": "if (count === limit) {\n  stop();\n}"
+    "dont": "if (count == limit || state != \"done\") {\n  stop();\n}",
+    "do": "if (count === limit || state !== \"done\") {\n  stop();\n}"
    },
    "ported_from": [
     "eslint/eqeqeq"
@@ -15145,8 +15145,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix upper-cases the digits, which a fix template cannot compute",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -19094,8 +19094,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator of the rewrite depends on which of three patterns matched",
+   "fix": "suggest",
+   "fix_reason": "the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -21537,8 +21537,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "trimming the string is a computed edit a template cannot make",
+   "fix": "suggest",
+   "fix_reason": "the space may be deliberate (two spaces for alignment); the author confirms the output",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22186,8 +22186,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the edit inside the pattern is not a template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22331,8 +22331,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator of the rewrite depends on which of four patterns matched",
+   "fix": "suggest",
+   "fix_reason": "`x >= y` and `x > y || x === y` differ when the operands have different types (`\"1\" >= 1` is true, the pair is false); the author confirms they match",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -23595,8 +23595,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the label token from the statement is not a template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24442,8 +24442,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the call to write depends on the operator matched",
+   "fix": "suggest",
+   "fix_reason": "`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26792,8 +26792,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the equivalent `\\u` or `\\x` escape is computed from the octal value",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -29261,8 +29261,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern",
+   "fix": "suggest",
+   "fix_reason": "a condition that is not already a boolean becomes `Boolean(…)`, which the author may prefer to write another way",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31364,8 +31364,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix strips characters from the literal, which a template cannot compute",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31509,8 +31509,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the grouped literal is a computed edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31650,8 +31650,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator token cannot be carried into a fix template",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -33610,8 +33610,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the literal's prefix depends on the radix, which a template cannot choose",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -33980,8 +33980,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector string is built from the id, which a template cannot escape",
+   "fix": "suggest",
+   "fix_reason": "`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -34608,8 +34608,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the string literal is the pattern without its anchor, which a template cannot strip",
+   "fix": "suggest",
+   "fix_reason": "`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -41020,8 +41020,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the decimal form has to be computed from the literal, which codelaw's fix templates cannot do",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -44177,8 +44177,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each deprecated API has its own replacement",
+   "fix": "auto",
+   "fix_reason": "auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88912,8 +88912,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten to build a new value",
+   "fix": "suggest",
+   "fix_reason": "an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -88959,8 +88959,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument",
+   "fix": "suggest",
+   "fix_reason": "suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -89054,8 +89054,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which fields the component needs is a choice only its author can make",
+   "fix": "suggest",
+   "fix_reason": "when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -89075,7 +89075,7 @@
    ],
    "example": {
     "language": "javascript",
-    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest];\n}",
+    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest.isPending];\n}",
     "do": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, isPending } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, isPending];\n}"
    },
    "ported_from": [
@@ -89103,8 +89103,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fields to list depend on what the effect, callback or memo reads",
+   "fix": "suggest",
+   "fix_reason": "when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

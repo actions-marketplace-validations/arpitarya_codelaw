@@ -2,9 +2,9 @@
 id: tanstack-query/no-mutating-set-query-data
 title: "A `setQueryData` updater does not change the cached data in place"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the update has to be rewritten to build a new value"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual"
+fix_exception: restructure
 stability: preview
 since: 0.3.0
 ---
@@ -44,6 +44,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+#### Fixed
+
+```js
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 #### Do
 
 ```js
@@ -63,6 +69,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+#### Fixed
+
+```jsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 #### Do
@@ -86,6 +98,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+#### Fixed
+
+```ts
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 #### Do
 
 ```ts
@@ -105,6 +123,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+#### Fixed
+
+```tsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 #### Do

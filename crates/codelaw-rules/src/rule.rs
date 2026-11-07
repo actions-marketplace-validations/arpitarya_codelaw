@@ -277,6 +277,10 @@ pub enum BlockKind {
         /// rule's finding stays `auto` only where it holds, and is
         /// `suggest` elsewhere (SR-LAW-4 decision 2).
         auto_when: Option<Box<serde_json::Value>>,
+        /// `transform:`, ast-grep's own: new captures computed from others
+        /// (`replace`, `substring`, `convert`) for the `fix:` template
+        /// (SR-RULE-FORMAT decision 3b; W-162).
+        transform: Option<Box<serde_json::Value>>,
     },
     Graph(serde_json::Value),
     Target { target: serde_json::Value, assert: serde_json::Value },
@@ -489,7 +493,7 @@ fn yaml_value(text: &str) -> Result<serde_json::Value, String> {
 }
 
 const BLOCK_KEYS: &[&str] =
-    &["match", "constraints", "utils", "where", "type", "auto_when", "graph", "target", "assert", "native", "message", "fix"];
+    &["match", "constraints", "utils", "transform", "where", "type", "auto_when", "graph", "target", "assert", "native", "message", "fix"];
 
 fn parse_block(code: &str) -> Result<Block, String> {
     let value = yaml_value(code)?;
@@ -520,6 +524,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
             predicates: get("where"),
             types: get("type").map(Box::new),
             auto_when: get("auto_when").map(Box::new),
+            transform: get("transform").map(Box::new),
         },
         "graph" => BlockKind::Graph(get("graph").unwrap()),
         "target" => BlockKind::Target {
@@ -531,7 +536,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
         ),
     };
     if !matches!(kind, BlockKind::Match { .. }) {
-        for k in ["constraints", "utils", "where", "type", "auto_when"] {
+        for k in ["constraints", "utils", "transform", "where", "type", "auto_when"] {
             if map.contains_key(k) {
                 return Err(format!("`{k}:` only goes with `match:`"));
             }

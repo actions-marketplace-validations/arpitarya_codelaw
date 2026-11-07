@@ -2,9 +2,7 @@
 id: js/numeric-separators-style
 title: "Group digits of long numbers"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the grouped literal is a computed edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-unicorn/numeric-separators-style]
 since: 0.5.0
@@ -20,6 +18,7 @@ match:
   kind: number
   regex: '^[0-9]{5,}$'
 message: "Group the digits with `_` (`1_000_000`)"
+fix: "$$MATCH|number(group-digits)"
 ```
 
 ## How to fix
