@@ -2,9 +2,9 @@
 id: stencil/prefer-vdom-listener
 title: "DOM events are handled in render(), not with @Listen"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "the handler moves into the rendered markup by hand"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [stencil/prefer-vdom-listener]
 since: 0.1.0
@@ -38,6 +38,18 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -55,6 +67,18 @@ export class Card {
 @Component({ tag: 'my-card' })
 export class Card {
   @Listen('click') onClick() {}
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
 }
 ```
 

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the handler moves into the rendered markup by hand) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/prefer-vdom-listener` |
@@ -138,6 +138,18 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -155,6 +167,18 @@ export class Card {
 @Component({ tag: 'my-card' })
 export class Card {
   @Listen('click') onClick() {}
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
 }
 ```
 

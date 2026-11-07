@@ -2,9 +2,9 @@
 id: stencil/host-data-deprecated
 title: "No hostData()"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "the attributes move into `render()` by hand"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [stencil/host-data-deprecated]
 since: 0.1.0
@@ -38,6 +38,17 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 #### Do
 
 ```ts
@@ -58,6 +69,17 @@ export class Card {
 export class Card {
   hostData() {
     return { class: 'card' };
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
   }
 }
 ```

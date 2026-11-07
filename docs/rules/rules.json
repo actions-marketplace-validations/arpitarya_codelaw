@@ -87663,8 +87663,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the class should be a component needs the author",
+   "fix": "suggest",
+   "fix_reason": "a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87708,8 +87708,8 @@
    "languages": [
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the slot's description, or whether it should exist, needs the author",
+   "fix": "suggest",
+   "fix_reason": "a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -87721,15 +87721,15 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "* @slot header - The card's title row.",
+   "dont": "* @slot footer - The card's actions.",
+   "do": null,
    "fix_steps": [
     "For a slot reported as rendered without a tag, add `@slot <name> - <what it holds>` (or `@slot - <what it holds>` for the default slot) to the JSDoc above `@Component`.",
     "For a tag reported as never rendered, remove the tag, or render the `<slot>` it describes."
    ],
    "example": {
     "language": "tsx",
-    "dont": "/**\n * A card.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
+    "dont": "/**\n * A card.\n * @slot header - The card's title row.\n * @slot footer - The card's actions.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
     "do": "/**\n * A card.\n * @slot header - The card's title row.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}"
    },
    "ported_from": [
@@ -87755,8 +87755,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the attributes move into `render()` by hand",
+   "fix": "auto",
+   "fix_reason": "auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87802,8 +87802,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the method is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87848,8 +87848,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which member was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87982,8 +87982,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the handler moves into the rendered markup by hand",
+   "fix": "suggest",
+   "fix_reason": "in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88073,8 +88073,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the field is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88212,8 +88212,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the component should change the prop needs the author",
+   "fix": "auto",
+   "fix_reason": "`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

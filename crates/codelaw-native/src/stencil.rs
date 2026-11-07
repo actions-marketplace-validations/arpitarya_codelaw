@@ -141,6 +141,74 @@ fn option_value<'t>(args: Option<Node<'t>>, key: &str, src: &str) -> Option<Node
     named_children(obj).into_iter().filter(|p| p.kind() == "pair").find(|p| p.child_by_field_name("key").is_some_and(|k| text(k, src) == key)).and_then(|p| p.child_by_field_name("value"))
 }
 
+
+/// The edit removing an accessibility modifier and the space after it.
+fn drop_modifier(m: &Member<'_>, src: &str) -> Vec<TextEdit> {
+    children(m.node).into_iter().find(|c| c.kind() == "accessibility_modifier").map(|md| {
+        let rest = &src[md.end_byte()..];
+        vec![TextEdit::delete(md.start_byte(), md.end_byte() + rest.len() - rest.trim_start().len())]
+    }).unwrap_or_default()
+}
+
+/// The edit removing a decorator and the whitespace after it.
+fn drop_decorator(d: Node<'_>, src: &str) -> TextEdit {
+    let (s, e) = crate::util::whole_lines(src, d.start_byte(), d.end_byte());
+    if (s, e) != (d.start_byte(), d.end_byte()) {
+        return TextEdit::delete(s, e);
+    }
+    let rest = &src[d.end_byte()..];
+    TextEdit::delete(d.start_byte(), d.end_byte() + rest.len() - rest.trim_start().len())
+}
+
+/// The edits that give the file's `@stencil/core` import the names it
+/// lacks; none needed when the file imports nothing from it (its other
+/// Stencil names are reached the same way). `None` when it imports
+/// otherwise than by name.
+fn stencil_imports(src: &str, names: &[&str]) -> Option<Vec<TextEdit>> {
+    let re = regex::Regex::new(r#"import\s*\{([^}]*)\}\s*from\s*['"]@stencil/core['"]"#).ok()?;
+    let Some(c) = re.captures(src) else {
+        return (!src.contains("@stencil/core")).then(Vec::new);
+    };
+    let list = c.get(1)?;
+    let have: Vec<&str> = list.as_str().split(',').map(|n| n.trim()).collect();
+    let missing: Vec<&str> = names.iter().copied().filter(|n| !have.contains(n)).collect();
+    if missing.is_empty() {
+        return Some(Vec::new());
+    }
+    let end = list.start() + list.as_str().trim_end().len();
+    let sep = if list.as_str().trim_end().ends_with(',') { " " } else { ", " };
+    Some(vec![TextEdit::insert(end, format!("{sep}{}", missing.join(", ")))])
+}
+
+/// The edits that make a component without a `render()` render
+/// `h(Host, <attributes>)`: one method in `replace`'s place, or a new
+/// one at the end of the class.
+fn host_render(body: Node<'_>, src: &str, attributes: &str, replace: Option<Node<'_>>) -> Option<Vec<TextEdit>> {
+    let ms = members(body, src);
+    if ms.iter().any(|m| m.node.kind() == "method_definition" && m.name_text(src) == "render") {
+        return None;
+    }
+    let mut edits = stencil_imports(src, &["h", "Host"])?;
+    let method = |pad: &str| format!("render() {{\n{pad}  return h(Host, {attributes});\n{pad}}}");
+    match replace {
+        Some(m) => {
+            let line = src[..m.start_byte()].rfind('\n').map(|i| i + 1).unwrap_or(0);
+            let pad = &src[line..m.start_byte()];
+            edits.push(TextEdit::new(m.start_byte(), m.end_byte(), method(pad)));
+        }
+        None => {
+            let close = body.end_byte() - 1;
+            let line = src[..close].rfind('\n').map(|i| i + 1).unwrap_or(0);
+            let outer = &src[line..close];
+            if !outer.trim().is_empty() {
+                return None;
+            }
+            edits.push(TextEdit::insert(line, format!("{outer}  {}\n", method(&format!("{outer}  ")))));
+        }
+    }
+    Some(edits)
+}
+
 macro_rules! stencil_rule {
     ($ty:ident, $id:literal, |$body:ident, $ctx:ident, $comp:ident, $out:ident| $check:block) => {
         pub struct $ty;
@@ -199,7 +267,7 @@ stencil_rule!(DecoratorsContext, "stencil/decorators-context", |body, ctx, comp,
     for m in members(body, ctx.source) {
         for (n, _, d) in &m.decorators {
             if STENCIL_DECORATORS.contains(&n.as_str()) {
-                out.push(finding(*d, format!("`@{n}()` only works inside a `@Component` class"), Vec::new()));
+                out.push(finding(*d, format!("`@{n}()` only works inside a `@Component` class"), vec![drop_decorator(*d, ctx.source)]));
             }
         }
     }
@@ -210,7 +278,18 @@ stencil_rule!(HostDataDeprecated, "stencil/host-data-deprecated", |body, ctx, co
         return;
     }
     for m in members(body, ctx.source).into_iter().filter(|m| m.node.kind() == "method_definition" && m.name_text(ctx.source) == "hostData") {
-        out.push(finding(m.name.expect("named"), "`hostData()` is deprecated; render a `<Host>` element instead", Vec::new()));
+        // `hostData() { return <attributes>; }` in a component with no
+        // `render()` is `render() { return h(Host, <attributes>); }`.
+        let src = ctx.source;
+        let returned = m.node.child_by_field_name("body").and_then(|b| {
+            let stmts: Vec<Node> = named_children(b).into_iter().filter(|c| c.kind() != "comment").collect();
+            match stmts.as_slice() {
+                [only] if only.kind() == "return_statement" => only.named_child(0),
+                _ => None,
+            }
+        });
+        let edits = returned.and_then(|v| host_render(body, src, text(v, src), Some(m.node))).unwrap_or_default();
+        out.push(finding(m.name.expect("named"), "`hostData()` is deprecated; render a `<Host>` element instead", edits));
     }
 });
 
@@ -220,7 +299,7 @@ stencil_rule!(MethodsMustBePublic, "stencil/methods-must-be-public", |body, ctx,
     }
     for m in members(body, ctx.source).into_iter().filter(|m| m.has("Method")) {
         if let Some(md) = m.modifier(ctx.source).filter(|x| *x != "public") {
-            out.push(finding(m.name.unwrap_or(m.node), format!("A @Method() is part of the component's public API; it can't be {md}"), Vec::new()));
+            out.push(finding(m.name.unwrap_or(m.node), format!("A @Method() is part of the component's public API; it can't be {md}"), drop_modifier(&m, ctx.source)));
         }
     }
 });
@@ -231,7 +310,7 @@ stencil_rule!(PropsMustBePublic, "stencil/props-must-be-public", |body, ctx, com
     }
     for m in members(body, ctx.source).into_iter().filter(|m| m.has("Prop")) {
         if let Some(md) = m.modifier(ctx.source).filter(|x| *x != "public") {
-            out.push(finding(m.name.unwrap_or(m.node), format!("A @Prop() is set from outside the component; it can't be {md}"), Vec::new()));
+            out.push(finding(m.name.unwrap_or(m.node), format!("A @Prop() is set from outside the component; it can't be {md}"), drop_modifier(&m, ctx.source)));
         }
     }
 });
@@ -250,7 +329,15 @@ stencil_rule!(NoUnusedWatch, "stencil/no-unused-watch", |body, ctx, comp, out| {
             if let Some(w) = first_string_arg(*args, ctx.source)
                 && !watchable.contains(w)
             {
-                out.push(finding(*d, format!("@Watch('{w}') watches nothing: `{w}` is not a @Prop or @State of this component"), Vec::new()));
+                let mut choices: Vec<codelaw_core::FixChoice> = Vec::new();
+                if let Some(arg) = args.and_then(|a| named_children(a).into_iter().next()) {
+                    let quote = &text(arg, ctx.source)[..1];
+                    for (i, near) in crate::util::nearest(w, watchable.iter().copied(), 2).into_iter().enumerate() {
+                        choices.push(crate::choice(near, i == 0, vec![TextEdit::new(arg.start_byte(), arg.end_byte(), format!("{quote}{near}{quote}"))]));
+                    }
+                }
+                choices.push(crate::choice("remove", false, vec![drop_decorator(*d, ctx.source)]));
+                out.push(finding(*d, format!("@Watch('{w}') watches nothing: `{w}` is not a @Prop or @State of this component"), crate::choice_edits(choices)));
             }
         }
     }
@@ -290,6 +377,11 @@ stencil_rule!(OwnPropsMustBePrivate, "stencil/own-props-must-be-private", |body,
     }
 });
 
+/// Whether a `@Listen` takes only its event name.
+fn options_only_event(args: Option<Node<'_>>) -> bool {
+    args.is_some_and(|a| named_children(a).len() == 1)
+}
+
 stencil_rule!(PreferVdomListener, "stencil/prefer-vdom-listener", |body, ctx, comp, out| {
     if comp.is_none() {
         return;
@@ -300,7 +392,21 @@ stencil_rule!(PreferVdomListener, "stencil/prefer-vdom-listener", |body, ctx, co
                 continue;
             }
             if let Some(evt) = first_string_arg(*args, ctx.source).filter(|e| DOM_EVENTS.contains(e)) {
-                out.push(finding(*d, format!("Listen for `{evt}` with an `on{}` handler in `render()` instead of @Listen", evt[..1].to_uppercase() + &evt[1..]), Vec::new()));
+                let prop = format!("on{}", evt[..1].to_uppercase() + &evt[1..]);
+                // With no `render()` or `hostData()`, the handler moves to
+                // the `<Host>` a new `render()` draws.
+                let src = ctx.source;
+                let method = m.name_text(src);
+                let alone = options_only_event(*args) && m.node.kind() == "method_definition" && !members(body, src).iter().any(|x| x.name_text(src) == "hostData");
+                let edits = if alone {
+                    host_render(body, src, &format!("{{ {prop}: (ev) => this.{method}(ev) }}"), None).map(|mut e| {
+                        e.push(drop_decorator(*d, src));
+                        e
+                    })
+                } else {
+                    None
+                };
+                out.push(finding(*d, format!("Listen for `{evt}` with an `{prop}` handler in `render()` instead of @Listen"), edits.unwrap_or_default()));
             }
         }
     }
@@ -355,7 +461,11 @@ stencil_rule!(StrictMutable, "stencil/strict-mutable", |body, ctx, comp, out| {
         let name = m.name_text(src);
         let assigned = regex::Regex::new(&format!(r"this\.{}\s*(=[^=]|\+=|-=|\+\+|--)", regex::escape(name))).is_ok_and(|r| r.is_match(body_text));
         if !assigned {
-            out.push(finding(v, format!("`{name}` is never assigned in the component, so it doesn't need `mutable: true`"), Vec::new()));
+            let edits = v.parent().filter(|p| p.kind() == "pair").and_then(|pair| {
+                let obj = pair.parent()?;
+                Some(if named_children(obj).len() == 1 { TextEdit::delete(obj.start_byte(), obj.end_byte()) } else { crate::util::remove_list_item(pair, src) })
+            });
+            out.push(finding(v, format!("`{name}` is never assigned in the component, so it doesn't need `mutable: true`"), edits.into_iter().collect()));
         }
     }
 });
@@ -512,6 +622,26 @@ fn rendered_slots(body: Node<'_>, src: &str) -> BTreeSet<String> {
     out
 }
 
+/// The edit deleting the JSDoc line `@slot <name> …` of a slot the class
+/// never renders.
+fn stale_slot_tag(class: Node<'_>, src: &str, slot: &str) -> Option<Vec<TextEdit>> {
+    let doc = class_jsdoc(class, src)?;
+    let base = doc.as_ptr() as usize - src.as_ptr() as usize;
+    let mut at = 0;
+    for line in doc.split_inclusive('\n') {
+        let body = line.trim().trim_start_matches('*').trim();
+        if let Some(rest) = body.strip_prefix("@slot") {
+            let comment = rest.trim();
+            let name = if comment.is_empty() || comment == "-" || comment.starts_with("- ") { "<default>" } else { comment.find(" - ").map_or(comment, |i| comment[..i].trim()) };
+            if name == slot && line.ends_with('\n') {
+                return Some(vec![TextEdit::delete(base + at, base + at + line.len())]);
+            }
+        }
+        at += line.len();
+    }
+    None
+}
+
 pub struct EnforceSlotJsdoc;
 
 impl NativeRule for EnforceSlotJsdoc {
@@ -538,8 +668,12 @@ impl NativeRule for EnforceSlotJsdoc {
         for s in rendered.difference(&documented) {
             out.push(finding(at, format!("{} is rendered but has no `@slot` tag in the component's JSDoc", label(s)), Vec::new()));
         }
+        // A stale tag goes, when every slot the component renders has a
+        // literal name.
+        let dynamic = text(body, src).contains("<slot name={");
         for s in documented.difference(&rendered) {
-            out.push(finding(at, format!("{} has a `@slot` tag but the component never renders it", label(s)), Vec::new()));
+            let edits = if dynamic { Vec::new() } else { stale_slot_tag(class, src, s).unwrap_or_default() };
+            out.push(finding(at, format!("{} has a `@slot` tag but the component never renders it", label(s)), edits));
         }
     }
 }

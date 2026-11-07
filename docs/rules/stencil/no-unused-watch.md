@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which member was meant needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/no-unused-watch` |
@@ -136,6 +136,26 @@ export class Card {
 }
 ```
 
+#### Fixed (open)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+#### Fixed (remove)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
+}
+```
+
 #### Do
 
 ```ts
@@ -155,6 +175,26 @@ export class Card {
 export class Card {
   @State() open = false;
   @Watch('opened') onOpen() {}
+}
+```
+
+#### Fixed (open)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+#### Fixed (remove)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
 }
 ```
 

@@ -116152,7 +116152,7 @@ export function init() {
 ## `stencil/decorators-context` — Stencil decorators only inside @Component classes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the class should be a component needs the author)
+- **Fix:** `suggest` (a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/decorators-context.md
 
@@ -116208,7 +116208,7 @@ export class Store {
 ## `stencil/enforce-slot-jsdoc` — Every slot a component renders has a @slot tag, and every @slot tag a slot
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TSX
-- **Fix:** `manual` (the slot's description, or whether it should exist, needs the author)
+- **Fix:** `suggest` (a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/enforce-slot-jsdoc.md
 
@@ -116236,6 +116236,23 @@ tag hides a slot from its users, and a stale one promises a slot that isn't ther
 ```tsx
 /**
  * A card.
+ * @slot header - The card's title row.
+ * @slot footer - The card's actions.
+ */
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return <slot name="header" />;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+/**
+ * A card.
+ * @slot header - The card's title row.
  */
 @Component({ tag: 'my-card' })
 export class Card {
@@ -116271,7 +116288,7 @@ export class Card {
 ## `stencil/host-data-deprecated` — No hostData()
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the attributes move into `render()` by hand)
+- **Fix:** `auto` (auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/host-data-deprecated.md
 
@@ -116301,6 +116318,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -116325,6 +116353,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```tsx
@@ -116339,7 +116378,7 @@ export class Card {
 ## `stencil/methods-must-be-public` — @Method() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the method is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/methods-must-be-public.md
 
@@ -116403,7 +116442,7 @@ export class Card {
 ## `stencil/no-unused-watch` — @Watch watches a @Prop or @State
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which member was meant needs the author)
+- **Fix:** `suggest` (the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/no-unused-watch.md
 
@@ -116431,6 +116470,26 @@ export class Card {
 }
 ```
 
+##### Fixed (open)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
+}
+```
+
 ##### Do
 
 ```ts
@@ -116450,6 +116509,26 @@ export class Card {
 export class Card {
   @State() open = false;
   @Watch('opened') onOpen() {}
+}
+```
+
+##### Fixed (open)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
 }
 ```
 
@@ -116586,7 +116665,7 @@ export class Card {
 ## `stencil/prefer-vdom-listener` — DOM events are handled in render(), not with @Listen
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the handler moves into the rendered markup by hand)
+- **Fix:** `suggest` (in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/prefer-vdom-listener.md
 
@@ -116616,6 +116695,18 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -116633,6 +116724,18 @@ export class Card {
 @Component({ tag: 'my-card' })
 export class Card {
   @Listen('click') onClick() {}
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
 }
 ```
 
@@ -116707,7 +116810,7 @@ export class Card {
 ## `stencil/props-must-be-public` — @Prop() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the field is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/props-must-be-public.md
 
@@ -116896,7 +116999,7 @@ export class Card {
 ## `stencil/strict-mutable` — mutable: true only on props the component changes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the component should change the prop needs the author)
+- **Fix:** `auto` (`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/strict-mutable.md
 
@@ -116925,6 +117028,16 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -116947,6 +117060,16 @@ export class Card {
 export class Card {
   /** The count. */
   @Prop({ mutable: true }) count = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
 }
 ```
 
