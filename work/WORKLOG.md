@@ -74,6 +74,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 slice 20: unicorn and SonarJS, last expressible rows (js strand, second pass)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the js half of W-139's remaining port rows, slice by slice.
+- **Done:** 17 `js/*` rules (7 `auto`, 4 `suggest`, 6 `manual`); presets `js/strict` +7, `js/sonarjs` +7; the strand's remaining 284 rows recorded in the item as not written, each under its reason (offline-unconfirmable 104, flow 55, native 42, graph 29, no default 17, covered by an existing rule 19, types 15, layout 2, reports nothing 1).
+- **Decided / left open:** rows written in the narrowest form whose fix is certain; corpus counts not run (no corpus on this machine).
+- **Mistakes:** the editor turned `\u2028` in a spec into a real line separator, which broke the YAML; the escapes were rewritten by script. Before that, an end-of-turn landing (`0fb16657`) put slice 19's first draft, with load errors, on main; slice 19's submit replaced it within the hour.
+- **Next:** the js strand is done for what can be written now; what is left waits on native rules, the project graph, types (W-105) or the decider's call on the offline-unconfirmable rows.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: slice 20 (48 rows)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the python half of W-139 after slice 19; resume where the usage limit was thought to have stopped it, merge main, land, continue to closure.
