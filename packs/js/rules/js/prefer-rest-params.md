@@ -3,8 +3,8 @@ id: js/prefer-rest-params
 title: "Rest parameters instead of arguments"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
-fix_reason: "the parameter list has to be rewritten by hand"
-fix_pending: "auto-subset; needs scope-rename (W-162)"
+fix_reason: "`...args` is a real array where `arguments` is array-like and, outside strict mode, tracks the named parameters; the parameter list and each use are rewritten together by the author"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/prefer-rest-params]
 since: 0.1.0

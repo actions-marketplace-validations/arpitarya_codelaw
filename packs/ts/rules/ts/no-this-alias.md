@@ -3,8 +3,8 @@ id: ts/no-this-alias
 title: "No aliasing this to a variable"
 languages: [typescript, tsx]
 fix: manual
-fix_reason: "the callbacks that use the alias must become arrow functions by hand"
-fix_pending: "auto-subset; needs scope-rename (W-162)"
+fix_reason: "the callbacks that use the alias become arrow functions, which changes their own `this` and `arguments`"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/no-this-alias]
 since: 0.1.0

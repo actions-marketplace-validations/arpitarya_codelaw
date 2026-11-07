@@ -2,9 +2,8 @@
 id: js/no-caller
 title: "No arguments.callee or arguments.caller"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "naming the function to refer to it changes its declaration"
-fix_pending: "auto-subset; needs scope-rename (W-162)"
+fix: suggest
+fix_reason: "the function refers to itself by its own name, which code that reassigns that name, or shadows it inside, reads differently; an anonymous function is named the first of `self`, `self2`, … the file does not use; `arguments.caller` has no replacement and is removed by hand"
 stability: preview
 ported_from: [eslint/no-caller]
 since: 0.5.0
@@ -18,7 +17,21 @@ since: 0.5.0
 match:
   kind: member_expression
   regex: '^arguments\.(callee|caller)$'
+  any:
+    - all:
+        - regex: '^arguments\.callee$'
+        - pattern: $ANON
+        - inside: { stopBy: { any: [{ kind: function_expression }, { kind: function_declaration }, { kind: method_definition }, { kind: generator_function }, { kind: generator_function_declaration }] }, kind: function_expression, not: { has: { field: name, regex: . } }, pattern: $FN }
+    - all:
+        - regex: '^arguments\.callee$'
+        - inside: { stopBy: { any: [{ kind: function_expression }, { kind: function_declaration }, { kind: method_definition }, { kind: generator_function }, { kind: generator_function_declaration }] }, any: [{ kind: function_expression }, { kind: function_declaration }], has: { field: name, pattern: $NAME } }
+        - pattern: $NAMED
+    - regex: ''
 message: "Do not use `$$MATCH`; name the function instead"
+fix:
+  - edit-text: { target: $FN, pattern: '\Afunction(\s*\*?)\s*\(', replace: "function${1} $FRESH(self)(" }
+  - replace: { target: $ANON, with: "$FRESH(self)" }
+  - replace: { target: $NAMED, with: "$NAME" }
 ```
 
 ## How to fix

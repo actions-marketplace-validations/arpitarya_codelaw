@@ -322,9 +322,9 @@ fn move_after_takes_the_targets_lines() {
 #[test]
 fn rename_symbol_renames_one_binding_to_a_fresh_name() {
     // W-162: `rename-symbol` and `$FRESH` (SR-RULE-FORMAT 3c).
-    let block = "match:\n  kind: identifier\n  regex: ^undefined$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: \"$FRESH(_$$MATCH)\", scope: binding }";
-    let out = fix(Language::Javascript, block, "function f(undefined) {\n  const _undefined = 1;\n  return undefined;\n}\nconst undefinedish = undefined;\n");
-    assert_eq!(out.text, "function f(_undefined2) {\n  const _undefined = 1;\n  return _undefined2;\n}\nconst undefinedish = undefined;\n");
+    let block = "match:\n  kind: identifier\n  regex: ^NaN$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: \"$FRESH(_$$MATCH)\", scope: binding }";
+    let out = fix(Language::Javascript, block, "function f(NaN) {\n  const _NaN = 1;\n  return NaN;\n}\nconst n = NaN;\n");
+    assert_eq!(out.text, "function f(_NaN2) {\n  const _NaN = 1;\n  return _NaN2;\n}\nconst n = NaN;\n");
 }
 
 #[test]
@@ -343,7 +343,8 @@ fn rename_symbol_refuses_a_taken_name_and_a_shorthand() {
 
 #[test]
 fn edit_text_patterns_name_captures_escaped() {
-    let block = "match:\n  kind: for_statement\n  has: { field: condition, pattern: '$I < $A.length' }\nmessage: m\nfix:\n  - edit-text: { pattern: '$A\\[$I\\]', replace: \"$FRESH(item)\" }";
+    let block = "match:\n  kind: for_statement\n  all:\n    - has: { field: condition, pattern: '$I < $A.length' }\n    - has: { stopBy: end, pattern: '$A[$I]' }\nmessage: m\nfix:\n  - edit-text: { pattern: '$A\\[$I\\]', replace: \"$FRESH(item)\" }";
     let out = fix(Language::Javascript, block, "for (let i = 0; i < a.b.length; i++) f(a.b[i], axb[i]);\nconst item = 1;\n");
     assert_eq!(out.text, "for (let i = 0; i < a.b.length; i++) f(item2, axb[i]);\nconst item = 1;\n");
 }
+

@@ -2,9 +2,8 @@
 id: next/no-assign-module-variable
 title: "No variable named module"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the variable needs a new name, chosen by the author"
-fix_pending: "suggest; needs scope-rename (W-162)"
+fix: suggest
+fix_reason: "the variable is renamed to the first of `mod`, `mod2`, … the file does not use, with every reference; the name is the author's to improve, and an exported one is renamed by hand"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/no-assign-module-variable"]
 since: 0.5.0
@@ -17,8 +16,10 @@ No variable is declared with the name `module`.
 ```codelaw
 match:
   kind: variable_declarator
-  has: { field: name, kind: identifier, regex: '^module$' }
+  has: { field: name, kind: identifier, regex: '^module$', pattern: $N }
 message: "Do not declare a variable named `module`"
+fix:
+  - rename-symbol: { target: $N, to: "$FRESH(mod)", scope: binding }
 ```
 
 ## How to fix
