@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 8: action SHAs  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) action SHAs after the `py/*` rules.
+- **Done:** `deps refresh` records each Action ref's commit; `yaml/gha-pin-sha` suggests it offline.
+- **Decided / left open:** the fix trusts the snapshot's record; no entry, no fix. Not run against the network here (the refresh path is unit-free; the rule is proven by its snapshot example).
+- **Mistakes:** none new.
+- **Next:** cross-file read.
+
+---
+
 ## 2026-11-07 — W-162 change 7: the ten new `py/*` rules  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) the ten `py/*` rules W-139 filed under W-162, then SHAs, then cross-file, then close.

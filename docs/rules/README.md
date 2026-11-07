@@ -1432,7 +1432,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`toml/todo-marker`](toml/todo-marker.md) | TOML TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
 | [`yaml/document-start`](yaml/document-start.md) | A YAML document starts with --- | `auto` | — | `data/conventions` |
 | [`yaml/gha-action-schema`](yaml/gha-action-schema.md) | GitHub Actions action metadata matches its schema | `manual` | — | `data/github-actions` |
-| [`yaml/gha-pin-sha`](yaml/gha-pin-sha.md) | GitHub Actions are pinned to a commit SHA | `manual` | — | `data/github-actions` |
+| [`yaml/gha-pin-sha`](yaml/gha-pin-sha.md) | GitHub Actions are pinned to a commit SHA | `suggest` | — | `data/github-actions` |
 | [`yaml/gha-workflow-schema`](yaml/gha-workflow-schema.md) | GitHub Actions workflows match their schema | `manual` | — | `data/github-actions` |
 | [`yaml/no-ambiguous-booleans`](yaml/no-ambiguous-booleans.md) | No yes/no/on/off as unquoted values | `suggest` | — | `data/recommended` |
 | [`yaml/no-ambiguous-numbers`](yaml/no-ambiguous-numbers.md) | No numbers that YAML 1.1 and 1.2 read differently | `suggest` | — | `data/recommended` |
