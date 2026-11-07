@@ -380,10 +380,51 @@ fn import_shadowed_by_loop_var(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
             None
         };
         if let Some(d) = shadowed {
-            out.push(hit(id, format!("The loop variable `{}` replaces the import on line {}", s.name, line_of(ctx.source, d.0))));
+            let edits = loop_rename(n, model, sym, &format!("{}_", s.name), ctx.source);
+            out.push(hit_fix(id, format!("The loop variable `{}` replaces the import on line {}", s.name, line_of(ctx.source, d.0)), edits));
         }
     }
 }
+/// The edits renaming a `for` loop's target `sym` to `new` in the loop —
+/// its target, body and `else`, not the iterable, which is evaluated
+/// before the name is bound. `auto` when the loop is in a function that
+/// reads the name nowhere after it, from no nested scope outside it, and
+/// calls no `locals()`, `vars()`, `eval()` or `exec()`, and declares no
+/// `global` or `nonlocal`: the name then holds what it held before the loop
+/// everywhere it is read. Otherwise a suggestion (a module-level loop
+/// rebinds a global others may read). None when `new` is bound anywhere in
+/// the module.
+pub(crate) fn loop_rename(for_stmt: Node<'_>, model: &SemanticModel, sym: SymbolId, new: &str, src: &str) -> Vec<TextEdit> {
+    if model.symbols.iter().any(|x| x.name == new) {
+        return Vec::new();
+    }
+    let s = model.symbol(sym);
+    let (lo, hi) = (for_stmt.start_byte(), for_stmt.end_byte());
+    let iter = for_stmt.child_by_field_name("right").map_or((0, 0), |r| (r.start_byte(), r.end_byte()));
+    let inside = |at: usize| at >= lo && at < hi && !(at >= iter.0 && at < iter.1);
+    let mut spans: BTreeSet<(usize, usize)> = s.decls.iter().copied().filter(|d| inside(d.0)).collect();
+    let mut safe = model.scopes[s.scope].kind == ScopeKind::Function;
+    for &r in &s.refs {
+        let r = &model.references[r];
+        if inside(r.start) {
+            spans.insert((r.start, r.end));
+        } else if r.start >= lo || r.scope != s.scope {
+            safe = false;
+        }
+    }
+    if spans.iter().any(|&(a, b)| src.get(a..b) != Some(s.name.as_str())) {
+        return Vec::new();
+    }
+    if let Some(def) = crate::python_util::enclosing_def(for_stmt) {
+        let body = text(def, src);
+        if ["locals(", "vars(", "eval(", "exec(", "global ", "nonlocal "].iter().any(|w| body.contains(w)) {
+            safe = false;
+        }
+    }
+    let edits: Vec<TextEdit> = spans.into_iter().map(|(a, b)| TextEdit::new(a, b, new)).collect();
+    if safe { edits } else { crate::as_suggestion(edits) }
+}
+
 py_rule!(ImportShadowedByLoopVar, "py/import-shadowed-by-loop-var", ["for_statement"], true, import_shadowed_by_loop_var);
 
 fn star_import(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
@@ -442,7 +483,7 @@ fn nested_star_import(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<Nativ
 }
 py_rule!(NestedStarImport, "py/nested-star-import", ["wildcard_import"], false, nested_star_import);
 
-fn late_future_import(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn late_future_import(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let Some(parent) = n.parent() else { return };
     if parent.kind() != "module" {
         out.push(hit(n, "`from __future__` imports must come first in the module"));
@@ -455,7 +496,18 @@ fn late_future_import(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<Nativ
         if s.kind() == "future_import_statement" || (i == 0 && is_docstring_stmt(s)) {
             continue;
         }
-        out.push(hit(n, "`from __future__` imports must come first in the module"));
+        // Moved above the first statement that isn't one: the module never
+        // ran (a late `__future__` import is a SyntaxError), so the move is
+        // its only meaning.
+        let edits = match remove_stmt(n, ctx.source) {
+            Some(mut del) => {
+                let at = ctx.source[..s.start_byte()].rfind('\n').map_or(0, |i| i + 1);
+                del.push(TextEdit::insert(at, format!("{}\n", text(n, ctx.source))));
+                del
+            }
+            None => Vec::new(),
+        };
+        out.push(hit_fix(n, "`from __future__` imports must come first in the module", edits));
         return;
     }
 }
@@ -467,6 +519,7 @@ const FUTURE_FEATURES: &[&str] = &[
 ];
 
 fn future_feature_not_defined(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let names: Vec<Node> = kids(n).into_iter().filter(|c| matches!(c.kind(), "dotted_name" | "aliased_import")).collect();
     for c in kids(n) {
         let name = match c.kind() {
             "dotted_name" => c,
@@ -478,13 +531,22 @@ fn future_feature_not_defined(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Ve
         };
         let t = text(name, ctx.source);
         if !FUTURE_FEATURES.contains(&t) {
-            out.push(hit(name, format!("`{t}` is not a `__future__` feature")));
+            // The features within two edits, nearest first (the default), or
+            // the name removed; a SyntaxError today.
+            let mut choices: Vec<codelaw_core::FixChoice> = crate::util::nearest(t, FUTURE_FEATURES.iter().copied(), 2)
+                .into_iter()
+                .enumerate()
+                .map(|(i, f)| crate::choice(f, i == 0, vec![TextEdit::new(name.start_byte(), name.end_byte(), f)]))
+                .collect();
+            let remove = if names.len() == 1 { remove_stmt(n, ctx.source).unwrap_or_default() } else { vec![crate::util::remove_list_item(c, ctx.source)] };
+            choices.push(crate::choice("remove", false, remove));
+            out.push(hit_fix(name, format!("`{t}` is not a `__future__` feature"), crate::choice_edits(choices)));
         }
     }
 }
 py_rule!(FutureFeatureNotDefined, "py/undefined-future-feature", ["future_import_statement"], false, future_feature_not_defined);
 
-fn starred_targets(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, many: bool) {
+fn starred_targets(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, many: bool) {
     let Some(p) = n.parent() else { return };
     let is_target = matches!(p.kind(), "assignment" | "for_statement" | "for_in_clause") && p.child_by_field_name("left") == Some(n);
     if !is_target {
@@ -494,7 +556,15 @@ fn starred_targets(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFi
     let stars: Vec<usize> = items.iter().enumerate().filter(|(_, c)| matches!(c.kind(), "list_splat_pattern" | "list_splat")).map(|(i, _)| i).collect();
     if many {
         if stars.len() > 1 {
-            out.push(hit(n, "Only one starred expression is allowed in an assignment"));
+            // One choice per starred target: it keeps its star, the others lose theirs.
+            let choices = stars
+                .iter()
+                .map(|&k| {
+                    let edits = stars.iter().filter(|&&o| o != k).map(|&o| TextEdit::delete(items[o].start_byte(), items[o].start_byte() + 1)).collect();
+                    crate::choice(format!("keep {}", text(items[k], ctx.source)), false, edits)
+                })
+                .collect();
+            out.push(hit_fix(n, "Only one starred expression is allowed in an assignment", crate::choice_edits(choices)));
         }
     } else if let [i] = stars[..]
         && (i >= 1 << 8 || items.len() - i > 1 << 24)
@@ -511,21 +581,51 @@ fn star_too_many(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFindi
 py_rule!(MultipleStarredExpressions, "py/multiple-starred-expressions", ["pattern_list", "tuple_pattern", "list_pattern", "tuple", "list"], false, multiple_starred);
 py_rule!(ExpressionsInStarAssignment, "py/too-many-expressions-in-star-assignment", ["pattern_list", "tuple_pattern", "list_pattern", "tuple", "list"], false, star_too_many);
 
-fn assert_tuple(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+/// A tuple's items as plain expressions: none when it holds a comment or
+/// a starred item.
+fn tuple_items<'t>(t: Node<'t>) -> Option<Vec<Node<'t>>> {
+    let items = kids(t);
+    (!items.is_empty() && items.iter().all(|c| !matches!(c.kind(), "comment" | "list_splat" | "parenthesized_list_splat"))).then_some(items)
+}
+
+fn assert_tuple(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if let Some(first) = kids(n).first()
         && first.kind() == "tuple"
         && !kids(*first).is_empty()
     {
-        out.push(hit(*first, "A non-empty tuple is always true, so this assert never fails"));
+        // Without the parentheses: a test and its message, as meant.
+        let edits = match tuple_items(*first).as_deref() {
+            Some([t]) => vec![TextEdit::new(first.start_byte(), first.end_byte(), text(*t, ctx.source))],
+            Some([t, m]) => vec![TextEdit::new(first.start_byte(), first.end_byte(), format!("{}, {}", text(*t, ctx.source), text(*m, ctx.source)))],
+            _ => Vec::new(),
+        };
+        out.push(hit_fix(*first, "A non-empty tuple is always true, so this assert never fails", edits));
     }
 }
 py_rule!(AssertTuple, "py/assert-tuple", ["assert_statement"], false, assert_tuple);
 
-fn if_tuple(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn if_tuple(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if let Some(c) = n.child_by_field_name("condition") {
         let c = unparen(c);
         if c.kind() == "tuple" && !kids(c).is_empty() {
-            out.push(hit(c, "A non-empty tuple is always true, so this condition never changes"));
+            // Test the first item, or all of them joined with `and`.
+            let edits = match tuple_items(c) {
+                Some(items) => {
+                    let src = ctx.source;
+                    let all = items
+                        .iter()
+                        .map(|i| if matches!(i.kind(), "boolean_operator" | "conditional_expression" | "lambda" | "named_expression") { format!("({})", text(*i, src)) } else { text(*i, src).to_owned() })
+                        .collect::<Vec<_>>()
+                        .join(" and ");
+                    let mut choices = vec![crate::choice("first item", false, vec![TextEdit::new(c.start_byte(), c.end_byte(), text(items[0], src))])];
+                    if items.len() > 1 {
+                        choices.push(crate::choice("all items", false, vec![TextEdit::new(c.start_byte(), c.end_byte(), all)]));
+                    }
+                    crate::choice_edits(choices)
+                }
+                None => Vec::new(),
+            };
+            out.push(hit_fix(c, "A non-empty tuple is always true, so this condition never changes", edits));
         }
     }
 }
@@ -584,8 +684,22 @@ py_rule!(IsLiteral, "py/is-literal", ["comparison_operator"], false, is_literal)
 fn invalid_print_syntax(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     match n.kind() {
         "print_statement" => {
-            if kids(n).iter().any(|c| c.kind() == "chevron") {
-                out.push(hit(n, "`print >>` is Python 2 syntax; use `print(..., file=...)`"));
+            if let Some(chevron) = kids(n).into_iter().find(|c| c.kind() == "chevron") {
+                // As 2to3 writes it: the arguments, then `file=`; a trailing
+                // comma is `end=" "`.
+                let src = ctx.source;
+                let edits = match chevron.named_child(0) {
+                    Some(f) if !kids(n).iter().any(|c| c.kind() == "comment") => {
+                        let mut args: Vec<String> = kids(n).into_iter().filter(|c| c.id() != chevron.id()).map(|c| text(c, src).to_owned()).collect();
+                        if children(n).last().is_some_and(|t| t.kind() == ",") {
+                            args.push("end=\" \"".into());
+                        }
+                        args.push(format!("file={}", text(f, src)));
+                        vec![TextEdit::new(n.start_byte(), n.end_byte(), format!("print({})", args.join(", ")))]
+                    }
+                    _ => Vec::new(),
+                };
+                out.push(hit_fix(n, "`print >>` is Python 2 syntax; use `print(..., file=...)`", edits));
             }
         }
         _ => {
@@ -616,14 +730,26 @@ fn in_loop(n: Node<'_>) -> bool {
     false
 }
 
-fn break_outside_loop(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+/// The ways out of a `break` or `continue` outside a loop: `return`, in a
+/// function, or the statement deleted (`pass` when its block empties); a
+/// SyntaxError today, so neither is the default.
+fn jump_choices(n: Node<'_>, src: &str) -> Vec<TextEdit> {
+    let mut choices = Vec::new();
+    if frame(n) == "function" {
+        choices.push(crate::choice("return", false, vec![TextEdit::new(n.start_byte(), n.end_byte(), "return")]));
+    }
+    choices.push(crate::choice("delete", false, remove_stmt(n, src).unwrap_or_default()));
+    crate::choice_edits(choices)
+}
+
+fn break_outside_loop(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if !in_loop(n) {
-        out.push(hit(n, "`break` outside a loop"));
+        out.push(hit_fix(n, "`break` outside a loop", jump_choices(n, ctx.source)));
     }
 }
-fn continue_outside_loop(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn continue_outside_loop(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if !in_loop(n) {
-        out.push(hit(n, "`continue` outside a loop"));
+        out.push(hit_fix(n, "`continue` outside a loop", jump_choices(n, ctx.source)));
     }
 }
 py_rule!(BreakOutsideLoop, "py/break-outside-loop", ["break_statement"], false, break_outside_loop);
@@ -660,20 +786,48 @@ fn yield_outside_function(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
 }
 py_rule!(YieldOutsideFunction, "py/yield-outside-function", ["yield", "await"], false, yield_outside_function);
 
-fn return_outside_function(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn return_outside_function(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if frame(n) != "function" {
-        out.push(hit(n, "`return` outside a function"));
+        // Deleted (a SyntaxError today, so nothing ran); a value that does
+        // something stays as a statement.
+        let edits = match n.named_child(0).filter(|v| v.kind() != "comment") {
+            Some(v) if !is_pure(v) => vec![TextEdit::new(n.start_byte(), n.end_byte(), text(v, ctx.source))],
+            _ => remove_stmt(n, ctx.source).unwrap_or_default(),
+        };
+        out.push(hit_fix(n, "`return` outside a function", edits));
     }
 }
 py_rule!(ReturnOutsideFunction, "py/return-outside-function", ["return_statement"], false, return_outside_function);
 
-fn default_except_not_last(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn default_except_not_last(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
     let handlers: Vec<Node> = kids(n).into_iter().filter(|c| c.kind() == "except_clause").collect();
+    let bare_count = handlers.iter().filter(|h| kids(**h).first().is_none_or(|c| c.kind() == "block")).count();
     for (i, h) in handlers.iter().enumerate() {
         let bare = kids(*h).first().is_none_or(|c| c.kind() == "block");
         if bare && i + 1 < handlers.len() {
             let end = h.child(0).map(|c| c.end_byte()).unwrap_or(h.end_byte());
-            out.push(NativeFinding { start: h.start_byte(), end, message: "A bare `except:` must be the last handler".into(), edits: Vec::new() });
+            // Moved after the last handler, its lines whole: a SyntaxError
+            // today, so the order every handler can run in is its meaning.
+            let edits = match (bare_count, handlers.last()) {
+                (1, Some(last)) if starts_line(src, h.start_byte()) => {
+                    let lines = |a: usize, b: usize| {
+                        let s = src[..a].rfind('\n').map_or(0, |x| x + 1);
+                        let e = src[b..].find('\n').map_or(src.len(), |x| b + x + 1);
+                        (s, e)
+                    };
+                    let (hs, he) = lines(h.start_byte(), h.end_byte());
+                    let (_, le) = lines(last.start_byte(), last.end_byte());
+                    let moved = &src[hs..he];
+                    if src[h.end_byte()..he].trim().is_empty() && src[last.end_byte()..le].trim().is_empty() && moved.ends_with('\n') {
+                        vec![TextEdit::delete(hs, he), TextEdit::insert(le, moved)]
+                    } else {
+                        Vec::new()
+                    }
+                }
+                _ => Vec::new(),
+            };
+            out.push(NativeFinding { start: h.start_byte(), end, message: "A bare `except:` must be the last handler".into(), edits });
         }
     }
 }
@@ -709,10 +863,44 @@ fn forward_annotation_syntax_error(n: Node<'_>, ctx: &NativeContext<'_>, out: &m
         out.push(hit(n, "This string annotation is empty"));
         return;
     }
-    let wrapped = format!("__codelaw_annotation__: ({body})\n");
-    let root = codelaw_lang::parse(codelaw_core::Language::Python, &wrapped);
-    if codelaw_lang::syntax_error_count(&root) > 0 {
-        out.push(hit(n, format!("The string annotation `{body}` is not a valid expression")));
+    let parses = |body: &str| {
+        let wrapped = format!("__codelaw_annotation__: ({body})\n");
+        codelaw_lang::syntax_error_count(&codelaw_lang::parse(codelaw_core::Language::Python, &wrapped)) == 0
+    };
+    if !parses(body) {
+        // The brackets left open, closed: when that makes it parse.
+        let mut open = Vec::new();
+        let mut balanced = true;
+        for ch in body.chars() {
+            match ch {
+                '(' | '[' | '{' => open.push(ch),
+                ')' | ']' | '}' => {
+                    let want = match ch {
+                        ')' => '(',
+                        ']' => '[',
+                        _ => '{',
+                    };
+                    if open.pop() != Some(want) {
+                        balanced = false;
+                    }
+                }
+                '"' | '\'' => balanced = false,
+                _ => {}
+            }
+        }
+        let closers: String = open.iter().rev().map(|c| match c {
+            '(' => ')',
+            '[' => ']',
+            _ => '}',
+        }).collect();
+        let t = text(n, ctx.source);
+        let q = if t.ends_with("\"\"\"") || t.ends_with("'''") { 3 } else { 1 };
+        let edits = if balanced && !closers.is_empty() && parses(&format!("{body}{closers}")) && content.ends_with(body) {
+            vec![TextEdit::insert(n.end_byte() - q, closers)]
+        } else {
+            Vec::new()
+        };
+        out.push(hit_fix(n, format!("The string annotation `{body}` is not a valid expression"), edits));
     }
 }
 py_rule!(ForwardAnnotationSyntaxError, "py/forward-annotation-syntax-error", ["string"], false, forward_annotation_syntax_error);
@@ -787,10 +975,43 @@ fn redefined_while_unused(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec
                 continue;
             }
             let _ = id;
-            out.push(hit(nb, format!("`{}` is redefined here, but the definition on line {} was never used", s.name, line_of(src, a.0))));
+            let edits = match (import_key(na, src), import_key(nb, src)) {
+                // The same import twice, the later alone on its statement:
+                // it goes, and the name stays bound to the same object.
+                (Some((_, ka)), Some((sb, kb))) if ka == kb && import_names(sb) == 1 => remove_stmt(sb, src).unwrap_or_default(),
+                (Some(_), Some(_)) => Vec::new(),
+                // An unused definition: it goes, but its decorators and
+                // defaults no longer run.
+                _ if matches!(ka, Bind::Def | Bind::Class) => crate::as_suggestion(remove_stmt(statement_of(na), src).unwrap_or_default()),
+                _ => Vec::new(),
+            };
+            out.push(hit_fix(nb, format!("`{}` is redefined here, but the definition on line {} was never used", s.name, line_of(src, a.0)), edits));
         }
     }
 }
+/// The import statement binding `id`, and what it imports there as text:
+/// its kind, module and entry (`import a.b`, `from m import a as b`).
+fn import_key<'t>(id: Node<'t>, src: &str) -> Option<(Node<'t>, String)> {
+    let mut cur = id;
+    while let Some(p) = cur.parent() {
+        if matches!(p.kind(), "import_statement" | "import_from_statement") {
+            let module = p.child_by_field_name("module_name").map_or("", |m| text(m, src));
+            return Some((p, format!("{}|{module}|{}", p.kind(), text(cur, src))));
+        }
+        if !matches!(p.kind(), "dotted_name" | "aliased_import") {
+            return None;
+        }
+        cur = p;
+    }
+    None
+}
+
+/// How many names an import statement imports.
+fn import_names(stmt: Node<'_>) -> usize {
+    let mut cursor = stmt.walk();
+    stmt.children_by_field_name("name", &mut cursor).count()
+}
+
 py_rule!(RedefinedWhileUnused, "py/redefined-while-unused", ["module"], true, redefined_while_unused);
 
 fn extra_builtins(ctx: &NativeContext<'_>) -> BTreeSet<String> {
@@ -849,7 +1070,17 @@ fn undefined_name(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeF
         if implicit_name(model, r.scope, &r.name) || guarded_by_name_error(root, r.start, ctx.source) {
             continue;
         }
-        out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` is not defined", r.name), edits: Vec::new() });
+        // The names in scope within two edits, nearest first (the default).
+        let mut known: Vec<&str> = codelaw_semantic::PYTHON_BUILTINS.to_vec();
+        let mut sc = Some(r.scope);
+        while let Some(i) = sc {
+            if model.scopes[i].kind != ScopeKind::Class || i == r.scope {
+                known.extend(model.scopes[i].bindings.keys().map(String::as_str));
+            }
+            sc = model.scopes[i].parent;
+        }
+        let edits = crate::util::name_choices(&crate::util::nearest(&r.name, known, 2), r.start, r.end, &|c| c.to_owned());
+        out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` is not defined", r.name), edits });
     }
 }
 py_rule!(UndefinedName, "py/undefined-name", ["module"], true, undefined_name);
@@ -913,7 +1144,20 @@ fn undefined_export(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Nativ
     for s in dunder_all_strings(root, ctx.source) {
         let Some(name) = string_value(s, ctx.source) else { continue };
         if !model.scopes[0].bindings.contains_key(&name) && !codelaw_semantic::PYTHON_BUILTINS.contains(&name.as_str()) {
-            out.push(hit(s, format!("`{name}` is listed in `__all__` but not defined in the module")));
+            // A module `__getattr__` may define it; otherwise the module's
+            // names within two edits (the nearest the default), or the
+            // entry removed.
+            let edits = if model.scopes[0].bindings.contains_key("__getattr__") || !s.parent().is_some_and(|p| matches!(p.kind(), "list" | "tuple")) {
+                Vec::new()
+            } else {
+                let t = text(s, ctx.source);
+                let q = &t[t.len() - 1..];
+                let near = crate::util::nearest(&name, model.scopes[0].bindings.keys().map(String::as_str).filter(|k| !k.starts_with("__")), 2);
+                let mut choices: Vec<codelaw_core::FixChoice> = near.iter().enumerate().map(|(i, n)| crate::choice(*n, i == 0, vec![TextEdit::new(s.start_byte(), s.end_byte(), format!("{q}{n}{q}"))])).collect();
+                choices.push(crate::choice("remove", false, vec![crate::util::remove_list_item(s, ctx.source)]));
+                crate::choice_edits(choices)
+            };
+            out.push(hit_fix(s, format!("`{name}` is listed in `__all__` but not defined in the module"), edits));
         }
     }
 }
@@ -933,17 +1177,15 @@ fn undefined_local(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Native
         };
         // Defined in an enclosing function or the module.
         let mut outer = model.scopes[s.scope].parent;
-        let mut defined_outside = false;
+        let mut defined_outside = None;
         while let Some(sc) = outer {
             if model.scopes[sc].kind != ScopeKind::Class && model.scopes[sc].bindings.contains_key(&s.name) {
-                defined_outside = true;
+                defined_outside = Some(model.scopes[sc].kind);
                 break;
             }
             outer = model.scopes[sc].parent;
         }
-        if !defined_outside {
-            continue;
-        }
+        let Some(where_) = defined_outside else { continue };
         for &r in &s.refs {
             let r = &model.references[r];
             if !r.read || r.scope != s.scope {
@@ -951,11 +1193,27 @@ fn undefined_local(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Native
             }
             let before = r.start <= first.0 || rhs.is_some_and(|x| x.start_byte() <= r.start && r.start < x.end_byte());
             if before {
+                // `global` (a module binding) or `nonlocal` (an enclosing
+                // function's) at the top of the function: the function then
+                // reads and writes the outer name.
+                let word = if where_ == ScopeKind::Function { "nonlocal" } else { "global" };
+                let edits = crate::python_util::enclosing_def(decl)
+                    .filter(|d| d.kind() == "function_definition")
+                    .and_then(|d| d.child_by_field_name("body"))
+                    .and_then(|body| {
+                        let stmts = statements(body);
+                        let first = stmts.iter().find(|x| !is_docstring_stmt(**x) && x.kind() != "comment").copied()?;
+                        starts_line(ctx.source, first.start_byte()).then(|| {
+                            let indent = crate::python_util::indent_at(ctx.source, first.start_byte());
+                            vec![TextEdit::insert(first.start_byte(), format!("{word} {}\n{indent}", s.name))]
+                        })
+                    })
+                    .unwrap_or_default();
                 out.push(NativeFinding {
                     start: r.start,
                     end: r.end,
                     message: format!("`{}` is read here before this function assigns it, so it is never the outer `{}`", s.name, s.name),
-                    edits: Vec::new(),
+                    edits,
                 });
                 break;
             }
@@ -1153,7 +1411,7 @@ fn literal_key(n: Node<'_>, src: &str) -> Option<String> {
 
 fn repeated_keys(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, variables: bool) {
     let src = ctx.source;
-    let mut seen: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    let mut seen: BTreeMap<String, Vec<(String, Node)>> = BTreeMap::new();
     for p in kids(n) {
         if p.kind() != "pair" {
             continue;
@@ -1173,16 +1431,32 @@ fn repeated_keys(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFindi
         };
         let value = text(v, src).split_whitespace().collect::<String>();
         let prev = seen.entry(key).or_default();
-        if !prev.is_empty() {
+        if let Some((_, first)) = prev.first() {
             let shown = text(k, src);
-            let msg = if prev.contains(&value) {
+            let same = prev.iter().any(|(pv, _)| *pv == value);
+            let msg = if same {
                 format!("The key `{shown}` repeats with the same value")
             } else {
                 format!("The key `{shown}` repeats; only its last value is kept")
             };
-            out.push(hit(k, msg));
+            let remove_later = crate::util::remove_list_item(p, src);
+            let edits = if same && is_pure(v) && prev.len() == 1 {
+                // The same value again, nothing run: it goes.
+                vec![remove_later]
+            } else if let Some(fv) = first.child_by_field_name("value").filter(|_| prev.len() == 1) {
+                // Python keeps the first key's place and the last value:
+                // `keep last` writes that (the default), `keep first` keeps
+                // the first value.
+                crate::choice_edits(vec![
+                    crate::choice("keep last", true, vec![TextEdit::new(fv.start_byte(), fv.end_byte(), text(v, src)), remove_later.clone()]),
+                    crate::choice("keep first", false, vec![remove_later]),
+                ])
+            } else {
+                Vec::new()
+            };
+            out.push(hit_fix(k, msg, edits));
         }
-        prev.push(value);
+        prev.push((value, p));
     }
 }
 fn repeated_key_literal(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
