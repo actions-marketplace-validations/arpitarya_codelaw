@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) finish the python half of W-139's remaining ports and close W-139 if DoD 1 is met.
+- **Done:** slices 19–22 landed (`3b9710f4`, `02994cae`, `7f6ae3e9`, `e6bb810a`): 200 new `py/*` rules. The strand's tally is in the item: 272 python-side rows left, each with its reason.
+- **Decided / left open:** W-139 stays open — DoD 1 is not met (python 272 rows, js 284, both mostly native, type-aware or waiting on W-162's add-import); W-143, W-142 and W-102 stay waiting on it.
+- **Mistakes:** none new.
+- **Next:** the rows that wait on W-162's add-import, once it lands; the natives with the W-139-native strand.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: slices 21 landed, 22 (48 Pylint rows)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the python half of W-139 to closure.
