@@ -29,9 +29,7 @@ here. Read that record before changing anything below it.
 
 ## Open items (13)
 
-### build (7)
-
-🟢 **W-171** `agent` Six worktrees of agents stopped by the usage limit 11-05, ruled keep 11-07: five landed and removed (W-139, W-141, W-162, W-168, W-169); W-156's is left, its agent still at work. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
+### build (6)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -57,7 +55,9 @@ here. Read that record before changing anything below it.
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
-### cleanup (0)
+### cleanup (1)
+
+🟢 **W-171** `agent` Six worktrees of agents stopped by the usage limit 11-05, ruled keep 11-07: five landed and removed (W-139, W-141, W-162, W-168, W-169); W-156's is left, its agent still at work. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
 
 ### testing (0)
 
