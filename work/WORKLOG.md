@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-169: the crash capture landed; the segfault not reproduced locally  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-169 — make the build legs save a core and a symbolized backtrace on a crash; stress `rules lint` on every pack locally under release and sanitizer builds; fix it if found.
+- **Done:** `scripts/crash-capture.sh` (`arm`, `collect`) and the build legs' two steps and `crash-<key>` artifact, SR-PACKAGES decision 11 and the ownership row — landed as `8ad936ec`. Local: release, ASan (Rust; Rust + C grammars) and TSan on all 27 packs, 19,305 runs — no crash, no sanitizer report. The paths read (rule loading, `unsafe`, tree-sitter FFI, the allocator) are in the item.
+- **Decided / left open:** no fix without a backtrace, so no regression test. The capture is unproven until the decider pushes `main`.
+- **Mistakes:** the first sanitizer `test` pass ran while auto-land merged newer `packs/` into the worktree; 51 failures were that skew, not crashes — rerun on packs frozen with `git archive`. A worktree removed mid-session (W-171 cleanup) took this session's item edit; redone in a new change.
+- **Next:** the first red build leg after the push: read `crash-<key>`'s `backtrace.txt`.
+
+---
+
 ## 2026-11-07 — W-139 steps 3–4: checks, corpus counts, L8, before/after  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-139 step 3 — `codelaw test` on every pack, corpus counts for the 233 rules of 11-05, the L8 budgets; then step 4; resumed after the usage limit (W-171).
