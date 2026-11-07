@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "the rename covers every use in this file; names read from other files or from strings are for the reviewer"
 stability: preview
-ported_from: [eslint/camelcase]
+ported_from: [eslint/camelcase, eslint-plugin-sonarjs/variable-name]
 since: 0.5.0
 ---
 
