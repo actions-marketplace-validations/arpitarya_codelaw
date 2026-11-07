@@ -280,7 +280,7 @@ pub fn compile_all(rules: &RuleSet, _config: &Config) -> Result<(Vec<CompiledRul
             Matcher::Match(per) => per.iter().any(|(_, m)| m.needs_semantic()),
             Matcher::Native(n) => n.needs_semantic(),
             Matcher::Graph(_) | Matcher::Target(_) | Matcher::TypeErrors | Matcher::Unsupported(_) => false,
-        } || matches!(&fix, Some(FixSpec::Steps(s)) if s.iter().any(|p| matches!(p, codelaw_fix::Primitive::RenameSymbolLocal { .. })));
+        } || fix.as_ref().is_some_and(FixSpec::needs_semantic);
         let typed = match &matcher {
             Matcher::Match(per) => per.iter().any(|(_, m)| m.has_types()),
             Matcher::TypeErrors => true,

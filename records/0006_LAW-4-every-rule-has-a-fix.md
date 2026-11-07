@@ -238,9 +238,9 @@ a diff.
   `manual` would fall from 577 to 147, and `auto` (always or for a stated
   subset) would rise from 93 to 254. W-156 moved the rules, one pack per
   change with its examples, and closed 2026-11-07: every rule is on its rung
-  or `manual` with its exception, except 77 that wait on a capability
-  (`fix_pending:`, 76 naming W-162, `ts/type-error` W-105). Whole tree at
-  close: `auto` 599, `suggest` 846, `manual` 933.
+  or `manual` with its exception, except 43 that wait on a capability
+  (`fix_pending:`, 42 naming W-162, `ts/type-error` W-105). Whole tree at
+  close: `auto` 608, `suggest` 872, `manual` 963.
 - **Rule authors carry more cost:** a subset condition, choices with their own
   `Fixed` examples, an exception. That is the point: the cost moves from every
   reader of a finding to the one author of the rule.

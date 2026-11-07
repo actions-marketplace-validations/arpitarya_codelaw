@@ -33,13 +33,13 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done; L8 → W-172. DoD 1 under way: js slices 18–19 (104 rules), py slices 19–21 (152). Next: more js and py rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: DoD 1 — js slices 18–20 (121; 284 rows not written, reasons in item), py 19–22 (200; 272 rows left: native, types, W-162). Next: natives, graph, types. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets on the reference runner (11-07): `check_cold_10k` 13,465 > 13,118 ms, `peak_memory_10k` 124 > 72 MiB, `mcp_rules_for_path` 129 > 65 ms; green 11-05. Next: bisect, optimise. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits done: 64 moved, 39 re-judged `manual`. 58 still wait (scope rename 10, add-import 9, purity 2, cross-file 36, SHAs 1), 6 more on W-105. Next: scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 36 wait (cross-file), 6 on W-105. Next: cross-file read, then write. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 ### ci/cd (4)
 

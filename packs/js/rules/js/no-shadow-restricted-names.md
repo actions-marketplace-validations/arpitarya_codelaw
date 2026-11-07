@@ -2,9 +2,8 @@
 id: js/no-shadow-restricted-names
 title: "No declaring undefined, NaN, Infinity, arguments, eval or globalThis"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the new name is the author's choice"
-fix_pending: "auto-subset; needs scope-rename (W-162)"
+fix: auto
+fix_reason: "renamed automatically to the first of `_NaN`, `_NaN2`, … that the file does not use, with every reference to it; an exported name, or one in a shorthand `{ NaN }`, is renamed by hand"
 stability: preview
 ported_from: [eslint/no-shadow-restricted-names, eslint-plugin-sonarjs/no-globals-shadowing]
 since: 0.1.0
@@ -22,6 +21,8 @@ match:
 where:
   $$MATCH: declaration
 message: "`$$MATCH` is a restricted name; don't declare it"
+fix:
+  - rename-symbol: { target: $$MATCH, to: "$FRESH(_$$MATCH)", scope: binding }
 ```
 
 ## How to fix
@@ -43,8 +44,8 @@ function check(NaN) {
 #### Do
 
 ```js
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -61,8 +62,8 @@ function check(NaN) {
 #### Do
 
 ```jsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -79,8 +80,8 @@ function check(NaN) {
 #### Do
 
 ```ts
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -97,7 +98,7 @@ function check(NaN) {
 #### Do
 
 ```tsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```

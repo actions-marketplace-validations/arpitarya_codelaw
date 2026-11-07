@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/github-actions` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (finding the commit a tag points to needs the network, and the engine never uses it (L5)) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the commit is the one `codelaw deps refresh` recorded for the ref, the one networked command (L5); the fix trusts that record, and a ref the snapshot has no entry for is pinned by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Files** | only `**/.github/workflows/*.yml`, `**/.github/workflows/*.yaml`, `**/action.yml`, `**/action.yaml` |
@@ -122,7 +122,7 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ## How to fix
 
-1. Look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.
+1. Run `codelaw deps refresh`: it records the commit of each Action ref the workflows name, and the fix pins to it. Otherwise look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.
 2. Replace the tag with the 40-character SHA and keep the tag as a comment: `uses: actions/checkout@<sha> # v4.2.2`.
 3. Let Dependabot or Renovate update the pinned SHAs.
 
@@ -132,7 +132,10 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 #### Don't
 
-```yaml path=.github/workflows/ci.yml
+```yaml
+# .codelaw/deps-snapshot.json
+{ "fetched": "2026-11-07", "actions": { "actions/checkout@v4": "11bd71901bbe5b1630ceea73d27597364c9af683" } }
+# .github/workflows/ci.yml
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -142,12 +145,15 @@ jobs:
 
 #### Do
 
-```yaml path=.github/workflows/ci.yml
+```yaml
+# .codelaw/deps-snapshot.json
+{ "fetched": "2026-11-07", "actions": { "actions/checkout@v4": "11bd71901bbe5b1630ceea73d27597364c9af683" } }
+# .github/workflows/ci.yml
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 ```
 
 ---

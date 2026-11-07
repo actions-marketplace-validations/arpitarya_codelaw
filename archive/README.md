@@ -28,7 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
-| [`W-156-fix-ladder.md`](open/W-156-fix-ladder.md) | 2026-11-07 | done — [SR-LAW-4](../records/0006_LAW-4-every-rule-has-a-fix.md): the ladder in the engine and every rule on its rung; 77 wait on a capability (W-162 76, W-105 1) |
+| [`W-156-fix-ladder.md`](open/W-156-fix-ladder.md) | 2026-11-07 | done — [SR-LAW-4](../records/0006_LAW-4-every-rule-has-a-fix.md): the ladder in the engine and every rule on its rung; 77 wait on a capability (W-162 42, W-105 1) |
 | [`W-171-session-cleanup.md`](open/W-171-session-cleanup.md) | 2026-11-07 | done — [SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md): the six kept worktrees of 11-05 landed and removed |
 | [`W-168-graph-scale-measurement.md`](open/W-168-graph-scale-measurement.md) | 2026-11-07 | done — [`experiments/graph-scale/RESULTS.md`](../experiments/graph-scale/RESULTS.md), [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decisions 2 and 10, [SR-PROJECT-GRAPH](../records/0103_project-graph.md) decision 5; ruled no budget yet — the follow-up is [W-167](../work/open/W-167-graph-architecture-design.md) step 6 |
 | [`W-141-formatter-parity.md`](open/W-141-formatter-parity.md) | 2026-11-05 | done — [SR-FORMATTER](../records/0105_formatter.md) decision 2 (Oxc for CSS, SCSS, YAML, Markdown; [L11](../records/0013_LAW-11-dependencies.md) D-52) and Consequences (the corpus, and every difference left named per engine); W-148 step 4 is [W-139](../work/open/W-139-rule-parity-build.md)'s DoD 2d |

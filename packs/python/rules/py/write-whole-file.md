@@ -2,9 +2,8 @@
 id: py/write-whole-file
 title: "pathlib writes a whole file in one call"
 languages: [python]
-fix: manual
-fix_reason: "the block becomes `Path(p).write_text(data)`, which needs `pathlib.Path` imported"
-fix_pending: "suggest; needs add-import (W-162)"
+fix: suggest
+fix_reason: "`Path(...).write_text(...)` opens, writes and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not"
 stability: preview
 ported_from: [ruff/FURB103]
 since: 0.5.0
@@ -24,7 +23,15 @@ match:
         all:
           - has: {nthChild: 1, kind: expression_statement, has: {kind: call, pattern: $F.write($D)}}
           - not: {has: {nthChild: 2}}
+    - has: {kind: with_clause, has: {kind: with_item, has: {kind: as_pattern, has: {kind: call, has: {field: arguments, has: {nthChild: 1, pattern: $P}}}}}}
+    - any:
+        - all: [{regex: '^with\s+open\([^\n]*["'']wb["'']'}, {pattern: $BYTES}]
+        - all: [{not: {regex: '^with\s+open\([^\n]*["'']wb["'']'}}, {pattern: $TEXT}]
 message: "Write it with `Path(...).write_text(...)`"
+fix:
+  - replace: { target: $TEXT, with: "Path($P).write_text($D)" }
+  - replace: { target: $BYTES, with: "Path($P).write_bytes($D)" }
+  - ensure-import: { module: pathlib, name: Path }
 ```
 
 ## How to fix
@@ -45,5 +52,7 @@ with open(path, "w") as f:
 #### Do
 
 ```python
+from pathlib import Path
+
 Path(path).write_text(text)
 ```

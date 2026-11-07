@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the loop variable needs a name the code does not contain) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`for … of` reads the array through its iterator, which a subclass or a sparse array can tell apart from indexing; the element is named the first of `item`, `item2`, … the file does not use, for the author to improve) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `typescript-eslint/prefer-for-of` |
@@ -141,8 +141,8 @@ for (let i = 0; i < names.length; i++) {
 #### Do
 
 ```ts
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
 
@@ -159,8 +159,8 @@ for (let i = 0; i < names.length; i++) {
 #### Do
 
 ```tsx
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
 

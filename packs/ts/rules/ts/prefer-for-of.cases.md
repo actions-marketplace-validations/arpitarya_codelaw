@@ -1,34 +1,19 @@
-# ts/prefer-for-of — cases
-
-### case: the index is used on its own
+### case: the element name avoids one the file uses
 
 ```ts
-for (let i = 0; i < xs.length; i++) {
-  print(i, xs[i]);
+const item = 0;
+for (let i = 0; i < list.items.length; i++) {
+  use(list.items[i], item);
 }
 ```
 
 ```expect
+2:1 ts/prefer-for-of
 ```
 
-### case: the element is assigned
-
-```ts
-for (let i = 0; i < xs.length; i++) {
-  xs[i] = 0;
+```fixed
+const item = 0;
+for (const item2 of list.items) {
+  use(item2, item);
 }
-```
-
-```expect
-```
-
-### case: another array is indexed
-
-```ts
-for (let i = 0; i < xs.length; i++) {
-  use(ys[i]);
-}
-```
-
-```expect
 ```

@@ -2,9 +2,8 @@
 id: py/useless-try-except
 title: "No handler that only re-raises"
 languages: [python]
-fix: manual
-fix_reason: "removing the handler, and the `try` when nothing else is left, re-indents its body"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the `try` goes and its body moves up one level; a `try` with an `else` or `finally`, or another handler that does something, keeps its structure and is rewritten by hand"
 stability: preview
 ported_from: [ruff/TRY203, pylint/try-except-raise]
 since: 0.5.0
@@ -24,7 +23,18 @@ match:
   inside:
     kind: try_statement
     not: {has: {kind: except_clause, not: {matches: reraise}}}
+  any:
+    - inside:
+        kind: try_statement
+        pattern: $TRY
+        all:
+          - has: { field: body, pattern: $B }
+          - not: { has: { kind: else_clause } }
+          - not: { has: { kind: finally_clause } }
+    - regex: ''
 message: "The handler only re-raises; remove it"
+fix:
+  - unwrap-block: { target: $B, within: $TRY }
 ```
 
 ## How to fix

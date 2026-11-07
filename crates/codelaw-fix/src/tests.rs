@@ -318,3 +318,66 @@ fn move_after_takes_the_targets_lines() {
     assert_eq!(out.text, "const a = 1;\n\nfunction f() {}\n");
     assert!(parse_fix(&serde_json::json!([{ "move": { "before": "$A", "after": "$B" } }])).unwrap_err().contains("one of"));
 }
+
+#[test]
+fn rename_symbol_renames_one_binding_to_a_fresh_name() {
+    // W-162: `rename-symbol` and `$FRESH` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: identifier\n  regex: ^NaN$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: \"$FRESH(_$$MATCH)\", scope: binding }";
+    let out = fix(Language::Javascript, block, "function f(NaN) {\n  const _NaN = 1;\n  return NaN;\n}\nconst n = NaN;\n");
+    assert_eq!(out.text, "function f(_NaN2) {\n  const _NaN = 1;\n  return _NaN2;\n}\nconst n = NaN;\n");
+}
+
+#[test]
+fn rename_symbol_refuses_a_taken_name_and_a_shorthand() {
+    let block = "match:\n  kind: identifier\n  regex: ^ok$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: resolve }";
+    let (rule, compiled) = matcher(Language::Javascript, block);
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    for src in ["new Promise((ok) => resolve(ok));\n", "function f(ok) { return { ok }; }\n"] {
+        let root = codelaw_lang::parse(Language::Javascript, src);
+        let model = codelaw_semantic::build(Language::Javascript, &root, src);
+        let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: model.as_ref() };
+        let m = find(Language::Javascript, &compiled, &root, src);
+        assert!(edits_for(&spec, &m[0], &ctx).is_err(), "{src}");
+    }
+}
+
+#[test]
+fn edit_text_patterns_name_captures_escaped() {
+    let block = "match:\n  kind: for_statement\n  all:\n    - has: { field: condition, pattern: '$I < $A.length' }\n    - has: { stopBy: end, pattern: '$A[$I]' }\nmessage: m\nfix:\n  - edit-text: { pattern: '$A\\[$I\\]', replace: \"$FRESH(item)\" }";
+    let out = fix(Language::Javascript, block, "for (let i = 0; i < a.b.length; i++) f(a.b[i], axb[i]);\nconst item = 1;\n");
+    assert_eq!(out.text, "for (let i = 0; i < a.b.length; i++) f(item2, axb[i]);\nconst item = 1;\n");
+}
+
+
+#[test]
+fn ensure_import_reuses_or_adds_an_import() {
+    // W-162: `ensure-import` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: call\n  pattern: isclose($A, $B)\nmessage: m\nfix:\n  - replace: \"math.isclose($A, $B)\"\n  - ensure-import: { module: math }";
+    let out = fix(Language::Python, block, "\"\"\"Doc.\"\"\"\nimport os\n\nx = isclose(a, 0.1)\n");
+    assert_eq!(out.text, "\"\"\"Doc.\"\"\"\nimport os\nimport math\n\nx = math.isclose(a, 0.1)\n");
+    let block = "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - replace: \"field($A)\"\n  - ensure-import: { module: dataclasses, name: field }";
+    let out = fix(Language::Python, block, "from dataclasses import dataclass\n\nx = make(1)\n");
+    assert_eq!(out.text, "from dataclasses import dataclass, field\n\nx = field(1)\n");
+    let block = "match:\n  kind: jsx_self_closing_element\n  has: { field: name, regex: ^a$, pattern: $N }\nmessage: m\nfix:\n  - replace: { target: $N, with: Link }\n  - ensure-import: { module: next/link, name: default, as: Link }";
+    let out = fix(Language::Jsx, block, "\"use client\";\nconst a = <a href=\"/x\" />;\n");
+    assert_eq!(out.text, "\"use client\";\nimport Link from \"next/link\";\nconst a = <Link href=\"/x\" />;\n");
+}
+
+#[test]
+fn ensure_import_refuses_a_name_taken_by_something_else() {
+    let (rule, compiled) = matcher(Language::Python, "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - ensure-import: { module: dataclasses, name: field }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "field = 1\nx = make(1)\n";
+    let root = codelaw_lang::parse(Language::Python, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Python, semantic: None };
+    let m = find(Language::Python, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("already a name"));
+}
+
+#[test]
+fn unwrap_block_dedents_a_python_block() {
+    // W-162: `unwrap-block` on a Python `block`.
+    let block = "match:\n  kind: else_clause\n  has: { field: body, pattern: $B }\nmessage: m\nfix:\n  - unwrap-block: { target: $B, within: $$MATCH }";
+    let out = fix(Language::Python, block, "def f(x):\n    if x:\n        return 1\n    else:\n        # two\n        y = 2\n        return y\n");
+    assert_eq!(out.text, "def f(x):\n    if x:\n        return 1\n    # two\n    y = 2\n    return y\n");
+}

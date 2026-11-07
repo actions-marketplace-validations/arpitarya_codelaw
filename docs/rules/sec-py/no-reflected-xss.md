@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (escaping the value or rendering a template are both fixes; which fits depends on the response) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (escaping the value or rendering a template are both fixes, and a suggested edit would read as made safe; which fits depends on the response) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Files** | never `**/tests/**`, `**/test/**`, `**/test_*.py`, `**/*_test.py`, `**/*_tests.py`, `**/tests.py`, `**/conftest.py` |

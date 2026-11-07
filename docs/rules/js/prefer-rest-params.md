@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/typescript` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the parameter list has to be rewritten by hand) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`...args` is a real array where `arguments` is array-like and, outside strict mode, tracks the named parameters; the parameter list and each use are rewritten together by the author) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/prefer-rest-params` |

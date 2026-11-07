@@ -2,9 +2,8 @@
 id: py/superfluous-else-break
 title: "No else after break"
 languages: [python]
-fix: manual
-fix_reason: "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand"
 stability: preview
 ported_from: [ruff/RET508, pylint/no-else-break]
 since: 0.5.0
@@ -28,7 +27,12 @@ match:
           - has: {field: consequence, matches: ends}
           - not: {has: {kind: elif_clause, not: {has: {field: consequence, matches: ends}}}}
     - inside: {any: [{kind: for_statement}, {kind: while_statement}], stopBy: {any: [{kind: function_definition}, {kind: class_definition}]}}
+    - any:
+      - all: [{ kind: else_clause }, { has: { field: body, pattern: $B } }, { pattern: $ELSE }]
+      - regex: ''
 message: "Remove the `else`; the `break` already leaves the branch"
+fix:
+  - unwrap-block: { target: $B, within: $ELSE }
 ```
 
 ## How to fix
