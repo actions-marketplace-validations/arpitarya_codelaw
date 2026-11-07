@@ -39,16 +39,6 @@ native: css/no-duplicate-selector
 }
 ```
 
-#### Fixed
-
-```css
-.card {
-  color: red;
-
-  margin: 0;}
-
-```
-
 #### Do
 
 ```css
@@ -69,17 +59,6 @@ native: css/no-duplicate-selector
 .card {
   margin: 0;
 }
-```
-
-#### Fixed
-
-```scss
-.card {
-  color: red;
-
-  margin: 0;}
-
-
 ```
 
 #### Do

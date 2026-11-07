@@ -35,14 +35,6 @@ a {
 }
 ```
 
-#### Fixed
-
-```css
-a {
-  font-family: Helvetica, Arial, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif;
-}
-```
-
 #### Do
 
 ```css
@@ -57,14 +49,6 @@ a {
 ```scss
 a {
   font-family: Helvetica, Arial;
-}
-```
-
-#### Fixed
-
-```scss
-a {
-  font-family: Helvetica, Arial, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif, sans-serif;
 }
 ```
 

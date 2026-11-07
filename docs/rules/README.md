@@ -1078,7 +1078,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/declaration-block-no-duplicate-custom-properties`](css/declaration-block-no-duplicate-custom-properties.md) | No custom property declared twice in one block | `auto` | — | `css/recommended` |
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
 | [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
-| [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `manual` | — | `css/recommended` |
+| [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `suggest` | — | `css/recommended` |
 | [`css/declaration-property-max-values`](css/declaration-property-max-values.md) | No declaration with more values than the project allows | `manual` | `max` | *[rules] only* |
 | [`css/declaration-property-unit-allowed-list`](css/declaration-property-unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-unit-disallowed-list`](css/declaration-property-unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
@@ -1089,7 +1089,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/display-notation`](css/display-notation.md) | `display` in its short form | `auto` | — | *[rules] only* |
 | [`css/font-family-name-quotes`](css/font-family-name-quotes.md) | Font family names are quoted where they should be | `auto` | — | *[rules] only* |
 | [`css/font-family-no-duplicate-names`](css/font-family-no-duplicate-names.md) | No font family listed twice | `auto` | — | `css/recommended` |
-| [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `manual` | `ignoreFontFamilies` | `css/recommended` |
+| [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `suggest` | `ignoreFontFamilies` | `css/recommended` |
 | [`css/font-weight-notation`](css/font-weight-notation.md) | Font weights are numeric | `auto` | `mode` | *[rules] only* |
 | [`css/function-allowed-list`](css/function-allowed-list.md) | Only functions the project allows | `manual` | `list` | *[rules] only* |
 | [`css/function-calc-no-unspaced-operator`](css/function-calc-no-unspaced-operator.md) | Spaces around `+` and `-` in math functions | `suggest` | — | `css/recommended` |
@@ -1125,12 +1125,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/nesting-selector-no-missing-scoping-root`](css/nesting-selector-no-missing-scoping-root.md) | Nesting selectors have a parent | `suggest` | — | `css/recommended` |
 | [`css/no-descending-specificity`](css/no-descending-specificity.md) | Less specific selectors come first | `manual` | `ignore` | `css/recommended` |
 | [`css/no-duplicate-at-import-rules`](css/no-duplicate-at-import-rules.md) | No stylesheet imported twice | `suggest` | — | `css/recommended` |
-| [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `manual` | — | `css/recommended` |
+| [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `auto` | — | `css/recommended` |
 | [`css/no-empty-block`](css/no-empty-block.md) | No empty blocks | `auto` | — | `css/recommended` |
 | [`css/no-empty-source`](css/no-empty-source.md) | No empty stylesheets | `manual` | — | `css/recommended` |
 | [`css/no-important`](css/no-important.md) | No `!important` | `suggest` | — | `css/conventions` |
 | [`css/no-invalid-double-slash-comments`](css/no-invalid-double-slash-comments.md) | No `//` comments | `auto` | — | `css/recommended` |
-| [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `manual` | `ignoreAtRules` | `css/recommended` |
+| [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `suggest` | — | `css/recommended` |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
 | [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |

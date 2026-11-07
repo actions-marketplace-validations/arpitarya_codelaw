@@ -78,10 +78,15 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
                         return None;
                     }
                     let inner = src[sopen + 1..sclose].trim_end();
-                    let head = src[..fclose].trim_end_matches([' ', '\t']).len();
-                    let (a, b) = crate::util::whole_lines(src, n.start, n.end);
-                    let sep = if inner.starts_with('\n') { "" } else { " " };
-                    Some(vec![TextEdit::insert(head, format!("{sep}{inner}")), TextEdit::delete(a, b)])
+                    let head = src[..fclose].trim_end().len();
+                    // The second rule goes with the blank line before it.
+                    let a = src[..n.start].trim_end().len();
+                    let b = if src[n.end..].starts_with('\n') { n.end } else { n.end };
+                    let joined = match inner.strip_prefix('\n') {
+                        Some(lines) => format!("\n{lines}"),
+                        None => format!(" {}", inner.trim()),
+                    };
+                    Some(vec![TextEdit::insert(head, joined), TextEdit::delete(a, b)])
                 });
                 out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first)), edits.unwrap_or_default()));
             }

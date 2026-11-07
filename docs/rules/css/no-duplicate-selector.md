@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (merging the rules depends on cascade order) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a selector repeated in its own list, which goes, and for two rules side by side with the same selector, which cascade as one and merge; rules apart are manual, since moving declarations past others changes the cascade) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/no-duplicate-selectors` |

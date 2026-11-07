@@ -37,7 +37,9 @@ a {
 #### Fixed
 
 ```css
-XX
+a {
+  padding: 20px;
+}
 ```
 
 #### Do
@@ -62,7 +64,9 @@ a {
 #### Fixed
 
 ```scss
-XX
+a {
+  padding: 20px;
+}
 ```
 
 #### Do
