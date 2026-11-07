@@ -27,7 +27,7 @@ match:
         all:
           - has: {field: consequence, matches: ends}
           - not: {has: {kind: elif_clause, not: {has: {field: consequence, matches: ends}}}}
-    - inside: {kind: for_statement, stopBy: {any: [{kind: function_definition}, {kind: class_definition}]}}
+    - inside: {any: [{kind: for_statement}, {kind: while_statement}], stopBy: {any: [{kind: function_definition}, {kind: class_definition}]}}
 message: "Remove the `else`; the `continue` already leaves the branch"
 ```
 
