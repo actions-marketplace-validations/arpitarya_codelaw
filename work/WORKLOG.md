@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, third pass: slice 23 (35 rows upstream had to confirm)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) confirm the "not confirmable offline" rows from upstream's source and tests, write them; natives in Rust; the add-import rows if W-162 has it; re-label the rest; close W-139 if DoD 1 is met.
+- **Done:** read Ruff 0.16.9's rule sources, fixtures and snapshots and Pylint 4.1.3's checkers and functional tests over GitHub (behaviour only for Pylint, L2); slice 23 — 35 `py/*` rules (Ruff 15, Pylint 20): 3 `auto`, 7 `suggest`, 25 `manual`. `codelaw test packs/python` 741 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written. Every other formerly unconfirmed row re-labelled in the item with what it waits on.
+- **Decided / left open:** W-162 has no add-import yet, so its ~25 rows stay marked; no natives this pass. W-139 stays open — DoD 1 not met (python 237 rows left).
+- **Mistakes:** the Write tool and zsh's `cat` turned a written `\u00e9` into `é` in a rule's examples; caught by the rule's own test, rewritten through `chr(92)` (LESSONS-worthy only if it recurs).
+- **Next:** the native rows (`crates/codelaw-native`), the add-import rows once W-162 builds it.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish the python half of W-139's remaining ports and close W-139 if DoD 1 is met.
