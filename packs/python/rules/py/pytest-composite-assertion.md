@@ -2,9 +2,8 @@
 id: py/pytest-composite-assertion
 title: "One condition per assert"
 languages: [python]
-fix: manual
-fix_reason: "the assert is split into one per condition, each on its own line at the assert's indentation"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "each condition becomes its own assert, so a failure names the one that failed; the second is now asserted only if the first held, as before, but an assert with a message is split by hand"
 stability: preview
 ported_from: [ruff/PT018]
 since: 0.5.0
@@ -18,7 +17,16 @@ An `assert a and b` is written as two asserts, `assert a` and `assert b`, and `a
 match:
   kind: assert_statement
   has: {nthChild: 1, any: [{kind: boolean_operator, regex: '\band\b'}, {kind: not_operator, has: {kind: parenthesized_expression, has: {kind: boolean_operator, regex: '\bor\b'}}}]}
+  any:
+    - all: [{ pattern: assert $A and $B }, { pattern: $AND }]
+    - all: [{ pattern: "assert not ($A or $B)" }, { pattern: $NOR }]
+    - regex: ''
 message: "Assert one condition at a time"
+fix:
+  - replace: { target: $AND, with: "assert $A" }
+  - insert-after: { target: $AND, text: "assert $B", line: true }
+  - replace: { target: $NOR, with: "assert not $A" }
+  - insert-after: { target: $NOR, text: "assert not $B", line: true }
 ```
 
 ## How to fix

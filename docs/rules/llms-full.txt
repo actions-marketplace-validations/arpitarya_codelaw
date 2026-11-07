@@ -87907,7 +87907,7 @@ def f():
 ## `py/dot-format-in-exception` — An exception .format() message is assigned before the raise
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the message moves into a `msg` variable on the line above, at the raise's indentation)
+- **Fix:** `suggest` (the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/dot-format-in-exception.md
 
@@ -89193,7 +89193,7 @@ def greet():
 ## `py/f-string-in-exception` — An exception f-string is assigned before the raise
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the message moves into a `msg` variable on the line above, at the raise's indentation)
+- **Fix:** `suggest` (the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/f-string-in-exception.md
 
@@ -92471,7 +92471,7 @@ if v is None:
 ## `py/iter-method-return-iterable` — __iter__ returns an Iterator
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the return type becomes `Iterator`, which may need importing)
+- **Fix:** `suggest` (the type becomes the iterator it returns, which is what `iter()` promises; a bare `Iterator` is imported from where the file imports `Iterable`, and a file that imports neither is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/iter-method-return-iterable.md
 
@@ -92492,6 +92492,8 @@ if v is None:
 ##### Don't
 
 ```python path=api.pyi
+from typing import Iterable
+
 class Rows:
     def __iter__(self) -> Iterable[int]: ...
 ```
@@ -92499,6 +92501,8 @@ class Rows:
 ##### Do
 
 ```python path=api.pyi
+from typing import Iterable, Iterator
+
 class Rows:
     def __iter__(self) -> Iterator[int]: ...
 ```
@@ -98192,7 +98196,7 @@ def test_parse():
 ## `py/pytest-composite-assertion` — One condition per assert
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the assert is split into one per condition, each on its own line at the assert's indentation)
+- **Fix:** `suggest` (each condition becomes its own assert, so a failure names the one that failed; the second is now asserted only if the first held, as before, but an assert with a message is split by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/pytest-composite-assertion.md
 
@@ -99419,7 +99423,7 @@ raise ValueError(f"bad {name}")
 ## `py/raw-string-in-exception` — An exception message is assigned before the raise
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the message moves into a `msg` variable on the line above, at the raise's indentation)
+- **Fix:** `suggest` (the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/raw-string-in-exception.md
 
@@ -101711,7 +101715,7 @@ class A(B):
 ## `py/superfluous-else-break` — No else after break
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet)
+- **Fix:** `suggest` (the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/superfluous-else-break.md
 
@@ -101751,7 +101755,7 @@ for x in xs:
 ## `py/superfluous-else-continue` — No else after continue
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet)
+- **Fix:** `suggest` (the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/superfluous-else-continue.md
 
@@ -101791,7 +101795,7 @@ for x in xs:
 ## `py/superfluous-else-raise` — No else after raise
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet)
+- **Fix:** `suggest` (the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/superfluous-else-raise.md
 
@@ -101831,7 +101835,7 @@ def check(x):
 ## `py/superfluous-else-return` — No else after return
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet)
+- **Fix:** `suggest` (the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/superfluous-else-return.md
 
@@ -106528,7 +106532,7 @@ def save(x):
 ## `py/useless-try-except` — No handler that only re-raises
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (removing the handler, and the `try` when nothing else is left, re-indents its body)
+- **Fix:** `suggest` (the `try` goes and its body moves up one level; a `try` with an `else` or `finally`, or another handler that does something, keeps its structure and is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/useless-try-except.md
 
