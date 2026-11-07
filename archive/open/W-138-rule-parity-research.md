@@ -23,7 +23,7 @@ ball: none
 
 **Arpit, 2026-10-30 (voice):** on depth inside each tool's own language — *"I want one work item to research all the rules in depth for all the tools and then go ahead and implement it within code law."* → *"One big item for Opus to research it and once the research is done, then one big work item to build it."*
 
-**Researched 2026-10-30 (Cowork, Opus 5.5):** *"Research work item 138, create a list. … Make sure we first have a count of all the rules for ESLint, Ruff, and all the linters … and then put a count."* → [the proposal](../../work/proposals/rule-parity.md), the per-tool CSVs and the scripts in [`rule-parity/`](../../work/proposals/rule-parity/). Two classes added to the eight: `planned` (filed elsewhere) and `same-as` (one rule counted once across tools). Found on the way: the formatter's measured gap → [W-141](../../work/open/W-141-formatter-parity.md).
+**Researched 2026-10-30 (Cowork, Opus 5.5):** *"Research work item 138, create a list. … Make sure we first have a count of all the rules for ESLint, Ruff, and all the linters … and then put a count."* → [the proposal](../../work/proposals/rule-parity.md), the per-tool CSVs and the scripts in [`rule-parity/`](../../work/proposals/rule-parity/). Two classes added to the eight: `planned` (filed elsewhere) and `same-as` (one rule counted once across tools). Found on the way: the formatter's measured gap → [W-141](W-141-formatter-parity.md).
 
 **Model:** Cowork (Opus 5.5) — research (SR-WORK-OPEN-QUEUE rule 37a): Arpit asked for Opus; Claude Code does not pick research items.
 
