@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignore` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (reordering rules can change which declarations win) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the more specific rule comes right before, nothing but whitespace between, each with one selector and only declarations: between two rules whose specificities differ, specificity decides and not order, so the swap changes nothing; a rule further up is manual, as moving one past others can change which declarations win) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/no-descending-specificity` |

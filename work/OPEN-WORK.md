@@ -39,7 +39,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css landed): 60 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css done): 52 rules left to move, all python. Next: python's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits done: 64 moved, 39 re-judged `manual`. 58 still wait (scope rename 10, add-import 9, purity 2, cross-file 36, SHAs 1), 6 more on W-105. Next: scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 

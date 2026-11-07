@@ -2,9 +2,9 @@
 id: css/at-rule-prelude-no-invalid
 title: "At-rule preludes follow their grammar"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended prelude is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "an identifier where a dashed one belongs is dashed (`@property size` becomes `--size`), a single-quoted `@charset` double-quoted, and a prelude on an at-rule that takes none removed; the at-rule is dropped today and starts to apply. Any other prelude is manual, as the intended one is a value the code doesn't hold"
+fix_exception: value
 stability: stable
 options:
   ignoreAtRules: { type: "string[]", default: ["media"], description: "at-rules not to check; `@media` is left to `css/media-query-no-invalid`" }

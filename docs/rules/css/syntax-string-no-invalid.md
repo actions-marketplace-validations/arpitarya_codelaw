@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended type is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an unknown type name gets the names it is written for (`<size>` is `<length>` or `<length-percentage>`) or the names within two edits as choices, the first the default; `@property` is dropped today, so registering it changes behaviour. A string with another problem is manual, as the intended syntax is the author's call) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/syntax-string-no-invalid` |
@@ -137,6 +137,26 @@ codelaw config --print --for <file>                # the resolved setting, and w
 }
 ```
 
+#### Fixed (length)
+
+```css
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length-percentage)
+
+```css
+@property --size {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
 #### Do
 
 ```css
@@ -153,6 +173,26 @@ codelaw config --print --for <file>                # the resolved setting, and w
 ```scss
 @property --size {
   syntax: "<size>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length)
+
+```scss
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length-percentage)
+
+```scss
+@property --size {
+  syntax: "<length-percentage>";
   inherits: false;
   initial-value: 0px;
 }

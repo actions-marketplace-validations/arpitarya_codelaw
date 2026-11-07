@@ -346,6 +346,66 @@ fn each_query(sheet: &Sheet, src: &str, f: &mut dyn FnMut(Range, Result<(), Stri
     }
 }
 
+/// A query of three conditions in parentheses joined by `and` and `or`,
+/// which Media Queries refuses to mix without parentheses: the two ways to
+/// group it, `(a and b) or c` and `a and (b or c)`. Each changes which
+/// media apply (the query matches nothing today), so neither is the default.
+fn grouping_choices(src: &str, q: Range) -> Vec<codelaw_core::TextEdit> {
+    let t = text(src, q);
+    let b = t.as_bytes();
+    // The query's top level: groups in parentheses and the words between.
+    let mut parts: Vec<(usize, usize)> = Vec::new();
+    let mut i = 0;
+    while i < b.len() {
+        match b[i] {
+            c if c.is_ascii_whitespace() => i += 1,
+            b'(' => {
+                let start = i;
+                let mut depth = 0;
+                while i < b.len() {
+                    match b[i] {
+                        b'(' => depth += 1,
+                        b')' => {
+                            depth -= 1;
+                            if depth == 0 {
+                                break;
+                            }
+                        }
+                        b'"' | b'\'' | b'/' | b'\\' => return Vec::new(),
+                        _ => {}
+                    }
+                    i += 1;
+                }
+                if i >= b.len() {
+                    return Vec::new();
+                }
+                i += 1;
+                parts.push((start, i));
+            }
+            c if c.is_ascii_alphabetic() => {
+                let start = i;
+                while i < b.len() && b[i].is_ascii_alphabetic() {
+                    i += 1;
+                }
+                parts.push((start, i));
+            }
+            _ => return Vec::new(),
+        }
+    }
+    let word = |r: (usize, usize)| t[r.0..r.1].to_ascii_lowercase();
+    let group = |r: (usize, usize)| t.as_bytes()[r.0] == b'(';
+    let [a, op1, m, op2, c] = parts[..] else { return Vec::new() };
+    let (o1, o2) = (word(op1), word(op2));
+    if !(group(a) && group(m) && group(c)) || o1 == o2 || ![o1.as_str(), o2.as_str()].iter().all(|o| matches!(*o, "and" | "or")) {
+        return Vec::new();
+    }
+    let at = |r: usize| q.0 + r;
+    crate::choice_edits(vec![
+        crate::choice("group left", false, vec![codelaw_core::TextEdit::insert(at(a.0), "("), codelaw_core::TextEdit::insert(at(m.1), ")")]),
+        crate::choice("group right", false, vec![codelaw_core::TextEdit::insert(at(m.0), "("), codelaw_core::TextEdit::insert(at(c.1), ")")]),
+    ])
+}
+
 css_rule!(MediaQueryNoInvalid, "css/media-query-no-invalid", |sheet, src, ctx, out| {
     let ignore = opt_list(ctx, "ignoreFunctions");
     each_query(sheet, src, &mut |q, res, _, _| {
@@ -354,7 +414,7 @@ css_rule!(MediaQueryNoInvalid, "css/media-query-no-invalid", |sheet, src, ctx, o
                 return;
             }
             // A custom media query, `(--name)`, is always fine.
-            out.push(finding(q.0, q.1, format!("Invalid media query `{}`: {why}", text(src, q))));
+            out.push(crate::css_syntax::fixed(q.0, q.1, format!("Invalid media query `{}`: {why}", text(src, q)), grouping_choices(src, q)));
         }
     });
 });

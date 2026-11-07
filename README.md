@@ -247,10 +247,10 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 <!-- /docs-sync:packs -->
 
 - **Reimplemented, not wrapped.** Each rule is written fresh in codelaw's format, and its `ported_from:` field names the original. You don't need ESLint, Ruff or stylelint installed.
-- **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,395 today; 1,670 of the 2,590 rules on the ruled port list are answered so far. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13.
+- **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,395 today; 1,653 of the 2,590 rules on the ruled port list are answered so far. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13.
 - **Differences are written down.** Each pack's README lists where a port behaves differently from the original, and which rules weren't ported and why.
 - **Layout rules are left out on purpose.** Indentation, spacing and quotes are the formatter's job (`codelaw format`).
-- **37,431 example checks, all green.** `codelaw test packs/<pack>` runs them.
+- **36,072 example checks, all green.** `codelaw test packs/<pack>` runs them.
 - **`*/conventions` presets are opt-in**: house-style rules such as `js/exports-at-end` and `py/no-print`.
 - **`*/size` presets are opt-in too**: `js/size` and `py/size` turn on max lines per file, max lines per function and max parameters for JavaScript, TypeScript and Python; `html/size` and `css/size` a line limit per file. Each rule has options for the limit and for what counts.
 - **`*/project` presets are opt-in too**: the rules that read the whole repo, `graph/no-unused-exports` (`js/project`, `py/project`) and `graph/no-unused-css-classes` (`css/project`). `codelaw graph why-unused <symbol>` says why a finding held.
@@ -263,9 +263,9 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 
 | class | rules | what happens |
 |---|---|---|
-| `auto` | 591 | `codelaw fix` applies it. It's safe and meaning-preserving. |
-| `suggest` | 801 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
-| `manual` | 1003 | The finding lists numbered steps, for a person or an agent to follow. |
+| `auto` | 593 | `codelaw fix` applies it. It's safe and meaning-preserving. |
+| `suggest` | 807 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
+| `manual` | 995 | The finding lists numbered steps, for a person or an agent to follow. |
 
 <!-- /docs-sync:fix-classes -->
 
