@@ -2,9 +2,8 @@
 id: py/type-comparison
 title: "Don't compare types with `==`"
 languages: [python]
-fix: manual
-fix_reason: "`isinstance` accepts subclasses, which may or may not be intended"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when both sides are `type()` calls or builtin type names not rebound: `==` becomes `is` and `!=` `is not`, which give the same answer there; for any other class it is a suggestion, as a metaclass may define `__eq__`. `isinstance()` also accepts subclasses, so it is not offered"
 stability: preview
 ported_from: [ruff/E721, pylint/unidiomatic-typecheck]
 since: 0.1.0
@@ -31,6 +30,13 @@ native: py/type-comparison
 
 ```py
 if type(value) == int:
+    count(value)
+```
+
+#### Fixed
+
+```py
+if type(value) is int:
     count(value)
 ```
 

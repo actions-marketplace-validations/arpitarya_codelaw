@@ -2,9 +2,8 @@
 id: py/continue-outside-loop
 title: "`continue` only inside a loop"
 languages: [python]
-fix: manual
-fix_reason: "what should happen instead is the author's choice"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `return`, in a function, and deleting the `continue` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default"
 stability: preview
 ported_from: [ruff/F702]
 since: 0.1.0
@@ -31,6 +30,20 @@ native: py/continue-outside-loop
 ```py
 def skip():
     continue
+```
+
+#### Fixed (return)
+
+```py
+def skip():
+    return
+```
+
+#### Fixed (delete)
+
+```py
+def skip():
+    pass
 ```
 
 #### Do

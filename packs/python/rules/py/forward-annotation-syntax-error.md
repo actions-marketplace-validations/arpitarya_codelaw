@@ -2,9 +2,9 @@
 id: py/forward-annotation-syntax-error
 title: "A string annotation is valid Python"
 languages: [python]
-fix: manual
-fix_reason: "the intended type can't be inferred from broken text"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "when closing the brackets left open makes the string parse, they are added at its end, and the annotation starts to resolve to a type (`get_type_hints` raised before); any other broken annotation is manual, as the intended type is a value the code doesn't hold"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F722]
 since: 0.1.0

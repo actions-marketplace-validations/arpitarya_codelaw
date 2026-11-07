@@ -1071,7 +1071,8 @@ fn undefined_name(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeF
             continue;
         }
         // The names in scope within two edits, nearest first (the default).
-        let mut known: Vec<&str> = codelaw_semantic::PYTHON_BUILTINS.to_vec();
+        // The innermost scope's first, so a tie goes to the nearer name.
+        let mut known: Vec<&str> = Vec::new();
         let mut sc = Some(r.scope);
         while let Some(i) = sc {
             if model.scopes[i].kind != ScopeKind::Class || i == r.scope {
@@ -1079,6 +1080,7 @@ fn undefined_name(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeF
             }
             sc = model.scopes[i].parent;
         }
+        known.extend(codelaw_semantic::PYTHON_BUILTINS);
         let edits = crate::util::name_choices(&crate::util::nearest(&r.name, known, 2), r.start, r.end, &|c| c.to_owned());
         out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` is not defined", r.name), edits });
     }
