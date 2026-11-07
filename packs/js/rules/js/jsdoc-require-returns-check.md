@@ -4,7 +4,7 @@ title: "@returns only where a value is returned"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "whether to return the documented value or drop the tag is the author's call"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-returns-check]
 since: 0.5.0

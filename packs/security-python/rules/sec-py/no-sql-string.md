@@ -4,7 +4,7 @@ title: 'SQL built from a string'
 languages: [python]
 fix: manual
 fix_reason: "which placeholder style the driver takes, and where each value goes, depends on the driver"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix_exception: security
 stability: preview
 ported_from: [bandit/B608, bandit/B610, bandit/B611]
 security: { cwe: [89], owasp: ["A05:2025"], severity: high }
