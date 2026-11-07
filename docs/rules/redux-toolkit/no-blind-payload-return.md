@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:redux-toolkit/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the reducer has to name the fields it takes from the payload) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 

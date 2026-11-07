@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "codelaw_version": "0.4.3",
+  "workload": {
+    "kind": "graph",
+    "seed": 20261018,
+    "files": 1036802,
+    "files_asked": 1000000,
+    "digest": "6b5bb513b037d760",
+    "reference": false,
+    "path": "/private/tmp/claude-501/-Users-arpitarya-my-programs-codelaw/0a172e1f-7104-4fed-983f-3baacccdc91a/scratchpad/gw/g1000000",
+    "disk_mib": 4067.3,
+    "generated_ms": 155960.0,
+    "findings": 311355,
+    "target": "packages/ts/ts0/m5.ts"
+  },
+  "runs": 2,
+  "discarded": 1,
+  "threads": 10,
+  "os": "macos-aarch64",
+  "warm_runs_served_by_daemon": 3,
+  "cache_files": 329036,
+  "graph_stages": {
+    "cold": {
+      "compile": 180.4,
+      "discover": 21638.1,
+      "format": 518590.7,
+      "graph-cache-read": 270799.3,
+      "graph-cache-write": 1510384.7,
+      "graph-extract": 721226.1,
+      "graph-facts": 251222.9,
+      "graph-index": 691.4,
+      "graph-link": 14632.5,
+      "graph-read": 105447.3,
+      "graph-resolve": 5439.7,
+      "graph-rules": 46460.3,
+      "read": 943430.9
+    },
+    "warm_no_daemon": {
+      "compile": 87.4,
+      "discover": 14552.1,
+      "format": 292687.5,
+      "graph-cache-read": 372957.0,
+      "graph-cache-write": 891351.9,
+      "graph-extract": 312853.6,
+      "graph-facts": 158372.0,
+      "graph-index": 917.5,
+      "graph-link": 11748.5,
+      "graph-read": 83161.4,
+      "graph-resolve": 3613.7,
+      "graph-rules": 25444.5,
+      "read": 1078368.1
+    }
+  },
+  "repos": [],
+  "skipped": [],
+  "operations": [
+    {
+      "name": "graph_cold",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "`check` with `js/project` and `py/project` on the graph workload, empty cache, no warm process",
+      "samples": [
+        1186252.2
+      ],
+      "median": 1186252.2,
+      "p95": 1186252.2,
+      "min": 1186252.2,
+      "max": 1186252.2,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_warm",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "the same `check --prefer-warm`, served by the daemon, primed cache",
+      "samples": [
+        1016114.4
+      ],
+      "median": 1016114.4,
+      "p95": 1016114.4,
+      "min": 1016114.4,
+      "max": 1016114.4,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_warm_no_daemon",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "the same `check` in its own process, primed cache",
+      "samples": [
+        955083.3
+      ],
+      "median": 955083.3,
+      "p95": 955083.3,
+      "min": 955083.3,
+      "max": 955083.3,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_hook_one_file",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "`codelaw hook <file>` on one just-edited file of the graph workload, primed cache",
+      "samples": [
+        235538.1
+      ],
+      "median": 235538.1,
+      "p95": 235538.1,
+      "min": 235538.1,
+      "max": 235538.1,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_peak_memory",
+      "repo": null,
+      "unit": "MiB",
+      "budgeted": false,
+      "what": "peak resident memory of `graph_cold`",
+      "samples": [
+        6126.0
+      ],
+      "median": 6126.0,
+      "p95": 6126.0,
+      "min": 6126.0,
+      "max": 6126.0,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_cache_size",
+      "repo": null,
+      "unit": "MiB",
+      "budgeted": false,
+      "what": "the cache folder on disk after one `graph_cold` run",
+      "samples": [
+        1285.3
+      ],
+      "median": 1285.3,
+      "p95": 1285.3,
+      "min": 1285.3,
+      "max": 1285.3,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    }
+  ]
+}

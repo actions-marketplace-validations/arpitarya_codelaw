@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the access into an effect or an event handler changes when it runs) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `eslint-plugin-react-hooks/refs`, `@eslint-react/refs` |
@@ -159,22 +159,22 @@ function useLatest(value) {
 #### Don't
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 #### Do
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -186,6 +186,18 @@ function Counter() {
 function useLatest<T>(value: T) {
   const ref = useRef(value);
   ref.current = value;
+  return ref;
+}
+```
+
+#### Fixed
+
+```ts
+function useLatest<T>(value: T) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
   return ref;
 }
 ```
@@ -207,22 +219,22 @@ function useStore() {
 #### Don't
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 #### Do
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 

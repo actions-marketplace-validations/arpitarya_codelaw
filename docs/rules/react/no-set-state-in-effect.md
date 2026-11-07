@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to derive the value, lift the state or subscribe is a design choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `eslint-plugin-react-hooks/set-state-in-effect`, `@eslint-react/set-state-in-effect` |
@@ -144,6 +144,15 @@ function useFullName(first, last) {
 }
 ```
 
+#### Fixed
+
+```js
+function useFullName(first, last) {
+  const full = first + ' ' + last;
+  return full;
+}
+```
+
 #### Do
 
 ```js
@@ -191,6 +200,15 @@ function useFullName(first: string, last: string) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+#### Fixed
+
+```ts
+function useFullName(first: string, last: string) {
+  const full = first + ' ' + last;
   return full;
 }
 ```

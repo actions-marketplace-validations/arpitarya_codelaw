@@ -2,9 +2,8 @@
 id: js/jsdoc-no-defaults
 title: "Defaults in the signature, not in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the default leaves the documentation; the author checks the signature carries the same one"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/no-defaults]
 since: 0.5.0
@@ -21,6 +20,8 @@ match:
     - regex: '^/\*\*[^*/]'
     - regex: '(^/\*\*|\n)[ \t]*(\*[ \t]*)?@(param|arg|argument)[ \t]*(\{[^}\n]*\}[ \t]*)?\[[^\]=\s]+='
 message: "Give the parameter its default in the signature and write `[name]` here; a default in JSDoc can drift from the code"
+fix:
+  - edit-text: { pattern: '(@(?:param|arg|argument)[ \t]*(?:\{[^}\n]*\}[ \t]*)?\[[^\]=\s]+)=[^\[\]\n]*\]', replace: '${1}]' }
 ```
 
 ## How to fix

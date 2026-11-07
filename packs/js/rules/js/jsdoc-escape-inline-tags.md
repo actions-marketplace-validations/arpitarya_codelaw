@@ -2,9 +2,8 @@
 id: js/jsdoc-escape-inline-tags
 title: "A bare @word in a description is escaped"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks)"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the word may be a tag the author meant TypeScript to read; they confirm it is text"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/escape-inline-tags]
 since: 0.5.0
@@ -21,6 +20,8 @@ match:
     - regex: '^/\*\*[^*/]'
     - regex: '(^/\*\*|\n[ \t]*\*?)[ \t]*[^@\s*`][^\n`]*[ \t]@[A-Za-z]'
 message: "TypeScript reads `@word` after a space as a new tag; wrap it in backticks or write `\\@`"
+fix:
+  - edit-text: { pattern: '(?m)^((?:/\*\*|[ \t]*\*?)[ \t]*[^@\s*`/][^\n`]*?[ \t])(@[A-Za-z][\w/.@-]*[\w/])', replace: '${1}`${2}`' }
 ```
 
 ## How to fix

@@ -38,6 +38,23 @@ pub enum Primitive {
     /// Rename a symbol and every reference to it in this file. Refused for
     /// an exported symbol: importers elsewhere would break.
     RenameSymbolLocal { target: Target, to: String },
+    /// A regular-expression edit inside the target's text: every match of
+    /// `pattern` becomes `replace` (`$1`, `${name}` name its groups; a
+    /// capture's `$NAME` is interpolated first). Consecutive `edit-text`
+    /// steps on one target run in order, each on the text the one before
+    /// left, and give one edit: the bytes that changed (SR-RULE-FORMAT
+    /// decision 3c; W-162).
+    EditText { target: Target, pattern: String, replace: String },
+    /// Replace `within` (the block itself by default) and the blank space
+    /// before it with the block's statements, each on its own line,
+    /// re-indented to the indentation of the line `within` starts on;
+    /// comments are kept. Refused when a string in the block spans lines,
+    /// whose text re-indenting would change (W-162).
+    UnwrapBlock { target: Target, within: Target },
+    /// Move the target onto a line of its own above the line `before`
+    /// starts on, at that line's indentation; the target and the blank
+    /// space before it leave their place (W-162).
+    Move { target: Target, before: Target },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -67,7 +84,7 @@ impl FixSpec {
 }
 
 const PRIMITIVES: &[&str] =
-    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local"];
+    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "edit-text", "unwrap-block", "move"];
 
 fn target(v: &Value) -> Result<Target, String> {
     match v.as_str() {
@@ -157,6 +174,31 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
             let Value::Object(o) = arg else { return Err("`rename-symbol-local` takes `{ target, to }`".into()) };
             only_keys(o, &["target", "to"], name)?;
             Primitive::RenameSymbolLocal { target: target(field(o, "target", name)?)?, to: string(field(o, "to", name)?, "to")? }
+        }
+        "unwrap-block" => match arg {
+            Value::String(_) => Primitive::UnwrapBlock { target: target(arg)?, within: target(arg)? },
+            Value::Object(o) => {
+                only_keys(o, &["target", "within"], name)?;
+                let t = target(field(o, "target", name)?)?;
+                Primitive::UnwrapBlock { within: o.get("within").map(target).transpose()?.unwrap_or_else(|| t.clone()), target: t }
+            }
+            _ => return Err("`unwrap-block` takes a capture, or `{ target, within? }`".into()),
+        },
+        "move" => {
+            let Value::Object(o) = arg else { return Err("`move` takes `{ target?, before }`".into()) };
+            only_keys(o, &["target", "before"], name)?;
+            Primitive::Move { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), before: target(field(o, "before", name)?)? }
+        }
+        "edit-text" => {
+            let Value::Object(o) = arg else { return Err("`edit-text` takes `{ target?, pattern, replace }`".into()) };
+            only_keys(o, &["target", "pattern", "replace"], name)?;
+            let pattern = string(field(o, "pattern", name)?, "pattern")?;
+            regex::Regex::new(&pattern).map_err(|e| format!("`edit-text`: `pattern` is not a regular expression: {e}"))?;
+            Primitive::EditText {
+                target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match),
+                pattern,
+                replace: string(field(o, "replace", name)?, "replace")?,
+            }
         }
         other => {
             // The first four characters, not bytes: a name is whatever a
@@ -333,7 +375,13 @@ fn declaration_of<'t>(node: tree_sitter::Node<'t>) -> tree_sitter::Node<'t> {
 /// skipped, as a `calls:` entry is.
 fn unbound(p: &Primitive, m: &Match) -> bool {
     let t = match p {
-        Primitive::Replace { target, .. } | Primitive::Remove { target } | Primitive::InsertBefore { target, .. } | Primitive::InsertAfter { target, .. } => target,
+        Primitive::Replace { target, .. }
+        | Primitive::Remove { target }
+        | Primitive::InsertBefore { target, .. }
+        | Primitive::InsertAfter { target, .. }
+        | Primitive::EditText { target, .. }
+        | Primitive::UnwrapBlock { target, .. }
+        | Primitive::Move { target, .. } => target,
         _ => return false,
     };
     matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none())
@@ -397,8 +445,124 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
         }
         Primitive::CollectIntoBlock { .. } => {}
+        Primitive::EditText { .. } => unreachable!("edit-text steps run in `text_edits`"),
+        Primitive::UnwrapBlock { target, within } => {
+            let (bs, be) = range(target, m)?;
+            let (ws, we) = range(within, m)?;
+            let block = node_at(ctx.root, bs, be).ok_or("`unwrap-block`: no node at the target")?;
+            if spans_lines_in_string(block, ctx.source) {
+                return Err("`unwrap-block`: a string in the block spans lines, and re-indenting would change it".into());
+            }
+            let src = ctx.source;
+            let (open, close) = (src[bs..be].find('{'), src[bs..be].rfind('}'));
+            let (inner_s, inner_e) = match (open, close) {
+                (Some(o), Some(c)) if o < c => (bs + o + 1, bs + c),
+                _ => return Err("`unwrap-block`: the target is not a braced block".into()),
+            };
+            let indent = line_indent(src, ws);
+            let body = reindent(&src[inner_s..inner_e], &indent);
+            // The blank space before `within` goes with it.
+            let start = ws - src[..ws].bytes().rev().take_while(|b| *b == b' ' || *b == b'\t').count();
+            let text = if body.is_empty() { String::new() } else { format!("\n{body}") };
+            out.push(TextEdit::new(start, we, text));
+        }
+        Primitive::Move { target, before } => {
+            let (s, e) = range(target, m)?;
+            let (bs, _) = range(before, m)?;
+            let src = ctx.source;
+            let line_start = src[..bs].rfind('\n').map(|i| i + 1).unwrap_or(0);
+            if line_start >= s {
+                return Err("`move`: the target is not after the line it moves above".into());
+            }
+            let indent = line_indent(src, bs);
+            let text = src[s..e].to_owned();
+            let gap = src[..s].bytes().rev().take_while(|b| *b == b' ' || *b == b'\t').count();
+            out.push(TextEdit::insert(line_start, format!("{indent}{text}\n")));
+            out.push(TextEdit::delete(s - gap, e));
+        }
     }
     Ok(())
+}
+
+/// The whitespace a line starts with, for the line `offset` is on.
+fn line_indent(src: &str, offset: usize) -> String {
+    let start = src[..offset].rfind('\n').map(|i| i + 1).unwrap_or(0);
+    src[start..].chars().take_while(|c| *c == ' ' || *c == '\t').collect()
+}
+
+/// A block's inner text as lines at `indent`: blank lines at either end
+/// dropped, the common indentation of the rest replaced by `indent`.
+fn reindent(inner: &str, indent: &str) -> String {
+    let lines: Vec<&str> = inner.split('\n').collect();
+    let first = lines.iter().position(|l| !l.trim().is_empty());
+    let last = lines.iter().rposition(|l| !l.trim().is_empty());
+    let (Some(first), Some(last)) = (first, last) else { return String::new() };
+    let lines = &lines[first..=last];
+    let common = lines.iter().filter(|l| !l.trim().is_empty()).map(|l| l.len() - l.trim_start().len()).min().unwrap_or(0);
+    lines
+        .iter()
+        .map(|l| if l.trim().is_empty() { String::new() } else { format!("{indent}{}", l[common.min(l.len() - l.trim_start().len())..].trim_end()) })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// Whether a string or template in the node spans lines.
+fn spans_lines_in_string(node: tree_sitter::Node<'_>, src: &str) -> bool {
+    let mut c = node.walk();
+    let mut stack = vec![node];
+    while let Some(n) = stack.pop() {
+        if (n.kind().contains("string") || n.kind() == "template_literal") && src[n.byte_range()].contains('\n') {
+            return true;
+        }
+        stack.extend(n.children(&mut c));
+    }
+    false
+}
+
+/// The text of every target the `edit-text` steps act on, after them, in
+/// order: one minimal edit per target (the common prefix and suffix left
+/// out). A target whose text no step changed gives no edit.
+fn text_edits(steps: &[&Primitive], m: &Match, ctx: &FixContext<'_>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    let mut texts: Vec<((usize, usize), String)> = Vec::new();
+    for p in steps {
+        let Primitive::EditText { target, pattern, replace } = p else { continue };
+        if unbound(p, m) {
+            continue;
+        }
+        let range = range(target, m)?;
+        let at = match texts.iter().position(|(r, _)| *r == range) {
+            Some(i) => i,
+            None => {
+                texts.push((range, ctx.source[range.0..range.1].to_owned()));
+                texts.len() - 1
+            }
+        };
+        let re = regex::Regex::new(pattern).map_err(|e| format!("`edit-text`: {e}"))?;
+        let with = try_interpolate(replace, m, ctx.source)?;
+        texts[at].1 = re.replace_all(&texts[at].1, with.as_str()).into_owned();
+    }
+    for ((s, e), new) in texts {
+        let old = &ctx.source[s..e];
+        if *old == new {
+            continue;
+        }
+        let pre = old.bytes().zip(new.bytes()).take_while(|(a, b)| a == b).count();
+        let pre = (0..=pre).rev().find(|i| old.is_char_boundary(*i) && new.is_char_boundary(*i)).unwrap_or(0);
+        let max_suf = (old.len() - pre).min(new.len() - pre);
+        let suf = old.bytes().rev().zip(new.bytes().rev()).take(max_suf).take_while(|(a, b)| a == b).count();
+        let suf = (0..=suf).rev().find(|i| old.is_char_boundary(old.len() - i) && new.is_char_boundary(new.len() - i)).unwrap_or(0);
+        out.push(TextEdit::new(s + pre, e - suf, new[pre..new.len() - suf].to_owned()));
+    }
+    Ok(())
+}
+
+/// Every step of a fix: the `edit-text` steps together, then the others.
+fn all_step_edits(steps: &[Primitive], m: &Match, ctx: &FixContext<'_>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    let (text, rest): (Vec<&Primitive>, Vec<&Primitive>) = steps.iter().partition(|p| matches!(p, Primitive::EditText { .. }));
+    for p in rest {
+        step_edits(p, m, ctx, out)?;
+    }
+    text_edits(&text, m, ctx, out)
 }
 
 /// Names a declaration introduces, split into values and type-only names.
@@ -418,11 +582,12 @@ fn sort_edits(mut edits: Vec<TextEdit>) -> Vec<TextEdit> {
 pub fn edits_for(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<TextEdit>, String> {
     let FixSpec::Steps(steps) = spec else { return Err("an external fixer runs through `run_external`".into()) };
     let mut out = Vec::new();
-    for p in steps {
-        step_edits(p, m, ctx, &mut out)?;
-    }
+    all_step_edits(steps, m, ctx, &mut out)?;
     if out.is_empty() && steps.iter().any(|p| unbound(p, m)) {
         return Err("no step of the fix acts on what this match captured".into());
+    }
+    if out.is_empty() && steps.iter().any(|p| matches!(p, Primitive::EditText { .. })) {
+        return Err("`edit-text`: no pattern of the fix occurs in its target".into());
     }
     Ok(sort_edits(out))
 }
@@ -435,7 +600,7 @@ pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<V
     let mut first_error = None;
     for c in choices {
         let mut edits = Vec::new();
-        match c.steps.iter().try_for_each(|p| step_edits(p, m, ctx, &mut edits)) {
+        match all_step_edits(&c.steps, m, ctx, &mut edits) {
             Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits) }),
             Err(e) => {
                 first_error.get_or_insert(e);
@@ -466,9 +631,12 @@ pub fn group_edits(spec: &FixSpec, matches: &[Match], ctx: &FixContext<'_>) -> R
                     types.extend(t);
                     collect = Some((block, type_block, *position));
                 }
+                Primitive::EditText { .. } => {}
                 other => step_edits(other, m, ctx, &mut out)?,
             }
         }
+        let text: Vec<&Primitive> = steps.iter().filter(|p| matches!(p, Primitive::EditText { .. })).collect();
+        text_edits(&text, m, ctx, &mut out)?;
     }
     if let Some((block, type_block, position)) = collect {
         let at = place_offset(ctx, position);

@@ -22517,7 +22517,7 @@ function clearCache() {}
 ## `js/jsdoc-check-syntax` — No Closure optional syntax in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`))
+- **Fix:** `suggest` (`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-syntax.md
 
@@ -22625,7 +22625,7 @@ function greet(name) {}
 ## `js/jsdoc-check-types` — Primitive type names in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`))
+- **Fix:** `suggest` (a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-types.md
 
@@ -22841,7 +22841,7 @@ function parseDate() {}
 ## `js/jsdoc-convert-to-jsdoc-comments` — Functions documented in JSDoc, not // comments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`))
+- **Fix:** `suggest` (a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-convert-to-jsdoc-comments.md
 
@@ -23048,7 +23048,7 @@ function reset() {}
 ## `js/jsdoc-escape-inline-tags` — A bare @word in a description is escaped
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks))
+- **Fix:** `suggest` (the word may be a tag the author meant TypeScript to read; they confirm it is text)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-escape-inline-tags.md
 
@@ -23359,7 +23359,7 @@ function total() {}
 ## `js/jsdoc-multiline-blocks` — /** and */ on their own lines
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-multiline-blocks.md
 
@@ -23566,7 +23566,7 @@ function run() {}
 ## `js/jsdoc-no-defaults` — Defaults in the signature, not in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `suggest` (the default leaves the documentation; the author checks the signature carries the same one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-defaults.md
 
@@ -23674,7 +23674,7 @@ function greet(name = "you") {}
 ## `js/jsdoc-no-multi-asterisks` — One asterisk per JSDoc line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-multi-asterisks.md
 
@@ -23773,7 +23773,7 @@ function start() {}
 ## `js/jsdoc-no-types` — No JSDoc types in TypeScript
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed))
+- **Fix:** `suggest` (the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-types.md
 
@@ -34512,7 +34512,7 @@ export const icon = (name) => icons[name];
 ## `js/no-else-return` — No else after return
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (unwrapping the block re-indents its statements, and a declaration in it could clash with one outside)
+- **Fix:** `suggest` (a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-else-return.md
 
@@ -37805,7 +37805,7 @@ const msg = `Hello ${name}`;
 ## `js/no-inline-comments` — Comments on their own line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the comment above the code is a cross-line edit)
+- **Fix:** `suggest` (a comment after code may describe that one line; above it, it can read as describing what follows)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/taste` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-inline-comments.md
 
@@ -48981,7 +48981,7 @@ function f() {
 ## `js/no-useless-spread` — No spread of an array literal
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the brackets and the dots around the items is not one template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-spread.md
 
@@ -94210,7 +94210,7 @@ const p = <Theme.Provider value={theme}>{children}</Theme.Provider>;
 ## `react/jsx-no-duplicate-props` — No prop given twice on one element
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (which value should win needs the author)
+- **Fix:** `auto` (the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/jsx-no-duplicate-props.md
 
@@ -96941,7 +96941,7 @@ const c = <circle r={4} />;
 ## `react/no-nested-components` — Components are not defined inside other components
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving the component out means passing in the values it closed over as props)
+- **Fix:** `suggest` (a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-nested-components.md
 
@@ -96971,6 +96971,15 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```js
+const Item = ({ text }) => <li>{text}</li>;
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```js
@@ -96994,6 +97003,17 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```jsx
+function Item({ text }) {
+    return <li>{text}</li>;
+  }
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -97013,6 +97033,15 @@ function List({ items }) {
 ```tsx
 function List({ items }: { items: string[] }) {
   const Item = ({ text }: { text: string }) => <li>{text}</li>;
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
+##### Fixed
+
+```tsx
+const Item = ({ text }: { text: string }) => <li>{text}</li>;
+function List({ items }: { items: string[] }) {
   return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
 }
 ```
@@ -97262,7 +97291,7 @@ class Row extends PureComponent {
 ## `react/no-ref-in-render` — A ref's current value is not read or written during render
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the access into an effect or an event handler changes when it runs)
+- **Fix:** `suggest` (a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-ref-in-render.md
 
@@ -97312,22 +97341,22 @@ function useLatest(value) {
 ##### Don't
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97339,6 +97368,18 @@ function Counter() {
 function useLatest<T>(value: T) {
   const ref = useRef(value);
   ref.current = value;
+  return ref;
+}
+```
+
+##### Fixed
+
+```ts
+function useLatest<T>(value: T) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
   return ref;
 }
 ```
@@ -97360,22 +97401,22 @@ function useStore() {
 ##### Don't
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97551,7 +97592,7 @@ class Toggle extends Component {
 ## `react/no-set-state-in-effect` — An effect doesn't set state synchronously
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to derive the value, lift the state or subscribe is a design choice)
+- **Fix:** `suggest` (an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-set-state-in-effect.md
 
@@ -97582,6 +97623,15 @@ function useFullName(first, last) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```js
+function useFullName(first, last) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -97633,6 +97683,15 @@ function useFullName(first: string, last: string) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```ts
+function useFullName(first: string, last: string) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -99490,7 +99549,7 @@ The type is renamed with its uses in the file; an exported type is reported with
 ## `react/purity` — Render doesn't call Math.random(), Date.now() or other impure functions
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the value should come from instead — state, an effect, an event — depends on what it is for)
+- **Fix:** `suggest` (an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/purity.md
 
@@ -99518,6 +99577,15 @@ is a local binding that shadows the global (`Math` as a parameter).
 ```js
 function useRandomKey() {
   return Math.random().toString(36);
+}
+```
+
+##### Fixed
+
+```js
+function useRandomKey() {
+  const [value] = useState(() => Math.random().toString(36));
+  return value;
 }
 ```
 
@@ -99560,6 +99628,15 @@ function useToday(): string {
 }
 ```
 
+##### Fixed
+
+```ts
+function useToday(): string {
+  const [value] = useState(() => new Date().toDateString());
+  return value;
+}
+```
+
 ##### Do
 
 ```ts
@@ -99576,6 +99653,15 @@ function useToday(): string {
 ```tsx
 function Field({ label }: { label: string }) {
   const id = crypto.randomUUID();
+  return <label htmlFor={id}>{label}</label>;
+}
+```
+
+##### Fixed
+
+```tsx
+function Field({ label }: { label: string }) {
+  const [id] = useState(() => crypto.randomUUID());
   return <label htmlFor={id}>{label}</label>;
 }
 ```
@@ -99747,7 +99833,7 @@ class Row extends PureComponent {
 ## `react/require-render-return` — A class component's render() returns
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (what to render needs the author)
+- **Fix:** `suggest` (a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/require-render-return.md
 
@@ -99956,7 +100042,7 @@ function T({ id }) {
 ## `react/rules-of-hooks` — Hooks are called at the top level of components and hooks
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving a hook can change what the code does on the renders that skipped it)
+- **Fix:** `suggest` (a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/rules-of-hooks.md
 
@@ -100033,20 +100119,24 @@ function Profile({ id }) {
 ##### Don't
 
 ```ts
-function useProfile(id: string) {
+function Profile({ id }) {
   if (!id) {
     return null;
   }
-  return useState(id);
+  const [user] = useState(null);
+  return user;
 }
 ```
 
 ##### Do
 
 ```ts
-function useProfile(id: string) {
-  const state = useState(id);
-  return id ? state : null;
+function Profile({ id }) {
+  const [user] = useState(null);
+  if (!id) {
+    return null;
+  }
+  return user;
 }
 ```
 
@@ -100647,7 +100737,7 @@ function Calc({ expr }) {
 ## `react/use-memo` — useMemo's callback computes and returns a value
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the code belongs in useEffect, useCallback or plain render code is the author's call)
+- **Fix:** `suggest` (an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/use-memo.md
 
@@ -100691,20 +100781,16 @@ function useTotal(items) {
 ##### Don't
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => {
-    rows.sort(byDate);
-  }, [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => [...rows].sort(byDate), [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100713,16 +100799,16 @@ function Report({ rows }) {
 ##### Don't
 
 ```ts
-function useLabel(id: string) {
-  return useMemo((prefix: string) => prefix + id, [id]);
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```ts
-function useLabel(id: string) {
-  return useMemo(() => 'item-' + id, [id]);
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100731,18 +100817,16 @@ function useLabel(id: string) {
 ##### Don't
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useMemo(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useEffect(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100815,7 +100899,7 @@ const l = <>Line<br /></>;
 ## `redux-toolkit/no-blind-payload-return` — A reducer builds its state, not the action's payload
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the reducer has to name the fields it takes from the payload)
+- **Fix:** `suggest` (`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-blind-payload-return.md
 
@@ -101123,7 +101207,7 @@ import { configureStore } from '@reduxjs/toolkit';
 ## `redux-toolkit/no-mutating-reducer` — A hand-written reducer doesn't change its state in place
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the update has to be rewritten to return a new value)
+- **Fix:** `suggest` (a `state.push(x)` or `state.key = v` followed at once by `return state` becomes `return [...state, x]` or `return { ...state, key: v }`; whoever held the old state no longer sees the change, which is the fix but is a change. Any other mutation is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-mutating-reducer.md
 
@@ -101376,7 +101460,7 @@ const usersSlice = createSlice({
 ## `redux-toolkit/no-object-selector` — useSelector selects one value per call
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the one call is split into one per value, and the destructuring goes)
+- **Fix:** `suggest` (the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-object-selector.md
 
@@ -101593,7 +101677,7 @@ function placeOrder(dispatch) {
 ## `redux-toolkit/no-side-effects-in-reducer` — A reducer has no side effects
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the side effect has to move to a thunk, a listener or a `prepare` callback)
+- **Fix:** `suggest` (a case reducer whose side effect sits in an object built from `action.payload` gets a `prepare` callback that builds the object, and reads it from the payload; the action creator's argument stays the same, the effect now runs when the action is made. Any other effect is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-side-effects-in-reducer.md
 
@@ -101624,6 +101708,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+##### Fixed
+
+```js
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });
@@ -101664,6 +101767,25 @@ const todosSlice = createSlice({
 });
 ```
 
+##### Fixed
+
+```jsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 ##### Do
 
 ```jsx
@@ -101694,6 +101816,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+##### Fixed
+
+```ts
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });
@@ -101734,6 +101875,25 @@ const todosSlice = createSlice({
 });
 ```
 
+##### Fixed
+
+```tsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 ##### Do
 
 ```tsx
@@ -101756,7 +101916,7 @@ const todosSlice = createSlice({
 ## `redux-toolkit/object-shorthand-mapdispatch` — connect's mapDispatch is an object of action creators
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each wrapped dispatch call is replaced by the action creator it calls)
+- **Fix:** `suggest` (a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/object-shorthand-mapdispatch.md
 
@@ -102643,7 +102803,7 @@ a {
 ## `scss/at-rule-no-unknown` — No unknown at-rules (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended at-rule is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/at-rule-no-unknown.md
 
@@ -102672,6 +102832,14 @@ Every at-rule is one CSS or Sass defines: `@mixin`, `@include`, `@use`, `@if`, `
 
 ```scss
 @mixn button {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+@mixin button {
   color: red;
 }
 ```
@@ -103300,7 +103468,7 @@ a {
 ## `scss/function-no-unknown` — No unknown functions (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended function is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/function-no-unknown.md
 
@@ -103330,6 +103498,14 @@ Every function called is a CSS function, a Sass built-in (global or `module.name
 ```scss
 .a {
   width: percentag(0.5);
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  width: percentage(0.5);
 }
 ```
 
@@ -103511,7 +103687,7 @@ $sizes: ("small": 1px);
 ## `scss/max-nesting-depth` — Limit nesting depth
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (flattening a selector is the author's call)
+- **Fix:** `suggest` (a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/max-nesting-depth.md
 
@@ -103546,6 +103722,20 @@ A style rule nests at most `max` levels inside other style rules (default 3): `.
         .e {
           color: red;
         }
+      }
+    }
+  }
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  .b {
+    .c {
+      .d .e {
+        color: red;
       }
     }
   }
@@ -103649,7 +103839,7 @@ a {
 ## `scss/no-duplicate-dollar-variables` — No duplicate `$variables`
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which declaration wins is the author's call)
+- **Fix:** `auto` (auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-dollar-variables.md
 
@@ -103672,6 +103862,12 @@ A `$variable` is declared once per scope. A later `!default` declaration is not 
 
 ```scss
 $gap: 4px;
+$gap: 8px;
+```
+
+##### Fixed
+
+```scss
 $gap: 8px;
 ```
 
@@ -103723,7 +103919,7 @@ A file doesn't `@use`, `@forward` or `@import` the same URL twice.
 ## `scss/no-duplicate-mixins` — No duplicate mixins
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which definition should stay is the author's call)
+- **Fix:** `auto` (auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-mixins.md
 
@@ -103747,6 +103943,14 @@ A mixin is defined once per scope.
 @mixin shadow {
   box-shadow: none;
 }
+@mixin shadow {
+  box-shadow: 0 0 1px;
+}
+```
+
+##### Fixed
+
+```scss
 @mixin shadow {
   box-shadow: 0 0 1px;
 }
@@ -115948,7 +116152,7 @@ export function init() {
 ## `stencil/decorators-context` — Stencil decorators only inside @Component classes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the class should be a component needs the author)
+- **Fix:** `suggest` (a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/decorators-context.md
 
@@ -116004,7 +116208,7 @@ export class Store {
 ## `stencil/enforce-slot-jsdoc` — Every slot a component renders has a @slot tag, and every @slot tag a slot
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TSX
-- **Fix:** `manual` (the slot's description, or whether it should exist, needs the author)
+- **Fix:** `suggest` (a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/enforce-slot-jsdoc.md
 
@@ -116032,6 +116236,23 @@ tag hides a slot from its users, and a stale one promises a slot that isn't ther
 ```tsx
 /**
  * A card.
+ * @slot header - The card's title row.
+ * @slot footer - The card's actions.
+ */
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return <slot name="header" />;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+/**
+ * A card.
+ * @slot header - The card's title row.
  */
 @Component({ tag: 'my-card' })
 export class Card {
@@ -116067,7 +116288,7 @@ export class Card {
 ## `stencil/host-data-deprecated` — No hostData()
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the attributes move into `render()` by hand)
+- **Fix:** `auto` (auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/host-data-deprecated.md
 
@@ -116097,6 +116318,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -116121,6 +116353,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```tsx
@@ -116135,7 +116378,7 @@ export class Card {
 ## `stencil/methods-must-be-public` — @Method() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the method is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/methods-must-be-public.md
 
@@ -116199,7 +116442,7 @@ export class Card {
 ## `stencil/no-unused-watch` — @Watch watches a @Prop or @State
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which member was meant needs the author)
+- **Fix:** `suggest` (the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/no-unused-watch.md
 
@@ -116227,6 +116470,26 @@ export class Card {
 }
 ```
 
+##### Fixed (open)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
+}
+```
+
 ##### Do
 
 ```ts
@@ -116246,6 +116509,26 @@ export class Card {
 export class Card {
   @State() open = false;
   @Watch('opened') onOpen() {}
+}
+```
+
+##### Fixed (open)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
 }
 ```
 
@@ -116382,7 +116665,7 @@ export class Card {
 ## `stencil/prefer-vdom-listener` — DOM events are handled in render(), not with @Listen
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the handler moves into the rendered markup by hand)
+- **Fix:** `suggest` (in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/prefer-vdom-listener.md
 
@@ -116412,6 +116695,18 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -116429,6 +116724,18 @@ export class Card {
 @Component({ tag: 'my-card' })
 export class Card {
   @Listen('click') onClick() {}
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
 }
 ```
 
@@ -116503,7 +116810,7 @@ export class Card {
 ## `stencil/props-must-be-public` — @Prop() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the field is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/props-must-be-public.md
 
@@ -116692,7 +116999,7 @@ export class Card {
 ## `stencil/strict-mutable` — mutable: true only on props the component changes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the component should change the prop needs the author)
+- **Fix:** `auto` (`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/strict-mutable.md
 
@@ -116721,6 +117028,16 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -116743,6 +117060,16 @@ export class Card {
 export class Card {
   /** The count. */
   @Prop({ mutable: true }) count = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
 }
 ```
 
@@ -136186,7 +136513,7 @@ enum Color { Red,
 ## `ts/no-duplicate-enum-values` — No two enum members share a value
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which value is right needs the author)
+- **Fix:** `suggest` (the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-duplicate-enum-values.md
 
@@ -136214,6 +136541,24 @@ enum Color {
 }
 ```
 
+##### Fixed (alias)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = 2,
+}
+```
+
 ##### Do
 
 ```ts
@@ -136231,6 +136576,24 @@ enum Color {
 enum Color {
   Red = 1,
   Green = 1,
+}
+```
+
+##### Fixed (alias)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = 2,
 }
 ```
 
@@ -137758,7 +138121,7 @@ handler(1);
 ## `ts/no-unsafe-declaration-merging` — No interface that merges with a class of the same name
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether to rename or to move the members into the class needs the author)
+- **Fix:** `auto` (auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unsafe-declaration-merging.md
 
@@ -137788,6 +138151,15 @@ class Point {
 }
 ```
 
+##### Fixed
+
+```ts
+class Point {
+  declare z: number;
+  x = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -137808,6 +138180,15 @@ interface Point {
   z: number;
 }
 class Point {
+  x = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+class Point {
+  declare z: number;
   x = 0;
 }
 ```
@@ -137994,7 +138375,7 @@ is declared `any` or `unknown` is reported too; typescript-eslint allows it.
 ## `ts/no-unused-expressions` — No expression statements that do nothing
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether a call, an assignment or nothing was meant needs the author)
+- **Fix:** `suggest` (the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-expressions.md
 
@@ -138021,6 +138402,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```ts
@@ -138039,6 +138435,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -138050,7 +138461,7 @@ function close(conn: Connection) {
 ## `ts/no-unused-vars` — Every declared name is used
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (removing a declaration can drop the side effects of its initialiser)
+- **Fix:** `auto` (auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-vars.md
 

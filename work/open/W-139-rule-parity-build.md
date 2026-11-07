@@ -238,4 +238,4 @@ None — W-138 and W-144 ruled 2026-10-30.
 
 ## Reference
 
-[W-138](../../archive/open/W-138-rule-parity-research.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-145](../../archive/open/W-145-tailwind-pack-and-class-sorting.md) · [W-142](W-142-framework-pack-names.md) · [W-147](W-142-framework-pack-names.md) · [W-148](W-141-formatter-parity.md) · W-03 · W-105
+[W-138](../../archive/open/W-138-rule-parity-research.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-145](../../archive/open/W-145-tailwind-pack-and-class-sorting.md) · [W-142](W-142-framework-pack-names.md) · [W-147](W-142-framework-pack-names.md) · [W-148](../../archive/open/W-141-formatter-parity.md) · W-03 · W-105

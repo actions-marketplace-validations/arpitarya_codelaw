@@ -358,8 +358,14 @@ scss_rule!(NoDuplicateDollarVariables, "scss/no-duplicate-dollar-variables", |sh
         let is_default = n.important.is_some_and(|r| text(src, r).trim_start_matches('!').trim() == "default");
         match seen.get(&(n.parent, name.to_owned())) {
             Some(&first) if !is_default => {
-                let line = css_syntax::line(src, sheet.nodes[first].start);
-                out.push(finding(n.start, n.name.1, format!("`{name}` is already declared in this scope, on line {line}")));
+                let f = &sheet.nodes[first];
+                let line = css_syntax::line(src, f.start);
+                // The earlier value is a dead store when nothing between
+                // the two reads the variable.
+                let read = crate::util::mentions(&src[f.end..n.start], name) || crate::util::mentions(&src[f.params.0..f.params.1], name);
+                let edits = if read { Vec::new() } else { vec![crate::util::remove_css_statement(src, f.start, f.end)] };
+                out.push(fixed(n.start, n.name.1, format!("`{name}` is already declared in this scope, on line {line}"), edits));
+                seen.insert((n.parent, name.to_owned()), i);
             }
             Some(_) => {}
             None => {
@@ -423,8 +429,15 @@ scss_rule!(NoDuplicateMixins, "scss/no-duplicate-mixins", |sheet, src, ctx, out|
         let name = params[..end].to_owned();
         match seen.get(&(n.parent, name.clone())) {
             Some(&first) => {
-                let line = css_syntax::line(src, sheet.nodes[first].start);
-                out.push(finding(n.params.0, n.params.0 + end, format!("The mixin `{name}` is already defined, on line {line}")));
+                let f = &sheet.nodes[first];
+                let line = css_syntax::line(src, f.start);
+                // Nothing includes the earlier definition when no
+                // `@include` of it stands between the two.
+                let between = &src[f.end..n.start];
+                let included = between.contains("@include") && crate::util::mentions(between, &name);
+                let edits = if included { Vec::new() } else { vec![crate::util::remove_css_statement(src, f.start, f.end)] };
+                out.push(fixed(n.params.0, n.params.0 + end, format!("The mixin `{name}` is already defined, on line {line}"), edits));
+                seen.insert((n.parent, name), i);
             }
             None => {
                 seen.insert((n.parent, name), i);
@@ -449,9 +462,49 @@ scss_rule!(AtRuleNoUnknown, "scss/at-rule-no-unknown", |sheet, src, ctx, out| {
         if raw.is_empty() || raw.eq_ignore_ascii_case("charset") || known.contains(&sheet.at_name(i, src)) || css_syntax::matches_any(&ignore, raw) {
             continue;
         }
-        out.push(finding(n.start, n.name.1, format!("Unknown at-rule `@{raw}`")));
+        let mut names: Vec<&str> = known.iter().map(|k| k.as_str()).collect();
+        names.extend(SASS_AT_RULES);
+        names.sort_unstable();
+        let near = crate::util::nearest(&raw.to_ascii_lowercase(), names, 2);
+        out.push(fixed(n.start, n.name.1, format!("Unknown at-rule `@{raw}`"), crate::util::name_choices(&near, n.name.0, n.name.1, &|c| c.to_owned())));
     }
 });
+
+/// Sass's own at-rules, the nearest-name choices beside the CSS ones.
+const SASS_AT_RULES: &[&str] = &["at-root", "content", "debug", "each", "else", "error", "extend", "for", "forward", "function", "if", "import", "include", "mixin", "return", "use", "warn", "while"];
+
+/// The edit that joins a rule with a parent holding nothing else:
+/// `.d { .e { … } }` becomes `.d .e { … }`, one level shallower. Both
+/// selectors are one plain complex selector (no `,`, `&` or `#{`), and the
+/// compiled CSS is the same.
+fn hoist(sheet: &Sheet, src: &str, i: usize) -> Option<Vec<TextEdit>> {
+    let n = &sheet.nodes[i];
+    let p = n.parent?;
+    let parent = &sheet.nodes[p];
+    if parent.kind != Kind::Rule || parent.children != [i] {
+        return None;
+    }
+    let (block, inner) = (parent.block?, n.block?);
+    if !src[block.0 + 1..n.start].trim().is_empty() || !src[n.end..block.1].trim().trim_end_matches('}').trim().is_empty() {
+        return None;
+    }
+    let (ps, cs) = (text(src, parent.name), text(src, n.name));
+    if [ps, cs].iter().any(|s| s.contains([',', '&']) || s.contains("#{") || s.is_empty()) {
+        return None;
+    }
+    // The child's body, one level less indented.
+    let line = |at: usize| src[..at].rfind('\n').map(|x| x + 1).unwrap_or(0);
+    let indent = |at: usize| src[line(at)..at].len();
+    let shift = indent(n.start).saturating_sub(indent(parent.start));
+    let body: String = src[inner.0..n.end]
+        .split_inclusive('\n')
+        .map(|l| {
+            let lead = l.len() - l.trim_start_matches(' ').len();
+            &l[lead.min(shift)..]
+        })
+        .collect();
+    Some(vec![TextEdit::new(parent.name.0, parent.end, format!("{ps} {cs} {body}"))])
+}
 
 scss_rule!(MaxNestingDepth, "scss/max-nesting-depth", |sheet, src, ctx, out| {
     let max = ctx.options.get("max").and_then(|v| v.as_u64()).unwrap_or(3) as usize;
@@ -462,7 +515,7 @@ scss_rule!(MaxNestingDepth, "scss/max-nesting-depth", |sheet, src, ctx, out| {
         }
         let depth = sheet.ancestors(i).filter(|&a| sheet.nodes[a].kind == Kind::Rule).count();
         if depth > max {
-            out.push(finding(n.start, n.name.1, format!("Nesting depth {depth} is deeper than the {max} allowed")));
+            out.push(fixed(n.start, n.name.1, format!("Nesting depth {depth} is deeper than the {max} allowed"), hoist(sheet, src, i).unwrap_or_default()));
         }
     }
 });
@@ -767,7 +820,10 @@ scss_rule!(FunctionNoUnknown, "scss/function-no-unknown", |sheet, src, ctx, out|
             if s > 0 && src.as_bytes()[s - 1] == b'.' {
                 continue;
             }
-            out.push(finding(s, e, format!("Unknown function `{name}()`")));
+            let mut names: Vec<&str> = known.iter().map(|k| k.as_str()).collect();
+            names.sort_unstable();
+            let near = crate::util::nearest(&lower, names, 2);
+            out.push(fixed(s, e, format!("Unknown function `{name}()`"), crate::util::name_choices(&near, s, e, &|c| c.to_owned())));
         }
     }
 });

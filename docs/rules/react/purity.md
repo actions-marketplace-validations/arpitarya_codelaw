@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the value should come from instead — state, an effect, an event — depends on what it is for) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `eslint-plugin-react-hooks/purity`, `@eslint-react/purity` |
@@ -140,6 +140,15 @@ function useRandomKey() {
 }
 ```
 
+#### Fixed
+
+```js
+function useRandomKey() {
+  const [value] = useState(() => Math.random().toString(36));
+  return value;
+}
+```
+
 #### Do
 
 ```js
@@ -179,6 +188,15 @@ function useToday(): string {
 }
 ```
 
+#### Fixed
+
+```ts
+function useToday(): string {
+  const [value] = useState(() => new Date().toDateString());
+  return value;
+}
+```
+
 #### Do
 
 ```ts
@@ -195,6 +213,15 @@ function useToday(): string {
 ```tsx
 function Field({ label }: { label: string }) {
   const id = crypto.randomUUID();
+  return <label htmlFor={id}>{label}</label>;
+}
+```
+
+#### Fixed
+
+```tsx
+function Field({ label }: { label: string }) {
+  const [id] = useState(() => crypto.randomUUID());
   return <label htmlFor={id}>{label}</label>;
 }
 ```

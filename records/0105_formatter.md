@@ -14,7 +14,7 @@ owns:
   - scripts/tailwind-parity.py
   - crates/codelaw-lang/src/class_lists.rs
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-11-05T12:00:00Z
+timestamp: 2026-11-05T23:00:00Z
 content_sha: ""
 ---
 
@@ -183,7 +183,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
 
 ### What is built
 
-Built 2026-11-05 (`W-145`): decision 9. Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
+Built 2026-11-05 (`W-145`): decision 9. Built 2026-11-05 (`W-141`): Oxc behind decision 2's CSS, SCSS, YAML and Markdown rows, and the four changes and the named differences in Consequences. Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
 
 ### Consequences
 
@@ -230,6 +230,39 @@ Built 2026-11-05 (`W-145`): decision 9. Built 2026-10-21 (`W-07`): decisions 1, 
   | HTML (its `<style>` through CSS) | 147 | 68.7 % | 69.4 % |
 
   SCSS's identical lines fall because of one file, Bootstrap's `_utilities.scss`, where Prettier indents nested maps after a comment by two extra spaces and Oxc does not (72 → 513 differing lines); the other 149 files go from 454 to 302. Markdown's last eight files are fenced JS that Biome leaves as written (strict-mode-invalid examples: octal literals, an `eval` parameter, `"use strict"` in a non-simple function) where Prettier's parser formats them, two `:::` containers Oxc follows with a blank line, and a BOM inside a fence; oxfmt's 97.3 % formats those blocks with Oxc's JS formatter, which D-52 does not cover. **Speed:** `format --check` on the corpus's 529 CSS, SCSS, Markdown and YAML files, 118 → 49 ms (0.43 → 0.19 s on one thread); `format_warm_10k` p95 917 / 743 → 715 / 708 ms (budget 2,379), `startup` p95 2.2 → 2.2 ms (budget 3), `fix_one_file` unchanged — on a loaded M4 (load 9–12), each binary run alternately. **Binary:** 37,958,944 → 35,666,544 bytes (−2.3 MB): Biome's CSS crates, `pretty_yaml` and dprint left the build. **Layout check:** `codelaw test` on the `css`, `scss`, `html` and `security-html` packs as before (decision 3 compares tokens, not the engine).
+
+- **What codelaw's own code changed, and what is left in the engines — measured 2026-11-05 (`W-141`, DoD 3)** on the same corpus, Prettier 3.9.10, defaults. Four changes in `engines.rs`, each a place where codelaw, not the engine, decided the output:
+  - **JavaScript that only a script allows** (an octal literal `071`, `delete x`, a parameter named `eval`, `with`) is parsed again as a script when the module parse fails, as Prettier's Babel parser retries; `.mjs` and TypeScript stay modules, and the verifier's parse check does the same.
+  - **A `<script>` body's width** no longer counts its own indent twice: markup_fmt's `indent_level` already includes it, so a line Prettier fits at column 80 is no longer broken at 78.
+  - **A `<script>` or `<style>` holding only whitespace** prints `<script></script>`, and an empty element keeps `></button>` on its line (`closing_tag_line_break_for_empty = never`; Prettier breaks the attributes instead). Comments, `<textarea>` bodies and a node after an ignore marker are left alone.
+  - **The doctype** is `<!doctype html>` for HTML5; a legacy doctype keeps its keyword as written and its whitespace becomes one space, where markup_fmt lower-cased and kept line breaks. Prettier keeps the keyword of `<!DOCTYPE HTML>` and then lower-cases it on a second run; codelaw writes `<!doctype html>` at once, because its output must be stable (decision 4).
+
+  | language | files | before | after | identical lines | engine of what is left |
+  |---|--:|--:|--:|--:|---|
+  | CSS | 79 | 88.6 % | 88.6 % | 99.1 % | Oxc |
+  | SCSS | 150 | 86.0 % | 86.0 % | 97.4 % | Oxc |
+  | YAML | 150 | 97.3 % | 97.3 % | 99.9 % | Oxc |
+  | Markdown | 150 | 94.7 % | **96.7 %** | 100.0 % | Oxc, Biome (fenced JS) |
+  | HTML | 147 (3 skipped) | 69.4 % | **73.5 %** | 81.9 % | markup_fmt |
+  | JS · JSX | 139 (11 skipped) | 97.1 % | 97.1 % | 99.9 % | Biome |
+  | TS · TSX | 129 | 82.2 % | 82.2 % | 99.7 % | Biome |
+
+  No language is at 98 %, so every remaining difference is named here (W-141 DoD 3), each with the corpus files it accounts for. None can be changed without forking the engine, and none is an option codelaw leaves unmapped: Oxc's and Biome's options are all set from `[format]` (decision 5), and markup_fmt's that have a Prettier counterpart are set to it.
+  - **CSS — Oxc (9 of 9 files).** A math function written without spaces stays without them: `calc(var(--base-size-4)*-1)` (Primer's minified `dist/`), where Prettier writes `calc(var(--base-size-4) * -1)`.
+  - **SCSS — Oxc (21 files).**
+    - A trailing `//` comment counts toward Prettier's width, so Prettier breaks the call before it — `margin-top: calc(` / `-1 * var(--#{$prefix}gutter-y)` / `); // stylelint-disable-line …` — where Oxc keeps the line whole (8 files).
+    - A long `#{…}` interpolation: Prettier breaks inside it (`#{escape-svg(` / `$x` / `)}`); Oxc keeps it whole or moves it to the next line (6).
+    - `@if not($a)` becomes `@if not ($a)` (2); a comma list in a `$variable:` is filled, where Prettier puts one item per line (1); `+` and `==` chains are filled, where Prettier gives one operand a line (2); a parenthesised media-query value is broken inside its parentheses (1); a `//` comment after `),` stays on that line (1).
+    - Nested maps and `if()` arguments inside a parameter list are indented two spaces less than Prettier's, and `"key": hsl(` breaks after the colon (3) — among them Bootstrap's `_utilities.scss`, which alone holds 513 of the 815 lines SCSS's diffs change.
+  - **YAML — Oxc (4 files).** A plain value with a trailing comment followed by a comment line stays on its key's line, where Prettier moves it under the key (`runs-on:` / `windows-latest # …`) (2); a blank line between a comment block and a less-indented comment is kept (1); a file ending in several blank lines ends in none, where Prettier keeps one (1).
+  - **Markdown (5 files).** Oxc puts a blank line between a `:::` paragraph and an HTML comment that follows it (2); Oxc leaves a fenced block whose code starts with U+FEFF as written, by design (`FormatSession::dispatch`), where Prettier drops the mark and formats the block (1). Biome, in fenced JS: keeps `export {` / `foo as f,` / `baz` / `} from "x"` expanded as written, where Prettier joins it (1); formats `"use strict"` inside a function with default parameters, which Babel rejects, so Prettier leaves that block as written (1).
+  - **HTML — markup_fmt (39 files).**
+    - Inline content: where a line must break before an inline element, Prettier moves the element to the next line (`Here is a` / `<a href="viper.mp3">link to the audio</a> instead.`); markup_fmt breaks inside its tag (`Here is a <a href="viper.mp3"` / `>link to the audio</a>`) (29, among them the two legacy XHTML pages, which hold 2,266 of the 2,484 lines HTML's diffs change).
+    - `<caption>`: Prettier always puts its text on its own line (its display is `table-caption`); markup_fmt keeps a short one on one line (7).
+    - `<textarea>`: Prettier moves a value that starts on a new line, and collapses a blank value to one space; markup_fmt keeps it as written (3).
+    - Not compared: two pages markup_fmt cannot parse (a `<p>` closed implicitly by a block element) and one it does not format to a fixpoint, which codelaw then leaves unformatted.
+  - **JS · JSX — Biome 2.5.15, behind Prettier 3.9 (4 files).** A negated test that breaks: Prettier 3.9 writes `if (!(` … `)) {`, Biome `if (` / `!(` … `)` / `) {` (3); a `&&` chain as a call's only argument: Prettier 3.9 no longer indents its continuation lines (1).
+  - **TS · TSX — Biome (23 files).** A union that fits on the line after `=`, `:` or `as`: Prettier 3.9 keeps it on that one line (`type MessageId =` / `"await" | "removeAwait";`), Biome writes one `| member` per line (21); the two JS shapes above (2).
 
 - **The binary grows** by the size of six formatter engines. Accepted, because each package must be complete ([L6](0008_LAW-6-python-and-node-packages.md) decision 3).
 

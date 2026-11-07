@@ -5,7 +5,7 @@ description: "Arpit, 2026-11-05 (Cowork): design how codelaw builds its project 
 item: W-167
 filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-05
+updated: 2026-11-07
 updated_by: "Cowork (Opus 5.5)"
 ball: cowork
 ---
@@ -21,6 +21,7 @@ ball: cowork
 | 3 | Put W-168's numbers beside each stage: where time and memory go at 10k → 1M | which stage breaks first, measured, not guessed | ⏳ (needs W-168's runs) |
 | 4 | A proposal: 2–3 designs, each with its cost, its risk and what it changes in the records | a shape the decider can pick | ⏳ |
 | 5 | The decider picks a design | a build item, with its budgets | 🔴 decider decides |
+| 6 | Once the picked design is built: budget `graph_*` at 10k and 100k from three CI `perf` runs (L8 decision 4's method), with `bench --graph` in CI's `perf` group and a 50k+ real repo pinned — W-168 step 6, ruled 2026-11-07 (*"No budget yet (Recommended)"*) | L8 budgets for the graph | ⏳ after step 5's build |
 
 **Arpit, 2026-11-05:** *"add few work items — 1. architecture design for graph generation"* — after *"how does the graph work in code law?"* and *"is it performant for very large repo??"*
 

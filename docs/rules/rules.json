@@ -16791,8 +16791,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`)",
+   "fix": "suggest",
+   "fix_reason": "`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -16837,8 +16837,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`)",
+   "fix": "suggest",
+   "fix_reason": "a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -16939,8 +16939,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`)",
+   "fix": "suggest",
+   "fix_reason": "a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17035,8 +17035,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks)",
+   "fix": "suggest",
+   "fix_reason": "the word may be a tag the author meant TypeScript to read; they confirm it is text",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17182,8 +17182,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own)",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17276,8 +17276,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's",
+   "fix": "suggest",
+   "fix_reason": "the default leaves the documentation; the author checks the signature carries the same one",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17327,8 +17327,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed)",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17375,8 +17375,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed)",
+   "fix": "suggest",
+   "fix_reason": "the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22823,8 +22823,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "unwrapping the block re-indents its statements, and a declaration in it could clash with one outside",
+   "fix": "suggest",
+   "fix_reason": "a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24680,8 +24680,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the comment above the code is a cross-line edit",
+   "fix": "suggest",
+   "fix_reason": "a comment after code may describe that one line; above it, it can read as describing what follows",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -30878,8 +30878,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the brackets and the dots around the items is not one template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -69858,8 +69858,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win needs the author",
+   "fix": "auto",
+   "fix_reason": "the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -71481,8 +71481,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the component out means passing in the values it closed over as props",
+   "fix": "suggest",
+   "fix_reason": "a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -71664,8 +71664,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the access into an effect or an event handler changes when it runs",
+   "fix": "suggest",
+   "fix_reason": "a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -71810,8 +71810,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to derive the value, lift the state or subscribe is a design choice",
+   "fix": "suggest",
+   "fix_reason": "an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -72923,8 +72923,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "where the value should come from instead — state, an effect, an event — depends on what it is for",
+   "fix": "suggest",
+   "fix_reason": "an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -73063,8 +73063,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what to render needs the author",
+   "fix": "suggest",
+   "fix_reason": "a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73155,8 +73155,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving a hook can change what the code does on the renders that skipped it",
+   "fix": "suggest",
+   "fix_reason": "a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73574,8 +73574,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the code belongs in useEffect, useCallback or plain render code is the author's call",
+   "fix": "suggest",
+   "fix_reason": "an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -73670,8 +73670,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the reducer has to name the fields it takes from the payload",
+   "fix": "suggest",
+   "fix_reason": "`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73811,8 +73811,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten to return a new value",
+   "fix": "suggest",
+   "fix_reason": "a `state.push(x)` or `state.key = v` followed at once by `return state` becomes `return [...state, x]` or `return { ...state, key: v }`; whoever held the old state no longer sees the change, which is the fix but is a change. Any other mutation is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73906,8 +73906,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the one call is split into one per value, and the destructuring goes",
+   "fix": "suggest",
+   "fix_reason": "the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74006,8 +74006,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the side effect has to move to a thunk, a listener or a `prepare` callback",
+   "fix": "suggest",
+   "fix_reason": "a case reducer whose side effect sits in an object built from `action.payload` gets a `prepare` callback that builds the object, and reads it from the payload; the action creator's argument stays the same, the effect now runs when the action is made. Any other effect is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74053,8 +74053,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each wrapped dispatch call is replaced by the action creator it calls",
+   "fix": "suggest",
+   "fix_reason": "a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74781,8 +74781,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended at-rule is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75545,8 +75545,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended function is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75838,8 +75838,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "flattening a selector is the author's call",
+   "fix": "suggest",
+   "fix_reason": "a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75976,8 +75976,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which declaration wins is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -76070,8 +76070,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which definition should stay is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -87663,8 +87663,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the class should be a component needs the author",
+   "fix": "suggest",
+   "fix_reason": "a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87708,8 +87708,8 @@
    "languages": [
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the slot's description, or whether it should exist, needs the author",
+   "fix": "suggest",
+   "fix_reason": "a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -87721,15 +87721,15 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "* @slot header - The card's title row.",
+   "dont": "* @slot footer - The card's actions.",
+   "do": null,
    "fix_steps": [
     "For a slot reported as rendered without a tag, add `@slot <name> - <what it holds>` (or `@slot - <what it holds>` for the default slot) to the JSDoc above `@Component`.",
     "For a tag reported as never rendered, remove the tag, or render the `<slot>` it describes."
    ],
    "example": {
     "language": "tsx",
-    "dont": "/**\n * A card.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
+    "dont": "/**\n * A card.\n * @slot header - The card's title row.\n * @slot footer - The card's actions.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
     "do": "/**\n * A card.\n * @slot header - The card's title row.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}"
    },
    "ported_from": [
@@ -87755,8 +87755,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the attributes move into `render()` by hand",
+   "fix": "auto",
+   "fix_reason": "auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87802,8 +87802,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the method is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87848,8 +87848,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which member was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87982,8 +87982,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the handler moves into the rendered markup by hand",
+   "fix": "suggest",
+   "fix_reason": "in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88073,8 +88073,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the field is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88212,8 +88212,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the component should change the prop needs the author",
+   "fix": "auto",
+   "fix_reason": "`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -97925,8 +97925,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value is right needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99112,8 +99112,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to rename or to move the members into the class needs the author",
+   "fix": "auto",
+   "fix_reason": "auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99298,8 +99298,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a call, an assignment or nothing was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99345,8 +99345,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing a declaration can drop the side effects of its initialiser",
+   "fix": "auto",
+   "fix_reason": "auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

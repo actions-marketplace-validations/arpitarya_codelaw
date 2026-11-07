@@ -2,9 +2,9 @@
 id: scss/no-duplicate-mixins
 title: "No duplicate mixins"
 languages: [scss]
-fix: manual
-fix_reason: "which definition should stay is the author's call"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [stylelint-scss/no-duplicate-mixins]
 since: 0.3.0
@@ -32,6 +32,14 @@ native: scss/no-duplicate-mixins
 @mixin shadow {
   box-shadow: none;
 }
+@mixin shadow {
+  box-shadow: 0 0 1px;
+}
+```
+
+#### Fixed
+
+```scss
 @mixin shadow {
   box-shadow: 0 0 1px;
 }

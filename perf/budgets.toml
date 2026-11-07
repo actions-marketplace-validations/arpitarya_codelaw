@@ -127,3 +127,35 @@ budget = 2500 # p95 1383.3 / 1434.2 / 1429.5 (perf runs 41005346138, 41006814384
 set_by = "Arpit, ruled 2026-11-05 (voice): 2,500 ms, above decision 4's method (2,152) (SR-LAW-8 decision 4, W-103)"
 set_on = 2026-11-05
 measured_p95 = 1434.2
+
+# THE GRAPH ROWS (W-168, 2026-11-07): context, never gated, until the decider
+# rules which sizes, if any, get an L8 budget. RULED 2026-11-07 (Arpit, W-168
+# step 6): "No budget yet (Recommended)" — context-only until W-167's design is
+# built; then 10k and 100k get budgets from CI runs (decision 4's method).
+# `codelaw bench --graph --files <n>`; measured on a LOADED developer Mac, not
+# the reference machine — experiments/graph-scale/RESULTS.md has every size.
+# Each comment is the 10k median / p95 (10 runs, first discarded).
+
+[operation.graph_cold]
+unit = "ms"
+budget = "unset" # 10k: 6251.4 / 6868.0; 100k 56311.7; 1M 1186252.2 (one sample)
+
+[operation.graph_warm]
+unit = "ms"
+budget = "unset" # 10k: 1944.9 / 2522.0; 100k 13903.0; 1M 1016114.4 (cache pruned past ~200k)
+
+[operation.graph_warm_no_daemon]
+unit = "ms"
+budget = "unset" # 10k: 2322.6 / 2972.8; 100k 13933.0; 1M 955083.3
+
+[operation.graph_hook_one_file]
+unit = "ms"
+budget = "unset" # 10k: 2028.3 / 4518.2 — SR-PROJECT-GRAPH decision 5's target is 300; 100k 12082.0; 1M 235538.1
+
+[operation.graph_peak_memory]
+unit = "MiB"
+budget = "unset" # 10k: 226.4 / 229.8; 100k 1404.8; 1M 6126.0
+
+[operation.graph_cache_size]
+unit = "MiB"
+budget = "unset" # 10k: 69.8; 100k 697.7; 500k and 1M ~1300, held by [cache] max_size's 512 MB default

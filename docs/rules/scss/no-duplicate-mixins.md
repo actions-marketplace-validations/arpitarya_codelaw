@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which definition should stay is the author's call) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/no-duplicate-mixins` |
@@ -134,6 +134,14 @@ codelaw config --print --for <file>            # the resolved setting, and where
 @mixin shadow {
   box-shadow: none;
 }
+@mixin shadow {
+  box-shadow: 0 0 1px;
+}
+```
+
+#### Fixed
+
+```scss
 @mixin shadow {
   box-shadow: 0 0 1px;
 }

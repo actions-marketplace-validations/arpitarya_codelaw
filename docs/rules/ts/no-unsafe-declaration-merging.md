@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to rename or to move the members into the class needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-unsafe-declaration-merging` |
@@ -138,6 +138,15 @@ class Point {
 }
 ```
 
+#### Fixed
+
+```ts
+class Point {
+  declare z: number;
+  x = 0;
+}
+```
+
 #### Do
 
 ```ts
@@ -158,6 +167,15 @@ interface Point {
   z: number;
 }
 class Point {
+  x = 0;
+}
+```
+
+#### Fixed
+
+```tsx
+class Point {
+  declare z: number;
   x = 0;
 }
 ```

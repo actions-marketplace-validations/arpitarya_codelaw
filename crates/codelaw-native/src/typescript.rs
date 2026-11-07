@@ -30,8 +30,37 @@ impl NativeRule for NoDuplicateEnumValues {
         &["enum_body"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-        let mut seen: BTreeMap<String, ()> = BTreeMap::new();
-        for m in named_children(node.get_inner_node()) {
+        let src = ctx.source;
+        let body = node.get_inner_node();
+        // The next free number: past every member's value, the implicit
+        // ones included; none when a value isn't a plain integer.
+        let mut next: Option<i64> = Some(0);
+        let mut max: i64 = -1;
+        for m in named_children(body) {
+            match m.kind() {
+                "enum_assignment" => match m.child_by_field_name("value").filter(|v| v.kind() == "number").and_then(|v| text(v, src).parse::<i64>().ok()) {
+                    Some(n) => {
+                        max = max.max(n);
+                        next = Some(n + 1);
+                    }
+                    None if m.child_by_field_name("value").is_some_and(|v| v.kind() == "string") => next = None,
+                    None => {
+                        next = None;
+                        max = i64::MAX;
+                    }
+                },
+                "property_identifier" => match next {
+                    Some(n) => {
+                        max = max.max(n);
+                        next = Some(n + 1);
+                    }
+                    None => max = i64::MAX,
+                },
+                _ => {}
+            }
+        }
+        let mut seen: BTreeMap<String, Option<String>> = BTreeMap::new();
+        for m in named_children(body) {
             if m.kind() != "enum_assignment" {
                 continue;
             }
@@ -39,12 +68,67 @@ impl NativeRule for NoDuplicateEnumValues {
             if !matches!(v.kind(), "number" | "string") {
                 continue;
             }
-            let key = if v.kind() == "string" { format!("s:{}", crate::util::string_value(v, ctx.source)) } else { format!("n:{}", text(v, ctx.source)) };
-            if seen.insert(key, ()).is_some() {
-                out.push(finding(v, format!("Duplicate enum value `{}`", text(v, ctx.source)), Vec::new()));
+            let key = if v.kind() == "string" { format!("s:{}", crate::util::string_value(v, src)) } else { format!("n:{}", text(v, src)) };
+            let name = m.child_by_field_name("name").filter(|n| n.kind() == "property_identifier").map(|n| text(n, src).to_owned());
+            if let Some(first) = seen.get(&key) {
+                let mut choices = Vec::new();
+                if let Some(first) = first {
+                    choices.push(crate::choice("alias", false, vec![TextEdit::new(v.start_byte(), v.end_byte(), first.clone())]));
+                }
+                if v.kind() == "number" && max < i64::MAX {
+                    max += 1;
+                    choices.push(crate::choice("next value", false, vec![TextEdit::new(v.start_byte(), v.end_byte(), max.to_string())]));
+                }
+                out.push(finding(v, format!("Duplicate enum value `{}`", text(v, src)), crate::choice_edits(choices)));
+            } else {
+                seen.insert(key, name);
             }
         }
     }
+}
+
+/// The edits that move an interface's property signatures into the class
+/// it merges with, as `declare` fields, and delete the interface: when the
+/// interface has only property signatures, no `extends` and no type
+/// parameters, is not exported, and the class declares none of those names.
+/// A `declare` field emits nothing, so the class's runtime is unchanged
+/// and its type is the merged one.
+fn merge_edits(root: Node<'_>, iface_at: usize, class_at: usize, src: &str) -> Option<Vec<TextEdit>> {
+    let iface = root.descendant_for_byte_range(iface_at, iface_at)?.parent().filter(|p| p.kind() == "interface_declaration")?;
+    let class = root.descendant_for_byte_range(class_at, class_at)?.parent().filter(|p| p.kind() == "class_declaration")?;
+    if iface.parent().is_some_and(|p| p.kind() == "export_statement") || iface.child_by_field_name("type_parameters").is_some() || named_children(iface).iter().any(|c| c.kind() == "extends_type_clause") {
+        return None;
+    }
+    let ibody = iface.child_by_field_name("body")?;
+    let cbody = class.child_by_field_name("body")?;
+    let class_names: Vec<&str> = named_children(cbody).iter().filter_map(|m| m.child_by_field_name("name").or_else(|| m.named_child(0)).map(|n| text(n, src))).collect();
+    let mut fields = Vec::new();
+    for m in named_children(ibody) {
+        if m.kind() == "comment" {
+            continue;
+        }
+        if m.kind() != "property_signature" {
+            return None;
+        }
+        let name = m.child_by_field_name("name").filter(|n| n.kind() == "property_identifier")?;
+        if class_names.contains(&text(name, src)) {
+            return None;
+        }
+        fields.push(format!("declare {};", text(m, src).trim_end_matches([';', ','])));
+    }
+    if fields.is_empty() {
+        return None;
+    }
+    let indent = {
+        let line = src[..cbody.start_byte()].rfind('\n').map(|i| i + 1).unwrap_or(0);
+        let ws: String = src[line..].chars().take_while(|c| *c == ' ' || *c == '\t').collect();
+        format!("{ws}  ")
+    };
+    let open = cbody.start_byte() + 1;
+    let insert = fields.iter().map(|f| format!("\n{indent}{f}")).collect::<String>();
+    let insert = if named_children(cbody).is_empty() { format!("{insert}\n") } else { insert };
+    let (s, e) = crate::util::whole_lines(src, iface.start_byte(), iface.end_byte());
+    Some(vec![TextEdit::delete(s, e), TextEdit::insert(open, insert)])
 }
 
 pub struct NoUnsafeDeclarationMerging;
@@ -62,20 +146,21 @@ impl NativeRule for NoUnsafeDeclarationMerging {
     fn needs_semantic(&self) -> bool {
         true
     }
-    fn check(&self, _node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let Some(model) = ctx.semantic else { return };
         for scope in &model.scopes {
             for ids in scope.bindings.values() {
                 let class = ids.iter().find(|&&i| model.symbol(i).kind == SymbolKind::Class);
                 let iface = ids.iter().find(|&&i| model.symbol(i).kind == SymbolKind::Interface);
-                if let (Some(&_c), Some(&i)) = (class, iface) {
+                if let (Some(&c), Some(&i)) = (class, iface) {
                     let s = model.symbol(i);
                     let (start, end) = s.decls[0];
+                    let edits = if s.decls.len() == 1 && model.symbol(c).decls.len() == 1 { merge_edits(node.get_inner_node(), start, model.symbol(c).decls[0].0, ctx.source) } else { None };
                     out.push(NativeFinding {
                         start,
                         end,
                         message: format!("The interface `{}` merges with a class of the same name, which the compiler can't check", s.name),
-                        edits: Vec::new(),
+                        edits: edits.unwrap_or_default(),
                     });
                 }
             }
@@ -136,13 +221,29 @@ impl NativeRule for NoUnusedExpressions {
     fn kinds(&self) -> &'static [&'static str] {
         &["expression_statement"]
     }
-    fn check(&self, node: SyntaxNode<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let stmt = node.get_inner_node();
         let Some(e) = stmt.named_child(0) else { return };
         if has_effect(e) || directive(stmt) || stmt.has_error() {
             return;
         }
-        out.push(finding(e, "This expression's value is unused, so the statement does nothing", Vec::new()));
+        let src = ctx.source;
+        let mut choices = Vec::new();
+        let delete = match stmt.parent().map(|p| p.kind()) {
+            Some("program" | "statement_block") => crate::util::remove_statement(stmt, src),
+            _ => TextEdit::new(stmt.start_byte(), stmt.end_byte(), ";"),
+        };
+        choices.push(crate::choice("delete", true, vec![delete]));
+        if matches!(e.kind(), "member_expression" | "identifier") {
+            choices.push(crate::choice("call", false, vec![TextEdit::insert(e.end_byte(), "()")]));
+        }
+        if e.kind() == "binary_expression"
+            && let Some(op) = e.child_by_field_name("operator").filter(|o| matches!(o.kind(), "==" | "==="))
+            && e.child_by_field_name("left").is_some_and(|l| matches!(l.kind(), "identifier" | "member_expression"))
+        {
+            choices.push(crate::choice("assign", false, vec![TextEdit::new(op.start_byte(), op.end_byte(), "=")]));
+        }
+        out.push(finding(e, "This expression's value is unused, so the statement does nothing", crate::choice_edits(choices)));
     }
 }
 

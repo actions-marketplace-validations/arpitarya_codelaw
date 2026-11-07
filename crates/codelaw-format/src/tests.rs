@@ -241,3 +241,36 @@ fn prettier_js_keys_reach_the_engine() {
     };
     assert_eq!(format(Language::Jsx, "a.jsx", text, &o).unwrap(), "const f = a => ({\"b\": a, c: <i x='y' />});\n");
 }
+
+/// W-141: JavaScript that only a script allows (an octal literal, `delete`
+/// of a name, a parameter named `eval`) is parsed as a script, as
+/// Prettier's Babel parser retries; `.mjs` and TypeScript stay modules.
+#[test]
+fn sloppy_mode_javascript_is_formatted_as_a_script() {
+    assert_eq!(fmt(Language::Jsx, "a.js", "var num = 071;      // 57\n"), "var num = 071; // 57\n");
+    assert_eq!(fmt(Language::Jsx, "a.js", "delete bar\nf(function(eval) { eval('x') })\n"), "delete bar;\nf(function (eval) {\n  eval(\"x\");\n});\n");
+    assert!(parses(Language::Jsx, "a.js", "with (a) b;\n"));
+    assert!(!parses(Language::Jsx, "a.mjs", "with (a) b;\n"));
+    assert!(!parses(Language::Typescript, "a.ts", "with (a) b;\n"));
+    let md = "```js\nvar   num = 071;\n```\n";
+    assert_eq!(fmt(Language::Markdown, "a.md", md), "```js\nvar num = 071;\n```\n");
+}
+
+/// W-141: the doctype, a blank `<script>`/`<style>`, an empty element's
+/// closing tag and a `<script>` body's width, as Prettier writes them.
+#[test]
+fn html_doctype_and_embeds_match_prettier() {
+    let input = "<!DOCTYPE html>\n<html>\n<body>\n<script src=\"a.js\">\n  </script>\n<style> </style>\n<div class=\"controls\">\n<button class=\"play\" data-icon=\"P\" aria-label=\"play pause toggle\"></button>\n</div>\n<script>\nconst x72 = [aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, b];\n</script>\n</body>\n</html>\n";
+    let want = "<!doctype html>\n<html>\n  <body>\n    <script src=\"a.js\"></script>\n    <style></style>\n    <div class=\"controls\">\n      <button\n        class=\"play\"\n        data-icon=\"P\"\n        aria-label=\"play pause toggle\"\n      ></button>\n    </div>\n    <script>\n      const x72 = [aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, b];\n    </script>\n  </body>\n</html>\n";
+    let got = fmt(Language::Html, "a.html", input);
+    assert_eq!(got, want);
+    assert_eq!(fmt(Language::Html, "a.html", &got), got, "not idempotent");
+    // A legacy doctype keeps its keyword; its whitespace becomes one space.
+    let legacy = "<!-- c -->\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n\t\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<p>a</p>\n";
+    let got = fmt(Language::Html, "a.html", legacy);
+    assert!(got.contains("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"), "{got}");
+    // Inside a comment, a `<textarea>` or after an ignore marker, nothing is emptied.
+    for kept in ["<!-- <script> </script> -->\n", "<textarea>\n<script> </script></textarea>\n", "<!-- prettier-ignore -->\n<script>\n</script>\n"] {
+        assert_eq!(fmt(Language::Html, "a.html", kept), kept);
+    }
+}

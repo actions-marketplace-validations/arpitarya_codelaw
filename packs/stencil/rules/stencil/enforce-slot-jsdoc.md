@@ -2,9 +2,9 @@
 id: stencil/enforce-slot-jsdoc
 title: "Every slot a component renders has a @slot tag, and every @slot tag a slot"
 languages: [tsx]
-fix: manual
-fix_reason: "the slot's description, or whether it should exist, needs the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual"
+fix_exception: authored
 stability: preview
 ported_from: [stencil/enforce-slot-jsdoc]
 since: 0.2.0
@@ -36,6 +36,23 @@ native: stencil/enforce-slot-jsdoc
 ```tsx
 /**
  * A card.
+ * @slot header - The card's title row.
+ * @slot footer - The card's actions.
+ */
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return <slot name="header" />;
+  }
+}
+```
+
+#### Fixed
+
+```tsx
+/**
+ * A card.
+ * @slot header - The card's title row.
  */
 @Component({ tag: 'my-card' })
 export class Card {

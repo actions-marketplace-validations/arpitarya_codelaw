@@ -2,9 +2,9 @@
 id: redux-toolkit/no-object-selector
 title: "useSelector selects one value per call"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the one call is split into one per value, and the destructuring goes"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---
