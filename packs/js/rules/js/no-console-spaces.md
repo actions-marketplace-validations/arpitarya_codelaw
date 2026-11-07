@@ -2,9 +2,8 @@
 id: js/no-console-spaces
 title: "No leading or trailing space in console arguments"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "trimming the string is a computed edit a template cannot make"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the space may be deliberate (two spaces for alignment); the author confirms the output"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-console-spaces]
 since: 0.5.0
@@ -35,6 +34,7 @@ match:
             has:
               nthChild: 2
 message: '`console` already puts a space between arguments'
+fix: "$$MATCH|trim"
 ```
 
 ## How to fix

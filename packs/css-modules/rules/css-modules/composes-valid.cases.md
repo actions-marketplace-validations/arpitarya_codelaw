@@ -61,3 +61,32 @@
 ```expect
 1:21 css-modules/composes-valid
 ```
+
+### case: two near classes are two choices, the nearest first
+
+```css path=src/a.module.css
+.card { color: red; }
+.cart { color: blue; }
+.primary { composes: carx; }
+```
+
+```expect
+3:22 css-modules/composes-valid
+```
+
+```fixed
+.card { color: red; }
+.cart { color: blue; }
+.primary { composes: card; }
+```
+
+### case: no class near the name stays manual
+
+```css path=src/a.module.css
+.root { color: red; }
+.primary { composes: base; }
+```
+
+```expect
+2:22 css-modules/composes-valid
+```

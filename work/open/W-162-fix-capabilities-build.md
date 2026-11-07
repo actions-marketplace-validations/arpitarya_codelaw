@@ -6,7 +6,7 @@ item: W-162
 filed: 2026-11-05
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
+updated_by: "Claude Code (Opus 5.5), W-162 change 1"
 ball: agent
 ---
 
@@ -19,7 +19,9 @@ ball: agent
 | 0 | Re-judge the 37 waiting rules whose reason is an author's decision: `manual` with their exception ([proposal](../proposals/fix-capabilities.md) §3) | the waiting count falls by a quarter | ✅ 2026-11-05, by W-156 step 4 |
 | 1 | W-161's designs and build order | what to build, in what order | ✅ 2026-11-05 — [`fix-capabilities.md`](../proposals/fix-capabilities.md) §2, §4 |
 | 1a | The decider rules whether a fix may edit several files (L4 decisions 10, 12; proposal §5) | the 22 rename rules' path | ✅ 2026-11-05 — allowed; SR-LAW-4 decisions 10 and 12 amended |
-| 2 | Build each capability in the proposal's order (§4): computed edits, scope rename, add-import, purity, types, cross-file read, cross-file write, action SHAs | the engine can make the fix | ⏳ |
+| 2 | Build each capability in the proposal's order (§4): computed edits, scope rename, add-import, purity, types, cross-file read, cross-file write, action SHAs | the engine can make the fix | 🔨 2a computed edits tiers 1–2 ✅ 2026-11-05 (`transform:`, the template filters); 2a tier 3 and the rest ⏳ |
+| 2a.1 | Computed edits, tiers 1–2: ast-grep's `transform:` beside `match:`; filters `map`, `number`, `escape`, `unescape-octal`, `count`, `upper`, `lower`, `upper-first`; a refusing filter offers no fix ([SR-RULE-FORMAT](../../records/0112_rule-format.md) 3b) | 19 `js/*` rules move: `eqeqeq`, `operator-assignment`, `logical-assignment-operators`, `no-double-comparison`, `consistent-existence-index-check`, `no-implicit-coercion`, `no-zero-fractions`, `numeric-separators-style`, `use-simple-number-keys`, `prefer-numeric-literals`, `no-octal-escape`, `escape-case`, `no-div-regex`, `prefer-string-starts-ends-with`, `no-console-spaces`, `no-extra-label`, `dom-node-dataset`, `prefer-query-selector`, `no-unneeded-ternary` | ✅ 2026-11-05 — `codelaw test packs/js` 582 rules, 0 failed; `rules --fix-stats --check` passes; js auto 147 → 157, suggest 150 → 159, manual 285 → 266 |
+| 2a.2 | Computed edits, tier 3 and native fixes: `edit-text` (11 `jsdoc-*`), `unwrap-block` (`no-else-return`, `py/max-depth`), `move`/`merge-into` (8), native fixes (`prefer-arrow-callback`, `no-for-each`, `prefer-template`, `no-useless-concat`, …) | 84 rules still name computed-edit, several of them re-judgable | ⏳ |
 | 3 | Move each waiting rule up, proven by its own examples (`codelaw test`) | agents get a diff, not steps | ⏳ |
 | 4 | Close when no `fix_pending:` names W-162 | L4 holds without a stand-in | ⏳ |
 

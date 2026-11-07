@@ -2,9 +2,8 @@
 id: js/logical-assignment-operators
 title: "a ||= b rather than a = a || b"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the operator of the rewrite depends on which of three patterns matched"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called"
 stability: preview
 ported_from: [eslint/logical-assignment-operators, eslint-plugin-unicorn/logical-assignment-operators]
 since: 0.5.0
@@ -22,7 +21,9 @@ match:
     - pattern: $A = $A && $B
     - pattern: $A = $A ?? $B
   has: { field: left, any: [{kind: identifier}, {kind: member_expression}] }
+  all: [{ has: { field: right, has: { field: operator, pattern: $$OP } } }]
 message: "Use a logical assignment (`||=`, `&&=` or `??=`)"
+fix: "$A $OP= $B"
 ```
 
 ## How to fix

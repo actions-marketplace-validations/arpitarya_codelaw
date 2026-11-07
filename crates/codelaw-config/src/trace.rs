@@ -106,6 +106,9 @@ fn duration(d: std::time::Duration) -> Value {
     if ms.is_multiple_of(1000) { json!(format!("{}s", ms / 1000)) } else { json!(format!("{ms}ms")) }
 }
 
+/// Each browser's minimum version, as `(name, [major, minor, …])` — `[targets] browsers` resolved for one file and rule.
+pub type BrowserMinimums = Vec<(String, Vec<u64>)>;
+
 impl Config {
     fn source(&self, file: &ConfigFile, path: &[&str]) -> String {
         match file.line_of(path) {
@@ -451,7 +454,7 @@ impl Config {
 
     /// `targets.browsers` for `file` (and `rule`), from the config: each
     /// browser and its minimum version.
-    pub fn browsers_target(&self, file: &Path, rule: Option<&str>) -> Option<(Vec<(String, Vec<u64>)>, String)> {
+    pub fn browsers_target(&self, file: &Path, rule: Option<&str>) -> Option<(BrowserMinimums, String)> {
         self.target_from_config(file, rule, "browsers", |t| t.browsers.as_ref().map(|b| b.iter().filter_map(|q| crate::raw::parse_browser_target(q)).collect()))
     }
 

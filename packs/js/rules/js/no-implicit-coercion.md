@@ -2,9 +2,8 @@
 id: js/no-implicit-coercion
 title: "Explicit conversions, not !!x or +x"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the call to write depends on the operator matched"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds"
 stability: preview
 ported_from: [eslint/no-implicit-coercion]
 since: 0.5.0
@@ -22,7 +21,9 @@ match:
     - kind: unary_expression
       regex: '^\+'
       has: { field: argument, not: { any: [{kind: number}, {kind: unary_expression}] }, pattern: $X }
+  all: [{ has: { field: operator, pattern: $$OP } }]
 message: "Convert explicitly with `Boolean(…)` or `Number(…)`"
+fix: "$OP|map(!:Boolean, +:Number)($X)"
 ```
 
 ## How to fix

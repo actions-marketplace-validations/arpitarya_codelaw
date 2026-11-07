@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:tanstack-query/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 

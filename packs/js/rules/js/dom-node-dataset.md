@@ -2,9 +2,8 @@
 id: js/dom-node-dataset
 title: "Use dataset for data- attributes"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads"
 stability: preview
 ported_from: [eslint-plugin-unicorn/dom-node-dataset]
 since: 0.5.0
@@ -30,7 +29,22 @@ match:
         nthChild: 1
         kind: string
         regex: ^.data-[a-z0-9-]+.$
+        pattern: $K
+  - any:
+    - { pattern: "$O.setAttribute($K, $V)", all: [{ pattern: $SET }] }
+    - { pattern: "$O.getAttribute($K)", all: [{ pattern: $GET }] }
+    - { pattern: "$O.removeAttribute($K)", all: [{ pattern: $DEL }] }
+    - { pattern: "$O.hasAttribute($K)", all: [{ pattern: $HAS }] }
+    - { regex: '' }
+transform:
+  N: { substring: { source: $K, startChar: 6, endChar: -1 } }
+  C: { convert: { source: $N, toCase: camelCase, separatedBy: [dash] } }
 message: Read and write `data-*` attributes through `.dataset`
+fix:
+  - replace: { target: $SET, with: "$O.dataset.$C = $V" }
+  - replace: { target: $GET, with: "$O.dataset.$C" }
+  - replace: { target: $DEL, with: "delete $O.dataset.$C" }
+  - replace: { target: $HAS, with: "'$C' in $O.dataset" }
 ```
 
 ## How to fix

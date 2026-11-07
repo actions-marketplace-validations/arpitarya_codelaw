@@ -2,9 +2,7 @@
 id: js/prefer-numeric-literals
 title: "0b101 rather than parseInt(\"101\", 2)"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the literal's prefix depends on the radix, which a template cannot choose"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/prefer-numeric-literals]
 since: 0.5.0
@@ -22,7 +20,10 @@ match:
     - pattern: parseInt($S, $R)
     - pattern: Number.parseInt($S, $R)
   has: { field: arguments, all: [{ has: { nthChild: 1, kind: string, regex: '^.[0-9a-fA-F]+.$' } }, { has: { nthChild: 2, kind: number, regex: '^(2|8|16)$' } }] }
+transform:
+  D: { substring: { source: $S, startChar: 1, endChar: -1 } }
 message: "Write the number as a binary, octal or hexadecimal literal"
+fix: "$R|map(2:0b, 8:0o, 16:0x)$D"
 ```
 
 ## How to fix

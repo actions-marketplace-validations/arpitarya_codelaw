@@ -201,3 +201,30 @@ fn each_branch_of_an_any_gets_the_steps_on_its_own_captures() {
     let out = fix(Language::Javascript, block, "expect(f).toBeCalled();\nexpect(g).toThrowError();\n");
     assert_eq!(out.text, "expect(f).toHaveBeenCalled();\nexpect(g).toThrow();\n");
 }
+
+#[test]
+fn a_filter_computes_the_replacement() {
+    // W-162: `|map` on an operator captured with `$$OP` (SR-RULE-FORMAT 3b).
+    let block = "match:\n  any:\n    - pattern: $A == $B\n    - pattern: $A != $B\n  has: { field: operator, pattern: $$OP }\nmessage: m\nfix:\n  - replace: { target: $OP, with: \"$OP|map(==:===, !=:!==)\" }";
+    let out = fix(Language::Javascript, block, "if (a == b || c != d) {}\n");
+    assert_eq!(out.text, "if (a === b || c !== d) {}\n");
+}
+
+#[test]
+fn a_transform_gives_the_template_a_new_capture() {
+    // W-162: ast-grep's own `transform:` beside `match:`.
+    let block = "match:\n  pattern: el.getAttribute($S)\ntransform:\n  K:\n    substring: { source: $S, startChar: 6, endChar: -1 }\n  C:\n    convert: { source: $K, toCase: camelCase }\nmessage: m\nfix: \"el.dataset.$C\"";
+    let out = fix(Language::Javascript, block, "el.getAttribute('data-foo-bar');\n");
+    assert_eq!(out.text, "el.dataset.fooBar;\n");
+}
+
+#[test]
+fn a_filter_that_cannot_produce_a_value_offers_no_fix() {
+    let (rule, compiled) = matcher(Language::Javascript, "match:\n  pattern: $A < $B\n  has: { field: operator, pattern: $$OP }\nmessage: m\nfix:\n  - replace: { target: $OP, with: \"$OP|map(==:===)\" }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "a < b;\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("no entry for `<`"));
+}
