@@ -3,8 +3,9 @@
 
 use crate::html_dom::{
     aria_hidden, classify_text, finding, finding_with, flag, has_alt_text, has_aria_label, html_hidden, implicit_role, in_accessibility_tree,
-    inert, naming_allowed, remove_attr, style_hidden, tokens_with_offsets, Dom, Meta, TextClass,
+    inert, naming_allowed, remove_attr, style_hidden, tokens_with_offsets, Dom, Meta, TextClass, add_attr, rename_elem, remove_elem, set_attr, tag_name_end, Child,
 };
+use codelaw_core::TextEdit;
 use crate::html_rule;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -93,7 +94,11 @@ html_rule!(AriaLabelMisuse, "html/aria-label-misuse", |dom, meta, ctx, out| {
             } else {
                 format!("`{key}` has no effect on {}: it can't have an accessible name", lt(&e.tag))
             };
-            out.push(finding(a.name_start, a.name_end, msg));
+            let edits = crate::choice_edits(vec![
+                crate::choice("remove", false, vec![remove_attr(ctx.source, a)]),
+                crate::choice("role img", false, vec![add_attr(ctx.source, e, "role=\"img\"")]),
+            ]);
+            out.push(finding_with(a.name_start, a.name_end, msg, edits));
         }
     }
 });
@@ -127,9 +132,26 @@ html_rule!(HiddenFocusable, "html/hidden-focusable", |dom, meta, ctx, out| {
             continue;
         }
         let e = &dom.elems[i];
+        let src = ctx.source;
+        let unfocus = match e.attr("tabindex") {
+            Some(t) => set_attr(t, "-1"),
+            None => add_attr(src, e, "tabindex=\"-1\""),
+        };
+        let mut choices = vec![crate::choice("tabindex -1", false, vec![unfocus])];
+        if let Some(a) = e.attr("aria-hidden") {
+            choices.push(crate::choice("remove aria-hidden", false, vec![remove_attr(src, a)]));
+        }
+        if !e.has("inert") {
+            choices.push(crate::choice("inert", false, vec![add_attr(src, e, "inert")]));
+        }
+        let edits = crate::choice_edits(choices);
         match e.attr("aria-hidden") {
-            Some(a) => out.push(finding(a.name_start, a.name_end, "A focusable element can't be `aria-hidden`: keyboard users reach what screen readers can't see")),
-            None => out.push(dom.at_elem(i, format!("{} can take focus but an ancestor is `aria-hidden`", lt(&e.tag)))),
+            Some(a) => out.push(finding_with(a.name_start, a.name_end, "A focusable element can't be `aria-hidden`: keyboard users reach what screen readers can't see", edits)),
+            None => {
+                let mut f = dom.at_elem(i, format!("{} can take focus but an ancestor is `aria-hidden`", lt(&e.tag)));
+                f.edits = edits;
+                out.push(f);
+            }
         }
     }
 });
@@ -159,7 +181,15 @@ html_rule!(EmptyTitle, "html/empty-title", |dom, meta, ctx, out| {
             continue;
         }
         if classify_text(dom, i, false, false) == TextClass::Empty {
-            out.push(dom.at_elem(i, "<title> is empty; the page needs a title"));
+            let mut f = dom.at_elem(i, "<title> is empty; the page needs a title");
+            // The text of the document's first <h1>, when it holds only text.
+            let title = &dom.elems[i];
+            let h1 = dom.by_tag("h1").next().map(|h| &dom.elems[h]);
+            let words = h1.and_then(|h| h.children.iter().map(|c| if let Child::Text(t) = c { Some(dom.text_of(&dom.texts[*t])) } else { None }).collect::<Option<Vec<&str>>>().map(|v| v.concat()));
+            if let (Some(w), Some((ts, _))) = (words.map(|w| w.split_whitespace().collect::<Vec<_>>().join(" ")).filter(|w| !w.is_empty()), title.end_tag) {
+                f.edits = vec![TextEdit::new(title.open_end, ts, w)];
+            }
+            out.push(f);
         }
     }
 });
@@ -184,9 +214,14 @@ html_rule!(MetaRefresh, "html/meta-refresh", |dom, meta, ctx, out| {
             continue;
         }
         if delay == 0 && !url {
-            out.push(finding(at.0, at.1, "An instant meta refresh without a URL reloads the page forever"));
+            out.push(finding_with(at.0, at.1, "An instant meta refresh without a URL reloads the page forever", vec![remove_elem(ctx.source, e)]));
         } else if delay != 0 {
-            out.push(finding(at.0, at.1, "A timed meta refresh moves on before everyone has read the page; make it instant (`0;url=…`)"));
+            let mut choices = Vec::new();
+            if url {
+                choices.push(crate::choice("instant", false, vec![TextEdit::new(c.value_start, c.value_start + m[1].len(), "0")]));
+            }
+            choices.push(crate::choice("remove", false, vec![remove_elem(ctx.source, e)]));
+            out.push(finding_with(at.0, at.1, "A timed meta refresh moves on before everyone has read the page; make it instant (`0;url=…`)", crate::choice_edits(choices)));
         }
     }
 });
@@ -219,7 +254,23 @@ html_rule!(NoAbstractRole, "html/no-abstract-role", |dom, meta, ctx, out| {
         let Some(a) = e.attr("role").filter(|a| !a.is_dynamic()) else { continue };
         for (s, t, role) in tokens_with_offsets(a.value_or_empty(), a.value_start) {
             if ABSTRACT_ROLES.contains(&role) {
-                out.push(finding(s, t, format!("`{role}` is an abstract ARIA role; use one of its concrete roles")));
+                let only = a.value_or_empty().split_ascii_whitespace().count() == 1;
+                let mut choices = vec![crate::choice("remove", false, vec![if only { remove_attr(ctx.source, a) } else { TextEdit::delete(s, t) }])];
+                let concrete = match role {
+                    "landmark" | "section" => Some("region"),
+                    "sectionhead" => Some("heading"),
+                    "input" => Some("textbox"),
+                    "range" => Some("slider"),
+                    "select" => Some("listbox"),
+                    "window" => Some("dialog"),
+                    "structure" => Some("group"),
+                    "command" => Some("button"),
+                    _ => None,
+                };
+                if let Some(c) = concrete {
+                    choices.push(crate::choice("concrete role", false, vec![TextEdit::new(s, t, c)]));
+                }
+                out.push(finding_with(s, t, format!("`{role}` is an abstract ARIA role; use one of its concrete roles"), crate::choice_edits(choices)));
             }
         }
     }
@@ -329,7 +380,23 @@ html_rule!(PreferNativeElement, "html/prefer-native-element", |dom, meta, ctx, o
         if e.tag == *native {
             continue;
         }
-        out.push(finding(a.start, a.end, format!("Use a native <{native}> instead of `role=\"{role}\"`")));
+        // The element becomes the native one, its role and a `tabindex="0"`
+        // (now implied) dropped; a button says it submits nothing.
+        let src = ctx.source;
+        let edits = if e.end_tag.is_some() && *native != "a" && *native != "input" && *native != "img" {
+            let mut v = rename_elem(src, e, native);
+            v.push(remove_attr(src, a));
+            if let Some(t) = e.attr("tabindex").filter(|t| t.value_or_empty() == "0") {
+                v.push(remove_attr(src, t));
+            }
+            if *native == "button" && !e.has("type") {
+                v.push(TextEdit::insert(tag_name_end(src, e), " type=\"button\""));
+            }
+            v
+        } else {
+            Vec::new()
+        };
+        out.push(finding_with(a.start, a.end, format!("Use a native <{native}> instead of `role=\"{role}\"`"), edits));
     }
 });
 
@@ -537,9 +604,24 @@ html_rule!(ThScope, "html/th-scope", |dom, meta, ctx, out| {
                 continue;
             }
             let msg = "In a table with more than one row or column of headers, each <th> needs `scope`: row, col, rowgroup or colgroup";
+            // A header in the first row heads a column; one first in its
+            // row heads that row.
+            let row = dom.elems[th].parent;
+            let first_row = row.is_some_and(|r| dom.descendants(t).into_iter().find(|&d| dom.elems[d].is("tr")) == Some(r));
+            let first_cell = row.is_some_and(|r| dom.child_elems(r).next() == Some(th));
+            let put = |v: &str| match scope {
+                Some(s) => set_attr(s, v),
+                None => add_attr(ctx.source, &dom.elems[th], &format!("scope=\"{v}\"")),
+            };
+            let col_first = first_row || !first_cell;
+            let edits = crate::choice_edits(vec![crate::choice("col", col_first, vec![put("col")]), crate::choice("row", !col_first, vec![put("row")])]);
             match scope {
-                Some(s) => out.push(finding(s.start, s.end, msg)),
-                None => out.push(dom.at_elem(th, msg)),
+                Some(s) => out.push(finding_with(s.start, s.end, msg, edits)),
+                None => {
+                    let mut f = dom.at_elem(th, msg);
+                    f.edits = edits;
+                    out.push(f);
+                }
             }
         }
     }
@@ -552,7 +634,16 @@ html_rule!(ImgTitle, "html/img-title", |dom, meta, ctx, out| {
         if has_alt_text(e) {
             continue;
         }
-        out.push(finding(title.name_start, title.name_end, "A decorative <img> (empty `alt`) can't have a `title`: describe it in `alt` or drop the `title`"));
+        let src = ctx.source;
+        let mut choices = vec![crate::choice("remove the title", false, vec![remove_attr(src, title)])];
+        if title.quoted && !title.is_dynamic() {
+            let alt = match e.attr("alt") {
+                Some(alt) => set_attr(alt, title.value_or_empty()),
+                None => add_attr(src, e, &format!("alt=\"{}\"", title.value_or_empty())),
+            };
+            choices.push(crate::choice("title as alt", false, vec![alt, remove_attr(src, title)]));
+        }
+        out.push(finding_with(title.name_start, title.name_end, "A decorative <img> (empty `alt`) can't have a `title`: describe it in `alt` or drop the `title`", crate::choice_edits(choices)));
     }
 });
 
@@ -684,7 +775,9 @@ html_rule!(ValidAutocomplete, "html/valid-autocomplete", |dom, meta, ctx, out| {
                     match classify(tok) {
                         Some(k) => kinds.push(k),
                         None => {
-                            out.push(finding(s, t, format!("`{tok}` is not an autocomplete token or field name")));
+                            let known = FIELD1.iter().chain(FIELD2).copied();
+                            let near = crate::util::nearest(tok, known, 2);
+                            out.push(finding_with(s, t, format!("`{tok}` is not an autocomplete token or field name"), crate::util::name_choices(&near, s, t, &|c| c.to_owned())));
                             bad = true;
                             break;
                         }
@@ -734,8 +827,16 @@ html_rule!(AutocompletePassword, "html/autocomplete-password", |dom, meta, ctx, 
         if e.value_lower("type").as_deref() != Some("password") {
             continue;
         }
+        // A form with two password fields is choosing a new one.
+        let form = dom.ancestors(i).find(|&j| dom.elems[j].is("form"));
+        let pair = form.is_some_and(|f| dom.descendants(f).into_iter().filter(|&d| dom.elems[d].is("input") && dom.elems[d].value_lower("type").as_deref() == Some("password")).count() >= 2);
+        let pick = |put: &dyn Fn(&str) -> TextEdit| {
+            crate::choice_edits(vec![crate::choice("new-password", pair, vec![put("new-password")]), crate::choice("current-password", !pair, vec![put("current-password")])])
+        };
         let Some(a) = e.attr("autocomplete") else {
-            out.push(dom.at_elem(i, "A password field needs `autocomplete`: `new-password` or `current-password`"));
+            let mut f = dom.at_elem(i, "A password field needs `autocomplete`: `new-password` or `current-password`");
+            f.edits = pick(&|v| add_attr(ctx.source, e, &format!("autocomplete=\"{v}\"")));
+            out.push(f);
             continue;
         };
         if a.is_dynamic() || a.value.is_none() {
@@ -745,7 +846,7 @@ html_rule!(AutocompletePassword, "html/autocomplete-password", |dom, meta, ctx, 
         let toks = tokens_with_offsets(&lower, a.value_start);
         let Some(&(s, t, v)) = toks.iter().find(|t| !(t.2.starts_with("section-") || t.2 == "shipping" || t.2 == "billing")) else { continue };
         if v == "off" {
-            out.push(finding(s, t, "Don't turn `autocomplete` off on a password field; say `new-password` or `current-password`"));
+            out.push(finding_with(s, t, "Don't turn `autocomplete` off on a password field; say `new-password` or `current-password`", pick(&|v| TextEdit::new(s, t, v))));
         } else if let Some(p) = &preferred
             && v != p
         {

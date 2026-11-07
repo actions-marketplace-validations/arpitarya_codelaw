@@ -8722,8 +8722,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to move the label, add a role or use another element is a design decision",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the label, which nothing reads, or `role=\"img\"`, which gives the element a name to carry; which was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8925,8 +8925,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the field asks for a new or the current password depends on the form",
+   "fix": "suggest",
+   "fix_reason": "the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9764,8 +9764,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the page title needs a human",
+   "fix": "suggest",
+   "fix_reason": "the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9788,7 +9788,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<title></title>",
+    "dont": "<title></title>\n<h1>Release notes</h1>",
     "do": "<title>Pricing — Acme</title>"
    },
    "ported_from": [
@@ -10052,8 +10052,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to unhide it, take it out of the tab order or remove it depends on the design",
+   "fix": "suggest",
+   "fix_reason": "the choices are `tabindex=\"-1\"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10216,8 +10216,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the image is decorative or informative is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10517,8 +10517,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming a map means updating the `usemap` that points at it",
+   "fix": "suggest",
+   "fix_reason": "the later <map> goes: `usemap` always finds the first, so it is never used; the reviewer confirms it wasn't meant to replace the first",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10564,8 +10564,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two names is right depends on what refers to the map",
+   "fix": "suggest",
+   "fix_reason": "the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10679,8 +10679,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "redirecting at once or removing the refresh changes the page's behaviour",
+   "fix": "suggest",
+   "fix_reason": "the choices are making the refresh instant, when it names a URL, or removing it; either changes when, or whether, the page moves on",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10722,7 +10722,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<meta http-equiv=\"refresh\" content=\"5;url=/next\">",
+    "dont": "<meta http-equiv=\"refresh\" content=\"5;url=/next\">\n<title>Moved</title>",
     "do": "<meta http-equiv=\"refresh\" content=\"0;url=/next\">"
    },
    "ported_from": [
@@ -10893,8 +10893,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the concrete role depends on what the element is",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11002,8 +11002,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the markup inside is still needed is the author's call",
+   "fix": "auto",
+   "fix_reason": "no browser codelaw targets reads conditional comments: a comment hidden from them goes, and the markers around content every browser shows go, the content kept, so the page renders the same",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11189,8 +11189,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming an id breaks the CSS, scripts and links that use it",
+   "fix": "suggest",
+   "fix_reason": "the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11502,8 +11502,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which one is the main content is a design decision",
+   "fix": "suggest",
+   "fix_reason": "every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11922,8 +11922,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the element changes, so CSS and scripts that select `input` need updating",
+   "fix": "suggest",
+   "fix_reason": "`<input type=\"submit\" value=\"V\">` becomes `<button type=\"submit\" value=\"V\">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11970,8 +11970,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "swapping the element changes its styles and scripts",
+   "fix": "suggest",
+   "fix_reason": "the element becomes the native one its role names, the role and an implied `tabindex=\"0\"` dropped (a button gets `type=\"button\"`); its styles and scripts may target the old tag, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12467,8 +12467,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether each header labels a row or a column is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are `scope=\"col\"` and `scope=\"row\"`, the default by where the header stands (the first row heads columns, a row's first cell heads the row); the reviewer confirms it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12623,8 +12623,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended character is not always clear",
+   "fix": "auto",
+   "fix_reason": "auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12682,8 +12682,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the right field name depends on what the field collects",
+   "fix": "suggest",
+   "fix_reason": "the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12699,7 +12699,7 @@
     }
    ],
    "options": {},
-   "dont": "<input type=\"email\" name=\"email\" autocomplete=\"mail\">",
+   "dont": "<input type=\"email\" name=\"email\" autocomplete=\"emial\">",
    "do": "<input type=\"email\" name=\"email\" autocomplete=\"email\">",
    "fix_steps": [
     "Pick the field name that describes the data (the WHATWG autofill list).",
@@ -12707,7 +12707,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<input type=\"email\" name=\"email\" autocomplete=\"mail\">\n<input type=\"number\" name=\"n\" autocomplete=\"email\">",
+    "dont": "<input type=\"email\" name=\"email\" autocomplete=\"emial\">",
     "do": "<input type=\"email\" name=\"email\" autocomplete=\"email\">\n<input type=\"number\" name=\"n\" autocomplete=\"off\">"
    },
    "ported_from": [
@@ -12734,8 +12734,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the id or the element is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12754,7 +12754,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<label for=\"name\">Name</label>\n<div id=\"name\"></div>",
+    "dont": "<label for=\"name\">Name</label>\n<div id=\"name\"></div>\n<input id=\"full-name\">",
     "do": "<label for=\"name\">Name</label>\n<input type=\"text\" id=\"name\">"
    },
    "ported_from": [

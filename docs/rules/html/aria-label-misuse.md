@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `allowAnyNamable` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to move the label, add a role or use another element is a design decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are removing the label, which nothing reads, or `role="img"`, which gives the element a name to carry; which was meant is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -180,6 +180,18 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 
 ```html
 <span aria-label="Close">×</span>
+```
+
+#### Fixed (remove)
+
+```html
+<span>×</span>
+```
+
+#### Fixed (role img)
+
+```html
+<span role="img" aria-label="Close">×</span>
 ```
 
 #### Do

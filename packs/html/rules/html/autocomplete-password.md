@@ -2,9 +2,8 @@
 id: html/autocomplete-password
 title: "Password fields say which password they want"
 languages: [html]
-fix: manual
-fix_reason: "whether the field asks for a new or the current password depends on the form"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise"
 stability: preview
 options:
   preferred: { type: "string", default: "", description: "one value every password field must use, such as `current-password`" }
@@ -33,6 +32,12 @@ native: html/autocomplete-password
 
 ```html
 <input type="password" name="pw">
+```
+
+#### Fixed
+
+```html
+<input autocomplete="current-password" type="password" name="pw">
 ```
 
 #### Do

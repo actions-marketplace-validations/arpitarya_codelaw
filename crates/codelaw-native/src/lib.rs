@@ -253,8 +253,10 @@ pub trait NativeRule: Send + Sync {
     /// `fix_reason:` states; `None` keeps the rule's. The finding never
     /// rises above the rule's own class. Called once per finding, after
     /// `check`, with the same context.
-    fn rung_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
-        None
+    /// By default, `Suggest` when `check` marked the finding's edits with
+    /// [`as_suggestion`].
+    fn rung_of(&self, finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
+        finding.edits.iter().any(|e| e.start == SUGGEST_AT && e.end == SUGGEST_AT).then_some(FixClass::Suggest)
     }
     /// A `suggest` finding's labelled alternatives (SR-LAW-4 decision 4),
     /// when the right edit is one of a few the code determines; the
@@ -265,6 +267,25 @@ pub trait NativeRule: Send + Sync {
     fn choices_of(&self, finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<FixChoice> {
         choices_in(&finding.edits)
     }
+}
+
+/// The marker that makes a finding of an `auto` rule a suggestion
+/// ([`as_suggestion`]): an edit no file can hold.
+const SUGGEST_AT: usize = usize::MAX - 1;
+
+/// A finding's edits marked as a suggestion: the default
+/// [`NativeRule::rung_of`] reports it as `suggest` (L4 decision 2), and
+/// [`plain_edits`] drops the marker before the edits are applied.
+pub fn as_suggestion(mut edits: Vec<TextEdit>) -> Vec<TextEdit> {
+    if !edits.is_empty() && !edits.iter().any(|e| e.start == CHOICE_AT) {
+        edits.push(TextEdit { start: SUGGEST_AT, end: SUGGEST_AT, text: String::new() });
+    }
+    edits
+}
+
+/// A finding's edits without the markers `check` wrote into them.
+pub fn plain_edits(edits: Vec<TextEdit>) -> Vec<TextEdit> {
+    edits.into_iter().filter(|e| e.start != SUGGEST_AT && e.start != CHOICE_AT).collect()
 }
 
 /// The marker opening one choice in a finding's `edits` ([`choice_edits`]):
@@ -295,6 +316,9 @@ pub fn choice_edits(choices: Vec<FixChoice>) -> Vec<TextEdit> {
 pub fn choices_in(edits: &[TextEdit]) -> Vec<FixChoice> {
     let mut out: Vec<FixChoice> = Vec::new();
     for e in edits {
+        if e.start == SUGGEST_AT {
+            continue;
+        }
         if e.start == CHOICE_AT && e.end == CHOICE_AT {
             let (flag, label) = e.text.split_at(1);
             out.push(FixChoice { label: label.to_owned(), default: flag == "1", edits: Vec::new() });

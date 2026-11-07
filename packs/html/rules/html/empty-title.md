@@ -2,9 +2,9 @@
 id: html/empty-title
 title: "<title> has text"
 languages: [html]
-fix: manual
-fix_reason: "the page title needs a human"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual"
+fix_exception: authored
 stability: preview
 ported_from: [html-validate/empty-title]
 tags: [a11y]
@@ -31,6 +31,14 @@ native: html/empty-title
 
 ```html
 <title></title>
+<h1>Release notes</h1>
+```
+
+#### Fixed
+
+```html
+<title>Release notes</title>
+<h1>Release notes</h1>
 ```
 
 #### Do

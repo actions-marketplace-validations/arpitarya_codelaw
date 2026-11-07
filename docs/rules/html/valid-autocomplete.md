@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right field name depends on what the field collects) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -133,8 +133,13 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 #### Don't
 
 ```html
-<input type="email" name="email" autocomplete="mail">
-<input type="number" name="n" autocomplete="email">
+<input type="email" name="email" autocomplete="emial">
+```
+
+#### Fixed
+
+```html
+<input type="email" name="email" autocomplete="email">
 ```
 
 #### Do

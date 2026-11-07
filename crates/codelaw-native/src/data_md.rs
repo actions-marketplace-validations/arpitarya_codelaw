@@ -1038,7 +1038,7 @@ impl NativeRule for LinkFragments {
                         let exact = anchors.iter().find(|a| **a == slug(&f) || a.to_lowercase() == f.to_lowercase());
                         finding_.edits = match exact {
                             Some(a) => vec![TextEdit::new(h, e, a.clone())],
-                            None => crate::util::name_choices(&crate::util::nearest(&f, anchors.iter().map(String::as_str), 2), h, e, &|c| c.to_owned()),
+                            None => crate::as_suggestion(crate::util::name_choices(&crate::util::nearest(&f, anchors.iter().map(String::as_str), 2), h, e, &|c| c.to_owned())),
                         };
                     }
                 }

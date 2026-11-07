@@ -2,9 +2,8 @@
 id: html/meta-refresh
 title: "Meta refresh redirects at once"
 languages: [html]
-fix: manual
-fix_reason: "redirecting at once or removing the refresh changes the page's behaviour"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are making the refresh instant, when it names a URL, or removing it; either changes when, or whether, the page moves on"
 stability: preview
 options:
   allowLongDelay: { type: "boolean", default: false, description: "allow delays over 20 hours (72,000 seconds)" }
@@ -34,6 +33,20 @@ native: html/meta-refresh
 
 ```html
 <meta http-equiv="refresh" content="5;url=/next">
+<title>Moved</title>
+```
+
+#### Fixed (instant)
+
+```html
+<meta http-equiv="refresh" content="0;url=/next">
+<title>Moved</title>
+```
+
+#### Fixed (remove)
+
+```html
+<title>Moved</title>
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `strict` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether each header labels a row or a column is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `scope="col"` and `scope="row"`, the default by where the header stands (the first row heads columns, a row's first cell heads the row); the reviewer confirms it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |

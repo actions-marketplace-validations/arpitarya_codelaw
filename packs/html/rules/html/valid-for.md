@@ -2,9 +2,9 @@
 id: html/valid-for
 title: "A label points at a control"
 languages: [html]
-fix: manual
-fix_reason: "either the id or the element is wrong, and only the author knows which"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/valid-for]
 since: 0.1.0
@@ -31,6 +31,15 @@ native: html/valid-for
 ```html
 <label for="name">Name</label>
 <div id="name"></div>
+<input id="full-name">
+```
+
+#### Fixed
+
+```html
+<label for="full-name">Name</label>
+<div id="name"></div>
+<input id="full-name">
 ```
 
 #### Do

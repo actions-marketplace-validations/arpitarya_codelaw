@@ -2,9 +2,9 @@
 id: html/prefer-button
 title: "Buttons are <button> elements"
 languages: [html]
-fix: manual
-fix_reason: "the element changes, so CSS and scripts that select `input` need updating"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`<input type=\"submit\" value=\"V\">` becomes `<button type=\"submit\" value=\"V\">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/prefer-button]
 since: 0.1.0
@@ -31,6 +31,12 @@ native: html/prefer-button
 
 ```html
 <input type="submit" value="Send">
+```
+
+#### Fixed
+
+```html
+<button type="submit" value="Send">Send</button>
 ```
 
 #### Do
