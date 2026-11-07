@@ -11,5 +11,7 @@ description = "ESLint's style-only rules and two TSLint ones, which no defect st
 "js/no-plusplus" = "warn"
 "js/no-ternary" = "warn"
 "js/no-undefined" = "warn"
+"js/sort-keys" = "warn"
+"js/sort-vars" = "warn"
 "js/switch-final-break" = "warn"
 "js/vars-on-top" = "warn"
