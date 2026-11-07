@@ -240,7 +240,7 @@ css_rule!(DeclarationBlockNoShorthandPropertyOverrides, "css/declaration-block-n
     let resets = table(ctx.data, "css/shorthands").and_then(|t| t.get("resets")).and_then(|v| v.as_object());
     for block in blocks(sheet) {
         let mut seen: BTreeMap<String, String> = BTreeMap::new();
-        for i in block {
+        for &i in &block {
             let p = prop(sheet, i, src);
             let lower = p.to_ascii_lowercase();
             let prefix = vendor_prefix(&lower).unwrap_or("").to_owned();
@@ -250,7 +250,20 @@ css_rule!(DeclarationBlockNoShorthandPropertyOverrides, "css/declaration-block-n
             for long in covered {
                 if let Some(original) = seen.get(&format!("{prefix}{long}")) {
                     let r = sheet.nodes[i].name;
-                    out.push(finding(r.0, r.1, format!("`{p}` resets `{original}`, which is declared before it")));
+                    // The overridden longhand never applies: delete it (the
+                    // default, rendering the same), or move it after.
+                    let earlier = block.iter().copied().find(|&k| prop(sheet, k, src) == original.as_str());
+                    let edits = earlier.map(|k| {
+                        let e = &sheet.nodes[k];
+                        let end = if src[e.end..].starts_with(';') { e.end + 1 } else { e.end };
+                        let after = if src[sheet.nodes[i].end..].starts_with(';') { sheet.nodes[i].end + 1 } else { sheet.nodes[i].end };
+                        let pad = crate::python_util::indent_at(src, e.start);
+                        crate::choice_edits(vec![
+                            crate::choice("delete the longhand", true, vec![crate::util::remove_css_statement(src, e.start, e.end)]),
+                            crate::choice("move it after", false, vec![crate::util::remove_css_statement(src, e.start, e.end), TextEdit::insert(after, format!("\n{pad}{}", &src[e.start..end]))]),
+                        ])
+                    });
+                    out.push(fixed(r.0, r.1, format!("`{p}` resets `{original}`, which is declared before it"), edits.unwrap_or_default()));
                 }
             }
             seen.insert(lower, p.to_owned());
@@ -435,7 +448,19 @@ css_rule!(FontFamilyNoMissingGenericFamilyKeyword, "css/font-family-no-missing-g
         if fams.iter().any(|(_, name, quoted)| (!quoted && keywords.contains(&name.to_ascii_lowercase())) || matches_any(&ignore, name)) {
             continue;
         }
-        out.push(finding(last.0.0, last.0.1, "No generic family (`sans-serif`, `serif`, `monospace`, …) ends this font list"));
+        // The generic family the listed fonts belong to, by a table of
+        // common fonts; the three main ones as choices, that one first.
+        let kind = |f: &str| -> Option<&'static str> {
+            let f = f.to_ascii_lowercase();
+            const SANS: &[&str] = &["arial", "helvetica", "helvetica neue", "verdana", "tahoma", "trebuchet ms", "segoe ui", "roboto", "inter", "open sans", "system-ui", "calibri"];
+            const SERIF: &[&str] = &["times", "times new roman", "georgia", "garamond", "palatino", "cambria", "baskerville"];
+            const MONO: &[&str] = &["courier", "courier new", "consolas", "menlo", "monaco", "fira code", "source code pro", "jetbrains mono"];
+            if SANS.contains(&f.as_str()) { Some("sans-serif") } else if SERIF.contains(&f.as_str()) { Some("serif") } else if MONO.contains(&f.as_str()) { Some("monospace") } else { None }
+        };
+        let guess = fams.iter().find_map(|(_, name, _)| kind(name));
+        let at = last.0.1;
+        let edits = crate::choice_edits(["sans-serif", "serif", "monospace"].iter().map(|g| crate::choice(*g, guess == Some(*g), vec![TextEdit::insert(at, format!(", {g}"))])).collect());
+        out.push(fixed(last.0.0, last.0.1, "No generic family (`sans-serif`, `serif`, `monospace`, …) ends this font list", edits));
     }
 });
 

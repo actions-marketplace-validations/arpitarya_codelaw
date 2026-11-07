@@ -4,7 +4,7 @@ title: "No password, token or secret written to a log"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which fields to keep in the log is a decision for the author"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: security
 stability: preview
 security: { cwe: [532], owasp: ["A09:2025"], severity: medium }
 since: 0.3.0

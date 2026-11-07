@@ -24,6 +24,54 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build the js half of W-139's remaining port rows, ~30–60 rules per change, `codelaw test` 0 failed, `rules lint` 0, `--fix-stats --check`.
+- **Done:** 48 `js/*` unicorn rules (32 `auto`, 11 `suggest`, 5 `manual`), each with four language examples and cases for the shapes a matcher gets wrong; 44 into `js/strict`; docs regenerated; counts in README, proposal §13, the item.
+- **Decided / left open:** rows are written in the narrowest form whose fix is certain, the page naming what upstream also covers; corpus counts not run (no corpus on this machine, not refetched).
+- **Mistakes:** an `if` pattern without `else` matched an `if` with one; caught by a case, every lone-`if` rewrite now excludes `else_clause`.
+- **Next:** the next js slice (SonarJS, ESLint core, unicorn's remainder).
+
+---
+
+## 2026-11-07 — W-105: check_types_* timed on the batched helper; budgets to the inbox  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator, after the push to `7cdb480b`) read `check_types_*` from the CI `perf` runs, or trigger them, and file the budget proposal by L8's method without setting it.
+- **Done:** `perf-plan` fails on `7cdb480b` (the `graph_*` operations are in no group; reported for W-126). Three timings come from `ci` 42316894936 on `3b53d1a8`, which has the batched helper: its nightly plus two re-runs of each `perf types-*` job. p95 cold 9,734 / 5,186 / 6,011 ms, warm 5,775 / 5,286 / 5,006 ms. Inbox row: cold 14,602 ms, warm 8,663 ms.
+- **Decided / left open:** setting the budgets is the decider's. Job re-runs of one commit stand in for three separate runs; the row says so.
+- **Mistakes:** none.
+- **Next:** the decider rules on the two budgets; the RC re-pin on 11-10.
+
+---
+
+## 2026-11-07 — W-173: `zip` unreachable, not removable; Ruff 0.0.21 to the decider  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-173 — the five Dependabot advisories on `zip` 8.6.0: exposure, removal first, else the bump to the decider.
+- **Done:** exposure read — codelaw calls only `format_module_source`; `zip` is used by ruff_db's `VendoredFileSystem` alone, reached only through a `ruff_db::Db` codelaw never builds. Removal impossible: `zip` is non-optional in ruff_db 0.0.18 and ruff_db non-optional in the formatter. ruff_db 0.0.21 takes `zip ^9.0.5`; the bump's crate delta measured in a scratch crate (item, step 2). No code or lock changed.
+- **Decided / left open:** inbox row — ratify Ruff `=0.0.21` (recommended), or dismiss the alerts as unreachable; W-173 🔴 `arpit`.
+- **Mistakes:** none.
+- **Next:** on the ruling, bump D-02, update the L11 ledger, run `cargo test -p codelaw-format` and the Python corpus.
+
+---
+
+## 2026-11-07 — W-126: `perf-plan` red on W-168's graph rows; a `graph` group  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) three measurement runs of the `perf` matrix on `7cdb480b`; then: fix `perf-plan`, red because W-168's six `graph_*` rows are in no group.
+- **Done:** dispatched `ci` 42348089566 and 42348205785 beside push 42347941992 — all on the red plan, so no `perf` numbers. Added the `graph` group (`--graph`); records and RELEASING at eight groups.
+- **Decided / left open:** graph rows stay ungated (unset, ruled 11-07). `spell` plans as gated now that its budget is set.
+- **Mistakes:** none of this session's; the plan's completeness check did its job.
+- **Next:** Arpit pushes; three runs; times into W-126.
+
+## 2026-11-07 — W-162 change 4: 33 rules re-judged `manual`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure; re-judge the waiting rules whose reason is an author's decision.
+- **Done:** 33 rules re-judged with their exception (the item's step 2a.3b lists them); 40 still name computed-edit. Removed the empty `.fux/runtime` leftovers of the landed worktree so `lockmaster start` could recreate it.
+- **Decided / left open:** kept pending where a closed set of choices exists (`valid-typeof`, aria rules, `google-font-display`), and `py/max-depth` and `react/display-name`, whose auto subsets are real edits.
+- **Mistakes:** none new.
+- **Next:** `merge-into` and the native fixes for the 40.
+
+---
+
 ## 2026-11-07 — W-169: the crash capture landed; the segfault not reproduced locally  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-169 — make the build legs save a core and a symbolized backtrace on a crash; stress `rules lint` on every pack locally under release and sanitizer builds; fix it if found.
@@ -85,10 +133,10 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
-- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)). scss landed (scss: auto 18 → 20, suggest 10 → 13, manual 23 → 18 (pending 9 → 4)). redux-toolkit landed (redux-toolkit: auto 0 → 0, suggest 0 → 5, manual 12 → 7 (pending 7 → 2)). react landed (react: auto 18 → 19, suggest 39 → 46, manual 94 → 86 (pending 27 → 19)). stencil landed (stencil: auto 4 → 8, suggest 0 → 4, manual 14 → 6 (pending 10 → 2)). security-html landed (security-html: auto 1 → 1, suggest 6 → 15, manual 12 → 3 (pending 9 → 0)). data landed (data: auto 11 → 17, suggest 8 → 15, manual 28 → 15 (pending 20 → 7)). js landed (js: auto 160 → 162, suggest 167 → 181, manual 255 → 239 (pending 60 → 44)). html landed (html: auto 12 → 14, suggest 11 → 27, manual 62 → 44 (pending 32 → 14)). html landed (html: auto 14 → 17, suggest 27 → 35, manual 44 → 33 (pending 14 → 2)). css landed (css: auto 36 → 39, suggest 16 → 30, manual 94 → 77 (pending 37 → 20)).
-- **Decided / left open:** none yet.
-- **Mistakes:** none.
-- **Next:** the next pack.
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)). scss landed (scss: auto 18 → 20, suggest 10 → 13, manual 23 → 18 (pending 9 → 4)). redux-toolkit landed (redux-toolkit: auto 0 → 0, suggest 0 → 5, manual 12 → 7 (pending 7 → 2)). react landed (react: auto 18 → 19, suggest 39 → 46, manual 94 → 86 (pending 27 → 19)). stencil landed (stencil: auto 4 → 8, suggest 0 → 4, manual 14 → 6 (pending 10 → 2)). security-html landed (security-html: auto 1 → 1, suggest 6 → 15, manual 12 → 3 (pending 9 → 0)). data landed (data: auto 11 → 17, suggest 8 → 15, manual 28 → 15 (pending 20 → 7)). js landed (js: auto 160 → 162, suggest 167 → 181, manual 255 → 239 (pending 60 → 44)). html landed (html: auto 12 → 14, suggest 11 → 27, manual 62 → 44 (pending 32 → 14)). html landed (html: auto 14 → 17, suggest 27 → 35, manual 44 → 33 (pending 14 → 2)). css landed (css: auto 36 → 39, suggest 16 → 30, manual 94 → 77 (pending 37 → 20)). css landed (css: auto 39 → 40, suggest 30 → 33, manual 77 → 73 (pending 20 → 16)).
+- **Decided / left open:** `html/element-permitted-content` re-judged `manual` (restructure): it finds content-model violations the parser keeps. `data/codeowners-coverage` marked `needs cross-file (W-162)`: its edit is in CODEOWNERS, which `fix` never writes. A guessed edit of an `auto` native rule is marked `as_suggestion` (SR-ARCHITECTURE 15b); the engine strips the marker (`lint.rs`). Unfixable Don't examples moved to the cases files as manual cases.
+- **Mistakes:** the shared `target/debug/codelaw` was once another worktree's build, so a test passed on code it didn't hold; tests now run a private copy taken right after each build (LESSONS). The first submit left the `.fux` reindex in the worktree; cleared by hand before each restart.
+- **Next:** the 60 native rules left — css 8 (string-no-newline, keyframe-block-no-duplicate-selectors, declaration-block-no-redundant-longhand-properties, no-descending-specificity, named-grid-areas-no-invalid, at-rule-prelude-no-invalid, media-query-no-invalid, syntax-string-no-invalid) and python 52; then close W-156.
 
 ---
 

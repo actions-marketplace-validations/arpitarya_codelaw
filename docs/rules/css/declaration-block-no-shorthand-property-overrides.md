@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value is meant can't be known from the code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are deleting the overridden longhand (the default, which renders the same) or moving it after the shorthand, which makes it apply) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/declaration-block-no-shorthand-property-overrides` |
@@ -138,6 +138,14 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+a {
+  padding: 20px;
+}
+```
+
 #### Do
 
 ```css
@@ -153,6 +161,14 @@ a {
 ```scss
 a {
   padding-left: 10px;
+  padding: 20px;
+}
+```
+
+#### Fixed
+
+```scss
+a {
   padding: 20px;
 }
 ```

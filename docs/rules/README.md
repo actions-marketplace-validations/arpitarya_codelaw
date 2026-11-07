@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2121 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2169 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 582 | 12 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 630 | 12 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
@@ -229,6 +229,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-array-sort`](js/no-array-sort.md) | toSorted() rather than sort() | `suggest` | — | `js/strict` |
 | [`js/no-array-sort-for-min-max`](js/no-array-sort-for-min-max.md) | Math.min/max rather than sorting for one value | `manual` | — | `js/strict` |
 | [`js/no-array-splice`](js/no-array-splice.md) | toSpliced() rather than splice() for a copy | `manual` | — | `js/strict` |
+| [`js/no-async-iterator-callback`](js/no-async-iterator-callback.md) | No async callback to forEach, filter, some, every or find | `manual` | — | `js/strict` |
 | [`js/no-async-promise-executor`](js/no-async-promise-executor.md) | A Promise executor is not an async function | `suggest` | — | `js/recommended` |
 | [`js/no-async-promise-finally`](js/no-async-promise-finally.md) | No async callback in finally | `manual` | — | `js/strict` |
 | [`js/no-await-expression-member`](js/no-await-expression-member.md) | No member access on an await expression | `manual` | — | `js/strict` |
@@ -270,6 +271,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-dupe-else-if`](js/no-dupe-else-if.md) | No two conditions in an if/else-if chain are the same | `manual` | — | `js/recommended` |
 | [`js/no-dupe-keys`](js/no-dupe-keys.md) | No two keys in an object literal are the same | `suggest` | — | `js/recommended` |
 | [`js/no-duplicate-case`](js/no-duplicate-case.md) | No two case labels in a switch are the same | `suggest` | — | `js/recommended` |
+| [`js/no-duplicate-if-branches`](js/no-duplicate-if-branches.md) | No adjacent if branches with the same body | `suggest` | — | `js/strict` |
 | [`js/no-duplicate-imports`](js/no-duplicate-imports.md) | One import per module | `manual` | — | *[rules] only* |
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
@@ -315,6 +317,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `suggest` | — | `js/taste` |
 | [`js/no-inner-declarations`](js/no-inner-declarations.md) | No function declaration in a nested block | `manual` | — | *[rules] only* |
 | [`js/no-instanceof-builtins`](js/no-instanceof-builtins.md) | Array.isArray rather than instanceof Array | `suggest` | — | `js/strict` |
+| [`js/no-invalid-boolean-attribute-value`](js/no-invalid-boolean-attribute-value.md) | No "false" value for a boolean attribute | `suggest` | — | `js/strict` |
+| [`js/no-invalid-dom-token`](js/no-invalid-dom-token.md) | No space inside one classList token | `suggest` | — | `js/strict` |
+| [`js/no-invalid-fetch-options`](js/no-invalid-fetch-options.md) | No body on a GET or HEAD request | `manual` | — | `js/strict` |
+| [`js/no-invalid-property-descriptor`](js/no-invalid-property-descriptor.md) | No property descriptor with both a value and an accessor | `manual` | — | `js/strict` |
 | [`js/no-invalid-regexp`](js/no-invalid-regexp.md) | RegExp() is given a valid pattern and flags | `manual` | — | `js/recommended` |
 | [`js/no-invalid-remove-event-listener`](js/no-invalid-remove-event-listener.md) | removeEventListener takes a reference | `manual` | — | `js/strict` |
 | [`js/no-invalid-url-protocol-comparison`](js/no-invalid-url-protocol-comparison.md) | url.protocol ends with a colon | `suggest` | — | `js/strict` |
@@ -337,6 +343,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `auto` | — | *[rules] only* |
 | [`js/no-multi-str`](js/no-multi-str.md) | No multiline strings with a backslash | `manual` | — | *[rules] only* |
 | [`js/no-named-default`](js/no-named-default.md) | import x rather than import { default as x } | `auto` | — | `js/strict` |
+| [`js/no-negated-comparison`](js/no-negated-comparison.md) | No negated equality comparison | `auto` | — | `js/strict` |
 | [`js/no-negated-condition`](js/no-negated-condition.md) | No negated condition with an else | `auto` | — | `js/strict` |
 | [`js/no-negation-in-equality-check`](js/no-negation-in-equality-check.md) | No !a === b | `manual` | — | `js/strict` |
 | [`js/no-nested-assignment`](js/no-nested-assignment.md) | No assignment inside an expression | `manual` | — | `js/sonarjs` |
@@ -361,6 +368,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-os-command-from-path`](js/no-os-command-from-path.md) | Run commands by absolute path | `manual` | — | `js/sonarjs` |
 | [`js/no-param-reassign`](js/no-param-reassign.md) | Parameters are not reassigned | `manual` | — | *[rules] only* |
 | [`js/no-plusplus`](js/no-plusplus.md) | No ++ or -- | `manual` | — | `js/taste` |
+| [`js/no-prevent-default-in-passive-listener`](js/no-prevent-default-in-passive-listener.md) | No preventDefault() in a passive listener | `suggest` | — | `js/strict` |
 | [`js/no-promise-executor-return`](js/no-promise-executor-return.md) | A promise executor returns nothing | `auto` | — | *[rules] only* |
 | [`js/no-proto`](js/no-proto.md) | No __proto__ | `suggest` | — | *[rules] only* |
 | [`js/no-prototype-builtins`](js/no-prototype-builtins.md) | No calling Object.prototype methods on the object itself | `suggest` | — | `js/recommended` |
@@ -373,6 +381,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-return-array-push`](js/no-return-array-push.md) | No return of push() | `manual` | — | `js/strict` |
 | [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `auto` | — | *[rules] only* |
 | [`js/no-same-argument-assert`](js/no-same-argument-assert.md) | No assertion of a value against itself | `manual` | — | `js/sonarjs` |
+| [`js/no-selector-as-dom-name`](js/no-selector-as-dom-name.md) | No selector syntax where a DOM name is expected | `auto` | — | `js/strict` |
 | [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `suggest` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-self-compare`](js/no-self-compare.md) | No comparing a value with itself | `auto` | — | *[rules] only* |
 | [`js/no-sequences`](js/no-sequences.md) | No comma operator | `auto` | — | *[rules] only* |
@@ -393,6 +402,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-this-in-exported-function`](js/no-this-in-exported-function.md) | No this in an exported function | `manual` | — | *[rules] only* |
 | [`js/no-this-in-static`](js/no-this-in-static.md) | The class name, not this, in a static method | `suggest` | — | `js/recommended` |
 | [`js/no-throw-literal`](js/no-throw-literal.md) | Throw Error objects | `suggest` | — | *[rules] only* |
+| [`js/no-transition-all`](js/no-transition-all.md) | No transition of every property | `manual` | — | `js/strict` |
 | [`js/no-typeof-undefined`](js/no-typeof-undefined.md) | x === undefined rather than typeof x === "undefined" | `suggest` | — | `js/strict` |
 | [`js/no-unassigned-vars`](js/no-unassigned-vars.md) | A variable that is read is also assigned | `manual` | — | `js/recommended` |
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `manual` | `env`, `globals`, `typeof` | `js/recommended` |
@@ -405,12 +415,16 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unnecessary-array-flat-map`](js/no-unnecessary-array-flat-map.md) | flat() rather than flatMap(x => x) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-array-splice-count`](js/no-unnecessary-array-splice-count.md) | No length as splice count | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-await`](js/no-unnecessary-await.md) | No await on a value that is not a promise | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-boolean-comparison`](js/no-unnecessary-boolean-comparison.md) | No comparison of a boolean expression with true or false | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | Pass the function, not a wrapper | `suggest` | — | *[rules] only* |
+| [`js/no-unnecessary-fetch-options`](js/no-unnecessary-fetch-options.md) | No method: "GET" in fetch options | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-nested-ternary`](js/no-unnecessary-nested-ternary.md) | No nested ternary that repeats a branch | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-slice-end`](js/no-unnecessary-slice-end.md) | No slice(a, x.length) | `auto` | — | `js/strict` |
 | [`js/no-unneeded-ternary`](js/no-unneeded-ternary.md) | No x ? true : false | `suggest` | — | *[rules] only* |
 | [`js/no-unreachable`](js/no-unreachable.md) | No code after a return, throw, break or continue | `suggest` | — | `js/recommended` |
 | [`js/no-unreachable-loop`](js/no-unreachable-loop.md) | A loop that always exits on its first pass | `manual` | — | *[rules] only* |
 | [`js/no-unreadable-array-destructuring`](js/no-unreadable-array-destructuring.md) | No consecutive holes in array destructuring | `manual` | — | `js/strict` |
+| [`js/no-unreadable-iife`](js/no-unreadable-iife.md) | No arrow IIFE with a parenthesized body | `manual` | — | `js/strict` |
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `suggest` | — | `js/recommended` |
@@ -433,10 +447,13 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-constructor`](js/no-useless-constructor.md) | No constructor that only calls super | `suggest` | — | *[rules] only* |
 | [`js/no-useless-continue`](js/no-useless-continue.md) | No continue at the end of a loop | `auto` | — | `js/strict`, `js/sonarjs` |
 | [`js/no-useless-continue-biome`](js/no-useless-continue-biome.md) | No continue at the end of a loop | `auto` | — | `js/recommended` |
+| [`js/no-useless-delete-check`](js/no-useless-delete-check.md) | No existence check before a delete | `auto` | — | `js/strict` |
 | [`js/no-useless-error-capture-stack-trace`](js/no-useless-error-capture-stack-trace.md) | No captureStackTrace in an Error subclass | `suggest` | — | `js/strict` |
 | [`js/no-useless-escape`](js/no-useless-escape.md) | No backslash that changes nothing | `auto` | — | `js/recommended` |
 | [`js/no-useless-fallback-in-spread`](js/no-useless-fallback-in-spread.md) | No \|\| {} in an object spread | `auto` | — | `js/strict` |
 | [`js/no-useless-increment`](js/no-useless-increment.md) | No x = x++ | `manual` | — | `js/sonarjs` |
+| [`js/no-useless-length-check`](js/no-useless-length-check.md) | No length check before every() or some() | `auto` | — | `js/strict` |
+| [`js/no-useless-override`](js/no-useless-override.md) | No method override that only calls super | `auto` | — | `js/strict` |
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
 | [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
@@ -450,6 +467,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-void-type-return`](js/no-void-type-return.md) | A void function returns no value | `manual` | — | `js/recommended` |
 | [`js/no-weak-cipher`](js/no-weak-cipher.md) | No weak cipher | `manual` | — | `js/sonarjs` |
 | [`js/no-with`](js/no-with.md) | No with statements | `manual` | — | `js/recommended` |
+| [`js/no-xor-as-exponentiation`](js/no-xor-as-exponentiation.md) | No ^ where a power was meant | `suggest` | — | `js/strict` |
 | [`js/no-zero-fractions`](js/no-zero-fractions.md) | No zero fraction on a number | `auto` | — | `js/strict` |
 | [`js/non-existent-operator`](js/non-existent-operator.md) | No =+, =- or =! | `manual` | — | `js/sonarjs` |
 | [`js/number-arg-out-of-range`](js/number-arg-out-of-range.md) | Number method argument out of range | `manual` | — | *[rules] only* |
@@ -458,15 +476,20 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/object-shorthand`](js/object-shorthand.md) | { x } rather than { x: x } | `auto` | — | *[rules] only* |
 | [`js/operator-assignment`](js/operator-assignment.md) | x += 1 rather than x = x + 1 | `auto` | — | `js/strict` |
 | [`js/prefer-add-event-listener`](js/prefer-add-event-listener.md) | addEventListener rather than an on-property | `manual` | — | `js/strict` |
+| [`js/prefer-add-event-listener-options`](js/prefer-add-event-listener-options.md) | An options object rather than a capture boolean | `auto` | — | `js/strict` |
 | [`js/prefer-array-find`](js/prefer-array-find.md) | find() rather than filter()\[0\] | `auto` | — | `js/strict` |
 | [`js/prefer-array-flat`](js/prefer-array-flat.md) | flat() rather than concat spreading | `auto` | — | `js/strict` |
 | [`js/prefer-array-flat-map`](js/prefer-array-flat-map.md) | flatMap() rather than map().flat() | `auto` | — | `js/strict` |
 | [`js/prefer-array-from-map`](js/prefer-array-from-map.md) | Array.from(x, f) rather than Array.from(x).map(f) | `suggest` | — | `js/strict` |
 | [`js/prefer-array-index-of`](js/prefer-array-index-of.md) | indexOf() rather than findIndex(x => x === v) | `auto` | — | `js/strict` |
+| [`js/prefer-array-last-methods`](js/prefer-array-last-methods.md) | findLast() rather than reversing a copy to find | `suggest` | — | `js/strict` |
 | [`js/prefer-array-some`](js/prefer-array-some.md) | some() rather than find() in a boolean test | `auto` | — | `js/strict` |
 | [`js/prefer-arrow-callback`](js/prefer-arrow-callback.md) | Arrow functions for callbacks | `manual` | — | *[rules] only* |
 | [`js/prefer-at`](js/prefer-at.md) | at(-1) rather than \[a.length - 1\] | `auto` | — | `js/strict` |
+| [`js/prefer-bigint-literals`](js/prefer-bigint-literals.md) | BigInt literal rather than BigInt() of a constant | `auto` | — | `js/strict` |
 | [`js/prefer-blob-reading-methods`](js/prefer-blob-reading-methods.md) | blob.text() rather than FileReader | `manual` | — | `js/strict` |
+| [`js/prefer-block-statement-over-iife`](js/prefer-block-statement-over-iife.md) | A block rather than an arrow IIFE used only for scope | `auto` | — | `js/strict` |
+| [`js/prefer-classlist-toggle`](js/prefer-classlist-toggle.md) | classList.toggle() rather than add or remove by a condition | `auto` | — | `js/strict` |
 | [`js/prefer-code-point`](js/prefer-code-point.md) | codePointAt rather than charCodeAt | `suggest` | — | `js/strict` |
 | [`js/prefer-const`](js/prefer-const.md) | const for variables that are never reassigned | `auto` | — | `js/typescript` |
 | [`js/prefer-date-now`](js/prefer-date-now.md) | Date.now() rather than new Date().getTime() | `auto` | — | `js/strict` |
@@ -476,8 +499,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-dom-node-remove`](js/prefer-dom-node-remove.md) | node.remove() rather than parent.removeChild(node) | `suggest` | — | `js/strict` |
 | [`js/prefer-dom-node-replace-children`](js/prefer-dom-node-replace-children.md) | replaceChildren() rather than innerHTML = "" | `auto` | — | `js/strict` |
 | [`js/prefer-dom-node-text-content`](js/prefer-dom-node-text-content.md) | textContent rather than innerText | `suggest` | — | `js/strict` |
+| [`js/prefer-error-is-error`](js/prefer-error-is-error.md) | Error.isError() rather than instanceof Error | `auto` | — | *[rules] only* |
 | [`js/prefer-event-target`](js/prefer-event-target.md) | EventTarget rather than EventEmitter | `manual` | — | `js/strict` |
 | [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
+| [`js/prefer-flat-math-min-max`](js/prefer-flat-math-min-max.md) | One Math.min or Math.max call rather than nested ones | `auto` | — | `js/strict` |
+| [`js/prefer-global-this`](js/prefer-global-this.md) | globalThis rather than global | `auto` | — | `js/strict` |
 | [`js/prefer-has-check`](js/prefer-has-check.md) | has() rather than get() !== undefined | `suggest` | — | `js/strict` |
 | [`js/prefer-import-meta-properties`](js/prefer-import-meta-properties.md) | import.meta.filename rather than fileURLToPath(import.meta.url) | `suggest` | — | *[rules] only* |
 | [`js/prefer-includes`](js/prefer-includes.md) | includes() rather than indexOf() !== -1 | `suggest` | — | `js/strict` |
@@ -496,25 +522,36 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-named-capture-group`](js/prefer-named-capture-group.md) | Name capture groups | `manual` | — | *[rules] only* |
 | [`js/prefer-native-coercion-functions`](js/prefer-native-coercion-functions.md) | String rather than x => String(x) | `suggest` | — | `js/strict` |
 | [`js/prefer-negative-index`](js/prefer-negative-index.md) | slice(-n) rather than slice(a.length - n) | `auto` | — | `js/strict` |
+| [`js/prefer-number-is-safe-integer`](js/prefer-number-is-safe-integer.md) | Number.isSafeInteger() rather than its two halves | `suggest` | — | `js/strict` |
 | [`js/prefer-number-properties`](js/prefer-number-properties.md) | Number.isNaN rather than isNaN | `suggest` | — | `js/strict` |
 | [`js/prefer-numeric-literals`](js/prefer-numeric-literals.md) | 0b101 rather than parseInt("101", 2) | `auto` | — | *[rules] only* |
+| [`js/prefer-object-from-entries`](js/prefer-object-from-entries.md) | Object.fromEntries() rather than reducing pairs | `auto` | — | `js/strict` |
 | [`js/prefer-object-has-own`](js/prefer-object-has-own.md) | Object.hasOwn rather than hasOwnProperty.call | `auto` | — | *[rules] only* |
 | [`js/prefer-object-spread`](js/prefer-object-spread.md) | { ...a } rather than Object.assign({}, a) | `suggest` | — | *[rules] only* |
 | [`js/prefer-optional-catch-binding`](js/prefer-optional-catch-binding.md) | Omit an unused catch binding | `auto` | — | `js/strict` |
 | [`js/prefer-private-class-fields`](js/prefer-private-class-fields.md) | #private rather than _private | `manual` | — | `js/strict` |
 | [`js/prefer-promise-reject-errors`](js/prefer-promise-reject-errors.md) | Reject with an Error | `suggest` | — | *[rules] only* |
 | [`js/prefer-promise-shorthand`](js/prefer-promise-shorthand.md) | Promise.resolve rather than new Promise(r => r(x)) | `suggest` | — | `js/sonarjs` |
+| [`js/prefer-promise-static-methods`](js/prefer-promise-static-methods.md) | Promise.resolve() or Promise.reject() rather than new Promise | `auto` | — | `js/strict` |
+| [`js/prefer-promise-try`](js/prefer-promise-try.md) | Promise.try() rather than a promise that resolves to a call | `auto` | — | `js/strict` |
 | [`js/prefer-prototype-methods`](js/prefer-prototype-methods.md) | Array.prototype.x rather than \[\].x | `auto` | — | `js/strict` |
 | [`js/prefer-query-selector`](js/prefer-query-selector.md) | querySelector rather than getElementById | `suggest` | — | `js/strict` |
 | [`js/prefer-queue-microtask`](js/prefer-queue-microtask.md) | queueMicrotask rather than Promise.resolve().then | `suggest` | — | `js/strict` |
+| [`js/prefer-reflect-apply`](js/prefer-reflect-apply.md) | Reflect.apply() rather than Function#apply with no receiver | `auto` | — | `js/strict` |
 | [`js/prefer-regex-literals`](js/prefer-regex-literals.md) | A regex literal rather than new RegExp("…") | `suggest` | — | *[rules] only* |
+| [`js/prefer-regexp-escape`](js/prefer-regexp-escape.md) | RegExp.escape() rather than a hand-written escape | `auto` | — | *[rules] only* |
 | [`js/prefer-regexp-test`](js/prefer-regexp-test.md) | regex.test() rather than match() in a condition | `auto` | — | `js/strict` |
 | [`js/prefer-response-static-json`](js/prefer-response-static-json.md) | Response.json rather than new Response(JSON.stringify()) | `suggest` | — | `js/strict` |
 | [`js/prefer-rest-params`](js/prefer-rest-params.md) | Rest parameters instead of arguments | `manual` | — | `js/typescript` |
+| [`js/prefer-set-methods`](js/prefer-set-methods.md) | Set methods rather than filtering a spread | `suggest` | — | `js/strict` |
+| [`js/prefer-set-size`](js/prefer-set-size.md) | Set size rather than spreading to an array | `auto` | — | `js/strict` |
+| [`js/prefer-short-escape-sequences`](js/prefer-short-escape-sequences.md) | Short escape rather than a hex or Unicode one for a control character | `auto` | — | `js/strict` |
 | [`js/prefer-single-boolean-return`](js/prefer-single-boolean-return.md) | Return the condition, not true/false | `manual` | — | `js/sonarjs` |
 | [`js/prefer-single-call`](js/prefer-single-call.md) | One push() with several items | `manual` | — | `js/strict` |
+| [`js/prefer-split-limit`](js/prefer-split-limit.md) | A limit on split() when only the first parts are read | `auto` | — | `js/strict` |
 | [`js/prefer-spread`](js/prefer-spread.md) | Spread instead of .apply() | `auto` | — | `js/typescript` |
 | [`js/prefer-spread-unicorn`](js/prefer-spread-unicorn.md) | \[...x\] rather than Array.from(x) | `suggest` | — | `js/strict` |
+| [`js/prefer-string-raw`](js/prefer-string-raw.md) | String.raw for a string of escaped backslashes | `auto` | — | `js/strict` |
 | [`js/prefer-string-repeat`](js/prefer-string-repeat.md) | s.repeat(n) rather than Array(n + 1).join(s) | `auto` | — | `js/strict` |
 | [`js/prefer-string-replace-all`](js/prefer-string-replace-all.md) | replaceAll() rather than replace with a /g regex | `auto` | — | `js/strict` |
 | [`js/prefer-string-slice`](js/prefer-string-slice.md) | slice() rather than substr() | `auto` | — | `js/strict` |
@@ -522,9 +559,18 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-string-trim-start-end`](js/prefer-string-trim-start-end.md) | trimStart() rather than trimLeft() | `auto` | — | `js/strict` |
 | [`js/prefer-structured-clone`](js/prefer-structured-clone.md) | structuredClone rather than JSON round-trip | `suggest` | — | `js/strict` |
 | [`js/prefer-template`](js/prefer-template.md) | Template literal rather than string concatenation | `manual` | — | *[rules] only* |
+| [`js/prefer-ternary`](js/prefer-ternary.md) | A ternary for an if-else that only returns or assigns | `auto` | — | `js/strict` |
 | [`js/prefer-then-catch`](js/prefer-then-catch.md) | .catch() rather than a second then() argument | `manual` | — | `js/strict` |
+| [`js/prefer-toggle-attribute`](js/prefer-toggle-attribute.md) | toggleAttribute() rather than setting or removing by a condition | `auto` | — | `js/strict` |
 | [`js/prefer-top-level-await`](js/prefer-top-level-await.md) | Top-level await rather than an async IIFE | `manual` | — | `js/strict` |
+| [`js/prefer-type-error`](js/prefer-type-error.md) | TypeError for a failed type check | `auto` | — | `js/strict` |
+| [`js/prefer-uint8array-base64`](js/prefer-uint8array-base64.md) | Uint8Array base64 methods rather than btoa and atob | `suggest` | — | *[rules] only* |
+| [`js/prefer-uint8array-hex`](js/prefer-uint8array-hex.md) | Uint8Array toHex() rather than mapping bytes to hex | `suggest` | — | *[rules] only* |
+| [`js/prefer-unary-minus`](js/prefer-unary-minus.md) | Unary minus rather than multiplying by -1 | `auto` | — | `js/strict` |
+| [`js/prefer-url-can-parse`](js/prefer-url-can-parse.md) | URL.canParse() rather than try-catch around new URL() | `auto` | — | `js/strict` |
+| [`js/prefer-url-href`](js/prefer-url-href.md) | url.href rather than toString() on a new URL | `auto` | — | `js/strict` |
 | [`js/prefer-while`](js/prefer-while.md) | while rather than for(;;) with only a condition | `auto` | — | `js/sonarjs` |
+| [`js/prefer-while-loop-condition`](js/prefer-while-loop-condition.md) | The loop condition in the while, not a break at the top | `auto` | — | `js/strict` |
 | [`js/preserve-caught-error`](js/preserve-caught-error.md) | A rethrown error keeps the caught one as its cause | `suggest` | — | `js/recommended` |
 | [`js/promise-always-return`](js/promise-always-return.md) | A then callback returns or throws | `suggest` | — | `js/recommended` |
 | [`js/promise-avoid-new`](js/promise-avoid-new.md) | No new Promise | `manual` | — | *[rules] only* |
@@ -626,9 +672,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/relative-url-style`](js/relative-url-style.md) | No ./ in a relative URL | `manual` | — | `js/strict` |
 | [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/require-array-join-separator`](js/require-array-join-separator.md) | join() names its separator | `auto` | — | `js/strict` |
+| [`js/require-array-sort-compare`](js/require-array-sort-compare.md) | A compare function for sort() | `suggest` | — | `js/strict` |
 | [`js/require-await`](js/require-await.md) | An async function awaits something | `suggest` | — | *[rules] only* |
 | [`js/require-css-escape`](js/require-css-escape.md) | Escape values in a selector | `manual` | — | `js/strict` |
 | [`js/require-module-attributes`](js/require-module-attributes.md) | JSON imports say with { type: "json" } | `suggest` | — | `js/strict` |
+| [`js/require-module-specifiers`](js/require-module-specifiers.md) | No empty import specifier list | `auto` | — | `js/strict` |
 | [`js/require-number-to-fixed-digits-argument`](js/require-number-to-fixed-digits-argument.md) | toFixed() names its digits | `auto` | — | `js/strict` |
 | [`js/require-passive-events`](js/require-passive-events.md) | Touch and wheel listeners are passive | `suggest` | — | `js/strict` |
 | [`js/require-post-message-target-origin`](js/require-post-message-target-origin.md) | postMessage names its target origin | `manual` | — | *[rules] only* |
@@ -1078,7 +1126,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/declaration-block-no-duplicate-custom-properties`](css/declaration-block-no-duplicate-custom-properties.md) | No custom property declared twice in one block | `auto` | — | `css/recommended` |
 | [`css/declaration-block-no-duplicate-properties`](css/declaration-block-no-duplicate-properties.md) | No property declared twice in one block | `suggest` | `ignore`, `ignoreProperties` | `css/recommended` |
 | [`css/declaration-block-no-redundant-longhand-properties`](css/declaration-block-no-redundant-longhand-properties.md) | Shorthands instead of complete sets of longhands | `manual` | — | `css/standard` |
-| [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `manual` | — | `css/recommended` |
+| [`css/declaration-block-no-shorthand-property-overrides`](css/declaration-block-no-shorthand-property-overrides.md) | No shorthand after a longhand it resets | `suggest` | — | `css/recommended` |
 | [`css/declaration-property-max-values`](css/declaration-property-max-values.md) | No declaration with more values than the project allows | `manual` | `max` | *[rules] only* |
 | [`css/declaration-property-unit-allowed-list`](css/declaration-property-unit-allowed-list.md) | Only units the project allows | `manual` | `list` | *[rules] only* |
 | [`css/declaration-property-unit-disallowed-list`](css/declaration-property-unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
@@ -1089,7 +1137,7 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/display-notation`](css/display-notation.md) | `display` in its short form | `auto` | — | *[rules] only* |
 | [`css/font-family-name-quotes`](css/font-family-name-quotes.md) | Font family names are quoted where they should be | `auto` | — | *[rules] only* |
 | [`css/font-family-no-duplicate-names`](css/font-family-no-duplicate-names.md) | No font family listed twice | `auto` | — | `css/recommended` |
-| [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `manual` | `ignoreFontFamilies` | `css/recommended` |
+| [`css/font-family-no-missing-generic-family-keyword`](css/font-family-no-missing-generic-family-keyword.md) | Font lists end with a generic family | `suggest` | `ignoreFontFamilies` | `css/recommended` |
 | [`css/font-weight-notation`](css/font-weight-notation.md) | Font weights are numeric | `auto` | `mode` | *[rules] only* |
 | [`css/function-allowed-list`](css/function-allowed-list.md) | Only functions the project allows | `manual` | `list` | *[rules] only* |
 | [`css/function-calc-no-unspaced-operator`](css/function-calc-no-unspaced-operator.md) | Spaces around `+` and `-` in math functions | `suggest` | — | `css/recommended` |
@@ -1125,12 +1173,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/nesting-selector-no-missing-scoping-root`](css/nesting-selector-no-missing-scoping-root.md) | Nesting selectors have a parent | `suggest` | — | `css/recommended` |
 | [`css/no-descending-specificity`](css/no-descending-specificity.md) | Less specific selectors come first | `manual` | `ignore` | `css/recommended` |
 | [`css/no-duplicate-at-import-rules`](css/no-duplicate-at-import-rules.md) | No stylesheet imported twice | `suggest` | — | `css/recommended` |
-| [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `manual` | — | `css/recommended` |
+| [`css/no-duplicate-selector`](css/no-duplicate-selector.md) | No selector declared twice | `auto` | — | `css/recommended` |
 | [`css/no-empty-block`](css/no-empty-block.md) | No empty blocks | `auto` | — | `css/recommended` |
 | [`css/no-empty-source`](css/no-empty-source.md) | No empty stylesheets | `manual` | — | `css/recommended` |
 | [`css/no-important`](css/no-important.md) | No `!important` | `suggest` | — | `css/conventions` |
 | [`css/no-invalid-double-slash-comments`](css/no-invalid-double-slash-comments.md) | No `//` comments | `auto` | — | `css/recommended` |
-| [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `manual` | `ignoreAtRules` | `css/recommended` |
+| [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `suggest` | — | `css/recommended` |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
 | [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |

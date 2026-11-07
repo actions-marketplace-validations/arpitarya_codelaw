@@ -11,7 +11,7 @@
 #   perf      L8's gate (W-19): `codelaw bench` on the reference workload against
 #             perf/budgets.toml — fails only on a budget the decider SET; an
 #             unset one (a proposal) is reported in the job summary. Split (W-126,
-#             ruled 2026-10-30): perf-plan · `perf <group>` ×7 on `build linux-x64-gnu`'s
+#             ruled 2026-10-30): perf-plan · `perf <group>` ×8 on `build linux-x64-gnu`'s
 #             binary, a group with no set budget `continue-on-error` · `perf` the merged report
 #   corpus    level 4 (W-20): every pack's rules over the pinned corpus (scripts/corpus.json),
 #             invariants on every file, finding counts against packs/<pack>/corpus.toml —
@@ -255,26 +255,28 @@ jobs:
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, tomllib
-          # group: (operations for `codelaw bench --only`, needs the pinned repos, needs TypeScript)
+          # group: (operations for `codelaw bench --only`, needs the pinned repos, needs TypeScript, `--graph`:
+          # the graph workload's rows, W-168 — context only until the decider rules, so never gated today)
           GROUPS = {
-              "cold": ("check_cold_10k,peak_memory_10k", False, False),
-              "warm": ("startup,check_warm_10k,format_warm_10k,lsp_after_edit,mcp_rules_for_path,check_warm_10k_no_daemon", False, False),
-              "hooks": ("fix_one_file,fix_one_file_cold,hook_pre,watch_rerun,watch_save_to_print", False, False),
-              "types-cold": ("check_types_cold", False, True),
-              "types-warm": ("check_types_warm", False, True),
-              "spell": ("spell", True, False),
-              "repos": ("check_cold_repo,check_warm_repo", True, False),
+              "cold": ("check_cold_10k,peak_memory_10k", False, False, False),
+              "warm": ("startup,check_warm_10k,format_warm_10k,lsp_after_edit,mcp_rules_for_path,check_warm_10k_no_daemon", False, False, False),
+              "hooks": ("fix_one_file,fix_one_file_cold,hook_pre,watch_rerun,watch_save_to_print", False, False, False),
+              "types-cold": ("check_types_cold", False, True, False),
+              "types-warm": ("check_types_warm", False, True, False),
+              "spell": ("spell", True, False, False),
+              "repos": ("check_cold_repo,check_warm_repo", True, False, False),
+              "graph": ("graph_cold,graph_warm,graph_warm_no_daemon,graph_hook_one_file,graph_peak_memory,graph_cache_size", False, False, True),
           }
           ops = tomllib.load(open("perf/budgets.toml", "rb"))["operation"]
-          placed = [o for only, _, _ in GROUPS.values() for o in only.split(",")]
+          placed = [o for only, *_ in GROUPS.values() for o in only.split(",")]
           missing = sorted(set(ops) - set(placed))
           twice = sorted({o for o in placed if placed.count(o) > 1})
           if missing or twice:
               raise SystemExit(f"perf groups: not in any group {missing}, in two {twice} — edit GROUPS in ci.yml's perf-plan")
           include = []
-          for group, (only, repos, ts) in GROUPS.items():
+          for group, (only, repos, ts, graph) in GROUPS.items():
               gated = any(not isinstance(ops.get(o, {}).get("budget", "unset"), str) for o in only.split(","))
-              include.append({"group": group, "only": only, "gated": gated, "repos": repos, "ts": ts})
+              include.append({"group": group, "only": only, "gated": gated, "repos": repos, "ts": ts, "graph": graph})
           print("groups=" + json.dumps(include))
           PY
           cat "$GITHUB_OUTPUT"
@@ -342,11 +344,13 @@ jobs:
           ONLY: ${{ matrix.only }}
           REPOS: ${{ matrix.repos }}
           TS: ${{ matrix.ts }}
+          GRAPH: ${{ matrix.graph }}
         run: |
           code=0
           extra=()
           if [ "$REPOS" = true ]; then for r in djangoproject.com full-stack-fastapi-template html5-boilerplate; do extra+=(--repo "$RUNNER_TEMP/corpus/repos/$r"); done; fi
           [ "$TS" = true ] && extra+=(--typescript fixtures/types/node_modules/typescript)
+          [ "$GRAPH" = true ] && extra+=(--graph)
           "$RUNNER_TEMP/build/bin/linux-x64-gnu/codelaw" bench --workload "$RUNNER_TEMP/bench" --packs packs --budgets perf/budgets.toml --only "$ONLY" "${extra[@]}" --output "$RUNNER_TEMP/bench.json" 2>&1 | tee "$RUNNER_TEMP/bench.txt" || code=$?
           {
             echo '### perf ${{ matrix.group }}: L8 operations (each p95 against perf/budgets.toml; an unset budget is reported only)'

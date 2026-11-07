@@ -4,7 +4,7 @@ title: "await, not then"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "moving a chain to `await` needs an `async` function and may restructure the error handling"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-promise/prefer-await-to-then, eslint-plugin-unicorn/prefer-await]
 since: 0.5.0
