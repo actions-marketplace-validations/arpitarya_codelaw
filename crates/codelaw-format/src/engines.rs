@@ -18,7 +18,7 @@ pub(crate) fn format(language: Language, path: &str, text: &str, o: &FormatOptio
     use markers::{BIOME, PRETTIER};
     match language {
         Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => {
-            markers::native(text, &["//", "/*"], BIOME, |t| biome_js(js_source(language, path), t, o, o.line_width))
+            markers::native(text, &["//", "/*"], BIOME, |t| biome_js(language, path, t, o, o.line_width))
         }
         Language::Json => markers::native(text, &["//", "/*"], BIOME, |t| biome_json(t, o, o.line_width)),
         Language::Css => markers::native(text, &["/*"], PRETTIER, |t| crate::oxc::css(t, o, o.line_width, false)),
@@ -34,9 +34,7 @@ pub(crate) fn format(language: Language, path: &str, text: &str, o: &FormatOptio
 /// The parse error, if the engine's own parser rejects `text`.
 pub(crate) fn parse_error(language: Language, path: &str, text: &str) -> Option<String> {
     let bad = match language {
-        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => {
-            biome_js_parser::parse(text, js_source(language, path), biome_js_parser::JsParserOptions::default()).has_errors()
-        }
+        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => js_parse(language, path, text).0.has_errors(),
         Language::Json => biome_json_parser::parse_json(text, json_parser_options()).has_errors(),
         Language::Css => return crate::oxc::css_parse_error(text, false),
         Language::Scss => return crate::oxc::css_parse_error(text, true),
@@ -88,6 +86,22 @@ fn js_source(language: Language, path: &str) -> JsFileSource {
     }
 }
 
+/// Parse JavaScript as a module, then — if that fails and the file is not
+/// `.mjs` — as a script, as Prettier's Babel parser does: a script may
+/// hold what strict mode forbids (`071`, `with`, `delete x`, a parameter
+/// named `eval`). TypeScript is parsed once, as a module (W-141).
+fn js_parse(language: Language, path: &str, text: &str) -> (biome_js_parser::Parse<biome_js_parser::AnyJsRoot>, JsFileSource) {
+    let source = js_source(language, path);
+    let parsed = biome_js_parser::parse(text, source, biome_js_parser::JsParserOptions::default());
+    let module_only = path.to_ascii_lowercase().ends_with(".mjs");
+    if !parsed.has_errors() || !matches!(language, Language::Javascript | Language::Jsx) || module_only {
+        return (parsed, source);
+    }
+    let script = source.with_module_kind(biome_languages::javascript::ModuleKind::Script);
+    let retry = biome_js_parser::parse(text, script, biome_js_parser::JsParserOptions::default());
+    if retry.has_errors() { (parsed, source) } else { (retry, script) }
+}
+
 fn biome_indent(o: &FormatOptions) -> BIndentStyle {
     match o.indent_style {
         options::IndentStyle::Space => BIndentStyle::Space,
@@ -108,9 +122,9 @@ fn biome_widths(o: &FormatOptions, width: u16) -> Result<(IndentWidth, LineWidth
     Ok((indent, line))
 }
 
-fn biome_js(source: JsFileSource, text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
+fn biome_js(language: Language, path: &str, text: &str, o: &FormatOptions, width: u16) -> Result<String, FormatError> {
     use biome_js_formatter::context::{ArrowParentheses, JsFormatOptions, QuoteProperties, Semicolons, trailing_commas::TrailingCommas};
-    let parsed = biome_js_parser::parse(text, source, biome_js_parser::JsParserOptions::default());
+    let (parsed, source) = js_parse(language, path, text);
     if parsed.has_errors() {
         return Err(FormatError::Syntax("biome_js_parser rejects it".into()));
     }
@@ -266,7 +280,104 @@ fn style_attribute(code: &str, o: &FormatOptions) -> Option<String> {
     Some(declarations.join("; "))
 }
 
+/// The doctype as Prettier prints it (W-141): `<!doctype html>` for the
+/// HTML5 doctype; any other keeps its keyword as written, its value's first
+/// `html` lower-cased and its whitespace runs made one space. Comments and
+/// whitespace may come before it. (Prettier keeps the keyword of
+/// `<!DOCTYPE HTML>` and lower-cases only the value, which its own second
+/// run then changes again; codelaw's output must be stable, decision 4.)
+fn prettier_doctype(text: &str) -> Option<String> {
+    let mut at = 0;
+    loop {
+        let rest = text[at..].trim_start_matches(|c: char| c.is_whitespace() || c == '\u{feff}');
+        at = text.len() - rest.len();
+        if rest.starts_with("<!--") {
+            at += rest.find("-->")? + 3;
+        } else {
+            break;
+        }
+    }
+    let rest = &text[at..];
+    if rest.len() < 9 || !rest.is_char_boundary(9) || !rest[2..9].eq_ignore_ascii_case("doctype") || !rest.starts_with("<!") {
+        return None;
+    }
+    let end = rest.find('>')?;
+    let value = rest[9..end].split_whitespace().collect::<Vec<_>>().join(" ");
+    let keyword = if value.eq_ignore_ascii_case("html") { "doctype" } else { &rest[2..9] };
+    let value = match value.get(..4) {
+        Some(head) if head.eq_ignore_ascii_case("html") && value[4..].chars().next().is_none_or(|c| !c.is_alphanumeric() && c != '_') => {
+            format!("html{}", &value[4..])
+        }
+        _ => value,
+    };
+    let doctype = format!("<!{keyword} {value}>");
+    (doctype != rest[..=end]).then(|| format!("{}{doctype}{}", &text[..at], &rest[end + 1..]))
+}
+
+/// The index just past `needle` (ASCII, any case) at or after `from`.
+fn find_ci(text: &str, needle: &str, from: usize) -> Option<usize> {
+    let hay = text.as_bytes();
+    let n = needle.as_bytes();
+    (from..=hay.len().checked_sub(n.len())?).find(|&i| hay[i..i + n.len()].eq_ignore_ascii_case(n)).map(|i| i + n.len())
+}
+
+/// `<script>` and `<style>` whose body is only whitespace, emptied
+/// (W-141): Prettier prints them `<script></script>`, markup_fmt on two
+/// lines. Comments, `<textarea>` bodies and a node after an ignore marker
+/// are left alone.
+fn empty_blank_embeds(text: &str) -> Option<String> {
+    let lower = text.to_ascii_lowercase();
+    let mut out = String::new();
+    let mut copied = 0;
+    let mut at = 0;
+    while let Some(lt) = lower[at..].find('<').map(|i| i + at) {
+        let tail = &lower[lt..];
+        if tail.starts_with("<!--") {
+            at = lt + tail.find("-->").map_or(tail.len(), |e| e + 3);
+            continue;
+        }
+        let Some(name) = ["script", "style", "textarea"]
+            .into_iter()
+            .find(|n| tail[1..].starts_with(n) && tail[1 + n.len()..].starts_with(|c: char| c == '>' || c == '/' || c.is_ascii_whitespace()))
+        else {
+            at = lt + 1;
+            continue;
+        };
+        // The end of the opening tag, past quoted attribute values.
+        let mut quote = None;
+        let Some(open_end) = tail.char_indices().find_map(|(i, c)| match (quote, c) {
+            (Some(q), c) if c == q => {
+                quote = None;
+                None
+            }
+            (Some(_), _) => None,
+            (None, '"' | '\'') => {
+                quote = Some(c);
+                None
+            }
+            (None, '>') => Some(lt + i + 1),
+            _ => None,
+        }) else {
+            break;
+        };
+        let close = format!("</{name}");
+        let Some(body_end) = find_ci(&lower, &close, open_end).map(|e| e - close.len()) else { break };
+        let body = &text[open_end..body_end];
+        let ignored = text[..lt].trim_end().strip_suffix("-->").and_then(|t| t.rfind("<!--").map(|c| &t[c + 4..])).is_some_and(|c| c.trim().starts_with(markers::PRETTIER));
+        if name != "textarea" && !body.is_empty() && body.trim().is_empty() && !ignored {
+            out.push_str(&text[copied..open_end]);
+            copied = body_end;
+        }
+        at = body_end;
+    }
+    (copied > 0).then(|| out + &text[copied..])
+}
+
 fn html(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
+    let doctype = prettier_doctype(text);
+    let text = doctype.as_deref().unwrap_or(text);
+    let emptied = empty_blank_embeds(text);
+    let text = emptied.as_deref().unwrap_or(text);
     let mut options = markup_fmt::config::FormatOptions::default();
     options.layout.print_width = o.line_width as usize;
     options.layout.indent_width = o.indent_width as usize;
@@ -275,10 +386,14 @@ fn html(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
     // lower-case doctype, and `<!-- prettier-ignore -->` (decision 6).
     options.language.script_indent = true;
     options.language.style_indent = true;
-    options.language.doctype_keyword_case = markup_fmt::config::DoctypeKeywordCase::Lower;
+    // The doctype keyword is `prettier_doctype`'s.
+    options.language.doctype_keyword_case = markup_fmt::config::DoctypeKeywordCase::Ignore;
     // Prettier writes every void element as `<br />` (W-141); html-validate's
     // `void-style` leaves the spelling to the formatter (packs/html README).
     options.language.html_void_self_closing = Some(true);
+    // An empty element's closing tag stays on its line: Prettier breaks the
+    // attributes of `<button a b c></button>`, never the `></button>`.
+    options.language.closing_tag_line_break_for_empty = markup_fmt::config::ClosingTagLineBreakForEmpty::Never;
     options.language.ignore_comment_directive = markers::PRETTIER.into();
     options.layout.line_break = match o.eol() {
         options::EndOfLine::Lf => markup_fmt::config::LineBreak::Lf,
@@ -290,10 +405,11 @@ fn html(text: &str, o: &FormatOptions) -> Result<String, FormatError> {
         }
         // markup_fmt hands a `<style>` body the width left after its
         // indentation but a `<script>` body the whole line; Prettier fits
-        // both inside the line (W-141).
+        // both inside the line (W-141). A script's `indent_level` already
+        // counts the body's own indent.
         let mut width = hints.print_width;
         if !hints.attr && !matches!(hints.ext, "css" | "scss" | "less" | "sass") {
-            width = width.saturating_sub((hints.indent_level as usize + 1) * o.indent_width as usize);
+            width = width.saturating_sub(hints.indent_level as usize * o.indent_width as usize);
         }
         let width = u16::try_from(width).unwrap_or(u16::MAX);
         Ok(match embedded(hints.ext, code, o, width) {

@@ -136186,7 +136186,7 @@ enum Color { Red,
 ## `ts/no-duplicate-enum-values` — No two enum members share a value
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which value is right needs the author)
+- **Fix:** `suggest` (the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-duplicate-enum-values.md
 
@@ -136214,6 +136214,24 @@ enum Color {
 }
 ```
 
+##### Fixed (alias)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = 2,
+}
+```
+
 ##### Do
 
 ```ts
@@ -136231,6 +136249,24 @@ enum Color {
 enum Color {
   Red = 1,
   Green = 1,
+}
+```
+
+##### Fixed (alias)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = 2,
 }
 ```
 
@@ -137758,7 +137794,7 @@ handler(1);
 ## `ts/no-unsafe-declaration-merging` — No interface that merges with a class of the same name
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether to rename or to move the members into the class needs the author)
+- **Fix:** `auto` (auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unsafe-declaration-merging.md
 
@@ -137788,6 +137824,15 @@ class Point {
 }
 ```
 
+##### Fixed
+
+```ts
+class Point {
+  declare z: number;
+  x = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -137808,6 +137853,15 @@ interface Point {
   z: number;
 }
 class Point {
+  x = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+class Point {
+  declare z: number;
   x = 0;
 }
 ```
@@ -137994,7 +138048,7 @@ is declared `any` or `unknown` is reported too; typescript-eslint allows it.
 ## `ts/no-unused-expressions` — No expression statements that do nothing
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether a call, an assignment or nothing was meant needs the author)
+- **Fix:** `suggest` (the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-expressions.md
 
@@ -138021,6 +138075,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```ts
@@ -138039,6 +138108,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -138050,7 +138134,7 @@ function close(conn: Connection) {
 ## `ts/no-unused-vars` — Every declared name is used
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (removing a declaration can drop the side effects of its initialiser)
+- **Fix:** `auto` (auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-vars.md
 

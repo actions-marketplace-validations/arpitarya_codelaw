@@ -2,9 +2,8 @@
 id: ts/no-unused-expressions
 title: "No expression statements that do nothing"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "whether a call, an assignment or nothing was meant needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent"
 stability: preview
 ported_from: [typescript-eslint/no-unused-expressions, eslint/no-unused-expressions]
 since: 0.1.0
@@ -35,6 +34,21 @@ function close(conn: Connection) {
 }
 ```
 
+#### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+#### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 #### Do
 
 ```ts
@@ -50,6 +64,21 @@ function close(conn: Connection) {
 ```tsx
 function close(conn: Connection) {
   conn.close;
+}
+```
+
+#### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+#### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
 }
 ```
 

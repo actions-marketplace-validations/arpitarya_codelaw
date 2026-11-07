@@ -97925,8 +97925,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value is right needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99112,8 +99112,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to rename or to move the members into the class needs the author",
+   "fix": "auto",
+   "fix_reason": "auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99298,8 +99298,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a call, an assignment or nothing was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99345,8 +99345,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing a declaration can drop the side effects of its initialiser",
+   "fix": "auto",
+   "fix_reason": "auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
