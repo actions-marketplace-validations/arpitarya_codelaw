@@ -3,6 +3,12 @@ type: Log
 description: "Dated lessons — what this project learned the hard way, newest first. A log, not a record: the date is part of the lesson."
 ---
 
+## 2026-11-07 — a shared cargo target hands you another worktree's binary
+
+`target/debug/codelaw` is shared by every lane (MACHINE.md). Between your `cargo build` and your test run, another worktree's build can replace it, and the test then runs code your tree doesn't hold — once it passed a rule whose `Fixed` blocks still read `XX`, once the whole pack died with exit 137. **Copy the binary right after your own build and test with the copy**; a result that contradicts the code you just wrote is the binary first, the code second.
+
+---
+
 # LESSONS — what this build learned the hard way
 
 Newest first. A lesson whose remedy is a *rule* belongs in a record and is
