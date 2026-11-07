@@ -604,6 +604,7 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &conventions::ImportGroups,
     &expressions::NoConstantBinaryExpression,
     &rewrites::PreferTemplate,
+    &rewrites::GhaPinSha,
     &duplicates::NoDupeArgs,
     &duplicates::NoDupeClassMembers,
     &duplicates::NoDupeElseIf,

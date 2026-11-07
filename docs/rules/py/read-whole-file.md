@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the block becomes `Path(p).read_text()`, which needs `pathlib.Path` imported) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`Path(...).read_text()` opens, reads and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/FURB101` |
@@ -139,6 +139,8 @@ with open(path) as f:
 #### Do
 
 ```python
+from pathlib import Path
+
 text = Path(path).read_text()
 ```
 

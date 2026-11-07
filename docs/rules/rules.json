@@ -23048,8 +23048,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "naming the function to refer to it changes its declaration",
+   "fix": "suggest",
+   "fix_reason": "the function refers to itself by its own name, which code that reassigns that name, or shadows it inside, reads differently; an anonymous function is named the first of `self`, `self2`, … the file does not use; `arguments.caller` has no replacement and is removed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -26112,7 +26112,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "where the original error should go is a decision",
+   "fix_reason": "where the original error should go, and what the new value means, is the author's decision",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -31529,8 +31529,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the new name is the author's choice",
+   "fix": "auto",
+   "fix_reason": "renamed automatically to the first of `_NaN`, `_NaN2`, … that the file does not use, with every reference to it; an exported name, or one in a shorthand `{ NaN }`, is renamed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -31547,14 +31547,14 @@
    ],
    "options": {},
    "dont": "function check(NaN) {",
-   "do": "function check(value) {",
+   "do": "function check(_NaN) {",
    "fix_steps": [
     "Rename the declaration and its uses."
    ],
    "example": {
     "language": "javascript",
     "dont": "function check(NaN) {\n  return NaN;\n}",
-    "do": "function check(value) {\n  return value;\n}"
+    "do": "function check(_NaN) {\n  return _NaN;\n}"
    },
    "ported_from": [
     "eslint/no-shadow-restricted-names",
@@ -34400,8 +34400,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing a member may also remove writes that matter, so it's a reader's call",
+   "fix": "auto",
+   "fix_reason": "auto for a member nothing names: a method, or a field with no value or a value that can do nothing (a literal, a function, …); a field whose value could have an effect, or one that is still written, keeps its writes and is removed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -34449,8 +34449,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing a declaration can drop the side effects of its initialiser",
+   "fix": "auto",
+   "fix_reason": "auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -40596,7 +40596,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "the parameter list has to be rewritten by hand",
+   "fix_reason": "`...args` is a real array where `arguments` is array-like and, outside strict mode, tracks the named parameters; the parameter list and each use are rewritten together by the author",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -43237,8 +43237,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming a parameter is safe only when every use in the executor is renamed with it; rename it by hand or with the editor",
+   "fix": "auto",
+   "fix_reason": "each parameter is renamed with every use of it in the executor; where `resolve` or `reject` is already a name in the file, it is renamed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51268,7 +51268,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "moving to the component changes how the tag is configured",
+   "fix_reason": "moving to `next/script` or `@next/third-parties` changes how the tag is loaded and configured: the inline `gtag` set-up moves with it, which is the author's to restructure",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51315,8 +51315,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the variable needs a new name, chosen by the author",
+   "fix": "suggest",
+   "fix_reason": "the variable is renamed to the first of `mod`, `mod2`, … the file does not use, with every reference; the name is the author's to improve, and an exported one is renamed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51598,8 +51598,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the tags into `next/head` changes the imports",
+   "fix": "suggest",
+   "fix_reason": "`<Head>` moves its children into the document's head when the page renders, which a `<head>` in a page does not; `Head` is imported from `next/head` where the file does not, and a file that binds `Head` to something else is fixed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51612,14 +51612,14 @@
    ],
    "options": {},
    "dont": "const p = <head><title>Home</title></head>;",
-   "do": "const p = <Head><title>Home</title></Head>;",
+   "do": "import Head from \"next/head\";",
    "fix_steps": [
     "`import Head from 'next/head'` and use `<Head>`."
    ],
    "example": {
     "language": "javascript",
     "dont": "const p = <head><title>Home</title></head>;",
-    "do": "const p = <Head><title>Home</title></Head>;"
+    "do": "import Head from \"next/head\";\n\nconst p = <Head><title>Home</title></Head>;"
    },
    "ported_from": [
     "@next/eslint-plugin-next/no-head-element"
@@ -51693,8 +51693,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "switching to `<Link>` adds an import",
+   "fix": "suggest",
+   "fix_reason": "`<Link>` navigates on the client and prefetches, where `<a>` reloads the page; `Link` is imported from `next/link` where the file does not, and a file that binds `Link` to something else is fixed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -51707,14 +51707,14 @@
    ],
    "options": {},
    "dont": "const a = <a href=\"/about\">About</a>;",
-   "do": "const a = <Link href=\"/about\">About</Link>;",
+   "do": "import Link from \"next/link\";",
    "fix_steps": [
     "`import Link from 'next/link'` and replace `<a>` with `<Link>`."
    ],
    "example": {
     "language": "javascript",
     "dont": "const a = <a href=\"/about\">About</a>;",
-    "do": "const a = <Link href=\"/about\">About</Link>;"
+    "do": "import Link from \"next/link\";\n\nconst a = <Link href=\"/about\">About</Link>;"
    },
    "ported_from": [
     "@next/eslint-plugin-next/no-html-link-for-pages"
@@ -59478,8 +59478,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -61041,8 +61041,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -61433,8 +61433,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "`math.isclose` uses a tolerance, so values that compared unequal may compare equal",
+   "fix": "suggest",
+   "fix_reason": "`math.isclose` uses a tolerance, so values that compared unequal may compare equal; `math` is imported where the file does not, and a file that binds `math` to something else is fixed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -61442,14 +61442,14 @@
    "presets": [],
    "options": {},
    "dont": "if total == 0.3:",
-   "do": "if math.isclose(total, 0.3):",
+   "do": "import math",
    "fix_steps": [
     "Use `math.isclose(a, b)` (or `not math.isclose(...)` for `!=`)."
    ],
    "example": {
     "language": "python",
     "dont": "if total == 0.3:\n    done()",
-    "do": "if math.isclose(total, 0.3):\n    done()"
+    "do": "import math\n\nif math.isclose(total, 0.3):\n    done()"
    },
    "ported_from": [
     "ruff/RUF069"
@@ -61933,8 +61933,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is meant to be shared or built per instance is the author's call",
+   "fix": "suggest",
+   "fix_reason": "each instance now builds its own value, which is the usual intent but not if one shared value was meant; a call with no arguments becomes the factory itself, any other a `lambda`; `field` is imported from `dataclasses` where the file does not",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -61942,7 +61942,7 @@
    "presets": [],
    "options": {},
    "dont": "created: datetime = datetime.now()",
-   "do": "created: datetime = field(default_factory=datetime.now)",
+   "do": "from dataclasses import field",
    "fix_steps": [
     "If each instance needs its own value, write `field(default_factory=lambda: <the call>)`.",
     "If one shared value is meant, move it to a module constant and use the constant."
@@ -61950,7 +61950,7 @@
    "example": {
     "language": "python",
     "dont": "@dataclass\nclass Job:\n    created: datetime = datetime.now()",
-    "do": "@dataclass\nclass Job:\n    created: datetime = field(default_factory=datetime.now)"
+    "do": "from dataclasses import field\n\n@dataclass\nclass Job:\n    created: datetime = field(default_factory=datetime.now)"
    },
    "ported_from": [
     "ruff/RUF009"
@@ -64885,23 +64885,23 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the return type becomes `Iterator`, which may need importing",
+   "fix": "suggest",
+   "fix_reason": "the type becomes the iterator it returns, which is what `iter()` promises; a bare `Iterator` is imported from where the file imports `Iterable`, and a file that imports neither is fixed by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
    "presets": [],
    "options": {},
-   "dont": "def __iter__(self) -> Iterable[int]: ...",
-   "do": "def __iter__(self) -> Iterator[int]: ...",
+   "dont": "from typing import Iterable",
+   "do": "from typing import Iterable, Iterator",
    "fix_steps": [
     "Annotate the return as `Iterator[...]` (`AsyncIterator[...]` for `__aiter__`), importing it from `collections.abc`."
    ],
    "example": {
     "language": "python",
-    "dont": "class Rows:\n    def __iter__(self) -> Iterable[int]: ...",
-    "do": "class Rows:\n    def __iter__(self) -> Iterator[int]: ..."
+    "dont": "from typing import Iterable\n\n\nclass Rows:\n    def __iter__(self) -> Iterable[int]: ...",
+    "do": "from typing import Iterable, Iterator\n\n\nclass Rows:\n    def __iter__(self) -> Iterator[int]: ..."
    },
    "ported_from": [
     "ruff/PYI045"
@@ -67645,8 +67645,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix needs `ClassVar` imported, and whether sharing was meant is the author's",
+   "fix": "suggest",
+   "fix_reason": "whether sharing the value across instances was meant is the author's: the fix says it was; `ClassVar` is imported from `typing` where the file does not",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67654,14 +67654,14 @@
    "presets": [],
    "options": {},
    "dont": "names: list[str] = []",
-   "do": "names: ClassVar[list[str]] = []",
+   "do": "from typing import ClassVar",
    "fix_steps": [
     "Annotate it `ClassVar[<type>]`, or make it immutable (a tuple or `frozenset`)."
    ],
    "example": {
     "language": "python",
     "dont": "class Registry:\n    names: list[str] = []",
-    "do": "class Registry:\n    names: ClassVar[list[str]] = []"
+    "do": "from typing import ClassVar\n\nclass Registry:\n    names: ClassVar[list[str]] = []"
    },
    "ported_from": [
     "ruff/RUF012"
@@ -67730,8 +67730,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix needs `field` imported, which the file may not do",
+   "fix": "suggest",
+   "fix_reason": "each instance gets its own value, built by `default_factory`; an empty list, dict or set is built by its type, any other by a `lambda`; `field` is imported from `dataclasses` where the file does not",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -67739,14 +67739,14 @@
    "presets": [],
    "options": {},
    "dont": "items: list = []",
-   "do": "items: list = field(default_factory=list)",
+   "do": "from dataclasses import field",
    "fix_steps": [
     "Replace the literal with `field(default_factory=list)` (or `dict`, `set`, or a lambda returning the literal)."
    ],
    "example": {
     "language": "python",
     "dont": "@dataclass\nclass Cart:\n    items: list = []",
-    "do": "@dataclass\nclass Cart:\n    items: list = field(default_factory=list)"
+    "do": "from dataclasses import field\n\n@dataclass\nclass Cart:\n    items: list = field(default_factory=list)"
    },
    "ported_from": [
     "ruff/RUF008"
@@ -71876,8 +71876,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the assert is split into one per condition, each on its own line at the assert's indentation",
+   "fix": "suggest",
+   "fix_reason": "each condition becomes its own assert, so a failure names the one that failed; the second is now asserted only if the first held, as before, but an assert with a message is split by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -72496,8 +72496,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the pattern was meant as a regex or literal text is the author's",
+   "fix": "suggest",
+   "fix_reason": "the fix reads the pattern as literal text and escapes it in a raw string; a pattern meant as a regular expression is the author's to keep",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73299,8 +73299,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the message moves into a `msg` variable on the line above, at the raise's indentation",
+   "fix": "suggest",
+   "fix_reason": "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73384,8 +73384,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the block becomes `Path(p).read_text()`, which needs `pathlib.Path` imported",
+   "fix": "suggest",
+   "fix_reason": "`Path(...).read_text()` opens, reads and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -73393,14 +73393,14 @@
    "presets": [],
    "options": {},
    "dont": "with open(path) as f:",
-   "do": "text = Path(path).read_text()",
+   "do": "from pathlib import Path",
    "fix_steps": [
     "Replace the block with `x = Path(p).read_text()` (or `read_bytes()`), importing `pathlib.Path`."
    ],
    "example": {
     "language": "python",
     "dont": "with open(path) as f:\n    text = f.read()",
-    "do": "text = Path(path).read_text()"
+    "do": "from pathlib import Path\n\ntext = Path(path).read_text()"
    },
    "ported_from": [
     "ruff/FURB101"
@@ -76042,8 +76042,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -76083,8 +76083,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -76124,8 +76124,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -76165,8 +76165,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the `else` (or `elif`) is removed and its body dedented, which the engine cannot re-indent in Python yet",
+   "fix": "suggest",
+   "fix_reason": "the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -81858,8 +81858,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the handler, and the `try` when nothing else is left, re-indents its body",
+   "fix": "suggest",
+   "fix_reason": "the `try` goes and its body moves up one level; a `try` with an `else` or `finally`, or another handler that does something, keeps its structure and is rewritten by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -82251,8 +82251,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the block becomes `Path(p).write_text(data)`, which needs `pathlib.Path` imported",
+   "fix": "suggest",
+   "fix_reason": "`Path(...).write_text(...)` opens, writes and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -82260,14 +82260,14 @@
    "presets": [],
    "options": {},
    "dont": "with open(path, \"w\") as f:",
-   "do": "Path(path).write_text(text)",
+   "do": "from pathlib import Path",
    "fix_steps": [
     "Replace the block with `Path(p).write_text(data)` (or `write_bytes`), importing `pathlib.Path`."
    ],
    "example": {
     "language": "python",
     "dont": "with open(path, \"w\") as f:\n    f.write(text)",
-    "do": "Path(path).write_text(text)"
+    "do": "from pathlib import Path\n\nPath(path).write_text(text)"
    },
    "ported_from": [
     "ruff/FURB103"
@@ -88192,7 +88192,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "the ref object has to be created where the component can reach it",
+   "fix_reason": "the ref object has to be created where the component can reach it: a `useRef` in a function component, a `createRef` field in a class",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -100621,7 +100621,7 @@
     "python"
    ],
    "fix": "manual",
-   "fix_reason": "escaping the value or rendering a template are both fixes; which fits depends on the response",
+   "fix_reason": "escaping the value or rendering a template are both fixes, and a suggested edit would read as made safe; which fits depends on the response",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -115121,7 +115121,7 @@
     "tsx"
    ],
    "fix": "manual",
-   "fix_reason": "the callbacks that use the alias must become arrow functions by hand",
+   "fix_reason": "the callbacks that use the alias become arrow functions, which changes their own `this` and `arguments`",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -115911,8 +115911,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "value: the loop variable needs a name the code does not contain",
+   "fix": "suggest",
+   "fix_reason": "`for … of` reads the array through its iterator, which a subclass or a sparse array can tell apart from indexing; the element is named the first of `item`, `item2`, … the file does not use, for the author to improve",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -115920,7 +115920,7 @@
    "presets": [],
    "options": {},
    "dont": "for (let i = 0; i < names.length; i++) {",
-   "do": "for (const name of names) {",
+   "do": "for (const item of names) {",
    "fix_steps": [
     "Write `for (const item of $A)`, naming the element.",
     "Replace each `$A[$I]` in the body with that name."
@@ -115928,7 +115928,7 @@
    "example": {
     "language": "typescript",
     "dont": "for (let i = 0; i < names.length; i++) {\n  greet(names[i]);\n}",
-    "do": "for (const name of names) {\n  greet(name);\n}"
+    "do": "for (const item of names) {\n  greet(item);\n}"
    },
    "ported_from": [
     "typescript-eslint/prefer-for-of"
@@ -116393,8 +116393,8 @@
    "languages": [
     "yaml"
    ],
-   "fix": "manual",
-   "fix_reason": "finding the commit a tag points to needs the network, and the engine never uses it (L5)",
+   "fix": "suggest",
+   "fix_reason": "the commit is the one `codelaw deps refresh` recorded for the ref, the one networked command (L5); the fix trusts that record, and a ref the snapshot has no entry for is pinned by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -116407,16 +116407,16 @@
    ],
    "options": {},
    "dont": "- uses: actions/checkout@v4",
-   "do": "- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2",
+   "do": "- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4",
    "fix_steps": [
-    "Look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.",
+    "Run `codelaw deps refresh`: it records the commit of each Action ref the workflows name, and the fix pins to it. Otherwise look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.",
     "Replace the tag with the 40-character SHA and keep the tag as a comment: `uses: actions/checkout@<sha> # v4.2.2`.",
     "Let Dependabot or Renovate update the pinned SHAs."
    ],
    "example": {
     "language": "yaml",
-    "dont": "jobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4",
-    "do": "jobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2"
+    "dont": "# .codelaw/deps-snapshot.json\n{ \"fetched\": \"2026-11-07\", \"actions\": { \"actions/checkout@v4\": \"11bd71901bbe5b1630ceea73d27597364c9af683\" } }\n# .github/workflows/ci.yml\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4",
+    "do": "# .codelaw/deps-snapshot.json\n{ \"fetched\": \"2026-11-07\", \"actions\": { \"actions/checkout@v4\": \"11bd71901bbe5b1630ceea73d27597364c9af683\" } }\n# .github/workflows/ci.yml\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4"
    },
    "ported_from": [],
    "security": null,

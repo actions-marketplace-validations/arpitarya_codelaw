@@ -150,3 +150,79 @@ mod tests {
         template(stmt.named_child(0)?, &src)
     }
 }
+
+/// `yaml/gha-pin-sha` (W-162): a `uses:` that names an Action by a tag or
+/// a branch. Its fix is the commit the deps snapshot recorded for that ref
+/// (`codelaw deps refresh`, the one networked command), with the ref kept
+/// as a comment; with no entry, the finding carries no edit.
+pub struct GhaPinSha;
+
+impl NativeRule for GhaPinSha {
+    fn id(&self) -> &'static str {
+        "yaml/gha-pin-sha"
+    }
+    fn languages(&self) -> &'static [Language] {
+        &[Language::Yaml]
+    }
+    fn kinds(&self) -> &'static [&'static str] {
+        &["flow_node"]
+    }
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+        let n = node.get_inner_node();
+        let src = ctx.source;
+        let value = text(n, src);
+        let pair = n.parent().filter(|p| p.kind() == "block_mapping_pair");
+        if !value.contains('@') || !pair.and_then(|p| p.child_by_field_name("key")).is_some_and(|k| text(k, src) == "uses") {
+            return;
+        }
+        if pair.and_then(|p| p.child_by_field_name("value")).is_none_or(|v| v.id() != n.id()) {
+            return;
+        }
+        let Some((repo, r)) = crate::deps::snapshot::action_ref(value) else { return };
+        let snap = ctx.file.read(crate::deps::snapshot::SNAPSHOT_PATH).and_then(|t| crate::deps::snapshot::Snapshot::parse(&t));
+        let mut edits = Vec::new();
+        if let Some(sha) = snap.as_ref().and_then(|s| s.actions.get(&format!("{repo}@{r}")))
+            && let Some(at) = value.rfind('@')
+        {
+            let start = n.start_byte() + at + 1;
+            edits.push(TextEdit::new(start, start + r.len(), sha.clone()));
+            let line_end = src[n.end_byte()..].find('\n').map(|i| n.end_byte() + i).unwrap_or(src.len());
+            if !src[n.end_byte()..line_end].contains('#') {
+                edits.push(TextEdit::insert(n.end_byte(), format!(" # {r}")));
+            }
+        }
+        out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message: format!("Pin `{value}` to a full commit SHA; a tag or branch can be moved to other code"), edits });
+    }
+}
+
+#[cfg(test)]
+mod gha_tests {
+    use super::*;
+    use crate::{MemoryFiles, NativeContext};
+    use std::collections::BTreeMap;
+
+    #[test]
+    fn a_recorded_ref_becomes_its_commit() {
+        let src = "jobs:\n  b:\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n      - uses: ./local\n";
+        let snap = "{\"fetched\": \"2026-11-07\", \"actions\": {\"actions/checkout@v4\": \"0123456789abcdef0123456789abcdef01234567\"}}";
+        let files = MemoryFiles::new(".github/workflows/ci.yml", src, &[(".codelaw/deps-snapshot.json", snap)]);
+        let root = codelaw_lang::parse(Language::Yaml, src);
+        let (options, data) = (BTreeMap::new(), BTreeMap::new());
+        let ctx = NativeContext { source: src, language: Language::Yaml, semantic: None, options: &options, data: &data, file: &files };
+        let mut out = Vec::new();
+        for node in root.root().dfs() {
+            if node.kind() == "flow_node" {
+                GhaPinSha.check(node, &ctx, &mut out);
+            }
+        }
+        assert_eq!(out.len(), 2);
+        let mut fixed = src.to_owned();
+        let mut edits = out[0].edits.clone();
+        edits.sort_by_key(|e| std::cmp::Reverse(e.start));
+        for e in edits {
+            fixed.replace_range(e.start..e.end, &e.text);
+        }
+        assert!(fixed.contains("actions/checkout@0123456789abcdef0123456789abcdef01234567 # v4"), "{fixed}");
+        assert!(out[1].edits.is_empty());
+    }
+}

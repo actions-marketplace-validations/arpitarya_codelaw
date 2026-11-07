@@ -14,7 +14,7 @@ use tree_sitter::Node;
 
 /// Whether evaluating an initialiser can do nothing observable: a
 /// literal, a name, a function, or an array or object of those.
-fn pure(n: Node<'_>) -> bool {
+pub(crate) fn pure(n: Node<'_>) -> bool {
     match n.kind() {
         "number" | "string" | "true" | "false" | "null" | "undefined" | "identifier" | "arrow_function" | "function_expression" | "function" | "regex" => true,
         "template_string" => !named_children(n).iter().any(|c| c.kind() == "template_substitution"),

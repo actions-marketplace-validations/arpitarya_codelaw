@@ -3,8 +3,8 @@ id: js/no-ex-assign
 title: "A caught error is not reassigned"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
-fix_reason: "where the original error should go is a decision"
-fix_pending: "suggest; needs scope-rename (W-162)"
+fix_reason: "where the original error should go, and what the new value means, is the author's decision"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-ex-assign]
 since: 0.1.0

@@ -147,6 +147,31 @@ impl NativeRule for NoThisBeforeSuper {
     }
 }
 
+/// The edit removing a class member whose declaration has no effect: a
+/// method, or a field with no value or a pure one, with no decorator. A
+/// member alone on its line takes the line.
+fn member_removal(m: Node<'_>, src: &str) -> Option<TextEdit> {
+    let field = matches!(m.kind(), "field_definition" | "public_field_definition");
+    if !field && m.kind() != "method_definition" {
+        return None;
+    }
+    if named_children(m).iter().any(|c| c.kind() == "decorator") || (field && m.child_by_field_name("value").is_some_and(|v| !crate::unused_vars::pure(v))) {
+        return None;
+    }
+    let (mut s, mut e) = (m.start_byte(), m.end_byte());
+    if let Some(semi) = m.next_sibling().filter(|n| n.kind() == ";" && n.start_byte() == e) {
+        e = semi.end_byte();
+    }
+    let line_start = src[..s].rfind('\n').map(|i| i + 1).unwrap_or(0);
+    let line_end = src[e..].find('\n').map(|i| e + i + 1).unwrap_or(src.len());
+    if src[line_start..s].trim().is_empty() && src[e..line_end].trim().is_empty() {
+        (s, e) = (line_start, line_end);
+    } else {
+        e += src[e..].bytes().take_while(|b| *b == b' ').count();
+    }
+    Some(TextEdit::delete(s, e))
+}
+
 pub struct NoUnusedPrivateClassMembers;
 
 impl NativeRule for NoUnusedPrivateClassMembers {
@@ -181,10 +206,12 @@ impl NativeRule for NoUnusedPrivateClassMembers {
         let mut all = Vec::new();
         descendants(body, &|_| false, &mut all);
         let mut read: BTreeMap<String, ()> = BTreeMap::new();
+        let mut used: BTreeMap<String, ()> = BTreeMap::new();
         for n in all.into_iter().filter(|n| n.kind() == "private_property_identifier") {
             if declared.values().any(|d| d.id() == n.id()) {
                 continue;
             }
+            used.insert(text(n, ctx.source).to_owned(), ());
             // `this.#x = v` writes; everything else reads.
             let write_only = n.parent().is_some_and(|member| {
                 member.kind() == "member_expression"
@@ -196,7 +223,11 @@ impl NativeRule for NoUnusedPrivateClassMembers {
         }
         for (name, k) in declared {
             if !read.contains_key(&name) {
-                out.push(NativeFinding { start: k.start_byte(), end: k.end_byte(), message: format!("Private member `{name}` is never read"), edits: Vec::new() });
+                // Nothing names it at all: the member goes, when declaring it
+                // does nothing either (W-162, purity). One that is written
+                // keeps its writes, whose values may matter: by hand.
+                let edits = if used.contains_key(&name) { Vec::new() } else { k.parent().and_then(|m| member_removal(m, ctx.source)).into_iter().collect() };
+                out.push(NativeFinding { start: k.start_byte(), end: k.end_byte(), message: format!("Private member `{name}` is never read"), edits });
             }
         }
     }
@@ -234,5 +265,7 @@ mod tests {
             found(&NoUnusedPrivateClassMembers, "class A { #a = 1; #b = 2; #c() {} m() { this.#b = 3; return this.#a + this.#c(); } }"),
             ["Private member `#b` is never read @#b"]
         );
+        let fixed = |src: &str| crate::run(&NoUnusedPrivateClassMembers, Language::Javascript, src).into_iter().map(|f| f.edits.len()).collect::<Vec<_>>();
+        assert_eq!(fixed("class A {\n  #a = [];\n  #b() {}\n  #c = load();\n  #d = 1;\n  m() { this.#d = 2; }\n}\n"), [1, 1, 0, 0]);
     }
 }

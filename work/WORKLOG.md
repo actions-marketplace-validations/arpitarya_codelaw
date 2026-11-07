@@ -24,6 +24,46 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-169: the crash twin carries symbols  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) make `crash-capture.sh`'s unstripped twin actually unstripped, verified locally.
+- **Done:** the twin builds with `--strip false` and `-C strip=none` on the final crate only. Locally (musl, zig) its `.text` is byte-identical to the shipped build's, with 120,192 symbols, and only `codelaw-cli` relinks. `collect` ran end to end. SR-PACKAGES decision 11 and the item are updated.
+- **Decided / left open:** a profile override (`profile.release.strip`) was rejected: it rebuilds every crate and the code moves. Step 3 still waits on the push.
+- **Mistakes:** none new.
+- **Next:** after the push, five green runs of every build leg.
+
+---
+
+## 2026-11-07 — W-162 change 8: action SHAs  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) action SHAs after the `py/*` rules.
+- **Done:** `deps refresh` records each Action ref's commit; `yaml/gha-pin-sha` suggests it offline.
+- **Decided / left open:** the fix trusts the snapshot's record; no entry, no fix. Not run against the network here (the refresh path is unit-free; the rule is proven by its snapshot example).
+- **Mistakes:** none new.
+- **Next:** cross-file read.
+
+---
+
+## 2026-11-07 — W-162 change 7: the ten new `py/*` rules  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the ten `py/*` rules W-139 filed under W-162, then SHAs, then cross-file, then close.
+- **Done:** all ten to `suggest` on `unwrap-block` (now Python too), line inserts, `$FRESH` and a gated `ensure-import`.
+- **Decided / left open:** an `elif` after a jump is left by hand (it would become an `if`).
+- **Mistakes:** none new.
+- **Next:** action SHAs.
+
+---
+
+## 2026-11-07 — W-162 change 6: scope rename, purity, add-import  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure after change 5 landed.
+- **Done:** `rename-symbol`, `$FRESH`, `ensure-import`; purity reused for the two `js/*` unused rules; 18 rules moved, 7 re-judged `manual`.
+- **Decided / left open:** a rename fix makes the engine build the semantic model for its rule. W-139's py strand filed ten new rules under W-162 (computed-edit 9, add-import 1) while this ran; they are next. Cross-file (36) is not started.
+- **Mistakes:** change 5's first claim passed the rule files as one path (zsh does not split an unquoted variable), so the first submit left them behind; re-committed with records in one commit before it landed.
+- **Next:** the ten `py/*` rules, then cross-file read.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-js, third pass: slice 21 (52 unicorn rules read from source, 15 links)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the js strand: link the 19 "already does it" rows, confirm the 104 "not confirmable offline" rows from upstream's source and tests, write the natives, re-label the rest.

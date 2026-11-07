@@ -2,9 +2,9 @@
 id: js/no-unused-private-class-members
 title: "Every private class member is read"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "removing a member may also remove writes that matter, so it's a reader's call"
-fix_pending: "auto-subset; needs purity (W-162)"
+fix: auto
+fix_reason: "auto for a member nothing names: a method, or a field with no value or a value that can do nothing (a literal, a function, …); a field whose value could have an effect, or one that is still written, keeps its writes and is removed by hand"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-unused-private-class-members]
 since: 0.1.0

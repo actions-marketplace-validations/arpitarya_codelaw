@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving to the component changes how the tag is configured) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving to `next/script` or `@next/third-parties` changes how the tag is loaded and configured: the inline `gtag` set-up moves with it, which is the author's to restructure) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/next-script-for-ga` |

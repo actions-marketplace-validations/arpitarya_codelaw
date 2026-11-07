@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the message moves into a `msg` variable on the line above, at the raise's indentation) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/EM101` |

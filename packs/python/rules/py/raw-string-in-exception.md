@@ -2,9 +2,8 @@
 id: py/raw-string-in-exception
 title: "An exception message is assigned before the raise"
 languages: [python]
-fix: manual
-fix_reason: "the message moves into a `msg` variable on the line above, at the raise's indentation"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the message moves into a variable on the line above, named the first of `msg`, `msg2`, … the file does not use; it is now built even if building the exception fails first"
 stability: preview
 ported_from: [ruff/EM101]
 since: 0.5.0
@@ -21,7 +20,13 @@ match:
   inside:
     kind: argument_list
     inside: {kind: call, inside: {kind: raise_statement}}
+  any:
+    - all: [{ pattern: $MSG }, { inside: { kind: raise_statement, stopBy: end, pattern: $STMT } }]
+    - regex: ''
 message: "Assign the message to a variable before raising"
+fix:
+  - insert-before: { target: $STMT, text: "$FRESH(msg) = $MSG", line: true }
+  - replace: { target: $MSG, with: "$FRESH(msg)" }
 ```
 
 ## How to fix

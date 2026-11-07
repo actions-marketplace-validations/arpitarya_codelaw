@@ -3,8 +3,8 @@ id: next/next-script-for-ga
 title: "Google Analytics through next/third-parties"
 languages: [javascript, jsx, tsx]
 fix: manual
-fix_reason: "moving to the component changes how the tag is configured"
-fix_pending: "suggest; needs add-import (W-162)"
+fix_reason: "moving to `next/script` or `@next/third-parties` changes how the tag is loaded and configured: the inline `gtag` set-up moves with it, which is the author's to restructure"
+fix_exception: restructure
 stability: preview
 ported_from: ["@next/eslint-plugin-next/next-script-for-ga"]
 since: 0.5.0

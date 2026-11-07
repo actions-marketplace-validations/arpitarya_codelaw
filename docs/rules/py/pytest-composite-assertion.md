@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the assert is split into one per condition, each on its own line at the assert's indentation) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (each condition becomes its own assert, so a failure names the one that failed; the second is now asserted only if the first held, as before, but an assert with a message is split by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PT018` |

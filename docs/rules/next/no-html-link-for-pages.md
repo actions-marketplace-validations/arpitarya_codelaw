@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (switching to `<Link>` adds an import) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`<Link>` navigates on the client and prefetches, where `<a>` reloads the page; `Link` is imported from `next/link` where the file does not, and a file that binds `Link` to something else is fixed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/pages/**`, `**/app/**`, `**/src/**`, `**/components/**` |
@@ -136,6 +136,8 @@ const a = <a href="/about">About</a>;
 #### Do
 
 ```js path=pages/index.js
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -150,6 +152,8 @@ const a = <a href="/about">About</a>;
 #### Do
 
 ```jsx path=pages/index.jsx
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -164,6 +168,8 @@ const a = <a href="/about">About</a>;
 #### Do
 
 ```tsx path=pages/index.tsx
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
