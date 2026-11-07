@@ -4,7 +4,7 @@ title: "lang is a valid language tag"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the page's language is the author's"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/lang]
 since: 0.5.0

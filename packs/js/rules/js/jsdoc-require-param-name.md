@@ -4,7 +4,7 @@ title: "@param names its parameter"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "which parameter the tag is for is the author's to say"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsdoc/require-param-name]
 since: 0.5.0

@@ -4,7 +4,7 @@ title: 'Requests go over HTTPS'
 languages: [python]
 fix: manual
 fix_reason: "the server must serve HTTPS first, and the URL change has to follow it"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: security
 stability: preview
 security: { cwe: [319], owasp: ["A04:2025"], severity: medium }
 since: 0.2.0

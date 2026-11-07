@@ -4,7 +4,7 @@ title: "No stray semicolon after a JSX element"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the semicolon is rendered as text; whether it was meant is the author's call"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [biome/suspicious/noSuspiciousSemicolonInJsx]
 since: 0.5.0

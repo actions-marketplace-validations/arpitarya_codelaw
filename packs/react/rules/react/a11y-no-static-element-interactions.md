@@ -4,7 +4,7 @@ title: "div and span have a role when they handle events"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the fix is a native control or a role with keyboard behaviour; which is the author's choice"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-jsx-a11y/no-static-element-interactions]
 since: 0.5.0
