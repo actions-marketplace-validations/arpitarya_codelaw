@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "the target is repeated on the right, so either the compound form or the long form was meant: both are offered and the reviewer picks"
 stability: preview
-ported_from: [biome/suspicious/noMisrefactoredShorthandAssign]
+ported_from: [biome/suspicious/noMisrefactoredShorthandAssign, eslint-plugin-unicorn/no-misrefactored-assignment]
 since: 0.5.0
 ---
 

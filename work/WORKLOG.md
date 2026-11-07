@@ -64,6 +64,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 21 (52 unicorn rules read from source, 15 links)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the js strand: link the 19 "already does it" rows, confirm the 104 "not confirmable offline" rows from upstream's source and tests, write the natives, re-label the rest.
+- **Done:** slice 21 — 52 `js/*` rules (18 auto, 27 suggest, 7 manual) from unicorn 79.0.0, behaviour read at the `v79.0.0` tag; 15 `ported_from:` links; four "already does it" rows were not the same rule once read (two written, one native, one Markdown). The strand's not-written list is re-labelled with what each row waits on.
+- **Decided / left open:** an upstream rule with several shapes is written in the narrowest shape whose fix is certain, its page naming the rest; five unicorn rows moved to native (number comparison, integrity lengths, CSS shorthand tables, code points), six to W-162 (they need every call or reference of a binding), one to W-105.
+- **Mistakes:** a scratch `mv` into the session's shared scratchpad briefly moved the python strand's upstream files; put back at once. A matcher fact: a `constraints:` entry on a capture an `any:` branch does not bind fails that branch — check per branch instead.
+- **Next:** slice 22 — the 42 rows read (SonarJS 29, unicorn 12, `md/no-empty-link-text`); then the natives.
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish the python half of W-139's remaining ports and close W-139 if DoD 1 is met.

@@ -4,7 +4,7 @@ title: "import x rather than import { default as x }"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
-ported_from: [eslint-plugin-unicorn/no-named-default]
+ported_from: [eslint-plugin-unicorn/no-named-default, eslint-plugin-import/no-named-default]
 since: 0.5.0
 ---
 

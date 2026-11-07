@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: auto
 fix_reason: "two imports of `{ … }` names only are merged automatically, a name both hold kept once; an import with a default or namespace binding is merged by hand, since the two can't always share one statement"
 stability: preview
-ported_from: [eslint/no-duplicate-imports]
+ported_from: [eslint/no-duplicate-imports, eslint-plugin-import/no-duplicates]
 since: 0.5.0
 ---
 

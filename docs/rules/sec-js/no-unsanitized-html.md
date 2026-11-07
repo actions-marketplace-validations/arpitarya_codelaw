@@ -15,6 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Security** | CWE-79 · OWASP A05:2025 · security severity `high` |
+| **Ported from** | `eslint-plugin-unicorn/no-unsafe-dom-html` |
 
 ## What it checks
 

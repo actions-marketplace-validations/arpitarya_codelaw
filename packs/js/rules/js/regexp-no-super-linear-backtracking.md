@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: auto
 fix_reason: "auto when one alternative of a repeated alternation matches a subset of another (it is removed, the language is the same); a repeated sequence with an unbounded quantifier is reported without an edit"
 stability: preview
-ported_from: [eslint-plugin-regexp/no-super-linear-backtracking]
+ported_from: [eslint-plugin-regexp/no-super-linear-backtracking, eslint-plugin-sonarjs/super-linear-regex]
 since: 0.5.0
 ---
 

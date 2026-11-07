@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant"
 stability: preview
-ported_from: [eslint/no-unexpected-multiline]
+ported_from: [eslint/no-unexpected-multiline, eslint-plugin-sonarjs/call-argument-line]
 since: 0.1.0
 ---
 

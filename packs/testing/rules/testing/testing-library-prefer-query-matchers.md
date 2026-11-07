@@ -8,7 +8,7 @@ fix_reason: "which query pairs with which matcher is the project's configuration
 fix_exception: value
 stability: preview
 options: { get_matchers: { type: "string[]", default: [] }, query_matchers: { type: "string[]", default: [] } }
-ported_from: ["eslint-plugin-testing-library/prefer-query-matchers"]
+ported_from: ["eslint-plugin-testing-library/prefer-query-matchers", "eslint-plugin-sonarjs/testing-library-query-assertion"]
 since: 0.5.0
 ---
 
