@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the file moved, was renamed or was never written needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the files beside the target whose names are within two edits, then files of the same name elsewhere in the project, are choices, nearest first; a link with none is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -132,19 +132,32 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./faq.md).
 <!-- docs/setup.md -->
 # Setup
+<!-- docs/FAQ.md -->
+# FAQ
+````
+
+#### Fixed
+
+````md
+<!-- docs/guide.md -->
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
+<!-- docs/setup.md -->
+# Setup
+<!-- docs/FAQ.md -->
+# FAQ
 ````
 
 #### Do
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
 <!-- docs/setup.md -->
 # Setup
-<!-- FAQ.md -->
+<!-- docs/FAQ.md -->
 # FAQ
 ````
 

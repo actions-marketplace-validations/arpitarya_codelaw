@@ -120,17 +120,26 @@ impl NativeRule for NoDuplicateKeys {
         &["object"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-        let mut seen: BTreeMap<String, usize> = BTreeMap::new();
-        for (name, key, _) in pairs(node.get_inner_node(), ctx.source) {
-            match seen.get(&name) {
-                Some(&first) => out.push(NativeFinding {
-                    start: key.start_byte(),
-                    end: key.end_byte(),
-                    message: format!("Key `{name}` is already set on line {first} of this object; most parsers keep only the last value"),
-                    edits: Vec::new(),
-                }),
+        let src = ctx.source;
+        let mut seen: BTreeMap<String, Node<'_>> = BTreeMap::new();
+        for (name, key, value) in pairs(node.get_inner_node(), src) {
+            match seen.get(&name).copied() {
+                Some(first_key) => {
+                    let first = line_of(src, first_key.start_byte());
+                    let value_of = |k: Node<'_>| k.parent().and_then(|p| p.child_by_field_name("value")).map(|v| crate::util::text(v, src).to_owned()).unwrap_or_default();
+                    let (fv, lv) = (value_of(first_key), value.map(|v| crate::util::text(v, src).to_owned()).unwrap_or_default());
+                    let edits = match (first_key.parent(), key.parent()) {
+                        (Some(fp), Some(lp)) => crate::util::duplicate_key_edits((fp, &fv), (lp, &lv), true, &|n| {
+                            let e = crate::util::remove_list_item(n, src);
+                            let (s, t) = crate::util::whole_lines(src, e.start, e.end);
+                            TextEdit::delete(s, t)
+                        }),
+                        _ => Vec::new(),
+                    };
+                    out.push(NativeFinding { start: key.start_byte(), end: key.end_byte(), message: format!("Key `{name}` is already set on line {first} of this object; most parsers keep only the last value"), edits });
+                }
                 None => {
-                    seen.insert(name, line_of(ctx.source, key.start_byte()));
+                    seen.insert(name, key);
                 }
             }
         }

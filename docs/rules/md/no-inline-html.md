@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/conventions` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `allowed_elements` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the Markdown equivalent, if there is one, needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for an inline element Markdown writes the same way — `<em>` and `<i>` as `*x*`, `<strong>` and `<b>` as `**x**`, `<code>` as a code span, a line-ending `<br>` as `\` — with no attribute and plain content; any other HTML is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD033` |

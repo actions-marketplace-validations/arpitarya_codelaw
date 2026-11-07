@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the anchor is missing, misspelt or defined too late needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the anchors defined before the alias within two edits are choices, nearest first; an alias whose anchor comes later, or with none near, is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -131,11 +131,21 @@ codelaw config --print --for <file>            # the resolved setting, and where
 #### Don't
 
 ```yaml
+defaults: &defaults
+  port: 443
+production:
+  <<: *default
+  host: example.com
+```
+
+#### Fixed
+
+```yaml
+defaults: &defaults
+  port: 443
 production:
   <<: *defaults
   host: example.com
-defaults: &defaults
-  port: 443
 ```
 
 #### Do

@@ -2,9 +2,8 @@
 id: md/no-emphasis-as-heading
 title: "Headings are headings, not bold lines"
 languages: [markdown]
-fix: manual
-fix_reason: "which heading level the line should become depends on the outline"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are a heading one level under the heading above it (the default) or at that heading's level, written with the emphasised words; the outline changes, which the reviewer confirms"
 stability: preview
 options:
   punctuation: { type: "string", default: ".,;:!?。，；：！？", description: "a line ending in one of these is a sentence, not a heading" }

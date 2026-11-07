@@ -5,7 +5,7 @@ languages: [json, toml]
 files: ["package.json", "pyproject.toml", "codelaw.toml"]
 fix: manual
 fix_reason: "who owns a path is a decision about people; the finding names the paths and the lines, and the owner is the team's to choose"
-fix_pending: "suggest"
+fix_pending: "suggest; needs cross-file (W-162)"
 stability: preview
 options:
   path: { type: "string", description: "the CODEOWNERS file, from the project root; by default the first that exists of .github/CODEOWNERS, CODEOWNERS, docs/CODEOWNERS and .gitlab/CODEOWNERS" }

@@ -38,3 +38,13 @@ Jump to [the end][end].
 ```expect
 (none)
 ```
+
+### case: a label with no definition near it needs one written
+
+````md
+Read [the spec][spec].
+````
+
+```expect
+1:6 md/reference-links-images
+```

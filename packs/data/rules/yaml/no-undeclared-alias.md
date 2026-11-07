@@ -2,9 +2,9 @@
 id: yaml/no-undeclared-alias
 title: "Every alias refers to an anchor defined before it"
 languages: [yaml]
-fix: manual
-fix_reason: "whether the anchor is missing, misspelt or defined too late needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the anchors defined before the alias within two edits are choices, nearest first; an alias whose anchor comes later, or with none near, is manual"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---
@@ -29,11 +29,21 @@ native: yaml/no-undeclared-alias
 #### Don't
 
 ```yaml
+defaults: &defaults
+  port: 443
+production:
+  <<: *default
+  host: example.com
+```
+
+#### Fixed
+
+```yaml
+defaults: &defaults
+  port: 443
 production:
   <<: *defaults
   host: example.com
-defaults: &defaults
-  port: 443
 ```
 
 #### Do
@@ -45,3 +55,4 @@ production:
   <<: *defaults
   host: example.com
 ```
+

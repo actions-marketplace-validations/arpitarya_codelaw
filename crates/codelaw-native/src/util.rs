@@ -306,3 +306,15 @@ pub fn mentions(text: &str, name: &str) -> bool {
     }
     false
 }
+
+/// The fix for a key set twice: when both values are the same text, the
+/// later one goes; otherwise the choices `keep last` (the earlier goes)
+/// and `keep first` (the later goes), `keep last` the default when the
+/// format's readers keep the last value. `remove` is the edit deleting one
+/// entry, by its node.
+pub fn duplicate_key_edits(first: (Node<'_>, &str), later: (Node<'_>, &str), last_wins: bool, remove: &dyn Fn(Node<'_>) -> TextEdit) -> Vec<TextEdit> {
+    if first.1 == later.1 {
+        return vec![remove(later.0)];
+    }
+    crate::choice_edits(vec![crate::choice("keep last", last_wins, vec![remove(first.0)]), crate::choice("keep first", false, vec![remove(later.0)])])
+}

@@ -1273,7 +1273,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 |---|---|---|---|---|
 | [`data/codeowners-coverage`](data/codeowners-coverage.md) | Every file has a code owner, and every CODEOWNERS pattern is live | `manual` | `path`, `allow_unowned`, `ignore` | `data/codeowners` |
 | [`data/flag-registry`](data/flag-registry.md) | The feature-flag registry is valid and holds only flags still read | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
-| [`json/no-duplicate-keys`](json/no-duplicate-keys.md) | No key twice in one JSON object | `manual` | — | `data/recommended` |
+| [`json/no-duplicate-keys`](json/no-duplicate-keys.md) | No key twice in one JSON object | `auto` | — | `data/recommended` |
 | [`json/package-deps-sorted`](json/package-deps-sorted.md) | package.json dependency lists are sorted by name | `auto` | — | `data/package-json` |
 | [`json/package-engines`](json/package-engines.md) | package.json declares engines.node | `suggest` | `node` | `data/package-json` |
 | [`json/package-json-schema`](json/package-json-schema.md) | package.json matches its schema | `manual` | — | `data/package-json` |
@@ -1283,29 +1283,29 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/commands-show-output`](md/commands-show-output.md) | No $ before shell commands that show no output | `auto` | — | `md/recommended` |
 | [`md/descriptive-link-text`](md/descriptive-link-text.md) | Link text says where the link goes | `manual` | `prohibited_texts` | `md/recommended` |
 | [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `suggest` | — | `md/recommended` |
-| [`md/first-line-heading`](md/first-line-heading.md) | A document starts with its title heading | `manual` | `level`, `allow_preamble` | `md/recommended` |
+| [`md/first-line-heading`](md/first-line-heading.md) | A document starts with its title heading | `suggest` | `level`, `allow_preamble` | `md/recommended` |
 | [`md/heading-increment`](md/heading-increment.md) | Heading levels go down one at a time | `suggest` | — | `md/recommended` |
-| [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `manual` | `ignore_case` | `md/recommended` |
+| [`md/link-fragments`](md/link-fragments.md) | In-page links point at a heading or anchor that exists | `auto` | `ignore_case` | `md/recommended` |
 | [`md/link-image-reference-definitions`](md/link-image-reference-definitions.md) | Every reference definition is used, and defined once | `auto` | `ignored_definitions` | `md/recommended` |
 | [`md/link-image-style`](md/link-image-style.md) | Links and images in the styles the project allows | `manual` | `autolink`, `inline`, `full`, `collapsed`, `shortcut`, `url_inline` | `md/recommended` |
 | [`md/no-alt-text`](md/no-alt-text.md) | Images have alt text | `manual` | — | `md/recommended` |
 | [`md/no-bare-urls`](md/no-bare-urls.md) | URLs are links, not bare text | `auto` | — | `md/recommended` |
 | [`md/no-blanks-blockquote`](md/no-blanks-blockquote.md) | No blank line inside a blockquote | `suggest` | — | `md/recommended` |
 | [`md/no-duplicate-heading`](md/no-duplicate-heading.md) | No two sibling headings with the same text | `manual` | `siblings_only` | `md/recommended` |
-| [`md/no-emphasis-as-heading`](md/no-emphasis-as-heading.md) | Headings are headings, not bold lines | `manual` | `punctuation` | `md/recommended` |
+| [`md/no-emphasis-as-heading`](md/no-emphasis-as-heading.md) | Headings are headings, not bold lines | `suggest` | `punctuation` | `md/recommended` |
 | [`md/no-empty-links`](md/no-empty-links.md) | Links have a destination | `suggest` | — | `md/recommended` |
-| [`md/no-inline-html`](md/no-inline-html.md) | No raw HTML in Markdown | `manual` | `allowed_elements` | `data/conventions` |
+| [`md/no-inline-html`](md/no-inline-html.md) | No raw HTML in Markdown | `auto` | `allowed_elements` | `data/conventions` |
 | [`md/no-reversed-links`](md/no-reversed-links.md) | Links are written \[text\](url), not (text)\[url\] | `auto` | — | `md/recommended` |
 | [`md/no-trailing-punctuation`](md/no-trailing-punctuation.md) | No punctuation at the end of a heading | `auto` | `punctuation` | `md/recommended` |
 | [`md/proper-names`](md/proper-names.md) | Proper names are spelled as the project spells them | `auto` | `names`, `code_blocks` | `md/recommended` |
-| [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `manual` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
-| [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `manual` | — | `md/recommended` |
+| [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `suggest` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
+| [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `suggest` | — | `md/recommended` |
 | [`md/required-headings`](md/required-headings.md) | Documents follow the required outline | `manual` | `headings` | `md/recommended` |
-| [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `manual` | `level` | `md/recommended` |
-| [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `manual` | — | `md/recommended` |
+| [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `suggest` | `level` | `md/recommended` |
+| [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `auto` | — | `md/recommended` |
 | [`md/todo-marker`](md/todo-marker.md) | Markdown TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
 | [`toml/deps-sorted`](toml/deps-sorted.md) | pyproject.toml dependencies are sorted by name | `auto` | — | `data/pyproject` |
-| [`toml/no-duplicate-keys`](toml/no-duplicate-keys.md) | No key or table defined twice in TOML | `manual` | — | `data/recommended` |
+| [`toml/no-duplicate-keys`](toml/no-duplicate-keys.md) | No key or table defined twice in TOML | `auto` | — | `data/recommended` |
 | [`toml/pyproject-requires-python`](toml/pyproject-requires-python.md) | pyproject.toml declares requires-python | `suggest` | `python` | `data/pyproject` |
 | [`toml/pyproject-schema`](toml/pyproject-schema.md) | pyproject.toml matches its schema | `manual` | — | `data/pyproject` |
 | [`toml/todo-marker`](toml/todo-marker.md) | TOML TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
@@ -1314,9 +1314,9 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`yaml/gha-pin-sha`](yaml/gha-pin-sha.md) | GitHub Actions are pinned to a commit SHA | `manual` | — | `data/github-actions` |
 | [`yaml/gha-workflow-schema`](yaml/gha-workflow-schema.md) | GitHub Actions workflows match their schema | `manual` | — | `data/github-actions` |
 | [`yaml/no-ambiguous-booleans`](yaml/no-ambiguous-booleans.md) | No yes/no/on/off as unquoted values | `suggest` | — | `data/recommended` |
-| [`yaml/no-ambiguous-numbers`](yaml/no-ambiguous-numbers.md) | No numbers that YAML 1.1 and 1.2 read differently | `manual` | — | `data/recommended` |
-| [`yaml/no-duplicate-keys`](yaml/no-duplicate-keys.md) | No key twice in one YAML mapping | `manual` | — | `data/recommended` |
-| [`yaml/no-undeclared-alias`](yaml/no-undeclared-alias.md) | Every alias refers to an anchor defined before it | `manual` | — | `data/recommended` |
+| [`yaml/no-ambiguous-numbers`](yaml/no-ambiguous-numbers.md) | No numbers that YAML 1.1 and 1.2 read differently | `suggest` | — | `data/recommended` |
+| [`yaml/no-duplicate-keys`](yaml/no-duplicate-keys.md) | No key twice in one YAML mapping | `auto` | — | `data/recommended` |
+| [`yaml/no-undeclared-alias`](yaml/no-undeclared-alias.md) | Every alias refers to an anchor defined before it | `suggest` | — | `data/recommended` |
 | [`yaml/todo-marker`](yaml/todo-marker.md) | YAML TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
 
 ## tanstack-query

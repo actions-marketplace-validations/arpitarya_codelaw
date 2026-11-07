@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `level` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which heading is the title, and what level the others become, needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD025` |
