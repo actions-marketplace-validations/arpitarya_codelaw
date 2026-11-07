@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2377 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2394 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 686 | 12 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 703 | 12 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
@@ -74,7 +74,9 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/accessor-pairs`](js/accessor-pairs.md) | A setter has a getter | `manual` | — | *[rules] only* |
 | [`js/arguments-usage`](js/arguments-usage.md) | Rest parameters rather than arguments | `manual` | — | *[rules] only* |
 | [`js/array-callback-return`](js/array-callback-return.md) | A callback to map, filter, reduce and the like returns a value | `manual` | — | *[rules] only* |
+| [`js/array-constructor`](js/array-constructor.md) | An array literal rather than the Array constructor | `auto` | — | *[rules] only* |
 | [`js/arrow-body-style`](js/arrow-body-style.md) | No braces around a single returned expression | `auto` | — | *[rules] only* |
+| [`js/assertions-in-test-cases`](js/assertions-in-test-cases.md) | A test makes an assertion | `manual` | — | `js/sonarjs` |
 | [`js/aws-apigateway-public-api`](js/aws-apigateway-public-api.md) | API Gateway methods require authorisation | `manual` | — | `js/sonarjs` |
 | [`js/aws-ec2-rds-dms-public`](js/aws-ec2-rds-dms-public.md) | No publicly accessible instance or database | `suggest` | — | `js/sonarjs` |
 | [`js/aws-ec2-unencrypted-ebs-volume`](js/aws-ec2-unencrypted-ebs-volume.md) | EBS volumes are encrypted | `suggest` | — | `js/sonarjs` |
@@ -132,6 +134,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/explicit-timer-delay`](js/explicit-timer-delay.md) | Give setTimeout and setInterval a delay | `auto` | — | `js/strict` |
 | [`js/exports-at-end`](js/exports-at-end.md) | Exports are gathered at the end of the file | `auto` | — | `js/conventions` |
 | [`js/file-permissions`](js/file-permissions.md) | No world-writable file modes | `manual` | — | `js/sonarjs` |
+| [`js/file-uploads`](js/file-uploads.md) | File uploads have size limits | `manual` | — | `js/sonarjs` |
 | [`js/flag-expiry`](js/flag-expiry.md) | Every feature flag read is registered, with an owner and a date it goes | `suggest` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`js/flag-marker`](js/flag-marker.md) | An inline flag marker agrees with the registry | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`js/for-direction`](js/for-direction.md) | A for loop's counter moves toward its end condition | `suggest` | — | `js/recommended` |
@@ -232,7 +235,9 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/max-depth`](js/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `js/size` |
 | [`js/max-lines`](js/max-lines.md) | A file stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `js/size` |
 | [`js/max-lines-per-function`](js/max-lines-per-function.md) | A function stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `include_nested`, `include_iife`, `ignore_names` | `js/size` |
+| [`js/max-nested-callbacks`](js/max-nested-callbacks.md) | No callbacks nested more than ten deep | `manual` | — | *[rules] only* |
 | [`js/max-params`](js/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `count_this`, `count_varargs`, `ignore_names`, `ignore_overrides`, `ignore_declarations`, `ignore_constructor_injection` | `js/size` |
+| [`js/max-statements`](js/max-statements.md) | No function with more than ten statements | `manual` | — | *[rules] only* |
 | [`js/max-switch-cases`](js/max-switch-cases.md) | No switch with more than 30 cases | `manual` | — | `js/sonarjs` |
 | [`js/max-union-size`](js/max-union-size.md) | No union of more than three types outside an alias | `manual` | — | *[rules] only* |
 | [`js/new-cap`](js/new-cap.md) | Constructors are capitalised | `manual` | — | *[rules] only* |
@@ -292,6 +297,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-debugger`](js/no-debugger.md) | No debugger statements | `auto` | — | `js/recommended` |
 | [`js/no-default-export`](js/no-default-export.md) | No default exports | `manual` | — | `js/conventions` |
 | [`js/no-default-import`](js/no-default-import.md) | Import by name, not the default | `manual` | — | *[rules] only* |
+| [`js/no-default-utility-imports`](js/no-default-utility-imports.md) | No default import of lodash or underscore | `manual` | — | `js/sonarjs` |
 | [`js/no-delete-var`](js/no-delete-var.md) | No delete on a variable | `suggest` | — | `js/recommended` |
 | [`js/no-div-regex`](js/no-div-regex.md) | No regex starting with = | `auto` | — | *[rules] only* |
 | [`js/no-document-cookie`](js/no-document-cookie.md) | No document.cookie | `manual` | — | `js/strict` |
@@ -304,6 +310,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-case`](js/no-duplicate-case.md) | No two case labels in a switch are the same | `suggest` | — | `js/recommended` |
 | [`js/no-duplicate-if-branches`](js/no-duplicate-if-branches.md) | No adjacent if branches with the same body | `suggest` | — | `js/strict` |
 | [`js/no-duplicate-imports`](js/no-duplicate-imports.md) | One import per module | `auto` | — | *[rules] only* |
+| [`js/no-duplicate-in-composite`](js/no-duplicate-in-composite.md) | No type written twice in a union or intersection | `auto` | — | `js/sonarjs` |
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-duplicate-test-title`](js/no-duplicate-test-title.md) | No two tests with the same title in a block | `manual` | — | `js/sonarjs` |
@@ -329,6 +336,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-extra-boolean-cast`](js/no-extra-boolean-cast.md) | No needless !! or Boolean() in a condition | `auto` | — | `js/recommended` |
 | [`js/no-extra-label`](js/no-extra-label.md) | No label that is not needed | `auto` | — | *[rules] only* |
 | [`js/no-fallthrough`](js/no-fallthrough.md) | A switch case does not fall through into the next by accident | `suggest` | — | `js/recommended` |
+| [`js/no-fixed-wait-in-tests`](js/no-fixed-wait-in-tests.md) | No fixed wait in a UI test | `manual` | — | `js/sonarjs` |
 | [`js/no-flat-map-identity`](js/no-flat-map-identity.md) | flat, not flatMap of the identity | `suggest` | — | `js/recommended` |
 | [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers`, `js/sonarjs` |
 | [`js/no-for-each`](js/no-for-each.md) | for…of rather than forEach | `suggest` | — | `js/strict` |
@@ -472,6 +480,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unsafe-finally`](js/no-unsafe-finally.md) | No return, throw, break or continue in finally | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `suggest` | — | `js/recommended` |
+| [`js/no-unsafe-sqlite-interpolation`](js/no-unsafe-sqlite-interpolation.md) | No values interpolated into an SQL statement | `manual` | — | `js/strict` |
 | [`js/no-unthrown-error`](js/no-unthrown-error.md) | Throw the error you create | `suggest` | — | `js/sonarjs` |
 | [`js/no-unused-builtin-method-return`](js/no-unused-builtin-method-return.md) | Use the result of a method that returns a new value | `manual` | — | `js/strict` |
 | [`js/no-unused-function-parameters`](js/no-unused-function-parameters.md) | No unused trailing parameter | `suggest` | — | `js/recommended` |
@@ -537,6 +546,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-block-statement-over-iife`](js/prefer-block-statement-over-iife.md) | A block rather than an arrow IIFE used only for scope | `auto` | — | `js/strict` |
 | [`js/prefer-classlist-toggle`](js/prefer-classlist-toggle.md) | classList.toggle() rather than add or remove by a condition | `auto` | — | `js/strict` |
 | [`js/prefer-code-point`](js/prefer-code-point.md) | codePointAt rather than charCodeAt | `suggest` | — | `js/strict` |
+| [`js/prefer-combined-guards`](js/prefer-combined-guards.md) | One guard for two that exit the same way | `auto` | — | `js/strict` |
 | [`js/prefer-const`](js/prefer-const.md) | const for variables that are never reassigned | `auto` | — | `js/typescript` |
 | [`js/prefer-date-now`](js/prefer-date-now.md) | Date.now() rather than new Date().getTime() | `auto` | — | `js/strict` |
 | [`js/prefer-default-parameters`](js/prefer-default-parameters.md) | A default parameter rather than reassigning it | `suggest` | — | `js/strict` |
@@ -547,13 +557,16 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-dom-node-replace-children`](js/prefer-dom-node-replace-children.md) | replaceChildren() rather than innerHTML = "" | `auto` | — | `js/strict` |
 | [`js/prefer-dom-node-text-content`](js/prefer-dom-node-text-content.md) | textContent rather than innerText | `suggest` | — | `js/strict` |
 | [`js/prefer-error-is-error`](js/prefer-error-is-error.md) | Error.isError() rather than instanceof Error | `auto` | — | *[rules] only* |
+| [`js/prefer-escaped-irregular-whitespace`](js/prefer-escaped-irregular-whitespace.md) | Irregular whitespace in a string is written as an escape | `auto` | — | `js/strict` |
 | [`js/prefer-event-target`](js/prefer-event-target.md) | EventTarget rather than EventEmitter | `manual` | — | `js/strict` |
 | [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
 | [`js/prefer-flat-math-min-max`](js/prefer-flat-math-min-max.md) | One Math.min or Math.max call rather than nested ones | `auto` | — | `js/strict` |
 | [`js/prefer-global-this`](js/prefer-global-this.md) | globalThis rather than global | `auto` | — | `js/strict` |
+| [`js/prefer-group-by`](js/prefer-group-by.md) | Object.groupBy() rather than reducing into arrays | `suggest` | — | `js/strict` |
 | [`js/prefer-has-check`](js/prefer-has-check.md) | has() rather than get() !== undefined | `suggest` | — | `js/strict` |
 | [`js/prefer-import-meta-properties`](js/prefer-import-meta-properties.md) | import.meta.filename rather than fileURLToPath(import.meta.url) | `suggest` | — | *[rules] only* |
 | [`js/prefer-includes`](js/prefer-includes.md) | includes() rather than indexOf() !== -1 | `suggest` | — | `js/strict` |
+| [`js/prefer-includes-over-repeated-comparisons`](js/prefer-includes-over-repeated-comparisons.md) | includes() rather than three or more === tests of one value | `suggest` | — | `js/strict` |
 | [`js/prefer-iterable-in-constructor`](js/prefer-iterable-in-constructor.md) | new Set(x) rather than new Set(\[...x\]) | `auto` | — | `js/strict` |
 | [`js/prefer-keyboard-event-key`](js/prefer-keyboard-event-key.md) | event.key rather than keyCode | `suggest` | — | `js/strict` |
 | [`js/prefer-location-assign`](js/prefer-location-assign.md) | location.assign rather than location = url | `auto` | — | `js/strict` |
@@ -596,6 +609,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-short-escape-sequences`](js/prefer-short-escape-sequences.md) | Short escape rather than a hex or Unicode one for a control character | `auto` | — | `js/strict` |
 | [`js/prefer-single-boolean-return`](js/prefer-single-boolean-return.md) | Return the condition, not true/false | `manual` | — | `js/sonarjs` |
 | [`js/prefer-single-call`](js/prefer-single-call.md) | One push() with several items | `suggest` | — | `js/strict` |
+| [`js/prefer-single-object-destructuring`](js/prefer-single-object-destructuring.md) | One destructuring of an object, not two in a row | `auto` | — | `js/strict` |
 | [`js/prefer-split-limit`](js/prefer-split-limit.md) | A limit on split() when only the first parts are read | `auto` | — | `js/strict` |
 | [`js/prefer-spread`](js/prefer-spread.md) | Spread instead of .apply() | `auto` | — | `js/typescript` |
 | [`js/prefer-spread-unicorn`](js/prefer-spread-unicorn.md) | \[...x\] rather than Array.from(x) | `suggest` | — | `js/strict` |
@@ -621,6 +635,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-while`](js/prefer-while.md) | while rather than for(;;) with only a condition | `auto` | — | `js/sonarjs` |
 | [`js/prefer-while-loop-condition`](js/prefer-while-loop-condition.md) | The loop condition in the while, not a break at the top | `auto` | — | `js/strict` |
 | [`js/preserve-caught-error`](js/preserve-caught-error.md) | A rethrown error keeps the caught one as its cause | `suggest` | — | `js/recommended` |
+| [`js/production-debug`](js/production-debug.md) | No error-handler middleware that shows stack traces, unguarded | `manual` | — | `js/sonarjs` |
 | [`js/promise-always-return`](js/promise-always-return.md) | A then callback returns or throws | `suggest` | — | `js/recommended` |
 | [`js/promise-avoid-new`](js/promise-avoid-new.md) | No new Promise | `manual` | — | *[rules] only* |
 | [`js/promise-catch-or-return`](js/promise-catch-or-return.md) | A promise chain is returned, awaited or ends in catch | `suggest` | — | `js/recommended` |
@@ -731,6 +746,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/require-number-to-fixed-digits-argument`](js/require-number-to-fixed-digits-argument.md) | toFixed() names its digits | `auto` | — | `js/strict` |
 | [`js/require-passive-events`](js/require-passive-events.md) | Touch and wheel listeners are passive | `suggest` | — | `js/strict` |
 | [`js/require-post-message-target-origin`](js/require-post-message-target-origin.md) | postMessage names its target origin | `manual` | — | *[rules] only* |
+| [`js/require-proxy-trap-boolean-return`](js/require-proxy-trap-boolean-return.md) | A Proxy set or deleteProperty trap returns a boolean | `suggest` | — | `js/strict` |
 | [`js/require-unicode-regexp`](js/require-unicode-regexp.md) | Regular expressions use the u or v flag | `suggest` | — | *[rules] only* |
 | [`js/require-yield`](js/require-yield.md) | A generator function yields | `suggest` | — | `js/recommended` |
 | [`js/shorthand-property-grouping`](js/shorthand-property-grouping.md) | Shorthand properties grouped at the start or the end | `manual` | — | *[rules] only* |
@@ -739,6 +755,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/strict-transport-security`](js/strict-transport-security.md) | Keep the HSTS header | `suggest` | — | `js/sonarjs` |
 | [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last case | `auto` | — | `js/taste` |
 | [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `suggest` | — | *[rules] only* |
+| [`js/table-header`](js/table-header.md) | A table has header cells | `manual` | — | `js/sonarjs` |
 | [`js/test-check-exception`](js/test-check-exception.md) | A test that expects a throw says what is thrown | `manual` | — | `js/sonarjs` |
 | [`js/text-encoding-identifier-case`](js/text-encoding-identifier-case.md) | Write the encoding as "utf8" | `suggest` | — | `js/strict` |
 | [`js/throw-new-error`](js/throw-new-error.md) | throw new Error, not Error() | `auto` | — | `js/strict` |
