@@ -2,9 +2,9 @@
 id: redux-toolkit/object-shorthand-mapdispatch
 title: "connect's mapDispatch is an object of action creators"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "each wrapped dispatch call is replaced by the action creator it calls"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---
