@@ -11,6 +11,7 @@ codelaw-cache.workspace = true
 codelaw-lang.workspace = true
 codelaw-match.workspace = true
 codelaw-semantic.workspace = true
+regex.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tree-sitter.workspace = true

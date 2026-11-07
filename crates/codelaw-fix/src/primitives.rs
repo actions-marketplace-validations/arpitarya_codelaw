@@ -38,6 +38,13 @@ pub enum Primitive {
     /// Rename a symbol and every reference to it in this file. Refused for
     /// an exported symbol: importers elsewhere would break.
     RenameSymbolLocal { target: Target, to: String },
+    /// A regular-expression edit inside the target's text: every match of
+    /// `pattern` becomes `replace` (`$1`, `${name}` name its groups; a
+    /// capture's `$NAME` is interpolated first). Consecutive `edit-text`
+    /// steps on one target run in order, each on the text the one before
+    /// left, and give one edit: the bytes that changed (SR-RULE-FORMAT
+    /// decision 3c; W-162).
+    EditText { target: Target, pattern: String, replace: String },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -67,7 +74,7 @@ impl FixSpec {
 }
 
 const PRIMITIVES: &[&str] =
-    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local"];
+    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "edit-text"];
 
 fn target(v: &Value) -> Result<Target, String> {
     match v.as_str() {
@@ -157,6 +164,17 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
             let Value::Object(o) = arg else { return Err("`rename-symbol-local` takes `{ target, to }`".into()) };
             only_keys(o, &["target", "to"], name)?;
             Primitive::RenameSymbolLocal { target: target(field(o, "target", name)?)?, to: string(field(o, "to", name)?, "to")? }
+        }
+        "edit-text" => {
+            let Value::Object(o) = arg else { return Err("`edit-text` takes `{ target?, pattern, replace }`".into()) };
+            only_keys(o, &["target", "pattern", "replace"], name)?;
+            let pattern = string(field(o, "pattern", name)?, "pattern")?;
+            regex::Regex::new(&pattern).map_err(|e| format!("`edit-text`: `pattern` is not a regular expression: {e}"))?;
+            Primitive::EditText {
+                target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match),
+                pattern,
+                replace: string(field(o, "replace", name)?, "replace")?,
+            }
         }
         other => {
             // The first four characters, not bytes: a name is whatever a
@@ -333,7 +351,11 @@ fn declaration_of<'t>(node: tree_sitter::Node<'t>) -> tree_sitter::Node<'t> {
 /// skipped, as a `calls:` entry is.
 fn unbound(p: &Primitive, m: &Match) -> bool {
     let t = match p {
-        Primitive::Replace { target, .. } | Primitive::Remove { target } | Primitive::InsertBefore { target, .. } | Primitive::InsertAfter { target, .. } => target,
+        Primitive::Replace { target, .. }
+        | Primitive::Remove { target }
+        | Primitive::InsertBefore { target, .. }
+        | Primitive::InsertAfter { target, .. }
+        | Primitive::EditText { target, .. } => target,
         _ => return false,
     };
     matches!(t, Target::Capture(name) if !m.single.contains_key(name) && m.multi_span(name).is_none())
@@ -397,8 +419,55 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
         }
         Primitive::CollectIntoBlock { .. } => {}
+        Primitive::EditText { .. } => unreachable!("edit-text steps run in `text_edits`"),
     }
     Ok(())
+}
+
+/// The text of every target the `edit-text` steps act on, after them, in
+/// order: one minimal edit per target (the common prefix and suffix left
+/// out). A target whose text no step changed gives no edit.
+fn text_edits(steps: &[&Primitive], m: &Match, ctx: &FixContext<'_>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    let mut texts: Vec<((usize, usize), String)> = Vec::new();
+    for p in steps {
+        let Primitive::EditText { target, pattern, replace } = p else { continue };
+        if unbound(p, m) {
+            continue;
+        }
+        let range = range(target, m)?;
+        let at = match texts.iter().position(|(r, _)| *r == range) {
+            Some(i) => i,
+            None => {
+                texts.push((range, ctx.source[range.0..range.1].to_owned()));
+                texts.len() - 1
+            }
+        };
+        let re = regex::Regex::new(pattern).map_err(|e| format!("`edit-text`: {e}"))?;
+        let with = try_interpolate(replace, m, ctx.source)?;
+        texts[at].1 = re.replace_all(&texts[at].1, with.as_str()).into_owned();
+    }
+    for ((s, e), new) in texts {
+        let old = &ctx.source[s..e];
+        if *old == new {
+            continue;
+        }
+        let pre = old.bytes().zip(new.bytes()).take_while(|(a, b)| a == b).count();
+        let pre = (0..=pre).rev().find(|i| old.is_char_boundary(*i) && new.is_char_boundary(*i)).unwrap_or(0);
+        let max_suf = (old.len() - pre).min(new.len() - pre);
+        let suf = old.bytes().rev().zip(new.bytes().rev()).take(max_suf).take_while(|(a, b)| a == b).count();
+        let suf = (0..=suf).rev().find(|i| old.is_char_boundary(old.len() - i) && new.is_char_boundary(new.len() - i)).unwrap_or(0);
+        out.push(TextEdit::new(s + pre, e - suf, new[pre..new.len() - suf].to_owned()));
+    }
+    Ok(())
+}
+
+/// Every step of a fix: the `edit-text` steps together, then the others.
+fn all_step_edits(steps: &[Primitive], m: &Match, ctx: &FixContext<'_>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    let (text, rest): (Vec<&Primitive>, Vec<&Primitive>) = steps.iter().partition(|p| matches!(p, Primitive::EditText { .. }));
+    for p in rest {
+        step_edits(p, m, ctx, out)?;
+    }
+    text_edits(&text, m, ctx, out)
 }
 
 /// Names a declaration introduces, split into values and type-only names.
@@ -418,11 +487,12 @@ fn sort_edits(mut edits: Vec<TextEdit>) -> Vec<TextEdit> {
 pub fn edits_for(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<Vec<TextEdit>, String> {
     let FixSpec::Steps(steps) = spec else { return Err("an external fixer runs through `run_external`".into()) };
     let mut out = Vec::new();
-    for p in steps {
-        step_edits(p, m, ctx, &mut out)?;
-    }
+    all_step_edits(steps, m, ctx, &mut out)?;
     if out.is_empty() && steps.iter().any(|p| unbound(p, m)) {
         return Err("no step of the fix acts on what this match captured".into());
+    }
+    if out.is_empty() && steps.iter().any(|p| matches!(p, Primitive::EditText { .. })) {
+        return Err("`edit-text`: no pattern of the fix occurs in its target".into());
     }
     Ok(sort_edits(out))
 }
@@ -435,7 +505,7 @@ pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<V
     let mut first_error = None;
     for c in choices {
         let mut edits = Vec::new();
-        match c.steps.iter().try_for_each(|p| step_edits(p, m, ctx, &mut edits)) {
+        match all_step_edits(&c.steps, m, ctx, &mut edits) {
             Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits) }),
             Err(e) => {
                 first_error.get_or_insert(e);
@@ -466,9 +536,12 @@ pub fn group_edits(spec: &FixSpec, matches: &[Match], ctx: &FixContext<'_>) -> R
                     types.extend(t);
                     collect = Some((block, type_block, *position));
                 }
+                Primitive::EditText { .. } => {}
                 other => step_edits(other, m, ctx, &mut out)?,
             }
         }
+        let text: Vec<&Primitive> = steps.iter().filter(|p| matches!(p, Primitive::EditText { .. })).collect();
+        text_edits(&text, m, ctx, &mut out)?;
     }
     if let Some((block, type_block, position)) = collect {
         let at = place_offset(ctx, position);

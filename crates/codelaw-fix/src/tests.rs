@@ -228,3 +228,23 @@ fn a_filter_that_cannot_produce_a_value_offers_no_fix() {
     let m = find(Language::Javascript, &compiled, &root, src);
     assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("no entry for `<`"));
 }
+
+#[test]
+fn edit_text_edits_inside_a_comment_in_order() {
+    // W-162: `edit-text` (SR-RULE-FORMAT 3c), two steps chained on one node.
+    let block = "match:\n  kind: comment\n  regex: '^/\\*\\*[ \\t]*[^\\s*]'\nmessage: m\nfix:\n  - edit-text: { pattern: '\\A/\\*\\*[ \\t]*([^\\s*][^\\n]*)\\n([ \\t]*)\\*', replace: \"/**\\n${2}* ${1}\\n${2}*\" }\n  - edit-text: { pattern: '\\n([ \\t]*)(\\*[ \\t]*)?([^\\s*][^\\n]*?)[ \\t]*\\*/\\z', replace: \"\\n${1}* ${3}\\n${1}*/\" }";
+    let out = fix(Language::Javascript, block, "/** a\n * b */\nf();\n");
+    assert_eq!(out.text, "/**\n * a\n * b\n */\nf();\n");
+}
+
+#[test]
+fn edit_text_that_finds_nothing_offers_no_fix() {
+    let (rule, compiled) = matcher(Language::Javascript, "match:\n  kind: comment\nmessage: m\nfix:\n  - edit-text: { pattern: 'zzz', replace: 'y' }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "// a\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).is_err());
+    assert!(parse_fix(&serde_json::json!([{ "edit-text": { "pattern": "(", "replace": "" } }])).unwrap_err().contains("not a regular expression"));
+}

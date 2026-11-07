@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 2: `edit-text`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) resume W-162 after the usage-limit stop (W-171 kept the worktree): re-derive status, merge main, land each capability as a complete change.
+- **Done:** the stop had left `edit-text`'s code auto-committed on `lm/W-162` (a0875296, not on main) and eight rule files uncommitted; merged main, finished the change: `edit-text` (SR-RULE-FORMAT 3c), eight `js/jsdoc-*` rules moved, docs regenerated. `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `jsdoc-empty-tags`, `implements-on-classes` and `prefer-import-tag` move text between lines or nodes; they wait on `move`. The `.fux/index` files fux re-indexed in the worktree are not this change's and stay unstaged.
+- **Mistakes:** none new.
+- **Next:** W-162 change 3 — `unwrap-block` (`no-else-return`, `py/max-depth`).
+
+---
+
 ## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
