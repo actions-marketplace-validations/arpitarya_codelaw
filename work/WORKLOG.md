@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 4: 33 rules re-judged `manual`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure; re-judge the waiting rules whose reason is an author's decision.
+- **Done:** 33 rules re-judged with their exception (the item's step 2a.3b lists them); 40 still name computed-edit. Removed the empty `.fux/runtime` leftovers of the landed worktree so `lockmaster start` could recreate it.
+- **Decided / left open:** kept pending where a closed set of choices exists (`valid-typeof`, aria rules, `google-font-display`), and `py/max-depth` and `react/display-name`, whose auto subsets are real edits.
+- **Mistakes:** none new.
+- **Next:** `merge-into` and the native fixes for the 40.
+
+---
+
 ## 2026-11-07 — W-169: the crash capture landed; the segfault not reproduced locally  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-169 — make the build legs save a core and a symbolized backtrace on a crash; stress `rules lint` on every pack locally under release and sanitizer builds; fix it if found.
