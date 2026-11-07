@@ -2,9 +2,8 @@
 id: js/prefer-arrow-callback
 title: "Arrow functions for callbacks"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the parameter list and body are re-joined around `=>`, which a template over this node cannot capture"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "an arrow function cannot be called with `new` and has no `prototype`, which a callee could rely on; a function with type parameters is rewritten by hand"
 stability: preview
 ported_from: [eslint/prefer-arrow-callback]
 since: 0.5.0
@@ -40,7 +39,17 @@ match:
         - kind: identifier
           regex: ^arguments$
         - kind: meta_property
+  - not: { has: { kind: type_parameters } }
+  - any:
+      - all: [{ not: { regex: ^async } }, { has: { kind: type_annotation, pattern: $R } }, { has: { field: parameters, pattern: $P } }, { has: { field: body, pattern: $B } }, { pattern: $TYPED }]
+      - all: [{ not: { regex: ^async } }, { not: { has: { kind: type_annotation } } }, { has: { field: parameters, pattern: $P } }, { has: { field: body, pattern: $B } }, { pattern: $PLAIN }]
+      - all: [{ regex: ^async }, { not: { has: { kind: type_annotation } } }, { has: { field: parameters, pattern: $P } }, { has: { field: body, pattern: $B } }, { pattern: $ASYNC }]
+      - regex: ''
 message: Use an arrow function for this callback
+fix:
+  - replace: { target: $TYPED, with: "$P$R => $B" }
+  - replace: { target: $PLAIN, with: "$P => $B" }
+  - replace: { target: $ASYNC, with: "async $P => $B" }
 ```
 
 ## How to fix

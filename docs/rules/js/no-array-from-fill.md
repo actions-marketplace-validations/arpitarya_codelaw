@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`Array.from` may already have a mapper argument, and the fill value moves into a new arrow function) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`fill` evaluates its value once and the mapper once per element: a call or an object literal there gives each element its own value; a `fill` with a start or end, or an `Array.from` with a mapper already, is rewritten by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-array-from-fill` |

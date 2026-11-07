@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (merging the specifier lists is a computed edit) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (two imports of `{ … }` names only are merged automatically, a name both hold kept once; an import with a default or namespace binding is merged by hand, since the two can't always share one statement) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-duplicate-imports` |
@@ -124,7 +124,7 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second import's names into the first, and delete the second.
 
 ## Examples
 

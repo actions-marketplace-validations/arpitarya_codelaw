@@ -2,9 +2,8 @@
 id: next/google-font-display
 title: "Google Fonts load with display=swap or optional"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "`swap` and `optional` trade layout shift against fallback text differently; the author picks"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`swap` and `optional` trade layout shift against fallback text differently, so both are offered and the author picks; a `display` already in the URL is replaced, and a new parameter is joined with `&amp;`, which JSX reads as `&`"
 stability: preview
 ported_from: ["@next/eslint-plugin-next/google-font-display"]
 since: 0.5.0
@@ -23,8 +22,23 @@ match:
   - has: {field: name, regex: ^link$}
   - has: {kind: jsx_attribute, regex: ^href=.*fonts\.googleapis\.com/css}
   - not:
-      has: {kind: jsx_attribute, regex: '^href=.*[?&]display=(swap|optional)\b'}
+      has: {kind: jsx_attribute, regex: '^href=.*[?&;]display=(swap|optional)\b'}
+  - any:
+    - has: {kind: jsx_attribute, regex: '^href=.*[?&;]display=', pattern: $SET}
+    - has: {kind: jsx_attribute, regex: '^href=.*fonts\.googleapis\.com/css', not: {regex: '[?&;]display='}, pattern: $ADD}
 message: Add `&display=swap` (or `optional`) to the Google Fonts URL, or use `next/font`
+fix:
+  choices:
+    - label: swap
+      fix:
+        - edit-text: { target: $SET, pattern: '([?&;]display=)[\w-]*', replace: '${1}swap' }
+        - edit-text: { target: $ADD, pattern: '(fonts\.googleapis\.com/css2?\?[^"''\s]*)', replace: '${1}&amp;display=swap' }
+        - edit-text: { target: $ADD, pattern: '(fonts\.googleapis\.com/css2?)(["''])', replace: '${1}?display=swap${2}' }
+    - label: optional
+      fix:
+        - edit-text: { target: $SET, pattern: '([?&;]display=)[\w-]*', replace: '${1}optional' }
+        - edit-text: { target: $ADD, pattern: '(fonts\.googleapis\.com/css2?\?[^"''\s]*)', replace: '${1}&amp;display=optional' }
+        - edit-text: { target: $ADD, pattern: '(fonts\.googleapis\.com/css2?)(["''])', replace: '${1}?display=optional${2}' }
 ```
 
 ## How to fix
@@ -47,6 +61,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+#### Fixed (swap)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 ### JSX
 
 #### Don't
@@ -61,6 +87,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+#### Fixed (swap)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 ### TSX
 
 #### Don't
@@ -73,4 +111,16 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 
 ```tsx
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (swap)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
 ```

@@ -2,9 +2,8 @@
 id: react/display-name
 title: "A component passed to memo or forwardRef has a name"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the name is the author's choice"
-fix_pending: "auto-subset; needs computed-edit (W-162)"
+fix: auto
+fix_reason: "a component held by a `const` at the top of the module gets `displayName` set to that name, which changes nothing but what DevTools and error messages show; one held anywhere else is named by hand"
 stability: preview
 ported_from: [eslint-plugin-react/display-name]
 since: 0.1.0
@@ -17,11 +16,30 @@ which makes both harder to read.
 
 ```codelaw
 match:
-  any:
-    - pattern: memo($F)
-    - pattern: React.memo($F)
-    - pattern: forwardRef($F)
-    - pattern: React.forwardRef($F)
+  all:
+    - any:
+        - pattern: memo($F)
+        - pattern: React.memo($F)
+        - pattern: forwardRef($F)
+        - pattern: React.forwardRef($F)
+    - not:
+        inside:
+          kind: variable_declarator
+          inside:
+            kind: lexical_declaration
+            any:
+              - precedes: { kind: expression_statement, regex: '^\w+\.displayName\s*=' }
+              - inside: { kind: export_statement, precedes: { kind: expression_statement, regex: '^\w+\.displayName\s*=' } }
+    - any:
+        - inside:
+            kind: variable_declarator
+            has: { field: name, kind: identifier, pattern: $NAME }
+            inside:
+              kind: lexical_declaration
+              any:
+                - { inside: { kind: program }, pattern: $STMT }
+                - { inside: { kind: export_statement, inside: { kind: program }, pattern: $STMT } }
+        - regex: ''
 constraints:
   F:
     any:
@@ -29,6 +47,8 @@ constraints:
       - kind: function_expression
         not: { has: { field: name, pattern: $NAME } }
 message: "This component has no name, so React DevTools and error messages show it as `Anonymous`"
+fix:
+  - insert-after: { target: $STMT, text: "$NAME.displayName = \"$NAME\";", line: true }
 ```
 
 ## How to fix
@@ -49,9 +69,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```js
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ### JSX
@@ -65,9 +84,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```jsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ### TSX
@@ -81,9 +99,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 #### Do
 
 ```tsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ## Differences from the source

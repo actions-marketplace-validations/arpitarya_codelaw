@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the index is the number of skipped places, computed from the pattern) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an array pattern reads any iterable and an index reads only an array-like value, so a `Set` or a generator on the right changes; a pattern with more than one name, a type annotation, or a right side `[…]` would bind differently on is rewritten by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-unreadable-array-destructuring` |

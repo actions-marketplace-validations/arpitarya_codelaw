@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 5: computed edits, the rest  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure: `merge-into`, the per-rule fixes, then scope rename, add-import, purity, cross-file, SHAs; resumed after a usage-limit stop, main merged in.
+- **Done:** `merge-into`, `move: { after }`, line inserts, three filters, native `js/prefer-template`; 34 rules moved, 6 re-judged `manual`. No rule names computed-edit.
+- **Decided / left open:** tree-sitter-javascript reads `&` in a JSX attribute string as an error, so `google-font-display` joins with `&amp;` (JSX reads it as `&`). `prefer-template` keeps the match rule's detection so the corpus count holds. `cargo test -p codelaw-native` has one failure on main (`data_json::duplicate_keys_decode_escapes`), not W-162's.
+- **Mistakes:** none new.
+- **Next:** scope rename and `$FRESH`.
+
+---
+
 ## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build the js half of W-139's remaining port rows, ~30–60 rules per change, `codelaw test` 0 failed, `rules lint` 0, `--fix-stats --check`.

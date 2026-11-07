@@ -2,9 +2,8 @@
 id: js/no-array-fill-with-reference-type
 title: "No fill() with an object"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the array length is not always in the same expression"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "each element gets its own value, which is the point, but code that relied on the elements being one shared object changes; a `fill` whose length is not in a `new Array(n)` or `Array(n)` before it is rewritten by hand"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-fill-with-reference-type]
 since: 0.5.0
@@ -34,7 +33,12 @@ match:
         - kind: new_expression
         - kind: arrow_function
         - kind: function_expression
+  any:
+    - all: [{ any: [{ pattern: new Array($N).fill($VAL) }, { pattern: Array($N).fill($VAL) }] }, { pattern: $CALL }]
+    - regex: ''
 message: '`fill` puts the same object in every slot; use `Array.from({ length }, () => …)`'
+fix:
+  - replace: { target: $CALL, with: "Array.from({ length: $N }, () => $VAL|arrow-body)" }
 ```
 
 ## How to fix

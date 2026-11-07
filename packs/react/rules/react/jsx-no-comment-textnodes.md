@@ -2,9 +2,8 @@
 id: react/jsx-no-comment-textnodes
 title: "No comment syntax as text inside JSX"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "whether the text is a comment or content needs the author"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "whether the text is a comment or content needs the author, so both are offered: wrapped as a JSX comment, or kept as text in a string"
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-comment-textnodes]
 since: 0.1.0
@@ -19,6 +18,15 @@ match:
   kind: jsx_text
   regex: ^\s*(//|/\*)
 message: "This is rendered as text, not a comment; write `{/* … */}`"
+fix:
+  choices:
+    - label: comment
+      fix:
+        - edit-text: { pattern: '(?m)^([ \t]*)//[ \t]?([^\n]*?)[ \t]*$', replace: '${1}{/* ${2} */}' }
+        - edit-text: { pattern: '\A(\s*)(/\*[\s\S]*?\*/)', replace: '${1}{${2}}' }
+    - label: text
+      fix:
+        - edit-text: { pattern: '(?m)^([ \t]*)(//[^\n]*?|/\*[^\n]*?\*/)[ \t]*$', replace: '${1}{"${2}"}' }
 ```
 
 ## How to fix
@@ -47,6 +55,24 @@ const a = <div>
 </div>;
 ```
 
+#### Fixed (comment)
+
+```js
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```js
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 ### JSX
 
 #### Don't
@@ -67,6 +93,24 @@ const a = <div>
 </div>;
 ```
 
+#### Fixed (comment)
+
+```jsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```jsx
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 ### TSX
 
 #### Don't
@@ -83,6 +127,24 @@ const a = <div>
 ```tsx
 const a = <div>
   {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (comment)
+
+```tsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```tsx
+const a = <div>
+  {"// the title"}
   <h1>Hi</h1>
 </div>;
 ```
