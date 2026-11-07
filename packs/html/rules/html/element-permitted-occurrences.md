@@ -2,9 +2,8 @@
 id: html/element-permitted-occurrences
 title: "Elements that may appear once do"
 languages: [html]
-fix: manual
-fix_reason: "which of the duplicates to keep is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call"
 stability: preview
 ported_from: [html-validate/element-permitted-occurrences]
 since: 0.1.0
@@ -32,6 +31,24 @@ native: html/element-permitted-occurrences
 <table>
   <caption>Prices</caption>
   <caption>2024</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+#### Fixed (delete this one)
+
+```html
+<table>
+  <caption>Prices</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+#### Fixed (merge into the first)
+
+```html
+<table>
+  <caption>Prices 2024</caption>
   <tr><td>1</td></tr>
 </table>
 ```

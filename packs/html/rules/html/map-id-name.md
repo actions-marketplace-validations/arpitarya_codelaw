@@ -2,9 +2,8 @@
 id: html/map-id-name
 title: "A map's id and name match"
 languages: [html]
-fix: manual
-fix_reason: "which of the two names is right depends on what refers to the map"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks"
 stability: preview
 ported_from: [html-validate/map-id-name]
 since: 0.1.0
@@ -30,6 +29,18 @@ native: html/map-id-name
 
 ```html
 <map id="nav" name="menu"></map>
+```
+
+#### Fixed (name follows id)
+
+```html
+<map id="nav" name="nav"></map>
+```
+
+#### Fixed (id follows name)
+
+```html
+<map id="menu" name="menu"></map>
 ```
 
 #### Do

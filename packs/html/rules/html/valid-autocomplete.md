@@ -2,9 +2,9 @@
 id: html/valid-autocomplete
 title: "autocomplete values are valid"
 languages: [html]
-fix: manual
-fix_reason: "the right field name depends on what the field collects"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/valid-autocomplete]
 tags: [a11y]
@@ -31,8 +31,13 @@ native: html/valid-autocomplete
 #### Don't
 
 ```html
-<input type="email" name="email" autocomplete="mail">
-<input type="number" name="n" autocomplete="email">
+<input type="email" name="email" autocomplete="emial">
+```
+
+#### Fixed
+
+```html
+<input type="email" name="email" autocomplete="email">
 ```
 
 #### Do

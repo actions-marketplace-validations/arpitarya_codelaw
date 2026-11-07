@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the concrete role depends on what the element is) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ```html
 <div role="landmark">News</div>
+```
+
+#### Fixed (remove)
+
+```html
+<div>News</div>
+```
+
+#### Fixed (concrete role)
+
+```html
+<div role="region">News</div>
 ```
 
 #### Do

@@ -2,9 +2,9 @@
 id: html/unrecognized-char-ref
 title: "Character references exist and are terminated"
 languages: [html]
-fix: manual
-fix_reason: "the intended character is not always clear"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion"
+fix_exception: value
 stability: preview
 options:
   ignoreCase: { type: "boolean", default: false, description: "compare names without case" }

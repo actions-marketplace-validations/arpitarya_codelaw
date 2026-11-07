@@ -11812,7 +11812,7 @@ An `<area>` with `href` has non-empty `alt` text, and an `<area>` without `href`
 ## `html/aria-label-misuse` — aria-label is used only where it names something
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to move the label, add a role or use another element is a design decision)
+- **Fix:** `suggest` (the choices are removing the label, which nothing reads, or `role="img"`, which gives the element a name to carry; which was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/aria-label-misuse.md
 
@@ -11841,6 +11841,18 @@ An `<area>` with `href` has non-empty `alt` text, and an `<area>` without `href`
 
 ```html
 <span aria-label="Close">×</span>
+```
+
+##### Fixed (remove)
+
+```html
+<span>×</span>
+```
+
+##### Fixed (role img)
+
+```html
+<span role="img" aria-label="Close">×</span>
 ```
 
 ##### Do
@@ -11891,7 +11903,7 @@ An attribute's name matches `pattern` (lowercase letters, digits, `-` and `:` by
 ## `html/attribute-allowed-values` — Attributes have values HTML allows
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the intended value can only be guessed)
+- **Fix:** `suggest` (the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/attribute-allowed-values.md
 
@@ -11917,6 +11929,13 @@ An attribute with a fixed set of values (`type`, `dir`, `loading`, …) uses one
 <img src="a.png" alt="A" loading="later">
 ```
 
+##### Fixed
+
+```html
+<input type="email" name="email">
+<img src="a.png" alt="A" loading="eager">
+```
+
 ##### Do
 
 ```html
@@ -11927,7 +11946,7 @@ An attribute with a fixed set of values (`type`, `dir`, `loading`, …) uses one
 ## `html/attribute-misuse` — Attributes are used only where they take effect
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the attribute or its context is wrong, and only the author knows which)
+- **Fix:** `suggest` (the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type="submit"`); only the author knows which was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/attribute-misuse.md
 
@@ -11952,6 +11971,18 @@ An attribute that only works in a given context is used there: `formaction` on a
 <button type="button" formaction="/save">Save</button>
 ```
 
+##### Fixed (remove)
+
+```html
+<button type="button">Save</button>
+```
+
+##### Fixed (change the context)
+
+```html
+<button type="submit" formaction="/save">Save</button>
+```
+
 ##### Do
 
 ```html
@@ -11961,7 +11992,7 @@ An attribute that only works in a given context is used there: `formaction` on a
 ## `html/autocomplete-password` — Password fields say which password they want
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the field asks for a new or the current password depends on the form)
+- **Fix:** `suggest` (the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/security` at `error` · `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/autocomplete-password.md
 
@@ -11990,6 +12021,12 @@ An `<input type="password">` has `autocomplete`, set to `new-password` or `curre
 
 ```html
 <input type="password" name="pw">
+```
+
+##### Fixed
+
+```html
+<input autocomplete="current-password" type="password" name="pw">
 ```
 
 ##### Do
@@ -12098,7 +12135,7 @@ An end tag is just `</name>`, with no attributes.
 ## `html/close-order` — Elements are closed, and in the order they were opened
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (where the missing end tag belongs depends on the intended structure)
+- **Fix:** `auto` (auto when the unclosed element is its parent's last child and not a formatting element: its end tag goes where the parser already ends it, before the parent's, so the document is the same; any other unclosed element is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/close-order.md
 
@@ -12244,7 +12281,7 @@ The doctype is `<!DOCTYPE html>`, not an HTML 4 or XHTML one.
 ## `html/element-name` — Element names are HTML elements or valid custom elements
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming an element changes its CSS and script hooks)
+- **Fix:** `suggest` (the known element names within two edits are choices, nearest first, with a custom element name (`x-<name>`) last; which was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-name.md
 
@@ -12285,7 +12322,7 @@ Every element is either an HTML element or a custom element whose name starts wi
 ## `html/element-permitted-content` — Elements contain only content HTML allows there
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the right structure depends on what the markup is for)
+- **Fix:** `manual` (what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-content.md
 
@@ -12325,7 +12362,7 @@ Obsolete elements (`<tt>`, `<font>`, `<acronym>`, …) have no content model in 
 ## `html/element-permitted-occurrences` — Elements that may appear once do
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which of the duplicates to keep is the author's call)
+- **Fix:** `suggest` (the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-occurrences.md
 
@@ -12353,6 +12390,24 @@ Children that may appear only once in their parent do: one `<caption>`, `<thead>
 </table>
 ```
 
+##### Fixed (delete this one)
+
+```html
+<table>
+  <caption>Prices</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+##### Fixed (merge into the first)
+
+```html
+<table>
+  <caption>Prices 2024</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
 ##### Do
 
 ```html
@@ -12365,7 +12420,7 @@ Children that may appear only once in their parent do: one `<caption>`, `<thead>
 ## `html/element-permitted-order` — Children come in the order HTML requires
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (moving markup may change how it is styled)
+- **Fix:** `auto` (auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-order.md
 
@@ -12404,7 +12459,7 @@ Children with a required order are in it: in a table, `<caption>` then `<colgrou
 ## `html/element-permitted-parent` — Elements have a parent HTML allows
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to wrap the element or change it depends on the intended structure)
+- **Fix:** `suggest` (the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-parent.md
 
@@ -12431,6 +12486,22 @@ Elements that need a particular parent have it: `<li>` in `<ul>`, `<ol>` or `<me
 </div>
 ```
 
+##### Fixed (change the parent)
+
+```html
+<ul>
+  <li>Apples</li>
+</ul>
+```
+
+##### Fixed (wrap)
+
+```html
+<div>
+  <ul><li>Apples</li></ul>
+</div>
+```
+
 ##### Do
 
 ```html
@@ -12442,7 +12513,7 @@ Elements that need a particular parent have it: `<li>` in `<ul>`, `<ol>` or `<me
 ## `html/element-required-ancestor` — Elements are inside the ancestor they need
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to add the ancestor or use other elements depends on the intent)
+- **Fix:** `suggest` (the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-required-ancestor.md
 
@@ -12467,6 +12538,24 @@ Elements that only work inside a given ancestor are there: `<area>` in a `<map>`
 <div>
   <dt>Term</dt>
   <dd>Definition</dd>
+</div>
+```
+
+##### Fixed (change the parent)
+
+```html
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+##### Fixed (wrap)
+
+```html
+<div>
+  <dl><dt>Term</dt>
+  <dd>Definition</dd></dl>
 </div>
 ```
 
@@ -12593,7 +12682,7 @@ Every `<h1>`–`<h6>` has text, or an image with `alt` text.
 ## `html/empty-title` — <title> has text
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the page title needs a human)
+- **Fix:** `suggest` (the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/empty-title.md
 
@@ -12615,6 +12704,14 @@ The `<title>` element has text.
 
 ```html
 <title></title>
+<h1>Release notes</h1>
+```
+
+##### Fixed
+
+```html
+<title>Release notes</title>
+<h1>Release notes</h1>
 ```
 
 ##### Do
@@ -12749,7 +12846,7 @@ A `<form>` has a submit button, inside it or associated with it by `form=`.
 ## `html/heading-level` — Headings start at <h1> and go down one level at a time
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (changing a heading level changes its style and the outline)
+- **Fix:** `suggest` (the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/document` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/heading-level.md
 
@@ -12792,7 +12889,7 @@ The first heading is `<h1>`, there is one `<h1>`, and each heading is at most on
 ## `html/hidden-focusable` — Focusable elements are not aria-hidden
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to unhide it, take it out of the tab order or remove it depends on the design)
+- **Fix:** `suggest` (the choices are `tabindex="-1"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/hidden-focusable.md
 
@@ -12815,6 +12912,24 @@ An element keyboard focus can reach — a link, a form control, anything with `t
 
 ```html
 <a href="/home" aria-hidden="true">Home</a>
+```
+
+##### Fixed (tabindex -1)
+
+```html
+<a tabindex="-1" href="/home" aria-hidden="true">Home</a>
+```
+
+##### Fixed (remove aria-hidden)
+
+```html
+<a href="/home">Home</a>
+```
+
+##### Fixed (inert)
+
+```html
+<a inert href="/home" aria-hidden="true">Home</a>
 ```
 
 ##### Do
@@ -12907,7 +13022,7 @@ Every `<img>` has an `alt` attribute: a description, or `alt=""` for a purely de
 ## `html/img-title` — Decorative images have no title
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the image is decorative or informative is the author's call)
+- **Fix:** `suggest` (the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/img-title.md
 
@@ -12930,6 +13045,18 @@ An `<img>` with empty `alt` has no `title`.
 
 ```html
 <img src="logo.png" alt="" title="Acme">
+```
+
+##### Fixed (remove the title)
+
+```html
+<img src="logo.png" alt="">
+```
+
+##### Fixed (title as alt)
+
+```html
+<img src="logo.png" alt="Acme">
 ```
 
 ##### Do
@@ -13110,7 +13237,7 @@ The `<title>` text is at most 70 characters.
 ## `html/map-dup-name` — Image maps have unique names
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming a map means updating the `usemap` that points at it)
+- **Fix:** `suggest` (the later <map> goes: `usemap` always finds the first, so it is never used; the reviewer confirms it wasn't meant to replace the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/map-dup-name.md
 
@@ -13135,6 +13262,12 @@ No two `<map>` elements share a `name`.
 <map name="nav"></map>
 ```
 
+##### Fixed
+
+```html
+<map name="nav"></map>
+```
+
 ##### Do
 
 ```html
@@ -13145,7 +13278,7 @@ No two `<map>` elements share a `name`.
 ## `html/map-id-name` — A map's id and name match
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which of the two names is right depends on what refers to the map)
+- **Fix:** `suggest` (the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/map-id-name.md
 
@@ -13167,6 +13300,18 @@ When a `<map>` has both `id` and `name`, they are the same.
 
 ```html
 <map id="nav" name="menu"></map>
+```
+
+##### Fixed (name follows id)
+
+```html
+<map id="nav" name="nav"></map>
+```
+
+##### Fixed (id follows name)
+
+```html
+<map id="menu" name="menu"></map>
 ```
 
 ##### Do
@@ -13641,7 +13786,7 @@ Split it, so each file stays short:
 ## `html/meta-refresh` — Meta refresh redirects at once
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (redirecting at once or removing the refresh changes the page's behaviour)
+- **Fix:** `suggest` (the choices are making the refresh instant, when it names a URL, or removing it; either changes when, or whether, the page moves on)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` · `codelaw:html/security` at `error` · `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/meta-refresh.md
 
@@ -13670,6 +13815,20 @@ A `<meta http-equiv="refresh">` redirects immediately (`0;url=…`); it doesn't 
 
 ```html
 <meta http-equiv="refresh" content="5;url=/next">
+<title>Moved</title>
+```
+
+##### Fixed (instant)
+
+```html
+<meta http-equiv="refresh" content="0;url=/next">
+<title>Moved</title>
+```
+
+##### Fixed (remove)
+
+```html
+<title>Moved</title>
 ```
 
 ##### Do
@@ -13792,7 +13951,7 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 ## `html/no-abstract-role` — No abstract ARIA roles
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the concrete role depends on what the element is)
+- **Fix:** `suggest` (the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-abstract-role.md
 
@@ -13814,6 +13973,18 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 
 ```html
 <div role="landmark">News</div>
+```
+
+##### Fixed (remove)
+
+```html
+<div>News</div>
+```
+
+##### Fixed (concrete role)
+
+```html
+<div role="region">News</div>
 ```
 
 ##### Do
@@ -13860,7 +14031,7 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 ## `html/no-conditional-comment` — No Internet Explorer conditional comments
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the markup inside is still needed is the author's call)
+- **Fix:** `auto` (no browser codelaw targets reads conditional comments: a comment hidden from them goes, and the markers around content every browser shows go, the content kept, so the page renders the same)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-conditional-comment.md
 
@@ -13894,7 +14065,7 @@ The document has no conditional comments (`<!--[if IE]>…<![endif]-->`).
 ## `html/no-deprecated-attr` — No obsolete attributes
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the replacement is usually CSS, which needs a class and a rule)
+- **Fix:** `auto` (auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-deprecated-attr.md
 
@@ -13917,6 +14088,12 @@ Elements don't use attributes HTML has made obsolete, such as `align`, `bgcolor`
 
 ```html
 <img src="a.png" alt="Chart" align="left">
+```
+
+##### Fixed
+
+```html
+<img src="a.png" alt="Chart" style="float: left">
 ```
 
 ##### Do
@@ -13990,7 +14167,7 @@ A `class` attribute lists each class once.
 ## `html/no-duplicate-id` — Ids are unique in the document
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming an id breaks the CSS, scripts and links that use it)
+- **Fix:** `suggest` (the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-duplicate-id.md
 
@@ -14014,6 +14191,20 @@ No two elements in the document have the same `id`. Ids inside a `<template>` on
 ```html
 <h2 id="intro">Intro</h2>
 <p id="intro">Text</p>
+```
+
+##### Fixed (drop the id)
+
+```html
+<h2 id="intro">Intro</h2>
+<p>Text</p>
+```
+
+##### Fixed (rename)
+
+```html
+<h2 id="intro">Intro</h2>
+<p id="intro-2">Text</p>
 ```
 
 ##### Do
@@ -14168,7 +14359,7 @@ Elements don't have a `style` attribute, except one that only sets `display` or 
 ## `html/no-missing-references` — Id references point at an element
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the id or the reference is wrong, and only the author knows which)
+- **Fix:** `suggest` (the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/document` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-missing-references.md
 
@@ -14192,6 +14383,12 @@ Attributes that refer to ids — `for`, `form`, `list`, `headers`, `aria-labelle
 <input type="text" aria-describedby="hint">
 ```
 
+##### Fixed
+
+```html
+<input type="text">
+```
+
 ##### Do
 
 ```html
@@ -14202,7 +14399,7 @@ Attributes that refer to ids — `for`, `form`, `list`, `headers`, `aria-labelle
 ## `html/no-multiple-main` — One visible <main> per document
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which one is the main content is a design decision)
+- **Fix:** `suggest` (every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-multiple-main.md
 
@@ -14225,6 +14422,13 @@ A document has at most one `<main>` without the `hidden` attribute.
 ```html
 <main>Feed</main>
 <main>Sidebar</main>
+```
+
+##### Fixed
+
+```html
+<main>Feed</main>
+<div>Sidebar</div>
 ```
 
 ##### Do
@@ -14510,7 +14714,7 @@ Only the file itself is checked: an HTML region inside another file (a Markdown 
 ## `html/prefer-button` — Buttons are <button> elements
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the element changes, so CSS and scripts that select `input` need updating)
+- **Fix:** `suggest` (`<input type="submit" value="V">` becomes `<button type="submit" value="V">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/prefer-button.md
 
@@ -14535,6 +14739,12 @@ Buttons are written as `<button>`, not `<input type="button">`, `submit`, `reset
 <input type="submit" value="Send">
 ```
 
+##### Fixed
+
+```html
+<button type="submit" value="Send">Send</button>
+```
+
 ##### Do
 
 ```html
@@ -14544,7 +14754,7 @@ Buttons are written as `<button>`, not `<input type="button">`, `submit`, `reset
 ## `html/prefer-native-element` — Native elements instead of ARIA roles
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (swapping the element changes its styles and scripts)
+- **Fix:** `suggest` (the element becomes the native one its role names, the role and an implied `tabindex="0"` dropped (a button gets `type="button"`); its styles and scripts may target the old tag, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/prefer-native-element.md
 
@@ -14875,7 +15085,7 @@ A `<button>` has text a screen reader can announce: content, `aria-label`, `aria
 ## `html/th-scope` — Header cells in complex tables have scope
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether each header labels a row or a column is the author's call)
+- **Fix:** `suggest` (the choices are `scope="col"` and `scope="row"`, the default by where the header stands (the first row heads columns, a row's first cell heads the row); the reviewer confirms it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/th-scope.md
 
@@ -15008,7 +15218,7 @@ When a landmark appears more than once (two `<nav>`, two `<aside>`, …), each h
 ## `html/unrecognized-char-ref` — Character references exist and are terminated
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the intended character is not always clear)
+- **Fix:** `auto` (auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/unrecognized-char-ref.md
 
@@ -15049,7 +15259,7 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ## `html/valid-autocomplete` — autocomplete values are valid
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the right field name depends on what the field collects)
+- **Fix:** `suggest` (the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/valid-autocomplete.md
 
@@ -15071,8 +15281,13 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ##### Don't
 
 ```html
-<input type="email" name="email" autocomplete="mail">
-<input type="number" name="n" autocomplete="email">
+<input type="email" name="email" autocomplete="emial">
+```
+
+##### Fixed
+
+```html
+<input type="email" name="email" autocomplete="email">
 ```
 
 ##### Do
@@ -15085,7 +15300,7 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ## `html/valid-for` — A label points at a control
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the id or the element is wrong, and only the author knows which)
+- **Fix:** `suggest` (the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/valid-for.md
 
@@ -15108,6 +15323,15 @@ A `<label for>` refers to the id of a form control a label can name (`input`, `s
 ```html
 <label for="name">Name</label>
 <div id="name"></div>
+<input id="full-name">
+```
+
+##### Fixed
+
+```html
+<label for="full-name">Name</label>
+<div id="name"></div>
+<input id="full-name">
 ```
 
 ##### Do

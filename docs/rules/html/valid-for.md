@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (either the id or the element is wrong, and only the author knows which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/valid-for` |
@@ -133,6 +133,15 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 ```html
 <label for="name">Name</label>
 <div id="name"></div>
+<input id="full-name">
+```
+
+#### Fixed
+
+```html
+<label for="full-name">Name</label>
+<div id="name"></div>
+<input id="full-name">
 ```
 
 #### Do

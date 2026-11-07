@@ -2,9 +2,8 @@
 id: html/attribute-misuse
 title: "Attributes are used only where they take effect"
 languages: [html]
-fix: manual
-fix_reason: "either the attribute or its context is wrong, and only the author knows which"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type=\"submit\"`); only the author knows which was meant"
 stability: preview
 ported_from: [html-validate/attribute-misuse]
 since: 0.1.0
@@ -31,6 +30,18 @@ native: html/attribute-misuse
 
 ```html
 <button type="button" formaction="/save">Save</button>
+```
+
+#### Fixed (remove)
+
+```html
+<button type="button">Save</button>
+```
+
+#### Fixed (change the context)
+
+```html
+<button type="submit" formaction="/save">Save</button>
 ```
 
 #### Do

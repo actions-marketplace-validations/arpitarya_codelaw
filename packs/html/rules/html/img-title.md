@@ -2,9 +2,8 @@
 id: html/img-title
 title: "Decorative images have no title"
 languages: [html]
-fix: manual
-fix_reason: "whether the image is decorative or informative is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which"
 stability: preview
 ported_from: [html-validate/wcag/h67]
 tags: [a11y]
@@ -32,6 +31,18 @@ native: html/img-title
 
 ```html
 <img src="logo.png" alt="" title="Acme">
+```
+
+#### Fixed (remove the title)
+
+```html
+<img src="logo.png" alt="">
+```
+
+#### Fixed (title as alt)
+
+```html
+<img src="logo.png" alt="Acme">
 ```
 
 #### Do

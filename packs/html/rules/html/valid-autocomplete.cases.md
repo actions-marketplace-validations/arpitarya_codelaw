@@ -40,3 +40,13 @@
 ```expect
 1:21 html/valid-autocomplete
 ```
+
+### case: a field that does not fit its input type stays manual
+
+```html
+<input type="number" name="n" autocomplete="email">
+```
+
+```expect
+1:45 html/valid-autocomplete
+```

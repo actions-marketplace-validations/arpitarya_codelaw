@@ -2,9 +2,9 @@
 id: html/close-order
 title: "Elements are closed, and in the order they were opened"
 languages: [html]
-fix: manual
-fix_reason: "where the missing end tag belongs depends on the intended structure"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the unclosed element is its parent's last child and not a formatting element: its end tag goes where the parser already ends it, before the parent's, so the document is the same; any other unclosed element is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/close-order, htmlhint/tag-pair]
 since: 0.1.0

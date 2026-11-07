@@ -2,9 +2,9 @@
 id: html/prefer-native-element
 title: "Native elements instead of ARIA roles"
 languages: [html]
-fix: manual
-fix_reason: "swapping the element changes its styles and scripts"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the element becomes the native one its role names, the role and an implied `tabindex=\"0\"` dropped (a button gets `type=\"button\"`); its styles and scripts may target the old tag, which the reviewer checks"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/prefer-native-element]
 tags: [a11y]

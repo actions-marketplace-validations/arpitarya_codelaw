@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming an id breaks the CSS, scripts and links that use it) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Tags** | `a11y` |
@@ -135,6 +135,20 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 ```html
 <h2 id="intro">Intro</h2>
 <p id="intro">Text</p>
+```
+
+#### Fixed (drop the id)
+
+```html
+<h2 id="intro">Intro</h2>
+<p>Text</p>
+```
+
+#### Fixed (rename)
+
+```html
+<h2 id="intro">Intro</h2>
+<p id="intro-2">Text</p>
 ```
 
 #### Do

@@ -2,9 +2,8 @@
 id: html/no-duplicate-id
 title: "Ids are unique in the document"
 languages: [html]
-fix: manual
-fix_reason: "renaming an id breaks the CSS, scripts and links that use it"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks"
 stability: preview
 ported_from: [html-validate/no-dup-id, htmlhint/id-unique]
 tags: [a11y]
@@ -33,6 +32,20 @@ native: html/no-duplicate-id
 ```html
 <h2 id="intro">Intro</h2>
 <p id="intro">Text</p>
+```
+
+#### Fixed (drop the id)
+
+```html
+<h2 id="intro">Intro</h2>
+<p>Text</p>
+```
+
+#### Fixed (rename)
+
+```html
+<h2 id="intro">Intro</h2>
+<p id="intro-2">Text</p>
 ```
 
 #### Do
