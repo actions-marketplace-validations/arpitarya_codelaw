@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-07 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+| 🔴 **Ratify Ruff `=0.0.21` under L11 (W-173)** — the only fix for `zip` 8.6.0's five advisories (1 critical). Not reachable from codelaw (we call only `format_module_source`; `zip` sits behind ruff_db's vendored typeshed), but no feature drops it. **(a, recommended)** bump D-02's five crates to `=0.0.21`: `zip` → 9.4.1, `typed-path` → 0.13, new `getrandom` 0.4 and `nix` 0.31 (macOS), `psm`/`stacker` gone, all permissive; then the Python corpus re-run (0.0.21 may restyle). **(b)** stay on 0.0.18 and dismiss the alerts as unreachable. **(c)** a `[patch]` fork — no. | 2026-11-07 |
+| ↳ **blocks:** W-173 | |
 
 ---
 
@@ -47,7 +47,7 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (5)
 
-🟢🧨 **W-173** `agent` Dependabot: five advisories (1 critical) on `zip` 8.6.0, transitive via ruff_db ← ruff_python_formatter; fixed in 9.0.5. Next: is it reachable, can a ruff_db feature drop it, else a bump to the decider (L11). Filed by Arpit (Claude Code). [detail](open/W-173-zip-advisories.md)
+🔴🧨 **W-173** `arpit` Dependabot: five advisories (1 critical) on `zip` 8.6.0, via ruff_db ← ruff_python_formatter. 11-07: unreachable from codelaw; no feature drops it; ruff_db 0.0.21 takes zip ^9.0.5. Waits on the inbox ruling (bump D-02 to `=0.0.21`). Filed by Arpit (Claude Code). [detail](open/W-173-zip-advisories.md)
 
 🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 

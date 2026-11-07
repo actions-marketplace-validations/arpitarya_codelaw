@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-173: `zip` unreachable, not removable; Ruff 0.0.21 to the decider  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-173 — the five Dependabot advisories on `zip` 8.6.0: exposure, removal first, else the bump to the decider.
+- **Done:** exposure read — codelaw calls only `format_module_source`; `zip` is used by ruff_db's `VendoredFileSystem` alone, reached only through a `ruff_db::Db` codelaw never builds. Removal impossible: `zip` is non-optional in ruff_db 0.0.18 and ruff_db non-optional in the formatter. ruff_db 0.0.21 takes `zip ^9.0.5`; the bump's crate delta measured in a scratch crate (item, step 2). No code or lock changed.
+- **Decided / left open:** inbox row — ratify Ruff `=0.0.21` (recommended), or dismiss the alerts as unreachable; W-173 🔴 `arpit`.
+- **Mistakes:** none.
+- **Next:** on the ruling, bump D-02, update the L11 ledger, run `cargo test -p codelaw-format` and the Python corpus.
+
+---
+
 ## 2026-11-07 — W-126: `perf-plan` red on W-168's graph rows; a `graph` group  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) three measurement runs of the `perf` matrix on `7cdb480b`; then: fix `perf-plan`, red because W-168's six `graph_*` rows are in no group.
