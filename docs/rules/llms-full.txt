@@ -157705,7 +157705,7 @@ The schema is SchemaStore's `github-action.json` schema, shipped with the pack i
 ## `yaml/gha-pin-sha` — GitHub Actions are pinned to a commit SHA
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (finding the commit a tag points to needs the network, and the engine never uses it (L5))
+- **Fix:** `suggest` (the commit is the one `codelaw deps refresh` recorded for the ref, the one networked command (L5); the fix trusts that record, and a ref the snapshot has no entry for is pinned by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/github-actions` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/gha-pin-sha.md
 
@@ -157717,7 +157717,7 @@ A `uses:` in a GitHub Actions workflow or composite action names a full 40-chara
 
 ### How to fix
 
-1. Look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.
+1. Run `codelaw deps refresh`: it records the commit of each Action ref the workflows name, and the fix pins to it. Otherwise look up the commit the tag points to, for example with `git ls-remote https://github.com/<owner>/<repo> <tag>`.
 2. Replace the tag with the 40-character SHA and keep the tag as a comment: `uses: actions/checkout@<sha> # v4.2.2`.
 3. Let Dependabot or Renovate update the pinned SHAs.
 
@@ -157727,7 +157727,10 @@ A `uses:` in a GitHub Actions workflow or composite action names a full 40-chara
 
 ##### Don't
 
-```yaml path=.github/workflows/ci.yml
+```yaml
+# .codelaw/deps-snapshot.json
+{ "fetched": "2026-11-07", "actions": { "actions/checkout@v4": "11bd71901bbe5b1630ceea73d27597364c9af683" } }
+# .github/workflows/ci.yml
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -157737,12 +157740,15 @@ jobs:
 
 ##### Do
 
-```yaml path=.github/workflows/ci.yml
+```yaml
+# .codelaw/deps-snapshot.json
+{ "fetched": "2026-11-07", "actions": { "actions/checkout@v4": "11bd71901bbe5b1630ceea73d27597364c9af683" } }
+# .github/workflows/ci.yml
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 ```
 
 ## `yaml/gha-workflow-schema` — GitHub Actions workflows match their schema
