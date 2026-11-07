@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to remove or move the declaration is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/at-rule-descriptor-no-unknown` |

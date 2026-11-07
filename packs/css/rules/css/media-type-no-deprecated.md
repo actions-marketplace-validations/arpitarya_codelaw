@@ -2,9 +2,9 @@
 id: css/media-type-no-deprecated
 title: "No deprecated media types"
 languages: [css, scss]
-fix: manual
-fix_reason: "the media features that describe the device are the author's call"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual"
+fix_exception: restructure
 stability: stable
 options:
   ignoreMediaTypes: { type: "string[]", default: [], description: "media types to accept" }
@@ -31,7 +31,17 @@ native: css/media-type-no-deprecated
 #### Don't
 
 ```css
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed
+
+```css
+@media print {
   a {
     color: red;
   }
@@ -52,7 +62,17 @@ native: css/media-type-no-deprecated
 #### Don't
 
 ```scss
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed
+
+```scss
+@media print {
   a {
     color: red;
   }

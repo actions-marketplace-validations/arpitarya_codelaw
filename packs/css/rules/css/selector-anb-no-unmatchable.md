@@ -2,9 +2,9 @@
 id: css/selector-anb-no-unmatchable
 title: "No An+B selector that matches nothing"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended position is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/selector-anb-no-unmatchable]
 since: 0.1.0
@@ -29,7 +29,16 @@ native: css/selector-anb-no-unmatchable
 #### Don't
 
 ```css
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+#### Fixed
+
+```css
+li.first {
   color: red;
 }
 ```
@@ -46,7 +55,16 @@ li:nth-child(1) {
 #### Don't
 
 ```scss
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+#### Fixed
+
+```scss
+li.first {
   color: red;
 }
 ```

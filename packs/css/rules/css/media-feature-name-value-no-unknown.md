@@ -2,9 +2,9 @@
 id: css/media-feature-name-value-no-unknown
 title: "Media features have valid values"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended value is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the feature's keywords within two edits are choices, nearest first; a value with none near is manual"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/media-feature-name-value-no-unknown]
 since: 0.1.0
@@ -29,7 +29,7 @@ native: css/media-feature-name-value-no-unknown
 #### Don't
 
 ```css
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -50,7 +50,7 @@ native: css/media-feature-name-value-no-unknown
 #### Don't
 
 ```scss
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/conventions` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the selector or layer that should win instead is a design call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`!important` goes; the declaration may then lose to another, which the reviewer checks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/declaration-no-important` |
@@ -139,6 +139,14 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+a {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -153,6 +161,14 @@ a.highlight {
 ```scss
 a {
   color: red !important;
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  color: red;
 }
 ```
 

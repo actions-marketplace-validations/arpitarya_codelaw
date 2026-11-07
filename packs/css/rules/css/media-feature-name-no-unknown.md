@@ -2,9 +2,9 @@
 id: css/media-feature-name-no-unknown
 title: "No unknown media features"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended feature is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the known names within two edits are choices, nearest first; a name with none near is manual"
+fix_exception: value
 stability: stable
 options:
   ignoreMediaFeatureNames: { type: "string[]", default: [], description: "features to accept; `/regex/` for a pattern" }

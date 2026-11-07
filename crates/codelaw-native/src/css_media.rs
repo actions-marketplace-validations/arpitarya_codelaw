@@ -369,7 +369,7 @@ css_rule!(MediaFeatureNameNoUnknown, "css/media-feature-name-no-unknown", |sheet
             if lower.starts_with("--") || vendor_prefix(&lower).is_some() || known.contains(&lower) || matches_any(&ignore, name) {
                 continue;
             }
-            out.push(finding(f.name.0, f.name.1, format!("Unknown media feature `{name}`")));
+            out.push(crate::css_syntax::fixed(f.name.0, f.name.1, format!("Unknown media feature `{name}`"), crate::util::near_choices(&known, name, f.name.0, f.name.1)));
         }
     });
 });
@@ -415,7 +415,8 @@ css_rule!(MediaFeatureNameValueNoUnknown, "css/media-feature-name-value-no-unkno
                 let kw_ok = kw.is_some_and(|k| k.iter().any(|x| x.as_str() == Some(lower.as_str())));
                 let ty_ok = ty.is_some_and(|t| t.iter().filter_map(|x| x.as_str()).any(|t| value_ok(v, t)));
                 if !kw_ok && !ty_ok {
-                    out.push(finding(r.0, r.1, format!("`{v}` is not a valid value for the media feature `{name}`")));
+                    let names: Vec<String> = kw.into_iter().flatten().filter_map(|x| x.as_str().map(str::to_owned)).collect();
+                    out.push(crate::css_syntax::fixed(r.0, r.1, format!("`{v}` is not a valid value for the media feature `{name}`"), crate::util::near_choices(&names, &lower, r.0, r.1)));
                 }
             }
         }
@@ -425,11 +426,25 @@ css_rule!(MediaFeatureNameValueNoUnknown, "css/media-feature-name-value-no-unkno
 css_rule!(MediaTypeNoDeprecated, "css/media-type-no-deprecated", |sheet, src, ctx, out| {
     let deprecated = set(ctx.data, "css/media", "deprecated_types");
     let ignore = opt_list(ctx, "ignoreMediaTypes");
-    each_query(sheet, src, &mut |_, _, _, types| {
+    each_query(sheet, src, &mut |q, _, _, types| {
         for t in types {
             let name = text(src, t);
             if deprecated.contains(&name.to_ascii_lowercase()) && !matches_any(&ignore, name) {
-                out.push(finding(t.0, t.1, format!("The media type `{name}` is deprecated and matches nothing; use media features instead")));
+                // A query of only that type matches nothing, so it goes from
+                // a list that keeps another query.
+                let mut edits = Vec::new();
+                if text(src, q).trim().eq_ignore_ascii_case(name) {
+                    let after = &src[q.1..];
+                    let ws = after.len() - after.trim_start().len();
+                    if after[ws..].starts_with(',') {
+                        let rest = &after[ws + 1..];
+                        let ws2 = rest.len() - rest.trim_start().len();
+                        edits.push(TextEdit::delete(q.0, q.1 + ws + 1 + ws2));
+                    } else if let Some(b) = src[..q.0].trim_end().strip_suffix(',') {
+                        edits.push(TextEdit::delete(b.len(), q.1));
+                    }
+                }
+                out.push(crate::css_syntax::fixed(t.0, t.1, format!("The media type `{name}` is deprecated and matches nothing; use media features instead"), edits));
             }
         }
     });

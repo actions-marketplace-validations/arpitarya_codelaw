@@ -250,7 +250,7 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 - **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,122 today; 1,548 of the 2,590 rules on the ruled port list are answered so far. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13.
 - **Differences are written down.** Each pack's README lists where a port behaves differently from the original, and which rules weren't ported and why.
 - **Layout rules are left out on purpose.** Indentation, spacing and quotes are the formatter's job (`codelaw format`).
-- **33,381 example checks, all green.** `codelaw test packs/<pack>` runs them.
+- **33,477 example checks, all green.** `codelaw test packs/<pack>` runs them.
 - **`*/conventions` presets are opt-in**: house-style rules such as `js/exports-at-end` and `py/no-print`.
 - **`*/size` presets are opt-in too**: `js/size` and `py/size` turn on max lines per file, max lines per function and max parameters for JavaScript, TypeScript and Python; `html/size` and `css/size` a line limit per file. Each rule has options for the limit and for what counts.
 - **`*/project` presets are opt-in too**: the rules that read the whole repo, `graph/no-unused-exports` (`js/project`, `py/project`) and `graph/no-unused-css-classes` (`css/project`). `codelaw graph why-unused <symbol>` says why a finding held.
@@ -263,9 +263,9 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 
 | class | rules | what happens |
 |---|---|---|
-| `auto` | 530 | `codelaw fix` applies it. It's safe and meaning-preserving. |
-| `suggest` | 704 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
-| `manual` | 888 | The finding lists numbered steps, for a person or an agent to follow. |
+| `auto` | 533 | `codelaw fix` applies it. It's safe and meaning-preserving. |
+| `suggest` | 718 | `codelaw fix --unsafe` applies it. Review the diff, because it can change behaviour. |
+| `manual` | 871 | The finding lists numbered steps, for a person or an agent to follow. |
 
 <!-- /docs-sync:fix-classes -->
 

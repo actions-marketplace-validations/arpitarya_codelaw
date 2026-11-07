@@ -2,9 +2,9 @@
 id: css/no-invalid-double-slash-comments
 title: "No `//` comments"
 languages: [css]
-fix: manual
-fix_reason: "turning it into a comment changes what applies"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "a `//` line read as a declaration is dropped by the browser, as a comment is, so it becomes `/* … */`; a `//` that breaks a rule is manual"
+fix_exception: restructure
 stability: stable
 ported_from: [stylelint/no-invalid-double-slash-comments]
 since: 0.1.0

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignorePseudoClasses` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended pseudo-class is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/selector-pseudo-class-no-unknown` |

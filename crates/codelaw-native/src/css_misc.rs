@@ -66,7 +66,17 @@ css_rule!(NoInvalidDoubleSlashComments, "css/no-invalid-double-slash-comments", 
         if starts {
             let line_end = src[n.start..n.end].find('\n').map_or(n.end, |o| n.start + o);
             let what = if n.kind == Kind::Rule { "the rule after it" } else { "this declaration" };
-            out.push(finding(n.start, line_end.max(n.start + 2), format!("`//` does not start a comment in CSS; it breaks {what}. Use `/* … */`")));
+            // A `//` line that is a declaration is the comment it meant:
+            // the browser drops the declaration, as it drops a comment.
+            let line = &src[n.start..line_end];
+            let edits = if n.kind == Kind::Decl && !line.contains("*/") && line_end <= n.end + 1 {
+                let end = if src[n.end..].starts_with(';') { n.end + 1 } else { n.end };
+                let body = src[n.start + 2..end].trim();
+                vec![codelaw_core::TextEdit::new(n.start, end, format!("/* {body} */"))]
+            } else {
+                Vec::new()
+            };
+            out.push(crate::css_syntax::fixed(n.start, line_end.max(n.start + 2), format!("`//` does not start a comment in CSS; it breaks {what}. Use `/* … */`"), edits));
         }
     }
 });
