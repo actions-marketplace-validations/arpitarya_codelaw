@@ -74,6 +74,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 22 (37 SonarJS and unicorn rules read from source, 2 links)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) as slice 21: the rest of the rows once "not confirmable offline".
+- **Done:** slice 21 landed (`ebf86f12`). Slice 22 — 37 rules (3 auto, 16 suggest, 18 manual): SonarJS 24 read from its rule code, tests and fixtures at eslint-plugin-sonarjs 4.2.2's `gitHead` (fetched with curl from raw.githubusercontent.com; behaviour only), unicorn 13, `md/no-empty-link-text` in the data pack; 2 SonarJS rows linked; 3 found native. No row of the strand is left unread.
+- **Decided / left open:** SonarJS 4.x ships under the Sonar Source-Available Licence, not LGPL: the preset's description already says behaviour only, and nothing was copied; the source was read to confirm behaviour, as the coordinator asked.
+- **Mistakes:** none new.
+- **Next:** the strand's 51 native rows in `crates/codelaw-native`.
+
 ## 2026-11-07 — W-139 strand W-139-js, third pass: slice 21 (52 unicorn rules read from source, 15 links)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the js strand: link the 19 "already does it" rows, confirm the 104 "not confirmable offline" rows from upstream's source and tests, write the natives, re-label the rest.
