@@ -23,13 +23,15 @@ here. Read that record before changing anything below it.
 | what the decider decides | filed |
 |---|---|
 
-*Empty since 2026-11-05 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+*Empty since 2026-11-07 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
-## Open items (13)
+## Open items (14)
 
-### build (6)
+### build (7)
+
+🟢 **W-171** `agent` Six worktrees (W-139, W-141, W-156, W-162, W-168, W-169) hold unlanded work of agents stopped by the usage limit 11-05. Ruled 11-07: keep; each lands with its item. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
