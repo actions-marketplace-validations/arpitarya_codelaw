@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (either the attribute or its context is wrong, and only the author knows which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type="submit"`); only the author knows which was meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/attribute-misuse` |
@@ -133,6 +133,18 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ```html
 <button type="button" formaction="/save">Save</button>
+```
+
+#### Fixed (remove)
+
+```html
+<button type="button">Save</button>
+```
+
+#### Fixed (change the context)
+
+```html
+<button type="submit" formaction="/save">Save</button>
 ```
 
 #### Do

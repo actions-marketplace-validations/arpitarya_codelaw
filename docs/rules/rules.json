@@ -8828,8 +8828,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value can only be guessed",
+   "fix": "suggest",
+   "fix_reason": "the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8877,8 +8877,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the attribute or its context is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type=\"submit\"`); only the author knows which was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9134,8 +9134,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "where the missing end tag belongs depends on the intended structure",
+   "fix": "auto",
+   "fix_reason": "auto when the unclosed element is its parent's last child and not a formatting element: its end tag goes where the parser already ends it, before the parent's, so the document is the same; any other unclosed element is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9324,8 +9324,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming an element changes its CSS and script hooks",
+   "fix": "suggest",
+   "fix_reason": "the known element names within two edits are choices, nearest first, with a custom element name (`x-<name>`) last; which was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9380,7 +9380,7 @@
     "html"
    ],
    "fix": "manual",
-   "fix_reason": "the right structure depends on what the markup is for",
+   "fix_reason": "what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9427,8 +9427,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the duplicates to keep is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9474,8 +9474,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "moving markup may change how it is styled",
+   "fix": "auto",
+   "fix_reason": "auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9521,8 +9521,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to wrap the element or change it depends on the intended structure",
+   "fix": "suggest",
+   "fix_reason": "the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9569,8 +9569,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to add the ancestor or use other elements depends on the intent",
+   "fix": "suggest",
+   "fix_reason": "the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9985,8 +9985,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "changing a heading level changes its style and the outline",
+   "fix": "suggest",
+   "fix_reason": "the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11049,8 +11049,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement is usually CSS, which needs a class and a rule",
+   "fix": "auto",
+   "fix_reason": "auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11455,8 +11455,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the id or the reference is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

@@ -2,9 +2,9 @@
 id: html/element-permitted-parent
 title: "Elements have a parent HTML allows"
 languages: [html]
-fix: manual
-fix_reason: "whether to wrap the element or change it depends on the intended structure"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/element-permitted-parent]
 since: 0.1.0
@@ -32,6 +32,22 @@ native: html/element-permitted-parent
 ```html
 <div>
   <li>Apples</li>
+</div>
+```
+
+#### Fixed (change the parent)
+
+```html
+<ul>
+  <li>Apples</li>
+</ul>
+```
+
+#### Fixed (wrap)
+
+```html
+<div>
+  <ul><li>Apples</li></ul>
 </div>
 ```
 

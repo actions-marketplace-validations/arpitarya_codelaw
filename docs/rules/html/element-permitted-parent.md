@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to wrap the element or change it depends on the intended structure) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/element-permitted-parent` |
@@ -134,6 +134,22 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 ```html
 <div>
   <li>Apples</li>
+</div>
+```
+
+#### Fixed (change the parent)
+
+```html
+<ul>
+  <li>Apples</li>
+</ul>
+```
+
+#### Fixed (wrap)
+
+```html
+<div>
+  <ul><li>Apples</li></ul>
 </div>
 ```
 

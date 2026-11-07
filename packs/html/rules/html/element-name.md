@@ -2,9 +2,9 @@
 id: html/element-name
 title: "Element names are HTML elements or valid custom elements"
 languages: [html]
-fix: manual
-fix_reason: "renaming an element changes its CSS and script hooks"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the known element names within two edits are choices, nearest first, with a custom element name (`x-<name>`) last; which was meant is the reviewer's call"
+fix_exception: value
 stability: preview
 options:
   allow: { type: "string[]", default: [], description: "more element names to accept" }

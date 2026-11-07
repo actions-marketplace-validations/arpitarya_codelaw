@@ -2,9 +2,9 @@
 id: html/no-missing-references
 title: "Id references point at an element"
 languages: [html]
-fix: manual
-fix_reason: "either the id or the reference is wrong, and only the author knows which"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/no-missing-references]
 since: 0.1.0
@@ -30,6 +30,12 @@ native: html/no-missing-references
 
 ```html
 <input type="text" aria-describedby="hint">
+```
+
+#### Fixed
+
+```html
+<input type="text">
 ```
 
 #### Do

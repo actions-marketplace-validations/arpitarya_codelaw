@@ -961,22 +961,22 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/aria-hidden-body`](html/aria-hidden-body.md) | <body> is not aria-hidden | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/aria-label-misuse`](html/aria-label-misuse.md) | aria-label is used only where it names something | `suggest` | `allowAnyNamable` | `html/recommended`, `html/a11y` |
 | [`html/attr-pattern`](html/attr-pattern.md) | Attribute names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
-| [`html/attribute-allowed-values`](html/attribute-allowed-values.md) | Attributes have values HTML allows | `manual` | — | `html/recommended` |
-| [`html/attribute-misuse`](html/attribute-misuse.md) | Attributes are used only where they take effect | `manual` | — | `html/recommended` |
+| [`html/attribute-allowed-values`](html/attribute-allowed-values.md) | Attributes have values HTML allows | `suggest` | — | `html/recommended` |
+| [`html/attribute-misuse`](html/attribute-misuse.md) | Attributes are used only where they take effect | `suggest` | — | `html/recommended` |
 | [`html/autocomplete-password`](html/autocomplete-password.md) | Password fields say which password they want | `suggest` | `preferred` | `html/recommended`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/button-type`](html/button-type.md) | <button> says what type it is | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/class-pattern`](html/class-pattern.md) | Class names follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/close-attr`](html/close-attr.md) | End tags have no attributes | `auto` | — | `html/recommended` |
-| [`html/close-order`](html/close-order.md) | Elements are closed, and in the order they were opened | `manual` | — | `html/recommended` |
+| [`html/close-order`](html/close-order.md) | Elements are closed, and in the order they were opened | `auto` | — | `html/recommended` |
 | [`html/deprecated`](html/deprecated.md) | No obsolete elements | `manual` | — | `html/recommended` |
 | [`html/deprecated-class`](html/deprecated-class.md) | No class the project has deprecated | `auto` | `classes` | *[rules] only* |
 | [`html/doctype-html`](html/doctype-html.md) | The doctype is the HTML5 one | `suggest` | — | `html/recommended` |
-| [`html/element-name`](html/element-name.md) | Element names are HTML elements or valid custom elements | `manual` | `allow` | `html/recommended` |
+| [`html/element-name`](html/element-name.md) | Element names are HTML elements or valid custom elements | `suggest` | `allow` | `html/recommended` |
 | [`html/element-permitted-content`](html/element-permitted-content.md) | Elements contain only content HTML allows there | `manual` | — | `html/recommended` |
-| [`html/element-permitted-occurrences`](html/element-permitted-occurrences.md) | Elements that may appear once do | `manual` | — | `html/recommended` |
-| [`html/element-permitted-order`](html/element-permitted-order.md) | Children come in the order HTML requires | `manual` | — | `html/recommended` |
-| [`html/element-permitted-parent`](html/element-permitted-parent.md) | Elements have a parent HTML allows | `manual` | — | `html/recommended` |
-| [`html/element-required-ancestor`](html/element-required-ancestor.md) | Elements are inside the ancestor they need | `manual` | — | `html/recommended` |
+| [`html/element-permitted-occurrences`](html/element-permitted-occurrences.md) | Elements that may appear once do | `suggest` | — | `html/recommended` |
+| [`html/element-permitted-order`](html/element-permitted-order.md) | Children come in the order HTML requires | `auto` | — | `html/recommended` |
+| [`html/element-permitted-parent`](html/element-permitted-parent.md) | Elements have a parent HTML allows | `suggest` | — | `html/recommended` |
+| [`html/element-required-ancestor`](html/element-required-ancestor.md) | Elements are inside the ancestor they need | `suggest` | — | `html/recommended` |
 | [`html/element-required-attributes`](html/element-required-attributes.md) | Elements have the attributes HTML requires | `manual` | — | `html/recommended` |
 | [`html/element-required-content`](html/element-required-content.md) | Elements contain the children HTML requires | `manual` | — | `html/recommended` |
 | [`html/empty-heading`](html/empty-heading.md) | Headings have text | `manual` | — | `html/recommended`, `html/a11y` |
@@ -984,7 +984,7 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/fieldset-legend`](html/fieldset-legend.md) | <fieldset> has a legend | `manual` | — | `html/recommended`, `html/a11y` |
 | [`html/form-dup-name`](html/form-dup-name.md) | Form controls have unique names | `manual` | `allowArrayBrackets`, `allowCheckboxDefault`, `shared` | `html/recommended` |
 | [`html/form-submit`](html/form-submit.md) | Forms have a submit button | `manual` | — | `html/recommended`, `html/a11y` |
-| [`html/heading-level`](html/heading-level.md) | Headings start at <h1> and go down one level at a time | `manual` | `allowMultipleH1`, `minInitialRank`, `sectioningRoots` | `html/document` |
+| [`html/heading-level`](html/heading-level.md) | Headings start at <h1> and go down one level at a time | `suggest` | `allowMultipleH1`, `minInitialRank`, `sectioningRoots` | `html/document` |
 | [`html/hidden-focusable`](html/hidden-focusable.md) | Focusable elements are not aria-hidden | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/id-pattern`](html/id-pattern.md) | Ids follow the project's pattern | `manual` | `pattern` | *[rules] only* |
 | [`html/img-alt`](html/img-alt.md) | <img> has alt text | `manual` | `allowEmpty`, `alias` | `html/recommended`, `html/a11y` |
@@ -1004,7 +1004,7 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/no-abstract-role`](html/no-abstract-role.md) | No abstract ARIA roles | `suggest` | — | `html/recommended`, `html/a11y` |
 | [`html/no-autoplay`](html/no-autoplay.md) | Media does not play by itself | `suggest` | `include` | `html/recommended`, `html/a11y` |
 | [`html/no-conditional-comment`](html/no-conditional-comment.md) | No Internet Explorer conditional comments | `auto` | — | `html/recommended` |
-| [`html/no-deprecated-attr`](html/no-deprecated-attr.md) | No obsolete attributes | `manual` | — | `html/recommended` |
+| [`html/no-deprecated-attr`](html/no-deprecated-attr.md) | No obsolete attributes | `auto` | — | `html/recommended` |
 | [`html/no-dup-attr`](html/no-dup-attr.md) | No attribute written twice | `auto` | — | `html/recommended` |
 | [`html/no-dup-class`](html/no-dup-class.md) | No class listed twice | `auto` | — | `html/recommended` |
 | [`html/no-duplicate-id`](html/no-duplicate-id.md) | Ids are unique in the document | `suggest` | — | `html/recommended`, `html/a11y` |
@@ -1012,7 +1012,7 @@ Presets: `codelaw:html/recommended` · `codelaw:html/a11y` · `codelaw:html/docu
 | [`html/no-implicit-input-type`](html/no-implicit-input-type.md) | <input> says what type it is | `suggest` | — | `html/recommended` |
 | [`html/no-inline-script`](html/no-inline-script.md) | No inline event handlers or javascript: URLs | `manual` | — | `html/conventions`, `html/security`, `sec-html/recommended`, `sec-html/strict` |
 | [`html/no-inline-style`](html/no-inline-style.md) | No inline styles | `manual` | `allowedProperties`, `allowVariables` | `html/conventions` |
-| [`html/no-missing-references`](html/no-missing-references.md) | Id references point at an element | `manual` | — | `html/document` |
+| [`html/no-missing-references`](html/no-missing-references.md) | Id references point at an element | `suggest` | — | `html/document` |
 | [`html/no-multiple-main`](html/no-multiple-main.md) | One visible <main> per document | `suggest` | — | `html/recommended` |
 | [`html/no-raw-characters`](html/no-raw-characters.md) | Special characters are escaped | `auto` | `relaxed` | `html/recommended` |
 | [`html/no-redundant-aria-label`](html/no-redundant-aria-label.md) | aria-label doesn't repeat the label | `auto` | — | `html/recommended`, `html/a11y` |
