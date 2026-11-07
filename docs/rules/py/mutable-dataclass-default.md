@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the fix needs `field` imported, which the file may not do) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (each instance gets its own value, built by `default_factory`; an empty list, dict or set is built by its type, any other by a `lambda`; `field` is imported from `dataclasses` where the file does not) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/RUF008` |
@@ -140,6 +140,8 @@ class Cart:
 #### Do
 
 ```python
+from dataclasses import field
+
 @dataclass
 class Cart:
     items: list = field(default_factory=list)

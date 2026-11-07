@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`math.isclose` uses a tolerance, so values that compared unequal may compare equal) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`math.isclose` uses a tolerance, so values that compared unequal may compare equal; `math` is imported where the file does not, and a file that binds `math` to something else is fixed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/RUF069` |
@@ -139,6 +139,8 @@ if total == 0.3:
 #### Do
 
 ```python
+import math
+
 if math.isclose(total, 0.3):
     done()
 ```

@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-162 change 6: scope rename, purity, add-import  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure after change 5 landed.
+- **Done:** `rename-symbol`, `$FRESH`, `ensure-import`; purity reused for the two `js/*` unused rules; 18 rules moved, 7 re-judged `manual`.
+- **Decided / left open:** a rename fix makes the engine build the semantic model for its rule. W-139's py strand filed ten new rules under W-162 (computed-edit 9, add-import 1) while this ran; they are next. Cross-file (36) is not started.
+- **Mistakes:** change 5's first claim passed the rule files as one path (zsh does not split an unquoted variable), so the first submit left them behind; re-committed with records in one commit before it landed.
+- **Next:** the ten `py/*` rules, then cross-file read.
+
+---
+
 ## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish the python half of W-139's remaining ports and close W-139 if DoD 1 is met.
