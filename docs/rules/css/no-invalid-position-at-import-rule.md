@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAtRules` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the import makes its rules apply, which changes the page) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are moving the `@import` above the rules, where it starts to apply, or deleting it, which keeps what the page renders today; only the author knows which) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/no-invalid-position-at-import-rule` |
@@ -180,6 +180,25 @@ a {
 }
 
 @import url("theme.css");
+```
+
+#### Fixed (move up)
+
+```css
+@import url("theme.css");
+a {
+  color: red;
+}
+
+```
+
+#### Fixed (delete)
+
+```css
+a {
+  color: red;
+}
+
 ```
 
 #### Do

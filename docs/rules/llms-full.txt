@@ -2416,7 +2416,7 @@ Reported without a fix; stylelint rewrites some sets into the shorthand.
 ## `css/declaration-block-no-shorthand-property-overrides` — No shorthand after a longhand it resets
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which value is meant can't be known from the code)
+- **Fix:** `suggest` (the choices are deleting the overridden longhand (the default, which renders the same) or moving it after the shorthand, which makes it apply)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-block-no-shorthand-property-overrides.md
 
@@ -2443,6 +2443,14 @@ a {
 }
 ```
 
+##### Fixed
+
+```css
+a {
+  padding: 20px;
+}
+```
+
 ##### Do
 
 ```css
@@ -2458,6 +2466,14 @@ a {
 ```scss
 a {
   padding-left: 10px;
+  padding: 20px;
+}
+```
+
+##### Fixed
+
+```scss
+a {
   padding: 20px;
 }
 ```
@@ -3086,7 +3102,7 @@ a {
 ## `css/font-family-no-missing-generic-family-keyword` — Font lists end with a generic family
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which generic family suits the fonts is a design call)
+- **Fix:** `suggest` (the choices are `sans-serif`, `serif` and `monospace` appended to the list, the default the family a table of common fonts puts the listed ones in; with none known there is no default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/font-family-no-missing-generic-family-keyword.md
 
@@ -6012,7 +6028,7 @@ Each stylesheet is imported once with the same media conditions.
 ## `css/no-duplicate-selector` — No selector declared twice
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (merging the rules depends on cascade order)
+- **Fix:** `auto` (auto for a selector repeated in its own list, which goes, and for two rules side by side with the same selector, which cascade as one and merge; rules apart are manual, since moving declarations past others changes the cascade)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-duplicate-selector.md
 
@@ -6295,7 +6311,7 @@ a {
 ## `css/no-invalid-position-at-import-rule` — `@import` comes first
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS
-- **Fix:** `manual` (moving the import makes its rules apply, which changes the page)
+- **Fix:** `suggest` (the choices are moving the `@import` above the rules, where it starts to apply, or deleting it, which keeps what the page renders today; only the author knows which)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-invalid-position-at-import-rule.md
 
@@ -6327,6 +6343,25 @@ a {
 }
 
 @import url("theme.css");
+```
+
+##### Fixed (move up)
+
+```css
+@import url("theme.css");
+a {
+  color: red;
+}
+
+```
+
+##### Fixed (delete)
+
+```css
+a {
+  color: red;
+}
+
 ```
 
 ##### Do

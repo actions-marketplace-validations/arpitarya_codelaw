@@ -1952,8 +1952,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which value is meant can't be known from the code",
+   "fix": "suggest",
+   "fix_reason": "the choices are deleting the overridden longhand (the default, which renders the same) or moving it after the shorthand, which makes it apply",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -2474,8 +2474,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which generic family suits the fonts is a design call",
+   "fix": "suggest",
+   "fix_reason": "the choices are `sans-serif`, `serif` and `monospace` appended to the list, the default the family a table of common fonts puts the listed ones in; with none known there is no default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -4245,8 +4245,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "merging the rules depends on cascade order",
+   "fix": "auto",
+   "fix_reason": "auto for a selector repeated in its own list, which goes, and for two rules side by side with the same selector, which cascade as one and merge; rules apart are manual, since moving declarations past others changes the cascade",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -4484,8 +4484,8 @@
    "languages": [
     "css"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the import makes its rules apply, which changes the page",
+   "fix": "suggest",
+   "fix_reason": "the choices are moving the `@import` above the rules, where it starts to apply, or deleting it, which keeps what the page renders today; only the author knows which",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",

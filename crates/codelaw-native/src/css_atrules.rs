@@ -292,7 +292,17 @@ css_rule!(NoInvalidPositionAtImportRule, "css/no-invalid-position-at-import-rule
                 let name = sheet.at_name(i, src);
                 if name == "import" {
                     if late || n.parent.is_some() {
-                        out.push(finding(n.start, n.end, "`@import` must come before every other rule except `@charset` and `@layer` statements; browsers ignore it here"));
+                        // Move it up, where it starts to apply, or delete it,
+                        // keeping what the page renders today.
+                        let end = if src[n.end..].starts_with(';') { n.end + 1 } else { n.end };
+                        let top = sheet.top.iter().map(|&t| &sheet.nodes[t]).find(|t| !(t.kind == Kind::AtRule && matches!(text(src, t.name).to_ascii_lowercase().as_str(), "charset" | "import" | "layer"))).map(|t| t.start);
+                        let remove = crate::util::remove_css_statement(src, n.start, n.end);
+                        let mut choices = Vec::new();
+                        if let Some(top) = top.filter(|_| n.parent.is_none()) {
+                            choices.push(crate::choice("move up", false, vec![TextEdit::insert(top, format!("{}\n", &src[n.start..end])), remove.clone()]));
+                        }
+                        choices.push(crate::choice("delete", false, vec![remove]));
+                        out.push(crate::css_syntax::fixed(n.start, n.end, "`@import` must come before every other rule except `@charset` and `@layer` statements; browsers ignore it here", crate::choice_edits(choices)));
                     }
                 } else if name != "charset" && !(name == "layer" && n.block.is_none()) && !matches_any(&ignore, text(src, n.name)) {
                     late = true;

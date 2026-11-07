@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreFontFamilies` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which generic family suits the fonts is a design call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `sans-serif`, `serif` and `monospace` appended to the list, the default the family a table of common fonts puts the listed ones in; with none known there is no default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/font-family-no-missing-generic-family-keyword` |

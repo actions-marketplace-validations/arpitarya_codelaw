@@ -2,9 +2,8 @@
 id: css/no-invalid-position-at-import-rule
 title: "`@import` comes first"
 languages: [css]
-fix: manual
-fix_reason: "moving the import makes its rules apply, which changes the page"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are moving the `@import` above the rules, where it starts to apply, or deleting it, which keeps what the page renders today; only the author knows which"
 stability: stable
 options:
   ignoreAtRules: { type: "string[]", default: [], description: "at-rules that may come before `@import`" }
@@ -36,6 +35,25 @@ a {
 }
 
 @import url("theme.css");
+```
+
+#### Fixed (move up)
+
+```css
+@import url("theme.css");
+a {
+  color: red;
+}
+
+```
+
+#### Fixed (delete)
+
+```css
+a {
+  color: red;
+}
+
 ```
 
 #### Do
