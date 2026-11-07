@@ -2,9 +2,8 @@
 id: js/prefer-template
 title: "Template literal rather than string concatenation"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "escaping the parts into one template literal is a computed edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "a value joined with `+` is read through its `valueOf` and in a template through its `toString`, which differ for some objects; a join holding a comment, or a line continuation in a string, is rewritten by hand"
 stability: preview
 ported_from: [eslint/prefer-template]
 since: 0.5.0
@@ -15,27 +14,7 @@ A string is not built by adding a string literal and another value with `+`.
 **Why:** A template literal shows the shape of the result at a glance.
 
 ```codelaw
-match:
-  kind: binary_expression
-  has:
-    field: operator
-    regex: ^\+$
-  not:
-    inside:
-      kind: binary_expression
-      has:
-        field: operator
-        regex: ^\+$
-  all:
-  - has:
-      kind: string
-  - has:
-      not:
-        any:
-        - kind: string
-        - kind: template_string
-        - kind: binary_expression
-message: Build the string with a template literal
+native: js/prefer-template
 ```
 
 ## How to fix

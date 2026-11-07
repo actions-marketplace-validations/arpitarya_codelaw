@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/jsdoc` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether `object`, `unknown` or a real shape is meant is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether `object`, `unknown` or a real shape is meant is the author's call, so `object` and `unknown` are offered; a shape is written by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/ts-no-empty-object-type` |
@@ -147,6 +147,26 @@ function merge(opts) {}
 function merge(opts) {}
 ```
 
+#### Fixed (object)
+
+```js
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (unknown)
+
+```js
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
+ */
+function merge(opts) {}
+```
+
 ### JSX
 
 #### Don't
@@ -165,6 +185,26 @@ function merge(opts) {}
 /**
  * Merges options.
  * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (object)
+
+```jsx
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (unknown)
+
+```jsx
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
  */
 function merge(opts) {}
 ```
@@ -191,6 +231,26 @@ function merge(opts) {}
 function merge(opts) {}
 ```
 
+#### Fixed (object)
+
+```ts
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (unknown)
+
+```ts
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
+ */
+function merge(opts) {}
+```
+
 ### TSX
 
 #### Don't
@@ -209,6 +269,26 @@ function merge(opts) {}
 /**
  * Merges options.
  * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (object)
+
+```tsx
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+#### Fixed (unknown)
+
+```tsx
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
  */
 function merge(opts) {}
 ```

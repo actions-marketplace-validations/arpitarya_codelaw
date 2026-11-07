@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the text is a comment or content needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether the text is a comment or content needs the author, so both are offered: wrapped as a JSX comment, or kept as text in a string) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/jsx-no-comment-textnodes` |
@@ -145,6 +145,24 @@ const a = <div>
 </div>;
 ```
 
+#### Fixed (comment)
+
+```js
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```js
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 ### JSX
 
 #### Don't
@@ -165,6 +183,24 @@ const a = <div>
 </div>;
 ```
 
+#### Fixed (comment)
+
+```jsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```jsx
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 ### TSX
 
 #### Don't
@@ -181,6 +217,24 @@ const a = <div>
 ```tsx
 const a = <div>
   {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (comment)
+
+```tsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+#### Fixed (text)
+
+```tsx
+const a = <div>
+  {"// the title"}
   <h1>Hi</h1>
 </div>;
 ```

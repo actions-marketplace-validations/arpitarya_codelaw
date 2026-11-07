@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-169: the segfault caught by the capture, and fixed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) watch CI on the pushed `main`, dispatch until a build leg crashes, read `crash-<key>`, fix with a regression test.
+- **Done:** runs 42347941992 and 42348089566 green on all eight legs; dispatch 42348986474 crashed `build linux-arm64-musl` (`test packs/js/`). The core: tree-sitter's `ts_language_symbol_for_name` → a `strncmp` that reads `name[len]`, a 16-byte name ending at a page boundary. Fix: `codelaw-lang` hands tree-sitter a NUL-terminated copy of every kind and field name; unit and guard-page tests; SR-LINTER decision 1.
+- **Decided / left open:** step 3 (five green runs) waits on the decider's push. The crash twin came out byte-identical, i.e. stripped — the frames were named by disassembly; fixing the twin is open.
+- **Mistakes:** none new.
+- **Next:** after the push, five green runs of every build leg.
+
+---
+
 ## 2026-11-07 — W-139 slice 20: unicorn and SonarJS, last expressible rows (js strand, second pass)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the js half of W-139's remaining port rows, slice by slice.
@@ -61,6 +71,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Decided / left open:** rows written in the narrowest form whose fix is certain; corpus counts not run (no corpus on this machine).
 - **Mistakes:** a `has:` with only `field:` is not a rule (load error), and `follows`/`precedes` see the block's braces as siblings; both fixed before landing.
 - **Next:** the next js slice (unicorn's remainder, SonarJS's remainder), then the not-written list.
+
+---
+
+## 2026-11-07 — W-162 change 5: computed edits, the rest  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure: `merge-into`, the per-rule fixes, then scope rename, add-import, purity, cross-file, SHAs; resumed after a usage-limit stop, main merged in.
+- **Done:** `merge-into`, `move: { after }`, line inserts, three filters, native `js/prefer-template`; 34 rules moved, 6 re-judged `manual`. No rule names computed-edit.
+- **Decided / left open:** tree-sitter-javascript reads `&` in a JSX attribute string as an error, so `google-font-display` joins with `&amp;` (JSX reads it as `&`). `prefer-template` keeps the match rule's detection so the corpus count holds. `cargo test -p codelaw-native` has one failure on main (`data_json::duplicate_keys_decode_escapes`), not W-162's.
+- **Mistakes:** none new.
+- **Next:** scope rename and `$FRESH`.
 
 ---
 

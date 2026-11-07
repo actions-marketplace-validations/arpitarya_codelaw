@@ -2,9 +2,8 @@
 id: react/style-prop-object
 title: "style is an object"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "value: the CSS text has to be rewritten as an object with camel-cased keys"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "each value stays a string, where React would also take a number for a length; a value with quotes or `!important`, or a `style` that is not a plain string, is rewritten by hand"
 stability: preview
 ported_from: [eslint-plugin-react/style-prop-object]
 since: 0.5.0
@@ -18,10 +17,16 @@ The `style` prop is an object (`style={{ color: "red" }}`), not a string, number
 match:
   kind: jsx_attribute
   regex: '^style\b'
-  any:
-    - has: { kind: string }
-    - has: { kind: jsx_expression, has: { any: [{ kind: string }, { kind: template_string }, { kind: number }, { kind: "true" }, { kind: "false" }] } }
+  all:
+    - any:
+        - has: { kind: string }
+        - has: { kind: jsx_expression, has: { any: [{ kind: string }, { kind: template_string }, { kind: number }, { kind: "true" }, { kind: "false" }] } }
+    - any:
+        - has: { kind: string, pattern: $CSS }
+        - regex: ''
 message: "`style` takes an object, not a string"
+fix:
+  - replace: { target: $CSS, with: "{$CSS|style-object}" }
 ```
 
 ## How to fix

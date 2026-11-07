@@ -105,7 +105,7 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
 | id | unit | crates | what it does for codelaw | pin | crates incl. transitive | status |
 |---|---|---|---|---|---|---|
 | D-01 | **Biome** | `biome_formatter`, `biome_languages`, `biome_js_parser`, `biome_js_formatter`, `biome_json_parser`, `biome_json_formatter`, `biome_css_parser`, `biome_css_formatter` | formats JS, TS, JSX, JSON (CSS and SCSS until 2026-11-05, now Oxc's, D-52; `biome_css_formatter` and `biome_css_parser` are no longer built) | git `0b4c11f` (Biome 2.5.15) | 133 | ratified 2026-10-26 — *"Ratify."* |
-| D-02 | **Ruff** | `ruff_formatter`, `ruff_python_formatter`, `ruff_python_parser`, `ruff_python_ast`, `ruff_text_size` | formats Python | `=0.0.18` | 165 | ratified 2026-10-26 — *"Ratify."* |
+| D-02 | **Ruff** | `ruff_formatter`, `ruff_python_formatter`, `ruff_python_parser`, `ruff_python_ast`, `ruff_text_size` | formats Python | `=0.0.21` (Ruff 0.17.4) | 162 | ratified 2026-10-26 — *"Ratify."* · 2026-11-07 (W-173): ratified again at `=0.0.21`, the only release whose `ruff_db` takes `zip` ≥ 9.0.5 (Dependabot's five `zip` 8.6.0 advisories) — *"Bump Ruff to 0.0.21 (Recommended)"* (the decider, Claude Code); the tree as pinned that day (decision 4): `zip@9`, `typed-path@0.13`, the `phf@0.14` family (already in the lock), and new to D-02 `getrandom@0.4`, `nix@0.31` (macOS), `r-efi@6` (UEFI only), and `fastrand@2`, `cfg_aliases@0.2` (already in the lock); gone: `psm`, `stacker`, `cc`, `shlex`, `find-msvc-tools`, `ar_archive_writer`, `object@0.39`, `rand@0.8`, `rand_core@0.6` |
 | D-03 | **ast-grep** | `ast-grep-core`, `ast-grep-config`, `ast-grep-language` | the `match:` rule engine; brings the tree-sitter grammars for JS, TS, Python, JSON, YAML, Markdown, CSS, HTML | `=0.51.0` | 91 | ratified 2026-10-26 — *"Ratify."* |
 | D-04 | **tree-sitter** | `tree-sitter`, `tree-sitter-language`, `tree-sitter-md`, `tree-sitter-toml-ng` | the parser runtime every lint rule stands on; Markdown and TOML grammars | `=0.27.0` | 26 | ratified 2026-10-26 — *"Ratify."* |
 | D-05 | **tree-sitter-css fork** | in-tree copy of `tree-sitter-css` 0.25.0 (+ `cc`, build) | the CSS grammar (B-047: SCSS joins via tree-sitter-scss, W-62) | vendored | 3 | ratified 2026-10-26 — *"Ratify."* |
@@ -267,33 +267,32 @@ D-01 cargo tree addr2line@0.25 adler2@2 aho-corasick@1 allocator-api2@0.2 backtr
    unicode-segmentation@1 unicode-width@0.2 winapi-util@0.1 windows-link@0.2 windows-sys@0.61 zmij@1
 D-02 cargo members ruff_formatter ruff_python_ast ruff_python_formatter ruff_python_parser ruff_text_size
 D-02 cargo tree aho-corasick@1 allocator-api2@0.2 anstream@1 anstyle-parse@1 anstyle-query@1
-   anstyle-wincon@3 anstyle@1 anyhow@1 ar_archive_writer@0.5 arc-swap@1 arrayvec@0.7
-   attribute-derive-macro@0.11 attribute-derive@0.11 bitflags@2 boxcar@0.2 bstr@1 bumpalo@3 camino@1
-   castaway@0.2 cc@1 cfg-if@1 chacha20@0.10 char_str@0.0.4 clap@4 clap_builder@4 clap_derive@4
-   clap_lex@1 collection_literals@1 colorchoice@1 compact_str@0.10 countme@3 cpufeatures@0.3
-   crc32fast@1 crossbeam-deque@0.8 crossbeam-epoch@0.9 crossbeam-queue@0.3 crossbeam-utils@0.8
-   dashmap@6 drop_bomb@0.1 dunce@1 either@1 equivalent@1 filetime@0.2 find-msvc-tools@0.1
-   foldhash@0.2 futures-core@0.3 futures-task@0.3 futures-util@0.3 get-size-derive2@0.11
-   get-size2@0.11 glob@0.3 globset@0.4 hashbrown@0.14 hashbrown@0.17 hashlink@0.12 heck@0.5
-   indexmap@2 interpolator@0.5 intrusive-collections@0.10 inventory@0.3 is-macro@0.3
-   is_terminal_polyfill@1 itertools@0.15 itoa@1 js-sys@0.3 libc@0.2 lock_api@0.4 log@0.4
-   manyhow-macros@0.14 manyhow@0.14 matchit@0.9 memchr@2 object@0.39 once_cell@1 once_cell_polyfill@1
-   ordermap@1 parking_lot@0.12 parking_lot_core@0.9 path-slash@0.2 pathdiff@0.2 phf@0.11
-   phf_codegen@0.11 phf_generator@0.11 phf_shared@0.11 pin-project-lite@0.2 portable-atomic@1
-   proc-macro-utils@0.10 proc-macro2@1 psm@0.1 quote-use-macros@0.9 quote-use@0.9 quote@1 rand@0.10
-   rand@0.8 rand_core@0.10 rand_core@0.6 rayon-core@1 rayon@1 redox_syscall@0.5 regex-automata@0.4
-   regex-syntax@0.8 regex@1 ruff_annotate_snippets@0.0.18 ruff_cache@0.0.18 ruff_db@0.0.18
-   ruff_diagnostics@0.0.18 ruff_formatter@0.0.18 ruff_macros@0.0.18 ruff_memory_usage@0.0.18
-   ruff_notebook@0.0.18 ruff_python_ast@0.0.18 ruff_python_formatter@0.0.18 ruff_python_parser@0.0.18
-   ruff_python_trivia@0.0.18 ruff_source_file@0.0.18 ruff_text_size@0.0.18 ruff_unicode_names2@0.0.18
-   ruff_unicode_names2_generator@0.0.18 rustc-hash@2 rustversion@1 ryu@1 salsa-macro-rules@0.28
-   salsa-macros@0.28 salsa@0.28 scopeguard@1 seahash@4 serde@1 serde_core@1 serde_derive@1
-   serde_json@1 shlex@2 similar@3 siphasher@1 slab@0.4 smallvec@1 stacker@0.1 static_assertions@1
+   anstyle-wincon@3 anstyle@1 anyhow@1 arc-swap@1 arrayvec@0.7 attribute-derive-macro@0.11
+   attribute-derive@0.11 bitflags@2 boxcar@0.2 bstr@1 bumpalo@3 camino@1 castaway@0.2 cfg-if@1
+   cfg_aliases@0.2 chacha20@0.10 char_str@0.0.4 clap@4 clap_builder@4 clap_derive@4 clap_lex@1
+   collection_literals@1 colorchoice@1 compact_str@0.10 countme@3 cpufeatures@0.3 crc32fast@1
+   crossbeam-deque@0.8 crossbeam-epoch@0.9 crossbeam-queue@0.3 crossbeam-utils@0.8 dashmap@6
+   drop_bomb@0.1 dunce@1 either@1 equivalent@1 fastrand@2 filetime@0.2 foldhash@0.2 futures-core@0.3
+   futures-task@0.3 futures-util@0.3 get-size-derive2@0.11 get-size2@0.11 getrandom@0.4 glob@0.3
+   globset@0.4 hashbrown@0.14 hashbrown@0.17 hashlink@0.12 heck@0.5 indexmap@2 interpolator@0.5
+   intrusive-collections@0.10 inventory@0.3 is-macro@0.3 is_terminal_polyfill@1 itertools@0.15 itoa@1
+   js-sys@0.3 libc@0.2 lock_api@0.4 log@0.4 manyhow-macros@0.14 manyhow@0.14 matchit@0.9 memchr@2
+   nix@0.31 once_cell@1 once_cell_polyfill@1 ordermap@1 parking_lot@0.12 parking_lot_core@0.9
+   path-slash@0.2 pathdiff@0.2 phf@0.14 phf_codegen@0.14 phf_generator@0.14 phf_macros@0.14
+   phf_shared@0.14 pin-project-lite@0.2 portable-atomic@1 proc-macro-utils@0.10 proc-macro2@1
+   quote-use-macros@0.9 quote-use@0.9 quote@1 r-efi@6 rand@0.10 rand_core@0.10 rayon-core@1 rayon@1
+   redox_syscall@0.5 regex-automata@0.4 regex-syntax@0.8 regex@1 ruff_annotate_snippets@0.0.21
+   ruff_cache@0.0.21 ruff_db@0.0.21 ruff_diagnostics@0.0.21 ruff_formatter@0.0.21 ruff_macros@0.0.21
+   ruff_memory_usage@0.0.21 ruff_notebook@0.0.21 ruff_python_ast@0.0.21 ruff_python_formatter@0.0.21
+   ruff_python_parser@0.0.21 ruff_python_trivia@0.0.21 ruff_source_file@0.0.21 ruff_text_size@0.0.21
+   ruff_unicode_names2@0.0.21 ruff_unicode_names2_generator@0.0.21 rustc-hash@2 rustversion@1 ryu@1
+   salsa-macro-rules@0.28 salsa-macros@0.28 salsa@0.28 scopeguard@1 seahash@4 serde@1 serde_core@1
+   serde_derive@1 serde_json@1 similar@3 siphasher@1 slab@0.4 smallvec@1 static_assertions@1
    strsim@0.11 supports-hyperlinks@3 syn@2 syn@3 thin-vec@0.2 thiserror-impl@2 thiserror@2 tinyvec@1
-   tracing-attributes@0.1 tracing-core@0.1 tracing@0.1 ty_static@0.0.18 typed-path@0.12 typeid@1
+   tracing-attributes@0.1 tracing-core@0.1 tracing@0.1 ty_static@0.0.21 typed-path@0.13 typeid@1
    unicode-ident@1 unicode-normalization@0.1 unicode-width@0.2 utf8parse@0.2 uuid@1
    wasm-bindgen-macro-support@0.2 wasm-bindgen-macro@0.2 wasm-bindgen-shared@0.2 wasm-bindgen@0.2
-   web-time@1 windows-link@0.2 windows-sys@0.61 zip@8 zmij@1
+   web-time@1 windows-link@0.2 windows-sys@0.61 zip@9 zmij@1
 D-03 cargo members ast-grep-config ast-grep-core ast-grep-language
 D-03 cargo tree aho-corasick@1 allocator-api2@0.2 annotate-snippets@0.12 anstyle@1 arraydeque@0.5
    ast-grep-config@0.51 ast-grep-core@0.51 ast-grep-language@0.51 autocfg@1 base64@0.23 bit-set@0.11

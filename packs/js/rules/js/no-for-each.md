@@ -2,9 +2,8 @@
 id: js/no-for-each
 title: "for…of rather than forEach"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "a `return` in the callback becomes `continue`, and an index parameter becomes `.entries()`"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`for … of` iterates what the value's iterator gives, where `forEach` visits an array's indices: a sparse array, or a `Map` (whose `forEach` passes the value and `for … of` the entry), changes; a callback with a `return`, an index parameter, `async`, or a block-less body is rewritten by hand"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-for-each]
 since: 0.5.0
@@ -31,7 +30,25 @@ match:
         has:
           nthChild: 1
           kind: arrow_function
+  any:
+    - all:
+        - pattern: $STMT
+        - has:
+            kind: call_expression
+            any: [{ pattern: "$A.forEach(($X) => $B)" }, { pattern: "$A.forEach($X => $B)" }]
+            has:
+              field: arguments
+              has:
+                kind: arrow_function
+                not: { regex: ^async }
+                has:
+                  field: body
+                  kind: statement_block
+                  not: { has: { stopBy: { any: [{ kind: function_expression }, { kind: function_declaration }, { kind: arrow_function }, { kind: method_definition }, { kind: class }] }, kind: return_statement } }
+    - regex: ''
 message: Use a `for … of` loop instead of `.forEach`
+fix:
+  - replace: { target: $STMT, with: "for (const $X of $A) $B" }
 ```
 
 ## How to fix

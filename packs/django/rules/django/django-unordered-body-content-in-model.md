@@ -2,9 +2,8 @@
 id: django/django-unordered-body-content-in-model
 title: "A model's body follows Django's order"
 languages: [python]
-fix: manual
-fix_reason: "moving members reorders the class by hand"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the field moves above the methods before it, one method a pass, keeping the fields' own order; a comment above the field stays where it was"
 stability: preview
 ported_from: [ruff/DJ012]
 since: 0.5.0
@@ -24,10 +23,13 @@ match:
   follows:
     stopBy: end
     any: [{kind: function_definition}, {kind: decorated_definition}]
+    pattern: $M
   inside:
     kind: block
     inside: { kind: class_definition, has: { field: superclasses, regex: '\b(models\.)?Model\b' } }
 message: "Put fields and `class Meta` before the model's methods"
+fix:
+  - move: { before: $M }
 ```
 
 ## How to fix
