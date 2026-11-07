@@ -288,3 +288,41 @@ Asked as *"auxlint"* — no tool by that name; read as **Oxlint** (Oxc, MIT). Ox
 - **Its formatters (oxfmt 0.75.0) on W-141's corpus:** CSS 88.6% (codelaw 41.8%), Markdown 97.3% (73.3%), YAML 97.3% (88.7%), SCSS 88.0% (82.7%), JS 96.0% (94.7%), TS 94.0% (94.0%). Native Rust for these; HTML, Vue, Svelte and Astro go to Prettier itself. → W-148.
 - **Already in codelaw:** the `agent` format and agent detection (SR-CLI-MCP), `--timings`, unused-suppression reports, nested configs, the Oxlint adapter and its type-aware mode, the rival bench (L8). **Not taken:** tsgolint (SR-TYPES R1), JS plugins (packs hold data, not code).
 - **Ruled 2026-10-30 (Arpit, voice):** `migrate oxlint|oxfmt` to the backlog (B-066); the rest one work item, W-148 (*"File it."*).
+
+## 13 · Built, measured (W-139 steps 3–4, 2026-11-07)
+
+Pack by pack: codelaw's rules when this proposal was written, the count it proposed, the rows on the ruled port list (both rounds, Oxlint's 18 and TSLint's 6, without `tailwind`'s 8), how many of those rows a codelaw rule now answers, and the pack's rules today. A row counts as built when its `proposed_id` is a rule, or a rule's `ported_from:` names its upstream id; Ruff rows linked by code alone are missed, so *built* is a lower bound. Rules today are `codelaw test`'s counts.
+
+| pack | 2026-10-30 | proposed after all | on the port list | built | rules today |
+|---|--:|--:|--:|--:|--:|
+| airflow | 0 | 13 | 13 | 5 | 5 |
+| css | 73 | 159 | 86 | 73 | 146 |
+| css-modules | 5 | 5 |  |  | 5 |
+| data | 44 | 58 | 14 | 5 | 47 |
+| deps | — | — |  |  | 8 |
+| django | 0 | 7 | 7 | 7 | 7 |
+| fastapi | 0 | 3 | 3 | 2 | 2 |
+| html | 74 | 86 | 12 | 12 | 85 |
+| js | 84 | 1050 | 981 | 530 | 582 |
+| nextjs | 0 | 22 | 22 | 22 | 22 |
+| node | 10 | 40 | 31 | 25 | 35 |
+| numpy | 0 | 4 | 4 | 4 | 4 |
+| pandas | 0 | 12 | 12 | 12 | 12 |
+| python | 109 | 1076 | 967 | 486 | 506 |
+| react | 35 | 196 | 168 | 122 | 151 |
+| redux-toolkit | 12 | 12 |  |  | 12 |
+| scss | 16 | 56 | 40 | 40 | 51 |
+| security-html | 19 | 19 |  |  | 19 |
+| security-js | 66 | 68 | 2 | 0 | 66 |
+| security-python | 61 | 66 | 5 | 0 | 61 |
+| security-ts | 16 | 16 |  |  | 16 |
+| spell | 7 | 7 |  |  | 7 |
+| stencil | 18 | 18 |  |  | 18 |
+| tailwind | 0 | 8 | (W-145) |  | 8 |
+| tanstack-query | 13 | 14 | 1 | 0 | 13 |
+| testing | 0 | 182 | 182 | 169 | 169 |
+| ts | 27 | 66 | 40 | 34 | 65 |
+| **all** | **689** | **3263** | **2590** | **1548** | **2122** |
+
+- **The gap:** 1,042 rows not answered yet, nearly all in `js` (451) and `python` (481) — unicorn's and Ruff's long tails, the jsdoc type-expression rows and the natives W-139's *Remaining* tables name. Many `python` and `js` rows were met by linking an existing rule (`ported_from:`), so *rules today* rises less than *built*.
+- **Corpus (step 3):** every pack's `corpus.toml` holds the 233 rules of 2026-11-05. Two rules narrowed on what the corpus showed — `md/no-empty-links` (on in `md/recommended`: 254 findings on `[x](#anchor)` and `[x](<a b.md>)` links, now 0) and `js/no-undefined` (TypeScript's `undefined` type rewritten to `void 0`, not a fixpoint). Every other new count belongs to a `preview` rule in no on-by-default preset; the loud ones (`css/no-unknown-custom-properties` 782, `scss/no-dollar-variables` 1,864, `ts/member-ordering` 1,683, `py/unused-function-argument` 541) are for review before any promotion.

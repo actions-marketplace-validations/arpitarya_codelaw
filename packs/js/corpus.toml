@@ -329,7 +329,7 @@
 "js/no-unassigned-vars" = 0
 "js/no-undef" = 61
 "js/no-undef-init" = 2
-"js/no-undefined" = 305
+"js/no-undefined" = 190
 "js/no-underscore-dangle" = 4
 "js/no-unexpected-multiline" = 0
 "js/no-uninvoked-array-callback" = 0
