@@ -23,7 +23,7 @@ match:
     not: {has: {kind: interpolation}}
     any:
       - inside: {kind: subscript, field: subscript, has: {field: value, regex: '^os\.environ$'}}
-      - inside: {kind: argument_list, has: {nthChild: 1, kind: string}, inside: {kind: call, has: {field: function, regex: '^(os\.environ\.get|os\.getenv)$'}}}
+      - all: [{nthChild: 1}, {inside: {kind: argument_list, inside: {kind: call, has: {field: function, regex: '^(os\.environ\.get|os\.getenv)$'}}}}]
 message: "Write the environment variable name in capitals"
 fix: "$C|upper"
 ```

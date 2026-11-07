@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (suggest for a local name, renamed with a trailing underscore along with its uses in this file; a public module-level name is manual, since importers use it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/A001` |
+| **Ported from** | `ruff/A001`, `pylint/redefined-builtin` |
 
 ## What it checks
 

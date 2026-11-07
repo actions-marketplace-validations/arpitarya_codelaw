@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the local and its uses in the function are renamed; code that reads it through `locals()` or `eval` would not follow) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/N806` |
+| **Ported from** | `ruff/N806`, `pylint/invalid-name` |
 
 ## What it checks
 

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (its callers, in this file and in others, use the name; renaming it is a change across the code base) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/N802` |
+| **Ported from** | `ruff/N802`, `pylint/invalid-name` |
 
 ## What it checks
 

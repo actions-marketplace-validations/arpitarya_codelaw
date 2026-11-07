@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a caller that passes the argument by keyword must change too, so the rename is reviewed) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/N803` |
+| **Ported from** | `ruff/N803`, `pylint/invalid-name` |
 
 ## What it checks
 

@@ -452,7 +452,7 @@
 "py/typevar-name-mismatch" = 0
 "py/typing-text-str-alias" = 44
 "py/unary-prefix-increment" = 0
-"py/uncapitalized-environment-variables" = 8
+"py/uncapitalized-environment-variables" = 0
 "py/unconventional-import-alias" = 0
 "py/undefined-export" = 0
 "py/undefined-future-feature" = 0

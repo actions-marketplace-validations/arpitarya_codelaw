@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing the handler, and the `try` when nothing else is left, re-indents its body) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/TRY203` |
+| **Ported from** | `ruff/TRY203`, `pylint/try-except-raise` |
 
 ## What it checks
 

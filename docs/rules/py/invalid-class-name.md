@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (suggest for a private or local class, renamed with its uses in this file; a public one is manual, since its importers would break) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/N801` |
+| **Ported from** | `ruff/N801`, `pylint/invalid-name` |
 
 ## What it checks
 

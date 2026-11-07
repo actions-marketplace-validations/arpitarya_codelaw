@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a module variable can be imported elsewhere, so the rename is a change across files) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/N816` |
+| **Ported from** | `ruff/N816`, `pylint/invalid-name` |
 
 ## What it checks
 
