@@ -2,13 +2,16 @@
 # Rewrite with --update-snapshot, and review the change.
 
 [findings]
+"html/allowed-links" = 0
 "html/area-alt" = 0
 "html/aria-hidden-body" = 0
 "html/aria-label-misuse" = 0
+"html/attr-pattern" = 86
 "html/attribute-allowed-values" = 6
 "html/attribute-misuse" = 0
 "html/autocomplete-password" = 3
 "html/button-type" = 4
+"html/class-pattern" = 2
 "html/close-attr" = 0
 "html/close-order" = 6
 "html/deprecated" = 4
@@ -29,6 +32,7 @@
 "html/form-submit" = 0
 "html/heading-level" = 41
 "html/hidden-focusable" = 0
+"html/id-pattern" = 5
 "html/img-alt" = 3
 "html/img-title" = 0
 "html/input-attributes" = 0
@@ -42,6 +46,7 @@
 "html/meta-refresh" = 0
 "html/missing-doctype" = 1
 "html/multiple-labeled-controls" = 0
+"html/name-pattern" = 0
 "html/no-abstract-role" = 0
 "html/no-autoplay" = 0
 "html/no-conditional-comment" = 0
@@ -59,10 +64,14 @@
 "html/no-redundant-aria-label" = 0
 "html/no-redundant-for" = 0
 "html/no-redundant-role" = 0
+"html/no-style-tag" = 6
+"html/no-unknown-attributes" = 153
+"html/no-unknown-elements" = 0
 "html/no-utf8-bom" = 0
 "html/prefer-button" = 19
 "html/prefer-native-element" = 22
 "html/prefer-tbody" = 3
+"html/require-csp-nonce" = 15
 "html/require-sri" = 9
 "html/script-element" = 0
 "html/script-type" = 0

@@ -18,9 +18,14 @@ match:
   kind: inline_link
   any:
     - pattern: "[$T]()"
-    - pattern: "[$T](#)"
-    - pattern: "[$T](<>)"
-    - pattern: "[$T](<#>)"
+    # the `#` and `<>` patterns also match `(#section)` and `(<a b.md>)`:
+    # each holds only with the destination check (W-139 corpus, 254 findings)
+    - all:
+        - any:
+            - pattern: "[$T](#)"
+            - pattern: "[$T](<>)"
+            - pattern: "[$T](<#>)"
+        - has: { kind: link_destination, regex: '^(#|<>|<#>)$' }
     - not: { has: { kind: link_destination } }
     - has: { kind: link_destination, regex: '^(#|<>|<#>)$' }
 message: "This link goes nowhere; give it a destination"
