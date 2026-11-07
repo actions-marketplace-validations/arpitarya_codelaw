@@ -497,7 +497,7 @@ const BLOCK_KEYS: &[&str] =
 
 fn parse_block(code: &str) -> Result<Block, String> {
     let value = yaml_value(code)?;
-    let serde_json::Value::Object(map) = value else {
+    let serde_json::Value::Object(mut map) = value else {
         return Err("the codelaw block must be a YAML mapping".into());
     };
     for key in map.keys() {
@@ -515,24 +515,25 @@ fn parse_block(code: &str) -> Result<Block, String> {
             if forms.is_empty() { "none".to_owned() } else { forms.join(", ") }
         ));
     }
-    let get = |k: &str| map.get(k).cloned();
+    // Each value is taken out of the parsed block, not copied (W-172); a key
+    // taken is not looked at again below.
     let kind = match forms[0] {
         "match" => BlockKind::Match {
-            rule: get("match").unwrap(),
-            constraints: get("constraints"),
-            utils: get("utils"),
-            predicates: get("where"),
-            types: get("type").map(Box::new),
-            auto_when: get("auto_when").map(Box::new),
-            transform: get("transform").map(Box::new),
+            rule: map.remove("match").unwrap(),
+            constraints: map.remove("constraints"),
+            utils: map.remove("utils"),
+            predicates: map.remove("where"),
+            types: map.remove("type").map(Box::new),
+            auto_when: map.remove("auto_when").map(Box::new),
+            transform: map.remove("transform").map(Box::new),
         },
-        "graph" => BlockKind::Graph(get("graph").unwrap()),
+        "graph" => BlockKind::Graph(map.remove("graph").unwrap()),
         "target" => BlockKind::Target {
-            target: get("target").unwrap(),
-            assert: get("assert").ok_or("`target:` needs `assert:`")?,
+            target: map.remove("target").unwrap(),
+            assert: map.remove("assert").ok_or("`target:` needs `assert:`")?,
         },
         _ => BlockKind::Native(
-            get("native").and_then(|v| v.as_str().map(str::to_owned)).ok_or("`native:` takes the id of an engine rule")?,
+            map.remove("native").and_then(|v| v.as_str().map(str::to_owned)).ok_or("`native:` takes the id of an engine rule")?,
         ),
     };
     if !matches!(kind, BlockKind::Match { .. }) {
@@ -545,7 +546,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
     if !matches!(kind, BlockKind::Target { .. }) && map.contains_key("assert") {
         return Err("`assert:` only goes with `target:`".into());
     }
-    let message = match get("message") {
+    let message = match map.remove("message") {
         None => None,
         Some(serde_json::Value::String(s)) => Some(s),
         Some(_) => return Err("`message:` must be a string".into()),
@@ -553,7 +554,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
     if message.is_none() && !matches!(kind, BlockKind::Native(_)) {
         return Err("the codelaw block needs a `message:`".into());
     }
-    Ok(Block { kind, message, fix: get("fix") })
+    Ok(Block { kind, message, fix: map.remove("fix") })
 }
 
 /// Parse and check a rule file. Every problem is returned, so `codelaw
@@ -1003,6 +1004,16 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
     if !errors.is_empty() {
         return Err(errors);
     }
+    // A pack holds every rule it ships, most of them in no preset, for the
+    // life of the process: no list keeps room it will not use (W-172).
+    for e in &mut examples {
+        e.donts.shrink_to_fit();
+        e.dos.shrink_to_fit();
+        e.fixed.shrink_to_fit();
+        e.choices.shrink_to_fit();
+    }
+    examples.shrink_to_fit();
+    steps.shrink_to_fit();
     Ok(RuleFile {
         path: path.to_owned(),
         id,

@@ -220,12 +220,11 @@ pub(crate) fn compile_cached(rules: &RuleSet, config: &Config) -> Result<Compile
 }
 
 /// Compile every loaded rule. A rule that fails refuses the run (exit 2),
-/// naming the rule (SR-RULE-PACKS decision 13). Each rule compiles on its
-/// own, so they compile in parallel — on the project's pool when the caller
-/// runs this inside it — and the result keeps the rules' order (W-172).
+/// naming the rule (SR-RULE-PACKS decision 13). One rule at a time, on one
+/// thread: what compiling a rule leaves behind is reused by the next, where
+/// in parallel each thread kept its own (W-172 measured 10 MB more).
 pub fn compile_all(rules: &RuleSet, _config: &Config) -> Result<(Vec<CompiledRule>, Vec<String>), Vec<LoadError>> {
-    use rayon::prelude::*;
-    let each: Vec<Compiled1> = if std::env::var_os("XX_SERIAL").is_some() { rules.rules.iter().map(compile_one).collect() } else { rules.rules.par_iter().map(compile_one).collect() }; // XX-EXPERIMENT
+    let each: Vec<Compiled1> = rules.rules.iter().map(compile_one).collect();
     let mut out = Vec::with_capacity(each.len());
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
@@ -252,7 +251,7 @@ fn compile_one(loaded: &LoadedRule) -> Compiled1 {
     let mut fail = |msg: String| errors.push(LoadError::new(path.clone(), format!("rule `{}`: {msg}", rule.id)));
     let matcher = match &rule.block.kind {
         BlockKind::Match { .. } => {
-            let (per, problems) = if loaded.default.is_none() && std::env::var_os("XX_SKIP").is_some() { (Vec::new(), Vec::new()) } else { compile_match(loaded) }; // XX-EXPERIMENT
+            let (per, problems) = compile_match(loaded);
             for e in problems {
                 fail(e);
             }

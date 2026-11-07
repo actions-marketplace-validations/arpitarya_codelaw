@@ -314,7 +314,6 @@ fn read_rules(dir: &Path, errors: &mut Vec<LoadError>) -> Vec<RuleFile> {
                             Err(e) => errors.extend(e),
                         }
                     }
-                    if std::env::var_os("XX_SLIM").is_some() { rule.examples = Vec::new(); rule.cases = Vec::new(); rule.why = String::new(); rule.summary = String::new(); rule.steps = Vec::new(); } // XX-EXPERIMENT
                     rules.push(rule);
                 }
                 Err(e) => errors.extend(e),
@@ -564,7 +563,11 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
         out.extend(errors);
         return Err(out);
     }
-    let rules = rules.into_iter().map(Arc::new).collect();
+    // A new list, not the parsed one's buffer reused: that holds room for
+    // every whole rule, kept for as long as the pack is (W-172).
+    let mut shared = Vec::with_capacity(rules.len());
+    shared.extend(rules.into_iter().map(Arc::new));
+    let rules = shared;
     Ok(RulePack { manifest, dir: dir.to_owned(), first_party: first_party.is_some(), rules, presets, data: Arc::new(data), data_hash })
 }
 
