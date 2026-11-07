@@ -29,7 +29,7 @@ here. Read that record before changing anything below it.
 
 ## Open items (13)
 
-### build (7)
+### build (6)
 
 🟢 **W-171** `agent` Six worktrees (W-139, W-141, W-156, W-162, W-168, W-169) hold unlanded work of agents stopped by the usage limit 11-05. Ruled 11-07: keep; each lands with its item. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
 
