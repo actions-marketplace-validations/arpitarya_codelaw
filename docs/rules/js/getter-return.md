@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the value a getter should return is the author's decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the path that falls off the end gets `return undefined;`, which it already returns; the reviewer confirms that is the value meant) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/getter-return` |
@@ -141,6 +141,19 @@ const box = {
 };
 ```
 
+#### Fixed
+
+```js
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
+  },
+};
+```
+
 #### Do
 
 ```js
@@ -161,6 +174,19 @@ const box = {
     if (this.items) {
       return this.items.length;
     }
+  },
+};
+```
+
+#### Fixed
+
+```jsx
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
   },
 };
 ```

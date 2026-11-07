@@ -2,9 +2,8 @@
 id: js/no-unsafe-optional-chaining
 title: "No ?. chain used where undefined throws"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the right fallback value depends on the code"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are a fallback (`?? {}` for destructuring, `?? []` for spreading, `?.` carried through a call or access), the default, or plain `.` when the value is always there"
 stability: preview
 ported_from: [eslint/no-unsafe-optional-chaining]
 since: 0.1.0

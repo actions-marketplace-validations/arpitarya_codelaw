@@ -2,9 +2,9 @@
 id: js/no-constant-binary-expression
 title: "No binary expression whose result is fixed"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the intended grouping or comparison needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are dropping the operand that never decides the result (the default, behaviour-preserving) or regrouping, `a + b ?? c` as `a + (b ?? c)`; a constant comparison is manual"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-constant-binary-expression]
 since: 0.1.0
@@ -35,6 +35,12 @@ native: js/no-constant-binary-expression
 const total = price + tax ?? 0;
 ```
 
+#### Fixed
+
+```js
+const total = price + tax;
+```
+
 #### Do
 
 ```js
@@ -47,6 +53,12 @@ const total = price + (tax ?? 0);
 
 ```jsx
 const total = price + tax ?? 0;
+```
+
+#### Fixed
+
+```jsx
+const total = price + tax;
 ```
 
 #### Do
@@ -63,6 +75,12 @@ const total = price + (tax ?? 0);
 const total = price + tax ?? 0;
 ```
 
+#### Fixed
+
+```ts
+const total = price + tax;
+```
+
 #### Do
 
 ```ts
@@ -75,6 +93,12 @@ const total = price + (tax ?? 0);
 
 ```tsx
 const total = price + tax ?? 0;
+```
+
+#### Fixed
+
+```tsx
+const total = price + tax;
 ```
 
 #### Do

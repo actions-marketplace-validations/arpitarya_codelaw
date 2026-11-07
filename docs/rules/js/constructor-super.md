@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what `super()` must receive depends on the base class) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `super(...arguments)` first in the constructor (the default: what an implicit constructor does) or `super()`; which the parent needs is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/constructor-super` |
@@ -140,6 +140,17 @@ class Cat extends Animal {
 }
 ```
 
+#### Fixed
+
+```js
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
+    this.lives = 9;
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -158,6 +169,17 @@ class Cat extends Animal {
 ```jsx
 class Cat extends Animal {
   constructor() {
+    this.lives = 9;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
     this.lives = 9;
   }
 }

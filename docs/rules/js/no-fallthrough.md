@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the fall-through is intended needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `break;` ending the case, which stops the fall-through, or a `// falls through` comment saying it is meant, which keeps behaviour; only the author knows which) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-fallthrough` |
@@ -141,6 +141,32 @@ switch (kind) {
 }
 ```
 
+#### Fixed (break)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 #### Do
 
 ```js
@@ -173,6 +199,32 @@ switch (kind) {
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (break)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -217,6 +269,32 @@ switch (kind) {
 }
 ```
 
+#### Fixed (break)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 #### Do
 
 ```ts
@@ -249,6 +327,32 @@ switch (kind) {
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (break)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+#### Fixed (falls through)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;

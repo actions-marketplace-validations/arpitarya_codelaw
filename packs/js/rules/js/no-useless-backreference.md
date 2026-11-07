@@ -2,9 +2,8 @@
 id: js/no-useless-backreference
 title: "No backreference that can only match the empty string"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "what the reference was meant to repeat needs the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the backreference, with its quantifier, always matches the empty string, so it goes; the reviewer confirms the pattern was not meant to match more"
 stability: preview
 ported_from: [eslint/no-useless-backreference, eslint-plugin-regexp/no-useless-backreference]
 since: 0.1.0
@@ -35,6 +34,12 @@ native: js/no-useless-backreference
 const re = /\1(a)/;
 ```
 
+#### Fixed
+
+```js
+const re = /(a)/;
+```
+
 #### Do
 
 ```js
@@ -47,6 +52,12 @@ const re = /(a)\1/;
 
 ```jsx
 const re = /\1(a)/;
+```
+
+#### Fixed
+
+```jsx
+const re = /(a)/;
 ```
 
 #### Do
@@ -63,6 +74,12 @@ const re = /(a)\1/;
 const re = /\1(a)/;
 ```
 
+#### Fixed
+
+```ts
+const re = /(a)/;
+```
+
 #### Do
 
 ```ts
@@ -75,6 +92,12 @@ const re = /(a)\1/;
 
 ```tsx
 const re = /\1(a)/;
+```
+
+#### Fixed
+
+```tsx
+const re = /(a)/;
 ```
 
 #### Do

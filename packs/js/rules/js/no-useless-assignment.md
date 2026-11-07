@@ -2,9 +2,9 @@
 id: js/no-useless-assignment
 title: "No value is stored that nothing reads"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the store is dead or the read is missing needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-useless-assignment]
 since: 0.1.0
@@ -38,6 +38,16 @@ function total(items) {
 }
 ```
 
+#### Fixed
+
+```js
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 #### Do
 
 ```js
@@ -54,6 +64,16 @@ function total(items) {
 ```jsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+#### Fixed
+
+```jsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -80,6 +100,16 @@ function total(items) {
 }
 ```
 
+#### Fixed
+
+```ts
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 #### Do
 
 ```ts
@@ -96,6 +126,16 @@ function total(items) {
 ```tsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+#### Fixed
+
+```tsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }

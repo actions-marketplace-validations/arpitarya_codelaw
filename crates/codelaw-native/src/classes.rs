@@ -9,7 +9,7 @@
 
 use crate::util::{children, descendants, is_function, named_children, text};
 use crate::{NativeContext, NativeFinding, NativeRule};
-use codelaw_core::Language;
+use codelaw_core::{Language, TextEdit};
 use codelaw_lang::SyntaxNode;
 use std::collections::BTreeMap;
 use tree_sitter::Node;
@@ -66,7 +66,14 @@ impl NativeRule for ConstructorSuper {
         let calls: Vec<Node> = same_this(body).into_iter().filter(is_super_call).collect();
         let name = ctor.child_by_field_name("name").expect("checked");
         if derived(class, ctx.source) && calls.is_empty() {
-            out.push(NativeFinding { start: name.start_byte(), end: name.end_byte(), message: "A derived class's constructor must call `super()`".into(), edits: Vec::new() });
+            // `super(...arguments)` is what an implicit constructor calls.
+            let at = body.start_byte() + 1;
+            let pad = format!("{}  ", crate::python_util::indent_at(ctx.source, ctor.start_byte()));
+            let edits = crate::choice_edits(vec![
+                crate::choice("pass the arguments", true, vec![TextEdit::insert(at, format!("\n{pad}super(...arguments);"))]),
+                crate::choice("no arguments", false, vec![TextEdit::insert(at, format!("\n{pad}super();"))]),
+            ]);
+            out.push(NativeFinding { start: name.start_byte(), end: name.end_byte(), message: "A derived class's constructor must call `super()`".into(), edits });
         }
         if !derived(class, ctx.source) {
             for c in calls {
@@ -74,6 +81,31 @@ impl NativeRule for ConstructorSuper {
             }
         }
     }
+}
+
+/// The edits that move the constructor's `super(…);` statement above the
+/// first statement using `this`, when both are statements of its body and
+/// the call's arguments read neither `this` nor a name declared between.
+fn super_first(body: Node<'_>, inside: &[Node<'_>], src: &str) -> Option<Vec<TextEdit>> {
+    let call = inside.iter().find(|n| is_super_call(n))?;
+    let stmt = call.parent().filter(|p| p.kind() == "expression_statement" && p.parent().is_some_and(|b| b.id() == body.id()))?;
+    let first_this = inside.iter().find(|n| matches!(n.kind(), "this" | "super") && n.start_byte() < call.start_byte() && !(n.kind() == "super" && n.parent().is_some_and(|p| p.id() == call.id())))?;
+    let mut top = *first_this;
+    while top.parent()?.id() != body.id() {
+        top = top.parent()?;
+    }
+    let args = text(call.child_by_field_name("arguments")?, src);
+    if args.contains("this") {
+        return None;
+    }
+    let between = &src[top.start_byte()..stmt.start_byte()];
+    let declares = ["let ", "const ", "var ", "function ", "class "];
+    if declares.iter().any(|d| between.contains(d)) {
+        return None;
+    }
+    let pad = crate::python_util::indent_at(src, top.start_byte());
+    let (a, b) = crate::util::whole_lines(src, stmt.start_byte(), stmt.end_byte());
+    Some(vec![TextEdit::insert(top.start_byte(), format!("{}\n{pad}", text(stmt, src))), TextEdit::delete(a, b)])
 }
 
 pub struct NoThisBeforeSuper;
@@ -102,13 +134,14 @@ impl NativeRule for NoThisBeforeSuper {
         // The first `super(...)` call ends where `this` becomes legal; `this`
         // inside its own arguments is still too early.
         let first_super = inside.iter().filter(|n| is_super_call(n)).map(|n| n.end_byte()).min();
+        let mut moved = super_first(body, &inside, ctx.source);
         for n in inside {
             let too_early = first_super.is_none_or(|s| n.start_byte() < s);
             let is_this = n.kind() == "this";
             let is_super_member = n.kind() == "super" && n.parent().is_some_and(|p| p.kind() == "member_expression");
             if too_early && (is_this || is_super_member) {
                 let what = if is_this { "`this`" } else { "`super`" };
-                out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message: format!("{what} is used before `super()` is called"), edits: Vec::new() });
+                out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message: format!("{what} is used before `super()` is called"), edits: moved.take().unwrap_or_default() });
             }
         }
     }
