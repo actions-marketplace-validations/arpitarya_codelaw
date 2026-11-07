@@ -58,3 +58,17 @@ query valid; the finding comes first because lint runs before format (SR-FORMATT
 ```expect
 1:8 css/media-query-no-invalid
 ```
+
+### case: four conditions are reported without a fix
+
+```css
+@media (color) and (hover) or (width) and (height) {
+  a {
+    color: red;
+  }
+}
+```
+
+```expect
+1:8 css/media-query-no-invalid
+```

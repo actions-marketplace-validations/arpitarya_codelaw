@@ -106,8 +106,8 @@ fn has_declaration(sheet: &Sheet, i: usize) -> bool {
     })
 }
 
-/// An earlier selector: its specificity, text and offset.
-type Prior = ((u32, u32, u32), String, usize);
+/// An earlier selector: its specificity, text, offset and rule.
+type Prior = ((u32, u32, u32), String, usize, usize);
 
 const LEGACY_ELEMENTS: &[&str] = &["before", "after", "first-line", "first-letter"];
 
@@ -127,6 +127,26 @@ fn reference(sel: &str, pseudo_elements: &BTreeSet<String>) -> Option<String> {
         .map(|p| &sel[p.start..p.end])
         .collect();
     (!parts.is_empty()).then(|| parts.concat())
+}
+
+/// The edit swapping rule `a` and the rule `b` right after it (`auto`):
+/// between two rules whose specificities differ, specificity decides, not
+/// order, so the swap changes nothing. Only when nothing but whitespace
+/// separates them, each has one selector and holds only declarations
+/// (nothing nested moves with it).
+fn swap_rules(sheet: &Sheet, src: &str, a: usize, b: usize) -> Option<Vec<TextEdit>> {
+    let (na, nb) = (&sheet.nodes[a], &sheet.nodes[b]);
+    if na.parent != nb.parent || na.end > nb.start || !src[na.end..nb.start].trim().is_empty() {
+        return None;
+    }
+    for &r in &[a, b] {
+        let n = &sheet.nodes[r];
+        if sheet.selectors(r, src).len() != 1 || n.block.is_none_or(|(_, close)| close >= src.len()) || n.children.iter().any(|&c| !matches!(sheet.nodes[c].kind, Kind::Decl | Kind::Comment)) {
+            return None;
+        }
+    }
+    let between = &src[na.end..nb.start];
+    Some(vec![TextEdit::new(na.start, nb.end, format!("{}{between}{}", &src[nb.start..nb.end], &src[na.start..na.end]))])
 }
 
 css_rule!(NoDescendingSpecificity, "css/no-descending-specificity", |sheet, src, ctx, out| {
@@ -151,10 +171,11 @@ css_rule!(NoDescendingSpecificity, "css/no-descending-specificity", |sheet, src,
             let own = normalize_selector(text(src, (c.start, c.end)));
             let shown = if own == res { format!("`{own}`") } else { format!("`{own}` (`{res}`)") };
             let prior = map.entry(r).or_default();
-            if let Some((_, sel, at)) = prior.iter().find(|p| p.0 > spec) {
-                out.push(finding(c.start, c.end, format!("{shown} comes after `{sel}` (line {}), which is more specific; put the less specific selector first", line(src, *at))));
+            if let Some((_, sel, at, earlier)) = prior.iter().find(|p| p.0 > spec) {
+                let edits = swap_rules(sheet, src, *earlier, i).unwrap_or_default();
+                out.push(crate::css_syntax::fixed(c.start, c.end, format!("{shown} comes after `{sel}` (line {}), which is more specific; put the less specific selector first", line(src, *at)), edits));
             }
-            prior.push((spec, res, n.start));
+            prior.push((spec, res, n.start, i));
         }
     }
 });
@@ -370,6 +391,37 @@ css_rule!(SelectorTypeNoUnknown, "css/selector-type-no-unknown", |sheet, src, ct
     }
 });
 
+/// The raw line breaks of a string from `j` (a break) to its closing
+/// quote `q`: each break's range, `\r\n` as one.
+fn raw_breaks(b: &[u8], mut j: usize, e: usize, q: u8) -> Vec<(usize, usize)> {
+    let mut out = Vec::new();
+    while j < e && b[j] != q {
+        match b[j] {
+            b'\\' => j += 2,
+            b'\r' if b.get(j + 1) == Some(&b'\n') => {
+                out.push((j, j + 2));
+                j += 2;
+            }
+            b'\n' | b'\r' => {
+                out.push((j, j + 1));
+                j += 1;
+            }
+            _ => j += 1,
+        }
+    }
+    out
+}
+
+/// The two ways a string's raw line breaks can go: a space, or an escaped
+/// line break `\A` the string keeps. Both change what the selector
+/// matches (it is dropped today), so neither is the default. (A `\` before
+/// each break would join the lines, but the grammar refuses it, so the
+/// engine never applies it.)
+fn newline_choices(breaks: &[(usize, usize)]) -> Vec<TextEdit> {
+    let each = |f: &dyn Fn(usize, usize) -> TextEdit| breaks.iter().map(|&(s, e)| f(s, e)).collect::<Vec<_>>();
+    crate::choice_edits(vec![crate::choice("space", false, each(&|s, e| TextEdit::new(s, e, " "))), crate::choice("escape", false, each(&|s, e| TextEdit::new(s, e, "\\A ")))])
+}
+
 /// Strings in a range that hold an unescaped line break.
 fn strings_with_newline(src: &str, s: usize, e: usize, out: &mut Vec<crate::NativeFinding>) {
     let b = src.as_bytes();
@@ -386,7 +438,12 @@ fn strings_with_newline(src: &str, s: usize, e: usize, out: &mut Vec<crate::Nati
                     }
                     if b[j] == b'\n' || b[j] == b'\r' {
                         let line_end = src[j..].find('\n').map_or(j, |o| j + o);
-                        out.push(finding(i, line_end.min(e), "Line break inside a string; escape it as `\\A` or end the line with `\\`"));
+                        let breaks = raw_breaks(b, j, e, q);
+                        out.push(crate::css_syntax::fixed(i, line_end.min(e), "Line break inside a string; escape it as `\\A` or end the line with `\\`", newline_choices(&breaks)));
+                        j = breaks.last().map_or(j + 1, |r| r.1);
+                        while j < e && b[j] != q {
+                            j += if b[j] == b'\\' { 2 } else { 1 };
+                        }
                         break;
                     }
                     j += 1;
