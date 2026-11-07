@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting the declaration needs its keyword repeated per declarator, which no declarative edit can write) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the two declarators become two statements in their order, which a comment between them or a type on the declaration does not survive unchanged; a declaration of more than two, an exported one or one in a `for` is split by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-n/no-mixed-requires` |

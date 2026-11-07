@@ -8,8 +8,9 @@ use std::path::Path;
 /// Compile a `codelaw` block and return a closure listing its matches.
 fn matcher(language: Language, block: &str) -> (codelaw_rules::RuleFile, codelaw_match::CompiledMatch) {
     let ext = language.extension();
+    let class = if block.contains("choices:") { "suggest\nfix_reason: test" } else { "auto" };
     let text = format!(
-        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: auto\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
+        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: {class}\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
         language.name(),
         language.display()
     );
@@ -263,4 +264,120 @@ fn move_puts_the_target_on_its_own_line_above() {
     let block = "match:\n  kind: comment\n  follows: { regex: '.', pattern: $P }\nmessage: m\nfix:\n  - move: { before: $P }";
     let out = fix(Language::Javascript, block, "if (a) {\n  const max = 3; // retries\n}\n");
     assert_eq!(out.text, "if (a) {\n  // retries\n  const max = 3;\n}\n");
+}
+
+#[test]
+fn merge_into_writes_the_items_into_the_earlier_list() {
+    // W-162: `merge-into` (SR-RULE-FORMAT 3c), with `unique` for imports.
+    let block = "match:\n  kind: import_statement\n  regex: '^import\\s*\\{'\n  pattern: $DUP\n  all:\n    - has: { field: source, pattern: $S }\n    - has: { kind: import_clause, has: { kind: named_imports, pattern: $FROM } }\n    - follows: { stopBy: end, kind: import_statement, regex: '^import\\s*\\{', has: { field: source, pattern: $S }, all: [{ has: { kind: import_clause, has: { kind: named_imports, pattern: $INTO } } }] }\nmessage: m\nfix:\n  - merge-into: { target: $FROM, into: $INTO, unique: true }\n  - remove: $DUP";
+    let out = fix(Language::Javascript, block, "import { a } from \"./u\";\nimport x from \"./v\";\nimport { a, b } from \"./u\";\n");
+    assert_eq!(out.text, "import { a, b } from \"./u\";\nimport x from \"./v\";\n");
+}
+
+#[test]
+fn merge_into_keeps_repeated_items_unless_unique() {
+    let block = "match:\n  kind: expression_statement\n  pattern: $A.push($$$X);\n  has: { kind: call_expression, has: { field: arguments, pattern: $INTO } }\n  precedes: { all: [{ pattern: $A.push($$$Y); }, { pattern: $NEXT }, { has: { kind: call_expression, has: { field: arguments, pattern: $FROM } } }] }\nmessage: m\nfix:\n  - merge-into: { target: $FROM, into: $INTO }\n  - remove: $NEXT";
+    let out = fix(Language::Javascript, block, "a.push(1);\na.push(1);\na.push();\nb.push(2);\n");
+    assert_eq!(out.text, "a.push(1, 1);\nb.push(2);\n");
+    assert!(parse_fix(&serde_json::json!([{ "merge-into": { "target": "$A", "into": "$B", "unique": "yes" } }])).unwrap_err().contains("`unique`"));
+}
+
+#[test]
+fn a_choice_with_nothing_to_edit_is_left_out() {
+    // W-162: a choice whose steps act on a capture another branch binds.
+    let (rule, compiled) = matcher(
+        Language::Javascript,
+        "match:\n  kind: identifier\n  any:\n    - { regex: '^a$', pattern: $A }\n    - { regex: '^b$' }\nmessage: m\nfix:\n  choices:\n    - label: one\n      fix:\n        - replace: { target: $A, with: one }\n    - label: two\n      fix:\n        - replace: { target: $A, with: two }",
+    );
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "a; b;\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert_eq!(choice_edits(&spec, &m[0], &ctx).unwrap().len(), 2);
+    assert!(choice_edits(&spec, &m[1], &ctx).is_err());
+}
+
+#[test]
+fn insert_with_line_writes_a_line_of_its_own() {
+    // W-162: `insert-before` / `insert-after` with `line: true`.
+    let block = "match:\n  kind: expression_statement\n  pattern: f();\nmessage: m\nfix:\n  - insert-before: { text: \"a();\", line: true }\n  - insert-after: { text: \"b();\", line: true }\n  - replace: g();";
+    let out = fix(Language::Javascript, block, "if (x) {\n  f();\n}\n");
+    assert_eq!(out.text, "if (x) {\n  a();\n  g();\n  b();\n}\n");
+}
+
+#[test]
+fn move_after_takes_the_targets_lines() {
+    // W-162: `move: { after }`; a target alone on its lines takes them.
+    let block = "match:\n  kind: switch_default\n  precedes: { stopBy: end, kind: switch_case, not: { precedes: { kind: switch_case } }, pattern: $LAST }\nmessage: m\nfix:\n  - move: { after: $LAST }";
+    let src = "switch (x) {\n  default:\n    b();\n    break;\n  case 1:\n    a();\n    break;\n}\n";
+    let out = fix(Language::Javascript, block, src);
+    assert_eq!(out.text, "switch (x) {\n  case 1:\n    a();\n    break;\n  default:\n    b();\n    break;\n}\n");
+    let block = "match:\n  kind: lexical_declaration\n  follows: { stopBy: end, kind: function_declaration, pattern: $F }\nmessage: m\nfix:\n  - move: { before: $F }";
+    let out = fix(Language::Javascript, block, "function f() {}\n\nconst a = 1;\n");
+    assert_eq!(out.text, "const a = 1;\n\nfunction f() {}\n");
+    assert!(parse_fix(&serde_json::json!([{ "move": { "before": "$A", "after": "$B" } }])).unwrap_err().contains("one of"));
+}
+
+#[test]
+fn rename_symbol_renames_one_binding_to_a_fresh_name() {
+    // W-162: `rename-symbol` and `$FRESH` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: identifier\n  regex: ^NaN$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: \"$FRESH(_$$MATCH)\", scope: binding }";
+    let out = fix(Language::Javascript, block, "function f(NaN) {\n  const _NaN = 1;\n  return NaN;\n}\nconst n = NaN;\n");
+    assert_eq!(out.text, "function f(_NaN2) {\n  const _NaN = 1;\n  return _NaN2;\n}\nconst n = NaN;\n");
+}
+
+#[test]
+fn rename_symbol_refuses_a_taken_name_and_a_shorthand() {
+    let block = "match:\n  kind: identifier\n  regex: ^ok$\nwhere:\n  $$MATCH: declaration\nmessage: m\nfix:\n  - rename-symbol: { target: $$MATCH, to: resolve }";
+    let (rule, compiled) = matcher(Language::Javascript, block);
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    for src in ["new Promise((ok) => resolve(ok));\n", "function f(ok) { return { ok }; }\n"] {
+        let root = codelaw_lang::parse(Language::Javascript, src);
+        let model = codelaw_semantic::build(Language::Javascript, &root, src);
+        let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: model.as_ref() };
+        let m = find(Language::Javascript, &compiled, &root, src);
+        assert!(edits_for(&spec, &m[0], &ctx).is_err(), "{src}");
+    }
+}
+
+#[test]
+fn edit_text_patterns_name_captures_escaped() {
+    let block = "match:\n  kind: for_statement\n  all:\n    - has: { field: condition, pattern: '$I < $A.length' }\n    - has: { stopBy: end, pattern: '$A[$I]' }\nmessage: m\nfix:\n  - edit-text: { pattern: '$A\\[$I\\]', replace: \"$FRESH(item)\" }";
+    let out = fix(Language::Javascript, block, "for (let i = 0; i < a.b.length; i++) f(a.b[i], axb[i]);\nconst item = 1;\n");
+    assert_eq!(out.text, "for (let i = 0; i < a.b.length; i++) f(item2, axb[i]);\nconst item = 1;\n");
+}
+
+
+#[test]
+fn ensure_import_reuses_or_adds_an_import() {
+    // W-162: `ensure-import` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: call\n  pattern: isclose($A, $B)\nmessage: m\nfix:\n  - replace: \"math.isclose($A, $B)\"\n  - ensure-import: { module: math }";
+    let out = fix(Language::Python, block, "\"\"\"Doc.\"\"\"\nimport os\n\nx = isclose(a, 0.1)\n");
+    assert_eq!(out.text, "\"\"\"Doc.\"\"\"\nimport os\nimport math\n\nx = math.isclose(a, 0.1)\n");
+    let block = "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - replace: \"field($A)\"\n  - ensure-import: { module: dataclasses, name: field }";
+    let out = fix(Language::Python, block, "from dataclasses import dataclass\n\nx = make(1)\n");
+    assert_eq!(out.text, "from dataclasses import dataclass, field\n\nx = field(1)\n");
+    let block = "match:\n  kind: jsx_self_closing_element\n  has: { field: name, regex: ^a$, pattern: $N }\nmessage: m\nfix:\n  - replace: { target: $N, with: Link }\n  - ensure-import: { module: next/link, name: default, as: Link }";
+    let out = fix(Language::Jsx, block, "\"use client\";\nconst a = <a href=\"/x\" />;\n");
+    assert_eq!(out.text, "\"use client\";\nimport Link from \"next/link\";\nconst a = <Link href=\"/x\" />;\n");
+}
+
+#[test]
+fn ensure_import_refuses_a_name_taken_by_something_else() {
+    let (rule, compiled) = matcher(Language::Python, "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - ensure-import: { module: dataclasses, name: field }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "field = 1\nx = make(1)\n";
+    let root = codelaw_lang::parse(Language::Python, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Python, semantic: None };
+    let m = find(Language::Python, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("already a name"));
+}
+
+#[test]
+fn unwrap_block_dedents_a_python_block() {
+    // W-162: `unwrap-block` on a Python `block`.
+    let block = "match:\n  kind: else_clause\n  has: { field: body, pattern: $B }\nmessage: m\nfix:\n  - unwrap-block: { target: $B, within: $$MATCH }";
+    let out = fix(Language::Python, block, "def f(x):\n    if x:\n        return 1\n    else:\n        # two\n        y = 2\n        return y\n");
+    assert_eq!(out.text, "def f(x):\n    if x:\n        return 1\n    # two\n    y = 2\n    return y\n");
 }

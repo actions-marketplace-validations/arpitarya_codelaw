@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the exception class to raise is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the literal is wrapped in `RuntimeError(...)`; it raised `TypeError` before, so a handler for that no longer catches it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B016`, `pylint/raising-non-exception`, `pylint/raising-bad-type` |
@@ -130,6 +130,12 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ```py
 raise "failed"
+```
+
+#### Fixed
+
+```py
+raise RuntimeError("failed")
 ```
 
 #### Do

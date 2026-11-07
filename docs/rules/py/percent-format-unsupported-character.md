@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended conversion can't be inferred) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the string raises ValueError today: the choices are escaping the `%` as `%%` and replacing the conversion with `s`; neither is the default. A string with escapes is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F509`, `pylint/bad-format-character` |
@@ -130,6 +130,18 @@ codelaw config --print --for <file>                           # the resolved set
 
 ```py
 message = "%y" % (1,)
+```
+
+#### Fixed (escape)
+
+```py
+message = "%%y" % (1,)
+```
+
+#### Fixed (s)
+
+```py
+message = "%s" % (1,)
 ```
 
 #### Do

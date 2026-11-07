@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the new name is the author's choice) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes the singular of the name (`items` → `item`), else `<name>_item`, in the loop. A module-level loop, or a read after the loop, is a suggestion, as the name then holds the iterable again; none when the new name is taken) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B020` |
@@ -132,6 +132,13 @@ codelaw config --print --for <file>                       # the resolved setting
 ```py
 for items in items:
     print(items)
+```
+
+#### Fixed
+
+```py
+for item in items:
+    print(item)
 ```
 
 #### Do

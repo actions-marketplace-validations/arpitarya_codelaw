@@ -2,9 +2,8 @@
 id: py/mutable-class-default
 title: "Mutable class attribute is ClassVar"
 languages: [python]
-fix: manual
-fix_reason: "the fix needs `ClassVar` imported, and whether sharing was meant is the author's"
-fix_pending: "suggest; needs add-import (W-162)"
+fix: suggest
+fix_reason: "whether sharing the value across instances was meant is the author's: the fix says it was; `ClassVar` is imported from `typing` where the file does not"
 stability: preview
 ported_from: [ruff/RUF012]
 since: 0.5.0
@@ -25,6 +24,9 @@ match:
 constraints:
   T: {not: {regex: '^(typing\.)?(ClassVar|Final)\b'}}
 message: "A mutable class default is shared; annotate it `ClassVar[...]`"
+fix:
+  - replace: { target: $T, with: "ClassVar[$T]" }
+  - ensure-import: { module: typing, name: ClassVar }
 ```
 
 ## How to fix
@@ -45,6 +47,8 @@ class Registry:
 #### Do
 
 ```python
+from typing import ClassVar
+
 class Registry:
     names: ClassVar[list[str]] = []
 ```

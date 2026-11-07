@@ -2,9 +2,8 @@
 id: css/string-no-newline
 title: "No line breaks inside selector strings"
 languages: [css, scss]
-fix: manual
-fix_reason: "whether the line break was meant is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are a space or an escaped line break (`\\A`) the string keeps; each makes a selector the browser drops today start to match, and only the author knows which was meant"
 stability: stable
 options:
   ignore: { type: "string[]", default: ["at-rule-preludes", "declaration-values"], description: "contexts not to check: `at-rule-preludes`, `declaration-values`" }
@@ -37,6 +36,22 @@ two"] {
 }
 ```
 
+#### Fixed (space)
+
+```css
+[title="one two"] {
+  color: red;
+}
+```
+
+#### Fixed (escape)
+
+```css
+[title="one\A two"] {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -51,6 +66,22 @@ two"] {
 ```scss
 [title="one
 two"] {
+  color: red;
+}
+```
+
+#### Fixed (space)
+
+```scss
+[title="one two"] {
+  color: red;
+}
+```
+
+#### Fixed (escape)
+
+```scss
+[title="one\A two"] {
   color: red;
 }
 ```

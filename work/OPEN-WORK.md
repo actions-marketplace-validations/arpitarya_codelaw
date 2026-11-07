@@ -22,36 +22,28 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **`check_types_cold` / `check_types_warm` L8 budgets: 14,602 ms and 8,663 ms?** ([W-105](open/W-105-type-aware-engine.md)): p95 on three `perf` runs on `main` of the batched helper (`ci` 42316894936 on `3b53d1a8`, its nightly and two re-runs of the job; ubuntu-24.04, 2,200 files, TypeScript 7.1.0-beta): cold 9,734.3 / 5,185.9 / 6,010.8 ms, warm 5,775.1 / 5,286.0 / 5,005.8 ms. Your method (L8 decision 4): 1.5 × the worst → **cold 14,602 ms, warm 8,663 ms**; no design target, so no guard. The cold spread is the runner (same commit, same binary). **Set them** (a p95 over fails CI) **or leave them unset** (reported only). | 2026-11-07 |
-| ↳ **blocks:** W-105 | |
-| 🔴 **Ratify Ruff `=0.0.21` under L11 (W-173)** — the only fix for `zip` 8.6.0's five advisories (1 critical). Not reachable from codelaw (we call only `format_module_source`; `zip` sits behind ruff_db's vendored typeshed), but no feature drops it. **(a, recommended)** bump D-02's five crates to `=0.0.21`: `zip` → 9.4.1, `typed-path` → 0.13, new `getrandom` 0.4 and `nix` 0.31 (macOS), `psm`/`stacker` gone, all permissive; then the Python corpus re-run (0.0.21 may restyle). **(b)** stay on 0.0.18 and dismiss the alerts as unreachable. **(c)** a `[patch]` fork — no. | 2026-11-07 |
-| ↳ **blocks:** W-173 | |
+
+*Empty since 2026-11-07 — next gate: 2026-11-10, the TypeScript 7.1 RC re-pin (W-105).*
 
 ---
 
-## Open items (14)
+## Open items (11)
 
-### build (6)
+### build (5)
 
-🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets in the inbox (cold 14,602, warm 8,663 ms); next the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done (proposal §13); L8 → W-172. DoD 1 under way: js second pass, slice 18 — 48 unicorn rules (1,596 of 2,590 built). Next: more js rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: DoD 1 — js slices 18–20 (121; 284 rows not written, reasons in item), py 19–22 (200; 272 rows left: native, types, W-162). Next: natives, graph, types. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets (11-07). Steps 1–2 done: a per-rule cost on every loaded rule; `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB locally (over 72). Next: push main for CI; re-anchor hot `js/*` rules. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css landed): 60 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 36 wait (cross-file), 6 on W-105. Next: cross-file read, then write. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: 30 `js/*` moved, 33 re-judged `manual`; 40 still wait. Next: `merge-into` and native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+### ci/cd (4)
 
-
-
-### ci/cd (5)
-
-🔴🧨 **W-173** `arpit` Dependabot: five advisories (1 critical) on `zip` 8.6.0, via ruff_db ← ruff_python_formatter. 11-07: unreachable from codelaw; no feature drops it; ruff_db 0.0.21 takes zip ^9.0.5. Waits on the inbox ruling (bump D-02 to `=0.0.21`). Filed by Arpit (Claude Code). [detail](open/W-173-zip-advisories.md)
-
-🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
 🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
@@ -59,9 +51,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
-### cleanup (1)
-
-🟢 **W-171** `agent` Six worktrees of agents stopped by the usage limit 11-05, ruled keep 11-07: five landed and removed (W-139, W-141, W-162, W-168, W-169); W-156's is left, its agent still at work. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
+### cleanup (0)
 
 ### testing (0)
 
@@ -74,6 +64,5 @@ here. Read that record before changing anything below it.
 ### research (1)
 
 🟢 **W-167** `cowork` Architecture design for graph generation at 100k–1M files: today's pipeline, prior art (Glean, Kythe, SCIP, salsa, Knip, Nx), 2–3 options as a proposal; step 3 reads W-168's numbers. Filed by Arpit (Cowork). [detail](open/W-167-graph-architecture-design.md)
-
 
 ---

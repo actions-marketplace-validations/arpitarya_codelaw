@@ -4,8 +4,8 @@ title: 'A request value is not written into the response as it is'
 languages: [python]
 exclude: ["**/tests/**", "**/test/**", "**/test_*.py", "**/*_test.py", "**/*_tests.py", "**/tests.py", "**/conftest.py"]
 fix: manual
-fix_reason: "escaping the value or rendering a template are both fixes; which fits depends on the response"
-fix_pending: "suggest-choices; needs add-import (W-162)"
+fix_reason: "escaping the value or rendering a template are both fixes, and a suggested edit would read as made safe; which fits depends on the response"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

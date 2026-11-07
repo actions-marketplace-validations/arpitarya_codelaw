@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/jsdoc` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which access level was meant is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (which access level was meant is the author's choice, so each of the four is offered for an unknown `@access` value; a block with two access tags keeps the one the author means, by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/check-access` |
@@ -148,6 +148,46 @@ function clearCache() {}
 function clearCache() {}
 ```
 
+#### Fixed (package)
+
+```js
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+#### Fixed (private)
+
+```js
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (protected)
+
+```js
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+#### Fixed (public)
+
+```js
+/**
+ * Clears the cache.
+ * @access public
+ */
+function clearCache() {}
+```
+
 ### JSX
 
 #### Don't
@@ -166,6 +206,46 @@ function clearCache() {}
 /**
  * Clears the cache.
  * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (package)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+#### Fixed (private)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (protected)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+#### Fixed (public)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access public
  */
 function clearCache() {}
 ```
@@ -192,6 +272,46 @@ function clearCache() {}
 function clearCache() {}
 ```
 
+#### Fixed (package)
+
+```ts
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+#### Fixed (private)
+
+```ts
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (protected)
+
+```ts
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+#### Fixed (public)
+
+```ts
+/**
+ * Clears the cache.
+ * @access public
+ */
+function clearCache() {}
+```
+
 ### TSX
 
 #### Don't
@@ -210,6 +330,46 @@ function clearCache() {}
 /**
  * Clears the cache.
  * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (package)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+#### Fixed (private)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+#### Fixed (protected)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+#### Fixed (public)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access public
  */
 function clearCache() {}
 ```

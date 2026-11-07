@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which parameter the value was meant for needs a person) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the arguments after the third (`re.sub`, `re.subn`) or second (`re.split`) become `count=`/`maxsplit=` and `flags=`, by the real signature: the same binding. A flag in the `count` place is the bug the rule is for: its choices are `count=` (what runs today) and `flags=`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B034` |
@@ -132,6 +132,14 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 import re
 
 text = re.sub("a", "b", text, 1)
+```
+
+#### Fixed
+
+```py
+import re
+
+text = re.sub("a", "b", text, count=1)
 ```
 
 #### Do

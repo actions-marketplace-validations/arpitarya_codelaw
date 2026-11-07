@@ -70,7 +70,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    |---|---|---|---|---|
    | JS · JSX · TS · TSX | Biome formatter (`biome_js_formatter`) | Prettier-compatible (Biome tracks its Prettier compatibility in a published report) | MIT / Apache-2.0 | git dependency pinned to a Biome release tag; the crates.io copies are stale |
    | JSON · JSONC | Biome formatter (`biome_json_formatter`) | Prettier-compatible | MIT / Apache-2.0 | same pin |
-   | Python | Ruff formatter (`ruff_python_formatter`) | Black-compatible (> 99.9 % identical lines on Django and Zulip, per Ruff) | MIT | crates.io, pinned exactly (`=0.0.18`, the crates Ruff 0.17.1 publishes) |
+   | Python | Ruff formatter (`ruff_python_formatter`) | Black-compatible (> 99.9 % identical lines on Django and Zulip, per Ruff) | MIT | crates.io, pinned exactly (`=0.0.21`, the crates Ruff 0.17.4 publishes; from `=0.0.18` on 2026-11-07, W-173 — byte-identical output on a 756-file Python corpus) |
    | YAML | Oxc's formatter (`oxc_formatter_yaml`; W-141, replaced `pretty_yaml` 2026-11-05) | Prettier-compatible (Oxc's own Prettier fixtures: 301/302) | MIT | git revision of `oxc-project/oxc` ([L11](0013_LAW-11-dependencies.md) D-52); its parsers from crates.io |
    | TOML | `taplo` formatter | taplo style | MIT | crates.io |
    | Markdown | Oxc's formatter (`oxc_formatter_markdown`; W-141, replaced `dprint-plugin-markdown` 2026-11-05); a fenced block in a language codelaw formats, and front matter, go to that language's engine through Oxc's dispatcher (`[format.markdown] format_code_blocks`) | Prettier-compatible, CommonMark/GFM (273/283) | MIT | the same Oxc revision |
@@ -153,7 +153,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
      | Ruff (Python) | Ruff's own `# fmt:` pragmas work as they are. An own-line marker followed at its own indentation by a statement becomes `# fmt: off`, and a `# fmt: on` follows that statement; both are undone after. A marker inside an expression, or with no statement after it at its level, skips nothing |
      | taplo (TOML) | taplo has no directive: the file is formatted, then the next entry, table header or array element after each marker is put back as it was written |
 
-     Restoring goes by order: a marker the engine drops or moves fails the file with `format-engine`, so a fenced-off node is never reformatted silently. A YAML marker before a block's first entry applies to the whole block, not only that entry. The statement tree comes from `ruff_python_ast` and `ruff_text_size` (MIT, `=0.0.18`, the same Ruff release as the formatter).
+     Restoring goes by order: a marker the engine drops or moves fails the file with `format-engine`, so a fenced-off node is never reformatted silently. A YAML marker before a block's first entry applies to the whole block, not only that entry. The statement tree comes from `ruff_python_ast` and `ruff_text_size` (MIT, `=0.0.21`, the same Ruff release as the formatter).
 
 7. **Deterministic and stable ([L5](0007_LAW-5-no-model-in-the-engine.md)).**
    - The same input and the same codelaw version always give byte-identical output.

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the exception class to catch is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a string naming a builtin exception becomes that exception, and another literal in a tuple with classes goes; any exception reaching the handler raised `TypeError` before, so what it catches changes. Anything else is manual, as the class meant is a value the code doesn't hold) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B030`, `pylint/catching-non-exception` |
@@ -131,7 +131,16 @@ codelaw config --print --for <file>                        # the resolved settin
 ```py
 try:
     run()
-except "error":
+except "ValueError":
+    log()
+```
+
+#### Fixed
+
+```py
+try:
+    run()
+except ValueError:
     log()
 ```
 

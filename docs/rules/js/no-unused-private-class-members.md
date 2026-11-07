@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing a member may also remove writes that matter, so it's a reader's call) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a member nothing names: a method, or a field with no value or a value that can do nothing (a literal, a function, …); a field whose value could have an effect, or one that is still written, keeps its writes and is removed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-unused-private-class-members` |

@@ -339,7 +339,7 @@ fn compile_one(loaded: &LoadedRule) -> Compiled1 {
         Matcher::Match(_) => match_flags.0,
         Matcher::Native(n) => n.needs_semantic(),
         Matcher::Graph(_) | Matcher::Target(_) | Matcher::TypeErrors | Matcher::Unsupported(_) => false,
-    } || matches!(&fix, Some(FixSpec::Steps(s)) if s.iter().any(|p| matches!(p, codelaw_fix::Primitive::RenameSymbolLocal { .. })));
+    } || fix.as_ref().is_some_and(FixSpec::needs_semantic);
     let typed = match &matcher {
         Matcher::Match(_) => match_flags.1,
         Matcher::TypeErrors => true,

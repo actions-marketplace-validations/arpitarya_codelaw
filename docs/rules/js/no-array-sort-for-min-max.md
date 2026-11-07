@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of `Math.min` and `Math.max` the comparator means is read from the comparator, which a template cannot do) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`Math.min` of an empty array is `Infinity` where the sort gave `undefined`, `sort` no longer reorders the array in place, and a value that is not a number compares differently; only a `(a, b) => a - b` or `b - a` comparator is rewritten) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-array-sort-for-min-max` |

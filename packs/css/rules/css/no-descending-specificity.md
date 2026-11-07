@@ -2,9 +2,9 @@
 id: css/no-descending-specificity
 title: "Less specific selectors come first"
 languages: [css, scss]
-fix: manual
-fix_reason: "reordering rules can change which declarations win"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the more specific rule comes right before, nothing but whitespace between, each with one selector and only declarations: between two rules whose specificities differ, specificity decides and not order, so the swap changes nothing; a rule further up is manual, as moving one past others can change which declarations win"
+fix_exception: restructure
 stability: preview
 options:
   ignore: { type: "string[]", default: [], description: "`selectors-within-list` skips rules with a selector list" }

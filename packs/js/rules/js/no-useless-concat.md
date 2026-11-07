@@ -2,9 +2,8 @@
 id: js/no-useless-concat
 title: "No concatenation of two literals"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the joined literal has to be written out"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
+fix_reason: "two strings in the same quotes are joined automatically; a template literal, quotes that differ, or a numeric escape before the join (`'\\0' + '1'` would become an octal escape) are left as they are"
 stability: preview
 ported_from: [eslint/no-useless-concat, eslint-plugin-unicorn/no-useless-concat]
 since: 0.5.0
@@ -22,6 +21,9 @@ constraints:
   A: { any: [{kind: string}, {kind: template_string}] }
   B: { any: [{kind: string}, {kind: template_string}] }
 message: "Join these literals into one"
+fix:
+  - edit-text: { pattern: '^"((?:[^"\\\n]|\\[^0-9\n])*)"\s*\+\s*"((?:[^"\\\n]|\\[^\n])*)"$', replace: '"${1}${2}"' }
+  - edit-text: { pattern: '^''((?:[^''\\\n]|\\[^0-9\n])*)''\s*\+\s*''((?:[^''\\\n]|\\[^\n])*)''$', replace: '''${1}${2}''' }
 ```
 
 ## How to fix

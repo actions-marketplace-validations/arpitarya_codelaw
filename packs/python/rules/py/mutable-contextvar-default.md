@@ -2,9 +2,9 @@
 id: py/mutable-contextvar-default
 title: "No mutable `ContextVar` defaults"
 languages: [python]
-fix: manual
-fix_reason: "whether to use an immutable value or set a fresh one per context is a design choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a list becomes a tuple and a set a frozenset (their comprehensions and `list()`/`set()` calls too); code that changes the value in place stops working, so review the uses. A dict or a computed default is manual, as its immutable form is the author's call"
+fix_exception: value
 stability: preview
 ported_from: [ruff/B039]
 since: 0.1.0
@@ -32,6 +32,14 @@ native: py/mutable-contextvar-default
 from contextvars import ContextVar
 
 items = ContextVar("items", default=[])
+```
+
+#### Fixed
+
+```py
+from contextvars import ContextVar
+
+items = ContextVar("items", default=())
 ```
 
 #### Do

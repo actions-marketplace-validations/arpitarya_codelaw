@@ -6,7 +6,7 @@
 //! offered rather than half-written (W-162; SR-LAW-4 decision 2).
 
 /// Every filter, by name. A `|` followed by anything else is plain text.
-const FILTERS: &[&str] = &["trim", "lower-first", "upper-first", "lower", "upper", "map", "number", "escape", "unescape-octal", "count"];
+const FILTERS: &[&str] = &["trim", "lower-first", "upper-first", "lower", "upper", "map", "number", "escape", "unescape-octal", "count", "arrow-body", "nearest", "style-object"];
 
 /// The next filter at the start of `rest`: its name, its argument (the
 /// text inside `(…)`, if any) and the bytes it spans. `None` when `rest`
@@ -104,8 +104,111 @@ pub fn apply_filter(name: &str, arg: Option<&str>, v: &str) -> Result<String, St
         "escape" => escape(need("template | js-string | css-ident")?.trim(), v),
         "unescape-octal" => unescape_octal(v),
         "count" => Ok(v.matches(unescape(need("text")?).as_str()).count().to_string()),
+        "arrow-body" => Ok(if v.trim_start().starts_with('{') { format!("({v})") } else { v.to_owned() }),
+        "nearest" => nearest(need("name, …")?, v),
+        "style-object" => style_object(v),
         other => Err(format!("unknown filter `|{other}`")),
     }
+}
+
+/// `|nearest(a, b, …)`: the one entry nearest the text, by edit distance:
+/// at most two edits, and fewer than a third of the text's length, with no
+/// other entry as near. A quoted string is compared without its quotes and
+/// keeps them. Anything else refuses: a guess is not a fix (W-162).
+fn nearest(arg: &str, v: &str) -> Result<String, String> {
+    let quoted = v.len() >= 2 && (v.starts_with('"') || v.starts_with('\'')) && v.ends_with(&v[..1]);
+    let inner = if quoted { &v[1..v.len() - 1] } else { v };
+    let limit = 2.min(inner.chars().count().saturating_sub(1) / 3 + 1).max(1);
+    let mut best: Option<(usize, String)> = None;
+    let mut tied = false;
+    for entry in split_unescaped(arg, ',', usize::MAX) {
+        let entry = entry.trim().to_owned();
+        if entry.is_empty() || entry == inner {
+            continue;
+        }
+        let d = edit_distance(inner, &entry);
+        match &best {
+            Some((bd, _)) if d > *bd => {}
+            Some((bd, _)) if d == *bd => tied = true,
+            _ => {
+                best = Some((d, entry));
+                tied = false;
+            }
+        }
+    }
+    match best {
+        Some((d, e)) if d <= limit && !tied => Ok(if quoted { format!("{}{e}{}", &v[..1], &v[..1]) } else { e }),
+        _ => Err(format!("`|nearest`: no single entry is near `{v}`")),
+    }
+}
+
+/// `|style-object`: a quoted CSS declaration list as the text of a React
+/// style object, `"font-size: 12px"` → `{ fontSize: "12px" }`. Refuses a
+/// value with a quote, a backslash or `!important`, and a property that is
+/// not a plain name (W-162).
+fn style_object(v: &str) -> Result<String, String> {
+    let not = |why: &str| Err(format!("`|style-object`: {why} in `{v}`"));
+    let quoted = v.len() >= 2 && (v.starts_with('"') || v.starts_with('\'')) && v.ends_with(&v[..1]);
+    if !quoted {
+        return not("not a quoted string");
+    }
+    let mut pairs = Vec::new();
+    for decl in v[1..v.len() - 1].split(';') {
+        if decl.trim().is_empty() {
+            continue;
+        }
+        let Some((prop, value)) = decl.split_once(':') else { return not("a declaration with no `:`") };
+        let (prop, value) = (prop.trim().to_ascii_lowercase(), value.trim());
+        if value.is_empty() || value.contains(['"', '\'', '\\']) || value.contains("!important") {
+            return not("a value it can't write as a string");
+        }
+        if prop.is_empty() || !prop.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-') {
+            return not("a property that is not a name");
+        }
+        let key = if let Some(custom) = prop.strip_prefix("--") {
+            if custom.is_empty() {
+                return not("an empty custom property");
+            }
+            format!("\"{prop}\"")
+        } else {
+            let mut key = String::new();
+            let mut upper = false;
+            for (i, c) in prop.chars().enumerate() {
+                if c == '-' {
+                    // `-ms-` is the one vendor prefix React writes in lower case.
+                    upper = i > 0 || !prop.starts_with("-ms-");
+                    continue;
+                }
+                key.push(if upper { c.to_ascii_uppercase() } else { c });
+                upper = false;
+            }
+            key
+        };
+        pairs.push(format!("{key}: \"{value}\""));
+    }
+    Ok(if pairs.is_empty() { "{}".to_owned() } else { format!("{{ {} }}", pairs.join(", ")) })
+}
+
+/// Levenshtein distance over characters, an adjacent swap counting one.
+fn edit_distance(a: &str, b: &str) -> usize {
+    let (a, b): (Vec<char>, Vec<char>) = (a.chars().collect(), b.chars().collect());
+    let mut d = vec![vec![0usize; b.len() + 1]; a.len() + 1];
+    for (i, row) in d.iter_mut().enumerate() {
+        row[0] = i;
+    }
+    for j in 0..=b.len() {
+        d[0][j] = j;
+    }
+    for i in 1..=a.len() {
+        for j in 1..=b.len() {
+            let cost = usize::from(a[i - 1] != b[j - 1]);
+            d[i][j] = (d[i - 1][j] + 1).min(d[i][j - 1] + 1).min(d[i - 1][j - 1] + cost);
+            if i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1] {
+                d[i][j] = d[i][j].min(d[i - 2][j - 2] + 1);
+            }
+        }
+    }
+    d[a.len()][b.len()]
 }
 
 /// `|map(k:v, …)`: the value for the entry whose key is the whole text.
@@ -360,5 +463,35 @@ mod tests {
     #[test]
     fn count_counts_occurrences() {
         assert_eq!(f("count", Some(","), "[, , x]"), Ok("2".into()));
+    }
+
+    #[test]
+    fn style_object_writes_camel_cased_keys() {
+        assert_eq!(f("style-object", None, "\"color: red; font-size: 12px;\""), Ok("{ color: \"red\", fontSize: \"12px\" }".into()));
+        assert_eq!(f("style-object", None, "'-webkit-transition: none; -ms-flex: 1; --gap: 4px'"), Ok("{ WebkitTransition: \"none\", msFlex: \"1\", \"--gap\": \"4px\" }".into()));
+        assert_eq!(f("style-object", None, "\"\""), Ok("{}".into()));
+        assert!(f("style-object", None, "\"color: red !important\"").is_err());
+        assert!(f("style-object", None, "\"font-family: 'A B'\"").is_err());
+        assert!(f("style-object", None, "\"color\"").is_err());
+        assert!(f("style-object", None, "12").is_err());
+    }
+
+    #[test]
+    fn arrow_body_wraps_an_object_literal() {
+        assert_eq!(f("arrow-body", None, "{}"), Ok("({})".into()));
+        assert_eq!(f("arrow-body", None, "[]"), Ok("[]".into()));
+        assert_eq!(f("arrow-body", None, "new Map()"), Ok("new Map()".into()));
+    }
+
+    #[test]
+    fn nearest_takes_one_close_entry_and_refuses_the_rest() {
+        let types = Some("undefined, object, boolean, number, string, function, symbol, bigint");
+        assert_eq!(f("nearest", types, "\"strnig\""), Ok("\"string\"".into()));
+        assert_eq!(f("nearest", types, "'fucntion'"), Ok("'function'".into()));
+        assert_eq!(f("nearest", types, "undefied"), Ok("undefined".into()));
+        assert!(f("nearest", types, "\"array\"").is_err());
+        assert!(f("nearest", types, "\"nul\"").is_err());
+        assert!(f("nearest", Some("ab, ba"), "aa").is_err());
+        assert_eq!(f("nearest", Some("label, level"), "lable"), Ok("label".into()));
     }
 }

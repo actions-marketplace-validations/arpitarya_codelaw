@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (escaping the parts into one template literal is a computed edit) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a value joined with `+` is read through its `valueOf` and in a template through its `toString`, which differ for some objects; a join holding a comment, or a line continuation in a string, is rewritten by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/prefer-template` |

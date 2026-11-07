@@ -13,3 +13,7 @@ tree-sitter.workspace = true
 tree-sitter-toml-ng.workspace = true
 tree-sitter-md.workspace = true
 tree-sitter-scss.workspace = true
+
+# The guard-page test of W-169 maps an unreadable page (L11 D-25).
+[target.'cfg(unix)'.dev-dependencies]
+libc.workspace = true

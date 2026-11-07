@@ -3,8 +3,8 @@ id: ts/parameter-properties
 title: "No parameter properties"
 languages: [typescript, tsx]
 fix: manual
-fix_reason: "moving the property into the class body adds a field and an assignment"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_reason: "the property becomes a field in the class body and an assignment in the constructor, placed after any `super()` call; where the field goes among the others is the author's layout"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/parameter-properties]
 since: 0.5.0

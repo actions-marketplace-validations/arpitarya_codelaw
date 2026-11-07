@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the fix needs `ClassVar` imported, and whether sharing was meant is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether sharing the value across instances was meant is the author's: the fix says it was; `ClassVar` is imported from `typing` where the file does not) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/RUF012` |
@@ -139,6 +139,8 @@ class Registry:
 #### Do
 
 ```python
+from typing import ClassVar
+
 class Registry:
     names: ClassVar[list[str]] = []
 ```

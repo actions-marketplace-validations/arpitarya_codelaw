@@ -67,3 +67,64 @@ a {
 ```expect
 7:1 css/no-descending-specificity
 ```
+
+### case: adjacent rules swap
+
+```css
+a:hover {
+  color: red;
+}
+a {
+  color: blue;
+}
+```
+
+```expect
+4:1 css/no-descending-specificity
+```
+
+```fixed
+a {
+  color: blue;
+}
+a:hover {
+  color: red;
+}
+```
+
+### case: a rule between them is reported without a fix
+
+```css
+#nav a {
+  color: red;
+}
+
+b {
+  color: green;
+}
+
+a {
+  color: blue;
+}
+```
+
+```expect
+9:1 css/no-descending-specificity
+```
+
+### case: a selector list is reported without a fix
+
+```css
+#nav a {
+  color: red;
+}
+
+a,
+b {
+  color: blue;
+}
+```
+
+```expect
+5:1 css/no-descending-specificity
+```

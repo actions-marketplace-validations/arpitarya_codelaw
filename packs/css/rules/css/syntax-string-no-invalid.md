@@ -2,9 +2,9 @@
 id: css/syntax-string-no-invalid
 title: "`@property` syntax strings are valid"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended type is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "an unknown type name gets the names it is written for (`<size>` is `<length>` or `<length-percentage>`) or the names within two edits as choices, the first the default; `@property` is dropped today, so registering it changes behaviour. A string with another problem is manual, as the intended syntax is the author's call"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/syntax-string-no-invalid]
 since: 0.1.0
@@ -36,6 +36,26 @@ native: css/syntax-string-no-invalid
 }
 ```
 
+#### Fixed (length)
+
+```css
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length-percentage)
+
+```css
+@property --size {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
 #### Do
 
 ```css
@@ -52,6 +72,26 @@ native: css/syntax-string-no-invalid
 ```scss
 @property --size {
   syntax: "<size>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length)
+
+```scss
+@property --size {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+```
+
+#### Fixed (length-percentage)
+
+```scss
+@property --size {
+  syntax: "<length-percentage>";
   inherits: false;
   initial-value: 0px;
 }

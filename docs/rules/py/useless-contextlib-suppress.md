@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the exceptions to suppress are the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `with` line goes and its body is dedented: it suppressed nothing, so the code runs the same, but the exception the author forgot to name is gone from view, so review it. A `with` with an `as` target, other context managers or a multi-line string is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B022` |
@@ -133,6 +133,14 @@ import contextlib
 
 with contextlib.suppress():
     remove("cache")
+```
+
+#### Fixed
+
+```py
+import contextlib
+
+remove("cache")
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended condition can't be inferred from the tuple) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are testing the first item or all of them joined with `and`; the condition is always true today, so either changes what runs. A tuple with a starred item or a comment is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F634` |
@@ -130,6 +130,20 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ```py
 if (ready, "waiting"):
+    start()
+```
+
+#### Fixed (first item)
+
+```py
+if ready:
+    start()
+```
+
+#### Fixed (all items)
+
+```py
+if ready and "waiting":
     start()
 ```
 

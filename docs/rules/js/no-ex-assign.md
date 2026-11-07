@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the original error should go is a decision) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the original error should go, and what the new value means, is the author's decision) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-ex-assign` |
