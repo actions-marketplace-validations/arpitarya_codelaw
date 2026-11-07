@@ -2,9 +2,9 @@
 id: redux-toolkit/no-mutating-reducer
 title: "A hand-written reducer doesn't change its state in place"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the update has to be rewritten to return a new value"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a `state.push(x)` or `state.key = v` followed at once by `return state` becomes `return [...state, x]` or `return { ...state, key: v }`; whoever held the old state no longer sees the change, which is the fix but is a change. Any other mutation is manual"
+fix_exception: restructure
 stability: preview
 since: 0.1.0
 ---

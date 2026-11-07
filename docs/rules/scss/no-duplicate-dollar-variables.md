@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which declaration wins is the author's call) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/no-duplicate-dollar-variables` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>                      # the resolved setting,
 
 ```scss
 $gap: 4px;
+$gap: 8px;
+```
+
+#### Fixed
+
+```scss
 $gap: 8px;
 ```
 

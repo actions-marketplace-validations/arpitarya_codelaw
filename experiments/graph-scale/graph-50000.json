@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "codelaw_version": "0.4.3",
+  "workload": {
+    "kind": "graph",
+    "seed": 20261018,
+    "files": 51842,
+    "files_asked": 50000,
+    "digest": "2992a09faf425a03",
+    "reference": false,
+    "path": "/private/tmp/claude-501/-Users-arpitarya-my-programs-codelaw/0a172e1f-7104-4fed-983f-3baacccdc91a/scratchpad/gw/g50000",
+    "disk_mib": 219.8,
+    "generated_ms": 7422.1,
+    "findings": 15620,
+    "target": "packages/ts/ts0/m5.ts"
+  },
+  "runs": 5,
+  "discarded": 1,
+  "threads": 10,
+  "os": "macos-aarch64",
+  "warm_runs_served_by_daemon": 6,
+  "cache_files": 89325,
+  "graph_stages": {
+    "cold": {
+      "compile": 394.2,
+      "discover": 952.9,
+      "format": 41405.2,
+      "graph-cache-read": 2972.1,
+      "graph-cache-write": 55863.6,
+      "graph-extract": 77719.1,
+      "graph-facts": 13789.5,
+      "graph-index": 36.5,
+      "graph-link": 1775.4,
+      "graph-read": 6703.9,
+      "graph-resolve": 650.2,
+      "graph-rules": 5539.8,
+      "read": 22165.2
+    },
+    "warm_no_daemon": {
+      "compile": 409.4,
+      "discover": 954.4,
+      "graph-cache-read": 13357.2,
+      "graph-facts": 1417.6,
+      "graph-index": 82.0,
+      "graph-link": 1193.0,
+      "graph-read": 4676.7,
+      "graph-resolve": 429.6,
+      "graph-rules": 3406.9,
+      "read": 17573.0
+    }
+  },
+  "repos": [],
+  "skipped": [],
+  "operations": [
+    {
+      "name": "graph_cold",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "`check` with `js/project` and `py/project` on the graph workload, empty cache, no warm process",
+      "samples": [
+        49003.2,
+        50525.7,
+        55808.7,
+        53850.5
+      ],
+      "median": 52188.1,
+      "p95": 55808.7,
+      "min": 49003.2,
+      "max": 55808.7,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_warm",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "the same `check --prefer-warm`, served by the daemon, primed cache",
+      "samples": [
+        9917.4,
+        8043.3,
+        7832.0,
+        8277.7
+      ],
+      "median": 8160.5,
+      "p95": 9917.4,
+      "min": 7832.0,
+      "max": 9917.4,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_warm_no_daemon",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "the same `check` in its own process, primed cache",
+      "samples": [
+        31856.6,
+        19229.0,
+        17737.5,
+        14388.2
+      ],
+      "median": 18483.2,
+      "p95": 31856.6,
+      "min": 14388.2,
+      "max": 31856.6,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_hook_one_file",
+      "repo": null,
+      "unit": "ms",
+      "budgeted": false,
+      "what": "`codelaw hook <file>` on one just-edited file of the graph workload, primed cache",
+      "samples": [
+        7476.0,
+        8091.1,
+        7780.8,
+        7298.2
+      ],
+      "median": 7628.4,
+      "p95": 8091.1,
+      "min": 7298.2,
+      "max": 8091.1,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_peak_memory",
+      "repo": null,
+      "unit": "MiB",
+      "budgeted": false,
+      "what": "peak resident memory of `graph_cold`",
+      "samples": [
+        776.1,
+        706.5,
+        681.7,
+        709.3
+      ],
+      "median": 707.9,
+      "p95": 776.1,
+      "min": 681.7,
+      "max": 776.1,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    },
+    {
+      "name": "graph_cache_size",
+      "repo": null,
+      "unit": "MiB",
+      "budgeted": false,
+      "what": "the cache folder on disk after one `graph_cold` run",
+      "samples": [
+        348.9,
+        348.9,
+        348.9,
+        348.9
+      ],
+      "median": 348.9,
+      "p95": 348.9,
+      "min": 348.9,
+      "max": 348.9,
+      "budget": null,
+      "proposed": null,
+      "verdict": null
+    }
+  ]
+}

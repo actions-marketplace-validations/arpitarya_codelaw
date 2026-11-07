@@ -2,9 +2,9 @@
 id: react/rules-of-hooks
 title: "Hooks are called at the top level of components and hooks"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "moving a hook can change what the code does on the renders that skipped it"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/rules-of-hooks, eslint-plugin-react-hooks/hooks]
 since: 0.1.0
@@ -85,20 +85,24 @@ function Profile({ id }) {
 #### Don't
 
 ```ts
-function useProfile(id: string) {
+function Profile({ id }) {
   if (!id) {
     return null;
   }
-  return useState(id);
+  const [user] = useState(null);
+  return user;
 }
 ```
 
 #### Do
 
 ```ts
-function useProfile(id: string) {
-  const state = useState(id);
-  return id ? state : null;
+function Profile({ id }) {
+  const [user] = useState(null);
+  if (!id) {
+    return null;
+  }
+  return user;
 }
 ```
 

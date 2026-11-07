@@ -2,9 +2,8 @@
 id: js/jsdoc-check-syntax
 title: "No Closure optional syntax in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`)"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/check-syntax]
 since: 0.5.0
@@ -21,6 +20,8 @@ match:
     - regex: '^/\*\*[^*/]'
     - regex: '(^/\*\*|\n)[ \t]*(\*[ \t]*)?@(param|arg|argument|property|prop)[ \t]*\{[^{}\n]*=\}'
 message: "`{Type=}` is Closure syntax for an optional value; write `{Type} [name]`"
+fix:
+  - edit-text: { pattern: '(@(?:param|arg|argument|property|prop)[ \t]*\{[^{}\n]*)=\}([ \t]+)([A-Za-z_$][\w$.]*)', replace: '${1}}${2}[${3}]' }
 ```
 
 ## How to fix

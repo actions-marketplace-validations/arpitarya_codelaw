@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:redux-toolkit/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the one call is split into one per value, and the destructuring goes) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 

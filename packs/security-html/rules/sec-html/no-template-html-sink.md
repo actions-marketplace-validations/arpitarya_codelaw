@@ -2,9 +2,9 @@
 id: sec-html/no-template-html-sink
 title: "No template binding that writes HTML"
 languages: [html]
-fix: manual
-fix_reason: "whether the value is trusted, and how to sanitise it, is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0
@@ -31,6 +31,12 @@ native: sec-html/no-template-html-sink
 
 ```html
 <div [innerHTML]="comment"></div>
+```
+
+#### Fixed
+
+```html
+<div [textContent]="comment"></div>
 ```
 
 #### Do

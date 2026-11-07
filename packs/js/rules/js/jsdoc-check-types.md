@@ -2,9 +2,8 @@
 id: js/jsdoc-check-types
 title: "Primitive type names in JSDoc"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`)"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/check-types]
 since: 0.5.0
@@ -21,6 +20,14 @@ match:
     - regex: '^/\*\*[^*/]'
     - regex: '@[A-Za-z]+[ \t]*\{[^}\n]*(\b(String|Number|Boolean|Symbol|BigInt)\b|\bObject[^<.\w]|\.<)'
 message: "Use the primitive type names in JSDoc (`string`, `number`, `boolean`, `object`) and `Array<T>` rather than `Array.<T>`"
+fix:
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bString\b', replace: '${1}string' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bNumber\b', replace: '${1}number' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bBoolean\b', replace: '${1}boolean' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bSymbol\b', replace: '${1}symbol' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bBigInt\b', replace: '${1}bigint' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\bObject([^<.\w])', replace: '${1}object${2}' }
+  - edit-text: { pattern: '(@[A-Za-z]+[ \t]*\{[^}\n]*)\.<', replace: '${1}<' }
 ```
 
 ## How to fix

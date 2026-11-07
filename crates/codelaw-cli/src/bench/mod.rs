@@ -18,6 +18,7 @@ pub mod workload;
 
 use clap::Args;
 use serde_json::{Value, json};
+use std::collections::BTreeMap;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, ExitCode, Stdio};
@@ -57,6 +58,17 @@ pub const CONTEXT: &[Op] = &[
     Op { name: "check_warm_repo", unit: "ms", budgeted: false, what: "`check` on each `--repo` in its own process, primed cache" },
     Op { name: "watch_rerun", unit: "ms", budgeted: false, what: "`check --watch`'s re-check after one file is saved (the engine's `Watch::rerun`), primed cache" },
     Op { name: "watch_save_to_print", unit: "ms", budgeted: false, what: "`check --watch --format json`: one file saved to its run printed, polling and settling included" },
+];
+
+/// The graph workload's rows (`--graph`, W-168): context, never gated,
+/// until the decider says which sizes get an L8 budget.
+pub const GRAPH: &[Op] = &[
+    Op { name: "graph_cold", unit: "ms", budgeted: false, what: "`check` with `js/project` and `py/project` on the graph workload, empty cache, no warm process" },
+    Op { name: "graph_warm", unit: "ms", budgeted: false, what: "the same `check --prefer-warm`, served by the daemon, primed cache" },
+    Op { name: "graph_warm_no_daemon", unit: "ms", budgeted: false, what: "the same `check` in its own process, primed cache" },
+    Op { name: "graph_hook_one_file", unit: "ms", budgeted: false, what: "`codelaw hook <file>` on one just-edited file of the graph workload, primed cache" },
+    Op { name: "graph_peak_memory", unit: "MiB", budgeted: false, what: "peak resident memory of `graph_cold`" },
+    Op { name: "graph_cache_size", unit: "MiB", budgeted: false, what: "the cache folder on disk after one `graph_cold` run" },
 ];
 
 #[derive(Args)]
@@ -105,6 +117,13 @@ pub struct BenchArgs {
     /// `fixtures/types` pins. Without it those two are skipped, with a note.
     #[arg(long, value_name = "DIR")]
     typescript: Option<PathBuf>,
+    /// Time the project graph instead (W-168): the graph workload — the
+    /// reference generator plus workspace packages, barrels and imports
+    /// across folders and packages — with `js/project` and `py/project`
+    /// on, and each graph stage apart from `--timings`. Only the `graph_*`
+    /// rows run.
+    #[arg(long)]
+    graph: bool,
 }
 
 /// One operation's samples, after the discarded first run.
@@ -164,7 +183,7 @@ fn run(args: BenchArgs) -> Result<ExitCode, String> {
     if args.files < 100 {
         return Err("--files is at least 100".into());
     }
-    let all: Vec<&'static Op> = OPERATIONS.iter().chain(CONTEXT).collect();
+    let all: Vec<&'static Op> = if args.graph { GRAPH.iter().collect() } else { OPERATIONS.iter().chain(CONTEXT).collect() };
     for o in &args.only {
         if !all.iter().any(|op| op.name == o) {
             let near = codelaw_config::did_you_mean(o, all.iter().map(|op| op.name)).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -173,6 +192,9 @@ fn run(args: BenchArgs) -> Result<ExitCode, String> {
     }
     let wanted = |name: &str| args.only.is_empty() || args.only.iter().any(|o| o == name);
     let budgets = args.budgets.as_deref().map(budgets::load).transpose()?;
+    if args.graph {
+        return run_graph(&args, &all, budgets.as_ref());
+    }
 
     let packs = args.packs.clone().or_else(find_packs).ok_or("no `packs/` folder above the current one; name it with --packs")?;
     let dir = args.workload.clone().unwrap_or_else(|| std::env::temp_dir().join("codelaw-bench").join(format!("{}-{}", args.seed, args.files)));
@@ -392,37 +414,7 @@ fn run(args: BenchArgs) -> Result<ExitCode, String> {
     let _ = std::fs::remove_dir_all(&caches);
 
     // The report, in the order of OPERATIONS then CONTEXT.
-    results.sort_by_key(|m| all.iter().position(|o| o.name == m.op.name));
-    let mut over = false;
-    let rows: Vec<Value> = results
-        .iter()
-        .map(|m| {
-            let entry = budgets.as_ref().and_then(|b| b.operations.get(m.op.name));
-            let (median, p95) = (m.median(), m.p95());
-            let sorted = m.sorted();
-            let v = if m.op.budgeted && budgets.is_some() { Some(budgets::verdict(entry, p95)) } else { None };
-            over |= v == Some(budgets::Verdict::Over);
-            json!({
-                "name": m.op.name,
-                "repo": m.repo,
-                "unit": m.op.unit,
-                "budgeted": m.op.budgeted,
-                "what": m.op.what,
-                "samples": m.samples.iter().map(|x| round(*x)).collect::<Vec<_>>(),
-                "median": round(median),
-                "p95": round(p95),
-                "min": round(sorted[0]),
-                "max": round(sorted[sorted.len() - 1]),
-                "budget": entry.and_then(|e| e.budget),
-                "proposed": entry.and_then(|e| e.proposed),
-                "verdict": v.map(|v| match v {
-                    budgets::Verdict::Within => "within",
-                    budgets::Verdict::Over => "over",
-                    budgets::Verdict::Unset => "unset",
-                }),
-            })
-        })
-        .collect();
+    let (rows, over) = rows(&mut results, &all, budgets.as_ref());
     let report = json!({
         "schema_version": 1,
         "codelaw_version": env!("CARGO_PKG_VERSION"),
@@ -451,6 +443,273 @@ fn run(args: BenchArgs) -> Result<ExitCode, String> {
     Ok(if over { ExitCode::from(1) } else { ExitCode::SUCCESS })
 }
 
+/// The report's rows, in the order of `all`, and whether one is over its
+/// budget.
+fn rows(results: &mut [Measured], all: &[&'static Op], budgets: Option<&budgets::Budgets>) -> (Vec<Value>, bool) {
+    results.sort_by_key(|m| all.iter().position(|o| o.name == m.op.name));
+    let mut over = false;
+    let rows = results
+        .iter()
+        .map(|m| {
+            let entry = budgets.and_then(|b| b.operations.get(m.op.name));
+            let (median, p95) = (m.median(), m.p95());
+            let sorted = m.sorted();
+            let v = if m.op.budgeted && budgets.is_some() { Some(budgets::verdict(entry, p95)) } else { None };
+            over |= v == Some(budgets::Verdict::Over);
+            json!({
+                "name": m.op.name,
+                "repo": m.repo,
+                "unit": m.op.unit,
+                "budgeted": m.op.budgeted,
+                "what": m.op.what,
+                "samples": m.samples.iter().map(|x| round(*x)).collect::<Vec<_>>(),
+                "median": round(median),
+                "p95": round(p95),
+                "min": round(sorted[0]),
+                "max": round(sorted[sorted.len() - 1]),
+                "budget": entry.and_then(|e| e.budget),
+                "proposed": entry.and_then(|e| e.proposed),
+                "verdict": v.map(|v| match v {
+                    budgets::Verdict::Within => "within",
+                    budgets::Verdict::Over => "over",
+                    budgets::Verdict::Unset => "unset",
+                }),
+            })
+        })
+        .collect();
+    (rows, over)
+}
+
+/// `codelaw bench --graph` (W-168): the graph workload at `--files`, its
+/// `graph_*` rows, and each stage's median from the engine's `--timings`
+/// (cold and warm runs in their own process; the daemon's runs and the
+/// hook print no timings).
+fn run_graph(args: &BenchArgs, all: &[&'static Op], budgets: Option<&budgets::Budgets>) -> Result<ExitCode, String> {
+    let wanted = |name: &str| args.only.is_empty() || args.only.iter().any(|o| o == name);
+    let packs = args.packs.clone().or_else(find_packs).ok_or("no `packs/` folder above the current one; name it with --packs")?;
+    let dir = args.workload.clone().unwrap_or_else(|| std::env::temp_dir().join("codelaw-bench").join(format!("graph-{}-{}", args.seed, args.files)));
+    let generating = Instant::now();
+    let (digest, files) = workload::write_graph(&dir, &packs, args.seed, args.files)?;
+    let generated_ms = generating.elapsed().as_secs_f64() * 1000.0;
+    let dir = std::fs::canonicalize(&dir).map_err(|e| e.to_string())?;
+    let (workload_bytes, _) = disk_usage(&dir);
+    if args.generate_only {
+        println!("{} ({files} files, seed {}, digest {digest}, {:.1} MiB on disk)", codelaw_core::normalize_path(&dir), args.seed, mib(workload_bytes));
+        return Ok(ExitCode::SUCCESS);
+    }
+    let caches = dir.with_file_name(format!("{}.caches", dir.file_name().and_then(|n| n.to_str()).unwrap_or("workload")));
+    let _ = std::fs::remove_dir_all(&caches);
+    std::fs::create_dir_all(&caches).map_err(|e| e.to_string())?;
+    let exe = std::env::current_exe().map_err(|e| format!("cannot find the codelaw binary: {e}"))?;
+    let b = Bench { exe, dir: dir.clone(), caches: caches.clone(), runs: args.runs };
+    let op = |name: &str| all.iter().copied().find(|o| o.name == name).expect("known operation");
+    let timed = ["check", "--no-adapters", "--timings", "--format", "json"];
+    let mut results: Vec<Measured> = Vec::new();
+    let mut stages: serde_json::Map<String, Value> = serde_json::Map::new();
+    let mut cache_files = 0;
+    let mut findings = None;
+
+    if wanted("graph_cold") || wanted("graph_peak_memory") || wanted("graph_cache_size") {
+        let (mut peaks, mut sizes, mut phases) = (Vec::new(), Vec::new(), Vec::new());
+        let cold = b.repeat(op("graph_cold"), |i| {
+            let cache = caches.join(format!("graph-cold-{i}"));
+            let r = b.cli(&timed, Some(&cache))?;
+            let (bytes, n) = disk_usage(&cache);
+            let _ = std::fs::remove_dir_all(&cache);
+            peaks.push(r.peak_mib);
+            sizes.push(mib(bytes));
+            cache_files = n;
+            let (p, found) = graph_phases(&r.stdout)?;
+            phases.push(p);
+            findings = Some(found);
+            Ok(r.ms)
+        })?;
+        if wanted("graph_cold") {
+            results.push(cold);
+        }
+        let peaks: Option<Vec<f64>> = peaks.into_iter().skip(1).collect();
+        if wanted("graph_peak_memory")
+            && let Some(samples) = peaks
+        {
+            results.push(Measured { op: op("graph_peak_memory"), samples, repo: None });
+        }
+        if wanted("graph_cache_size") {
+            results.push(Measured { op: op("graph_cache_size"), samples: sizes.into_iter().skip(1).collect(), repo: None });
+        }
+        stages.insert("cold".into(), stage_medians(&phases[1..]));
+    }
+    let warm = caches.join("warm");
+    if wanted("graph_warm_no_daemon") {
+        b.cli(&timed, Some(&warm))?;
+        let mut phases = Vec::new();
+        let m = b.repeat(op("graph_warm_no_daemon"), |_| {
+            let r = b.cli(&timed, Some(&warm))?;
+            phases.push(graph_phases(&r.stdout)?.0);
+            Ok(r.ms)
+        })?;
+        results.push(m);
+        stages.insert("warm_no_daemon".into(), stage_medians(&phases[1..]));
+    }
+    let mut served_warm = None;
+    if wanted("graph_warm") {
+        b.daemon("start", &warm)?;
+        let measured = (|| {
+            b.cli(&["check", "--no-adapters", "--prefer-warm"], Some(&warm))?;
+            b.repeat(op("graph_warm"), |_| b.cli(&["check", "--no-adapters", "--prefer-warm"], Some(&warm)).map(|r| r.ms))
+        })();
+        let status = b.cli(&["daemon", "status"], Some(&warm));
+        b.daemon("stop", &warm)?;
+        results.push(measured?);
+        let served: u64 = status?.stdout.lines().filter(|l| l.starts_with("daemon ")).filter_map(|l| l.split(" served ").nth(1)?.split_whitespace().next()?.parse::<u64>().ok()).sum();
+        if served < args.runs as u64 + 1 {
+            return Err(format!("graph_warm: the daemon served {served} of the {} warm runs; a warm number it did not serve is not a warm number", args.runs + 1));
+        }
+        served_warm = Some(served);
+    }
+    let target = graph_target(args.seed, args.files);
+    if wanted("graph_hook_one_file") {
+        let path = dir.join(&target.path);
+        let p = path.to_string_lossy().into_owned();
+        b.cli(&["check", "--no-adapters"], Some(&warm))?;
+        let measured = b.repeat(op("graph_hook_one_file"), |i| {
+            // Text no run has seen: an export added, so the graph changes.
+            std::fs::write(&path, format!("{}\nexport const edited{i} = {i};\n", target.text)).map_err(|e| e.to_string())?;
+            b.cli(&["hook", &p], Some(&warm)).map(|r| r.ms)
+        });
+        std::fs::write(&path, &target.text).map_err(|e| e.to_string())?;
+        results.push(measured?);
+    }
+    let _ = std::fs::remove_dir_all(&caches);
+
+    let (rows, over) = rows(&mut results, all, budgets);
+    let report = json!({
+        "schema_version": 1,
+        "codelaw_version": env!("CARGO_PKG_VERSION"),
+        "workload": {
+            "kind": "graph",
+            "seed": args.seed,
+            "files": files,
+            "files_asked": args.files,
+            "digest": digest,
+            "reference": args.files == workload::FILES && args.seed == workload::SEED && digest == workload::GRAPH_DIGEST_10K,
+            "path": codelaw_core::normalize_path(&dir),
+            "disk_mib": round(mib(workload_bytes)),
+            "generated_ms": round(generated_ms),
+            "findings": findings,
+            "target": target.path,
+        },
+        "runs": args.runs,
+        "discarded": 1,
+        "threads": std::thread::available_parallelism().map(|n| n.get()).unwrap_or(1),
+        "os": format!("{}-{}", std::env::consts::OS, std::env::consts::ARCH),
+        "warm_runs_served_by_daemon": served_warm,
+        "cache_files": cache_files,
+        "graph_stages": stages,
+        "repos": [],
+        "skipped": [],
+        "operations": rows,
+    });
+    let pretty = serde_json::to_string_pretty(&report).expect("json");
+    if let Some(out) = &args.output {
+        std::fs::write(out, format!("{pretty}\n")).map_err(|e| format!("cannot write {}: {e}", codelaw_core::normalize_path(out)))?;
+    }
+    if args.format == "json" {
+        println!("{pretty}");
+    } else {
+        print!("{}", text(&report));
+        print!("{}", stages_text(&report["graph_stages"]));
+    }
+    Ok(if over { ExitCode::from(1) } else { ExitCode::SUCCESS })
+}
+
+/// The one-file target of `graph_hook_one_file`: a mid-folder TypeScript
+/// module of a workspace package.
+fn graph_target(seed: u64, files: usize) -> workload::File {
+    let set = workload::generate_graph(seed, files);
+    let pick = set.iter().position(|f| f.path.ends_with("/m5.ts")).or_else(|| set.iter().position(|f| f.path.ends_with(".ts"))).unwrap_or(0);
+    set.into_iter().nth(pick).expect("a workload has files")
+}
+
+/// One `--timings --format json` run's phases (ms by name, those that
+/// ran), and how many findings it printed.
+fn graph_phases(stdout: &str) -> Result<(BTreeMap<String, f64>, usize), String> {
+    let v: Value = serde_json::from_str(stdout).map_err(|e| format!("`check --timings --format json` printed no JSON report: {e}"))?;
+    let phases = v["timings"]["phases"]
+        .as_array()
+        .ok_or("`check --timings` printed no phases")?
+        .iter()
+        .filter(|p| p["count"].as_u64().unwrap_or(0) > 0)
+        .filter_map(|p| Some((p["phase"].as_str()?.to_owned(), p["ms"].as_f64()?)))
+        .collect::<BTreeMap<_, _>>();
+    if !phases.contains_key("graph-link") {
+        return Err("the project stage did not run: is `js/project` in the packs?".into());
+    }
+    Ok((phases, v["diagnostics"].as_array().map_or(0, Vec::len)))
+}
+
+/// Each phase's median over the runs that timed it.
+fn stage_medians(runs: &[BTreeMap<String, f64>]) -> Value {
+    let mut by: BTreeMap<&str, Vec<f64>> = BTreeMap::new();
+    for r in runs {
+        for (k, v) in r {
+            by.entry(k).or_default().push(*v);
+        }
+    }
+    let mut out = serde_json::Map::new();
+    for (k, mut v) in by {
+        v.sort_by(f64::total_cmp);
+        let n = v.len();
+        let median = if n % 2 == 1 { v[n / 2] } else { (v[n / 2 - 1] + v[n / 2]) / 2.0 };
+        out.insert(k.to_owned(), json!(round(median)));
+    }
+    Value::Object(out)
+}
+
+fn stages_text(stages: &Value) -> String {
+    let Some(map) = stages.as_object().filter(|m| !m.is_empty()) else { return String::new() };
+    let mut s = String::from("\nstage medians (ms; `graph-extract` and the cache's are summed over threads, `graph-facts` is their wall time):\n");
+    for (run, phases) in map {
+        s.push_str(&format!("  {run}:"));
+        for (k, v) in phases.as_object().into_iter().flatten() {
+            s.push_str(&format!(" {k} {}", v.as_f64().map(|x| format!("{x:.1}")).unwrap_or_default()));
+        }
+        s.push('\n');
+    }
+    s
+}
+
+fn mib(bytes: u64) -> f64 {
+    bytes as f64 / (1024.0 * 1024.0)
+}
+
+/// The bytes a folder takes on disk (allocated blocks where the platform
+/// says, else lengths) and how many files it holds.
+fn disk_usage(dir: &Path) -> (u64, usize) {
+    let (mut bytes, mut files) = (0, 0);
+    let mut stack = vec![dir.to_path_buf()];
+    while let Some(d) = stack.pop() {
+        let Ok(entries) = std::fs::read_dir(&d) else { continue };
+        for e in entries.flatten() {
+            let Ok(m) = e.metadata() else { continue };
+            if m.is_dir() {
+                stack.push(e.path());
+            } else {
+                files += 1;
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::MetadataExt;
+                    bytes += m.blocks() * 512;
+                }
+                #[cfg(not(unix))]
+                {
+                    bytes += m.len();
+                }
+            }
+        }
+    }
+    (bytes, files)
+}
+
 fn round(x: f64) -> f64 {
     (x * 10.0).round() / 10.0
 }
@@ -460,7 +719,13 @@ fn text(r: &Value) -> String {
         "codelaw bench {} — workload {}{} ({} files, seed {}), {} runs per operation, first discarded, on {} with {} threads\n\n",
         r["codelaw_version"].as_str().unwrap_or(""),
         r["workload"]["digest"].as_str().unwrap_or(""),
-        if r["workload"]["reference"] == true { ", the reference workload" } else { ", NOT the reference workload: not comparable with the budgets" },
+        if r["workload"]["kind"] == "graph" {
+            ", the graph workload (W-168): context rows, no budget"
+        } else if r["workload"]["reference"] == true {
+            ", the reference workload"
+        } else {
+            ", NOT the reference workload: not comparable with the budgets"
+        },
         r["workload"]["files"],
         r["workload"]["seed"],
         r["runs"],

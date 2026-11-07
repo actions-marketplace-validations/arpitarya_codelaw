@@ -152,19 +152,19 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/insecure-jwt-token`](js/insecure-jwt-token.md) | No unsigned JWTs | `manual` | — | `js/sonarjs` |
 | [`js/inverted-assertion-arguments`](js/inverted-assertion-arguments.md) | Actual first, expected second | `suggest` | — | `js/sonarjs` |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `manual` | — | *[rules] only* |
-| [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
+| [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-values`](js/jsdoc-check-values.md) | @version, @since and @kind take valid values | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `manual` | — | *[rules] only* |
+| [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-empty-tags`](js/jsdoc-empty-tags.md) | Flag tags like @private carry no text | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-implements-on-classes`](js/jsdoc-implements-on-classes.md) | @implements only on classes | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-match-description`](js/jsdoc-match-description.md) | A function's description is a sentence | `manual` | — | *[rules] only* |
-| [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-no-blank-blocks`](js/jsdoc-no-blank-blocks.md) | No empty JSDoc blocks | `auto` | — | *[rules] only* |
-| [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `manual` | — | *[rules] only* |
+| [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `auto` | — | `js/jsdoc` |
+| [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-prefer-import-tag`](js/jsdoc-prefer-import-tag.md) | @import a type instead of inline import() | `manual` | — | *[rules] only* |
 | [`js/jsdoc-reject-any-type`](js/jsdoc-reject-any-type.md) | No any or * types in JSDoc | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-reject-function-type`](js/jsdoc-reject-function-type.md) | No bare Function type in JSDoc | `manual` | — | `js/jsdoc` |
@@ -274,7 +274,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-dynamic-namespace-import-access`](js/no-dynamic-namespace-import-access.md) | No computed access on a namespace import | `manual` | — | `js/recommended` |
-| [`js/no-else-return`](js/no-else-return.md) | No else after return | `manual` | — | `js/strict` |
+| [`js/no-else-return`](js/no-else-return.md) | No else after return | `suggest` | — | `js/strict` |
 | [`js/no-empty`](js/no-empty.md) | No empty blocks | `auto` | — | `js/recommended` |
 | [`js/no-empty-character-class`](js/no-empty-character-class.md) | No empty character classes in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-empty-file`](js/no-empty-file.md) | No empty file | `manual` | — | `js/strict` |
@@ -312,7 +312,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-impossible-length-comparison`](js/no-impossible-length-comparison.md) | No length < 0 | `manual` | — | `js/strict` |
 | [`js/no-incorrect-template-string-interpolation`](js/no-incorrect-template-string-interpolation.md) | No ${} in a plain string | `manual` | — | `js/strict` |
-| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `manual` | — | `js/taste` |
+| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `suggest` | — | `js/taste` |
 | [`js/no-inner-declarations`](js/no-inner-declarations.md) | No function declaration in a nested block | `manual` | — | *[rules] only* |
 | [`js/no-instanceof-builtins`](js/no-instanceof-builtins.md) | Array.isArray rather than instanceof Array | `suggest` | — | `js/strict` |
 | [`js/no-invalid-regexp`](js/no-invalid-regexp.md) | RegExp() is given a valid pattern and flags | `manual` | — | `js/recommended` |
@@ -440,7 +440,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
 | [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
-| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `manual` | — | `js/strict` |
+| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `auto` | — | `js/strict` |
 | [`js/no-useless-string-raw`](js/no-useless-string-raw.md) | No String.raw without an escape | `auto` | — | `js/recommended` |
 | [`js/no-useless-switch-case`](js/no-useless-switch-case.md) | No empty case before default | `suggest` | — | `js/strict` |
 | [`js/no-useless-template-literals`](js/no-useless-template-literals.md) | No template literal without substitutions | `manual` | — | `js/strict` |
@@ -677,7 +677,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-array-constructor`](ts/no-array-constructor.md) | No Array constructor with several arguments | `auto` | — | `ts/recommended` |
 | [`ts/no-confusing-non-null-assertion`](ts/no-confusing-non-null-assertion.md) | No non-null assertion next to = or == | `suggest` | — | *[rules] only* |
 | [`ts/no-const-enum`](ts/no-const-enum.md) | enum, not const enum | `auto` | — | `ts/recommended` |
-| [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `manual` | — | `ts/recommended` |
+| [`ts/no-duplicate-enum-values`](ts/no-duplicate-enum-values.md) | No two enum members share a value | `suggest` | — | `ts/recommended` |
 | [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `suggest` | — | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `auto` | — | `ts/recommended` |
@@ -704,12 +704,12 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-call`](ts/no-unsafe-call.md) | No call of a value typed `any` | `manual` | — | `ts/type-checked` |
-| [`ts/no-unsafe-declaration-merging`](ts/no-unsafe-declaration-merging.md) | No interface that merges with a class of the same name | `manual` | — | `ts/recommended` |
+| [`ts/no-unsafe-declaration-merging`](ts/no-unsafe-declaration-merging.md) | No interface that merges with a class of the same name | `auto` | — | `ts/recommended` |
 | [`ts/no-unsafe-function-type`](ts/no-unsafe-function-type.md) | No Function type | `manual` | — | `ts/recommended` |
 | [`ts/no-unsafe-member-access`](ts/no-unsafe-member-access.md) | No member access on a value typed `any` | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-return`](ts/no-unsafe-return.md) | No `return` of a value typed `any` | `manual` | — | `ts/type-checked` |
-| [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `manual` | — | `ts/recommended` |
-| [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `manual` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
+| [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `suggest` | — | `ts/recommended` |
+| [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `auto` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
 | [`ts/no-useless-empty-export`](ts/no-useless-empty-export.md) | No export {} in a module | `auto` | — | *[rules] only* |
 | [`ts/no-wrapper-object-types`](ts/no-wrapper-object-types.md) | Primitive types, not wrapper object types | `auto` | — | `ts/recommended` |
 | [`ts/parameter-properties`](ts/parameter-properties.md) | No parameter properties | `manual` | — | *[rules] only* |
@@ -800,7 +800,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-no-bind`](react/jsx-no-bind.md) | No new function in a JSX prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-comment-textnodes`](react/jsx-no-comment-textnodes.md) | No comment syntax as text inside JSX | `manual` | — | `react/recommended` |
 | [`react/jsx-no-constructed-context-values`](react/jsx-no-constructed-context-values.md) | A context value is not rebuilt on every render | `manual` | — | *[rules] only* |
-| [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `manual` | — | `react/recommended` |
+| [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `auto` | — | `react/recommended` |
 | [`react/jsx-no-jsx-as-prop`](react/jsx-no-jsx-as-prop.md) | No JSX element built in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-leaked-render`](react/jsx-no-leaked-render.md) | No && that can render 0 or "" | `suggest` | — | *[rules] only* |
 | [`react/jsx-no-literals`](react/jsx-no-literals.md) | No bare text in JSX | `manual` | — | *[rules] only* |
@@ -835,14 +835,14 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `suggest` | — | `react/recommended` |
 | [`react/no-multi-comp`](react/no-multi-comp.md) | One component per file | `manual` | — | *[rules] only* |
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
-| [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
+| [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `suggest` | — | `react/recommended` |
 | [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
 | [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
-| [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
+| [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `suggest` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `suggest` | — | `react/recommended` |
 | [`react/no-set-state`](react/no-set-state.md) | No this.setState | `manual` | — | *[rules] only* |
-| [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `manual` | — | `react/recommended` |
+| [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `suggest` | — | `react/recommended` |
 | [`react/no-set-state-in-render`](react/no-set-state-in-render.md) | State is not set on every render | `manual` | — | `react/recommended` |
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
@@ -866,12 +866,12 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/prefer-stateless-function`](react/prefer-stateless-function.md) | A class with only render is a function | `manual` | — | *[rules] only* |
 | [`react/prop-types`](react/prop-types.md) | Props are declared in propTypes | `manual` | — | `react/recommended` |
 | [`react/props-type-name`](react/props-type-name.md) | A component's props type is named <Component>Props | `suggest` | — | `react/conventions` |
-| [`react/purity`](react/purity.md) | Render doesn't call Math.random(), Date.now() or other impure functions | `manual` | — | `react/recommended` |
+| [`react/purity`](react/purity.md) | Render doesn't call Math.random(), Date.now() or other impure functions | `suggest` | — | `react/recommended` |
 | [`react/require-default-props`](react/require-default-props.md) | Every optional prop has a default | `manual` | — | *[rules] only* |
 | [`react/require-optimization`](react/require-optimization.md) | Class components say when to skip a render | `manual` | — | *[rules] only* |
-| [`react/require-render-return`](react/require-render-return.md) | A class component's render() returns | `manual` | — | `react/recommended` |
+| [`react/require-render-return`](react/require-render-return.md) | A class component's render() returns | `suggest` | — | `react/recommended` |
 | [`react/rule-suppression`](react/rule-suppression.md) | The hooks rules are not switched off | `auto` | — | *[rules] only* |
-| [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `manual` | — | `react/recommended` |
+| [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `suggest` | — | `react/recommended` |
 | [`react/self-closing-comp`](react/self-closing-comp.md) | An element with no children closes itself | `auto` | — | *[rules] only* |
 | [`react/sort-comp`](react/sort-comp.md) | Component class members are in a set order | `manual` | — | *[rules] only* |
 | [`react/sort-default-props`](react/sort-default-props.md) | Default props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
@@ -880,7 +880,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/static-property-placement`](react/static-property-placement.md) | Static component properties are assigned after the class | `manual` | — | *[rules] only* |
 | [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `manual` | — | *[rules] only* |
 | [`react/unsupported-syntax`](react/unsupported-syntax.md) | No eval or with in components and hooks | `manual` | — | `react/recommended` |
-| [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `manual` | — | `react/recommended` |
+| [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `suggest` | — | `react/recommended` |
 | [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
 
 ## node
@@ -935,19 +935,19 @@ Presets: `codelaw:stencil/recommended` · `codelaw:stencil/conventions`.
 | [`stencil/ban-exported-const-enums`](stencil/ban-exported-const-enums.md) | No exported const enums | `auto` | — | `stencil/recommended` |
 | [`stencil/ban-prefix`](stencil/ban-prefix.md) | A component tag doesn't use a reserved prefix | `manual` | `prefixes` | `stencil/recommended` |
 | [`stencil/ban-side-effects`](stencil/ban-side-effects.md) | No calls at a module's top level | `manual` | `allow` | `stencil/recommended` |
-| [`stencil/decorators-context`](stencil/decorators-context.md) | Stencil decorators only inside @Component classes | `manual` | — | `stencil/recommended` |
-| [`stencil/enforce-slot-jsdoc`](stencil/enforce-slot-jsdoc.md) | Every slot a component renders has a @slot tag, and every @slot tag a slot | `manual` | — | `stencil/recommended` |
-| [`stencil/host-data-deprecated`](stencil/host-data-deprecated.md) | No hostData() | `manual` | — | `stencil/recommended` |
-| [`stencil/methods-must-be-public`](stencil/methods-must-be-public.md) | @Method() members are public | `manual` | — | `stencil/recommended` |
-| [`stencil/no-unused-watch`](stencil/no-unused-watch.md) | @Watch watches a @Prop or @State | `manual` | — | `stencil/recommended` |
+| [`stencil/decorators-context`](stencil/decorators-context.md) | Stencil decorators only inside @Component classes | `suggest` | — | `stencil/recommended` |
+| [`stencil/enforce-slot-jsdoc`](stencil/enforce-slot-jsdoc.md) | Every slot a component renders has a @slot tag, and every @slot tag a slot | `suggest` | — | `stencil/recommended` |
+| [`stencil/host-data-deprecated`](stencil/host-data-deprecated.md) | No hostData() | `auto` | — | `stencil/recommended` |
+| [`stencil/methods-must-be-public`](stencil/methods-must-be-public.md) | @Method() members are public | `auto` | — | `stencil/recommended` |
+| [`stencil/no-unused-watch`](stencil/no-unused-watch.md) | @Watch watches a @Prop or @State | `suggest` | — | `stencil/recommended` |
 | [`stencil/own-methods-must-be-private`](stencil/own-methods-must-be-private.md) | A component's own methods are private | `auto` | — | `stencil/recommended` |
 | [`stencil/own-props-must-be-private`](stencil/own-props-must-be-private.md) | A component's own fields are private | `auto` | — | `stencil/recommended` |
-| [`stencil/prefer-vdom-listener`](stencil/prefer-vdom-listener.md) | DOM events are handled in render(), not with @Listen | `manual` | — | `stencil/recommended` |
+| [`stencil/prefer-vdom-listener`](stencil/prefer-vdom-listener.md) | DOM events are handled in render(), not with @Listen | `suggest` | — | `stencil/recommended` |
 | [`stencil/prop-readonly`](stencil/prop-readonly.md) | @Prop() members are readonly unless mutable | `auto` | — | `stencil/recommended` |
-| [`stencil/props-must-be-public`](stencil/props-must-be-public.md) | @Prop() members are public | `manual` | — | `stencil/recommended` |
+| [`stencil/props-must-be-public`](stencil/props-must-be-public.md) | @Prop() members are public | `auto` | — | `stencil/recommended` |
 | [`stencil/required-jsdoc`](stencil/required-jsdoc.md) | Public members have JSDoc | `manual` | — | `stencil/recommended` |
 | [`stencil/reserved-member-names`](stencil/reserved-member-names.md) | Public members don't reuse HTML element names | `manual` | — | `stencil/recommended` |
-| [`stencil/strict-mutable`](stencil/strict-mutable.md) | mutable: true only on props the component changes | `manual` | — | `stencil/recommended` |
+| [`stencil/strict-mutable`](stencil/strict-mutable.md) | mutable: true only on props the component changes | `auto` | — | `stencil/recommended` |
 | [`stencil/tag-prefix`](stencil/tag-prefix.md) | Component tags start with the project's prefix | `manual` | `prefix` | `stencil/conventions` |
 
 ## html
@@ -1213,7 +1213,7 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/at-mixin-pattern`](scss/at-mixin-pattern.md) | Mixin names are kebab-case | `manual` | `pattern` | `scss/strict` |
 | [`scss/at-root-no-redundant`](scss/at-root-no-redundant.md) | No redundant `@at-root` | `auto` | — | *[rules] only* |
 | [`scss/at-rule-conditional-no-parentheses`](scss/at-rule-conditional-no-parentheses.md) | No parentheses around `@if` and `@while` conditions | `auto` | — | *[rules] only* |
-| [`scss/at-rule-no-unknown`](scss/at-rule-no-unknown.md) | No unknown at-rules (SCSS) | `manual` | `ignoreAtRules` | `scss/recommended`, `scss/strict` |
+| [`scss/at-rule-no-unknown`](scss/at-rule-no-unknown.md) | No unknown at-rules (SCSS) | `suggest` | `ignoreAtRules` | `scss/recommended`, `scss/strict` |
 | [`scss/at-use-no-redundant-alias`](scss/at-use-no-redundant-alias.md) | No `@use` alias that repeats the module's name | `auto` | — | *[rules] only* |
 | [`scss/block-no-redundant-nesting`](scss/block-no-redundant-nesting.md) | No block that only holds one nested block | `auto` | — | *[rules] only* |
 | [`scss/comment-no-loud`](scss/comment-no-loud.md) | Silent comments, not loud ones | `suggest` | — | *[rules] only* |
@@ -1230,18 +1230,18 @@ Presets: `codelaw:scss/recommended` · `codelaw:scss/strict` · `codelaw:scss/ma
 | [`scss/function-color-channel`](scss/function-color-channel.md) | Colour channels are read with `color.channel()` | `suggest` | — | *[rules] only* |
 | [`scss/function-color-relative`](scss/function-color-relative.md) | No legacy relative colour functions | `suggest` | — | *[rules] only* |
 | [`scss/function-disallowed-list`](scss/function-disallowed-list.md) | No Sass function the project disallows | `manual` | `list` | *[rules] only* |
-| [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `manual` | `ignoreFunctions` | `scss/strict` |
+| [`scss/function-no-unknown`](scss/function-no-unknown.md) | No unknown functions (SCSS) | `suggest` | `ignoreFunctions` | `scss/strict` |
 | [`scss/function-quote-no-quoted-strings-inside`](scss/function-quote-no-quoted-strings-inside.md) | No `quote()` of a quoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/function-unquote-no-unquoted-strings-inside`](scss/function-unquote-no-unquoted-strings-inside.md) | No `unquote()` of an unquoted string | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/load-no-partial-leading-underscore`](scss/load-no-partial-leading-underscore.md) | No leading underscore in a loaded partial | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/load-partial-extension`](scss/load-partial-extension.md) | No file extension when loading a partial | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/map-keys-quotes`](scss/map-keys-quotes.md) | Map keys are quoted | `suggest` | — | *[rules] only* |
-| [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `manual` | `max` | `scss/strict` |
+| [`scss/max-nesting-depth`](scss/max-nesting-depth.md) | Limit nesting depth | `suggest` | `max` | `scss/strict` |
 | [`scss/media-feature-value-dollar-variable`](scss/media-feature-value-dollar-variable.md) | Media query values are variables | `manual` | — | *[rules] only* |
 | [`scss/no-dollar-variables`](scss/no-dollar-variables.md) | No Sass variables | `manual` | — | *[rules] only* |
-| [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/no-duplicate-dollar-variables`](scss/no-duplicate-dollar-variables.md) | No duplicate `$variables` | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-duplicate-load-rules`](scss/no-duplicate-load-rules.md) | No module loaded twice | `suggest` | — | *[rules] only* |
-| [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `manual` | — | `scss/recommended`, `scss/strict` |
+| [`scss/no-duplicate-mixins`](scss/no-duplicate-mixins.md) | No duplicate mixins | `auto` | — | `scss/recommended`, `scss/strict` |
 | [`scss/no-global-function-names`](scss/no-global-function-names.md) | No global function names | `auto` | — | `scss/strict` |
 | [`scss/no-import`](scss/no-import.md) | No `@import` | `suggest` | — | `scss/strict` |
 | [`scss/no-slash-division`](scss/no-slash-division.md) | No `/` as division | `suggest` | — | `scss/strict` |
@@ -1345,15 +1345,15 @@ Presets: `codelaw:redux-toolkit/recommended`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
-| [`redux-toolkit/no-blind-payload-return`](redux-toolkit/no-blind-payload-return.md) | A reducer builds its state, not the action's payload | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-blind-payload-return`](redux-toolkit/no-blind-payload-return.md) | A reducer builds its state, not the action's payload | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-immutable-js`](redux-toolkit/no-immutable-js.md) | State is plain JavaScript, not Immutable.js | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-legacy-create-store`](redux-toolkit/no-legacy-create-store.md) | The store is made with configureStore | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-mutating-reducer`](redux-toolkit/no-mutating-reducer.md) | A hand-written reducer doesn't change its state in place | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-mutating-reducer`](redux-toolkit/no-mutating-reducer.md) | A hand-written reducer doesn't change its state in place | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-non-serializable-state`](redux-toolkit/no-non-serializable-state.md) | State holds only serializable values | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-object-selector`](redux-toolkit/no-object-selector.md) | useSelector selects one value per call | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-object-selector`](redux-toolkit/no-object-selector.md) | useSelector selects one value per call | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/no-sequential-dispatch`](redux-toolkit/no-sequential-dispatch.md) | One event is one action, not a run of dispatches | `manual` | `max` | `redux-toolkit/recommended` |
-| [`redux-toolkit/no-side-effects-in-reducer`](redux-toolkit/no-side-effects-in-reducer.md) | A reducer has no side effects | `manual` | — | `redux-toolkit/recommended` |
-| [`redux-toolkit/object-shorthand-mapdispatch`](redux-toolkit/object-shorthand-mapdispatch.md) | connect's mapDispatch is an object of action creators | `manual` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/no-side-effects-in-reducer`](redux-toolkit/no-side-effects-in-reducer.md) | A reducer has no side effects | `suggest` | — | `redux-toolkit/recommended` |
+| [`redux-toolkit/object-shorthand-mapdispatch`](redux-toolkit/object-shorthand-mapdispatch.md) | connect's mapDispatch is an object of action creators | `suggest` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/prefer-create-slice`](redux-toolkit/prefer-create-slice.md) | Reducers are written with createSlice | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/prefer-hooks-api`](redux-toolkit/prefer-hooks-api.md) | Components read the store with hooks, not connect | `manual` | — | `redux-toolkit/recommended` |
 | [`redux-toolkit/slice-key-names`](redux-toolkit/slice-key-names.md) | State slices are named after their data | `manual` | — | `redux-toolkit/recommended` |
@@ -1461,21 +1461,21 @@ Presets: `codelaw:sec-html/recommended` · `codelaw:sec-html/strict`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`sec-html/angularjs-url-expression`](sec-html/angularjs-url-expression.md) | AngularJS URLs use ng-href and ng-src | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/csp-meta-unsafe`](sec-html/csp-meta-unsafe.md) | A meta Content Security Policy does not allow unsafe script | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/csp-meta-unsafe`](sec-html/csp-meta-unsafe.md) | A meta Content Security Policy does not allow unsafe script | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/form-csrf-token`](sec-html/form-csrf-token.md) | A POST form carries a CSRF token | `manual` | `names` | `sec-html/strict` |
-| [`sec-html/iframe-allow-powerful`](sec-html/iframe-allow-powerful.md) | A cross-origin iframe is not given a powerful feature | `manual` | — | `sec-html/strict` |
+| [`sec-html/iframe-allow-powerful`](sec-html/iframe-allow-powerful.md) | A cross-origin iframe is not given a powerful feature | `suggest` | — | `sec-html/strict` |
 | [`sec-html/iframe-sandbox`](sec-html/iframe-sandbox.md) | An iframe is sandboxed | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-credentials-in-url`](sec-html/no-credentials-in-url.md) | No username and password in a URL | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-external-base`](sec-html/no-external-base.md) | <base> stays on this origin | `manual` | — | `sec-html/strict` |
+| [`sec-html/no-credentials-in-url`](sec-html/no-credentials-in-url.md) | No username and password in a URL | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-external-base`](sec-html/no-external-base.md) | <base> stays on this origin | `suggest` | — | `sec-html/strict` |
 | [`sec-html/no-inline-event-handler`](sec-html/no-inline-event-handler.md) | No inline event handlers | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-javascript-url`](sec-html/no-javascript-url.md) | No javascript: URLs | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-javascript-url`](sec-html/no-javascript-url.md) | No javascript: URLs | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/no-mixed-content`](sec-html/no-mixed-content.md) | Subresources and forms load over HTTPS | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-plugin-embed`](sec-html/no-plugin-embed.md) | No <object>, <embed> or <applet> | `manual` | — | `sec-html/strict` |
+| [`sec-html/no-plugin-embed`](sec-html/no-plugin-embed.md) | No <object>, <embed> or <applet> | `suggest` | — | `sec-html/strict` |
 | [`sec-html/no-secret-in-hidden-input`](sec-html/no-secret-in-hidden-input.md) | No secret in a hidden input | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/no-sensitive-comments`](sec-html/no-sensitive-comments.md) | No comment that exposes a secret or an internal host | `auto` | — | `sec-html/strict` |
-| [`sec-html/no-srcdoc-script`](sec-html/no-srcdoc-script.md) | An iframe's srcdoc holds no script | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-template-html-sink`](sec-html/no-template-html-sink.md) | No template binding that writes HTML | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
-| [`sec-html/no-unsafe-template-interpolation`](sec-html/no-unsafe-template-interpolation.md) | No template syntax that turns escaping off | `manual` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-srcdoc-script`](sec-html/no-srcdoc-script.md) | An iframe's srcdoc holds no script | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-template-html-sink`](sec-html/no-template-html-sink.md) | No template binding that writes HTML | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
+| [`sec-html/no-unsafe-template-interpolation`](sec-html/no-unsafe-template-interpolation.md) | No template syntax that turns escaping off | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/password-form-post`](sec-html/password-form-post.md) | A form with a password sends it with POST over HTTPS | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/referrer-policy`](sec-html/referrer-policy.md) | No referrer policy that leaks full URLs | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |
 | [`sec-html/sri-crossorigin`](sec-html/sri-crossorigin.md) | A script or stylesheet with an integrity hash has crossorigin | `suggest` | — | `sec-html/recommended`, `sec-html/strict` |

@@ -2,9 +2,9 @@
 id: sec-html/no-unsafe-template-interpolation
 title: "No template syntax that turns escaping off"
 languages: [html]
-fix: manual
-fix_reason: "whether the value is trusted, and how to sanitise it, is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`{{{ x }}}` becomes `{{ x }}`, `|safe` goes and `<%- x %>` becomes `<%= x %>`, so the template escapes the value; markup the value was meant to carry then shows as text, which the reviewer confirms. `autoescape off` is manual"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0

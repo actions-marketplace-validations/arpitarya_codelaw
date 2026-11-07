@@ -2,9 +2,9 @@
 id: sec-html/csp-meta-unsafe
 title: "A meta Content Security Policy does not allow unsafe script"
 languages: [html]
-fix: manual
-fix_reason: "the page's scripts have to be given nonces or hashes, or moved to files"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual"
+fix_exception: security
 stability: preview
 security: { cwe: [693], owasp: ["A02:2025"], severity: medium }
 since: 0.2.0
@@ -32,6 +32,12 @@ native: sec-html/csp-meta-unsafe
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+```
+
+#### Fixed
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'">
 ```
 
 #### Do

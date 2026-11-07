@@ -2,9 +2,9 @@
 id: sec-html/no-srcdoc-script
 title: "An iframe's srcdoc holds no script"
 languages: [html]
-fix: manual
-fix_reason: "the framed document has to become a file or be sandboxed"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are an empty `sandbox` (the default), or `sandbox=\"allow-scripts\"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered"
+fix_exception: security
 stability: preview
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.2.0
@@ -31,6 +31,18 @@ native: sec-html/no-srcdoc-script
 
 ```html
 <iframe srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+#### Fixed (sandbox)
+
+```html
+<iframe sandbox srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+#### Fixed (sandbox, scripts allowed)
+
+```html
+<iframe sandbox="allow-scripts" srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
 ```
 
 #### Do

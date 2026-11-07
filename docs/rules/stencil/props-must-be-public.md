@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the field is public API needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/props-must-be-public` |

@@ -2,9 +2,9 @@
 id: scss/max-nesting-depth
 title: "Limit nesting depth"
 languages: [scss]
-fix: manual
-fix_reason: "flattening a selector is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual"
+fix_exception: restructure
 stability: preview
 options:
   max: { type: "number", default: 3, description: "the deepest nesting allowed" }
@@ -39,6 +39,20 @@ native: scss/max-nesting-depth
         .e {
           color: red;
         }
+      }
+    }
+  }
+}
+```
+
+#### Fixed
+
+```scss
+.a {
+  .b {
+    .c {
+      .d .e {
+        color: red;
       }
     }
   }

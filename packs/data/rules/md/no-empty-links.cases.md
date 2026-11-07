@@ -23,3 +23,13 @@ Go to [home](/) now.
 ```expect
 (none)
 ```
+
+### case: an anchor and a bracketed path are destinations (W-139 corpus)
+
+````md
+See [the install steps](#install) and [the notes](<release notes.md>).
+````
+
+```expect
+(none)
+```

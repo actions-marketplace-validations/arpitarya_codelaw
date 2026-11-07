@@ -17,6 +17,9 @@ The identifier `undefined` is not used (taste preset).
 
 match:
   kind: undefined
+  # TypeScript's `undefined` type (`T | undefined`) is not the identifier,
+  # and `void 0` is not a type (W-139 corpus: a fix that was not a fixpoint)
+  not: { inside: { kind: literal_type, stopBy: neighbor } }
 message: "Use `void 0`, or leave the value out, rather than `undefined`"
 fix: "void 0"
 ```

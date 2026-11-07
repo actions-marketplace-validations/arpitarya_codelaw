@@ -2,9 +2,8 @@
 id: sec-html/iframe-allow-powerful
 title: "A cross-origin iframe is not given a powerful feature"
 languages: [html]
-fix: manual
-fix_reason: "which framed sites deserve the permission is the owner's decision"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms"
 stability: preview
 security: { cwe: [250], owasp: ["A02:2025"], severity: low }
 since: 0.2.0
@@ -31,6 +30,12 @@ native: sec-html/iframe-allow-powerful
 
 ```html
 <iframe src="https://meet.example.com/room" allow="camera; microphone"></iframe>
+```
+
+#### Fixed
+
+```html
+<iframe src="https://meet.example.com/room"></iframe>
 ```
 
 #### Do

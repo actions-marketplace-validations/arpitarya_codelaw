@@ -2,9 +2,8 @@
 id: sec-html/no-credentials-in-url
 title: "No username and password in a URL"
 languages: [html]
-fix: manual
-fix_reason: "where the credential should live is the author's decision"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms"
 stability: preview
 security: { cwe: [522], owasp: ["A07:2025"], severity: high }
 since: 0.2.0

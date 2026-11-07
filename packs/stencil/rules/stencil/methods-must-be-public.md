@@ -2,9 +2,8 @@
 id: stencil/methods-must-be-public
 title: "@Method() members are public"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "whether the method is public API needs the author"
-fix_pending: "auto"
+fix: auto
+fix_reason: "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time"
 stability: preview
 ported_from: [stencil/methods-must-be-public]
 since: 0.1.0

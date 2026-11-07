@@ -27,7 +27,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (13)
 
 ### build (7)
 
@@ -35,15 +35,15 @@ here. Read that record before changing anything below it.
 
 🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-05: manual ceiling removed, the 231 held ports landed. Next: step 3 — corpus counts, L8 budgets. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done — 27 packs 0 failed, corpus counted, 2 rules narrowed, proposal §13 (1,548 of 2,590 built). L8 → W-172. Next: DoD 1. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-141** `agent` Formatter vs Prettier. Oxc built behind the formatter 11-05 (D-52): CSS 74→89%, SCSS 81→86%, YAML 90→97%, Markdown 93→95%, faster, binary −2.3 MB. Left: DoD 3's ≥ 98% — the rest is in Biome (JS/TS), markup_fmt (HTML) and Oxc. Filed by Arpit (Cowork). [detail](open/W-141-formatter-parity.md)
+🟢 **W-172** `agent` main over three L8 budgets on the reference runner (11-07): `check_cold_10k` 13,465 > 13,118 ms, `peak_memory_10k` 124 > 72 MiB, `mcp_rules_for_path` 129 > 65 ms; green 11-05. Next: bisect, optimise. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 168 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css-modules landed): 180 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
+🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 138 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (security-html landed): 141 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits tiers 1–2 built (19 `js/*` moved; 84 still wait). Next: tier 3 (`edit-text`, `unwrap-block`, `move`), then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: filters, `transform:`, `edit-text`, `unwrap-block`, `move` built (30 `js/*` moved; 73 still wait). Next: `merge-into`, native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 
 
@@ -61,9 +61,7 @@ here. Read that record before changing anything below it.
 
 ### testing (0)
 
-### reporting and benchmarks (2)
-
-🟢 **W-168** `agent` Measure the project graph at 10k, 50k, 100k, 500k and 1M files — cold, warm, one-file hook, memory, per stage; today's bench never builds the graph (`recommended` presets only). L9 disk care for 500k/1M. Filed by Arpit (Cowork). [detail](open/W-168-graph-scale-measurement.md)
+### reporting and benchmarks (1)
 
 🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 

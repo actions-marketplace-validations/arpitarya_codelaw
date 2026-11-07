@@ -2,9 +2,9 @@
 id: react/jsx-no-duplicate-props
 title: "No prop given twice on one element"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "which value should win needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/jsx-no-duplicate-props]
 since: 0.1.0
