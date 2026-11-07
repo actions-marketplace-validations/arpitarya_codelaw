@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-07 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+| 🔴 **Push `main` to GitHub** — local `main` is 146 commits ahead of `origin/main`; Claude Code's push is refused by the permission classifier (2026-11-07), so only Arpit can run `git push origin main`. W-105's and W-126's CI timings, W-169's crash capture and the CI fixes since 11-05 (lint, licences, clippy, tests) wait on it. | 2026-11-07 |
+| ↳ **blocks:** W-105, W-126, W-169 | |
 
 ---
 
@@ -31,7 +31,7 @@ here. Read that record before changing anything below it.
 
 ### build (6)
 
-🟢 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done — 27 packs 0 failed, corpus counted, 2 rules narrowed, proposal §13 (1,548 of 2,590 built). L8 → W-172. Next: DoD 1. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
@@ -47,9 +47,9 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (4)
 
-🟢🧨 **W-169** `agent` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🔴🧨 **W-169** `arpit` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05; first runs skipped it (arm64-musl red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🔴 **W-126** `arpit` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05; first runs skipped it (arm64-musl red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
