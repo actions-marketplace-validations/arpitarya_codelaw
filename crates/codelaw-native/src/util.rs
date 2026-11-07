@@ -278,3 +278,31 @@ pub fn nearest<'c>(name: &str, candidates: impl IntoIterator<Item = &'c str>, ma
 pub fn name_choices(names: &[&str], start: usize, end: usize, fmt: &dyn Fn(&str) -> String) -> Vec<TextEdit> {
     crate::choice_edits(names.iter().enumerate().map(|(i, n)| crate::choice(*n, i == 0, vec![TextEdit::new(start, end, fmt(n))])).collect())
 }
+
+/// The edit removing a CSS statement `start..end` (a declaration without
+/// its `;`, or a rule or at-rule): its `;` too, and its line when nothing
+/// else shares it.
+pub fn remove_css_statement(src: &str, start: usize, end: usize) -> TextEdit {
+    let rest = &src[end..];
+    let ws = rest.len() - rest.trim_start_matches([' ', '\t']).len();
+    let end = if rest[ws..].starts_with(';') { end + ws + 1 } else { end };
+    let (s, e) = whole_lines(src, start, end);
+    TextEdit::delete(s, e)
+}
+
+/// Whether `name` (a Sass `$variable` or a bare name) is spelled in
+/// `text` as a whole word.
+pub fn mentions(text: &str, name: &str) -> bool {
+    let word = |c: char| c.is_alphanumeric() || c == '-' || c == '_' || c == '$';
+    let mut from = 0;
+    while let Some(i) = text[from..].find(name) {
+        let at = from + i;
+        let before = text[..at].chars().next_back();
+        let after = text[at + name.len()..].chars().next();
+        if !before.is_some_and(|c| word(c) && !name.starts_with('$')) && !after.is_some_and(word) {
+            return true;
+        }
+        from = at + name.len();
+    }
+    false
+}

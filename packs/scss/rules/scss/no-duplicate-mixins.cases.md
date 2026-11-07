@@ -31,3 +31,15 @@
 ```expect
 4:8 scss/no-duplicate-mixins
 ```
+
+### case: an include between the two keeps the first
+
+```scss
+@mixin shadow { box-shadow: none; }
+.a { @include shadow; }
+@mixin shadow { box-shadow: 0 0 1px; }
+```
+
+```expect
+3:8 scss/no-duplicate-mixins
+```

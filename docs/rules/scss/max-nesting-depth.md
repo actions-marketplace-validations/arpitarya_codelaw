@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `max` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (flattening a selector is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint/max-nesting-depth` |
@@ -185,6 +185,20 @@ codelaw config --print --for <file>          # the resolved setting, and where i
         .e {
           color: red;
         }
+      }
+    }
+  }
+}
+```
+
+#### Fixed
+
+```scss
+.a {
+  .b {
+    .c {
+      .d .e {
+        color: red;
       }
     }
   }
