@@ -152,19 +152,19 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/insecure-jwt-token`](js/insecure-jwt-token.md) | No unsigned JWTs | `manual` | — | `js/sonarjs` |
 | [`js/inverted-assertion-arguments`](js/inverted-assertion-arguments.md) | Actual first, expected second | `suggest` | — | `js/sonarjs` |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `manual` | — | *[rules] only* |
-| [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
+| [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-values`](js/jsdoc-check-values.md) | @version, @since and @kind take valid values | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `manual` | — | *[rules] only* |
+| [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-empty-tags`](js/jsdoc-empty-tags.md) | Flag tags like @private carry no text | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-implements-on-classes`](js/jsdoc-implements-on-classes.md) | @implements only on classes | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-match-description`](js/jsdoc-match-description.md) | A function's description is a sentence | `manual` | — | *[rules] only* |
-| [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-no-blank-blocks`](js/jsdoc-no-blank-blocks.md) | No empty JSDoc blocks | `auto` | — | *[rules] only* |
-| [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `manual` | — | `js/jsdoc` |
-| [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `manual` | — | *[rules] only* |
+| [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `auto` | — | `js/jsdoc` |
+| [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-prefer-import-tag`](js/jsdoc-prefer-import-tag.md) | @import a type instead of inline import() | `manual` | — | *[rules] only* |
 | [`js/jsdoc-reject-any-type`](js/jsdoc-reject-any-type.md) | No any or * types in JSDoc | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-reject-function-type`](js/jsdoc-reject-function-type.md) | No bare Function type in JSDoc | `manual` | — | `js/jsdoc` |

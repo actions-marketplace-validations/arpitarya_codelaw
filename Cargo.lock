@@ -1014,6 +1014,7 @@ dependencies = [
  "codelaw-match",
  "codelaw-rules",
  "codelaw-semantic",
+ "regex",
  "serde",
  "serde_json",
  "tree-sitter",

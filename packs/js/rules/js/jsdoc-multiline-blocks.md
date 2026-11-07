@@ -2,9 +2,7 @@
 id: js/jsdoc-multiline-blocks
 title: "/** and */ on their own lines"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own)"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-jsdoc/multiline-blocks]
 since: 0.5.0
@@ -23,6 +21,9 @@ match:
         - regex: '^/\*\*[ \t]*[^\s*][^\n]*\n'
         - regex: '\n[ \t]*(\*[ \t]*)?[^\s*][^\n]*\*/$'
 message: "In a multi-line JSDoc block, keep `/**` and `*/` on lines of their own"
+fix:
+  - edit-text: { pattern: '\A/\*\*[ \t]*([^\s*][^\n]*?)[ \t]*\n([ \t]*)\*', replace: "/**\n${2}* ${1}\n${2}*" }
+  - edit-text: { pattern: '\n([ \t]*)(\*[ \t]*)?([^\s*][^\n]*?)[ \t]*\*/\z', replace: "\n${1}* ${3}\n${1}*/" }
 ```
 
 ## How to fix

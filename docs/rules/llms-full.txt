@@ -22517,7 +22517,7 @@ function clearCache() {}
 ## `js/jsdoc-check-syntax` — No Closure optional syntax in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`))
+- **Fix:** `suggest` (`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-syntax.md
 
@@ -22625,7 +22625,7 @@ function greet(name) {}
 ## `js/jsdoc-check-types` — Primitive type names in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`))
+- **Fix:** `suggest` (a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-types.md
 
@@ -22841,7 +22841,7 @@ function parseDate() {}
 ## `js/jsdoc-convert-to-jsdoc-comments` — Functions documented in JSDoc, not // comments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`))
+- **Fix:** `suggest` (a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-convert-to-jsdoc-comments.md
 
@@ -23048,7 +23048,7 @@ function reset() {}
 ## `js/jsdoc-escape-inline-tags` — A bare @word in a description is escaped
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks))
+- **Fix:** `suggest` (the word may be a tag the author meant TypeScript to read; they confirm it is text)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-escape-inline-tags.md
 
@@ -23359,7 +23359,7 @@ function total() {}
 ## `js/jsdoc-multiline-blocks` — /** and */ on their own lines
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-multiline-blocks.md
 
@@ -23566,7 +23566,7 @@ function run() {}
 ## `js/jsdoc-no-defaults` — Defaults in the signature, not in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `suggest` (the default leaves the documentation; the author checks the signature carries the same one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-defaults.md
 
@@ -23674,7 +23674,7 @@ function greet(name = "you") {}
 ## `js/jsdoc-no-multi-asterisks` — One asterisk per JSDoc line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-multi-asterisks.md
 
@@ -23773,7 +23773,7 @@ function start() {}
 ## `js/jsdoc-no-types` — No JSDoc types in TypeScript
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed))
+- **Fix:** `suggest` (the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-types.md
 

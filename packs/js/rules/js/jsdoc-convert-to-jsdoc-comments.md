@@ -2,9 +2,8 @@
 id: js/jsdoc-convert-to-jsdoc-comments
 title: "Functions documented in JSDoc, not // comments"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`)"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/convert-to-jsdoc-comments]
 since: 0.5.0
@@ -39,6 +38,9 @@ match:
     - not: {regex: '^(///|(//|/\*)[ \t]*(@ts-|istanbul |c8 |v8 |eslint|prettier-))'}
     - precedes: {matches: fn}
 message: "Write this function's comment as a `/** … */` JSDoc block so editors and doc tools show it"
+fix:
+  - edit-text: { pattern: '\A/\*([^*])', replace: '/**${1}' }
+  - edit-text: { pattern: '\A//[ \t]*((?:[^*\n]|\*[^/\n])*\*?)[ \t]*\z', replace: '/** ${1} */' }
 ```
 
 ## How to fix
