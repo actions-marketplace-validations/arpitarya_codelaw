@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **`check_types_cold` / `check_types_warm` L8 budgets: 14,602 ms and 8,663 ms?** ([W-105](open/W-105-type-aware-engine.md)): p95 on three `perf` runs on `main` of the batched helper (`ci` 42316894936 on `3b53d1a8`, its nightly and two re-runs of the job; ubuntu-24.04, 2,200 files, TypeScript 7.1.0-beta): cold 9,734.3 / 5,185.9 / 6,010.8 ms, warm 5,775.1 / 5,286.0 / 5,005.8 ms. Your method (L8 decision 4): 1.5 × the worst → **cold 14,602 ms, warm 8,663 ms**; no design target, so no guard. The cold spread is the runner (same commit, same binary). **Set them** (a p95 over fails CI) **or leave them unset** (reported only). | 2026-11-07 |
-| ↳ **blocks:** W-105 | |
+
+*Empty since 2026-11-07 — next gate: 2026-11-10, the TypeScript 7.1 RC re-pin (W-105).*
 
 ---
 
@@ -31,7 +31,7 @@ here. Read that record before changing anything below it.
 
 ### build (6)
 
-🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets in the inbox (cold 14,602, warm 8,663 ms); next the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done; L8 → W-172. DoD 1 under way: js slices 18–19 (104 rules), py slices 19–20 (101). Next: more js and py rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 

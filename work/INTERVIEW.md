@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**2026-11-07 (Cowork, docket): W-105's `check_types_*` budgets ruled — *"Leave unset"*** (reported only, L8 decision 6); W-105 🟣 on the 11-10 RC re-pin. W-173's Ruff `=0.0.21` was ruled and landed the same afternoon by Claude Code (`5f472943`). The inbox is empty.
+
 **2026-11-07 (Claude Code): `main` pushed by Arpit to `7cdb480b`** (Claude Code's push is refused by the permission classifier, so pushes are his). GitHub then reported five Dependabot advisories on `zip` 8.6.0 — W-173.
 
 **Ruled 2026-11-07 (Arpit, Claude Code, multiple choice): W-168 step 6** — *"No budget yet (Recommended)"*: the six `graph_*` rows stay context-only until W-167's design is built; then 10k and 100k get budgets from CI runs (L8 decision 4's method). W-168 closed and archived; its numbers are [`experiments/graph-scale/RESULTS.md`](../experiments/graph-scale/RESULTS.md), the budgeting follow-up is [W-167](open/W-167-graph-architecture-design.md) step 6. [W-168](../archive/open/W-168-graph-scale-measurement.md)
