@@ -800,7 +800,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-no-bind`](react/jsx-no-bind.md) | No new function in a JSX prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-comment-textnodes`](react/jsx-no-comment-textnodes.md) | No comment syntax as text inside JSX | `manual` | — | `react/recommended` |
 | [`react/jsx-no-constructed-context-values`](react/jsx-no-constructed-context-values.md) | A context value is not rebuilt on every render | `manual` | — | *[rules] only* |
-| [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `manual` | — | `react/recommended` |
+| [`react/jsx-no-duplicate-props`](react/jsx-no-duplicate-props.md) | No prop given twice on one element | `auto` | — | `react/recommended` |
 | [`react/jsx-no-jsx-as-prop`](react/jsx-no-jsx-as-prop.md) | No JSX element built in a component's prop | `manual` | — | *[rules] only* |
 | [`react/jsx-no-leaked-render`](react/jsx-no-leaked-render.md) | No && that can render 0 or "" | `suggest` | — | *[rules] only* |
 | [`react/jsx-no-literals`](react/jsx-no-literals.md) | No bare text in JSX | `manual` | — | *[rules] only* |
@@ -835,14 +835,14 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `suggest` | — | `react/recommended` |
 | [`react/no-multi-comp`](react/no-multi-comp.md) | One component per file | `manual` | — | *[rules] only* |
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
-| [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `manual` | — | `react/recommended` |
+| [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `suggest` | — | `react/recommended` |
 | [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
 | [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
-| [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `manual` | — | `react/recommended` |
+| [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `suggest` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `suggest` | — | `react/recommended` |
 | [`react/no-set-state`](react/no-set-state.md) | No this.setState | `manual` | — | *[rules] only* |
-| [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `manual` | — | `react/recommended` |
+| [`react/no-set-state-in-effect`](react/no-set-state-in-effect.md) | An effect doesn't set state synchronously | `suggest` | — | `react/recommended` |
 | [`react/no-set-state-in-render`](react/no-set-state-in-render.md) | State is not set on every render | `manual` | — | `react/recommended` |
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
@@ -866,12 +866,12 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/prefer-stateless-function`](react/prefer-stateless-function.md) | A class with only render is a function | `manual` | — | *[rules] only* |
 | [`react/prop-types`](react/prop-types.md) | Props are declared in propTypes | `manual` | — | `react/recommended` |
 | [`react/props-type-name`](react/props-type-name.md) | A component's props type is named <Component>Props | `suggest` | — | `react/conventions` |
-| [`react/purity`](react/purity.md) | Render doesn't call Math.random(), Date.now() or other impure functions | `manual` | — | `react/recommended` |
+| [`react/purity`](react/purity.md) | Render doesn't call Math.random(), Date.now() or other impure functions | `suggest` | — | `react/recommended` |
 | [`react/require-default-props`](react/require-default-props.md) | Every optional prop has a default | `manual` | — | *[rules] only* |
 | [`react/require-optimization`](react/require-optimization.md) | Class components say when to skip a render | `manual` | — | *[rules] only* |
-| [`react/require-render-return`](react/require-render-return.md) | A class component's render() returns | `manual` | — | `react/recommended` |
+| [`react/require-render-return`](react/require-render-return.md) | A class component's render() returns | `suggest` | — | `react/recommended` |
 | [`react/rule-suppression`](react/rule-suppression.md) | The hooks rules are not switched off | `auto` | — | *[rules] only* |
-| [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `manual` | — | `react/recommended` |
+| [`react/rules-of-hooks`](react/rules-of-hooks.md) | Hooks are called at the top level of components and hooks | `suggest` | — | `react/recommended` |
 | [`react/self-closing-comp`](react/self-closing-comp.md) | An element with no children closes itself | `auto` | — | *[rules] only* |
 | [`react/sort-comp`](react/sort-comp.md) | Component class members are in a set order | `manual` | — | *[rules] only* |
 | [`react/sort-default-props`](react/sort-default-props.md) | Default props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
@@ -880,7 +880,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/static-property-placement`](react/static-property-placement.md) | Static component properties are assigned after the class | `manual` | — | *[rules] only* |
 | [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `manual` | — | *[rules] only* |
 | [`react/unsupported-syntax`](react/unsupported-syntax.md) | No eval or with in components and hooks | `manual` | — | `react/recommended` |
-| [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `manual` | — | `react/recommended` |
+| [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `suggest` | — | `react/recommended` |
 | [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
 
 ## node

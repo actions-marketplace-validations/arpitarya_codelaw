@@ -2,9 +2,9 @@
 id: react/no-nested-components
 title: "Components are not defined inside other components"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "moving the component out means passing in the values it closed over as props"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/static-components, "@eslint-react/no-nested-component-definitions", eslint-plugin-react/no-unstable-nested-components]
 since: 0.3.0
@@ -38,6 +38,15 @@ function List({ items }) {
 }
 ```
 
+#### Fixed
+
+```js
+const Item = ({ text }) => <li>{text}</li>;
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 #### Do
 
 ```js
@@ -61,6 +70,17 @@ function List({ items }) {
 }
 ```
 
+#### Fixed
+
+```jsx
+function Item({ text }) {
+    return <li>{text}</li>;
+  }
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 #### Do
 
 ```jsx
@@ -80,6 +100,15 @@ function List({ items }) {
 ```tsx
 function List({ items }: { items: string[] }) {
   const Item = ({ text }: { text: string }) => <li>{text}</li>;
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
+#### Fixed
+
+```tsx
+const Item = ({ text }: { text: string }) => <li>{text}</li>;
+function List({ items }: { items: string[] }) {
   return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
 }
 ```

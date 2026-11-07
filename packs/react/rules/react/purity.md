@@ -2,9 +2,9 @@
 id: react/purity
 title: "Render doesn't call Math.random(), Date.now() or other impure functions"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "where the value should come from instead — state, an effect, an event — depends on what it is for"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/purity, "@eslint-react/purity"]
 since: 0.3.0
@@ -36,6 +36,15 @@ native: react/purity
 ```js
 function useRandomKey() {
   return Math.random().toString(36);
+}
+```
+
+#### Fixed
+
+```js
+function useRandomKey() {
+  const [value] = useState(() => Math.random().toString(36));
+  return value;
 }
 ```
 
@@ -78,6 +87,15 @@ function useToday(): string {
 }
 ```
 
+#### Fixed
+
+```ts
+function useToday(): string {
+  const [value] = useState(() => new Date().toDateString());
+  return value;
+}
+```
+
 #### Do
 
 ```ts
@@ -94,6 +112,15 @@ function useToday(): string {
 ```tsx
 function Field({ label }: { label: string }) {
   const id = crypto.randomUUID();
+  return <label htmlFor={id}>{label}</label>;
+}
+```
+
+#### Fixed
+
+```tsx
+function Field({ label }: { label: string }) {
+  const [id] = useState(() => crypto.randomUUID());
   return <label htmlFor={id}>{label}</label>;
 }
 ```

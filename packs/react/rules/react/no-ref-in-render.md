@@ -2,9 +2,9 @@
 id: react/no-ref-in-render
 title: "A ref's current value is not read or written during render"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "moving the access into an effect or an event handler changes when it runs"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/refs, "@eslint-react/refs"]
 since: 0.3.0
@@ -58,22 +58,22 @@ function useLatest(value) {
 #### Don't
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 #### Do
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -85,6 +85,18 @@ function Counter() {
 function useLatest<T>(value: T) {
   const ref = useRef(value);
   ref.current = value;
+  return ref;
+}
+```
+
+#### Fixed
+
+```ts
+function useLatest<T>(value: T) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
   return ref;
 }
 ```
@@ -106,24 +118,25 @@ function useStore() {
 #### Don't
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 #### Do
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
+
 
 ## Differences from the source
 

@@ -2,9 +2,9 @@
 id: react/require-render-return
 title: "A class component's render() returns"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "what to render needs the author"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/require-render-return]
 since: 0.1.0

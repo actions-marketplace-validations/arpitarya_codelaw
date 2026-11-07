@@ -2,9 +2,9 @@
 id: react/no-set-state-in-effect
 title: "An effect doesn't set state synchronously"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether to derive the value, lift the state or subscribe is a design choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/set-state-in-effect, "@eslint-react/set-state-in-effect"]
 since: 0.3.0
@@ -39,6 +39,15 @@ function useFullName(first, last) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+#### Fixed
+
+```js
+function useFullName(first, last) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -90,6 +99,15 @@ function useFullName(first: string, last: string) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+#### Fixed
+
+```ts
+function useFullName(first: string, last: string) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
