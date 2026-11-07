@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value is missing, or extra, can't be inferred) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (too many values: the extra ones at the end go when running them does nothing; too few needs values the code doesn't hold, so it is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F507`, `pylint/too-many-format-args`, `pylint/too-few-format-args` |
@@ -129,7 +129,7 @@ codelaw config --print --for <file>                    # the resolved setting, a
 #### Don't
 
 ```py
-message = "%s is %s" % ("Ada",)
+message = "%s is %s" % ("Ada", 36, "years")
 ```
 
 #### Do

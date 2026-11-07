@@ -6,7 +6,7 @@ item: W-171
 filed: 2026-11-07
 filed_by: "now-ledger.py (Claude Code)"
 updated: 2026-11-07
-updated_by: "now-ledger.py (Claude Code)"
+updated_by: "Claude Code (Opus 5.5)"
 ball: agent
 ---
 
@@ -16,7 +16,7 @@ ball: agent
 
 | what | state |
 |---|---|
-| Worktrees left by session 0a172e1f-7104-4fed-983f-3baacccdc91a would lose data if removed | 🟡 ruled **keep** all six; each lands with its item |
+| Worktrees left by session 0a172e1f-7104-4fed-983f-3baacccdc91a would lose data if removed | ✅ 2026-11-07 — all six landed and removed |
 
 Filed at the end of session `0a172e1f-7104-4fed-983f-3baacccdc91a`.
 
@@ -36,6 +36,10 @@ These worktrees were left untouched. Rule per worktree: **keep** (merge it or co
 ## Progress — 2026-11-07
 
 Landed and removed: W-141 (`6230624d`), W-162 (`29a1bddc`), W-168 (`89d376a6`), W-139 (`89fefb06`), W-169 (`8ad936ec`) — each worktree's only leftovers were `.fux/index` re-index output, restored before `git worktree remove` and `git branch -d`. Left: W-156, whose agent is still moving native rules.
+
+## Outcome — 2026-11-07
+
+W-156's worktree landed (`1dea33a6`, its css moves) and was removed (`git worktree remove`, `git branch -d`); its agent finished in a new change that closes W-156. All six kept worktrees have landed and none is left. W-171 closed.
 
 ## Record affected
 

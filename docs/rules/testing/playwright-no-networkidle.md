@@ -15,7 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**`, `**/tests/**`, `**/e2e/**` |
-| **Ported from** | `eslint-plugin-playwright/no-networkidle` |
+| **Ported from** | `eslint-plugin-playwright/no-networkidle`, `eslint-plugin-sonarjs/no-networkidle-wait` |
 
 ## What it checks
 

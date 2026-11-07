@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the rename covers every use in this file; names read from other files or from strings are for the reviewer) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/camelcase` |
+| **Ported from** | `eslint/camelcase`, `eslint-plugin-sonarjs/variable-name` |
 
 ## What it checks
 

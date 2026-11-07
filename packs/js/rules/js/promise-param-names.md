@@ -2,9 +2,8 @@
 id: js/promise-param-names
 title: "A promise executor names its parameters resolve and reject"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "renaming a parameter is safe only when every use in the executor is renamed with it; rename it by hand or with the editor"
-fix_pending: "auto-subset; needs scope-rename (W-162)"
+fix: auto
+fix_reason: "each parameter is renamed with every use of it in the executor; where `resolve` or `reject` is already a name in the file, it is renamed by hand"
 stability: preview
 ported_from: [eslint-plugin-promise/param-names]
 since: 0.5.0
@@ -28,15 +27,21 @@ match:
     - kind: identifier
       not: { regex: '^_?resolve$' }
       inside: { matches: executor, field: parameter }
+      pattern: $RES
     - any: [{kind: identifier}, {kind: required_parameter}, {kind: optional_parameter}]
       nthChild: 1
       not: { regex: '^_?resolve\b' }
       inside: { kind: formal_parameters, inside: { matches: executor } }
+      pattern: $RES
     - any: [{kind: identifier}, {kind: required_parameter}, {kind: optional_parameter}]
       nthChild: 2
       not: { regex: '^_?reject\b' }
       inside: { kind: formal_parameters, inside: { matches: executor } }
+      pattern: $REJ
 message: "Name the promise executor's parameters `resolve` and `reject`, in that order"
+fix:
+  - rename-symbol: { target: $RES, to: resolve, scope: binding }
+  - rename-symbol: { target: $REJ, to: reject, scope: binding }
 ```
 
 ## How to fix

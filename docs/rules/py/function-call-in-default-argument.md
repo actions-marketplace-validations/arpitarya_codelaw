@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `extend_immutable_calls` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value should be computed per call or once at import needs a person) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are a `None` default with the call in the body (it runs on every call, likely what was meant) and, for a module-level function, the call as a module constant above it (it runs once, as now, and says so); a call inside a larger default is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B008` |
@@ -178,6 +178,28 @@ codelaw config --print --for <file>                        # the resolved settin
 import time
 
 def log(message, when=time.time()):
+    print(when, message)
+```
+
+#### Fixed (None default)
+
+```py
+import time
+
+def log(message, when=None):
+    if when is None:
+        when = time.time()
+    print(when, message)
+```
+
+#### Fixed (module constant)
+
+```py
+import time
+
+_LOG_WHEN_DEFAULT = time.time()
+
+def log(message, when=_LOG_WHEN_DEFAULT):
     print(when, message)
 ```
 

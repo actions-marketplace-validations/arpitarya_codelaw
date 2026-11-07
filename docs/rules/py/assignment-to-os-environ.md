@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to clear the environment first or only update it needs a person) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are replacing the environment (`os.environ.clear()` then `.update()`) and adding to it (`.update()`); either now changes the real process environment, so neither is the default. An assignment inside another statement is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B003` |
@@ -132,6 +132,23 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 import os
 
 os.environ = {"PATH": "/bin"}
+```
+
+#### Fixed (replace)
+
+```py
+import os
+
+os.environ.clear()
+os.environ.update({"PATH": "/bin"})
+```
+
+#### Fixed (update)
+
+```py
+import os
+
+os.environ.update({"PATH": "/bin"})
 ```
 
 #### Do

@@ -232,7 +232,7 @@ fn refresh(args: &RefreshArgs) -> Result<Refreshed, String> {
     let jobs = args.jobs.max(1);
     let list: Vec<(String, Wanted)> = wanted.into_iter().collect();
     let results = fetch_all(&registries, &list, jobs, prerelease);
-    let mut snap = Snapshot { fetched: fetched.clone(), registries: BTreeMap::new(), packages: BTreeMap::new(), sources: BTreeMap::new() };
+    let mut snap = Snapshot { fetched: fetched.clone(), ..Snapshot::default() };
     let mut warnings = String::new();
     let mut errors = Vec::new();
     let mut counts: BTreeMap<Ecosystem, usize> = BTreeMap::new();
@@ -353,6 +353,36 @@ fn refresh(args: &RefreshArgs) -> Result<Refreshed, String> {
     }
     if no_licence > 0 {
         warnings.push_str(&format!("warning: {no_licence} version(s) in use have no licence the registry names\n"));
+    }
+
+    // The commit each GitHub Action ref the workflows name points to
+    // (W-162): `yaml/gha-pin-sha` reads them offline.
+    let mut refs: BTreeSet<(String, String)> = BTreeSet::new();
+    for f in &files {
+        let workflow = f.rel.contains(".github/workflows/") || matches!(f.rel.rsplit('/').next(), Some("action.yml" | "action.yaml"));
+        if !workflow || f.language != Language::Yaml {
+            continue;
+        }
+        let Some(text) = read(&f.rel) else { continue };
+        for line in text.lines() {
+            let l = line.trim_start().trim_start_matches("- ").trim_start();
+            if let Some(v) = l.strip_prefix("uses:")
+                && let Some(r) = codelaw_native::deps::snapshot::action_ref(v.split(" #").next().unwrap_or(v))
+            {
+                refs.insert(r);
+            }
+        }
+    }
+    for (repo, r) in refs {
+        let url = format!("https://api.github.com/repos/{repo}/commits/{r}");
+        let token = std::env::var("GITHUB_TOKEN").ok().filter(|t| !t.is_empty());
+        match request("GET", &url, "application/vnd.github.sha", token.as_deref(), None) {
+            Ok((200, sha)) if sha.trim().len() == 40 && sha.trim().bytes().all(|b| b.is_ascii_hexdigit()) => {
+                snap.actions.insert(format!("{repo}@{r}"), sha.trim().to_ascii_lowercase());
+            }
+            Ok((code, _)) => warnings.push_str(&format!("warning: the commit of `{repo}@{r}` could not be read (HTTP {code}); `yaml/gha-pin-sha` offers no fix for it\n")),
+            Err(e) => warnings.push_str(&format!("warning: the commit of `{repo}@{r}` could not be read ({e}); `yaml/gha-pin-sha` offers no fix for it\n")),
+        }
     }
 
     let path = root.join(SNAPSHOT_PATH);

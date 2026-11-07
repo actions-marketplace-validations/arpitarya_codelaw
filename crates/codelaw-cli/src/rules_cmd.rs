@@ -74,8 +74,12 @@ pub struct NewRuleArgs {
 }
 
 fn local(rule: RuleFile) -> LoadedRule {
+    shared(Arc::new(rule))
+}
+
+fn shared(rule: Arc<RuleFile>) -> LoadedRule {
     LoadedRule {
-        rule: Arc::new(rule),
+        rule,
         source: RuleSource::Local,
         default: None,
         enabled_by: None,
@@ -103,7 +107,7 @@ fn rules_at(path: &Path) -> Result<Vec<LoadedRule>, String> {
         return Ok(pack
             .rules
             .iter()
-            .map(|r| LoadedRule { source: source.clone(), data: pack.data.clone(), ..local(r.clone()) })
+            .map(|r| LoadedRule { source: source.clone(), data: pack.data.clone(), ..shared(r.clone()) })
             .collect());
     }
     if path.is_dir() {
@@ -242,7 +246,7 @@ fn fix_stats(packs_dir: Option<&Path>, check: bool, json: bool) -> ExitCode {
             Err(e) => return fail(errors_text(&e)),
         };
         let name = dir.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| pack.manifest.name.clone());
-        stats.push(codelaw_rules::FixStats::of(&name, &pack.rules));
+        stats.push(codelaw_rules::FixStats::of(&name, pack.rules.iter().map(|r| &**r)));
     }
     // `--check` holds the ladder's checks; the manual ceiling was one until
     // SR-LAW-4 decision 6 was retired (2026-11-05). Decision 5's

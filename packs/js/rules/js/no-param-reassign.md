@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the new variable's name is the author's choice"
 fix_exception: value
 stability: preview
-ported_from: [eslint/no-param-reassign]
+ported_from: [eslint/no-param-reassign, eslint-plugin-sonarjs/no-parameter-reassignment]
 since: 0.5.0
 ---
 

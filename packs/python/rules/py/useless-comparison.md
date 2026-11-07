@@ -2,9 +2,8 @@
 id: py/useless-comparison
 title: "No comparison whose result is thrown away"
 languages: [python]
-fix: manual
-fix_reason: "whether an assignment or an assertion was meant needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are an assignment (`==` written for `=`), an `assert`, and deleting the statement; each changes what runs (an assignment, a check, or no `__eq__` call), so none is the default"
 stability: preview
 ported_from: [ruff/B015]
 since: 0.1.0
@@ -32,6 +31,27 @@ native: py/useless-comparison
 ```py
 def reset(state):
     state.count == 0
+```
+
+#### Fixed (assign)
+
+```py
+def reset(state):
+    state.count = 0
+```
+
+#### Fixed (assert)
+
+```py
+def reset(state):
+    assert state.count == 0
+```
+
+#### Fixed (delete)
+
+```py
+def reset(state):
+    pass
 ```
 
 #### Do

@@ -4,7 +4,7 @@ title: "No braces around a single returned expression"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
-ported_from: [eslint/arrow-body-style]
+ported_from: [eslint/arrow-body-style, eslint-plugin-sonarjs/arrow-function-convention]
 since: 0.5.0
 ---
 

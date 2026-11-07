@@ -2,9 +2,8 @@
 id: py/unintentional-type-annotation
 title: "No annotation where an assignment was meant"
 languages: [python]
-fix: manual
-fix_reason: "whether an assignment was meant needs a person"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`:` becomes `=`: the annotation that did nothing becomes the assignment it looks like, which changes what runs"
 stability: preview
 ported_from: [ruff/B032]
 since: 0.1.0

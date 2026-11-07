@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the exceptions to catch are the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the handler never runs, so it goes; the only handler of a `try` without `finally` takes the `try` with it (its body, then its `else`, dedented). The code runs the same but loses what signals a bug, so review it) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B029` |
@@ -133,6 +133,12 @@ try:
     run()
 except ():
     log()
+```
+
+#### Fixed
+
+```py
+run()
 ```
 
 #### Do

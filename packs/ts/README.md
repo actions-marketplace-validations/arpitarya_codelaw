@@ -30,7 +30,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 22 | 19 | 24 | 9 | 7 | 0 | 0 | 8 |
+| 22 | 20 | 23 | 9 | 8 | 0 | 0 | 6 |
 
 <!-- /rule-docs:fix-ladder -->
 

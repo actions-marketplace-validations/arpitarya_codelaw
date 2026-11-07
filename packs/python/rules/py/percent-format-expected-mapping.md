@@ -2,9 +2,9 @@
 id: py/percent-format-expected-mapping
 title: "Named `%` placeholders get a mapping"
 languages: [python]
-fix: manual
-fix_reason: "the key each value belongs to isn't written anywhere"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a tuple with one item per name becomes a dict in the placeholders' order, which assumes the two orders match; any other right side is manual, as the mapping is a value the code doesn't hold"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F502, pylint/format-needs-mapping]
 since: 0.1.0

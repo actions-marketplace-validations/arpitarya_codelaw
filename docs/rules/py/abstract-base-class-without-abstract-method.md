@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which methods subclasses must provide is a design decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are dropping `ABC` (a plain class) and marking one method `@abstractmethod` (imported when it isn't), one choice per method; each changes what can be instantiated, so none is the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B024` |
@@ -133,6 +133,27 @@ codelaw config --print --for <file>                                  # the resol
 from abc import ABC
 
 class Shape(ABC):
+    def area(self):
+        return 0
+```
+
+#### Fixed (drop ABC)
+
+```py
+from abc import ABC
+
+class Shape:
+    def area(self):
+        return 0
+```
+
+#### Fixed (abstract area)
+
+```py
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
     def area(self):
         return 0
 ```

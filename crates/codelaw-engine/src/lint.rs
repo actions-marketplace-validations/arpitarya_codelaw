@@ -423,6 +423,9 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         .enumerate()
         .filter(|(_, r)| only.is_none_or(|o| o.iter().any(|id| id == r.id())))
         .filter(|(_, r)| !matches!(r.matcher, Matcher::Unsupported(_) | Matcher::Graph(_)))
+        // Only a rule a preset turns on or a layer names can be on: the
+        // rest of the packs' rules cost no glob and no settings (W-172).
+        .filter(|(_, r)| r.loaded.default.is_some() || layers.iter().any(|l| l.rules.contains_key(r.id())))
         .filter(|(_, r)| r.applies_to_path(&entry.rel))
         .filter_map(|(i, r)| project.rules.effective(&r.loaded, &layers).filter(|c| c.severity.is_some()).map(|c| (i, r, c)))
         .collect();

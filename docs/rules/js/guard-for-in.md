@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (looping over the own keys or guarding with `Object.hasOwn` both drop inherited keys; the author picks the form) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/guard-for-in` |
+| **Ported from** | `eslint/guard-for-in`, `eslint-plugin-sonarjs/for-in` |
 
 ## What it checks
 

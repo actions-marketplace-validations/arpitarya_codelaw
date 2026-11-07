@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended placeholder can't be inferred) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the string raises ValueError today: the choices are escaping the `%` as `%%` (it was text) and, for a key left open, closing it as `%(key)s`; neither is the default. A string with escapes or an f-prefix is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F501`, `pylint/truncated-format-string` |
@@ -130,6 +130,18 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ```py
 message = "%(name" % {"name": "Ada"}
+```
+
+#### Fixed (escape)
+
+```py
+message = "%%(name" % {"name": "Ada"}
+```
+
+#### Fixed (close)
+
+```py
+message = "%(name)s" % {"name": "Ada"}
 ```
 
 #### Do

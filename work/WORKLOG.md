@@ -28,11 +28,85 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 - **Asked:** (coordinator) confirm the "not confirmable offline" rows from upstream's source and tests, write them; natives in Rust; the add-import rows if W-162 has it; re-label the rest; close W-139 if DoD 1 is met.
 - **Done:** read Ruff 0.16.9's rule sources, fixtures and snapshots and Pylint 4.1.3's checkers and functional tests over GitHub (behaviour only for Pylint, L2); slice 23 — 35 `py/*` rules (Ruff 15, Pylint 20): 3 `auto`, 7 `suggest`, 25 `manual`. `codelaw test packs/python` 741 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written. Every other formerly unconfirmed row re-labelled in the item with what it waits on.
-- **Decided / left open:** W-162 has no add-import yet, so its ~25 rows stay marked; no natives this pass. W-139 stays open — DoD 1 not met (python 237 rows left).
+- **Decided / left open:** W-162's `ensure-import` (change 6) landed on main during the slice, so the ~25 add-import rows are the next python slice, not built here; no natives this pass. W-139 stays open — DoD 1 not met (python 237 rows left, js 164).
 - **Mistakes:** the Write tool and zsh's `cat` turned a written `\u00e9` into `é` in a rule's examples; caught by the rule's own test, rewritten through `chr(92)` (LESSONS-worthy only if it recurs).
-- **Next:** the native rows (`crates/codelaw-native`), the add-import rows once W-162 builds it.
+- **Next:** the add-import rows on `ensure-import`; the native rows (`crates/codelaw-native`).
 
 ---
+
+## 2026-11-07 — W-172: L8's three red budgets — cause found, engine side built, two still over  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-172 to closure — reproduce with `codelaw bench`, bisect 11-05 → main, optimise the cause, never loosen, prove each budget under locally.
+- **Done:** cause found without a commit bisect (the two weeks' engines and packs do not load each other): a per-rule cost on every loaded rule — 1,581 loaded, 474 on; regexes compiled once per grammar, rule files copied, every pack re-parsed per MCP call. Built: packs kept per process by file stamps, rules shared not copied, dormant matchers dropped after the load-time compile and rebuilt on first use, one-thread compile, the per-file settings lookup only for rules that can be on, `where:` before captures; SR-ARCHITECTURE 15 and SR-CACHE 8 amended. `codelaw bench`, same packs: `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB; cold within noise. `codelaw test` 9 packs 0 failed; release tests green.
+- **Decided / left open:** W-172 stays open — peak memory and `check_cold_10k` are what the newly-on rules cost (their regexes, `identifier` + `inside:` matchers); re-anchoring them is packs/js work (W-139-js, W-162 hold those files). CI's proof waits on pushing `main`.
+- **Mistakes:** `git stash pop` took W-162's stash (the stack is shared by every worktree); put back with `git stash store` before W-162 popped — LESSONS 2026-11-07. Parallel compile looked faster and cost 10 MB; reverted.
+- **Next:** push `main` (the decider) and read the runner's numbers; then re-anchor the hot `js/*` rules.
+
+---
+
+## 2026-11-07 — W-169: the crash twin carries symbols  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) make `crash-capture.sh`'s unstripped twin actually unstripped, verified locally.
+- **Done:** the twin builds with `--strip false` and `-C strip=none` on the final crate only. Locally (musl, zig) its `.text` is byte-identical to the shipped build's, with 120,192 symbols, and only `codelaw-cli` relinks. `collect` ran end to end. SR-PACKAGES decision 11 and the item are updated.
+- **Decided / left open:** a profile override (`profile.release.strip`) was rejected: it rebuilds every crate and the code moves. Step 3 still waits on the push.
+- **Mistakes:** none new.
+- **Next:** after the push, five green runs of every build leg.
+
+---
+
+## 2026-11-07 — W-162 change 8: action SHAs  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) action SHAs after the `py/*` rules.
+- **Done:** `deps refresh` records each Action ref's commit; `yaml/gha-pin-sha` suggests it offline.
+- **Decided / left open:** the fix trusts the snapshot's record; no entry, no fix. Not run against the network here (the refresh path is unit-free; the rule is proven by its snapshot example).
+- **Mistakes:** none new.
+- **Next:** cross-file read.
+
+---
+
+## 2026-11-07 — W-162 change 7: the ten new `py/*` rules  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the ten `py/*` rules W-139 filed under W-162, then SHAs, then cross-file, then close.
+- **Done:** all ten to `suggest` on `unwrap-block` (now Python too), line inserts, `$FRESH` and a gated `ensure-import`.
+- **Decided / left open:** an `elif` after a jump is left by hand (it would become an `if`).
+- **Mistakes:** none new.
+- **Next:** action SHAs.
+
+---
+
+## 2026-11-07 — W-162 change 6: scope rename, purity, add-import  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure after change 5 landed.
+- **Done:** `rename-symbol`, `$FRESH`, `ensure-import`; purity reused for the two `js/*` unused rules; 18 rules moved, 7 re-judged `manual`.
+- **Decided / left open:** a rename fix makes the engine build the semantic model for its rule. W-139's py strand filed ten new rules under W-162 (computed-edit 9, add-import 1) while this ran; they are next. Cross-file (36) is not started.
+- **Mistakes:** change 5's first claim passed the rule files as one path (zsh does not split an unquoted variable), so the first submit left them behind; re-committed with records in one commit before it landed.
+- **Next:** the ten `py/*` rules, then cross-file read.
+
+---
+
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 23 (14 native rules)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the strand's native rows, in Rust in `crates/codelaw-native`.
+- **Done:** slice 22 landed (`cdd67331`). Slice 23 — 14 native `js/*` rules in a new `js_parity.rs`: complexity and nesting measures, sort order with an in-place permutation fix, file-wide duplicates (strings, functions, union types), escape rewrites, braceless-block indentation. `cargo test -p codelaw-native` 276 passed.
+- **Decided / left open:** `js/sort-keys` reports one finding per object (the first key out of order) and sorts the whole object, where ESLint reports each key; `js/sort-imports` checks member order only. `js/prefer-unicode-code-point-escapes` leaves printable ASCII to `js/prefer-literal-ascii`, so the two never rewrite one escape back and forth.
+- **Mistakes:** the preset counts given in slices 21–22 counted the description line; corrected in the item.
+- **Next:** the other 37 natives (the jsdoc set, `prefer-continue`/`prefer-early-return`, `one-var`, `no-redundant-comparison`, …).
+
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 22 (37 SonarJS and unicorn rules read from source, 2 links)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) as slice 21: the rest of the rows once "not confirmable offline".
+- **Done:** slice 21 landed (`ebf86f12`). Slice 22 — 37 rules (3 auto, 16 suggest, 18 manual): SonarJS 24 read from its rule code, tests and fixtures at eslint-plugin-sonarjs 4.2.2's `gitHead` (fetched with curl from raw.githubusercontent.com; behaviour only), unicorn 13, `md/no-empty-link-text` in the data pack; 2 SonarJS rows linked; 3 found native. No row of the strand is left unread.
+- **Decided / left open:** SonarJS 4.x ships under the Sonar Source-Available Licence, not LGPL: the preset's description already says behaviour only, and nothing was copied; the source was read to confirm behaviour, as the coordinator asked.
+- **Mistakes:** none new.
+- **Next:** the strand's 51 native rows in `crates/codelaw-native`.
+
+## 2026-11-07 — W-139 strand W-139-js, third pass: slice 21 (52 unicorn rules read from source, 15 links)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the js strand: link the 19 "already does it" rows, confirm the 104 "not confirmable offline" rows from upstream's source and tests, write the natives, re-label the rest.
+- **Done:** slice 21 — 52 `js/*` rules (18 auto, 27 suggest, 7 manual) from unicorn 79.0.0, behaviour read at the `v79.0.0` tag; 15 `ported_from:` links; four "already does it" rows were not the same rule once read (two written, one native, one Markdown). The strand's not-written list is re-labelled with what each row waits on.
+- **Decided / left open:** an upstream rule with several shapes is written in the narrowest shape whose fix is certain, its page naming the rest; five unicorn rows moved to native (number comparison, integrity lengths, CSS shorthand tables, code points), six to W-162 (they need every call or reference of a binding), one to W-105.
+- **Mistakes:** a scratch `mv` into the session's shared scratchpad briefly moved the python strand's upstream files; put back at once. A matcher fact: a `constraints:` entry on a capture an `any:` branch does not bind fails that branch — check per branch instead.
+- **Next:** slice 22 — the 42 rows read (SonarJS 29, unicorn 12, `md/no-empty-link-text`); then the natives.
 
 ## 2026-11-07 — W-139 strand W-139-py, second pass: close-out tally  ·  Claude Code (Opus 5.5)
 
@@ -147,10 +221,10 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-07 — W-156 step 4: the last native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish W-156: first run `cargo test -p codelaw-native` and `-p codelaw-engine` after the previous agent's marker edits and fix what broke, then move the 60 native rules left (css 8, python 52), one pack per change, and close the item.
-- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)).
+- **Done:** the engine check — one failure, `data_json::duplicate_keys_decode_escapes`, whose test helper applied the choice markers as text edits (range `usize::MAX`); it now applies the default choice. css landed (css: auto 40 → 42, suggest 33 → 39, manual 73 → 65 (pending 16 → 8, all capability-blocked)). python landed (python: auto 170 → 181, suggest 233 → 274, manual 255 → 203 (pending 73 → 21, all capability-blocked)): eleven to `auto` within their subsets, forty-one to `suggest`, choices where the code gives several. `css/media-feature-name-no-vendor-prefix`, still marked for the closed W-166, moved to `suggest`. W-156 closed and archived; W-171 too (its last worktree, W-156's, landed and was removed).
 - **Decided / left open:** `string-no-newline` offers a space or `\A`, not a `\` continuation: the CSS grammar refuses the continuation, so the engine never applies it.
-- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack.
-- **Next:** python's 52 native rules.
+- **Mistakes:** the first `codelaw test` of one rule file reported "does not fire" for a rule that reads the pack's data tables; a single rule file runs without them — test the pack. `python_util::decorators` returns a decorator's expression, not its `@`: `cached-instance-method`'s first edit inserted after the `@`, the engine refused it as a syntax error and the test showed only "not a fixpoint"; found with a debug print, fixed to insert at the `@`. Once the shared binary was another worktree's build (caught by grepping the copy for a new string).
+- **Next:** W-162's 42 capability-blocked rules (its own item).
 
 ## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
 

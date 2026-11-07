@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the variable needs a new name, chosen by the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the variable is renamed to the first of `mod`, `mod2`, … the file does not use, with every reference; the name is the author's to improve, and an exported one is renamed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/no-assign-module-variable` |

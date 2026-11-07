@@ -8,13 +8,13 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX |
-| **Turned on by** | `codelaw:js/recommended` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `env`, `globals`, `typeof` |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right declaration — an import, a local, or an environment — is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-undef` |
+| **Ported from** | `eslint/no-undef`, `eslint-plugin-sonarjs/no-implicit-global`, `eslint-plugin-sonarjs/no-reference-error` |
 
 ## What it checks
 

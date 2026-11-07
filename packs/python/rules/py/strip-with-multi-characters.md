@@ -2,9 +2,8 @@
 id: py/strip-with-multi-characters
 title: "`.strip()` isn't given a word"
 languages: [python]
-fix: manual
-fix_reason: "whether a character set or a suffix was meant needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `removeprefix`/`removesuffix` (Python 3.9+), what a repeated character suggests was meant, and the character set without its repeats, which strips the same; `.strip()` offers only the second. Neither is the default"
 stability: preview
 ported_from: [ruff/B005]
 since: 0.1.0
@@ -31,6 +30,18 @@ native: py/strip-with-multi-characters
 
 ```py
 name = filename.rstrip(".txt")
+```
+
+#### Fixed (removesuffix)
+
+```py
+name = filename.removesuffix(".txt")
+```
+
+#### Fixed (deduplicate)
+
+```py
+name = filename.rstrip(".tx")
 ```
 
 #### Do

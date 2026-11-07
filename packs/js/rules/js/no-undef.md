@@ -10,7 +10,7 @@ options:
   env: { type: "string[]", default: ["shared-node-browser"], description: "environments whose globals are declared: browser, node, commonjs, worker, serviceworker, shared-node-browser, jest, mocha, vitest" }
   globals: { type: "string[]", default: [], description: "more names to treat as declared" }
   typeof: { type: "boolean", default: false, description: "also report names used only as `typeof x`" }
-ported_from: [eslint/no-undef]
+ported_from: [eslint/no-undef, eslint-plugin-sonarjs/no-implicit-global, eslint-plugin-sonarjs/no-reference-error]
 since: 0.1.0
 ---
 

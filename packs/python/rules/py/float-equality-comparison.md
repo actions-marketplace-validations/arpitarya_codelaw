@@ -2,9 +2,8 @@
 id: py/float-equality-comparison
 title: "No == between floats"
 languages: [python]
-fix: manual
-fix_reason: "`math.isclose` uses a tolerance, so values that compared unequal may compare equal"
-fix_pending: "suggest; needs add-import (W-162)"
+fix: suggest
+fix_reason: "`math.isclose` uses a tolerance, so values that compared unequal may compare equal; `math` is imported where the file does not, and a file that binds `math` to something else is fixed by hand"
 stability: preview
 ported_from: [ruff/RUF069]
 since: 0.5.0
@@ -21,7 +20,15 @@ match:
     - pattern: $A == $B
     - pattern: $A != $B
   has: {kind: float}
+  all:
+    - any:
+        - all: [{ pattern: $A == $B }, { pattern: $EQ }]
+        - all: [{ pattern: $A != $B }, { pattern: $NE }]
 message: "Compare floats with `math.isclose`"
+fix:
+  - replace: { target: $EQ, with: "math.isclose($A, $B)" }
+  - replace: { target: $NE, with: "not math.isclose($A, $B)" }
+  - ensure-import: { module: math }
 ```
 
 ## How to fix
@@ -42,6 +49,8 @@ if total == 0.3:
 #### Do
 
 ```python
+import math
+
 if math.isclose(total, 0.3):
     done()
 ```

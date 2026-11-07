@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how to keep the items (a list, `itertools.tee`) is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`group = list(group)` goes first in the loop body: the later uses see the items instead of an exhausted iterator, which is the fix and a change in what they get) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B031` |
@@ -132,6 +132,17 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 import itertools
 
 for key, group in itertools.groupby(rows):
+    first = list(group)
+    rest = list(group)
+```
+
+#### Fixed
+
+```py
+import itertools
+
+for key, group in itertools.groupby(rows):
+    group = list(group)
     first = list(group)
     rest = list(group)
 ```

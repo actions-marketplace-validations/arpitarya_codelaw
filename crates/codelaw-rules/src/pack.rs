@@ -256,7 +256,8 @@ pub struct RulePack {
     pub manifest: PackManifest,
     pub dir: PathBuf,
     pub first_party: bool,
-    pub rules: Vec<RuleFile>,
+    /// Shared with every rule set that loads the pack (W-172).
+    pub rules: Vec<Arc<RuleFile>>,
     pub presets: BTreeMap<String, Preset>,
     /// `data/` tables, parsed once and shared read-only
     /// (SR-ARCHITECTURE decision 15c), keyed by their path under `data/`
@@ -377,6 +378,73 @@ pub fn load_pack(dir: &Path) -> Result<RulePack, Vec<LoadError>> {
     load_pack_from(dir, true)
 }
 
+/// What a pack's load reads, as each file's and folder's path, size and
+/// modification time: the manifest, `rules/`, `presets/` and `data/`. Two
+/// equal stamps mean the same pack, without reading a file.
+type Stamp = Vec<(PathBuf, u64, Option<std::time::SystemTime>)>;
+
+fn stamp(dir: &Path) -> Stamp {
+    let mut out = Vec::new();
+    let mut note = |p: &Path, m: &fs::Metadata| out.push((p.to_path_buf(), m.len(), m.modified().ok()));
+    let manifest = dir.join("codelaw-pack.toml");
+    if let Ok(m) = fs::metadata(&manifest) {
+        note(&manifest, &m);
+    }
+    // Depth-first, at most eight folders deep, so a symlink cycle ends.
+    let mut stack: Vec<(PathBuf, usize)> = ["rules", "presets", "data"].iter().map(|s| (dir.join(s), 0)).collect();
+    while let Some((d, depth)) = stack.pop() {
+        let Ok(m) = fs::metadata(&d) else { continue };
+        note(&d, &m);
+        let Ok(entries) = fs::read_dir(&d) else { continue };
+        for e in entries.flatten() {
+            let p = e.path();
+            match fs::metadata(&p) {
+                Ok(m) if m.is_dir() => {
+                    if depth < 8 {
+                        stack.push((p, depth + 1));
+                    }
+                }
+                Ok(m) => note(&p, &m),
+                Err(_) => {}
+            }
+        }
+    }
+    out.sort();
+    out
+}
+
+/// The packs this process has loaded, most recently used first: a warm
+/// process (`mcp`, `lsp`, `daemon`) loads a project per request, and a pack
+/// whose files are unchanged is not read and parsed again (W-172; SR-CACHE
+/// decision 8's in-memory tier).
+#[allow(clippy::type_complexity)]
+static PACKS: std::sync::Mutex<Vec<((PathBuf, bool), Stamp, Arc<RulePack>)>> = std::sync::Mutex::new(Vec::new());
+
+/// How many loaded packs a process keeps.
+const PACKS_KEPT: usize = 64;
+
+/// [`load_pack_from`], from this process's memory when the pack's files
+/// have not changed since it was last loaded. A refused pack is never kept.
+pub fn load_pack_cached(dir: &Path, first_party_origin: bool) -> Result<Arc<RulePack>, Vec<LoadError>> {
+    let key = (dir.to_path_buf(), first_party_origin);
+    let now = stamp(dir);
+    {
+        let mut kept = PACKS.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(i) = kept.iter().position(|(k, s, _)| *k == key && *s == now) {
+            let hit = kept.remove(i);
+            let pack = hit.2.clone();
+            kept.insert(0, hit);
+            return Ok(pack);
+        }
+    }
+    let pack = Arc::new(load_pack_from(dir, first_party_origin)?);
+    let mut kept = PACKS.lock().unwrap_or_else(|e| e.into_inner());
+    kept.retain(|(k, _, _)| *k != key);
+    kept.insert(0, (key, now, pack.clone()));
+    kept.truncate(PACKS_KEPT);
+    Ok(pack)
+}
+
 /// Load a pack found through `extends`. `first_party_origin` says whether
 /// the spec could only resolve to a first-party install (`codelaw:`, or
 /// `npm:`/`pypi:` naming a first-party package): a pack reached any other
@@ -495,6 +563,11 @@ pub fn load_pack_from(dir: &Path, first_party_origin: bool) -> Result<RulePack, 
         out.extend(errors);
         return Err(out);
     }
+    // A new list, not the parsed one's buffer reused: that holds room for
+    // every whole rule, kept for as long as the pack is (W-172).
+    let mut shared = Vec::with_capacity(rules.len());
+    shared.extend(rules.into_iter().map(Arc::new));
+    let rules = shared;
     Ok(RulePack { manifest, dir: dir.to_owned(), first_party: first_party.is_some(), rules, presets, data: Arc::new(data), data_hash })
 }
 

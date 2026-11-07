@@ -15,7 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**`, `**/tests/**`, `**/e2e/**` |
-| **Ported from** | `eslint-plugin-testing-library/prefer-query-matchers` |
+| **Ported from** | `eslint-plugin-testing-library/prefer-query-matchers`, `eslint-plugin-sonarjs/testing-library-query-assertion` |
 
 ## What it checks
 
