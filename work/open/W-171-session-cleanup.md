@@ -33,6 +33,10 @@ These worktrees were left untouched. Rule per worktree: **keep** (merge it or co
 
 **Keep all six.** Each is the unlanded work of an agent stopped by the 5-hour usage limit on 11-05 (W-139 step 3, W-141 DoD 3, W-156 native moves, W-162 capabilities, W-168 graph bench, W-169 crash capture), resumed on Arpit's *"continue"* (2026-11-07, Claude Code) under his standing direction not to ask during build runs — as W-159 was. Keeping loses nothing; each worktree lands through lockmaster with its item, and the next cleanup removes it. W-171 closes when the last one has landed.
 
+## Progress — 2026-11-07
+
+Landed and removed: W-141 (`6230624d`), W-162 (`29a1bddc`), W-168 (`89d376a6`), W-139 (`89fefb06`), W-169 (`8ad936ec`) — each worktree's only leftovers were `.fux/index` re-index output, restored before `git worktree remove` and `git branch -d`. Left: W-156, whose agent is still moving native rules.
+
 ## Record affected
 
 No SR affected — the rule is SR-WORK-CLEANUP.
