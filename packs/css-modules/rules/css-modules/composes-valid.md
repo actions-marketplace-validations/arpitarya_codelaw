@@ -2,9 +2,9 @@
 id: css-modules/composes-valid
 title: "composes points at a class that exists"
 languages: [css, scss]
-fix: manual
-fix_reason: "which class to compose is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual"
+fix_exception: value
 stability: preview
 since: 0.3.0
 ---
@@ -32,9 +32,18 @@ native: css-modules/composes-valid
 
 ```css files
 /* src/button.module.css */
+.primary { composes: bse from "./base.module.css"; }
+/* src/base.module.css */
+.base { color: red; }
+```
+
+#### Fixed
+
+```css files
+/* src/button.module.css */
 .primary { composes: base from "./base.module.css"; }
 /* src/base.module.css */
-.root { color: red; }
+.base { color: red; }
 ```
 
 #### Do
@@ -52,6 +61,15 @@ native: css-modules/composes-valid
 
 ```scss files
 /* src/button.module.scss */
+.base { color: red; }
+.primary { composes: bsae; }
+```
+
+#### Fixed
+
+```scss files
+/* src/button.module.scss */
+.base { color: red; }
 .primary { composes: base; }
 ```
 

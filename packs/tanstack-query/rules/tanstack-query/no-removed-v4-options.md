@@ -2,9 +2,9 @@
 id: tanstack-query/no-removed-v4-options
 title: "A query takes no option TanStack Query v5 removed"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual"
+fix_exception: restructure
 stability: preview
 since: 0.3.0
 ---

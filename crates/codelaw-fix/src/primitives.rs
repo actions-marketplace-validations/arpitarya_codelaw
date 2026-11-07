@@ -4,7 +4,7 @@
 
 use codelaw_core::{FixChoice, Language, TextEdit};
 use codelaw_lang::Root;
-use codelaw_match::{Match, interpolate};
+use codelaw_match::{Match, try_interpolate};
 use codelaw_semantic::SemanticModel;
 use serde_json::Value;
 
@@ -346,7 +346,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
     match p {
         Primitive::Replace { target, with } => {
             let (s, e) = range(target, m)?;
-            out.push(TextEdit::new(s, e, interpolate(with, m, ctx.source)));
+            out.push(TextEdit::new(s, e, try_interpolate(with, m, ctx.source)?));
         }
         Primitive::Remove { target } => {
             let (s, e) = range(target, m)?;
@@ -355,11 +355,11 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
         }
         Primitive::InsertBefore { target, text } => {
             let (s, _) = range(target, m)?;
-            out.push(TextEdit::insert(s, interpolate(text, m, ctx.source)));
+            out.push(TextEdit::insert(s, try_interpolate(text, m, ctx.source)?));
         }
         Primitive::InsertAfter { target, text } => {
             let (_, e) = range(target, m)?;
-            out.push(TextEdit::insert(e, interpolate(text, m, ctx.source)));
+            out.push(TextEdit::insert(e, try_interpolate(text, m, ctx.source)?));
         }
         Primitive::StripExportKeyword { target } => {
             let (s, e) = range(target, m)?;
@@ -389,7 +389,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             if symbol.exported {
                 return Err(format!("`{}` is exported; renaming it would break importers", symbol.name));
             }
-            let new = interpolate(to, m, ctx.source);
+            let new = try_interpolate(to, m, ctx.source)?;
             let mut ranges: Vec<(usize, usize)> = symbol.decls.clone();
             ranges.extend(symbol.refs.iter().map(|&r| (model.references[r].start, model.references[r].end)));
             ranges.sort();

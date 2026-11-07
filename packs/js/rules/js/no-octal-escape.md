@@ -2,9 +2,7 @@
 id: js/no-octal-escape
 title: "No octal escapes"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the equivalent `\\u` or `\\x` escape is computed from the octal value"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/no-octal-escape]
 since: 0.5.0
@@ -19,6 +17,7 @@ match:
   kind: string
   regex: '(^|[^\\])(\\\\)*\\([1-7]|0[0-7])'
 message: "Use a `\\u` or `\\x` escape instead of an octal escape"
+fix: "$$MATCH|unescape-octal"
 ```
 
 ## How to fix

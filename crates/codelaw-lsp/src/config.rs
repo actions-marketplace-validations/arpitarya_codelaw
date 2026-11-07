@@ -432,16 +432,26 @@ fn same(a: Option<&'static Value>, pointer: &str) -> bool {
     }
 }
 
-/// Whether a path is a table of rule settings: `[rules]`, a scope's or a
-/// profile's `rules`.
+/// Whether a path is a table of rule settings: `[rules]` (the schema's
+/// `rootRules`, which adds `require_reason`), a scope's or a profile's `rules`.
 fn is_rules(path: &[String]) -> bool {
-    same(node(path), "/definitions/rules")
+    same(node(path), "/definitions/rules") || same(node(path), "/definitions/rootRules")
+}
+
+/// The keys of a rules table that are settings, not rule ids:
+/// `require_reason` in the top-level `[rules]` (SR-CONFIG decision 11c).
+fn rules_keys(path: &[String]) -> impl Iterator<Item = (&'static String, &'static Value)> {
+    node(path).filter(|_| is_rules(path)).and_then(|n| n.get("properties")).and_then(Value::as_object).into_iter().flatten()
 }
 
 /// The rule a path is inside, and what follows its id: `[rules]` →
-/// `"js/max-lines"` → `options` → `max`.
+/// `"js/max-lines"` → `options` → `max`. A rules table's own key
+/// (`require_reason`) is not a rule.
 fn rule_of(path: &[String]) -> Option<(&str, &[String])> {
-    (0..path.len()).rev().find(|&i| is_rules(&path[..i])).map(|i| (path[i].as_str(), &path[i + 1..]))
+    (0..path.len())
+        .rev()
+        .find(|&i| is_rules(&path[..i]) && !rules_keys(&path[..i]).any(|(k, _)| *k == path[i]))
+        .map(|i| (path[i].as_str(), &path[i + 1..]))
 }
 
 /// The record a key is defined by: its own `x-codelaw-record`, else the
@@ -667,6 +677,12 @@ pub fn complete(text: &str, offset: usize, home: Home, cat: &Catalogue) -> Optio
                 }
                 for (ns, how) in cat.missing_extended() {
                     items.push(Item { label: format!("{ns}/…"), insert: key_insert(&format!("{ns}/")), kind: Kind::Note, detail: Some(format!("not installed: {how}")), doc: None });
+                }
+                if place.at == At::Key {
+                    for (name, v) in rules_keys(path) {
+                        let v = resolve(v);
+                        items.push(Item { label: name.clone(), insert: key_insert(name), kind: Kind::Key, detail: Some(type_of(v)), doc: description(v).map(str::to_owned) });
+                    }
                 }
             } else if same(node(path), "/properties/scope") {
                 for (name, preset) in &cat.scopes {

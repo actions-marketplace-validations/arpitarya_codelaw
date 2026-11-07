@@ -2,9 +2,7 @@
 id: js/no-div-regex
 title: "No regex starting with ="
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the edit inside the pattern is not a template edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/no-div-regex]
 since: 0.5.0
@@ -18,8 +16,12 @@ A regular-expression literal does not begin with `=`.
 
 match:
   kind: regex
-  has: { kind: regex_pattern, regex: '^=' }
+  has: { kind: regex_pattern, regex: '^=', pattern: $P }
+transform:
+  R: { substring: { source: $P, startChar: 1 } }
 message: "A regex starting with `=` reads like `/=`; escape it as `[=]`"
+fix:
+  - replace: { target: $P, with: "[=]$R" }
 ```
 
 ## How to fix

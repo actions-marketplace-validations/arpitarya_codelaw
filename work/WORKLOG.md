@@ -24,6 +24,36 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)).
+- **Decided / left open:** none yet.
+- **Mistakes:** none.
+- **Next:** the next pack.
+
+---
+
+## 2026-11-05 — W-170 closed: config completion in the top-level `[rules]`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-170 — three `codelaw-lsp` config-completion tests fail on main; find the cause, fix it, close.
+- **Done:** named the three (`completions_come_from_the_schema_and_the_packs`, `fix_offers_only_the_rule_s_own_rung_and_below`, `the_server_publishes_completes_and_fixes_a_config_as_typed`); cause W-158's `rootRules` schema node (`c0346694`), which `is_rules` did not recognise; fixed in `config.rs` (`rootRules` is a rules table, `require_reason` a key, not a rule); SR-EDITOR decision 9 notes it; W-170 archived.
+- **Decided / left open:** no assertion changed. `cargo clippy -p codelaw-lsp` stops on a pre-existing `type_complexity` error in `codelaw-config`, not this change's.
+- **Mistakes:** none.
+- **Next:** none for W-170.
+
+---
+
+## 2026-11-05 — W-162 change 1: computed edits, tiers 1–2  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-162 — build the fix capabilities W-161 designed, computed edits first, moving the rules waiting on each; land each capability as its own change.
+- **Done:** ast-grep's `transform:` beside `match:`; the template filters (`map`, `number`, `escape`, `unescape-octal`, `count`, `upper`, `lower`, `upper-first`) with a strict `try_interpolate` so a refusing filter offers no fix; operator tokens captured with `$$OP`. 19 `js/*` rules moved (SR-RULE-FORMAT 3b's Built note lists them). `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `prefer-template` and `no-useless-concat` wait on native fixes (a chain of any length; mixed quotes); `prefer-keyboard-event-key` needs an edit outside its match. Tier 3 (`edit-text`, `unwrap-block`, `move`) next.
+- **Mistakes:** a binary copied over an existing one in place was SIGKILLed by macOS (code signature cache); copy to a removed path instead.
+- **Next:** W-162 change 2 — tier 3 primitives, starting with `edit-text` for the eleven `jsdoc-*` rules.
+
+---
+
 ## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.

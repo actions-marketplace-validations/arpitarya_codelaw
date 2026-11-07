@@ -108,6 +108,12 @@ fn completions_come_from_the_schema_and_the_packs() {
     assert!(rules.iter().any(|(l, _, k)| l == "py/…" && *k == Kind::Note), "the uninstalled pack the config extends: {rules:?}");
     let quoted = labels("[rules]\n\"js/m|\"", Home::CodelawToml);
     assert!(quoted.iter().any(|(l, ins, _)| l == "js/max-lines" && ins == "js/max-lines"), "{quoted:?}");
+    // The top-level [rules] also has `require_reason` (SR-CONFIG decision 11c): a key, a boolean, never a rule.
+    let root_rules = labels("[rules]\n|", Home::CodelawToml);
+    assert!(root_rules.iter().any(|(l, _, k)| l == "require_reason" && *k == Kind::Key) && has(&root_rules, "js/no-var"), "{root_rules:?}");
+    let rr = labels("[rules]\nrequire_reason = |", Home::CodelawToml);
+    assert!(has(&rr, "true") && has(&rr, "false") && !has(&rr, "error"), "{rr:?}");
+    assert!(!has(&labels("[scope.tests.rules]\n|", Home::CodelawToml), "require_reason"), "root config only");
     // Scope and profile rules are rule tables too.
     assert!(has(&labels("[scope.tests.rules]\n|", Home::CodelawToml), "js/no-var"));
     assert!(has(&labels("[profile.ci.rules]\n|", Home::CodelawToml), "js/no-var"));
