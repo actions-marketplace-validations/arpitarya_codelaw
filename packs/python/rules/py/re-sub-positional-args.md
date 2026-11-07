@@ -2,9 +2,8 @@
 id: py/re-sub-positional-args
 title: "`re.sub` count and flags by keyword"
 languages: [python]
-fix: manual
-fix_reason: "which parameter the value was meant for needs a person"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "the arguments after the third (`re.sub`, `re.subn`) or second (`re.split`) become `count=`/`maxsplit=` and `flags=`, by the real signature: the same binding. A flag in the `count` place is the bug the rule is for: its choices are `count=` (what runs today) and `flags=`"
 stability: preview
 ported_from: [ruff/B034]
 since: 0.1.0
@@ -32,6 +31,14 @@ native: py/re-sub-positional-args
 import re
 
 text = re.sub("a", "b", text, 1)
+```
+
+#### Fixed
+
+```py
+import re
+
+text = re.sub("a", "b", text, count=1)
 ```
 
 #### Do

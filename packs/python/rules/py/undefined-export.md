@@ -2,10 +2,10 @@
 id: py/undefined-export
 title: "`__all__` names only defined names"
 languages: [python]
+fix: suggest
+fix_reason: "the module's names within two edits are choices, the nearest the default, beside removing the entry from `__all__`; `import *` raises AttributeError today. A module with `__getattr__`, or an entry outside a list or tuple literal, is manual"
+fix_exception: value
 exclude: ["**/__init__.py"]
-fix: manual
-fix_reason: "whether the name should be defined or dropped from `__all__` needs a person"
-fix_pending: "suggest-choices"
 stability: preview
 ported_from: [ruff/F822, pylint/undefined-all-variable]
 since: 0.1.0
@@ -31,6 +31,16 @@ native: py/undefined-export
 
 ```py
 __all__ = ["load", "save"]
+
+
+def load():
+    pass
+```
+
+#### Fixed (remove)
+
+```py
+__all__ = ["load"]
 
 
 def load():

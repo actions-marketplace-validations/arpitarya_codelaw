@@ -5367,7 +5367,7 @@ Every media feature in `@media` and `@custom-media` is one the Media Queries spe
 ## `css/media-feature-name-no-vendor-prefix` — No vendor-prefixed media features
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the value needs converting to a `dppx` resolution)
+- **Fix:** `suggest` (a plain number becomes that many `dppx` on the standard feature (`-webkit-min-device-pixel-ratio: 2` is `min-resolution: 2dppx`); a browser that knows only the prefixed feature (Safari before 16) stops matching, so it is a suggestion, not `auto`. A ratio or a range is manual, as its `dppx` value is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-feature-name-no-vendor-prefix.md
 
@@ -87691,7 +87691,7 @@ out = a.merge(b, on='id')
 ## `py/abstract-base-class-without-abstract-method` — An abstract base class has an abstract method
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which methods subclasses must provide is a design decision)
+- **Fix:** `suggest` (the choices are dropping `ABC` (a plain class) and marking one method `@abstractmethod` (imported when it isn't), one choice per method; each changes what can be instantiated, so none is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/abstract-base-class-without-abstract-method.md
 
@@ -87716,6 +87716,27 @@ A class that inherits only from `ABC` (or uses `ABCMeta`) declares at least one 
 from abc import ABC
 
 class Shape(ABC):
+    def area(self):
+        return 0
+```
+
+##### Fixed (drop ABC)
+
+```py
+from abc import ABC
+
+class Shape:
+    def area(self):
+        return 0
+```
+
+##### Fixed (abstract area)
+
+```py
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
     def area(self):
         return 0
 ```
@@ -88099,7 +88120,7 @@ class TestParse(unittest.TestCase):
 ## `py/assert-tuple` — `assert` doesn't test a tuple
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (removing the parentheses turns a no-op into a check that can now fail)
+- **Fix:** `suggest` (without the parentheses the first item is the test and the second its message, as meant; the assert starts to check and can fail. A tuple of three or more items, or with a comment, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/assert-tuple.md
 
@@ -88224,7 +88245,7 @@ assert n > 0
 ## `py/assignment-to-os-environ` — Don't assign to `os.environ`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether to clear the environment first or only update it needs a person)
+- **Fix:** `suggest` (the choices are replacing the environment (`os.environ.clear()` then `.update()`) and adding to it (`.update()`); either now changes the real process environment, so neither is the default. An assignment inside another statement is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/assignment-to-os-environ.md
 
@@ -88248,6 +88269,23 @@ Code changes the environment through `os.environ`'s items, never by assigning a 
 import os
 
 os.environ = {"PATH": "/bin"}
+```
+
+##### Fixed (replace)
+
+```py
+import os
+
+os.environ.clear()
+os.environ.update({"PATH": "/bin"})
+```
+
+##### Fixed (update)
+
+```py
+import os
+
+os.environ.update({"PATH": "/bin"})
 ```
 
 ##### Do
@@ -89615,7 +89653,7 @@ def send(msg, *, urgent: bool):
 ## `py/break-outside-loop` — `break` only inside a loop
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (what should happen instead (return, raise) is the author's choice)
+- **Fix:** `suggest` (the choices are `return`, in a function, and deleting the `break` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/break-outside-loop.md
 
@@ -89638,6 +89676,20 @@ def send(msg, *, urgent: bool):
 ```py
 def stop():
     break
+```
+
+##### Fixed (return)
+
+```py
+def stop():
+    return
+```
+
+##### Fixed (delete)
+
+```py
+def stop():
+    pass
 ```
 
 ##### Do
@@ -89863,7 +89915,7 @@ def f(b: bytes | bytearray) -> None: ...
 ## `py/cached-instance-method` — No `lru_cache` on methods
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (where the cache should live is a design choice)
+- **Fix:** `suggest` (a method that never reads `self` becomes a `@staticmethod` without it: the cache is then shared by every instance and a subclass's override no longer replaces it through the base, so review it. A method that reads `self` is manual, as the cache must move out of the class)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/cached-instance-method.md
 
@@ -89890,6 +89942,18 @@ import functools
 class Store:
     @functools.lru_cache
     def get(self, key):
+        return key.upper()
+```
+
+##### Fixed
+
+```py
+import functools
+
+class Store:
+    @staticmethod
+    @functools.lru_cache
+    def get(key):
         return key.upper()
 ```
 
@@ -91210,7 +91274,7 @@ for x in xs:
 ## `py/continue-outside-loop` — `continue` only inside a loop
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (what should happen instead is the author's choice)
+- **Fix:** `suggest` (the choices are `return`, in a function, and deleting the `continue` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/continue-outside-loop.md
 
@@ -91233,6 +91297,20 @@ for x in xs:
 ```py
 def skip():
     continue
+```
+
+##### Fixed (return)
+
+```py
+def skip():
+    return
+```
+
+##### Fixed (delete)
+
+```py
+def skip():
+    pass
 ```
 
 ##### Do
@@ -91502,7 +91580,7 @@ price = Decimal("0.1")
 ## `py/default-except-not-last` — A bare `except:` is the last handler
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (reordering handlers changes which one runs)
+- **Fix:** `auto` (a bare `except:` before another handler is a SyntaxError, so the code never ran: the handler moves, lines whole, after the last handler, the only order in which every one can run. Two bare handlers, or a handler sharing a line, are manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/default-except-not-last.md
 
@@ -92154,7 +92232,7 @@ class Config:
 ## `py/duplicate-dict-key` — A dict literal doesn't repeat a literal key
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `auto` (auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/duplicate-dict-key.md
 
@@ -92179,6 +92257,12 @@ A dict literal names each literal key (`"a"`, `1`, `True`) once.
 colors = {"red": 1, "red": 2}
 ```
 
+##### Fixed
+
+```py
+colors = {"red": 2}
+```
+
 ##### Do
 
 ```py
@@ -92188,7 +92272,7 @@ colors = {"red": 1, "blue": 2}
 ## `py/duplicate-dict-key-variable` — A dict literal doesn't repeat a variable key
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `auto` (auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/duplicate-dict-key-variable.md
 
@@ -92211,6 +92295,12 @@ A dict literal uses the same variable as a key at most once.
 
 ```py
 scores = {player: 1, player: 2}
+```
+
+##### Fixed
+
+```py
+scores = {player: 2}
 ```
 
 ##### Do
@@ -92379,7 +92469,7 @@ colors = {"red", "green"}
 ## `py/duplicate-try-block-exception` — An exception is caught by one handler only
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which handler's code is meant to run needs a person)
+- **Fix:** `auto` (an earlier handler of the `try` catches the class first, so this one never runs for it: a class named by a plain name or attribute goes from the later tuple, and a later handler with nothing else live goes whole; any other repeat (a computed class, `except*`) is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/duplicate-try-block-exception.md
 
@@ -92406,6 +92496,15 @@ except ValueError:
     retry()
 except ValueError:
     log()
+```
+
+##### Fixed
+
+```py
+try:
+    run()
+except ValueError:
+    retry()
 ```
 
 ##### Do
@@ -92549,7 +92648,7 @@ def get(user_id):
 ## `py/empty-method-without-abstract-decorator` — Empty methods in an abstract base class are abstract
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the method is a required hook or an optional no-op is a design decision)
+- **Fix:** `suggest` (`@abstractmethod` goes right above the `def`, imported from `abc` when it isn't: a subclass that doesn't define the method can no longer be instantiated, so review the optional hooks. A name `abstractmethod` taken by something else is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/empty-method-without-abstract-decorator.md
 
@@ -92577,6 +92676,20 @@ class Shape(ABC):
     @abstractmethod
     def area(self): ...
 
+    def draw(self):
+        pass
+```
+
+##### Fixed
+
+```py
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self): ...
+
+    @abstractmethod
     def draw(self):
         pass
 ```
@@ -92862,7 +92975,7 @@ logger.error("startup failed")
 ## `py/except-with-empty-tuple` — No `except ():`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the exceptions to catch are the author's choice)
+- **Fix:** `suggest` (the handler never runs, so it goes; the only handler of a `try` without `finally` takes the `try` with it (its body, then its `else`, dedented). The code runs the same but loses what signals a bug, so review it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/except-with-empty-tuple.md
 
@@ -92889,6 +93002,12 @@ except ():
     log()
 ```
 
+##### Fixed
+
+```py
+run()
+```
+
 ##### Do
 
 ```py
@@ -92901,7 +93020,7 @@ except ValueError:
 ## `py/except-with-non-exception-classes` — `except` names exception classes
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the exception class to catch is the author's choice)
+- **Fix:** `suggest` (a string naming a builtin exception becomes that exception, and another literal in a tuple with classes goes; any exception reaching the handler raised `TypeError` before, so what it catches changes. Anything else is manual, as the class meant is a value the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/except-with-non-exception-classes.md
 
@@ -92924,7 +93043,16 @@ An `except` clause names exception classes (or tuples of them), not literals or 
 ```py
 try:
     run()
-except "error":
+except "ValueError":
+    log()
+```
+
+##### Fixed
+
+```py
+try:
+    run()
+except ValueError:
     log()
 ```
 
@@ -93242,7 +93370,7 @@ print(total)
 ## `py/f-string-docstring` — Docstrings aren't f-strings
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the docstring's wording has to change to drop the placeholder)
+- **Fix:** `suggest` (the `f` goes and `{{ }}` are undoubled: the text becomes `__doc__`, placeholders as written; tools that read docstrings (Click, Typer, FastAPI) then see it. An interpolation spanning lines or holding the quote is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/f-string-docstring.md
 
@@ -93265,6 +93393,13 @@ The first statement of a module, class or function isn't an f-string meant as it
 ```py
 def greet():
     f"""Say hello to {NAME}."""
+```
+
+##### Fixed
+
+```py
+def greet():
+    """Say hello to {NAME}."""
 ```
 
 ##### Do
@@ -93789,7 +93924,7 @@ msg = _("Hello, {}").format(name)
 ## `py/format-invalid` — A `.format` string is well formed
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the brace is a field or literal text has to be decided)
+- **Fix:** `suggest` (the string raises ValueError today: a stray `}` is doubled; a `{` never closed is escaped as `{{` or closed as an empty field `{}`, the two choices, neither the default. A string with escapes is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-invalid.md
 
@@ -93811,6 +93946,18 @@ A string literal passed through `.format()` has balanced braces; literal braces 
 
 ```py
 message = "{".format(1)
+```
+
+##### Fixed (escape)
+
+```py
+message = "{{".format(1)
+```
+
+##### Fixed (field)
+
+```py
+message = "{}".format(1)
 ```
 
 ##### Do
@@ -93855,7 +94002,7 @@ message = "{} is {}".format("Ada", 36)
 ## `py/format-mixed-numbering` — A `.format` string doesn't mix `{}` and `{0}`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which numbering the author wants has to be chosen)
+- **Fix:** `suggest` (each `{}` is numbered by its place among the fields, its evident meaning; the string raises ValueError today, so it starts to format. A string with nested fields or escapes is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-mixed-numbering.md
 
@@ -93983,7 +94130,7 @@ The fix removes unused arguments only from the end of the list, and only plain n
 ## `py/forward-annotation-syntax-error` — A string annotation is valid Python
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended type can't be inferred from broken text)
+- **Fix:** `suggest` (when closing the brackets left open makes the string parse, they are added at its end, and the annotation starts to resolve to a type (`get_type_hints` raised before); any other broken annotation is manual, as the intended type is a value the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/forward-annotation-syntax-error.md
 
@@ -94091,7 +94238,7 @@ class Job:
 ## `py/function-call-in-default-argument` — No function calls in default arguments
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the value should be computed per call or once at import needs a person)
+- **Fix:** `suggest` (the choices are a `None` default with the call in the body (it runs on every call, likely what was meant) and, for a module-level function, the call as a module constant above it (it runs once, as now, and says so); a call inside a larger default is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/function-call-in-default-argument.md
 
@@ -94125,6 +94272,28 @@ def log(message, when=time.time()):
     print(when, message)
 ```
 
+##### Fixed (None default)
+
+```py
+import time
+
+def log(message, when=None):
+    if when is None:
+        when = time.time()
+    print(when, message)
+```
+
+##### Fixed (module constant)
+
+```py
+import time
+
+_LOG_WHEN_DEFAULT = time.time()
+
+def log(message, when=_LOG_WHEN_DEFAULT):
+    print(when, message)
+```
+
 ##### Do
 
 ```py
@@ -94139,7 +94308,7 @@ def log(message, when=None):
 ## `py/function-uses-loop-variable` — Closures don't capture a loop variable by name
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (binding the value now (a default argument, `functools.partial`) changes the function's signature)
+- **Fix:** `suggest` (the loop variables the function reads become keyword-only defaults (`*, name=name`), bound when the function is made: the late binding becomes early, which is the fix and a change. A function that already takes `*`, `**` or `/` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/function-uses-loop-variable.md
 
@@ -94163,6 +94332,14 @@ A function or lambda defined in a loop doesn't read a variable the loop rebinds,
 callbacks = []
 for name in ["a", "b"]:
     callbacks.append(lambda: print(name))
+```
+
+##### Fixed
+
+```py
+callbacks = []
+for name in ["a", "b"]:
+    callbacks.append(lambda *, name=name: print(name))
 ```
 
 ##### Do
@@ -94664,7 +94841,7 @@ best = max(best, score)
 ## `py/if-tuple` — `if` doesn't test a tuple
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended condition can't be inferred from the tuple)
+- **Fix:** `suggest` (the choices are testing the first item or all of them joined with `and`; the condition is always true today, so either changes what runs. A tuple with a starred item or a comment is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/if-tuple.md
 
@@ -94686,6 +94863,20 @@ An `if` or `elif` condition isn't a non-empty tuple.
 
 ```py
 if (ready, "waiting"):
+    start()
+```
+
+##### Fixed (first item)
+
+```py
+if ready:
+    start()
+```
+
+##### Fixed (all items)
+
+```py
+if ready and "waiting":
     start()
 ```
 
@@ -94935,7 +95126,7 @@ def load():
 ## `py/import-shadowed-by-loop-var` — A loop variable doesn't reuse an imported name
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the new loop variable name is a choice the author has to make)
+- **Fix:** `auto` (auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes `<name>_` in the loop, and the import holds everywhere else as before; a module-level loop rebinds a global others may read, and a read after the loop would see the module, so those are suggestions. None when `<name>_` is taken)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/import-shadowed-by-loop-var.md
 
@@ -94961,6 +95152,15 @@ import path
 
 for path in ["a.txt", "b.txt"]:
     print(path)
+```
+
+##### Fixed
+
+```py
+import path
+
+for path_ in ["a.txt", "b.txt"]:
+    print(path_)
 ```
 
 ##### Do
@@ -96275,7 +96475,7 @@ out = path.with_suffix(".txt")
 ## `py/invalid-print-syntax` — No Python 2 `print >>`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the rewrite depends on how the Python 2 arguments were meant)
+- **Fix:** `suggest` (`print >> f, a, b` becomes `print(a, b, file=f)`, a trailing comma `end=" "`, as 2to3 writes it; it raises TypeError today, so the print starts to work)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/invalid-print-syntax.md
 
@@ -96594,7 +96794,7 @@ class Rows:
 ## `py/jump-statement-in-finally` — No `return`, `break` or `continue` in `finally`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (how errors should propagate has to be decided)
+- **Fix:** `suggest` (the `return`, `break` or `continue` ending a `finally` moves to right after the `try` (the `finally` goes when that was all it held and a handler stays, else `pass` stands in): an exception now propagates instead of being swallowed, which is the fix and a change. A jump elsewhere in the block is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/jump-statement-in-finally.md
 
@@ -96621,6 +96821,17 @@ def read(path):
         return load(path)
     finally:
         return None
+```
+
+##### Fixed
+
+```py
+def read(path):
+    try:
+        return load(path)
+    finally:
+        pass
+    return None
 ```
 
 ##### Do
@@ -96666,7 +96877,7 @@ def double(x):
 ## `py/late-future-import` — `from __future__` imports come first
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (moving statements above it can change the order the module runs in)
+- **Fix:** `auto` (a late `from __future__` import is a SyntaxError, so the module never ran: it moves above the first statement that isn't a docstring or another `__future__` import, its only meaning. One inside a block, or sharing its line, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/late-future-import.md
 
@@ -97311,7 +97522,7 @@ items = [item for item in items if item >= 0]
 ## `py/loop-variable-overrides-iterator` — A loop variable doesn't replace what it iterates
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the new name is the author's choice)
+- **Fix:** `auto` (auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes the singular of the name (`items` → `item`), else `<name>_item`, in the loop. A module-level loop, or a read after the loop, is a suggestion, as the name then holds the iterable again; none when the new name is taken)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/loop-variable-overrides-iterator.md
 
@@ -97335,6 +97546,13 @@ A `for` loop's target doesn't reuse a name read in the iterable expression.
 ```py
 for items in items:
     print(items)
+```
+
+##### Fixed
+
+```py
+for item in items:
+    print(item)
 ```
 
 ##### Do
@@ -98771,7 +98989,7 @@ import sys
 ## `py/multiple-starred-expressions` — One starred target per assignment
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which target should collect the rest has to be chosen)
+- **Fix:** `suggest` (one choice per starred target: it keeps its star and the others lose theirs; a SyntaxError today, and which target collects the rest is the author's call, so none is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/multiple-starred-expressions.md
 
@@ -98793,6 +99011,18 @@ An unpacking assignment has at most one starred target.
 
 ```py
 *head, *tail = values
+```
+
+##### Fixed (keep *head)
+
+```py
+*head, tail = values
+```
+
+##### Fixed (keep *tail)
+
+```py
+head, *tail = values
 ```
 
 ##### Do
@@ -98908,7 +99138,7 @@ class Registry:
 ## `py/mutable-contextvar-default` — No mutable `ContextVar` defaults
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether to use an immutable value or set a fresh one per context is a design choice)
+- **Fix:** `suggest` (a list becomes a tuple and a set a frozenset (their comprehensions and `list()`/`set()` calls too); code that changes the value in place stops working, so review the uses. A dict or a computed default is manual, as its immutable form is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/mutable-contextvar-default.md
 
@@ -98932,6 +99162,14 @@ A `ContextVar`'s `default=` isn't a list, dict, set or the result of a call.
 from contextvars import ContextVar
 
 items = ContextVar("items", default=[])
+```
+
+##### Fixed
+
+```py
+from contextvars import ContextVar
+
+items = ContextVar("items", default=())
 ```
 
 ##### Do
@@ -101626,7 +101864,7 @@ def f(x: int, /) -> None: ...
 ## `py/percent-format-count-mismatch` — A `%` format string gets one value per placeholder
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which value is missing, or extra, can't be inferred)
+- **Fix:** `suggest` (too many values: the extra ones at the end go when running them does nothing; too few needs values the code doesn't hold, so it is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-count-mismatch.md
 
@@ -101647,7 +101885,7 @@ The tuple (or single literal) formatted into a `%` string has as many values as 
 ##### Don't
 
 ```py
-message = "%s is %s" % ("Ada",)
+message = "%s is %s" % ("Ada", 36, "years")
 ```
 
 ##### Do
@@ -101659,7 +101897,7 @@ message = "%s is %s" % ("Ada", 36)
 ## `py/percent-format-expected-mapping` — Named `%` placeholders get a mapping
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the key each value belongs to isn't written anywhere)
+- **Fix:** `suggest` (a tuple with one item per name becomes a dict in the placeholders' order, which assumes the two orders match; any other right side is manual, as the mapping is a value the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-expected-mapping.md
 
@@ -101692,7 +101930,7 @@ message = "%(name)s" % {"name": "Ada"}
 ## `py/percent-format-expected-sequence` — Positional `%` placeholders get a tuple
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the order of the values isn't written anywhere)
+- **Fix:** `suggest` (a dict literal with one value per placeholder becomes a tuple of its values in their order, which assumes that order is the intended one; any other right side is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-expected-sequence.md
 
@@ -101725,7 +101963,7 @@ message = "%s and %s" % (1, 2)
 ## `py/percent-format-invalid` — A `%` format string is complete
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended placeholder can't be inferred)
+- **Fix:** `suggest` (the string raises ValueError today: the choices are escaping the `%` as `%%` (it was text) and, for a key left open, closing it as `%(key)s`; neither is the default. A string with escapes or an f-prefix is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-invalid.md
 
@@ -101747,6 +101985,18 @@ A string formatted with `%` has no unfinished placeholder such as `%(name` or a 
 
 ```py
 message = "%(name" % {"name": "Ada"}
+```
+
+##### Fixed (escape)
+
+```py
+message = "%%(name" % {"name": "Ada"}
+```
+
+##### Fixed (close)
+
+```py
+message = "%(name)s" % {"name": "Ada"}
 ```
 
 ##### Do
@@ -101824,7 +102074,7 @@ message = "%(name)s is %(age)s" % {"name": "Ada", "age": 36}
 ## `py/percent-format-star-requires-sequence` — A `*` width in a `%` format takes a tuple
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the order of the values has to be decided)
+- **Fix:** `suggest` (a dict literal with a value per `*` and per placeholder becomes a tuple of its values in their order, which assumes width comes before value; a named placeholder with `*`, or any other right side, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-star-requires-sequence.md
 
@@ -101857,7 +102107,7 @@ message = "%*d" % (5, 1)
 ## `py/percent-format-unsupported-character` — A `%` format uses known conversions
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended conversion can't be inferred)
+- **Fix:** `suggest` (the string raises ValueError today: the choices are escaping the `%` as `%%` and replacing the conversion with `s`; neither is the default. A string with escapes is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-unsupported-character.md
 
@@ -101879,6 +102129,18 @@ Each `%` placeholder ends with a conversion Python knows (`s`, `r`, `a`, `d`, `f
 
 ```py
 message = "%y" % (1,)
+```
+
+##### Fixed (escape)
+
+```py
+message = "%%y" % (1,)
+```
+
+##### Fixed (s)
+
+```py
+message = "%s" % (1,)
 ```
 
 ##### Do
@@ -103335,7 +103597,7 @@ def f(x: Node) -> None: ...
 ## `py/raise-literal` — Raise exceptions, not literals
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the exception class to raise is the author's choice)
+- **Fix:** `suggest` (the literal is wrapped in `RuntimeError(...)`; it raised `TypeError` before, so a handler for that no longer catches it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/raise-literal.md
 
@@ -103357,6 +103619,12 @@ def f(x: Node) -> None: ...
 
 ```py
 raise "failed"
+```
+
+##### Fixed
+
+```py
+raise RuntimeError("failed")
 ```
 
 ##### Do
@@ -103434,7 +103702,7 @@ raise LookupError("no such user")
 ## `py/raise-without-from-inside-except` — Raising in `except` says `from`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether to chain the original error or hide it is the author's choice)
+- **Fix:** `suggest` (the choices are `from err` (the caught error kept as the cause, bound `as err` when the handler doesn't name it) and `from None` (hidden); either changes the traceback, so neither is the default. A raise over several lines is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/raise-without-from-inside-except.md
 
@@ -103460,6 +103728,24 @@ try:
     value = int(text)
 except ValueError:
     raise TypeError("not a number")
+```
+
+##### Fixed (from err)
+
+```py
+try:
+    value = int(text)
+except ValueError as err:
+    raise TypeError("not a number") from err
+```
+
+##### Fixed (from None)
+
+```py
+try:
+    value = int(text)
+except ValueError:
+    raise TypeError("not a number") from None
 ```
 
 ##### Do
@@ -103541,7 +103827,7 @@ raise ValueError(msg)
 ## `py/re-sub-positional-args` — `re.sub` count and flags by keyword
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which parameter the value was meant for needs a person)
+- **Fix:** `auto` (the arguments after the third (`re.sub`, `re.subn`) or second (`re.split`) become `count=`/`maxsplit=` and `flags=`, by the real signature: the same binding. A flag in the `count` place is the bug the rule is for: its choices are `count=` (what runs today) and `flags=`)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/re-sub-positional-args.md
 
@@ -103565,6 +103851,14 @@ raise ValueError(msg)
 import re
 
 text = re.sub("a", "b", text, 1)
+```
+
+##### Fixed
+
+```py
+import re
+
+text = re.sub("a", "b", text, count=1)
 ```
 
 ##### Do
@@ -103791,7 +104085,7 @@ def run(settings):
 ## `py/redefined-while-unused` — A definition isn't replaced before it is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (which definition is meant, and whether to rename or remove the other, needs a person)
+- **Fix:** `auto` (auto for the same import twice, the later alone on its statement: it goes, and the name stays bound to the same object; an unused definition before a redefinition is deleted as a suggestion, since its decorators and defaults no longer run; any other redefinition is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/redefined-while-unused.md
 
@@ -103815,6 +104109,14 @@ A function, class or import isn't redefined (by another `def`, `class`, import o
 ```py
 def load():
     return 1
+
+def load():
+    return 2
+```
+
+##### Fixed
+
+```py
 
 def load():
     return 2
@@ -104599,7 +104901,7 @@ def f():
 ## `py/return-outside-function` — `return` only inside a function
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the surrounding code has to be restructured)
+- **Fix:** `suggest` (a SyntaxError today, so nothing ran: the `return` goes (`pass` when its block empties), and a value that does something stays as a statement; wrapping it in a function would need a name the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/return-outside-function.md
 
@@ -104624,6 +104926,13 @@ class Config:
     return None
 ```
 
+##### Fixed
+
+```py
+class Config:
+    pass
+```
+
 ##### Do
 
 ```py
@@ -104635,7 +104944,7 @@ class Config:
 ## `py/reuse-of-groupby-generator` — A `groupby` group is used once
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (how to keep the items (a list, `itertools.tee`) is the author's choice)
+- **Fix:** `suggest` (`group = list(group)` goes first in the loop body: the later uses see the items instead of an exhausted iterator, which is the fix and a change in what they get)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/reuse-of-groupby-generator.md
 
@@ -104659,6 +104968,17 @@ The group iterator from `itertools.groupby()` is consumed once inside its loop.
 import itertools
 
 for key, group in itertools.groupby(rows):
+    first = list(group)
+    rest = list(group)
+```
+
+##### Fixed
+
+```py
+import itertools
+
+for key, group in itertools.groupby(rows):
+    group = list(group)
     first = list(group)
     rest = list(group)
 ```
@@ -105342,7 +105662,7 @@ lowest = min(scores)
 ## `py/star-arg-unpacking-after-keyword-arg` — No `*args` after a keyword argument
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (reordering arguments can change which parameter each value binds to)
+- **Fix:** `auto` (auto when `*args` and the keyword values it moves past are names or literals: Python binds `*args` to positions either way, and only the order the arguments run in changes, which nothing then sees. Otherwise the same move is a suggestion; two late `*args` are manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/star-arg-unpacking-after-keyword-arg.md
 
@@ -105442,7 +105762,7 @@ totals = list(map(add, xs, ys))
 ## `py/static-key-dict-comprehension` — A dict comprehension's key varies
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended key can't be inferred)
+- **Fix:** `suggest` (one choice per loop target: it becomes the key, and the dict gets an entry per item instead of one; none is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/static-key-dict-comprehension.md
 
@@ -105464,6 +105784,12 @@ A dict comprehension's key depends on the loop variables.
 
 ```py
 sizes = {"size": len(name) for name in names}
+```
+
+##### Fixed (name)
+
+```py
+sizes = {name: len(name) for name in names}
 ```
 
 ##### Do
@@ -105571,7 +105897,7 @@ def f(x: str = ...) -> None: ...
 ## `py/strip-with-multi-characters` — `.strip()` isn't given a word
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether a character set or a suffix was meant needs a person)
+- **Fix:** `suggest` (the choices are `removeprefix`/`removesuffix` (Python 3.9+), what a repeated character suggests was meant, and the character set without its repeats, which strips the same; `.strip()` offers only the second. Neither is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/strip-with-multi-characters.md
 
@@ -105594,6 +105920,18 @@ def f(x: str = ...) -> None: ...
 
 ```py
 name = filename.rstrip(".txt")
+```
+
+##### Fixed (removesuffix)
+
+```py
+name = filename.removesuffix(".txt")
+```
+
+##### Fixed (deduplicate)
+
+```py
+name = filename.rstrip(".tx")
 ```
 
 ##### Do
@@ -106732,7 +107070,7 @@ def area(r):
 ## `py/type-comparison` — Don't compare types with `==`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (`isinstance` accepts subclasses, which may or may not be intended)
+- **Fix:** `auto` (auto when both sides are `type()` calls or builtin type names not rebound: `==` becomes `is` and `!=` `is not`, which give the same answer there; for any other class it is a suggestion, as a metaclass may define `__eq__`. `isinstance()` also accepts subclasses, so it is not offered)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/type-comparison.md
 
@@ -106755,6 +107093,13 @@ Types are compared with `is` / `is not`, or checked with `isinstance()`, not wit
 
 ```py
 if type(value) == int:
+    count(value)
+```
+
+##### Fixed
+
+```py
+if type(value) is int:
     count(value)
 ```
 
@@ -106985,7 +107330,7 @@ limit: int
 ## `py/unary-prefix-increment` — No `++x` or `--x`
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether an increment or a plain value was meant needs a person)
+- **Fix:** `suggest` (as a statement the choices are `x += 1` (`-=` for `--`) and deleting it; inside an expression the two signs go. `++x` is a no-op today, but `__pos__` may not be (Decimal), so none is automatic or the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/unary-prefix-increment.md
 
@@ -107008,6 +107353,19 @@ Code doesn't write `++x` or `--x`.
 ```py
 count = 1
 ++count
+```
+
+##### Fixed (increment)
+
+```py
+count = 1
+count += 1
+```
+
+##### Fixed (delete)
+
+```py
+count = 1
 ```
 
 ##### Do
@@ -107113,7 +107471,7 @@ x = np.zeros(3)
 ## `py/undefined-export` — `__all__` names only defined names
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the name should be defined or dropped from `__all__` needs a person)
+- **Fix:** `suggest` (the module's names within two edits are choices, the nearest the default, beside removing the entry from `__all__`; `import *` raises AttributeError today. A module with `__getattr__`, or an entry outside a list or tuple literal, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/undefined-export.md
 
@@ -107140,6 +107498,15 @@ def load():
     pass
 ```
 
+##### Fixed (remove)
+
+```py
+__all__ = ["load"]
+
+def load():
+    pass
+```
+
 ##### Do
 
 ```py
@@ -107159,7 +107526,7 @@ def save():
 ## `py/undefined-future-feature` — `from __future__` names only real features
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the intended feature can't be guessed from a misspelling)
+- **Fix:** `suggest` (the features within two edits of the name are choices, the nearest the default, beside removing the name; a SyntaxError today, so each choice changes what runs)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/undefined-future-feature.md
 
@@ -107181,7 +107548,18 @@ Every name imported from `__future__` is a feature Python defines.
 ##### Don't
 
 ```py
-from __future__ import braces
+from __future__ import annotatons
+```
+
+##### Fixed (annotations)
+
+```py
+from __future__ import annotations
+```
+
+##### Fixed (remove)
+
+```py
 ```
 
 ##### Do
@@ -107193,7 +107571,7 @@ from __future__ import annotations
 ## `py/undefined-local` — A local isn't read before the function assigns it
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether to declare it `global`, `nonlocal` or rename the local needs a person)
+- **Fix:** `suggest` (`global <name>` (a module binding) or `nonlocal <name>` (an enclosing function's) goes at the top of the function, after its docstring: the UnboundLocalError becomes reading and writing the outer name, which the author may not want. Renaming the local is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/undefined-local.md
 
@@ -107234,7 +107612,7 @@ def increment():
 ## `py/undefined-name` — Every name read is defined
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether to import, define or correct the name needs a person)
+- **Fix:** `suggest` (the names in scope and the builtins within two edits are choices, the nearest the default; the NameError becomes a read of that name. A name with none near is manual, as the right one is a value the code doesn't hold)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/undefined-name.md
 
@@ -107674,7 +108052,7 @@ name = "bob"
 ## `py/unintentional-type-annotation` — No annotation where an assignment was meant
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether an assignment was meant needs a person)
+- **Fix:** `suggest` (`:` becomes `=`: the annotation that did nothing becomes the assignment it looks like, which changes what runs)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/unintentional-type-annotation.md
 
@@ -110205,7 +110583,7 @@ class A(Base):
 ## `py/useless-comparison` — No comparison whose result is thrown away
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether an assignment or an assertion was meant needs a person)
+- **Fix:** `suggest` (the choices are an assignment (`==` written for `=`), an `assert`, and deleting the statement; each changes what runs (an assignment, a check, or no `__eq__` call), so none is the default)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/useless-comparison.md
 
@@ -110231,6 +110609,27 @@ def reset(state):
     state.count == 0
 ```
 
+##### Fixed (assign)
+
+```py
+def reset(state):
+    state.count = 0
+```
+
+##### Fixed (assert)
+
+```py
+def reset(state):
+    assert state.count == 0
+```
+
+##### Fixed (delete)
+
+```py
+def reset(state):
+    pass
+```
+
 ##### Do
 
 ```py
@@ -110241,7 +110640,7 @@ def reset(state):
 ## `py/useless-contextlib-suppress` — `contextlib.suppress()` names an exception
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the exceptions to suppress are the author's choice)
+- **Fix:** `suggest` (the `with` line goes and its body is dedented: it suppressed nothing, so the code runs the same, but the exception the author forgot to name is gone from view, so review it. A `with` with an `as` target, other context managers or a multi-line string is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/useless-contextlib-suppress.md
 
@@ -110266,6 +110665,14 @@ import contextlib
 
 with contextlib.suppress():
     remove("cache")
+```
+
+##### Fixed
+
+```py
+import contextlib
+
+remove("cache")
 ```
 
 ##### Do
@@ -110351,7 +110758,7 @@ def f(x):
 ## `py/useless-expression` — No expression statement that does nothing
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (what the expression was meant for needs a person)
+- **Fix:** `suggest` (the choices are deleting the statement and, when it ends a function, returning it; reading an attribute can run a property, so neither is automatic or the default. A statement sharing its line is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/useless-expression.md
 
@@ -110374,6 +110781,13 @@ A statement isn't a bare name, number, attribute access or container literal who
 ```py
 def name(user):
     user.name
+    return user
+```
+
+##### Fixed
+
+```py
+def name(user):
     return user
 ```
 

@@ -2,9 +2,9 @@
 id: py/redefined-while-unused
 title: "A definition isn't replaced before it is used"
 languages: [python]
-fix: manual
-fix_reason: "which definition is meant, and whether to rename or remove the other, needs a person"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for the same import twice, the later alone on its statement: it goes, and the name stays bound to the same object; an unused definition before a redefinition is deleted as a suggestion, since its decorators and defaults no longer run; any other redefinition is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/F811, pylint/function-redefined]
 since: 0.1.0
@@ -32,6 +32,15 @@ native: py/redefined-while-unused
 ```py
 def load():
     return 1
+
+
+def load():
+    return 2
+```
+
+#### Fixed
+
+```py
 
 
 def load():

@@ -2,9 +2,9 @@
 id: py/cached-instance-method
 title: "No `lru_cache` on methods"
 languages: [python]
-fix: manual
-fix_reason: "where the cache should live is a design choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a method that never reads `self` becomes a `@staticmethod` without it: the cache is then shared by every instance and a subclass's override no longer replaces it through the base, so review it. A method that reads `self` is manual, as the cache must move out of the class"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B019, pylint/method-cache-max-size-none]
 since: 0.1.0
@@ -36,6 +36,19 @@ import functools
 class Store:
     @functools.lru_cache
     def get(self, key):
+        return key.upper()
+```
+
+#### Fixed
+
+```py
+import functools
+
+
+class Store:
+    @staticmethod
+    @functools.lru_cache
+    def get(key):
         return key.upper()
 ```
 

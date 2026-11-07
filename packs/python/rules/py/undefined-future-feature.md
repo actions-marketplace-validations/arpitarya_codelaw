@@ -2,9 +2,8 @@
 id: py/undefined-future-feature
 title: "`from __future__` names only real features"
 languages: [python]
-fix: manual
-fix_reason: "the intended feature can't be guessed from a misspelling"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the features within two edits of the name are choices, the nearest the default, beside removing the name; a SyntaxError today, so each choice changes what runs"
 stability: preview
 ported_from: [ruff/F407]
 since: 0.1.0
@@ -30,7 +29,18 @@ native: py/undefined-future-feature
 #### Don't
 
 ```py
-from __future__ import braces
+from __future__ import annotatons
+```
+
+#### Fixed (annotations)
+
+```py
+from __future__ import annotations
+```
+
+#### Fixed (remove)
+
+```py
 ```
 
 #### Do

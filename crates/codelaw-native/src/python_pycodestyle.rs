@@ -214,6 +214,11 @@ fn is_type_call(n: Node<'_>, ctx: &NativeContext<'_>) -> bool {
     args.positional.len() == 1 && args.keywords.is_empty() && names_one_of(f, model, ctx.source, &["builtins.type"])
 }
 
+/// The builtin classes whose `type()` comparison `is` gives the same answer.
+const BUILTIN_TYPES: &[&str] = &[
+    "bool", "bytearray", "bytes", "complex", "dict", "float", "frozenset", "int", "list", "memoryview", "object", "range", "set", "slice", "str", "tuple", "type",
+];
+
 fn type_comparison(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let (operands, ops) = split_comparison(n, ctx.source);
     for (i, (op, _, _)) in ops.iter().enumerate() {
@@ -222,12 +227,20 @@ fn type_comparison(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFin
         }
         let (l, r) = (operands[i], operands[i + 1]);
         if is_type_call(l, ctx) || is_type_call(r, ctx) {
-            out.push(NativeFinding {
-                start: l.start_byte(),
-                end: r.end_byte(),
-                message: "Compare types with `is` / `is not`, or test with `isinstance()`".into(),
-                edits: Vec::new(),
-            });
+            // `is` / `is not`: the same for a builtin type or another
+            // `type()` (`auto`); for any other class, unless its metaclass
+            // defines `__eq__` (a suggestion).
+            let builtin = |n: Node<'_>| {
+                let n = unparen(n);
+                is_type_call(n, ctx)
+                    || (n.kind() == "identifier"
+                        && BUILTIN_TYPES.contains(&text(n, ctx.source))
+                        && ctx.semantic.is_some_and(|m| m.reference_at(n.start_byte()).is_some_and(|r| r.symbol.is_none())))
+            };
+            let (_, a, b) = &ops[i];
+            let edit = vec![TextEdit::new(*a, *b, if op == "==" { "is" } else { "is not" })];
+            let edits = if builtin(l) && builtin(r) { edit } else { crate::as_suggestion(edit) };
+            out.push(NativeFinding { start: l.start_byte(), end: r.end_byte(), message: "Compare types with `is` / `is not`, or test with `isinstance()`".into(), edits });
         }
     }
 }

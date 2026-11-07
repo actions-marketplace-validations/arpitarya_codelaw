@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (reordering handlers changes which one runs) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a bare `except:` before another handler is a SyntaxError, so the code never ran: the handler moves, lines whole, after the last handler, the only order in which every one can run. Two bare handlers, or a handler sharing a line, are manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F707` |

@@ -2,9 +2,9 @@
 id: py/function-uses-loop-variable
 title: "Closures don't capture a loop variable by name"
 languages: [python]
-fix: manual
-fix_reason: "binding the value now (a default argument, `functools.partial`) changes the function's signature"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the loop variables the function reads become keyword-only defaults (`*, name=name`), bound when the function is made: the late binding becomes early, which is the fix and a change. A function that already takes `*`, `**` or `/` is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B023, pylint/cell-var-from-loop]
 since: 0.1.0
@@ -32,6 +32,14 @@ native: py/function-uses-loop-variable
 callbacks = []
 for name in ["a", "b"]:
     callbacks.append(lambda: print(name))
+```
+
+#### Fixed
+
+```py
+callbacks = []
+for name in ["a", "b"]:
+    callbacks.append(lambda *, name=name: print(name))
 ```
 
 #### Do

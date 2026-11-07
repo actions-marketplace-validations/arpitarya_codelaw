@@ -2,9 +2,9 @@
 id: css/media-feature-name-no-vendor-prefix
 title: "No vendor-prefixed media features"
 languages: [css, scss]
-fix: manual
-fix_reason: "the value needs converting to a `dppx` resolution"
-fix_pending: "auto-subset; needs browser-targets (W-166)"
+fix: suggest
+fix_reason: "a plain number becomes that many `dppx` on the standard feature (`-webkit-min-device-pixel-ratio: 2` is `min-resolution: 2dppx`); a browser that knows only the prefixed feature (Safari before 16) stops matching, so it is a suggestion, not `auto`. A ratio or a range is manual, as its `dppx` value is the author's call"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/media-feature-name-no-vendor-prefix]
 since: 0.1.0

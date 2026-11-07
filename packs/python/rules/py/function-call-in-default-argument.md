@@ -2,9 +2,9 @@
 id: py/function-call-in-default-argument
 title: "No function calls in default arguments"
 languages: [python]
-fix: manual
-fix_reason: "whether the value should be computed per call or once at import needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are a `None` default with the call in the body (it runs on every call, likely what was meant) and, for a module-level function, the call as a module constant above it (it runs once, as now, and says so); a call inside a larger default is manual"
+fix_exception: restructure
 stability: preview
 options:
   extend_immutable_calls: { type: "string[]", default: [], description: "more calls whose results are immutable, by qualified name" }
@@ -36,6 +36,31 @@ import time
 
 
 def log(message, when=time.time()):
+    print(when, message)
+```
+
+#### Fixed (None default)
+
+```py
+import time
+
+
+def log(message, when=None):
+    if when is None:
+        when = time.time()
+    print(when, message)
+```
+
+#### Fixed (module constant)
+
+```py
+import time
+
+
+_LOG_WHEN_DEFAULT = time.time()
+
+
+def log(message, when=_LOG_WHEN_DEFAULT):
     print(when, message)
 ```
 

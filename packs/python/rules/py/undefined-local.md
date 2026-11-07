@@ -2,9 +2,9 @@
 id: py/undefined-local
 title: "A local isn't read before the function assigns it"
 languages: [python]
-fix: manual
-fix_reason: "whether to declare it `global`, `nonlocal` or rename the local needs a person"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`global <name>` (a module binding) or `nonlocal <name>` (an enclosing function's) goes at the top of the function, after its docstring: the UnboundLocalError becomes reading and writing the outer name, which the author may not want. Renaming the local is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F823]
 since: 0.1.0

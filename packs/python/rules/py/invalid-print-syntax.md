@@ -2,9 +2,8 @@
 id: py/invalid-print-syntax
 title: "No Python 2 `print >>`"
 languages: [python]
-fix: manual
-fix_reason: "the rewrite depends on how the Python 2 arguments were meant"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`print >> f, a, b` becomes `print(a, b, file=f)`, a trailing comma `end=\" \"`, as 2to3 writes it; it raises TypeError today, so the print starts to work"
 stability: preview
 ported_from: [ruff/F633]
 since: 0.1.0

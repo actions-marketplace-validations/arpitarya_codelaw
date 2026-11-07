@@ -2,9 +2,9 @@
 id: py/percent-format-count-mismatch
 title: "A `%` format string gets one value per placeholder"
 languages: [python]
-fix: manual
-fix_reason: "which value is missing, or extra, can't be inferred"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "too many values: the extra ones at the end go when running them does nothing; too few needs values the code doesn't hold, so it is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F507, pylint/too-many-format-args, pylint/too-few-format-args]
 since: 0.1.0
@@ -29,7 +29,7 @@ native: py/percent-format-count-mismatch
 #### Don't
 
 ```py
-message = "%s is %s" % ("Ada",)
+message = "%s is %s" % ("Ada", 36, "years")
 ```
 
 #### Do

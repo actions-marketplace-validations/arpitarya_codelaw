@@ -2,9 +2,9 @@
 id: py/default-except-not-last
 title: "A bare `except:` is the last handler"
 languages: [python]
-fix: manual
-fix_reason: "reordering handlers changes which one runs"
-fix_pending: "auto"
+fix: auto
+fix_reason: "a bare `except:` before another handler is a SyntaxError, so the code never ran: the handler moves, lines whole, after the last handler, the only order in which every one can run. Two bare handlers, or a handler sharing a line, are manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/F707]
 since: 0.1.0
