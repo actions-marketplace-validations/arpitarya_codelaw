@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2278 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2326 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -55,7 +55,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 559 | 21 |
+| [python](#python) | — | `codelaw-rules-python` | 607 | 21 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 2 | 0 |
@@ -1847,6 +1847,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended` |
 | [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended` |
 | [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | *[rules] only* |
+| [`py/any-type`](py/any-type.md) | No Any in a function signature | `manual` | — | *[rules] only* |
 | [`py/assert-false`](py/assert-false.md) | Don't `assert False` | `suggest` | — | `py/recommended` |
 | [`py/assert-on-string-literal`](py/assert-on-string-literal.md) | No assert on a string | `manual` | — | *[rules] only* |
 | [`py/assert-raises-exception`](py/assert-raises-exception.md) | Tests don't expect a bare `Exception` | `manual` | — | `py/recommended` |
@@ -1855,6 +1856,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/assignment-default-in-stub`](py/assignment-default-in-stub.md) | Simple values only in stub assignments | `auto` | — | *[rules] only* |
 | [`py/assignment-in-assert`](py/assignment-in-assert.md) | No walrus inside assert | `manual` | — | *[rules] only* |
 | [`py/assignment-to-os-environ`](py/assignment-to-os-environ.md) | Don't assign to `os.environ` | `manual` | — | `py/recommended` |
+| [`py/async-busy-wait`](py/async-busy-wait.md) | No sleep loop waiting for a condition | `manual` | — | *[rules] only* |
+| [`py/async-function-with-timeout`](py/async-function-with-timeout.md) | An async function has no timeout parameter | `manual` | — | *[rules] only* |
 | [`py/async-zero-sleep`](py/async-zero-sleep.md) | lowlevel.checkpoint(), not sleep(0) | `auto` | — | *[rules] only* |
 | [`py/asyncio-dangling-task`](py/asyncio-dangling-task.md) | Keep a reference to every asyncio task | `manual` | — | *[rules] only* |
 | [`py/await-outside-async`](py/await-outside-async.md) | No await outside an async function | `manual` | — | *[rules] only* |
@@ -1876,6 +1879,9 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/blanket-noqa`](py/blanket-noqa.md) | noqa names its rule codes | `manual` | — | *[rules] only* |
 | [`py/blanket-type-ignore`](py/blanket-type-ignore.md) | type: ignore names its error codes | `manual` | — | *[rules] only* |
 | [`py/blind-except`](py/blind-except.md) | No except Exception that swallows the error | `manual` | — | *[rules] only* |
+| [`py/blocking-http-call-in-async-function`](py/blocking-http-call-in-async-function.md) | No blocking HTTP call in an async function | `manual` | — | *[rules] only* |
+| [`py/blocking-input-in-async-function`](py/blocking-input-in-async-function.md) | No input() in an async function | `manual` | — | *[rules] only* |
+| [`py/blocking-open-call-in-async-function`](py/blocking-open-call-in-async-function.md) | No blocking file open in an async function | `manual` | — | *[rules] only* |
 | [`py/blocking-sleep-in-async-function`](py/blocking-sleep-in-async-function.md) | No time.sleep in an async function | `suggest` | — | *[rules] only* |
 | [`py/boolean-chained-comparison`](py/boolean-chained-comparison.md) | a < b < c, not a < b and b < c | `auto` | — | *[rules] only* |
 | [`py/boolean-default-value-positional-argument`](py/boolean-default-value-positional-argument.md) | A parameter defaulting to True or False is keyword-only | `manual` | — | *[rules] only* |
@@ -1899,6 +1905,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/camelcase-imported-as-acronym`](py/camelcase-imported-as-acronym.md) | A CamelCase name is not imported as its initials | `manual` | — | *[rules] only* |
 | [`py/camelcase-imported-as-constant`](py/camelcase-imported-as-constant.md) | A CamelCase name is not imported under a CONSTANT alias | `manual` | — | *[rules] only* |
 | [`py/camelcase-imported-as-lowercase`](py/camelcase-imported-as-lowercase.md) | A CamelCase name is not imported under a lowercase alias | `manual` | — | *[rules] only* |
+| [`py/cancel-scope-no-checkpoint`](py/cancel-scope-no-checkpoint.md) | A timeout scope contains an await | `manual` | — | *[rules] only* |
 | [`py/chained-comparison-all-equal`](py/chained-comparison-all-equal.md) | a == b == c, not a == b and b == c | `auto` | — | *[rules] only* |
 | [`py/check-and-remove-from-set`](py/check-and-remove-from-set.md) | s.discard(x), not if x in s: s.remove(x) | `suggest` | — | *[rules] only* |
 | [`py/class-as-data-structure`](py/class-as-data-structure.md) | A dataclass, not a class that only stores its arguments | `manual` | — | *[rules] only* |
@@ -1918,6 +1925,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/continue-outside-loop`](py/continue-outside-loop.md) | `continue` only inside a loop | `manual` | — | `py/recommended` |
 | [`py/convert-named-tuple-functional-to-class`](py/convert-named-tuple-functional-to-class.md) | NamedTuple as a class | `manual` | — | *[rules] only* |
 | [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | *[rules] only* |
+| [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | *[rules] only* |
 | [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | *[rules] only* |
 | [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | *[rules] only* |
 | [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | *[rules] only* |
@@ -1933,6 +1941,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/dict-get-with-none-default`](py/dict-get-with-none-default.md) | d.get(k), not d.get(k, None) | `auto` | — | *[rules] only* |
 | [`py/direct-logger-instantiation`](py/direct-logger-instantiation.md) | logging.getLogger, not logging.Logger() | `suggest` | — | *[rules] only* |
 | [`py/docstring-in-stub`](py/docstring-in-stub.md) | No docstrings in stubs | `auto` | — | *[rules] only* |
+| [`py/docstring-starts-with-this`](py/docstring-starts-with-this.md) | A docstring does not start with "This" | `manual` | — | *[rules] only* |
+| [`py/docstring-tab-indentation`](py/docstring-tab-indentation.md) | A docstring is indented with spaces | `manual` | — | *[rules] only* |
 | [`py/dot-format-in-exception`](py/dot-format-in-exception.md) | An exception .format() message is assigned before the raise | `manual` | — | *[rules] only* |
 | [`py/double-negation`](py/double-negation.md) | No not not | `auto` | — | *[rules] only* |
 | [`py/dunder-function-name`](py/dunder-function-name.md) | No dunder names for plain functions | `manual` | — | *[rules] only* |
@@ -1949,12 +1959,14 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/duplicate-union-member`](py/duplicate-union-member.md) | No type twice in a union | `suggest` | — | *[rules] only* |
 | [`py/ellipsis-in-non-empty-class-body`](py/ellipsis-in-non-empty-class-body.md) | No ... in a stub class with other members | `auto` | — | *[rules] only* |
 | [`py/empty-comment`](py/empty-comment.md) | No empty comments | `auto` | — | *[rules] only* |
+| [`py/empty-docstring`](py/empty-docstring.md) | No empty docstring | `manual` | — | *[rules] only* |
 | [`py/empty-method-without-abstract-decorator`](py/empty-method-without-abstract-decorator.md) | Empty methods in an abstract base class are abstract | `manual` | — | `py/recommended` |
 | [`py/empty-type-checking-block`](py/empty-type-checking-block.md) | No empty TYPE_CHECKING block | `auto` | — | *[rules] only* |
 | [`py/enumerate-for-loop`](py/enumerate-for-loop.md) | enumerate(), not a hand-kept counter | `manual` | — | *[rules] only* |
 | [`py/eq-without-hash`](py/eq-without-hash.md) | A class with __eq__ defines __hash__ | `suggest` | — | *[rules] only* |
 | [`py/error-instead-of-exception`](py/error-instead-of-exception.md) | logger.exception in an except block | `suggest` | — | *[rules] only* |
 | [`py/error-suffix-on-exception-name`](py/error-suffix-on-exception-name.md) | Exception classes end in Error | `manual` | — | *[rules] only* |
+| [`py/escape-sequence-in-docstring`](py/escape-sequence-in-docstring.md) | A docstring with a backslash is raw | `suggest` | — | *[rules] only* |
 | [`py/exc-info-outside-except-handler`](py/exc-info-outside-except-handler.md) | No exc_info=True outside an except block | `suggest` | — | *[rules] only* |
 | [`py/except-with-empty-tuple`](py/except-with-empty-tuple.md) | No `except ():` | `manual` | — | `py/recommended` |
 | [`py/except-with-non-exception-classes`](py/except-with-non-exception-classes.md) | `except` names exception classes | `manual` | — | `py/recommended` |
@@ -1970,11 +1982,15 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/f-string-docstring`](py/f-string-docstring.md) | Docstrings aren't f-strings | `manual` | — | `py/recommended` |
 | [`py/f-string-in-exception`](py/f-string-in-exception.md) | An exception f-string is assigned before the raise | `manual` | — | *[rules] only* |
 | [`py/f-string-missing-placeholders`](py/f-string-missing-placeholders.md) | An f-string has a placeholder | `auto` | — | `py/recommended` |
+| [`py/f-string-number-format`](py/f-string-number-format.md) | An f-string formats a number in binary, octal or hex | `suggest` | — | *[rules] only* |
 | [`py/f-string-percent-format`](py/f-string-percent-format.md) | No % formatting of an f-string | `manual` | — | *[rules] only* |
 | [`py/falsy-dict-get-fallback`](py/falsy-dict-get-fallback.md) | No falsy fallback to dict.get in a test | `auto` | — | *[rules] only* |
+| [`py/first-word-uncapitalized`](py/first-word-uncapitalized.md) | A docstring's first word is capitalised | `auto` | — | *[rules] only* |
 | [`py/flag-expiry`](py/flag-expiry.md) | Every feature flag read is registered, with an owner and a date it goes | `suggest` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`py/flag-marker`](py/flag-marker.md) | An inline flag marker agrees with the registry | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`py/float-equality-comparison`](py/float-equality-comparison.md) | No == between floats | `manual` | — | *[rules] only* |
+| [`py/for-loop-set-mutations`](py/for-loop-set-mutations.md) | A loop that only adds to a set is update | `suggest` | — | *[rules] only* |
+| [`py/for-loop-writes`](py/for-loop-writes.md) | A loop that only writes to a file is writelines | `suggest` | — | *[rules] only* |
 | [`py/format-invalid`](py/format-invalid.md) | A `.format` string is well formed | `manual` | — | `py/recommended` |
 | [`py/format-missing-argument`](py/format-missing-argument.md) | Every `.format` field has an argument | `manual` | — | `py/recommended` |
 | [`py/format-mixed-numbering`](py/format-mixed-numbering.md) | A `.format` string doesn't mix `{}` and `{0}` | `manual` | — | `py/recommended` |
@@ -2073,9 +2089,22 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/method-receiver-default`](py/method-receiver-default.md) | No default on self or cls | `auto` | — | *[rules] only* |
 | [`py/misplaced-bare-raise`](py/misplaced-bare-raise.md) | No bare raise outside an except block | `manual` | — | *[rules] only* |
 | [`py/misplaced-format-function`](py/misplaced-format-function.md) | format() on the string, not on print() | `suggest` | — | *[rules] only* |
+| [`py/missing-blank-line-after-summary`](py/missing-blank-line-after-summary.md) | A docstring's summary is followed by a blank line | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-class-method`](py/missing-return-type-class-method.md) | A class method annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-private-function`](py/missing-return-type-private-function.md) | A private function annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-special-method`](py/missing-return-type-special-method.md) | A special method annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-static-method`](py/missing-return-type-static-method.md) | A static method annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-undocumented-public-function`](py/missing-return-type-undocumented-public-function.md) | A public function annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-terminal-punctuation`](py/missing-terminal-punctuation.md) | A docstring's summary ends with punctuation | `suggest` | — | *[rules] only* |
+| [`py/missing-trailing-period`](py/missing-trailing-period.md) | A docstring's summary ends with a period | `suggest` | — | *[rules] only* |
+| [`py/missing-type-args`](py/missing-type-args.md) | *args is annotated | `manual` | — | *[rules] only* |
+| [`py/missing-type-function-argument`](py/missing-type-function-argument.md) | A function's parameters are annotated | `manual` | — | *[rules] only* |
+| [`py/missing-type-kwargs`](py/missing-type-kwargs.md) | **kwargs is annotated | `manual` | — | *[rules] only* |
 | [`py/mixed-case-variable-in-class-scope`](py/mixed-case-variable-in-class-scope.md) | Class attributes are not mixedCase | `manual` | — | *[rules] only* |
 | [`py/mixed-case-variable-in-global-scope`](py/mixed-case-variable-in-global-scope.md) | Module variables are not mixedCase | `manual` | — | *[rules] only* |
 | [`py/module-import-not-at-top`](py/module-import-not-at-top.md) | Module-level imports come first | `manual` | — | `py/recommended` |
+| [`py/multi-line-summary-first-line`](py/multi-line-summary-first-line.md) | A multi-line docstring's summary starts on the first line | `auto` | — | *[rules] only* |
+| [`py/multi-line-summary-second-line`](py/multi-line-summary-second-line.md) | A multi-line docstring's summary starts on the second line | `auto` | — | *[rules] only* |
 | [`py/multiple-imports-on-one-line`](py/multiple-imports-on-one-line.md) | One module per `import` statement | `auto` | — | `py/recommended` |
 | [`py/multiple-starred-expressions`](py/multiple-starred-expressions.md) | One starred target per assignment | `manual` | — | `py/recommended` |
 | [`py/multiple-starts-ends-with`](py/multiple-starts-ends-with.md) | One startswith with a tuple | `auto` | — | *[rules] only* |
@@ -2113,6 +2142,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/non-pep585-annotation`](py/non-pep585-annotation.md) | list\[int\], not typing.List\[int\] | `suggest` | — | *[rules] only* |
 | [`py/non-pep604-annotation-optional`](py/non-pep604-annotation-optional.md) | X \| None, not Optional\[X\] | `suggest` | — | *[rules] only* |
 | [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | *[rules] only* |
+| [`py/non-pep646-unpack`](py/non-pep646-unpack.md) | *Ts, not Unpack\[Ts\] | `auto` | — | *[rules] only* |
 | [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | *[rules] only* |
 | [`py/non-unique-enums`](py/non-unique-enums.md) | Each enum member has its own value | `manual` | — | *[rules] only* |
 | [`py/none-comparison`](py/none-comparison.md) | Compare with `None` using `is` | `suggest` | — | `py/recommended` |
@@ -2153,6 +2183,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/os-stat`](py/os-stat.md) | pathlib, not os.stat | `suggest` | — | *[rules] only* |
 | [`py/os-symlink`](py/os-symlink.md) | pathlib, not os.symlink | `suggest` | — | *[rules] only* |
 | [`py/os-unlink`](py/os-unlink.md) | pathlib, not os.unlink | `suggest` | — | *[rules] only* |
+| [`py/overload-with-docstring`](py/overload-with-docstring.md) | An @overload has no docstring | `suggest` | — | *[rules] only* |
 | [`py/p-print`](py/p-print.md) | No pprint left in code | `suggest` | — | *[rules] only* |
 | [`py/parenthesize-chained-operators`](py/parenthesize-chained-operators.md) | Parenthesize `and` inside `or` | `auto` | — | *[rules] only* |
 | [`py/pass-in-class-body`](py/pass-in-class-body.md) | No pass in a stub class with other members | `auto` | — | *[rules] only* |
@@ -2199,6 +2230,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/pytest-warns-with-multiple-statements`](py/pytest-warns-with-multiple-statements.md) | pytest.warns wraps one simple statement | `manual` | — | *[rules] only* |
 | [`py/pytest-warns-without-warning`](py/pytest-warns-without-warning.md) | pytest.warns names a warning | `manual` | — | *[rules] only* |
 | [`py/quadratic-list-summation`](py/quadratic-list-summation.md) | No sum() over lists | `suggest` | — | *[rules] only* |
+| [`py/quoted-annotation`](py/quoted-annotation.md) | No quoted annotation under postponed evaluation | `auto` | — | *[rules] only* |
 | [`py/quoted-annotation-in-stub`](py/quoted-annotation-in-stub.md) | No quoted annotations in stubs | `auto` | — | *[rules] only* |
 | [`py/raise-literal`](py/raise-literal.md) | Raise exceptions, not literals | `manual` | — | `py/recommended` |
 | [`py/raise-not-implemented`](py/raise-not-implemented.md) | Raise `NotImplementedError`, not `NotImplemented` | `suggest` | — | `py/recommended` |
@@ -2206,6 +2238,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/raise-without-from-inside-except`](py/raise-without-from-inside-except.md) | Raising in `except` says `from` | `manual` | — | `py/recommended` |
 | [`py/raw-string-in-exception`](py/raw-string-in-exception.md) | An exception message is assigned before the raise | `manual` | — | *[rules] only* |
 | [`py/re-sub-positional-args`](py/re-sub-positional-args.md) | `re.sub` count and flags by keyword | `manual` | — | `py/recommended` |
+| [`py/read-whole-file`](py/read-whole-file.md) | pathlib reads a whole file in one call | `manual` | — | *[rules] only* |
 | [`py/readlines-in-for`](py/readlines-in-for.md) | Iterate the file, not readlines() | `auto` | — | *[rules] only* |
 | [`py/redeclared-assigned-name`](py/redeclared-assigned-name.md) | No name twice in one unpacking | `manual` | — | *[rules] only* |
 | [`py/redefined-loop-name`](py/redefined-loop-name.md) | No reassigning the loop variable | `manual` | — | *[rules] only* |
@@ -2234,6 +2267,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/return-outside-function`](py/return-outside-function.md) | `return` only inside a function | `manual` | — | `py/recommended` |
 | [`py/reuse-of-groupby-generator`](py/reuse-of-groupby-generator.md) | A `groupby` group is used once | `manual` | — | `py/recommended` |
 | [`py/root-logger-call`](py/root-logger-call.md) | No logging through the root logger | `manual` | — | *[rules] only* |
+| [`py/run-process-in-async-function`](py/run-process-in-async-function.md) | No blocking process run in an async function | `manual` | — | *[rules] only* |
 | [`py/runtime-cast-value`](py/runtime-cast-value.md) | Quote the type in typing.cast | `auto` | — | *[rules] only* |
 | [`py/self-assigning-variable`](py/self-assigning-variable.md) | No x = x | `suggest` | — | *[rules] only* |
 | [`py/self-or-cls-assignment`](py/self-or-cls-assignment.md) | No assignment to self or cls | `manual` | — | *[rules] only* |
@@ -2249,6 +2283,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/six-py3`](py/six-py3.md) | No six.PY3 | `manual` | — | *[rules] only* |
 | [`py/skipped-test`](py/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `py/markers` |
 | [`py/slice-copy`](py/slice-copy.md) | x.copy(), not x\[:\] | `suggest` | — | *[rules] only* |
+| [`py/slice-to-remove-prefix-or-suffix`](py/slice-to-remove-prefix-or-suffix.md) | str.removeprefix, not a startswith and a slice | `auto` | — | *[rules] only* |
 | [`py/sorted-min-max`](py/sorted-min-max.md) | min(), not sorted()\[0\] | `suggest` | — | *[rules] only* |
 | [`py/star-arg-unpacking-after-keyword-arg`](py/star-arg-unpacking-after-keyword-arg.md) | No `*args` after a keyword argument | `manual` | — | `py/recommended` |
 | [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `manual` | — | `py/recommended` |
@@ -2295,6 +2330,14 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/undefined-future-feature`](py/undefined-future-feature.md) | `from __future__` names only real features | `manual` | — | `py/recommended` |
 | [`py/undefined-local`](py/undefined-local.md) | A local isn't read before the function assigns it | `manual` | — | `py/recommended` |
 | [`py/undefined-name`](py/undefined-name.md) | Every name read is defined | `manual` | `builtins` | `py/recommended` |
+| [`py/undocumented-magic-method`](py/undocumented-magic-method.md) | A magic method has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-class`](py/undocumented-public-class.md) | A public class has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-function`](py/undocumented-public-function.md) | A public function has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-init`](py/undocumented-public-init.md) | A public class's __init__ has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-method`](py/undocumented-public-method.md) | A public method has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-module`](py/undocumented-public-module.md) | A public module has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-nested-class`](py/undocumented-public-nested-class.md) | A public nested class has a docstring | `manual` | — | *[rules] only* |
+| [`py/undocumented-public-package`](py/undocumented-public-package.md) | A public package has a docstring | `manual` | — | *[rules] only* |
 | [`py/undocumented-warn`](py/undocumented-warn.md) | logging.WARNING, not logging.WARN | `auto` | — | *[rules] only* |
 | [`py/unexpected-special-method-signature`](py/unexpected-special-method-signature.md) | Special methods take the parameters Python passes | `manual` | — | *[rules] only* |
 | [`py/unicode-kind-prefix`](py/unicode-kind-prefix.md) | No u prefix on strings | `auto` | — | *[rules] only* |
@@ -2316,6 +2359,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unnecessary-ellipsis`](py/unnecessary-ellipsis.md) | No ... beside other statements | `auto` | — | *[rules] only* |
 | [`py/unnecessary-empty-iterable-within-deque-call`](py/unnecessary-empty-iterable-within-deque-call.md) | deque(), not deque(\[\]) | `auto` | — | *[rules] only* |
 | [`py/unnecessary-encode-utf8`](py/unnecessary-encode-utf8.md) | No .encode('utf-8') on a literal | `auto` | — | *[rules] only* |
+| [`py/unnecessary-enumerate`](py/unnecessary-enumerate.md) | No enumerate whose index or value is unused | `suggest` | — | *[rules] only* |
 | [`py/unnecessary-from-float`](py/unnecessary-from-float.md) | Decimal(x), not Decimal.from_float(x) | `suggest` | — | *[rules] only* |
 | [`py/unnecessary-future-import`](py/unnecessary-future-import.md) | No __future__ imports Python 3 already has | `auto` | — | *[rules] only* |
 | [`py/unnecessary-generator-dict`](py/unnecessary-generator-dict.md) | A dict comprehension, not dict(generator of pairs) | `auto` | — | *[rules] only* |
@@ -2337,6 +2381,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unnecessary-literal-within-list-call`](py/unnecessary-literal-within-list-call.md) | A list literal, not list(\[...\]) | `auto` | — | *[rules] only* |
 | [`py/unnecessary-literal-within-tuple-call`](py/unnecessary-literal-within-tuple-call.md) | A tuple literal, not tuple(\[...\]) | `auto` | — | *[rules] only* |
 | [`py/unnecessary-map`](py/unnecessary-map.md) | A generator, not map(lambda ...) | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-multiline-docstring`](py/unnecessary-multiline-docstring.md) | A one-line docstring fits on one line | `suggest` | — | *[rules] only* |
 | [`py/unnecessary-nested-literal`](py/unnecessary-nested-literal.md) | Literal\[a, b\], not Literal\[a, Literal\[b\]\] | `auto` | — | *[rules] only* |
 | [`py/unnecessary-paren-on-raise-exception`](py/unnecessary-paren-on-raise-exception.md) | raise ValueError, not raise ValueError() | `auto` | — | *[rules] only* |
 | [`py/unnecessary-placeholder`](py/unnecessary-placeholder.md) | No pass beside other statements | `auto` | — | *[rules] only* |
@@ -2389,8 +2434,11 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/verbose-decimal-constructor`](py/verbose-decimal-constructor.md) | Decimal('1.5'), not Decimal('  1.5 ') | `auto` | — | *[rules] only* |
 | [`py/verbose-log-message`](py/verbose-log-message.md) | logger.exception does not repeat the exception | `manual` | — | *[rules] only* |
 | [`py/verbose-raise`](py/verbose-raise.md) | raise, not raise e | `auto` | — | *[rules] only* |
+| [`py/wait-for-process-in-async-function`](py/wait-for-process-in-async-function.md) | No blocking wait for a process in an async function | `manual` | — | *[rules] only* |
 | [`py/while-one`](py/while-one.md) | while True, not while 1 | `auto` | — | *[rules] only* |
+| [`py/write-whole-file`](py/write-whole-file.md) | pathlib writes a whole file in one call | `manual` | — | *[rules] only* |
 | [`py/yield-from-in-async-function`](py/yield-from-in-async-function.md) | No yield from in an async function | `manual` | — | *[rules] only* |
+| [`py/yield-in-context-manager-in-async-generator`](py/yield-in-context-manager-in-async-generator.md) | An async generator does not yield inside a with block | `manual` | — | *[rules] only* |
 | [`py/yield-in-for-loop`](py/yield-in-for-loop.md) | yield from, not a loop that yields each item | `suggest` | — | *[rules] only* |
 | [`py/yield-in-init`](py/yield-in-init.md) | No yield in __init__ | `manual` | — | *[rules] only* |
 | [`py/yield-outside-function`](py/yield-outside-function.md) | `yield` and `await` only inside a function | `manual` | — | `py/recommended` |
