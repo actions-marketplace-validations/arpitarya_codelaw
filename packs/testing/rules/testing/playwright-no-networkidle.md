@@ -7,7 +7,7 @@ fix: manual
 fix_reason: "the wait becomes an assertion on what the page shows, which needs knowing what it waits for"
 fix_exception: restructure
 stability: preview
-ported_from: ["eslint-plugin-playwright/no-networkidle"]
+ported_from: ["eslint-plugin-playwright/no-networkidle", "eslint-plugin-sonarjs/no-networkidle-wait"]
 since: 0.5.0
 ---
 

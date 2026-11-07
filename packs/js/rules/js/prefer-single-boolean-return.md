@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern"
 fix_exception: value
 stability: preview
-ported_from: [eslint-plugin-sonarjs/prefer-single-boolean-return]
+ported_from: [eslint-plugin-sonarjs/prefer-single-boolean-return, eslint-plugin-unicorn/prefer-boolean-return]
 since: 0.5.0
 ---
 

@@ -15,7 +15,7 @@ options:
   argsIgnorePattern: { type: string }
   caughtErrorsIgnorePattern: { type: string }
   destructuredArrayIgnorePattern: { type: string }
-ported_from: [eslint/no-unused-vars]
+ported_from: [eslint/no-unused-vars, eslint-plugin-sonarjs/no-unused-function-argument]
 since: 0.1.0
 ---
 

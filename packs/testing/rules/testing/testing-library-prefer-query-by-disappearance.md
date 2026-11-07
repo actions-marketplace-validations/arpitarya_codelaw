@@ -6,7 +6,7 @@ files: ["**/*.test.*", "**/*.spec.*", "**/__tests__/**", "**/test/**", "**/tests
 fix: suggest
 fix_reason: "a `queryBy` callback returns `null` where `getBy` threw; the author checks the test still waits for the right thing"
 stability: preview
-ported_from: ["eslint-plugin-testing-library/prefer-query-by-disappearance"]
+ported_from: ["eslint-plugin-testing-library/prefer-query-by-disappearance", "eslint-plugin-sonarjs/testing-library-prefer-query-by-disappearance"]
 since: 0.5.0
 ---
 
