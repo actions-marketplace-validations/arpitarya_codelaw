@@ -438,6 +438,7 @@ pub fn load_pack_cached(dir: &Path, first_party_origin: bool) -> Result<Arc<Rule
         }
     }
     let pack = Arc::new(load_pack_from(dir, first_party_origin)?);
+    if std::env::var_os("XX_DROP").is_some() { return Ok(pack); } // XX-EXPERIMENT
     let mut kept = PACKS.lock().unwrap_or_else(|e| e.into_inner());
     kept.retain(|(k, _, _)| *k != key);
     kept.insert(0, (key, now, pack.clone()));
