@@ -2,9 +2,9 @@
 id: html/attribute-allowed-values
 title: "Attributes have values HTML allows"
 languages: [html]
-fix: manual
-fix_reason: "the intended value can only be guessed"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual"
+fix_exception: value
 stability: preview
 ported_from: [html-validate/attribute-allowed-values, htmlhint/src-not-empty]
 since: 0.1.0
@@ -32,6 +32,13 @@ native: html/attribute-allowed-values
 ```html
 <input type="emial" name="email">
 <img src="a.png" alt="A" loading="later">
+```
+
+#### Fixed
+
+```html
+<input type="email" name="email">
+<img src="a.png" alt="A" loading="eager">
 ```
 
 #### Do

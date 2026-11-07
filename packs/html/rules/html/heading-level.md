@@ -2,9 +2,9 @@
 id: html/heading-level
 title: "Headings start at <h1> and go down one level at a time"
 languages: [html]
-fix: manual
-fix_reason: "changing a heading level changes its style and the outline"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms"
+fix_exception: restructure
 stability: preview
 options:
   allowMultipleH1: { type: "boolean", default: false, description: "allow more than one `<h1>`" }

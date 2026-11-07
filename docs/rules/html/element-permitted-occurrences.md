@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of the duplicates to keep is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/element-permitted-occurrences` |
@@ -134,6 +134,24 @@ codelaw config --print --for <file>                      # the resolved setting,
 <table>
   <caption>Prices</caption>
   <caption>2024</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+#### Fixed (delete this one)
+
+```html
+<table>
+  <caption>Prices</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+#### Fixed (merge into the first)
+
+```html
+<table>
+  <caption>Prices 2024</caption>
   <tr><td>1</td></tr>
 </table>
 ```

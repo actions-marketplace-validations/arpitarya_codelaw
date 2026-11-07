@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/document` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (either the id or the reference is wrong, and only the author knows which) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/no-missing-references` |
@@ -132,6 +132,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```html
 <input type="text" aria-describedby="hint">
+```
+
+#### Fixed
+
+```html
+<input type="text">
 ```
 
 #### Do

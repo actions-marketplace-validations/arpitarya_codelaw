@@ -3,8 +3,8 @@ id: html/element-permitted-content
 title: "Elements contain only content HTML allows there"
 languages: [html]
 fix: manual
-fix_reason: "the right structure depends on what the markup is for"
-fix_pending: "suggest"
+fix_reason: "what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/element-permitted-content]
 since: 0.1.0
