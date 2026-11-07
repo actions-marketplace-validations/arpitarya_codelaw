@@ -22823,8 +22823,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "unwrapping the block re-indents its statements, and a declaration in it could clash with one outside",
+   "fix": "suggest",
+   "fix_reason": "a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24680,8 +24680,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the comment above the code is a cross-line edit",
+   "fix": "suggest",
+   "fix_reason": "a comment after code may describe that one line; above it, it can read as describing what follows",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -30878,8 +30878,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the brackets and the dots around the items is not one template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",

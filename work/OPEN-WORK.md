@@ -42,7 +42,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 141 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (scss landed): 171 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: filters, `transform:` and `edit-text` built (27 `js/*` moved; 76 still wait). Next: `unwrap-block`, `move`, native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: filters, `transform:`, `edit-text`, `unwrap-block`, `move` built (30 `js/*` moved; 73 still wait). Next: `merge-into`, native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 
 

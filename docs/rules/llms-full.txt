@@ -34512,7 +34512,7 @@ export const icon = (name) => icons[name];
 ## `js/no-else-return` — No else after return
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (unwrapping the block re-indents its statements, and a declaration in it could clash with one outside)
+- **Fix:** `suggest` (a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-else-return.md
 
@@ -37805,7 +37805,7 @@ const msg = `Hello ${name}`;
 ## `js/no-inline-comments` — Comments on their own line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the comment above the code is a cross-line edit)
+- **Fix:** `suggest` (a comment after code may describe that one line; above it, it can read as describing what follows)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/taste` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-inline-comments.md
 
@@ -48981,7 +48981,7 @@ function f() {
 ## `js/no-useless-spread` — No spread of an array literal
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the brackets and the dots around the items is not one template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-spread.md
 
