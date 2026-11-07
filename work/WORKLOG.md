@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 19 (53 Ruff/Pylint rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build the python half of W-139's remaining ports — Ruff's remaining sets and Pylint's — in slices of 30–60, each green, in parallel with the js strand, W-156, W-162 and W-172.
+- **Done:** slice 19 — 53 new `py/*` rules (pep8-naming, flake8-builtins, flake8-pytest-style, BLE, SLF, FBT, TRY, EM, TID253, ICN003, LOG, G101, PERF401–403, PIE804, SIM112): 1 auto, 14 suggest, 38 manual; three Pylint rows linked. `codelaw test packs/python` 559 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus: 6 repositories (flask, httpx, starlette, rich, full-stack-fastapi-template, djangoproject.com) — counts written; `uncapitalized-environment-variables` narrowed to the first argument after sampling (8 → 0, a default value is not the name); loudest `private-member-access` 331, `boolean-type-hint-positional-argument` 213, `raw-string-in-exception` 182. Rows not written are listed with their reason in the item.
+- **Decided / left open:** rename fixes are `suggest` only where the name is private or local (`rename-symbol-local` refuses a public one), the finding `manual` otherwise; four rules whose edit needs an insert at a statement's indentation or an import carry `fix_pending:` naming W-162.
+- **Mistakes:** an early test file was auto-committed on the branch at a turn's end (held: docs-sync failed), so it was kept and finished in this slice; ordering of composite keys in a rule object hid a capture (fixed with an ordered `all:`).
+- **Next:** slice 20 — pydocstyle, flake8-async, flake8-annotations, refurb and two pyupgrade rows (48, staged).
+
+---
+
 ## 2026-11-07 — W-139 slice 19: ESLint core, SonarJS, eslint-plugin-import, unicorn (js strand, second pass)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) continue the js half of W-139's remaining port rows, slice by slice.
