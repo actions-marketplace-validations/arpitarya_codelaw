@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 slice 18: 48 unicorn rules (js strand, second pass)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build the js half of W-139's remaining port rows, ~30–60 rules per change, `codelaw test` 0 failed, `rules lint` 0, `--fix-stats --check`.
+- **Done:** 48 `js/*` unicorn rules (32 `auto`, 11 `suggest`, 5 `manual`), each with four language examples and cases for the shapes a matcher gets wrong; 44 into `js/strict`; docs regenerated; counts in README, proposal §13, the item.
+- **Decided / left open:** rows are written in the narrowest form whose fix is certain, the page naming what upstream also covers; corpus counts not run (no corpus on this machine, not refetched).
+- **Mistakes:** an `if` pattern without `else` matched an `if` with one; caught by a case, every lone-`if` rewrite now excludes `else_clause`.
+- **Next:** the next js slice (SonarJS, ESLint core, unicorn's remainder).
+
+---
+
 ## 2026-11-07 — W-105: check_types_* timed on the batched helper; budgets to the inbox  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator, after the push to `7cdb480b`) read `check_types_*` from the CI `perf` runs, or trigger them, and file the budget proposal by L8's method without setting it.
