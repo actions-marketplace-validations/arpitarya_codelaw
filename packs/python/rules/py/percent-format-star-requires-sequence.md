@@ -2,9 +2,9 @@
 id: py/percent-format-star-requires-sequence
 title: "A `*` width in a `%` format takes a tuple"
 languages: [python]
-fix: manual
-fix_reason: "the order of the values has to be decided"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a dict literal with a value per `*` and per placeholder becomes a tuple of its values in their order, which assumes width comes before value; a named placeholder with `*`, or any other right side, is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F508]
 since: 0.1.0

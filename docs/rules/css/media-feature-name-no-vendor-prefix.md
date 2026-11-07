@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the value needs converting to a `dppx` resolution) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a plain number becomes that many `dppx` on the standard feature (`-webkit-min-device-pixel-ratio: 2` is `min-resolution: 2dppx`); a browser that knows only the prefixed feature (Safari before 16) stops matching, so it is a suggestion, not `auto`. A ratio or a range is manual, as its `dppx` value is the author's call) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/media-feature-name-no-vendor-prefix` |

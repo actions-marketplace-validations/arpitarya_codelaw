@@ -2,9 +2,9 @@
 id: py/jump-statement-in-finally
 title: "No `return`, `break` or `continue` in `finally`"
 languages: [python]
-fix: manual
-fix_reason: "how errors should propagate has to be decided"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the `return`, `break` or `continue` ending a `finally` moves to right after the `try` (the `finally` goes when that was all it held and a handler stays, else `pass` stands in): an exception now propagates instead of being swallowed, which is the fix and a change. A jump elsewhere in the block is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B012, pylint/lost-exception, pylint/return-in-finally, pylint/break-in-finally]
 since: 0.1.0
@@ -35,6 +35,17 @@ def read(path):
         return load(path)
     finally:
         return None
+```
+
+#### Fixed
+
+```py
+def read(path):
+    try:
+        return load(path)
+    finally:
+        pass
+    return None
 ```
 
 #### Do

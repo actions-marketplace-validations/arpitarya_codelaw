@@ -734,7 +734,10 @@ fn cached_instance_method(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
         return;
     }
     let decs = decorators(n);
-    let static_or_class = decs.iter().any(|d| names_one_of(*d, m, ctx.source, &["builtins.staticmethod", "builtins.classmethod"]));
+    let static_or_class = decs.iter().any(|d| {
+        let t = decorator_target(*d);
+        names_one_of(t, m, ctx.source, &["builtins.staticmethod", "builtins.classmethod"]) || matches!(text(t, ctx.source), "staticmethod" | "classmethod")
+    });
     if static_or_class {
         return;
     }
@@ -751,11 +754,13 @@ fn cached_instance_method(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
                 if p0.kind() != "identifier" || text(params, src).contains('\n') {
                     return None;
                 }
-                let sym = m.declared_at(p0.start_byte())?;
-                if !m.symbol(sym).refs.is_empty() {
+                let me = text(p0, src);
+                let body = n.child_by_field_name("body").map(|b| text(b, src))?;
+                if body.split(|c: char| !(c.is_alphanumeric() || c == '_')).any(|w| w == me) || ["locals(", "vars(", "eval(", "exec(", "super("].iter().any(|w| body.contains(w)) {
                     return None;
                 }
-                let at = first?.start_byte();
+                // The `@` of the first decorator.
+                let at = src[..first?.start_byte() + 1].rfind('@')?;
                 Some(vec![TextEdit::insert(at, format!("@staticmethod\n{}", indent_at(src, at))), crate::util::remove_list_item(p0, src)])
             })()
             .unwrap_or_default();
@@ -994,7 +999,7 @@ fn function_uses_loop_variable(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
         // The values bound when the function is made: keyword-only defaults
         // (`*, name=name`), on the function's first finding.
         if out.len() > first
-            && let Some(e) = bind_early(f, &reported, src)
+            && let Some(e) = bind_early(f, &reported)
         {
             out[first].edits = e;
         }
@@ -1003,7 +1008,7 @@ fn function_uses_loop_variable(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut V
 
 /// The edit adding `*, name=name, …` to a function's or lambda's
 /// parameters; none when it already has `*`, `**` or `/`.
-fn bind_early(f: Node<'_>, names: &BTreeSet<String>, src: &str) -> Option<Vec<TextEdit>> {
+fn bind_early(f: Node<'_>, names: &BTreeSet<String>) -> Option<Vec<TextEdit>> {
     let defaults = names.iter().map(|n| format!("{n}={n}")).collect::<Vec<_>>().join(", ");
     match f.child_by_field_name("parameters") {
         Some(p) => {
@@ -1078,6 +1083,15 @@ fn is_abstract_method(def: Node<'_>, ctx: &NativeContext<'_>) -> bool {
     })
 }
 
+/// The module a node is in.
+fn module_root(n: Node<'_>) -> Option<Node<'_>> {
+    let mut cur = n;
+    while let Some(p) = cur.parent() {
+        cur = p;
+    }
+    (cur.kind() == "module").then_some(cur)
+}
+
 fn abstract_without_abstract_method(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if !is_abstract_base(n, ctx) {
         return;
@@ -1093,7 +1107,28 @@ fn abstract_without_abstract_method(n: Node<'_>, ctx: &NativeContext<'_>, out: &
         && let Some(name) = n.child_by_field_name("name")
     {
         let t = text(name, ctx.source);
-        out.push(hit(name, format!("`{t}` is an abstract base class with no abstract methods; mark what subclasses must define, or drop `ABC`")));
+        // Drop `ABC` (the class becomes a plain one), or mark one method
+        // `@abstractmethod` (subclasses must define it); each changes what
+        // can be instantiated, so none is the default.
+        let src = ctx.source;
+        let mut choices = Vec::new();
+        if let Some(sup) = n.child_by_field_name("superclasses") {
+            choices.push(crate::choice("drop ABC", false, vec![TextEdit::delete(sup.start_byte(), sup.end_byte())]));
+        }
+        if let (Some(m), Some(root)) = (model(ctx), module_root(n))
+            && let Some((deco, import)) = imported_name(root, m, src, "abc", "abstractmethod")
+        {
+            for d in methods(n) {
+                let Some(mn) = d.child_by_field_name("name") else { continue };
+                if !starts_line(src, d.start_byte()) {
+                    continue;
+                }
+                let mut edits = import.clone();
+                edits.push(TextEdit::insert(d.start_byte(), format!("@{deco}\n{}", indent_at(src, d.start_byte()))));
+                choices.push(crate::choice(format!("abstract {}", text(mn, src)), false, edits));
+            }
+        }
+        out.push(hit_fix(name, format!("`{t}` is an abstract base class with no abstract methods; mark what subclasses must define, or drop `ABC`"), crate::choice_edits(choices)));
     }
 }
 py_rule!(AbstractBaseClassWithoutAbstractMethod, "py/abstract-base-class-without-abstract-method", ["class_definition"], true, abstract_without_abstract_method);
@@ -1114,7 +1149,17 @@ fn empty_method_without_abstract_decorator(n: Node<'_>, ctx: &NativeContext<'_>,
         }
         if let Some(name) = d.child_by_field_name("name") {
             let t = text(name, ctx.source);
-            out.push(hit(name, format!("`{class}.{t}` is empty in an abstract base class but not marked `@abstractmethod`")));
+            // `@abstractmethod` right above the `def` (imported when it isn't):
+            // a subclass that doesn't define it can no longer be instantiated.
+            let src = ctx.source;
+            let edits = match module_root(n).and_then(|root| imported_name(root, m, src, "abc", "abstractmethod")) {
+                Some((deco, mut edits)) if starts_line(src, d.start_byte()) => {
+                    edits.push(TextEdit::insert(d.start_byte(), format!("@{deco}\n{}", indent_at(src, d.start_byte()))));
+                    edits
+                }
+                _ => Vec::new(),
+            };
+            out.push(hit_fix(name, format!("`{class}.{t}` is empty in an abstract base class but not marked `@abstractmethod`"), edits));
         }
     }
 }
@@ -1129,30 +1174,61 @@ fn handler_names<'t>(h: Node<'t>) -> Vec<Node<'t>> {
 }
 
 fn duplicate_try_block_exception(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
     let mut seen: BTreeSet<String> = BTreeSet::new();
     for h in kids(n).into_iter().filter(|c| c.kind() == "except_clause") {
         let names = handler_names(h);
+        let group = text(h, src).starts_with("except*");
+        let dead: Vec<bool> = names.iter().map(|x| seen.contains(&norm(*x, src))).collect();
         let mut here = BTreeSet::new();
-        for x in names {
-            let k = norm(x, ctx.source);
-            if seen.contains(&k) {
-                out.push(hit(x, format!("`{}` is already caught by an earlier handler of this `try`", text(x, ctx.source))));
+        for (k, x) in names.iter().enumerate() {
+            if dead[k] {
+                // An earlier handler catches it first, so this one never runs
+                // for it: it goes from the tuple, or the handler goes when
+                // nothing else in it is live. A class named by a plain name
+                // or attribute is the same object both times.
+                let plain = attribute_chain(*x) && !group;
+                let edits = if !plain {
+                    Vec::new()
+                } else if dead.iter().all(|d| *d) {
+                    if k == 0 && starts_line(src, h.start_byte()) {
+                        let (a, b) = whole_stmt_lines(src, h.start_byte(), h.end_byte());
+                        vec![TextEdit::delete(a, b)]
+                    } else {
+                        Vec::new()
+                    }
+                } else {
+                    vec![crate::util::remove_list_item(*x, src)]
+                };
+                out.push(hit_fix(*x, format!("`{}` is already caught by an earlier handler of this `try`", text(*x, src)), edits));
             }
-            here.insert(k);
+            here.insert(norm(*x, src));
         }
         seen.extend(here);
     }
 }
 py_rule!(DuplicateTryBlockException, "py/duplicate-try-block-exception", ["try_statement"], false, duplicate_try_block_exception);
 
-fn star_arg_after_keyword(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-    let mut seen_kw = false;
-    for c in kids(n) {
-        match c.kind() {
-            "keyword_argument" => seen_kw = true,
-            "list_splat" if seen_kw => out.push(hit(c, "`*args` after a keyword argument fills the positions before it, which is confusing")),
-            _ => {}
-        }
+fn star_arg_after_keyword(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
+    let items = kids(n);
+    let late: Vec<usize> = (0..items.len()).filter(|&i| items[i].kind() == "list_splat" && items[..i].iter().any(|c| c.kind() == "keyword_argument")).collect();
+    let first_kw = items.iter().position(|c| c.kind() == "keyword_argument");
+    for &i in &late {
+        let c = items[i];
+        // Moved before the keywords: Python binds `*args` to positions
+        // either way, and only the order the arguments run in changes,
+        // which nothing sees when each is a name or a literal (`auto`).
+        let edits = match first_kw.filter(|_| late.len() == 1 && !items.iter().any(|x| x.kind() == "comment")) {
+            Some(k) => {
+                let simple = |x: Node<'_>| matches!(x.kind(), "identifier" | "integer" | "float" | "string" | "true" | "false" | "none") && (x.kind() != "string" || is_pure(x));
+                let quiet = c.named_child(0).is_some_and(simple) && items[k..i].iter().all(|x| x.child_by_field_name("value").is_some_and(simple));
+                let edits = vec![crate::util::remove_list_item(c, src), TextEdit::insert(items[k].start_byte(), format!("{}, ", text(c, src)))];
+                if quiet { edits } else { crate::as_suggestion(edits) }
+            }
+            None => Vec::new(),
+        };
+        out.push(hit_fix(c, "`*args` after a keyword argument fills the positions before it, which is confusing", edits));
     }
 }
 py_rule!(StarArgUnpackingAfterKeywordArg, "py/star-arg-unpacking-after-keyword-arg", ["argument_list"], false, star_arg_after_keyword);
@@ -1178,23 +1254,62 @@ fn no_explicit_stacklevel(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
 }
 py_rule!(NoExplicitStacklevel, "py/no-explicit-stacklevel", ["call"], true, no_explicit_stacklevel);
 
-fn except_with_empty_tuple(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn except_with_empty_tuple(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     if let Some(t) = handler_type(n)
         && t.kind() == "tuple"
         && kids(t).is_empty()
     {
-        out.push(hit(t, "`except ():` catches nothing"));
+        // The handler never runs, so it goes; the only handler of a `try`
+        // without `finally` takes the `try` with it (its body, then its
+        // `else`, dedented). It deletes code that signals a bug.
+        let src = ctx.source;
+        let edits = (|| {
+            let try_ = n.parent().filter(|p| p.kind() == "try_statement")?;
+            if !starts_line(src, n.start_byte()) || !starts_line(src, try_.start_byte()) {
+                return None;
+            }
+            let parts = kids(try_);
+            let others = parts.iter().any(|c| c.id() != n.id() && matches!(c.kind(), "except_clause" | "finally_clause"));
+            if others {
+                let (a, b) = whole_stmt_lines(src, n.start_byte(), n.end_byte());
+                return Some(vec![TextEdit::delete(a, b)]);
+            }
+            let body = try_.child_by_field_name("body")?;
+            let by = indent_at(src, body.start_byte()).len().checked_sub(indent_at(src, try_.start_byte()).len())?;
+            let mut new = dedented(src, body.start_byte(), body.end_byte(), by)?;
+            if let Some(e) = parts.iter().find(|c| c.kind() == "else_clause").and_then(|e| e.child_by_field_name("body")) {
+                new = format!("{new}\n{}", dedented(src, e.start_byte(), e.end_byte(), by)?);
+            }
+            let from = src[..try_.start_byte()].rfind('\n').map_or(0, |i| i + 1);
+            Some(vec![TextEdit::new(from, try_.end_byte(), new)])
+        })()
+        .unwrap_or_default();
+        out.push(hit_fix(t, "`except ():` catches nothing", edits));
     }
 }
 py_rule!(ExceptWithEmptyTuple, "py/except-with-empty-tuple", ["except_clause"], false, except_with_empty_tuple);
 
-fn except_with_non_exception_classes(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+fn except_with_non_exception_classes(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
     let Some(t) = handler_type(n) else { return };
+    let src = ctx.source;
     let mut items = Vec::new();
     flatten_handler(t, &mut items);
+    let classes = items.iter().filter(|x| matches!(x.kind(), "identifier" | "attribute")).count();
     for x in items {
         if !matches!(x.kind(), "identifier" | "attribute" | "call" | "subscript" | "list_splat" | "conditional_expression" | "boolean_operator") {
-            out.push(hit(x, "`except` takes exception classes or tuples of them"));
+            // A string naming a builtin exception is that exception; another
+            // literal in a tuple with classes goes. Any exception reaching the
+            // handler raised TypeError before, so either changes what it catches.
+            let named = string_value(x, src).filter(|v| {
+                codelaw_semantic::PYTHON_BUILTINS.contains(&v.as_str()) && (v.ends_with("Error") || v.ends_with("Exception") || v.ends_with("Warning") || v.ends_with("Exit") || v == "KeyboardInterrupt" || v == "StopIteration")
+            });
+            let in_tuple = x.parent().is_some_and(|p| p.kind() == "tuple" && p.id() == unparen(t).id());
+            let edits = match named {
+                Some(v) => vec![TextEdit::new(x.start_byte(), x.end_byte(), v)],
+                None if in_tuple && classes > 0 => vec![crate::util::remove_list_item(x, src)],
+                None => Vec::new(),
+            };
+            out.push(hit_fix(x, "`except` takes exception classes or tuples of them", edits));
         }
     }
 }
@@ -1267,10 +1382,16 @@ fn reuse_of_groupby_generator(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Ve
         return;
     }
     let group = names[1];
+    // Already listed first in the body: the fix is there.
+    let g = text(group, ctx.source);
+    if statements(body).first().is_some_and(|s0| text(*s0, ctx.source).split_whitespace().collect::<String>() == format!("{g}=list({g})")) {
+        return;
+    }
     let Some(sym) = m.declared_at(group.start_byte()) else { return };
     let mut reads: Vec<usize> = m.symbol(sym).refs.iter().map(|&r| &m.references[r]).filter(|r| r.read && body.start_byte() <= r.start && r.start < body.end_byte()).map(|r| r.start).collect();
     reads.sort();
     let mut counted: Vec<usize> = Vec::new();
+    let first = out.len();
     for r in reads {
         let node = body.descendant_for_byte_range(r, r);
         let again = counted.iter().any(|&c| match (node, body.descendant_for_byte_range(c, c)) {
@@ -1283,6 +1404,15 @@ fn reuse_of_groupby_generator(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Ve
             out.push(hit(nd, format!("The group `{}` from `itertools.groupby()` is an iterator; using it again yields nothing", text(group, ctx.source))));
         }
         counted.push(r);
+    }
+    // `group = list(group)` first in the loop: later uses see the items, not
+    // an exhausted iterator. On the first finding.
+    let src = ctx.source;
+    if out.len() > first
+        && let Some(s0) = statements(body).first().filter(|s0| starts_line(src, s0.start_byte()))
+    {
+        let g = text(group, src);
+        out[first].edits = vec![TextEdit::insert(s0.start_byte(), format!("{g} = list({g})\n{}", indent_at(src, s0.start_byte())))];
     }
 }
 py_rule!(ReuseOfGroupbyGenerator, "py/reuse-of-groupby-generator", ["for_statement"], true, reuse_of_groupby_generator);
@@ -1301,7 +1431,12 @@ fn unintentional_type_annotation(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut
         base.is_some_and(|b| b.kind() == "identifier" && (l.kind() == "subscript" || text(b, ctx.source) != "self"))
     });
     if suspicious {
-        out.push(hit(a, "This annotates an attribute or item without assigning it; did you mean `=`?"));
+        // `:` becomes `=`: the no-op annotation becomes the assignment meant.
+        let edits = match (a.child_by_field_name("left"), a.child_by_field_name("type")) {
+            (Some(l), Some(t)) if ctx.source[l.end_byte()..t.start_byte()].trim() == ":" => vec![TextEdit::new(l.end_byte(), t.start_byte(), " = ")],
+            _ => Vec::new(),
+        };
+        out.push(hit_fix(a, "This annotates an attribute or item without assigning it; did you mean `=`?", edits));
     }
 }
 py_rule!(UnintentionalTypeAnnotation, "py/unintentional-type-annotation", ["expression_statement"], false, unintentional_type_annotation);
@@ -1343,7 +1478,32 @@ fn re_sub_positional_args(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Na
     };
     let a = call_args(n, ctx.source);
     if a.positional.len() > max && !a.starred {
-        out.push(hit(n, format!("Pass {params} to `{q}` by keyword; their positions are easy to mix up")));
+        // The positions as keywords, by the real signature (`auto`: the same
+        // binding). A flag in the `count`/`maxsplit` place is the bug this
+        // rule is for: the choices are what Python does today and `flags=`.
+        let src = ctx.source;
+        let names: &[&str] = if max == 3 { &["count", "flags"] } else { &["maxsplit", "flags"] };
+        let extra = &a.positional[max..];
+        let clash = extra.len() > 2 || names.iter().take(extra.len()).any(|k| a.keyword(k).is_some());
+        let flag = |x: Node<'_>| {
+            let t = text(x, src);
+            t.contains("RegexFlag")
+                || t.split('|').all(|p| {
+                    let p = p.trim().trim_start_matches("re.");
+                    matches!(p, "I" | "IGNORECASE" | "M" | "MULTILINE" | "S" | "DOTALL" | "X" | "VERBOSE" | "A" | "ASCII" | "L" | "LOCALE" | "U" | "UNICODE" | "T" | "TEMPLATE" | "DEBUG" | "NOFLAG")
+                })
+        };
+        let edits = if clash {
+            Vec::new()
+        } else if extra.len() == 1 && flag(extra[0]) && a.keyword("flags").is_none() {
+            crate::choice_edits(vec![
+                crate::choice("flags", false, vec![TextEdit::insert(extra[0].start_byte(), "flags=")]),
+                crate::choice(names[0], false, vec![TextEdit::insert(extra[0].start_byte(), format!("{}=", names[0]))]),
+            ])
+        } else {
+            extra.iter().zip(names).map(|(x, k)| TextEdit::insert(x.start_byte(), format!("{k}="))).collect()
+        };
+        out.push(hit_fix(n, format!("Pass {params} to `{q}` by keyword; their positions are easy to mix up"), edits));
     }
 }
 py_rule!(ReSubPositionalArgs, "py/re-sub-positional-args", ["call"], true, re_sub_positional_args);
@@ -1353,13 +1513,18 @@ fn static_key_dict_comprehension(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut
     let Some(pair) = n.child_by_field_name("body").filter(|b| b.kind() == "pair") else { return };
     let Some(key) = pair.child_by_field_name("key") else { return };
     let mut bound = BTreeSet::new();
+    let mut order: Vec<String> = Vec::new();
     for c in kids(n) {
         if c.kind() == "for_in_clause"
             && let Some(l) = c.child_by_field_name("left")
         {
             let mut names = Vec::new();
             target_names(l, &mut names);
-            bound.extend(names.iter().map(|x| text(*x, src).to_owned()));
+            for x in names {
+                if bound.insert(text(x, src).to_owned()) {
+                    order.push(text(x, src).to_owned());
+                }
+            }
         }
     }
     let k = unparen(key);
@@ -1378,7 +1543,10 @@ fn static_key_dict_comprehension(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut
         _ => false,
     };
     if static_key {
-        out.push(hit(key, format!("Every item gets the same key `{}`, so the dict ends up with one entry", text(key, src))));
+        // One choice per loop target: it becomes the key, and the dict gets
+        // an entry per item.
+        let choices = order.iter().map(|nm| crate::choice(nm.clone(), false, vec![TextEdit::new(key.start_byte(), key.end_byte(), nm.clone())])).collect();
+        out.push(hit_fix(key, format!("Every item gets the same key `{}`, so the dict ends up with one entry", text(key, src)), crate::choice_edits(choices)));
     }
 }
 py_rule!(StaticKeyDictComprehension, "py/static-key-dict-comprehension", ["dictionary_comprehension"], false, static_key_dict_comprehension);
@@ -1414,7 +1582,26 @@ fn raise_without_from_inside_except(n: Node<'_>, ctx: &NativeContext<'_>, out: &
     if exc.kind() == "identifier" && bound.as_deref() == Some(text(exc, src)) {
         return;
     }
-    out.push(hit(n, "Inside `except`, write `raise … from err` (or `from None`) so the original error is kept or deliberately hidden"));
+    // `from err` keeps the caught error as the cause (binding it `as err`
+    // when the handler doesn't), `from None` hides it; either changes the
+    // traceback, so neither is the default.
+    let mut choices = Vec::new();
+    let end = n.end_byte();
+    if !text(n, src).contains('\n') {
+        match bound {
+            Some(b) => choices.push(crate::choice("from err", false, vec![TextEdit::insert(end, format!(" from {b}"))])),
+            None => {
+                let ty = handler_type(h);
+                let scope = crate::python_util::enclosing_def(h).unwrap_or(h);
+                let taken = text(scope, src).split(|c: char| !(c.is_alphanumeric() || c == '_')).any(|w| w == "err");
+                if let Some(ty) = ty.filter(|t| !taken && src[t.end_byte()..].trim_start().starts_with(':')) {
+                    choices.push(crate::choice("from err", false, vec![TextEdit::insert(ty.end_byte(), " as err"), TextEdit::insert(end, " from err")]));
+                }
+            }
+        }
+        choices.push(crate::choice("from None", false, vec![TextEdit::insert(end, " from None")]));
+    }
+    out.push(hit_fix(n, "Inside `except`, write `raise … from err` (or `from None`) so the original error is kept or deliberately hidden", crate::choice_edits(choices)));
 }
 py_rule!(RaiseWithoutFromInsideExcept, "py/raise-without-from-inside-except", ["raise_statement"], false, raise_without_from_inside_except);
 
@@ -1480,6 +1667,16 @@ mod tests {
 
     fn spans(rule: &dyn crate::NativeRule, src: &str) -> Vec<String> {
         run(rule, Language::Python, src).iter().map(|f| src[f.start..f.end].to_owned()).collect()
+    }
+
+    #[test]
+    fn cached_method_becomes_static() {
+        let src = "import functools\n\n\nclass Store:\n    @functools.lru_cache\n    def get(self, key):\n        return key.upper()\n";
+        let found = run(&super::CachedInstanceMethod, Language::Python, src);
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].edits.len(), 2, "{:?}", found[0].edits);
+        let fixed = "import functools\n\n\nclass Store:\n    @staticmethod\n    @functools.lru_cache\n    def get(key):\n        return key.upper()\n";
+        assert!(run(&super::CachedInstanceMethod, Language::Python, fixed).is_empty());
     }
 
     #[test]

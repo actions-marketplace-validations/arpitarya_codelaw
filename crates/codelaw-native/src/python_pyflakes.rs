@@ -406,9 +406,10 @@ pub(crate) fn loop_rename(for_stmt: Node<'_>, model: &SemanticModel, sym: Symbol
     let mut safe = model.scopes[s.scope].kind == ScopeKind::Function;
     for &r in &s.refs {
         let r = &model.references[r];
+        let in_iter = r.start >= iter.0 && r.start < iter.1;
         if inside(r.start) {
             spans.insert((r.start, r.end));
-        } else if r.start >= lo || r.scope != s.scope {
+        } else if (r.start >= lo && !in_iter) || r.scope != s.scope {
             safe = false;
         }
     }

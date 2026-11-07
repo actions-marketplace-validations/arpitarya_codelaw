@@ -2,9 +2,9 @@
 id: py/star-arg-unpacking-after-keyword-arg
 title: "No `*args` after a keyword argument"
 languages: [python]
-fix: manual
-fix_reason: "reordering arguments can change which parameter each value binds to"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when `*args` and the keyword values it moves past are names or literals: Python binds `*args` to positions either way, and only the order the arguments run in changes, which nothing then sees. Otherwise the same move is a suggestion; two late `*args` are manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B026]
 since: 0.1.0

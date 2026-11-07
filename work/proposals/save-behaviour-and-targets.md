@@ -236,7 +236,7 @@ SR-RULE-PACKS (the data table) and SR-AGENT-SURFACES.
 ## Reference
 
 [W-163](../open/W-163-save-behaviour-and-targets.md) ·
-[W-156](../open/W-156-fix-ladder.md) (open questions 1–2, as ruled 2026-11-05) ·
+[W-156](../../archive/open/W-156-fix-ladder.md) (open questions 1–2, as ruled 2026-11-05) ·
 [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 3, 12, 16 ·
 [SR-CONFIG](../../records/0110_config.md) 11d ·
 [`fix-ladder.md`](fix-ladder.md) §open questions

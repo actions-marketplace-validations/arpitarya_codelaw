@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (where the cache should live is a design choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a method that never reads `self` becomes a `@staticmethod` without it: the cache is then shared by every instance and a subclass's override no longer replaces it through the base, so review it. A method that reads `self` is manual, as the cache must move out of the class) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B019`, `pylint/method-cache-max-size-none` |
@@ -135,6 +135,18 @@ import functools
 class Store:
     @functools.lru_cache
     def get(self, key):
+        return key.upper()
+```
+
+#### Fixed
+
+```py
+import functools
+
+class Store:
+    @staticmethod
+    @functools.lru_cache
+    def get(key):
         return key.upper()
 ```
 

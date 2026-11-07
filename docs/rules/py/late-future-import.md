@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving statements above it can change the order the module runs in) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a late `from __future__` import is a SyntaxError, so the module never ran: it moves above the first statement that isn't a docstring or another `__future__` import, its only meaning. One inside a block, or sharing its line, is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F404`, `pylint/misplaced-future` |

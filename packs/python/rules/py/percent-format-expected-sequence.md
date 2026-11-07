@@ -2,9 +2,9 @@
 id: py/percent-format-expected-sequence
 title: "Positional `%` placeholders get a tuple"
 languages: [python]
-fix: manual
-fix_reason: "the order of the values isn't written anywhere"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "a dict literal with one value per placeholder becomes a tuple of its values in their order, which assumes that order is the intended one; any other right side is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F503]
 since: 0.1.0

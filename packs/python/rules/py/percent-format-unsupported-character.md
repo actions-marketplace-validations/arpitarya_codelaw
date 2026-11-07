@@ -2,9 +2,9 @@
 id: py/percent-format-unsupported-character
 title: "A `%` format uses known conversions"
 languages: [python]
-fix: manual
-fix_reason: "the intended conversion can't be inferred"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the string raises ValueError today: the choices are escaping the `%` as `%%` and replacing the conversion with `s`; neither is the default. A string with escapes is manual"
+fix_exception: value
 stability: preview
 ported_from: [ruff/F509, pylint/bad-format-character]
 since: 0.1.0
@@ -30,6 +30,18 @@ native: py/percent-format-unsupported-character
 
 ```py
 message = "%y" % (1,)
+```
+
+#### Fixed (escape)
+
+```py
+message = "%%y" % (1,)
+```
+
+#### Fixed (s)
+
+```py
+message = "%s" % (1,)
 ```
 
 #### Do

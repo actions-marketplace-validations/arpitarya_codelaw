@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which handler's code is meant to run needs a person) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an earlier handler of the `try` catches the class first, so this one never runs for it: a class named by a plain name or attribute goes from the later tuple, and a later handler with nothing else live goes whole; any other repeat (a computed class, `except*`) is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B025` |
@@ -135,6 +135,15 @@ except ValueError:
     retry()
 except ValueError:
     log()
+```
+
+#### Fixed
+
+```py
+try:
+    run()
+except ValueError:
+    retry()
 ```
 
 #### Do

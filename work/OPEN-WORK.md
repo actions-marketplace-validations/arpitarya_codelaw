@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (13)
+## Open items (11)
 
-### build (6)
+### build (5)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -39,11 +39,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css done): 52 rules left to move, all python. Next: python's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
-
 🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits done: 64 moved, 39 re-judged `manual`. 58 still wait (scope rename 10, add-import 9, purity 2, cross-file 36, SHAs 1), 6 more on W-105. Next: scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
-
-
 
 ### ci/cd (4)
 
@@ -55,9 +51,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
-### cleanup (1)
-
-🟢 **W-171** `agent` Six worktrees of agents stopped by the usage limit 11-05, ruled keep 11-07: five landed and removed (W-139, W-141, W-162, W-168, W-169); W-156's is left, its agent still at work. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
+### cleanup (0)
 
 ### testing (0)
 
@@ -70,6 +64,5 @@ here. Read that record before changing anything below it.
 ### research (1)
 
 🟢 **W-167** `cowork` Architecture design for graph generation at 100k–1M files: today's pipeline, prior art (Glean, Kythe, SCIP, salsa, Knip, Nx), 2–3 options as a proposal; step 3 reads W-168's numbers. Filed by Arpit (Cowork). [detail](open/W-167-graph-architecture-design.md)
-
 
 ---

@@ -61,4 +61,4 @@ SR-LAW-4 decision 5 (the stand-in ends); SR-MULTI-FILE-FIXES and SR-CONFIG 11g (
 
 ## Reference
 
-[W-161](../../archive/open/W-161-fix-capabilities-research.md) · [proposal](../proposals/fix-capabilities.md) · [W-156](W-156-fix-ladder.md) B4
+[W-161](../../archive/open/W-161-fix-capabilities-research.md) · [proposal](../proposals/fix-capabilities.md) · [W-156](../../archive/open/W-156-fix-ladder.md) B4

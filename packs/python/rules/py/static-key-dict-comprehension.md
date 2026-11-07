@@ -2,9 +2,8 @@
 id: py/static-key-dict-comprehension
 title: "A dict comprehension's key varies"
 languages: [python]
-fix: manual
-fix_reason: "the intended key can't be inferred"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "one choice per loop target: it becomes the key, and the dict gets an entry per item instead of one; none is the default"
 stability: preview
 ported_from: [ruff/B035]
 since: 0.1.0
@@ -30,6 +29,12 @@ native: py/static-key-dict-comprehension
 
 ```py
 sizes = {"size": len(name) for name in names}
+```
+
+#### Fixed (name)
+
+```py
+sizes = {name: len(name) for name in names}
 ```
 
 #### Do

@@ -13,7 +13,7 @@ a fix for it. The first priority is fixing it automatically. The second
 priority is suggesting it so that AI agent can fix it. The last one is manual,
 and only in exceptional cases we go with manual. Research all the rules and
 propose how it can be fixed."* The law is [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md);
-[W-156](../open/W-156-fix-ladder.md) builds this.
+[W-156](../../archive/open/W-156-fix-ladder.md) builds this.
 
 Every row is in [`fix-ladder/rules.csv`](fix-ladder/rules.csv): rule, pack,
 current class, proposed rung, the safe subset, the edit, the exception, the
@@ -168,6 +168,6 @@ decision 3).
 
 ## References
 
-- [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) · [W-156](../open/W-156-fix-ladder.md) · [rule-parity](rule-parity.md)
+- [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) · [W-156](../../archive/open/W-156-fix-ladder.md) · [rule-parity](rule-parity.md)
 - [`fix-ladder/rules.csv`](fix-ladder/rules.csv) — every reviewed rule.
 - `packs/*/rules/**/*.md` — the rules, as of `main` on 2026-10-30.

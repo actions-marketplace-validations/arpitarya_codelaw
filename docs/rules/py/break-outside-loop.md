@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what should happen instead (return, raise) is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `return`, in a function, and deleting the `break` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F701`, `pylint/not-in-loop` |
@@ -131,6 +131,20 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```py
 def stop():
     break
+```
+
+#### Fixed (return)
+
+```py
+def stop():
+    return
+```
+
+#### Fixed (delete)
+
+```py
+def stop():
+    pass
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to chain the original error or hide it is the author's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `from err` (the caught error kept as the cause, bound `as err` when the handler doesn't name it) and `from None` (hidden); either changes the traceback, so neither is the default. A raise over several lines is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B904`, `pylint/raise-missing-from` |
@@ -134,6 +134,24 @@ try:
     value = int(text)
 except ValueError:
     raise TypeError("not a number")
+```
+
+#### Fixed (from err)
+
+```py
+try:
+    value = int(text)
+except ValueError as err:
+    raise TypeError("not a number") from err
+```
+
+#### Fixed (from None)
+
+```py
+try:
+    value = int(text)
+except ValueError:
+    raise TypeError("not a number") from None
 ```
 
 #### Do

@@ -3701,8 +3701,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the value needs converting to a `dppx` resolution",
+   "fix": "suggest",
+   "fix_reason": "a plain number becomes that many `dppx` on the standard feature (`-webkit-min-device-pixel-ratio: 2` is `min-resolution: 2dppx`); a browser that knows only the prefixed feature (Safari before 16) stops matching, so it is a suggestion, not `auto`. A ratio or a range is manual, as its `dppx` value is the author's call",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -51060,8 +51060,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which methods subclasses must provide is a design decision",
+   "fix": "suggest",
+   "fix_reason": "the choices are dropping `ABC` (a plain class) and marking one method `@abstractmethod` (imported when it isn't), one choice per method; each changes what can be instantiated, so none is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51570,8 +51570,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the parentheses turns a no-op into a check that can now fail",
+   "fix": "suggest",
+   "fix_reason": "without the parentheses the first item is the test and the second its message, as meant; the assert starts to check and can fail. A tuple of three or more items, or with a comment, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51732,8 +51732,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to clear the environment first or only update it needs a person",
+   "fix": "suggest",
+   "fix_reason": "the choices are replacing the environment (`os.environ.clear()` then `.update()`) and adding to it (`.update()`); either now changes the real process environment, so neither is the default. An assignment inside another statement is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -53059,8 +53059,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "what should happen instead (return, raise) is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the choices are `return`, in a function, and deleting the `break` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -53359,8 +53359,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "where the cache should live is a design choice",
+   "fix": "suggest",
+   "fix_reason": "a method that never reads `self` becomes a `@staticmethod` without it: the cache is then shared by every instance and a subclass's override no longer replaces it through the base, so review it. A method that reads `self` is manual, as the cache must move out of the class",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -54792,8 +54792,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "what should happen instead is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the choices are `return`, in a function, and deleting the `continue` (`pass` when its block empties); a SyntaxError today, and which the author meant is theirs to say, so neither is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -55148,8 +55148,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "reordering handlers changes which one runs",
+   "fix": "auto",
+   "fix_reason": "a bare `except:` before another handler is a SyntaxError, so the code never ran: the handler moves, lines whole, after the last handler, the only order in which every one can run. Two bare handlers, or a handler sharing a line, are manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -55850,8 +55850,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win can't be known from the code",
+   "fix": "auto",
+   "fix_reason": "auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -55897,8 +55897,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win can't be known from the code",
+   "fix": "auto",
+   "fix_reason": "auto when the repeat has the same value and running it does nothing: it goes. Otherwise the choices are `keep last`, what Python keeps (the first key's place, the last value), the default, and `keep first`; dropping a value with a call can change what runs",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -56145,8 +56145,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which handler's code is meant to run needs a person",
+   "fix": "auto",
+   "fix_reason": "an earlier handler of the `try` catches the class first, so this one never runs for it: a class named by a plain name or attribute goes from the later tuple, and a later handler with nothing else live goes whole; any other repeat (a computed class, `except*`) is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -56344,8 +56344,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the method is a required hook or an optional no-op is a design decision",
+   "fix": "suggest",
+   "fix_reason": "`@abstractmethod` goes right above the `def`, imported from `abc` when it isn't: a subclass that doesn't define the method can no longer be instantiated, so review the optional hooks. A name `abstractmethod` taken by something else is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -56660,8 +56660,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the exceptions to catch are the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the handler never runs, so it goes; the only handler of a `try` without `finally` takes the `try` with it (its body, then its `else`, dedented). The code runs the same but loses what signals a bug, so review it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -56705,8 +56705,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the exception class to catch is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "a string naming a builtin exception becomes that exception, and another literal in a tuple with classes goes; any exception reaching the handler raised `TypeError` before, so what it catches changes. Anything else is manual, as the class meant is a value the code doesn't hold",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -56718,14 +56718,14 @@
     }
    ],
    "options": {},
-   "dont": "except \"error\":",
+   "dont": "except \"ValueError\":",
    "do": "except RuntimeError:",
    "fix_steps": [
     "Replace the value with the exception class you meant to catch."
    ],
    "example": {
     "language": "python",
-    "dont": "try:\n    run()\nexcept \"error\":\n    log()",
+    "dont": "try:\n    run()\nexcept \"ValueError\":\n    log()",
     "do": "try:\n    run()\nexcept RuntimeError:\n    log()"
    },
    "ported_from": [
@@ -57094,8 +57094,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the docstring's wording has to change to drop the placeholder",
+   "fix": "suggest",
+   "fix_reason": "the `f` goes and `{{ }}` are undoubled: the text becomes `__doc__`, placeholders as written; tools that read docstrings (Click, Typer, FastAPI) then see it. An interpolation spanning lines or holding the quote is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -57685,8 +57685,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the brace is a field or literal text has to be decided",
+   "fix": "suggest",
+   "fix_reason": "the string raises ValueError today: a stray `}` is doubled; a `{` never closed is escaped as `{{` or closed as an empty field `{}`, the two choices, neither the default. A string with escapes is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -57777,8 +57777,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which numbering the author wants has to be chosen",
+   "fix": "suggest",
+   "fix_reason": "each `{}` is numbered by its place among the fields, its evident meaning; the string raises ValueError today, so it starts to format. A string with nested fields or escapes is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -57948,8 +57948,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended type can't be inferred from broken text",
+   "fix": "suggest",
+   "fix_reason": "when closing the brackets left open makes the string parse, they are added at its end, and the annotation starts to resolve to a type (`get_type_hints` raised before); any other broken annotation is manual, as the intended type is a value the code doesn't hold",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -58072,8 +58072,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value should be computed per call or once at import needs a person",
+   "fix": "suggest",
+   "fix_reason": "the choices are a `None` default with the call in the body (it runs on every call, likely what was meant) and, for a module-level function, the call as a module constant above it (it runs once, as now, and says so); a call inside a larger default is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -58124,8 +58124,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "binding the value now (a default argument, `functools.partial`) changes the function's signature",
+   "fix": "suggest",
+   "fix_reason": "the loop variables the function reads become keyword-only defaults (`*, name=name`), bound when the function is made: the late binding becomes early, which is the fix and a change. A function that already takes `*`, `**` or `/` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -58791,8 +58791,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended condition can't be inferred from the tuple",
+   "fix": "suggest",
+   "fix_reason": "the choices are testing the first item or all of them joined with `and`; the condition is always true today, so either changes what runs. A tuple with a starred item or a comment is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -59109,8 +59109,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the new loop variable name is a choice the author has to make",
+   "fix": "auto",
+   "fix_reason": "auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes `<name>_` in the loop, and the import holds everywhere else as before; a module-level loop rebinds a global others may read, and a read after the loop would see the module, so those are suggestions. None when `<name>_` is taken",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -60056,8 +60056,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the rewrite depends on how the Python 2 arguments were meant",
+   "fix": "suggest",
+   "fix_reason": "`print >> f, a, b` becomes `print(a, b, file=f)`, a trailing comma `end=\" \"`, as 2to3 writes it; it raises TypeError today, so the print starts to work",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -60263,8 +60263,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "how errors should propagate has to be decided",
+   "fix": "suggest",
+   "fix_reason": "the `return`, `break` or `continue` ending a `finally` moves to right after the `try` (the `finally` goes when that was all it held and a handler stays, else `pass` stands in): an exception now propagates instead of being swallowed, which is the fix and a change. A jump elsewhere in the block is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -60356,8 +60356,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "moving statements above it can change the order the module runs in",
+   "fix": "auto",
+   "fix_reason": "a late `from __future__` import is a SyntaxError, so the module never ran: it moves above the first statement that isn't a docstring or another `__future__` import, its only meaning. One inside a block, or sharing its line, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -61066,8 +61066,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the new name is the author's choice",
+   "fix": "auto",
+   "fix_reason": "auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes the singular of the name (`items` → `item`), else `<name>_item`, in the loop. A module-level loop, or a read after the loop, is a suggestion, as the name then holds the iterable again; none when the new name is taken",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -62659,8 +62659,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which target should collect the rest has to be chosen",
+   "fix": "suggest",
+   "fix_reason": "one choice per starred target: it keeps its star and the others lose theirs; a SyntaxError today, and which target collects the rest is the author's call, so none is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -62823,8 +62823,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to use an immutable value or set a fresh one per context is a design choice",
+   "fix": "suggest",
+   "fix_reason": "a list becomes a tuple and a set a frozenset (their comprehensions and `list()`/`set()` calls too); code that changes the value in place stops working, so review the uses. A dict or a computed default is manual, as its immutable form is the author's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66155,8 +66155,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which value is missing, or extra, can't be inferred",
+   "fix": "suggest",
+   "fix_reason": "too many values: the extra ones at the end go when running them does nothing; too few needs values the code doesn't hold, so it is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66168,14 +66168,14 @@
     }
    ],
    "options": {},
-   "dont": "message = \"%s is %s\" % (\"Ada\",)",
+   "dont": "message = \"%s is %s\" % (\"Ada\", 36, \"years\")",
    "do": "message = \"%s is %s\" % (\"Ada\", 36)",
    "fix_steps": [
     "Add or remove values, or placeholders, until they match."
    ],
    "example": {
     "language": "python",
-    "dont": "message = \"%s is %s\" % (\"Ada\",)",
+    "dont": "message = \"%s is %s\" % (\"Ada\", 36, \"years\")",
     "do": "message = \"%s is %s\" % (\"Ada\", 36)"
    },
    "ported_from": [
@@ -66202,8 +66202,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the key each value belongs to isn't written anywhere",
+   "fix": "suggest",
+   "fix_reason": "a tuple with one item per name becomes a dict in the placeholders' order, which assumes the two orders match; any other right side is manual, as the mapping is a value the code doesn't hold",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66248,8 +66248,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the order of the values isn't written anywhere",
+   "fix": "suggest",
+   "fix_reason": "a dict literal with one value per placeholder becomes a tuple of its values in their order, which assumes that order is the intended one; any other right side is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66293,8 +66293,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended placeholder can't be inferred",
+   "fix": "suggest",
+   "fix_reason": "the string raises ValueError today: the choices are escaping the `%` as `%%` (it was text) and, for a key left open, closing it as `%(key)s`; neither is the default. A string with escapes or an f-prefix is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66431,8 +66431,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the order of the values has to be decided",
+   "fix": "suggest",
+   "fix_reason": "a dict literal with a value per `*` and per placeholder becomes a tuple of its values in their order, which assumes width comes before value; a named placeholder with `*`, or any other right side, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -66476,8 +66476,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended conversion can't be inferred",
+   "fix": "suggest",
+   "fix_reason": "the string raises ValueError today: the choices are escaping the `%` as `%%` and replacing the conversion with `s`; neither is the default. A string with escapes is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -68178,8 +68178,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the exception class to raise is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the literal is wrapped in `RuntimeError(...)`; it raised `TypeError` before, so a handler for that no longer catches it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -68310,8 +68310,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to chain the original error or hide it is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the choices are `from err` (the caught error kept as the cause, bound `as err` when the handler doesn't name it) and `from None` (hidden); either changes the traceback, so neither is the default. A raise over several lines is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -68397,8 +68397,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which parameter the value was meant for needs a person",
+   "fix": "auto",
+   "fix_reason": "the arguments after the third (`re.sub`, `re.subn`) or second (`re.split`) become `count=`/`maxsplit=` and `flags=`, by the real signature: the same binding. A flag in the `count` place is the bug the rule is for: its choices are `count=` (what runs today) and `flags=`",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -68641,8 +68641,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "which definition is meant, and whether to rename or remove the other, needs a person",
+   "fix": "auto",
+   "fix_reason": "auto for the same import twice, the later alone on its statement: it goes, and the name stays bound to the same object; an unused definition before a redefinition is deleted as a suggestion, since its decorators and defaults no longer run; any other redefinition is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -69576,8 +69576,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the surrounding code has to be restructured",
+   "fix": "suggest",
+   "fix_reason": "a SyntaxError today, so nothing ran: the `return` goes (`pass` when its block empties), and a value that does something stays as a statement; wrapping it in a function would need a name the code doesn't hold",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -69621,8 +69621,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "how to keep the items (a list, `itertools.tee`) is the author's choice",
+   "fix": "suggest",
+   "fix_reason": "`group = list(group)` goes first in the loop body: the later uses see the items instead of an exhausted iterator, which is the fix and a change in what they get",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -70451,8 +70451,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "reordering arguments can change which parameter each value binds to",
+   "fix": "auto",
+   "fix_reason": "auto when `*args` and the keyword values it moves past are names or literals: Python binds `*args` to positions either way, and only the order the arguments run in changes, which nothing then sees. Otherwise the same move is a suggestion; two late `*args` are manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -70580,8 +70580,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended key can't be inferred",
+   "fix": "suggest",
+   "fix_reason": "one choice per loop target: it becomes the key, and the dict gets an entry per item instead of one; none is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -70740,8 +70740,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a character set or a suffix was meant needs a person",
+   "fix": "suggest",
+   "fix_reason": "the choices are `removeprefix`/`removesuffix` (Python 3.9+), what a repeated character suggests was meant, and the character set without its repeats, which strips the same; `.strip()` offers only the second. Neither is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72065,8 +72065,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "`isinstance` accepts subclasses, which may or may not be intended",
+   "fix": "auto",
+   "fix_reason": "auto when both sides are `type()` calls or builtin type names not rebound: `==` becomes `is` and `!=` `is not`, which give the same answer there; for any other class it is a suggestion, as a metaclass may define `__eq__`. `isinstance()` also accepts subclasses, so it is not offered",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72384,8 +72384,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether an increment or a plain value was meant needs a person",
+   "fix": "suggest",
+   "fix_reason": "as a statement the choices are `x += 1` (`-=` for `--`) and deleting it; inside an expression the two signs go. `++x` is a no-op today, but `__pos__` may not be (Decimal), so none is automatic or the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72546,8 +72546,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the name should be defined or dropped from `__all__` needs a person",
+   "fix": "suggest",
+   "fix_reason": "the module's names within two edits are choices, the nearest the default, beside removing the entry from `__all__`; `import *` raises AttributeError today. A module with `__getattr__`, or an entry outside a list or tuple literal, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72592,8 +72592,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended feature can't be guessed from a misspelling",
+   "fix": "suggest",
+   "fix_reason": "the features within two edits of the name are choices, the nearest the default, beside removing the name; a SyntaxError today, so each choice changes what runs",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72605,7 +72605,7 @@
     }
    ],
    "options": {},
-   "dont": "from __future__ import braces",
+   "dont": "from __future__ import annotatons",
    "do": "from __future__ import annotations",
    "fix_steps": [
     "Check the name against the `__future__` module's features.",
@@ -72613,7 +72613,7 @@
    ],
    "example": {
     "language": "python",
-    "dont": "from __future__ import braces",
+    "dont": "from __future__ import annotatons",
     "do": "from __future__ import annotations"
    },
    "ported_from": [
@@ -72638,8 +72638,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to declare it `global`, `nonlocal` or rename the local needs a person",
+   "fix": "suggest",
+   "fix_reason": "`global <name>` (a module binding) or `nonlocal <name>` (an enclosing function's) goes at the top of the function, after its docstring: the UnboundLocalError becomes reading and writing the outer name, which the author may not want. Renaming the local is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -72684,8 +72684,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to import, define or correct the name needs a person",
+   "fix": "suggest",
+   "fix_reason": "the names in scope and the builtins within two edits are choices, the nearest the default; the NameError becomes a read of that name. A name with none near is manual, as the right one is a value the code doesn't hold",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73177,8 +73177,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether an assignment was meant needs a person",
+   "fix": "suggest",
+   "fix_reason": "`:` becomes `=`: the annotation that did nothing becomes the assignment it looks like, which changes what runs",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -76273,8 +76273,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "whether an assignment or an assertion was meant needs a person",
+   "fix": "suggest",
+   "fix_reason": "the choices are an assignment (`==` written for `=`), an `assert`, and deleting the statement; each changes what runs (an assignment, a check, or no `__eq__` call), so none is the default",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -76319,8 +76319,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the exceptions to suppress are the author's choice",
+   "fix": "suggest",
+   "fix_reason": "the `with` line goes and its body is dedented: it suppressed nothing, so the code runs the same, but the exception the author forgot to name is gone from view, so review it. A `with` with an `as` target, other context managers or a multi-line string is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -76443,8 +76443,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "what the expression was meant for needs a person",
+   "fix": "suggest",
+   "fix_reason": "the choices are deleting the statement and, when it ends a function, returning it; reading an attribute can run a property, so neither is automatic or the default. A statement sharing its line is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",

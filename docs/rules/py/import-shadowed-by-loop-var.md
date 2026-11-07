@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the new loop variable name is a choice the author has to make) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto in a function that reads the name nowhere after the loop, from no nested scope outside it, with no locals(), vars(), eval(), exec(), global or nonlocal: the loop variable becomes `<name>_` in the loop, and the import holds everywhere else as before; a module-level loop rebinds a global others may read, and a read after the loop would see the module, so those are suggestions. None when `<name>_` is taken) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F402` |
@@ -134,6 +134,15 @@ import path
 
 for path in ["a.txt", "b.txt"]:
     print(path)
+```
+
+#### Fixed
+
+```py
+import path
+
+for path_ in ["a.txt", "b.txt"]:
+    print(path_)
 ```
 
 #### Do

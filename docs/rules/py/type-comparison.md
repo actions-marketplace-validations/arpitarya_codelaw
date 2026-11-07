@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`isinstance` accepts subclasses, which may or may not be intended) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when both sides are `type()` calls or builtin type names not rebound: `==` becomes `is` and `!=` `is not`, which give the same answer there; for any other class it is a suggestion, as a metaclass may define `__eq__`. `isinstance()` also accepts subclasses, so it is not offered) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/E721`, `pylint/unidiomatic-typecheck` |
@@ -131,6 +131,13 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 
 ```py
 if type(value) == int:
+    count(value)
+```
+
+#### Fixed
+
+```py
+if type(value) is int:
     count(value)
 ```
 
