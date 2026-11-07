@@ -126,6 +126,8 @@ The decider wants performance to be a key property and accepts that today's numb
   - `codelaw hook` gains nothing from a primed cache: `fix_one_file` is 53.7 ms warm and 49.7 ms cold. Its time is project and rule-set loading, not checking.
   - Every operation is well inside its design target on this machine.
 
+**The project graph, 2026-11-07 (W-168) — context only, no budget.** None of the operations above builds the graph: the reference workload extends only the `recommended` presets. `codelaw bench --graph` ([SR-CLI-MCP](0115_cli-and-mcp.md) decision 10) times it on its own workload, and its six `graph_*` rows sit in `perf/budgets.toml` as `unset` context rows. Measured on the same loaded Mac (other agents building: load 12–60 for 10k–100k, 4–7 for 500k and 1M): `graph_hook_one_file` 2.0 s at 10k against SR-PROJECT-GRAPH decision 5's 300 ms target; `graph_cold` 6.3 s, 56 s and 1,186 s at 10k, 100k and 1M; peak memory 226 MiB, 1.4 GiB and 6.1 GiB. Every size and stage: [`experiments/graph-scale/RESULTS.md`](../experiments/graph-scale/RESULTS.md). Which sizes, if any, get a budget is the decider's (W-168 step 6).
+
 **The reference machine's numbers and the budgets set from them, 2026-10-25 (W-19).** Decision 4's ruled method applied to the `perf` job's three runs on `main` on `ubuntu-24.04` (image 20261012.334): A = run 40124005285 (`483b2a1`), B = 40124756694 and C = 40124878075 (both `ae90982`). "Rounded up" is taken to the next whole ms or MiB.
 
 | operation | p95 A / B / C | worst | 1.5 × worst | design target | budget |
