@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, second pass: slices 21 landed, 22 (48 Pylint rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 to closure.
+- **Done:** slice 21 landed by the end-of-turn hook (`7f6ae3e9`) once its checks passed; slice 22 — 48 `py/*` rules from Pylint's own checks, all `manual`. `codelaw test packs/python` 706 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written, one rule narrowed. Every Pylint row this strand does not write is in the item with its reason.
+- **Decided / left open:** Pylint rows whose twin is an older rule are not linked: adding `ported_from:` to existing rules waits until W-156 and W-162 stop editing them.
+- **Mistakes:** none new.
+- **Next:** what is left of the strand is native, type-inference or unconfirmable rows; close-out tally against DoD 1.
+
+---
+
 ## 2026-11-07 — W-173 closed: Ruff 0.0.21, `zip` 9.4.1  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) on Arpit's ruling, bump Ruff to `=0.0.21`, record it in SR-LAW-11, prove it, close W-173.
