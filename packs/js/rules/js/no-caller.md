@@ -29,7 +29,7 @@ match:
     - regex: ''
 message: "Do not use `$$MATCH`; name the function instead"
 fix:
-  - edit-text: { target: $FN, pattern: '\Afunction(\s*\*?)\s*\(', replace: "function${1} $FRESH(self)(" }
+  - edit-text: { target: $FN, pattern: '\Afunction\s*(\*?)\s*\(', replace: "function${1} $FRESH(self)(" }
   - replace: { target: $ANON, with: "$FRESH(self)" }
   - replace: { target: $NAMED, with: "$NAME" }
 ```

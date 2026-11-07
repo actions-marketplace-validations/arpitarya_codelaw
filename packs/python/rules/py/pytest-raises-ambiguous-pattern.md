@@ -2,9 +2,8 @@
 id: py/pytest-raises-ambiguous-pattern
 title: "pytest.raises(match=) escapes regex characters"
 languages: [python]
-fix: manual
-fix_reason: "whether the pattern was meant as a regex or literal text is the author's"
-fix_pending: "suggest-choices; needs add-import (W-162)"
+fix: suggest
+fix_reason: "the fix reads the pattern as literal text and escapes it in a raw string; a pattern meant as a regular expression is the author's to keep"
 stability: preview
 ported_from: [ruff/RUF043]
 since: 0.5.0
@@ -19,9 +18,12 @@ match:
   kind: keyword_argument
   all:
     - has: {field: name, regex: '^match$'}
-    - has: {field: value, kind: string, regex: '^["'']', not: {regex: '\\'}, has: {kind: string_content, regex: '[.*+?^$()\[\]{}|]'}}
+    - has: {field: value, kind: string, regex: '^["'']', not: {regex: '\\'}, has: {kind: string_content, regex: '[.*+?^$()\[\]{}|]'}, pattern: $S}
     - inside: {kind: argument_list, inside: {kind: call, has: {field: function, regex: '^pytest\.raises$'}}}
 message: "`match` is a regex; escape the metacharacters"
+fix:
+  - edit-text: { target: $S, pattern: '([.*+?^$()\[\]{}|])', replace: '\${1}' }
+  - edit-text: { target: $S, pattern: '\A', replace: 'r' }
 ```
 
 ## How to fix

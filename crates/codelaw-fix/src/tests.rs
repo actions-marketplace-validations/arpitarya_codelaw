@@ -348,3 +348,28 @@ fn edit_text_patterns_name_captures_escaped() {
     assert_eq!(out.text, "for (let i = 0; i < a.b.length; i++) f(item2, axb[i]);\nconst item = 1;\n");
 }
 
+
+#[test]
+fn ensure_import_reuses_or_adds_an_import() {
+    // W-162: `ensure-import` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: call\n  pattern: isclose($A, $B)\nmessage: m\nfix:\n  - replace: \"math.isclose($A, $B)\"\n  - ensure-import: { module: math }";
+    let out = fix(Language::Python, block, "\"\"\"Doc.\"\"\"\nimport os\n\nx = isclose(a, 0.1)\n");
+    assert_eq!(out.text, "\"\"\"Doc.\"\"\"\nimport os\nimport math\n\nx = math.isclose(a, 0.1)\n");
+    let block = "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - replace: \"field($A)\"\n  - ensure-import: { module: dataclasses, name: field }";
+    let out = fix(Language::Python, block, "from dataclasses import dataclass\n\nx = make(1)\n");
+    assert_eq!(out.text, "from dataclasses import dataclass, field\n\nx = field(1)\n");
+    let block = "match:\n  kind: jsx_self_closing_element\n  has: { field: name, regex: ^a$, pattern: $N }\nmessage: m\nfix:\n  - replace: { target: $N, with: Link }\n  - ensure-import: { module: next/link, name: default, as: Link }";
+    let out = fix(Language::Jsx, block, "\"use client\";\nconst a = <a href=\"/x\" />;\n");
+    assert_eq!(out.text, "\"use client\";\nimport Link from \"next/link\";\nconst a = <Link href=\"/x\" />;\n");
+}
+
+#[test]
+fn ensure_import_refuses_a_name_taken_by_something_else() {
+    let (rule, compiled) = matcher(Language::Python, "match:\n  kind: call\n  pattern: make($A)\nmessage: m\nfix:\n  - ensure-import: { module: dataclasses, name: field }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "field = 1\nx = make(1)\n";
+    let root = codelaw_lang::parse(Language::Python, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Python, semantic: None };
+    let m = find(Language::Python, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("already a name"));
+}

@@ -75,6 +75,12 @@ pub enum Primitive {
     /// out. The target stays where it is: a `remove` step takes it away
     /// (W-162).
     MergeInto { target: Target, into: Target, unique: bool },
+    /// Make the file import `name` from `module` (W-162): nothing when it
+    /// already does; else the name joins an import of the module the file
+    /// has, or a new import goes after the last one. `name: default` with
+    /// `as: X` is a default import; in Python, no `name` is `import module`.
+    /// Refused when the name the import binds is already a name in the file.
+    EnsureImport { module: String, name: Option<String>, alias: Option<String> },
 }
 
 /// Where `move` puts its target.
@@ -103,6 +109,17 @@ pub struct ChoiceSpec {
 }
 
 impl FixSpec {
+    /// Whether a step reads the semantic model (a rename), so the engine
+    /// builds it for the rule even when its match does not.
+    pub fn needs_semantic(&self) -> bool {
+        let renames = |s: &[Primitive]| s.iter().any(|p| matches!(p, Primitive::RenameSymbolLocal { .. } | Primitive::RenameSymbol { .. }));
+        match self {
+            FixSpec::Steps(s) => renames(s),
+            FixSpec::Choices(cs) => cs.iter().any(|c| renames(&c.steps)),
+            FixSpec::External(_) => false,
+        }
+    }
+
     /// A fix with `collect-into-block` is computed once over every match in
     /// the file; each diagnostic then carries the whole edit set.
     pub fn is_group(&self) -> bool {
@@ -111,7 +128,7 @@ impl FixSpec {
 }
 
 const PRIMITIVES: &[&str] =
-    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "rename-symbol", "edit-text", "unwrap-block", "move", "merge-into"];
+    &["replace", "remove", "insert-before", "insert-after", "strip-export-keyword", "collect-into-block", "move-to", "rename-symbol-local", "rename-symbol", "edit-text", "unwrap-block", "move", "merge-into", "ensure-import"];
 
 fn target(v: &Value) -> Result<Target, String> {
     match v.as_str() {
@@ -235,6 +252,16 @@ fn primitive(item: &Value) -> Result<Primitive, String> {
                 _ => return Err("`move` takes one of `before` and `after`".into()),
             };
             Primitive::Move { target: o.get("target").map(target).transpose()?.unwrap_or(Target::Match), to }
+        }
+        "ensure-import" => {
+            let Value::Object(o) = arg else { return Err("`ensure-import` takes `{ module, name?, as? }`".into()) };
+            only_keys(o, &["module", "name", "as"], name)?;
+            let get = |k: &str| o.get(k).map(|v| string(v, k)).transpose();
+            let (module, n, alias) = (string(field(o, "module", name)?, "module")?, get("name")?, get("as")?);
+            if n.as_deref() == Some("default") && alias.is_none() {
+                return Err("`ensure-import`: a `default` import needs `as`".into());
+            }
+            Primitive::EnsureImport { module, name: n, alias }
         }
         "merge-into" => {
             let Value::Object(o) = arg else { return Err("`merge-into` takes `{ target?, into, unique? }`".into()) };
@@ -564,6 +591,7 @@ fn step_edits(p: &Primitive, m: &Match, ctx: &FixContext<'_>, out: &mut Vec<Text
             }
             out.extend(ranges.into_iter().map(|(s, e)| TextEdit::new(s, e, new.clone())));
         }
+        Primitive::EnsureImport { module, name, alias } => ensure_import(ctx, module, name.as_deref(), alias.as_deref(), out)?,
         Primitive::CollectIntoBlock { .. } => {}
         Primitive::EditText { .. } => unreachable!("edit-text steps run in `text_edits`"),
         Primitive::UnwrapBlock { target, within } => {
@@ -697,7 +725,10 @@ fn names_in(ctx: &FixContext<'_>) -> std::collections::BTreeSet<String> {
     }
     let globals: &[&str] = if ctx.language == Language::Python { codelaw_semantic::PYTHON_BUILTINS } else { codelaw_semantic::ES_GLOBALS };
     names.extend(globals.iter().map(|g| (*g).to_owned()));
-    names.extend(["arguments", "await", "yield", "let", "static", "enum", "self", "cls"].map(str::to_owned));
+    names.extend(["arguments", "await", "yield", "let", "static", "enum"].map(str::to_owned));
+    if ctx.language == Language::Python {
+        names.extend(["self", "cls"].map(str::to_owned));
+    }
     names
 }
 
@@ -743,6 +774,103 @@ fn escaped_captures(pattern: &str, m: &Match, src: &str) -> String {
     }
     out.push_str(rest);
     out
+}
+
+fn kids(n: tree_sitter::Node<'_>) -> Vec<tree_sitter::Node<'_>> {
+    let mut c = n.walk();
+    n.named_children(&mut c).collect()
+}
+
+/// The edit for `ensure-import` (W-162; SR-RULE-FORMAT decision 3c).
+fn ensure_import(ctx: &FixContext<'_>, module: &str, name: Option<&str>, alias: Option<&str>, out: &mut Vec<TextEdit>) -> Result<(), String> {
+    let src = ctx.source;
+    let root = ctx.root.root().get_inner_node();
+    let mut c = root.walk();
+    let top: Vec<tree_sitter::Node<'_>> = root.named_children(&mut c).collect();
+    let txt = |n: tree_sitter::Node<'_>| &src[n.byte_range()];
+    let binds = alias.or(name).map(str::to_owned).unwrap_or_else(|| module.split('.').next().unwrap_or(module).to_owned());
+    let taken = || Err(format!("`ensure-import`: `{binds}` is already a name in the file"));
+    let python = ctx.language == Language::Python;
+    let mut last_import = None;
+    for &s in &top {
+        let is_import = matches!(s.kind(), "import_statement" | "import_from_statement" | "future_import_statement");
+        if is_import {
+            last_import = Some(s);
+        }
+        if python {
+            match (s.kind(), name) {
+                ("import_statement", None) if kids(s).iter().any(|k| k.kind() == "dotted_name" && txt(*k) == module) => return Ok(()),
+                ("import_from_statement", Some(n)) if s.child_by_field_name("module_name").is_some_and(|m| txt(m) == module) => {
+                    let names: Vec<_> = kids(s).into_iter().skip(1).collect();
+                    if names.iter().any(|k| k.kind() == "wildcard_import" || (k.kind() == "dotted_name" && txt(*k) == n)) {
+                        return Ok(());
+                    }
+                    if names_in(ctx).contains(n) {
+                        return taken();
+                    }
+                    let last = names.last().ok_or("`ensure-import`: an import with no names")?;
+                    out.push(TextEdit::insert(last.end_byte(), format!(", {n}")));
+                    return Ok(());
+                }
+                _ => {}
+            }
+        } else if s.kind() == "import_statement"
+            && s.child_by_field_name("source").is_some_and(|m| txt(m).trim_matches(['"', '\'']) == module)
+            && !txt(s).starts_with("import type")
+        {
+            let clause = kids(s).into_iter().find(|k| k.kind() == "import_clause");
+            let parts = clause.map(kids).unwrap_or_default();
+            match name {
+                Some("default") => {
+                    if let Some(d) = parts.iter().find(|k| k.kind() == "identifier") {
+                        return if txt(*d) == binds { Ok(()) } else { taken() };
+                    }
+                }
+                Some(n) => {
+                    if let Some(named) = parts.iter().find(|k| k.kind() == "named_imports") {
+                        let specs = kids(*named);
+                        if specs.iter().any(|k| k.child_by_field_name("name").is_some_and(|x| txt(x) == n) && k.child_by_field_name("alias").is_none()) {
+                            return Ok(());
+                        }
+                        if names_in(ctx).contains(n) {
+                            return taken();
+                        }
+                        match specs.last() {
+                            Some(l) => out.push(TextEdit::insert(l.end_byte(), format!(", {n}"))),
+                            None => out.push(TextEdit::insert(named.start_byte() + 1, format!(" {n} "))),
+                        }
+                        return Ok(());
+                    }
+                }
+                None => return Err("`ensure-import` needs `name` in JavaScript".into()),
+            }
+        }
+    }
+    if names_in(ctx).contains(&binds) {
+        return taken();
+    }
+    let line = match (python, name) {
+        (true, None) => format!("import {module}"),
+        (true, Some(n)) => format!("from {module} import {n}"),
+        (false, Some("default")) => format!("import {binds} from \"{module}\";"),
+        (false, Some(n)) => format!("import {{ {n} }} from \"{module}\";"),
+        (false, None) => unreachable!("checked above"),
+    };
+    // After the last import; else after a docstring or the directives.
+    let after = last_import.or_else(|| {
+        top.iter()
+            .take_while(|s| s.kind() == "expression_statement" && s.named_child(0).is_some_and(|e| e.kind() == "string"))
+            .last()
+            .copied()
+    });
+    let at = match after {
+        Some(n) => src[n.end_byte()..].find('\n').map(|i| n.end_byte() + i + 1).unwrap_or(src.len()),
+        None => 0,
+    };
+    let lead = if at == src.len() && !src.is_empty() && !src.ends_with('\n') { "\n" } else { "" };
+    let gap = if after.is_none() && !src.is_empty() { "\n" } else { "" };
+    out.push(TextEdit::insert(at, format!("{lead}{line}\n{gap}")));
+    Ok(())
 }
 
 /// Text written as lines of its own, each at `indent` plus the indentation
