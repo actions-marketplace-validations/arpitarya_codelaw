@@ -24,6 +24,86 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-173 closed: Ruff 0.0.21, `zip` 9.4.1  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) on Arpit's ruling, bump Ruff to `=0.0.21`, record it in SR-LAW-11, prove it, close W-173.
+- **Done:** five pins `=0.0.21` in `codelaw-format`, `Cargo.lock` moved only D-02's tree (`zip` 9.4.1); SR-LAW-11 D-02 ratified again with the decider's words, count 162, ledger lines regenerated; SR-FORMATTER pins; inbox row removed; item archived; IMPLEMENTATION, CHANGELOG (Security).
+- **Decided / left open:** the W-141 corpus has no Python, so 756 Python files (3.14 stdlib + the repo's) stood in: byte-identical under both release builds. Only D-02's ledger lines regenerated — `print_ledger` also rewrites D-01's (stale, not this change's). Alerts close on the push.
+- **Mistakes:** the inbox row named four new crates; the tree also takes `r-efi@6` (and three already in the lock) — written into D-02 and the item.
+- **Next:** none for W-173; the push closes the alerts.
+
+---
+
+## 2026-11-07 — Docket, inbox only: W-105's budgets ruled unset  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"explain me the blockers 1 by one"*, then *"yes"* to the write-back.
+- **Done:** two inbox cards. W-105 ruled *"Leave unset"*: the inbox row and its sub-row removed, W-105 🔴 `arpit` → 🟣 `agent` (the 11-10 RC re-pin), the item file, INTERVIEW §1, the registry rows. The inbox is empty.
+- **Decided / left open:** W-173 ruled *"Bump to 0.0.21 (Recommended)"* here, but Claude Code had already taken the same ruling and landed it (`5f472943`) mid-docket; its files left to that session.
+- **Mistakes:** the cards were read before the 17:32 landing; caught by `git log` before writing.
+- **Next:** W-105's RC re-pin on 2026-11-10.
+
+---
+
+## 2026-11-07 — W-169: the segfault caught by the capture, and fixed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) watch CI on the pushed `main`, dispatch until a build leg crashes, read `crash-<key>`, fix with a regression test.
+- **Done:** runs 42347941992 and 42348089566 green on all eight legs; dispatch 42348986474 crashed `build linux-arm64-musl` (`test packs/js/`). The core: tree-sitter's `ts_language_symbol_for_name` → a `strncmp` that reads `name[len]`, a 16-byte name ending at a page boundary. Fix: `codelaw-lang` hands tree-sitter a NUL-terminated copy of every kind and field name; unit and guard-page tests; SR-LINTER decision 1.
+- **Decided / left open:** step 3 (five green runs) waits on the decider's push. The crash twin came out byte-identical, i.e. stripped — the frames were named by disassembly; fixing the twin is open.
+- **Mistakes:** none new.
+- **Next:** after the push, five green runs of every build leg.
+
+---
+
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 21 (51 rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 to closure.
+- **Done:** slice 20 landed (`02994cae`); slice 21 — 51 `py/*` rules (flake8-pyi 20, Pylint-in-Ruff 14, flake8-return 4, gettext 3, CPY001, TID252, pytest-style 4, pathlib 4): 4 auto, 4 suggest, 43 manual; 15 Pylint rows linked. `codelaw test packs/python` 658 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written.
+- **Decided / left open:** the four unused-private-name stub rules are native (module-level names are never `unused` in the semantic model); upstream rows whose exemptions could not be confirmed offline listed in the item.
+- **Mistakes:** none new.
+- **Next:** the rest of the strand is mostly native or unconfirmable rows; Pylint's own rows next (links and the simple checks).
+
+---
+
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 20 (48 rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the python half of W-139 after slice 19; resume where the usage limit was thought to have stopped it, merge main, land, continue to closure.
+- **Done:** slice 19 landed (`3b9710f4`); slice 20 — 48 `py/*` rules (pydocstyle 20, flake8-async 10, flake8-annotations 9, refurb 7, pyupgrade 2): 6 auto, 15 suggest, 27 manual. `codelaw test packs/python` 607 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts for the 48 written from one run of only the new rules.
+- **Decided / left open:** D210 not built (the formatter already does it); the return-type rules offer `-> None` only where the function returns nothing, else the finding is manual; whitespace-only and docstring-section rows listed as native.
+- **Mistakes:** none new.
+- **Next:** slice 21 — flake8-pyi, Pylint's PLC/PLR rows, flake8-return, the gettext and copyright rows.
+
+---
+
+## 2026-11-07 — W-139 strand W-139-py, second pass: slice 19 (53 Ruff/Pylint rows)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build the python half of W-139's remaining ports — Ruff's remaining sets and Pylint's — in slices of 30–60, each green, in parallel with the js strand, W-156, W-162 and W-172.
+- **Done:** slice 19 — 53 new `py/*` rules (pep8-naming, flake8-builtins, flake8-pytest-style, BLE, SLF, FBT, TRY, EM, TID253, ICN003, LOG, G101, PERF401–403, PIE804, SIM112): 1 auto, 14 suggest, 38 manual; three Pylint rows linked. `codelaw test packs/python` 559 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus: 6 repositories (flask, httpx, starlette, rich, full-stack-fastapi-template, djangoproject.com) — counts written; `uncapitalized-environment-variables` narrowed to the first argument after sampling (8 → 0, a default value is not the name); loudest `private-member-access` 331, `boolean-type-hint-positional-argument` 213, `raw-string-in-exception` 182. Rows not written are listed with their reason in the item.
+- **Decided / left open:** rename fixes are `suggest` only where the name is private or local (`rename-symbol-local` refuses a public one), the finding `manual` otherwise; four rules whose edit needs an insert at a statement's indentation or an import carry `fix_pending:` naming W-162.
+- **Mistakes:** an early test file was auto-committed on the branch at a turn's end (held: docs-sync failed), so it was kept and finished in this slice; ordering of composite keys in a rule object hid a capture (fixed with an ordered `all:`).
+- **Next:** slice 20 — pydocstyle, flake8-async, flake8-annotations, refurb and two pyupgrade rows (48, staged).
+
+---
+
+## 2026-11-07 — W-139 slice 19: ESLint core, SonarJS, eslint-plugin-import, unicorn (js strand, second pass)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue the js half of W-139's remaining port rows, slice by slice.
+- **Done:** 56 `js/*` rules (ESLint 13, SonarJS 31, import 10, unicorn 2; 3 `auto`, 5 `suggest`, 48 `manual`), presets `js/sonarjs` +25, `js/taste` +6, `js/strict` +2; docs and counts.
+- **Decided / left open:** rows written in the narrowest form whose fix is certain; corpus counts not run (no corpus on this machine).
+- **Mistakes:** a `has:` with only `field:` is not a rule (load error), and `follows`/`precedes` see the block's braces as siblings; both fixed before landing.
+- **Next:** the next js slice (unicorn's remainder, SonarJS's remainder), then the not-written list.
+
+---
+
+## 2026-11-07 — W-162 change 5: computed edits, the rest  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162 to closure: `merge-into`, the per-rule fixes, then scope rename, add-import, purity, cross-file, SHAs; resumed after a usage-limit stop, main merged in.
+- **Done:** `merge-into`, `move: { after }`, line inserts, three filters, native `js/prefer-template`; 34 rules moved, 6 re-judged `manual`. No rule names computed-edit.
+- **Decided / left open:** tree-sitter-javascript reads `&` in a JSX attribute string as an error, so `google-font-display` joins with `&amp;` (JSX reads it as `&`). `prefer-template` keeps the match rule's detection so the corpus count holds. `cargo test -p codelaw-native` has one failure on main (`data_json::duplicate_keys_decode_escapes`), not W-162's.
+- **Mistakes:** none new.
+- **Next:** scope rename and `$FRESH`.
+
+---
+
 ## 2026-11-07 — W-156 step 4: the last native moves  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) finish W-156: first run `cargo test -p codelaw-native` and `-p codelaw-engine` after the previous agent's marker edits and fix what broke, then move the 60 native rules left (css 8, python 52), one pack per change, and close the item.

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (`swap` and `optional` trade layout shift against fallback text differently; the author picks) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`swap` and `optional` trade layout shift against fallback text differently, so both are offered and the author picks; a `display` already in the URL is replaced, and a new parameter is joined with `&amp;`, which JSX reads as `&`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `@next/eslint-plugin-next/google-font-display` |
@@ -138,6 +138,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+#### Fixed (swap)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 ### JSX
 
 #### Don't
@@ -152,6 +164,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+#### Fixed (swap)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 ### TSX
 
 #### Don't
@@ -164,6 +188,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 
 ```tsx
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (swap)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+#### Fixed (optional)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
 ```
 
 ---

@@ -2,9 +2,8 @@
 id: py/legacy-form-pytest-raises
 title: "pytest.raises as a context manager"
 languages: [python]
-fix: manual
-fix_reason: "the call moves into a `with` block"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the `with` body is indented four spaces, which a file indented with tabs would not match; a call whose result is used, or that passes keywords, is rewritten by hand"
 stability: preview
 ported_from: [ruff/RUF061]
 since: 0.5.0
@@ -21,7 +20,16 @@ match:
     - has: {field: function, regex: '^pytest\.(raises|warns|deprecated_call)$'}
     - has: {field: arguments, has: {nthChild: 2, not: {kind: keyword_argument}}}
     - not: {inside: {kind: with_item, stopBy: end}}
+  any:
+    - all:
+        - pattern: $FN($E, $F, $$$A)
+        - not: {has: {field: arguments, has: {kind: keyword_argument}}}
+        - inside: {kind: expression_statement, pattern: $STMT}
+    - regex: ''
 message: "Use `with pytest.raises(...):` around the call"
+fix:
+  - replace: { target: $STMT, with: "with $FN($E):" }
+  - insert-after: { target: $STMT, text: "    $F($$$A)", line: true }
 ```
 
 ## How to fix

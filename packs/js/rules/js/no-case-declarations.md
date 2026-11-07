@@ -2,9 +2,8 @@
 id: js/no-case-declarations
 title: "No let, const, function or class directly in a case"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "another case may rely on the shared declaration"
-fix_pending: "auto-subset; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the braces end the declaration's scope at the case, so another case that reads it no longer can, which the fix does not check"
 stability: preview
 ported_from: [eslint/no-case-declarations]
 since: 0.1.0
@@ -24,7 +23,12 @@ match:
   inside:
     stopBy: neighbor
     any: [{ kind: switch_case }, { kind: switch_default }]
+    pattern: $CASE
+    has: { regex: '^:$', pattern: $$COLON }
 message: "A declaration in a case is visible to the whole switch; wrap the case in braces"
+fix:
+  - insert-after: { target: $COLON, text: " {" }
+  - insert-after: { target: $CASE, text: "}", line: true }
 ```
 
 ## How to fix

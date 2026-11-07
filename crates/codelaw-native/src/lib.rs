@@ -62,6 +62,7 @@ mod regexp;
 pub mod regex_ast;
 mod regexp_rules;
 mod react_ts_extra;
+mod rewrites;
 mod css_lists;
 mod css_style;
 mod scss_extra;
@@ -602,6 +603,7 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &accessors::GetterReturn,
     &conventions::ImportGroups,
     &expressions::NoConstantBinaryExpression,
+    &rewrites::PreferTemplate,
     &duplicates::NoDupeArgs,
     &duplicates::NoDupeClassMembers,
     &duplicates::NoDupeElseIf,

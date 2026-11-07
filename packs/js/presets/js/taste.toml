@@ -1,9 +1,15 @@
 description = "ESLint's style-only rules and two TSLint ones, which no defect stands behind; opt in (W-139, ruled 2026-10-30 on W-138: R1)"
 
 [rules]
+"js/capitalized-comments" = "warn"
+"js/func-names" = "warn"
+"js/func-style" = "warn"
+"js/id-length" = "warn"
+"js/init-declarations" = "warn"
 "js/no-continue" = "warn"
 "js/no-inline-comments" = "warn"
 "js/no-plusplus" = "warn"
 "js/no-ternary" = "warn"
 "js/no-undefined" = "warn"
 "js/switch-final-break" = "warn"
+"js/vars-on-top" = "warn"

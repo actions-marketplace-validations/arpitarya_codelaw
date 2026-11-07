@@ -24,13 +24,13 @@ biome_js_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f5
 biome_js_parser = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 biome_json_formatter = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
 biome_json_parser = { git = "https://github.com/biomejs/biome", rev = "0b4c11f553a7e702f9851af139662e1de45dc131" }
-# Ruff publishes its internal crates to crates.io; 0.0.18 is Ruff 0.17.1's.
-ruff_formatter = "=0.0.18"
-ruff_python_formatter = "=0.0.18"
-ruff_python_parser = "=0.0.18"
+# Ruff publishes its internal crates to crates.io; 0.0.21 is Ruff 0.17.4's (W-173).
+ruff_formatter = "=0.0.21"
+ruff_python_formatter = "=0.0.21"
+ruff_python_parser = "=0.0.21"
 # The statement tree the ignore markers need (decision 6).
-ruff_python_ast = "=0.0.18"
-ruff_text_size = "=0.0.18"
+ruff_python_ast = "=0.0.21"
+ruff_text_size = "=0.0.21"
 taplo = { version = "=0.14.0", default-features = false }
 markup_fmt = "=0.27.6"
 # Oxc's native formatters (SR-LAW-11 D-52, ratified 2026-11-05): not on

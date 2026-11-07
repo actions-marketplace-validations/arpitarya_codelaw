@@ -3,8 +3,8 @@ id: js/no-anonymous-default-export
 title: "Name the default export"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
-fix_reason: "the name comes from the file name, which the rule does not read"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix_reason: "the name the function or class should have is the author's; the file name is only one guess at it"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-anonymous-default-export]
 since: 0.5.0
