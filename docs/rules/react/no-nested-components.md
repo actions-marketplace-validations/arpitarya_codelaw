@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the component out means passing in the values it closed over as props) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `eslint-plugin-react-hooks/static-components`, `@eslint-react/no-nested-component-definitions`, `eslint-plugin-react/no-unstable-nested-components` |
@@ -139,6 +139,15 @@ function List({ items }) {
 }
 ```
 
+#### Fixed
+
+```js
+const Item = ({ text }) => <li>{text}</li>;
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 #### Do
 
 ```js
@@ -162,6 +171,17 @@ function List({ items }) {
 }
 ```
 
+#### Fixed
+
+```jsx
+function Item({ text }) {
+    return <li>{text}</li>;
+  }
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 #### Do
 
 ```jsx
@@ -181,6 +201,15 @@ function List({ items }) {
 ```tsx
 function List({ items }: { items: string[] }) {
   const Item = ({ text }: { text: string }) => <li>{text}</li>;
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
+#### Fixed
+
+```tsx
+const Item = ({ text }: { text: string }) => <li>{text}</li>;
+function List({ items }: { items: string[] }) {
   return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
 }
 ```

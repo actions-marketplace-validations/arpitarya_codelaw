@@ -2,9 +2,9 @@
 id: react/use-memo
 title: "useMemo's callback computes and returns a value"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "whether the code belongs in useEffect, useCallback or plain render code is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint-plugin-react-hooks/use-memo, eslint-plugin-react-hooks/void-use-memo, "@eslint-react/use-memo"]
 since: 0.3.0
@@ -52,20 +52,16 @@ function useTotal(items) {
 #### Don't
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => {
-    rows.sort(byDate);
-  }, [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 #### Do
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => [...rows].sort(byDate), [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -74,16 +70,16 @@ function Report({ rows }) {
 #### Don't
 
 ```ts
-function useLabel(id: string) {
-  return useMemo((prefix: string) => prefix + id, [id]);
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 #### Do
 
 ```ts
-function useLabel(id: string) {
-  return useMemo(() => 'item-' + id, [id]);
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -92,20 +88,19 @@ function useLabel(id: string) {
 #### Don't
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useMemo(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 #### Do
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useEffect(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
+
 
 ## Differences from the source
 

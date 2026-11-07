@@ -39,11 +39,25 @@ impl NativeRule for JsxNoDuplicateProps {
         &["jsx_opening_element", "jsx_self_closing_element"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-        let mut seen = BTreeSet::new();
+        let mut seen: std::collections::BTreeMap<&str, Node<'_>> = std::collections::BTreeMap::new();
+        let src = ctx.source;
         for a in attributes(node.get_inner_node()) {
-            let Some(name) = attribute_name(a, ctx.source) else { continue };
-            if !seen.insert(name) {
-                out.push(finding(a, format!("The prop `{name}` is given twice; the last one wins"), Vec::new()));
+            let Some(name) = attribute_name(a, src) else { continue };
+            if let Some(first) = seen.insert(name, a) {
+                // The earlier one never takes effect; it goes when its value
+                // can't do anything as it is evaluated.
+                let quiet = first.named_child(1).is_none_or(|v| match v.kind() {
+                    "string" => true,
+                    "jsx_expression" => v.named_child(0).is_none_or(|e| matches!(e.kind(), "string" | "number" | "true" | "false" | "null" | "identifier" | "template_string")),
+                    _ => false,
+                });
+                let edits = if quiet {
+                    let before = src[..first.start_byte()].trim_end_matches([' ', '\t']).len();
+                    vec![TextEdit::delete(before, first.end_byte())]
+                } else {
+                    Vec::new()
+                };
+                out.push(finding(a, format!("The prop `{name}` is given twice; the last one wins"), edits));
             }
         }
     }
@@ -120,7 +134,25 @@ impl NativeRule for RequireRenderReturn {
                 && !returns_value(&b)
             {
                 let name = m.child_by_field_name("name").expect("checked");
-                out.push(finding(name, "`render()` must return what the component draws, on every path", Vec::new()));
+                // The last statement drawing JSX as a bare expression is
+                // what was meant to be returned.
+                let last = named_children(b).into_iter().filter(|s| s.kind() != "comment").last();
+                let edits = last
+                    .filter(|s| s.kind() == "expression_statement")
+                    .and_then(|s| s.named_child(0).map(|e| (s, e)))
+                    .filter(|(_, e)| {
+                        let mut e = *e;
+                        while e.kind() == "parenthesized_expression" {
+                            match e.named_child(0) {
+                                Some(c) => e = c,
+                                None => return false,
+                            }
+                        }
+                        matches!(e.kind(), "jsx_element" | "jsx_self_closing_element" | "jsx_fragment")
+                    })
+                    .map(|(s, _)| vec![TextEdit::insert(s.start_byte(), "return ")])
+                    .unwrap_or_default();
+                out.push(finding(name, "`render()` must return what the component draws, on every path", edits));
             }
         }
     }
@@ -174,6 +206,51 @@ pub(crate) fn enclosing_function<'t>(n: Node<'t>, src: &str) -> Option<(Node<'t>
         p = f.parent();
     }
     None
+}
+
+/// The edits that move a hook's statement above the statement holding the
+/// first early return, when both are statements of the function body and
+/// nothing the hook reads or declares is declared or read from there to it.
+fn hoist_hook<'t>(body: Node<'t>, ret: Node<'t>, call: Node<'t>, src: &str) -> Option<Vec<TextEdit>> {
+    let top = |n: Node<'t>| -> Option<Node<'t>> {
+        let mut cur = n;
+        while cur.parent()?.id() != body.id() {
+            cur = cur.parent()?;
+        }
+        Some(cur)
+    };
+    let (guard, stmt) = (top(ret)?, top(call)?);
+    if !matches!(stmt.kind(), "lexical_declaration" | "expression_statement") {
+        return None;
+    }
+    let names = |n: Node<'_>| -> Vec<String> {
+        let mut out = Vec::new();
+        let mut stack = vec![n];
+        while let Some(x) = stack.pop() {
+            if matches!(x.kind(), "identifier" | "shorthand_property_identifier_pattern") {
+                out.push(text(x, src).to_owned());
+            }
+            stack.extend(named_children(x));
+        }
+        out
+    };
+    let mine = names(stmt);
+    let mut cur = guard;
+    while cur.id() != stmt.id() {
+        if names(cur).iter().any(|n| mine.contains(n)) {
+            return None;
+        }
+        cur = cur.next_named_sibling()?;
+    }
+    let pad = {
+        let line = src[..guard.start_byte()].rfind('\n').map(|i| i + 1).unwrap_or(0);
+        src[line..guard.start_byte()].to_owned()
+    };
+    if !pad.trim().is_empty() {
+        return None;
+    }
+    let (s, e) = crate::util::whole_lines(src, stmt.start_byte(), stmt.end_byte());
+    Some(vec![TextEdit::insert(guard.start_byte(), format!("{}\n{pad}", text(stmt, src))), TextEdit::delete(s, e)])
 }
 
 pub struct RulesOfHooks;
@@ -237,7 +314,8 @@ impl NativeRule for RulesOfHooks {
             let mut stack = vec![body];
             while let Some(n) = stack.pop() {
                 if n.kind() == "return_statement" && n.end_byte() <= call.start_byte() {
-                    out.push(finding(call, format!("`{hook}` is called after an early return; hooks must run on every render"), Vec::new()));
+                    let edits = hoist_hook(body, n, call, src).unwrap_or_default();
+                    out.push(finding(call, format!("`{hook}` is called after an early return; hooks must run on every render"), edits));
                     return;
                 }
                 let mut c = n.walk();

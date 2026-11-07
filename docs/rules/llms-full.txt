@@ -94210,7 +94210,7 @@ const p = <Theme.Provider value={theme}>{children}</Theme.Provider>;
 ## `react/jsx-no-duplicate-props` — No prop given twice on one element
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (which value should win needs the author)
+- **Fix:** `auto` (the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/jsx-no-duplicate-props.md
 
@@ -96941,7 +96941,7 @@ const c = <circle r={4} />;
 ## `react/no-nested-components` — Components are not defined inside other components
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving the component out means passing in the values it closed over as props)
+- **Fix:** `suggest` (a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-nested-components.md
 
@@ -96971,6 +96971,15 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```js
+const Item = ({ text }) => <li>{text}</li>;
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```js
@@ -96994,6 +97003,17 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```jsx
+function Item({ text }) {
+    return <li>{text}</li>;
+  }
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -97013,6 +97033,15 @@ function List({ items }) {
 ```tsx
 function List({ items }: { items: string[] }) {
   const Item = ({ text }: { text: string }) => <li>{text}</li>;
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
+##### Fixed
+
+```tsx
+const Item = ({ text }: { text: string }) => <li>{text}</li>;
+function List({ items }: { items: string[] }) {
   return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
 }
 ```
@@ -97262,7 +97291,7 @@ class Row extends PureComponent {
 ## `react/no-ref-in-render` — A ref's current value is not read or written during render
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the access into an effect or an event handler changes when it runs)
+- **Fix:** `suggest` (a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-ref-in-render.md
 
@@ -97312,22 +97341,22 @@ function useLatest(value) {
 ##### Don't
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97339,6 +97368,18 @@ function Counter() {
 function useLatest<T>(value: T) {
   const ref = useRef(value);
   ref.current = value;
+  return ref;
+}
+```
+
+##### Fixed
+
+```ts
+function useLatest<T>(value: T) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
   return ref;
 }
 ```
@@ -97360,22 +97401,22 @@ function useStore() {
 ##### Don't
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97551,7 +97592,7 @@ class Toggle extends Component {
 ## `react/no-set-state-in-effect` — An effect doesn't set state synchronously
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to derive the value, lift the state or subscribe is a design choice)
+- **Fix:** `suggest` (an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-set-state-in-effect.md
 
@@ -97582,6 +97623,15 @@ function useFullName(first, last) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```js
+function useFullName(first, last) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -97633,6 +97683,15 @@ function useFullName(first: string, last: string) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```ts
+function useFullName(first: string, last: string) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -99490,7 +99549,7 @@ The type is renamed with its uses in the file; an exported type is reported with
 ## `react/purity` — Render doesn't call Math.random(), Date.now() or other impure functions
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the value should come from instead — state, an effect, an event — depends on what it is for)
+- **Fix:** `suggest` (an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/purity.md
 
@@ -99518,6 +99577,15 @@ is a local binding that shadows the global (`Math` as a parameter).
 ```js
 function useRandomKey() {
   return Math.random().toString(36);
+}
+```
+
+##### Fixed
+
+```js
+function useRandomKey() {
+  const [value] = useState(() => Math.random().toString(36));
+  return value;
 }
 ```
 
@@ -99560,6 +99628,15 @@ function useToday(): string {
 }
 ```
 
+##### Fixed
+
+```ts
+function useToday(): string {
+  const [value] = useState(() => new Date().toDateString());
+  return value;
+}
+```
+
 ##### Do
 
 ```ts
@@ -99576,6 +99653,15 @@ function useToday(): string {
 ```tsx
 function Field({ label }: { label: string }) {
   const id = crypto.randomUUID();
+  return <label htmlFor={id}>{label}</label>;
+}
+```
+
+##### Fixed
+
+```tsx
+function Field({ label }: { label: string }) {
+  const [id] = useState(() => crypto.randomUUID());
   return <label htmlFor={id}>{label}</label>;
 }
 ```
@@ -99747,7 +99833,7 @@ class Row extends PureComponent {
 ## `react/require-render-return` — A class component's render() returns
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (what to render needs the author)
+- **Fix:** `suggest` (a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/require-render-return.md
 
@@ -99956,7 +100042,7 @@ function T({ id }) {
 ## `react/rules-of-hooks` — Hooks are called at the top level of components and hooks
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving a hook can change what the code does on the renders that skipped it)
+- **Fix:** `suggest` (a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/rules-of-hooks.md
 
@@ -100033,20 +100119,24 @@ function Profile({ id }) {
 ##### Don't
 
 ```ts
-function useProfile(id: string) {
+function Profile({ id }) {
   if (!id) {
     return null;
   }
-  return useState(id);
+  const [user] = useState(null);
+  return user;
 }
 ```
 
 ##### Do
 
 ```ts
-function useProfile(id: string) {
-  const state = useState(id);
-  return id ? state : null;
+function Profile({ id }) {
+  const [user] = useState(null);
+  if (!id) {
+    return null;
+  }
+  return user;
 }
 ```
 
@@ -100647,7 +100737,7 @@ function Calc({ expr }) {
 ## `react/use-memo` — useMemo's callback computes and returns a value
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the code belongs in useEffect, useCallback or plain render code is the author's call)
+- **Fix:** `suggest` (an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/use-memo.md
 
@@ -100691,20 +100781,16 @@ function useTotal(items) {
 ##### Don't
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => {
-    rows.sort(byDate);
-  }, [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => [...rows].sort(byDate), [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100713,16 +100799,16 @@ function Report({ rows }) {
 ##### Don't
 
 ```ts
-function useLabel(id: string) {
-  return useMemo((prefix: string) => prefix + id, [id]);
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```ts
-function useLabel(id: string) {
-  return useMemo(() => 'item-' + id, [id]);
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100731,18 +100817,16 @@ function useLabel(id: string) {
 ##### Don't
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useMemo(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useEffect(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
