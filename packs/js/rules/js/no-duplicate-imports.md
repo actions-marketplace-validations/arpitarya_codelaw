@@ -2,9 +2,8 @@
 id: js/no-duplicate-imports
 title: "One import per module"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "merging the specifier lists is a computed edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
+fix_reason: "two imports of `{ … }` names only are merged automatically, a name both hold kept once; an import with a default or namespace binding is merged by hand, since the two can't always share one statement"
 stability: preview
 ported_from: [eslint/no-duplicate-imports]
 since: 0.5.0
@@ -21,12 +20,28 @@ match:
   has: { field: source, pattern: $S }
   not: { regex: '^import\s+type\b' }
   follows: { stopBy: end, kind: import_statement, has: { field: source, pattern: $S }, not: { regex: '^import\s+type\b' } }
+  any:
+    - all:
+        - regex: '^import\s*\{'
+        - pattern: $DUP
+        - has: { kind: import_clause, has: { kind: named_imports, pattern: $FROM } }
+        - follows:
+            stopBy: end
+            kind: import_statement
+            regex: '^import\s*\{'
+            all:
+              - has: { field: source, pattern: $S }
+              - has: { kind: import_clause, has: { kind: named_imports, pattern: $INTO } }
+    - regex: ''
 message: "`$S` is imported again; merge the two imports"
+fix:
+  - merge-into: { target: $FROM, into: $INTO, unique: true }
+  - remove: $DUP
 ```
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second import's names into the first, and delete the second.
 
 ## Examples
 

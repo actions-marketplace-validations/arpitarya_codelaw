@@ -2,9 +2,8 @@
 id: js/jsdoc-implements-on-classes
 title: "@implements only on classes"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the tag moves to the class that implements the interface, or is removed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "whether the function is a constructor is the author's to say, so both are offered: mark it `@class`, or remove the `@implements` line (moving it to the class that implements the interface is by hand)"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/implements-on-classes]
 since: 0.5.0
@@ -43,6 +42,14 @@ match:
           - matches: fn-decl
           - {kind: export_statement, has: {field: declaration, matches: fn-decl}}
 message: "`@implements` belongs on a class or constructor; mark this function `@class` or move the tag to the class"
+fix:
+  choices:
+    - label: constructor
+      fix:
+        - edit-text: { pattern: '\n([ \t]*)(\*[ \t]*)?@implements\b', replace: "\n${1}* @class\n${1}${2}@implements" }
+    - label: remove
+      fix:
+        - edit-text: { pattern: '\n[ \t]*(\*[ \t]*)?@implements\b[^\n]*', replace: '' }
 ```
 
 ## How to fix
@@ -72,7 +79,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```js
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```js
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### JSX
@@ -95,7 +122,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```jsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```jsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### TypeScript
@@ -118,7 +165,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```ts
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```ts
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### TSX
@@ -141,5 +208,25 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```tsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```tsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```

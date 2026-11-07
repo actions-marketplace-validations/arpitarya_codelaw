@@ -8,8 +8,9 @@ use std::path::Path;
 /// Compile a `codelaw` block and return a closure listing its matches.
 fn matcher(language: Language, block: &str) -> (codelaw_rules::RuleFile, codelaw_match::CompiledMatch) {
     let ext = language.extension();
+    let class = if block.contains("choices:") { "suggest\nfix_reason: test" } else { "auto" };
     let text = format!(
-        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: auto\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
+        "---\nid: t/r\ntitle: t\nlanguages: [{}]\nfix: {class}\n---\n\nSummary.\n\n**Why:** test.\n\n```codelaw\n{block}\n```\n\n## Examples\n\n### {}\n\n#### Don't\n\n```{ext}\nx\n```\n\n#### Do\n\n```{ext}\ny\n```\n",
         language.name(),
         language.display()
     );
@@ -263,4 +264,57 @@ fn move_puts_the_target_on_its_own_line_above() {
     let block = "match:\n  kind: comment\n  follows: { regex: '.', pattern: $P }\nmessage: m\nfix:\n  - move: { before: $P }";
     let out = fix(Language::Javascript, block, "if (a) {\n  const max = 3; // retries\n}\n");
     assert_eq!(out.text, "if (a) {\n  // retries\n  const max = 3;\n}\n");
+}
+
+#[test]
+fn merge_into_writes_the_items_into_the_earlier_list() {
+    // W-162: `merge-into` (SR-RULE-FORMAT 3c), with `unique` for imports.
+    let block = "match:\n  kind: import_statement\n  regex: '^import\\s*\\{'\n  pattern: $DUP\n  all:\n    - has: { field: source, pattern: $S }\n    - has: { kind: import_clause, has: { kind: named_imports, pattern: $FROM } }\n    - follows: { stopBy: end, kind: import_statement, regex: '^import\\s*\\{', has: { field: source, pattern: $S }, all: [{ has: { kind: import_clause, has: { kind: named_imports, pattern: $INTO } } }] }\nmessage: m\nfix:\n  - merge-into: { target: $FROM, into: $INTO, unique: true }\n  - remove: $DUP";
+    let out = fix(Language::Javascript, block, "import { a } from \"./u\";\nimport x from \"./v\";\nimport { a, b } from \"./u\";\n");
+    assert_eq!(out.text, "import { a, b } from \"./u\";\nimport x from \"./v\";\n");
+}
+
+#[test]
+fn merge_into_keeps_repeated_items_unless_unique() {
+    let block = "match:\n  kind: expression_statement\n  pattern: $A.push($$$X);\n  has: { kind: call_expression, has: { field: arguments, pattern: $INTO } }\n  precedes: { all: [{ pattern: $A.push($$$Y); }, { pattern: $NEXT }, { has: { kind: call_expression, has: { field: arguments, pattern: $FROM } } }] }\nmessage: m\nfix:\n  - merge-into: { target: $FROM, into: $INTO }\n  - remove: $NEXT";
+    let out = fix(Language::Javascript, block, "a.push(1);\na.push(1);\na.push();\nb.push(2);\n");
+    assert_eq!(out.text, "a.push(1, 1);\nb.push(2);\n");
+    assert!(parse_fix(&serde_json::json!([{ "merge-into": { "target": "$A", "into": "$B", "unique": "yes" } }])).unwrap_err().contains("`unique`"));
+}
+
+#[test]
+fn a_choice_with_nothing_to_edit_is_left_out() {
+    // W-162: a choice whose steps act on a capture another branch binds.
+    let (rule, compiled) = matcher(
+        Language::Javascript,
+        "match:\n  kind: identifier\n  any:\n    - { regex: '^a$', pattern: $A }\n    - { regex: '^b$' }\nmessage: m\nfix:\n  choices:\n    - label: one\n      fix:\n        - replace: { target: $A, with: one }\n    - label: two\n      fix:\n        - replace: { target: $A, with: two }",
+    );
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "a; b;\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert_eq!(choice_edits(&spec, &m[0], &ctx).unwrap().len(), 2);
+    assert!(choice_edits(&spec, &m[1], &ctx).is_err());
+}
+
+#[test]
+fn insert_with_line_writes_a_line_of_its_own() {
+    // W-162: `insert-before` / `insert-after` with `line: true`.
+    let block = "match:\n  kind: expression_statement\n  pattern: f();\nmessage: m\nfix:\n  - insert-before: { text: \"a();\", line: true }\n  - insert-after: { text: \"b();\", line: true }\n  - replace: g();";
+    let out = fix(Language::Javascript, block, "if (x) {\n  f();\n}\n");
+    assert_eq!(out.text, "if (x) {\n  a();\n  g();\n  b();\n}\n");
+}
+
+#[test]
+fn move_after_takes_the_targets_lines() {
+    // W-162: `move: { after }`; a target alone on its lines takes them.
+    let block = "match:\n  kind: switch_default\n  precedes: { stopBy: end, kind: switch_case, not: { precedes: { kind: switch_case } }, pattern: $LAST }\nmessage: m\nfix:\n  - move: { after: $LAST }";
+    let src = "switch (x) {\n  default:\n    b();\n    break;\n  case 1:\n    a();\n    break;\n}\n";
+    let out = fix(Language::Javascript, block, src);
+    assert_eq!(out.text, "switch (x) {\n  case 1:\n    a();\n    break;\n  default:\n    b();\n    break;\n}\n");
+    let block = "match:\n  kind: lexical_declaration\n  follows: { stopBy: end, kind: function_declaration, pattern: $F }\nmessage: m\nfix:\n  - move: { before: $F }";
+    let out = fix(Language::Javascript, block, "function f() {}\n\nconst a = 1;\n");
+    assert_eq!(out.text, "const a = 1;\n\nfunction f() {}\n");
+    assert!(parse_fix(&serde_json::json!([{ "move": { "before": "$A", "after": "$B" } }])).unwrap_err().contains("one of"));
 }

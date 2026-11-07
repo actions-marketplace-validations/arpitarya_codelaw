@@ -2,9 +2,8 @@
 id: js/no-chained-comparison
 title: "No a < b < c"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the middle operand is evaluated twice in the rewrite"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the middle operand is evaluated twice in the rewrite, and the comparison the author meant may not be the range; where `&&` would bind differently with what surrounds it, the rewrite is by hand"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-chained-comparison]
 since: 0.5.0
@@ -20,6 +19,7 @@ match:
   has:
     field: operator
     regex: ^(<|>|<=|>=)$
+    pattern: $$O2
   all:
   - has:
       field: left
@@ -27,11 +27,21 @@ match:
       has:
         field: operator
         regex: ^(<|>|<=|>=)$
+        pattern: $$O1
       all:
+      - has: { field: left, pattern: $A }
       - has:
           field: right
           pattern: $B
+  - has: { field: right, pattern: $C }
+  - any:
+      - all:
+          - inside: { any: [{ kind: parenthesized_expression }, { kind: variable_declarator }, { kind: return_statement }, { kind: arguments }, { kind: expression_statement }] }
+          - pattern: $CMP
+      - regex: ''
 message: '`a < b < c` compares a boolean with `c`; write `a < b && b < c`'
+fix:
+  - replace: { target: $CMP, with: "$A $O1 $B && $B $O2 $C" }
 ```
 
 ## How to fix

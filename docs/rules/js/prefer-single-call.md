@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (merging two statements is a cross-statement edit) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the receiver is evaluated once instead of twice, and a value the first push's arguments read is now computed before the second's: a getter or a call with effects can tell) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/prefer-single-call` |
@@ -121,7 +121,7 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second call's arguments into the first call, after its own, and delete the second statement.
 
 ## Examples
 

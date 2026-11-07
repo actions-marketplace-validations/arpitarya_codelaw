@@ -2,9 +2,8 @@
 id: js/no-unreadable-array-destructuring
 title: "No consecutive holes in array destructuring"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the index is the number of skipped places, computed from the pattern"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "an array pattern reads any iterable and an index reads only an array-like value, so a `Set` or a generator on the right changes; a pattern with more than one name, a type annotation, or a right side `[…]` would bind differently on is rewritten by hand"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-unreadable-array-destructuring]
 since: 0.5.0
@@ -19,7 +18,21 @@ An array destructuring pattern does not skip two or more elements in a row.
 match:
   kind: array_pattern
   regex: ',\s*,'
+  any:
+    - all:
+        - regex: '^\[\s*(,\s*)+[A-Za-z_$][\w$]*\s*\]$'
+        - pattern: $PAT
+        - has: { kind: identifier, pattern: $X }
+        - inside:
+            kind: variable_declarator
+            field: name
+            pattern: $DECL
+            not: { has: { kind: type_annotation } }
+            has: { field: value, any: [{ kind: identifier }, { kind: member_expression }, { kind: subscript_expression }, { kind: call_expression }], pattern: $V }
+    - regex: ''
 message: "Several skipped elements are hard to count; read the element by index"
+fix:
+  - replace: { target: $DECL, with: "$X = $V[$PAT|count(,)]" }
 ```
 
 ## How to fix

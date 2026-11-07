@@ -11533,7 +11533,7 @@ class Book(models.Model):
 ## `django/django-unordered-body-content-in-model` — A model's body follows Django's order
 
 - **Pack:** `codelaw-rules-django` · **Languages:** Python
-- **Fix:** `manual` (moving members reorders the class by hand)
+- **Fix:** `suggest` (the field moves above the methods before it, one method a pass, keeping the fields' own order; a comment above the field stays where it was)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:django/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/django/django-unordered-body-content-in-model.md
 
@@ -19520,7 +19520,7 @@ switch (x) {
 ## `js/default-case-last` — default comes last
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving a clause can change fall-through behaviour)
+- **Fix:** `auto` (moved automatically when no clause falls into another across the move: `default`, the clause before it and the last clause each end with `break`, `return`, `throw` or `continue`; otherwise moving it changes which statements run, and it is moved by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/sonarjs` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/default-case-last.md
 
@@ -19547,6 +19547,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -19559,6 +19560,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -19573,6 +19575,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -19585,6 +19588,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -19599,6 +19603,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -19611,6 +19616,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -19625,6 +19631,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -19637,6 +19644,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -21945,7 +21953,7 @@ const box = {
 ## `js/grouped-accessor-pairs` — A getter and its setter sit together
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving a method reorders the class body)
+- **Fix:** `suggest` (the setter moves below its getter; a comment or decorator above the setter stays where it was, and a class whose members are read in order (a decorator that lists them) changes)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/grouped-accessor-pairs.md
 
@@ -23240,7 +23248,7 @@ use(a, b, c, d, e, f, g, h, i, j);
 ## `js/import-no-absolute-path` — Imports use relative paths, not absolute ones
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the relative path depends on where this file sits, which the rule does not see)
+- **Fix:** `manual` (the absolute path names a place on the machine it was written on; which project file it means, and so the relative path, is the author's to say)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/import-no-absolute-path.md
 
@@ -24855,7 +24863,7 @@ assert.equal(sum(1, 2), 3);
 ## `js/jsdoc-check-access` — @access takes a known level, once
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which access level was meant is the author's choice)
+- **Fix:** `suggest` (which access level was meant is the author's choice, so each of the four is offered for an unknown `@access` value; a block with two access tags keeps the one the author means, by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-access.md
 
@@ -24894,6 +24902,46 @@ function clearCache() {}
 function clearCache() {}
 ```
 
+##### Fixed (package)
+
+```js
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+##### Fixed (private)
+
+```js
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (protected)
+
+```js
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+##### Fixed (public)
+
+```js
+/**
+ * Clears the cache.
+ * @access public
+ */
+function clearCache() {}
+```
+
 #### JSX
 
 ##### Don't
@@ -24912,6 +24960,46 @@ function clearCache() {}
 /**
  * Clears the cache.
  * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (package)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+##### Fixed (private)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (protected)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+##### Fixed (public)
+
+```jsx
+/**
+ * Clears the cache.
+ * @access public
  */
 function clearCache() {}
 ```
@@ -24938,6 +25026,46 @@ function clearCache() {}
 function clearCache() {}
 ```
 
+##### Fixed (package)
+
+```ts
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+##### Fixed (private)
+
+```ts
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (protected)
+
+```ts
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+##### Fixed (public)
+
+```ts
+/**
+ * Clears the cache.
+ * @access public
+ */
+function clearCache() {}
+```
+
 #### TSX
 
 ##### Don't
@@ -24956,6 +25084,46 @@ function clearCache() {}
 /**
  * Clears the cache.
  * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (package)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access package
+ */
+function clearCache() {}
+```
+
+##### Fixed (private)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access private
+ */
+function clearCache() {}
+```
+
+##### Fixed (protected)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access protected
+ */
+function clearCache() {}
+```
+
+##### Fixed (public)
+
+```tsx
+/**
+ * Clears the cache.
+ * @access public
  */
 function clearCache() {}
 ```
@@ -25386,7 +25554,7 @@ function add(a, b) {
 ## `js/jsdoc-empty-tags` — Flag tags like @private carry no text
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to the description))
+- **Fix:** `manual` (the text after the tag is prose; where it belongs in the description, and how it reads there, is the author's writing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-empty-tags.md
 
@@ -25593,7 +25761,7 @@ function build() {}
 ## `js/jsdoc-implements-on-classes` — @implements only on classes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the tag moves to the class that implements the interface, or is removed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `suggest` (whether the function is a constructor is the author's to say, so both are offered: mark it `@class`, or remove the `@implements` line (moving it to the class that implements the interface is by hand))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-implements-on-classes.md
 
@@ -25630,7 +25798,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+##### Fixed (constructor)
+
+```js
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+##### Fixed (remove)
+
+```js
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 #### JSX
@@ -25653,7 +25841,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+##### Fixed (constructor)
+
+```jsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+##### Fixed (remove)
+
+```jsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 #### TypeScript
@@ -25676,7 +25884,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+##### Fixed (constructor)
+
+```ts
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+##### Fixed (remove)
+
+```ts
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 #### TSX
@@ -25699,7 +25927,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+##### Fixed (constructor)
+
+```tsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+##### Fixed (remove)
+
+```tsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ## `js/jsdoc-match-description` — A function's description is a sentence
@@ -26290,7 +26538,7 @@ function double(n: number) {
 ## `js/jsdoc-prefer-import-tag` — @import a type instead of inline import()
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (an `@import` tag is added and each `import("…").Name` renamed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `manual` (the type comes in once by a new file-level `@import` block, whose place among the file's imports, and whose name against the names the file already binds, are the author's to decide)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-prefer-import-tag.md
 
@@ -29938,7 +30186,7 @@ const n = Math.max("1");
 ## `js/jsdoc-ts-no-empty-object-type` — No {} type in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `object`, `unknown` or a real shape is meant is the author's call)
+- **Fix:** `suggest` (whether `object`, `unknown` or a real shape is meant is the author's call, so `object` and `unknown` are offered; a shape is written by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-ts-no-empty-object-type.md
 
@@ -29976,6 +30224,26 @@ function merge(opts) {}
 function merge(opts) {}
 ```
 
+##### Fixed (object)
+
+```js
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (unknown)
+
+```js
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
+ */
+function merge(opts) {}
+```
+
 #### JSX
 
 ##### Don't
@@ -29994,6 +30262,26 @@ function merge(opts) {}
 /**
  * Merges options.
  * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (object)
+
+```jsx
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (unknown)
+
+```jsx
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
  */
 function merge(opts) {}
 ```
@@ -30020,6 +30308,26 @@ function merge(opts) {}
 function merge(opts) {}
 ```
 
+##### Fixed (object)
+
+```ts
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (unknown)
+
+```ts
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
+ */
+function merge(opts) {}
+```
+
 #### TSX
 
 ##### Don't
@@ -30038,6 +30346,26 @@ function merge(opts) {}
 /**
  * Merges options.
  * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (object)
+
+```tsx
+/**
+ * Merges options.
+ * @param {object} opts The options.
+ */
+function merge(opts) {}
+```
+
+##### Fixed (unknown)
+
+```tsx
+/**
+ * Merges options.
+ * @param {unknown} opts The options.
  */
 function merge(opts) {}
 ```
@@ -31948,7 +32276,7 @@ this.html = this.sanitizer.sanitize(SecurityContext.HTML, input);
 ## `js/no-anonymous-default-export` — Name the default export
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the name comes from the file name, which the rule does not read)
+- **Fix:** `manual` (the name the function or class should have is the author's; the file name is only one guess at it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-anonymous-default-export.md
 
@@ -32205,7 +32533,7 @@ for (const page of pages) {
 ## `js/no-array-fill-with-reference-type` — No fill() with an object
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the array length is not always in the same expression)
+- **Fix:** `suggest` (each element gets its own value, which is the point, but code that relied on the elements being one shared object changes; a `fill` whose length is not in a `new Array(n)` or `Array(n)` before it is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-array-fill-with-reference-type.md
 
@@ -32280,7 +32608,7 @@ const grid = Array.from({ length: 3 }, () => []);
 ## `js/no-array-from-fill` — Array.from with a mapper rather than fill()
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (`Array.from` may already have a mapper argument, and the fill value moves into a new arrow function)
+- **Fix:** `suggest` (`fill` evaluates its value once and the mapper once per element: a call or an object literal there gives each element its own value; a `fill` with a start or end, or an `Array.from` with a mapper already, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-array-from-fill.md
 
@@ -32825,7 +33153,7 @@ const names = users.toSorted(byName);
 ## `js/no-array-sort-for-min-max` — Math.min/max rather than sorting for one value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which of `Math.min` and `Math.max` the comparator means is read from the comparator, which a template cannot do)
+- **Fix:** `suggest` (`Math.min` of an empty array is `Infinity` where the sort gave `undefined`, `sort` no longer reorders the array in place, and a value that is not a number compares differently; only a `(a, b) => a - b` or `b - a` comparator is rewritten)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-array-sort-for-min-max.md
 
@@ -34002,7 +34330,7 @@ const f = function self() { return self; };
 ## `js/no-case-declarations` — No let, const, function or class directly in a case
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (another case may rely on the shared declaration)
+- **Fix:** `suggest` (the braces end the declaration's scope at the case, so another case that reads it no longer can, which the fix does not check)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-case-declarations.md
 
@@ -34230,7 +34558,7 @@ switch (k) {
 ## `js/no-chained-comparison` — No a < b < c
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the middle operand is evaluated twice in the rewrite)
+- **Fix:** `suggest` (the middle operand is evaluated twice in the rewrite, and the comparison the author meant may not be the range; where `&&` would bind differently with what surrounds it, the rewrite is by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-chained-comparison.md
 
@@ -37448,7 +37776,7 @@ if (role === "admin" || role === "owner") {
 ## `js/no-duplicate-imports` — One import per module
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (merging the specifier lists is a computed edit)
+- **Fix:** `auto` (two imports of `{ … }` names only are merged automatically, a name both hold kept once; an import with a default or namespace binding is merged by hand, since the two can't always share one statement)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-duplicate-imports.md
 
@@ -37460,7 +37788,7 @@ A module is imported by one `import` statement; type-only imports are counted ap
 
 ### How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second import's names into the first, and delete the second.
 
 ### Examples
 
@@ -40100,7 +40428,7 @@ it("renders the badge", () => {
 ## `js/no-for-each` — for…of rather than forEach
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a `return` in the callback becomes `continue`, and an index parameter becomes `.entries()`)
+- **Fix:** `suggest` (`for … of` iterates what the value's iterator gives, where `forEach` visits an array's indices: a sparse array, or a `Map` (whose `forEach` passes the value and `for … of` the entry), changes; a callback with a `return`, an index parameter, `async`, or a block-less body is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-for-each.md
 
@@ -44333,7 +44661,7 @@ b = 0;
 ## `js/no-multi-str` — No multiline strings with a backslash
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a template literal keeps the indentation of the next line, so the author chooses the form)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-multi-str.md
 
@@ -44361,8 +44689,7 @@ two';
 ##### Do
 
 ```js
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 #### JSX
@@ -44377,8 +44704,7 @@ two';
 ##### Do
 
 ```jsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 #### TypeScript
@@ -44393,8 +44719,7 @@ two';
 ##### Do
 
 ```ts
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 #### TSX
@@ -44409,8 +44734,7 @@ two';
 ##### Do
 
 ```tsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ## `js/no-named-default` — import x rather than import { default as x }
@@ -51673,7 +51997,7 @@ return users[0];
 ## `js/no-unreadable-array-destructuring` — No consecutive holes in array destructuring
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the index is the number of skipped places, computed from the pattern)
+- **Fix:** `suggest` (an array pattern reads any iterable and an index reads only an array-like value, so a `Set` or a generator on the right changes; a pattern with more than one name, a type annotation, or a right side `[…]` would bind differently on is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unreadable-array-destructuring.md
 
@@ -53525,7 +53849,7 @@ const o = { 'a': 1 };
 ## `js/no-useless-concat` — No concatenation of two literals
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the joined literal has to be written out)
+- **Fix:** `auto` (two strings in the same quotes are joined automatically; a template literal, quotes that differ, or a numeric escape before the join (`'\0' + '1'` would become an octal escape) are left as they are)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-concat.md
 
@@ -56948,7 +57272,7 @@ if (users.some((u) => u.admin)) {
 ## `js/prefer-arrow-callback` — Arrow functions for callbacks
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the parameter list and body are re-joined around `=>`, which a template over this node cannot capture)
+- **Fix:** `suggest` (an arrow function cannot be called with `new` and has no `prototype`, which a callee could rely on; a function with type parameters is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-arrow-callback.md
 
@@ -58899,7 +59223,7 @@ const copy = new Set(ids);
 ## `js/prefer-keyboard-event-key` — event.key rather than keyCode
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the key name for a numeric code comes from a table)
+- **Fix:** `suggest` (`key` names the key as typed, so a code compared with a number is rewritten only for the named keys (Enter, Escape, the arrows, …) whose `key` does not change with the layout or Shift; letters, digits and a `keyCode` read any other way are rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-keyboard-event-key.md
 
@@ -61997,7 +62321,7 @@ function isAdult(age) {
 ## `js/prefer-single-call` — One push() with several items
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (merging two statements is a cross-statement edit)
+- **Fix:** `suggest` (the receiver is evaluated once instead of twice, and a value the first push's arguments read is now computed before the second's: a getter or a call with effects can tell)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-single-call.md
 
@@ -62009,7 +62333,7 @@ Consecutive `push` calls on the same array are merged. Upstream also covers `cla
 
 ### How to fix
 
-1. Rewrite the code as the message says.
+1. Move the second call's arguments into the first call, after its own, and delete the second statement.
 
 ### Examples
 
@@ -62958,7 +63282,7 @@ switch (key) {
 ## `js/prefer-template` — Template literal rather than string concatenation
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (escaping the parts into one template literal is a computed edit)
+- **Fix:** `suggest` (a value joined with `+` is read through its `valueOf` and in a template through its `toString`, which differ for some objects; a join holding a comment, or a line continuation in a string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-template.md
 
@@ -74352,7 +74676,7 @@ The source's fix computes the decimal value; this rule reports the key and leave
 ## `js/valid-typeof` — typeof is compared with a type it can return
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which type was meant needs the author)
+- **Fix:** `suggest` (the nearest valid type name by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a type name with no single near one is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/valid-typeof.md
 
@@ -76388,7 +76712,7 @@ warn_days      = 14                           # warn this many days before the d
 ## `next/google-font-display` — Google Fonts load with display=swap or optional
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (`swap` and `optional` trade layout shift against fallback text differently; the author picks)
+- **Fix:** `suggest` (`swap` and `optional` trade layout shift against fallback text differently, so both are offered and the author picks; a `display` already in the URL is replaced, and a new parameter is joined with `&amp;`, which JSX reads as `&`)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/google-font-display.md
 
@@ -76418,6 +76742,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+##### Fixed (swap)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+##### Fixed (optional)
+
+```js
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 #### JSX
 
 ##### Don't
@@ -76432,6 +76768,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
 ```
 
+##### Fixed (swap)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+##### Fixed (optional)
+
+```jsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
+```
+
 #### TSX
 
 ##### Don't
@@ -76444,6 +76792,18 @@ const l = <link href="https://fonts.googleapis.com/css2?family=Inter" rel="style
 
 ```tsx
 const l = <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />;
+```
+
+##### Fixed (swap)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap" rel="stylesheet" />;
+```
+
+##### Fixed (optional)
+
+```tsx
+const l = <link href="https://fonts.googleapis.com/css2?family=Inter&amp;display=optional" rel="stylesheet" />;
 ```
 
 ## `next/google-font-preconnect` — fonts.gstatic.com is preconnected
@@ -79224,7 +79584,7 @@ export const helper = 1;
 ## `node/no-mixed-requires` — Don't mix requires with other declarations
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (splitting the declaration needs its keyword repeated per declarator, which no declarative edit can write)
+- **Fix:** `suggest` (the two declarators become two statements in their order, which a comment between them or a type on the declaration does not survive unchanged; a declaration of more than two, an exported one or one in a `for` is split by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-mixed-requires.md
 
@@ -82162,7 +82522,7 @@ TIMEOUT: float = ...
 ## `py/assignment-in-assert` — No walrus inside assert
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the binding moves to its own statement before the assert)
+- **Fix:** `suggest` (the value is now computed even when asserts are stripped (`python -O`), which is the point but runs its code there too; a binding that is not the first thing the assert evaluates is moved by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/assignment-in-assert.md
 
@@ -88951,7 +89311,7 @@ import os
 ## `py/legacy-form-pytest-raises` — pytest.raises as a context manager
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the call moves into a `with` block)
+- **Fix:** `suggest` (the `with` body is indented four spaces, which a file indented with tabs would not match; a call whose result is used, or that passes keywords, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/legacy-form-pytest-raises.md
 
@@ -92074,7 +92434,7 @@ if user is None:
 ## `py/none-not-at-end-of-union` — None goes last in a union
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (reordering a union of more than two members is left to the author)
+- **Fix:** `suggest` (a union's order is what `typing.get_args` returns at run time, which code may read; a `None` inside a member (`list[None] | int`) is moved by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/none-not-at-end-of-union.md
 
@@ -102288,7 +102648,7 @@ const l = <div aria-activedescendant={id} tabIndex={0} />;
 ## `react/a11y-aria-props` — ARIA attributes are real ones
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the intended attribute is the author's to pick)
+- **Fix:** `suggest` (the nearest valid attribute by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a attribute with no single near one is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-aria-props.md
 
@@ -102450,7 +102810,7 @@ Values written as expressions (`aria-hidden={x}`) are not checked; the source al
 ## `react/a11y-aria-role` — A role is a real ARIA role
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the intended role is the author's)
+- **Fix:** `suggest` (the nearest valid role by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a role with no single near one is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-aria-role.md
 
@@ -102471,13 +102831,13 @@ Every token of a `role` written as a string is a WAI-ARIA, DPUB-ARIA or Graphics
 ##### Don't
 
 ```js
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 ##### Do
 
 ```js
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 #### JSX
@@ -102485,13 +102845,13 @@ const d = <div role="dialog" />;
 ##### Don't
 
 ```jsx
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 ##### Do
 
 ```jsx
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 #### TSX
@@ -102499,13 +102859,13 @@ const d = <div role="dialog" />;
 ##### Don't
 
 ```tsx
-const d = <div role="datepicker" />;
+const d = <div role="buton" />;
 ```
 
 ##### Do
 
 ```tsx
-const d = <div role="dialog" />;
+const d = <div role="button" />;
 ```
 
 ## `react/a11y-aria-unsupported-elements` — No ARIA on elements that cannot carry it
@@ -102590,7 +102950,7 @@ const m = <meta charset="utf-8" />;
 ## `react/a11y-autocomplete-valid` — autoComplete holds a valid token list
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the intended field name is the author's)
+- **Fix:** `suggest` (the nearest valid field name by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a field name with no single near one is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error` · `codelaw:react/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-autocomplete-valid.md
 
@@ -105110,7 +105470,7 @@ function Hello({ name }) {
 ## `react/display-name` — A component passed to memo or forwardRef has a name
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the name is the author's choice)
+- **Fix:** `auto` (a component held by a `const` at the top of the module gets `displayName` set to that name, which changes nothing but what DevTools and error messages show; one held anywhere else is named by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/display-name.md
 
@@ -105139,9 +105499,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 ##### Do
 
 ```js
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 #### JSX
@@ -105155,9 +105514,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 ##### Do
 
 ```jsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 #### TSX
@@ -105171,9 +105529,8 @@ export const Card = memo((props) => <div>{props.title}</div>);
 ##### Do
 
 ```tsx
-export const Card = memo(function Card(props) {
-  return <div>{props.title}</div>;
-});
+export const Card = memo((props) => <div>{props.title}</div>);
+Card.displayName = "Card";
 ```
 
 ### Differences from the source
@@ -106883,7 +107240,7 @@ const r = <Row onClick={handleSelect} />;
 ## `react/jsx-no-comment-textnodes` — No comment syntax as text inside JSX
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (whether the text is a comment or content needs the author)
+- **Fix:** `suggest` (whether the text is a comment or content needs the author, so both are offered: wrapped as a JSX comment, or kept as text in a string)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/jsx-no-comment-textnodes.md
 
@@ -106919,6 +107276,24 @@ const a = <div>
 </div>;
 ```
 
+##### Fixed (comment)
+
+```js
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+##### Fixed (text)
+
+```js
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 #### JSX
 
 ##### Don't
@@ -106939,6 +107314,24 @@ const a = <div>
 </div>;
 ```
 
+##### Fixed (comment)
+
+```jsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+##### Fixed (text)
+
+```jsx
+const a = <div>
+  {"// the title"}
+  <h1>Hi</h1>
+</div>;
+```
+
 #### TSX
 
 ##### Don't
@@ -106955,6 +107348,24 @@ const a = <div>
 ```tsx
 const a = <div>
   {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+##### Fixed (comment)
+
+```tsx
+const a = <div>
+  {/* the title */}
+  <h1>Hi</h1>
+</div>;
+```
+
+##### Fixed (text)
+
+```tsx
+const a = <div>
+  {"// the title"}
   <h1>Hi</h1>
 </div>;
 ```
@@ -111077,7 +111488,7 @@ A.propTypes = {};
 ## `react/no-unescaped-entities` — No unescaped >, ", ' or } in JSX text
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the right escape depends on the character and the author's style)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-unescaped-entities.md
 
@@ -113416,7 +113827,7 @@ Card.displayName = "Card";
 ## `react/style-prop-object` — style is an object
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (value: the CSS text has to be rewritten as an object with camel-cased keys)
+- **Fix:** `suggest` (each value stays a string, where React would also take a number for a length; a value with quotes or `!important`, or a `style` that is not a plain string, is rewritten by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/style-prop-object.md
 
@@ -148307,7 +148718,7 @@ requests = "2.31.0"
 ## `ts/adjacent-overload-signatures` — Overloads of one name sit together
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (restructure: the overloads have to be moved next to each other, and the order between them is the author's)
+- **Fix:** `suggest` (each overload moves up below the one before it, keeping their order; a comment above it stays where it was)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/adjacent-overload-signatures.md
 
@@ -151494,7 +151905,7 @@ let label: string = "a";
 ## `ts/parameter-properties` — No parameter properties
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (moving the property into the class body adds a field and an assignment)
+- **Fix:** `manual` (the property becomes a field in the class body and an assignment in the constructor, placed after any `super()` call; where the field goes among the others is the author's layout)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/parameter-properties.md
 

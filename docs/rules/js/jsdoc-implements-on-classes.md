@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/jsdoc` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the tag moves to the class that implements the interface, or is removed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (whether the function is a constructor is the author's to say, so both are offered: mark it `@class`, or remove the `@implements` line (moving it to the class that implements the interface is by hand)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/implements-on-classes` |
@@ -146,7 +146,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```js
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```js
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### JSX
@@ -169,7 +189,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```jsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```jsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### TypeScript
@@ -192,7 +232,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```ts
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```ts
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ### TSX
@@ -215,7 +275,27 @@ function makeShape() {}
  * @class
  * @implements {Shape}
  */
-function Shape2() {}
+function makeShape() {}
+```
+
+#### Fixed (constructor)
+
+```tsx
+/**
+ * Makes a shape.
+ * @class
+ * @implements {Shape}
+ */
+function makeShape() {}
+```
+
+#### Fixed (remove)
+
+```tsx
+/**
+ * Makes a shape.
+ */
+function makeShape() {}
 ```
 
 ---

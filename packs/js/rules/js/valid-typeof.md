@@ -2,9 +2,8 @@
 id: js/valid-typeof
 title: "typeof is compared with a type it can return"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which type was meant needs the author"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the nearest valid type name by spelling (at most two edits, and no other as near) is offered; which was meant is still the author's, and a type name with no single near one is fixed by hand"
 stability: preview
 ported_from: [eslint/valid-typeof]
 since: 0.1.0
@@ -31,6 +30,8 @@ constraints:
     kind: string
     not: { regex: "^[\"'](undefined|object|boolean|number|string|function|symbol|bigint)[\"']$" }
 message: "`typeof` never returns $S"
+fix:
+  - replace: { target: $S, with: "$S|nearest(undefined, object, boolean, number, string, function, symbol, bigint)" }
 ```
 
 ## How to fix

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:django/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving members reorders the class by hand) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the field moves above the methods before it, one method a pass, keeping the fields' own order; a comment above the field stays where it was) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/DJ012` |
