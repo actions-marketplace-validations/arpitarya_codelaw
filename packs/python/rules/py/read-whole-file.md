@@ -2,9 +2,8 @@
 id: py/read-whole-file
 title: "pathlib reads a whole file in one call"
 languages: [python]
-fix: manual
-fix_reason: "the block becomes `Path(p).read_text()`, which needs `pathlib.Path` imported"
-fix_pending: "suggest; needs add-import (W-162)"
+fix: suggest
+fix_reason: "`Path(...).read_text()` opens, reads and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not"
 stability: preview
 ported_from: [ruff/FURB101]
 since: 0.5.0
@@ -24,7 +23,16 @@ match:
         all:
           - has: {nthChild: 1, kind: expression_statement, has: {kind: assignment, has: {field: right, pattern: $F.read()}}}
           - not: {has: {nthChild: 2}}
+    - has: {kind: with_clause, has: {kind: with_item, has: {kind: as_pattern, has: {kind: call, has: {field: arguments, has: {nthChild: 1, pattern: $P}}}}}}
+    - has: {field: body, has: {nthChild: 1, has: {kind: assignment, has: {field: left, pattern: $V}}}}
+    - any:
+        - all: [{regex: '^with\s+open\([^\n]*["'']rb["'']'}, {pattern: $BYTES}]
+        - all: [{not: {regex: '^with\s+open\([^\n]*["'']rb["'']'}}, {pattern: $TEXT}]
 message: "Read it with `Path(...).read_text()`"
+fix:
+  - replace: { target: $TEXT, with: "$V = Path($P).read_text()" }
+  - replace: { target: $BYTES, with: "$V = Path($P).read_bytes()" }
+  - ensure-import: { module: pathlib, name: Path }
 ```
 
 ## How to fix
@@ -45,5 +53,7 @@ with open(path) as f:
 #### Do
 
 ```python
+from pathlib import Path
+
 text = Path(path).read_text()
 ```

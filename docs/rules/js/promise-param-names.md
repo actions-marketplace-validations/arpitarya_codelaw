@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming a parameter is safe only when every use in the executor is renamed with it; rename it by hand or with the editor) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (each parameter is renamed with every use of it in the executor; where `resolve` or `reject` is already a name in the file, it is renamed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-promise/param-names` |

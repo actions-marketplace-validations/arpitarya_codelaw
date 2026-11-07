@@ -2,9 +2,9 @@
 id: js/no-unused-vars
 title: "Every declared name is used"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "removing a declaration can drop the side effects of its initialiser"
-fix_pending: "auto-subset; needs purity (W-162)"
+fix: auto
+fix_reason: "auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual"
+fix_exception: restructure
 stability: preview
 options:
   vars: { type: string, default: all, description: "all, or local to skip module-level names" }

@@ -34874,7 +34874,7 @@ const config = loadConfig();
 ## `js/no-caller` — No arguments.callee or arguments.caller
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (naming the function to refer to it changes its declaration)
+- **Fix:** `suggest` (the function refers to itself by its own name, which code that reassigns that name, or shadows it inside, reads differently; an anonymous function is named the first of `self`, `self2`, … the file does not use; `arguments.caller` has no replacement and is removed by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-caller.md
 
@@ -40289,7 +40289,7 @@ const data = JSON.parse(text);
 ## `js/no-ex-assign` — A caught error is not reassigned
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the original error should go is a decision)
+- **Fix:** `manual` (where the original error should go, and what the new value means, is the author's decision)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-ex-assign.md
 
@@ -49618,7 +49618,7 @@ function greet() {
 ## `js/no-shadow-restricted-names` — No declaring undefined, NaN, Infinity, arguments, eval or globalThis
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the new name is the author's choice)
+- **Fix:** `auto` (renamed automatically to the first of `_NaN`, `_NaN2`, … that the file does not use, with every reference to it; an exported name, or one in a shorthand `{ NaN }`, is renamed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-shadow-restricted-names.md
 
@@ -49648,8 +49648,8 @@ function check(NaN) {
 ##### Do
 
 ```js
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -49666,8 +49666,8 @@ function check(NaN) {
 ##### Do
 
 ```jsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -49684,8 +49684,8 @@ function check(NaN) {
 ##### Do
 
 ```ts
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -49702,8 +49702,8 @@ function check(NaN) {
 ##### Do
 
 ```tsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -53768,7 +53768,7 @@ for (const row of rows) {
 ## `js/no-unused-private-class-members` — Every private class member is read
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing a member may also remove writes that matter, so it's a reader's call)
+- **Fix:** `auto` (auto for a member nothing names: a method, or a field with no value or a value that can do nothing (a literal, a function, …); a field whose value could have an effect, or one that is still written, keeps its writes and is removed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unused-private-class-members.md
 
@@ -53889,7 +53889,7 @@ class Counter {
 ## `js/no-unused-vars` — Every declared name is used
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (removing a declaration can drop the side effects of its initialiser)
+- **Fix:** `auto` (auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unused-vars.md
 
@@ -63107,7 +63107,7 @@ return Response.json(body);
 ## `js/prefer-rest-params` — Rest parameters instead of arguments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the parameter list has to be rewritten by hand)
+- **Fix:** `manual` (`...args` is a real array where `arguments` is array-like and, outside strict mode, tracks the named parameters; the parameter list and each use are rewritten together by the author)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/typescript` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-rest-params.md
 
@@ -67119,7 +67119,7 @@ fetchUser().then((user) => {
 ## `js/promise-param-names` — A promise executor names its parameters resolve and reject
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (renaming a parameter is safe only when every use in the executor is renamed with it; rename it by hand or with the editor)
+- **Fix:** `auto` (each parameter is renamed with every use of it in the executor; where `resolve` or `reject` is already a name in the file, it is renamed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/promise-param-names.md
 
@@ -78480,7 +78480,7 @@ const s = <Script id="log">{`console.log(1)`}</Script>;
 ## `next/next-script-for-ga` — Google Analytics through next/third-parties
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving to the component changes how the tag is configured)
+- **Fix:** `manual` (moving to `next/script` or `@next/third-parties` changes how the tag is loaded and configured: the inline `gtag` set-up moves with it, which is the author's to restructure)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/next-script-for-ga.md
 
@@ -78541,7 +78541,7 @@ const ga = <GoogleAnalytics gaId="G-1" />;
 ## `next/no-assign-module-variable` — No variable named module
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the variable needs a new name, chosen by the author)
+- **Fix:** `suggest` (the variable is renamed to the first of `mod`, `mod2`, … the file does not use, with every reference; the name is the author's to improve, and an exported one is renamed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-assign-module-variable.md
 
@@ -78983,7 +78983,7 @@ const d = (
 ## `next/no-head-element` — next/head, not head
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving the tags into `next/head` changes the imports)
+- **Fix:** `suggest` (`<Head>` moves its children into the document's head when the page renders, which a `<head>` in a page does not; `Head` is imported from `next/head` where the file does not, and a file that binds `Head` to something else is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-head-element.md
 
@@ -79010,6 +79010,8 @@ const p = <head><title>Home</title></head>;
 ##### Do
 
 ```js path=pages/index.js
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -79024,6 +79026,8 @@ const p = <head><title>Home</title></head>;
 ##### Do
 
 ```jsx path=pages/index.jsx
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -79038,6 +79042,8 @@ const p = <head><title>Home</title></head>;
 ##### Do
 
 ```tsx path=pages/index.tsx
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -79119,7 +79125,7 @@ import { Head } from "next/document";
 ## `next/no-html-link-for-pages` — Link, not a, for internal pages
 
 - **Pack:** `@codelaw/rules-nextjs` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (switching to `<Link>` adds an import)
+- **Fix:** `suggest` (`<Link>` navigates on the client and prefetches, where `<a>` reloads the page; `Link` is imported from `next/link` where the file does not, and a file that binds `Link` to something else is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:next/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/next/no-html-link-for-pages.md
 
@@ -79146,6 +79152,8 @@ const a = <a href="/about">About</a>;
 ##### Do
 
 ```js path=pages/index.js
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -79160,6 +79168,8 @@ const a = <a href="/about">About</a>;
 ##### Do
 
 ```jsx path=pages/index.jsx
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -79174,6 +79184,8 @@ const a = <a href="/about">About</a>;
 ##### Do
 
 ```tsx path=pages/index.tsx
+import Link from "next/link";
+
 const a = <Link href="/about">About</Link>;
 ```
 
@@ -89563,7 +89575,7 @@ ON = is_feature_on("beta")
 ## `py/float-equality-comparison` — No == between floats
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (`math.isclose` uses a tolerance, so values that compared unequal may compare equal)
+- **Fix:** `suggest` (`math.isclose` uses a tolerance, so values that compared unequal may compare equal; `math` is imported where the file does not, and a file that binds `math` to something else is fixed by hand)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/float-equality-comparison.md
 
@@ -89591,6 +89603,8 @@ if total == 0.3:
 ##### Do
 
 ```python
+import math
+
 if math.isclose(total, 0.3):
     done()
 ```
@@ -89953,7 +89967,7 @@ when = datetime.fromisoformat(text)
 ## `py/function-call-in-dataclass-default-argument` — No call as a dataclass field default
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the value is meant to be shared or built per instance is the author's call)
+- **Fix:** `suggest` (each instance now builds its own value, which is the usual intent but not if one shared value was meant; a call with no arguments becomes the factory itself, any other a `lambda`; `field` is imported from `dataclasses` where the file does not)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/function-call-in-dataclass-default-argument.md
 
@@ -89983,6 +89997,8 @@ class Job:
 ##### Do
 
 ```python
+from dataclasses import field
+
 @dataclass
 class Job:
     created: datetime = field(default_factory=datetime.now)
@@ -94767,7 +94783,7 @@ with open(a) as src, open(b, "w") as dst:
 ## `py/mutable-class-default` — Mutable class attribute is ClassVar
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the fix needs `ClassVar` imported, and whether sharing was meant is the author's)
+- **Fix:** `suggest` (whether sharing the value across instances was meant is the author's: the fix says it was; `ClassVar` is imported from `typing` where the file does not)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/mutable-class-default.md
 
@@ -94795,6 +94811,8 @@ class Registry:
 ##### Do
 
 ```python
+from typing import ClassVar
+
 class Registry:
     names: ClassVar[list[str]] = []
 ```
@@ -94839,7 +94857,7 @@ items = ContextVar("items", default=())
 ## `py/mutable-dataclass-default` — No mutable default in a dataclass field
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the fix needs `field` imported, which the file may not do)
+- **Fix:** `suggest` (each instance gets its own value, built by `default_factory`; an empty list, dict or set is built by its type, any other by a `lambda`; `field` is imported from `dataclasses` where the file does not)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/mutable-dataclass-default.md
 
@@ -94868,6 +94886,8 @@ class Cart:
 ##### Do
 
 ```python
+from dataclasses import field
+
 @dataclass
 class Cart:
     items: list = field(default_factory=list)
@@ -98718,7 +98738,7 @@ def test_now(mocker):
 ## `py/pytest-raises-ambiguous-pattern` — pytest.raises(match=) escapes regex characters
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (whether the pattern was meant as a regex or literal text is the author's)
+- **Fix:** `suggest` (the fix reads the pattern as literal text and escapes it in a raw string; a pattern meant as a regular expression is the author's to keep)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/pytest-raises-ambiguous-pattern.md
 
@@ -99470,7 +99490,7 @@ text = re.sub("a", "b", text, count=1)
 ## `py/read-whole-file` — pathlib reads a whole file in one call
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the block becomes `Path(p).read_text()`, which needs `pathlib.Path` imported)
+- **Fix:** `suggest` (`Path(...).read_text()` opens, reads and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/read-whole-file.md
 
@@ -99498,6 +99518,8 @@ with open(path) as f:
 ##### Do
 
 ```python
+from pathlib import Path
+
 text = Path(path).read_text()
 ```
 
@@ -106851,7 +106873,7 @@ for i in range(n):
 ## `py/write-whole-file` — pathlib writes a whole file in one call
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `manual` (the block becomes `Path(p).write_text(data)`, which needs `pathlib.Path` imported)
+- **Fix:** `suggest` (`Path(...).write_text(...)` opens, writes and closes the file as the block did, with the same default encoding; `Path` is imported from `pathlib` where the file does not)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/write-whole-file.md
 
@@ -106879,6 +106901,8 @@ with open(path, "w") as f:
 ##### Do
 
 ```python
+from pathlib import Path
+
 Path(path).write_text(text)
 ```
 
@@ -116090,7 +116114,7 @@ function Counter({ start }: { start: number }) {
 ## `react/no-string-refs` — No string refs
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (the ref object has to be created where the component can reach it)
+- **Fix:** `manual` (the ref object has to be created where the component can reach it: a `useRef` in a function component, a `createRef` field in a class)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-string-refs.md
 
@@ -130895,7 +130919,7 @@ from Cryptodome.Cipher import AES
 ## `sec-py/no-reflected-xss` — A request value is not written into the response as it is
 
 - **Pack:** `codelaw-rules-security-python` · **Languages:** Python
-- **Fix:** `manual` (escaping the value or rendering a template are both fixes; which fits depends on the response)
+- **Fix:** `manual` (escaping the value or rendering a template are both fixes, and a suggested edit would read as made safe; which fits depends on the response)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-py/recommended` at `error` · `codelaw:sec-py/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-py/no-reflected-xss.md
 
@@ -156038,7 +156062,7 @@ let a: object = {};
 ## `ts/no-this-alias` — No aliasing this to a variable
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the callbacks that use the alias must become arrow functions by hand)
+- **Fix:** `manual` (the callbacks that use the alias become arrow functions, which changes their own `this` and `arguments`)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-this-alias.md
 
@@ -157073,7 +157097,7 @@ enum Status {
 ## `ts/prefer-for-of` — A loop that only reads arr[i] is a for-of
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (value: the loop variable needs a name the code does not contain)
+- **Fix:** `suggest` (`for … of` reads the array through its iterator, which a subclass or a sparse array can tell apart from indexing; the element is named the first of `item`, `item2`, … the file does not use, for the author to improve)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/prefer-for-of.md
 
@@ -157103,8 +157127,8 @@ for (let i = 0; i < names.length; i++) {
 ##### Do
 
 ```ts
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
 
@@ -157121,8 +157145,8 @@ for (let i = 0; i < names.length; i++) {
 ##### Do
 
 ```tsx
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
 

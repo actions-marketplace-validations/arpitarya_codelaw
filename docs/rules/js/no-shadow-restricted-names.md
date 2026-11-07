@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the new name is the author's choice) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (renamed automatically to the first of `_NaN`, `_NaN2`, … that the file does not use, with every reference to it; an exported name, or one in a shorthand `{ NaN }`, is renamed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-shadow-restricted-names`, `eslint-plugin-sonarjs/no-globals-shadowing` |
@@ -139,8 +139,8 @@ function check(NaN) {
 #### Do
 
 ```js
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -157,8 +157,8 @@ function check(NaN) {
 #### Do
 
 ```jsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -175,8 +175,8 @@ function check(NaN) {
 #### Do
 
 ```ts
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 
@@ -193,8 +193,8 @@ function check(NaN) {
 #### Do
 
 ```tsx
-function check(value) {
-  return value;
+function check(_NaN) {
+  return _NaN;
 }
 ```
 

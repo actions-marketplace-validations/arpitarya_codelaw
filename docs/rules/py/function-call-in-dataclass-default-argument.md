@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the value is meant to be shared or built per instance is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (each instance now builds its own value, which is the usual intent but not if one shared value was meant; a call with no arguments becomes the factory itself, any other a `lambda`; `field` is imported from `dataclasses` where the file does not) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/RUF009` |
@@ -141,6 +141,8 @@ class Job:
 #### Do
 
 ```python
+from dataclasses import field
+
 @dataclass
 class Job:
     created: datetime = field(default_factory=datetime.now)

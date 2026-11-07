@@ -2,9 +2,8 @@
 id: ts/prefer-for-of
 title: "A loop that only reads arr[i] is a for-of"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "value: the loop variable needs a name the code does not contain"
-fix_pending: "suggest; needs scope-rename (W-162)"
+fix: suggest
+fix_reason: "`for … of` reads the array through its iterator, which a subclass or a sparse array can tell apart from indexing; the element is named the first of `item`, `item2`, … the file does not use, for the author to improve"
 stability: preview
 ported_from: [typescript-eslint/prefer-for-of]
 since: 0.5.0
@@ -31,6 +30,9 @@ match:
             pattern: $I
             not: { inside: { kind: subscript_expression, pattern: '$A[$I]', not: { any: [{ inside: { kind: assignment_expression, field: left } }, { inside: { kind: augmented_assignment_expression, field: left } }, { inside: { kind: update_expression } }] } } }
 message: "`$I` only indexes `$A`; loop with `for (const … of $A)`"
+fix:
+  - edit-text: { pattern: '\Afor\s*\([^;]*;[^;]*;[^)]*\)', replace: "for (const $FRESH(item) of $A)" }
+  - edit-text: { pattern: '\b$A\[\s*$I\s*\]', replace: "$FRESH(item)" }
 ```
 
 ## How to fix
@@ -53,8 +55,8 @@ for (let i = 0; i < names.length; i++) {
 #### Do
 
 ```ts
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
 
@@ -71,7 +73,7 @@ for (let i = 0; i < names.length; i++) {
 #### Do
 
 ```tsx
-for (const name of names) {
-  greet(name);
+for (const item of names) {
+  greet(item);
 }
 ```
