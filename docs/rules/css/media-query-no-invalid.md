@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreFunctions` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended query is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (three conditions joined by both `and` and `or` get the two groupings as choices, `(a and b) or c` and `a and (b or c)`; the query matches nothing today and each grouping changes which media apply, so neither is the default. Any other invalid query is manual, as the intended query is the author's call) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/media-query-no-invalid` |
@@ -183,6 +183,26 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 }
 ```
 
+#### Fixed (group left)
+
+```css
+@media ((color) and (hover)) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed (group right)
+
+```css
+@media (color) and ((hover) or (width >= 600px)) {
+  a {
+    color: red;
+  }
+}
+```
+
 #### Do
 
 ```css
@@ -198,6 +218,26 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```scss
 @media (color) and (hover) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed (group left)
+
+```scss
+@media ((color) and (hover)) or (width >= 600px) {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed (group right)
+
+```scss
+@media (color) and ((hover) or (width >= 600px)) {
   a {
     color: red;
   }

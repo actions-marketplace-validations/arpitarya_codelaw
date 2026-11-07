@@ -2,9 +2,9 @@
 id: css/named-grid-areas-no-invalid
 title: "Named grid areas are rectangles"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended layout is the author's call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "rows of unequal length are padded with empty `.` cells when every area is then a rectangle, which makes the template valid again with a layout the author may not have meant; an empty row or an area that is not a rectangle is manual, as the intended layout is the author's call"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/named-grid-areas-no-invalid]
 since: 0.1.0
@@ -37,6 +37,16 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+a {
+  grid-template-areas:
+    "head head ."
+    "side main main";
+}
+```
+
 #### Do
 
 ```css
@@ -54,6 +64,16 @@ a {
 a {
   grid-template-areas:
     "head head"
+    "side main main";
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  grid-template-areas:
+    "head head ."
     "side main main";
 }
 ```

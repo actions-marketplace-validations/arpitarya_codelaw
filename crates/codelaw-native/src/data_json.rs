@@ -315,7 +315,14 @@ mod tests {
     fn fixed(rule: &dyn NativeRule, src: &str) -> (Vec<String>, String) {
         let found = crate::run(rule, Language::Json, src);
         let msgs = found.iter().map(|f| f.message.clone()).collect();
-        let mut edits: Vec<TextEdit> = found.into_iter().flat_map(|f| f.edits).collect();
+        // A finding with choices applies its default one; the markers never reach the text.
+        let mut edits: Vec<TextEdit> = found
+            .into_iter()
+            .flat_map(|f| match crate::choices_in(&f.edits).into_iter().find(|c| c.default) {
+                Some(c) => c.edits,
+                None => crate::plain_edits(f.edits),
+            })
+            .collect();
         edits.sort_by_key(|e| std::cmp::Reverse(e.start));
         let mut out = src.to_owned();
         for e in edits {
