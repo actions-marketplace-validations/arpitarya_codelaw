@@ -2,9 +2,8 @@
 id: js/no-else-return
 title: "No else after return"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "unwrapping the block re-indents its statements, and a declaration in it could clash with one outside"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name"
 stability: preview
 ported_from: [eslint/no-else-return, eslint-plugin-unicorn/no-useless-else]
 since: 0.5.0
@@ -28,10 +27,13 @@ match:
   - has:
       field: alternative
       kind: else_clause
+      pattern: $E
       has:
         kind: statement_block
         pattern: $B
 message: The `if` returns, so the `else` is not needed
+fix:
+  - unwrap-block: { target: $B, within: $E }
 ```
 
 ## How to fix

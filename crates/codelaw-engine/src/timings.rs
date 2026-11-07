@@ -18,10 +18,47 @@ pub enum Phase {
     /// The formatter engine, wherever it runs: `format`, the format step
     /// of `fix`, and `check`'s `format/unformatted`.
     Format,
+    /// The project stage (SR-ARCHITECTURE decision 4.4; W-168), each part
+    /// apart. `graph-read`: the root walked and every file read for the graph.
+    GraphRead,
+    /// Every file's graph facts, wall time: the three below, in parallel.
+    GraphFacts,
+    /// Facts extracted from a file the cache did not have.
+    GraphExtract,
+    /// The facts cache asked, hit or miss.
+    GraphCacheRead,
+    /// Facts written to the cache.
+    GraphCacheWrite,
+    /// The file set and manifests indexed for the resolver.
+    GraphIndex,
+    /// Import specifiers resolved to files; counted per call.
+    GraphResolve,
+    /// Uses, re-exports and entry points linked, the resolving left out.
+    GraphLink,
+    /// The project rules run on the linked graph.
+    GraphRules,
 }
 
 impl Phase {
-    pub const ALL: [Phase; 8] = [Phase::Compile, Phase::Discover, Phase::Read, Phase::Parse, Phase::Semantic, Phase::Rules, Phase::Suppress, Phase::Format];
+    pub const ALL: [Phase; 17] = [
+        Phase::Compile,
+        Phase::Discover,
+        Phase::Read,
+        Phase::Parse,
+        Phase::Semantic,
+        Phase::Rules,
+        Phase::Suppress,
+        Phase::Format,
+        Phase::GraphRead,
+        Phase::GraphFacts,
+        Phase::GraphExtract,
+        Phase::GraphCacheRead,
+        Phase::GraphCacheWrite,
+        Phase::GraphIndex,
+        Phase::GraphResolve,
+        Phase::GraphLink,
+        Phase::GraphRules,
+    ];
 
     pub fn name(self) -> &'static str {
         match self {
@@ -33,6 +70,15 @@ impl Phase {
             Phase::Rules => "rules",
             Phase::Suppress => "suppress",
             Phase::Format => "format",
+            Phase::GraphRead => "graph-read",
+            Phase::GraphFacts => "graph-facts",
+            Phase::GraphExtract => "graph-extract",
+            Phase::GraphCacheRead => "graph-cache-read",
+            Phase::GraphCacheWrite => "graph-cache-write",
+            Phase::GraphIndex => "graph-index",
+            Phase::GraphResolve => "graph-resolve",
+            Phase::GraphLink => "graph-link",
+            Phase::GraphRules => "graph-rules",
         }
     }
 }
@@ -45,15 +91,19 @@ struct Clock {
 
 impl Clock {
     fn add(&self, nanos: u64) {
+        self.add_n(nanos, 1);
+    }
+
+    fn add_n(&self, nanos: u64, count: u64) {
         self.nanos.fetch_add(nanos, Ordering::Relaxed);
-        self.count.fetch_add(1, Ordering::Relaxed);
+        self.count.fetch_add(count, Ordering::Relaxed);
     }
 }
 
 /// The counters of one run, shared by every worker thread.
 pub struct Timings {
     started: Instant,
-    phases: [Clock; 8],
+    phases: [Clock; 17],
     rules: Vec<Clock>,
     cache_hits: AtomicU64,
     cache_misses: AtomicU64,
@@ -88,6 +138,11 @@ impl Timings {
 
     pub(crate) fn add(&self, phase: Phase, since: Instant) {
         self.phases[phase as usize].add(since.elapsed().as_nanos() as u64);
+    }
+
+    /// `nanos` measured elsewhere, over `count` runs of the phase.
+    pub(crate) fn add_nanos(&self, phase: Phase, nanos: u64, count: u64) {
+        self.phases[phase as usize].add_n(nanos, count);
     }
 
     pub(crate) fn rule(&self, index: usize, since: Instant) {

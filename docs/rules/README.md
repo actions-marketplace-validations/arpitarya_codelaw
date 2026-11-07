@@ -274,7 +274,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-dynamic-namespace-import-access`](js/no-dynamic-namespace-import-access.md) | No computed access on a namespace import | `manual` | — | `js/recommended` |
-| [`js/no-else-return`](js/no-else-return.md) | No else after return | `manual` | — | `js/strict` |
+| [`js/no-else-return`](js/no-else-return.md) | No else after return | `suggest` | — | `js/strict` |
 | [`js/no-empty`](js/no-empty.md) | No empty blocks | `auto` | — | `js/recommended` |
 | [`js/no-empty-character-class`](js/no-empty-character-class.md) | No empty character classes in regular expressions | `manual` | — | `js/recommended` |
 | [`js/no-empty-file`](js/no-empty-file.md) | No empty file | `manual` | — | `js/strict` |
@@ -312,7 +312,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-impossible-length-comparison`](js/no-impossible-length-comparison.md) | No length < 0 | `manual` | — | `js/strict` |
 | [`js/no-incorrect-template-string-interpolation`](js/no-incorrect-template-string-interpolation.md) | No ${} in a plain string | `manual` | — | `js/strict` |
-| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `manual` | — | `js/taste` |
+| [`js/no-inline-comments`](js/no-inline-comments.md) | Comments on their own line | `suggest` | — | `js/taste` |
 | [`js/no-inner-declarations`](js/no-inner-declarations.md) | No function declaration in a nested block | `manual` | — | *[rules] only* |
 | [`js/no-instanceof-builtins`](js/no-instanceof-builtins.md) | Array.isArray rather than instanceof Array | `suggest` | — | `js/strict` |
 | [`js/no-invalid-regexp`](js/no-invalid-regexp.md) | RegExp() is given a valid pattern and flags | `manual` | — | `js/recommended` |
@@ -440,7 +440,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
 | [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
-| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `manual` | — | `js/strict` |
+| [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `auto` | — | `js/strict` |
 | [`js/no-useless-string-raw`](js/no-useless-string-raw.md) | No String.raw without an escape | `auto` | — | `js/recommended` |
 | [`js/no-useless-switch-case`](js/no-useless-switch-case.md) | No empty case before default | `suggest` | — | `js/strict` |
 | [`js/no-useless-template-literals`](js/no-useless-template-literals.md) | No template literal without substitutions | `manual` | — | `js/strict` |

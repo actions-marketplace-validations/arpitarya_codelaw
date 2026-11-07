@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (unwrapping the block re-indents its statements, and a declaration in it could clash with one outside) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-else-return`, `eslint-plugin-unicorn/no-useless-else` |

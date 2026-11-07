@@ -196,10 +196,11 @@ fn ms(nanos: u64) -> String {
 /// are summed over the worker threads.
 pub fn timings_text(t: &TimingReport) -> String {
     let mut out = format!("timings: {} wall · {} threads · phase and rule times summed over threads\n", ms(t.wall_nanos), t.threads);
-    for p in &t.phases {
-        out.push_str(&format!("  {:<10} {:>10}  ×{}\n", p.phase, ms(p.nanos), p.count));
+    // The project stage's parts only when it ran.
+    for p in t.phases.iter().filter(|p| p.count > 0 || !p.phase.starts_with("graph-")) {
+        out.push_str(&format!("  {:<17} {:>10}  ×{}\n", p.phase, ms(p.nanos), p.count));
     }
-    out.push_str(&format!("  {:<10} {} hits · {} misses\n", "cache", t.cache_hits, t.cache_misses));
+    out.push_str(&format!("  {:<17} {} hits · {} misses\n", "cache", t.cache_hits, t.cache_misses));
     if !t.rules.is_empty() {
         let total: u64 = t.rules.iter().map(|r| r.nanos).sum::<u64>().max(1);
         out.push_str("  slowest rules\n");

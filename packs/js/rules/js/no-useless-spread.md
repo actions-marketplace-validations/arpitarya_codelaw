@@ -2,9 +2,7 @@
 id: js/no-useless-spread
 title: "No spread of an array literal"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "removing the brackets and the dots around the items is not one template edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-useless-spread]
 since: 0.5.0
@@ -20,7 +18,12 @@ match:
   kind: spread_element
   has: { kind: array, pattern: "[$$$A]" }
   inside: { kind: array }
+  any:
+    - { has: { kind: array, has: { nthChild: 1 } }, pattern: $SPREAD }
+    - { regex: '' }
 message: "Spreading an array literal into another array adds nothing; inline its items"
+fix:
+  - replace: { target: $SPREAD, with: "$$$A" }
 ```
 
 ## How to fix

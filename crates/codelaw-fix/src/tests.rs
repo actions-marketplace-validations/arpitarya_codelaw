@@ -248,3 +248,19 @@ fn edit_text_that_finds_nothing_offers_no_fix() {
     assert!(edits_for(&spec, &m[0], &ctx).is_err());
     assert!(parse_fix(&serde_json::json!([{ "edit-text": { "pattern": "(", "replace": "" } }])).unwrap_err().contains("not a regular expression"));
 }
+
+#[test]
+fn unwrap_block_replaces_the_else_with_its_statements() {
+    // W-162: `unwrap-block` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: if_statement\n  has: { field: alternative, kind: else_clause, pattern: $E, has: { kind: statement_block, pattern: $B } }\nmessage: m\nfix:\n  - unwrap-block: { target: $B, within: $E }";
+    let src = "function f(n) {\n  if (n) {\n    return 1;\n  } else {\n    // two\n    g();\n    return 2;\n  }\n}\n";
+    let out = fix(Language::Javascript, block, src);
+    assert_eq!(out.text, "function f(n) {\n  if (n) {\n    return 1;\n  }\n  // two\n  g();\n  return 2;\n}\n");
+}
+
+#[test]
+fn move_puts_the_target_on_its_own_line_above() {
+    let block = "match:\n  kind: comment\n  follows: { regex: '.', pattern: $P }\nmessage: m\nfix:\n  - move: { before: $P }";
+    let out = fix(Language::Javascript, block, "if (a) {\n  const max = 3; // retries\n}\n");
+    assert_eq!(out.text, "if (a) {\n  // retries\n  const max = 3;\n}\n");
+}
