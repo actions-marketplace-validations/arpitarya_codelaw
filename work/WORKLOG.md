@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-139 strand W-139-py, third pass: slice 23 (35 rows upstream had to confirm)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) confirm the "not confirmable offline" rows from upstream's source and tests, write them; natives in Rust; the add-import rows if W-162 has it; re-label the rest; close W-139 if DoD 1 is met.
+- **Done:** read Ruff 0.16.9's rule sources, fixtures and snapshots and Pylint 4.1.3's checkers and functional tests over GitHub (behaviour only for Pylint, L2); slice 23 — 35 `py/*` rules (Ruff 15, Pylint 20): 3 `auto`, 7 `suggest`, 25 `manual`. `codelaw test packs/python` 741 rules, 0 failed; `rules lint` 0; `--fix-stats --check` passes; corpus counts written. Every other formerly unconfirmed row re-labelled in the item with what it waits on.
+- **Decided / left open:** W-162's `ensure-import` (change 6) landed on main during the slice, so the ~25 add-import rows are the next python slice, not built here; no natives this pass. W-139 stays open — DoD 1 not met (python 237 rows left, js 164).
+- **Mistakes:** the Write tool and zsh's `cat` turned a written `\u00e9` into `é` in a rule's examples; caught by the rule's own test, rewritten through `chr(92)` (LESSONS-worthy only if it recurs).
+- **Next:** the add-import rows on `ensure-import`; the native rows (`crates/codelaw-native`).
+
+---
+
 ## 2026-11-07 — W-172: L8's three red budgets — cause found, engine side built, two still over  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-172 to closure — reproduce with `codelaw bench`, bisect 11-05 → main, optimise the cause, never loosen, prove each budget under locally.

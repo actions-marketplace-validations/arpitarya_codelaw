@@ -9,6 +9,7 @@
 "py/ambiguous-class-name" = 0
 "py/ambiguous-function-name" = 0
 "py/ambiguous-variable-name" = 3
+"py/anomalous-unicode-escape-in-string" = 0
 "py/any-eq-ne-annotation" = 16
 "py/any-type" = 174
 "py/argument-default-in-stub" = 0
@@ -24,14 +25,17 @@
 "py/async-function-with-timeout" = 9
 "py/async-zero-sleep" = 7
 "py/asyncio-dangling-task" = 0
+"py/attribute-defined-outside-init" = 27
 "py/await-outside-async" = 0
 "py/bad-builtin" = 11
+"py/bad-chained-comparison" = 0
 "py/bad-classmethod-argument" = 0
 "py/bad-docstring-quotes" = 0
 "py/bad-dunder-method-name" = 0
 "py/bad-except-order" = 1
 "py/bad-exception-cause" = 0
 "py/bad-file-encoding" = 0
+"py/bad-format-string-key" = 0
 "py/bad-mcs-classmethod-argument" = 0
 "py/bad-mcs-method-argument" = 0
 "py/bad-open-mode" = 4
@@ -54,9 +58,11 @@
 "py/blocking-http-call-in-async-function" = 0
 "py/blocking-input-in-async-function" = 0
 "py/blocking-open-call-in-async-function" = 1
+"py/blocking-path-method-in-async-function" = 0
 "py/blocking-sleep-in-async-function" = 0
 "py/boolean-chained-comparison" = 0
 "py/boolean-default-value-positional-argument" = 193
+"py/boolean-positional-value-in-call" = 72
 "py/boolean-type-hint-positional-argument" = 213
 "py/break-outside-loop" = 0
 "py/builtin-argument-shadowing" = 22
@@ -96,7 +102,11 @@
 "py/complex-assignment-in-stub" = 0
 "py/complex-if-statement-in-stub" = 0
 "py/complexity" = 20
+"py/confusing-consecutive-elif" = 12
+"py/confusing-with-statement" = 0
 "py/consider-math-not-float" = 1
+"py/consider-refactoring-into-while-condition" = 0
+"py/consider-using-assignment-expr" = 235
 "py/consider-using-enumerate" = 0
 "py/consider-using-join" = 3
 "py/consider-using-min-builtin" = 0
@@ -119,6 +129,7 @@
 "py/del-attr-with-constant" = 0
 "py/delete-full-slice" = 10
 "py/deprecated-c-element-tree" = 0
+"py/deprecated-decorator" = 0
 "py/deprecated-mock-import" = 0
 "py/deprecated-unittest-alias" = 0
 "py/dict-get-with-none-default" = 14
@@ -141,6 +152,7 @@
 "py/duplicate-isinstance-call" = 1
 "py/duplicate-literal-member" = 0
 "py/duplicate-set-value" = 0
+"py/duplicate-string-formatting-argument" = 0
 "py/duplicate-try-block-exception" = 0
 "py/duplicate-union-member" = 0
 "py/ellipsis-in-non-empty-class-body" = 0
@@ -173,6 +185,7 @@
 "py/f-string-missing-placeholders" = 2
 "py/f-string-number-format" = 0
 "py/f-string-percent-format" = 0
+"py/fallible-context-manager" = 7
 "py/falsy-dict-get-fallback" = 13
 "py/first-word-uncapitalized" = 12
 "py/flag-expiry" = 0
@@ -193,11 +206,13 @@
 "py/function-call-in-default-argument" = 4
 "py/function-uses-loop-variable" = 5
 "py/future-annotations-in-stub" = 0
+"py/generic-not-last-base-class" = 0
 "py/getattr-with-constant" = 2
 "py/glob" = 0
 "py/global-at-module-level" = 0
 "py/global-statement" = 4
 "py/global-variable-not-assigned" = 0
+"py/global-variable-undefined" = 0
 "py/hashlib-digest-hex" = 0
 "py/if-else-block-instead-of-dict-get" = 0
 "py/if-else-block-instead-of-if-exp" = 89
@@ -217,9 +232,11 @@
 "py/implicit-string-concatenation-in-collection-literal" = 29
 "py/import-outside-top-level" = 147
 "py/import-shadowed-by-loop-var" = 0
+"py/impossible-comparison" = 0
 "py/in-dict-keys" = 38
 "py/in-empty-collection" = 0
 "py/inconsistent-return-statements" = 0
+"py/incorrect-decorator-order" = 0
 "py/incorrect-dict-iterator" = 0
 "py/incorrectly-parenthesized-tuple-in-subscript" = 2
 "py/inherit-non-class" = 0
@@ -259,6 +276,7 @@
 "py/invalid-repr-returned" = 0
 "py/invalid-slots" = 0
 "py/invalid-slots-object" = 0
+"py/invalid-star-assignment-target" = 0
 "py/invalid-str-return-type" = 0
 "py/invalid-str-returned" = 0
 "py/is-literal" = 0
@@ -290,12 +308,14 @@
 "py/lowercase-imported-as-non-lowercase" = 0
 "py/lru-cache-with-maxsize-none" = 0
 "py/lru-cache-without-parameters" = 0
+"py/magic-value-comparison" = 928
 "py/manual-dict-comprehension" = 13
 "py/manual-from-import" = 1
 "py/manual-list-comprehension" = 15
 "py/manual-list-copy" = 0
 "py/map-int-version-parsing" = 4
 "py/map-without-explicit-strict" = 0
+"py/match-class-bind-self" = 0
 "py/math-constant" = 7
 "py/max-depth" = 58
 "py/max-lines" = 13
@@ -307,6 +327,7 @@
 "py/misplaced-format-function" = 0
 "py/missing-blank-line-after-summary" = 251
 "py/missing-copyright-notice" = 677
+"py/missing-parentheses-for-call-in-test" = 0
 "py/missing-return-type-class-method" = 39
 "py/missing-return-type-private-function" = 45
 "py/missing-return-type-special-method" = 174
@@ -325,6 +346,7 @@
 "py/module-import-not-at-top" = 25
 "py/multi-line-summary-first-line" = 591
 "py/multi-line-summary-second-line" = 676
+"py/multiple-class-sub-patterns" = 0
 "py/multiple-imports-on-one-line" = 0
 "py/multiple-starred-expressions" = 0
 "py/multiple-starts-ends-with" = 0
@@ -349,6 +371,7 @@
 "py/no-mutable-default" = 0
 "py/no-print" = 0
 "py/no-self-argument" = 2
+"py/no-self-use" = 355
 "py/no-slots-in-namedtuple-subclass" = 0
 "py/no-slots-in-str-subclass" = 1
 "py/no-slots-in-tuple-subclass" = 1
@@ -427,6 +450,7 @@
 "py/percent-format-unused-named-argument" = 0
 "py/pointless-string-statement" = 0
 "py/post-init-default" = 0
+"py/prefer-typing-namedtuple" = 5
 "py/print-empty-string" = 0
 "py/printf-in-get-text-func-call" = 0
 "py/private-member-access" = 331
@@ -441,6 +465,7 @@
 "py/pytest-erroneous-use-fixtures-on-fixture" = 0
 "py/pytest-extraneous-scope-function" = 2
 "py/pytest-fail-without-message" = 0
+"py/pytest-fixture-autouse" = 15
 "py/pytest-fixture-finalizer-callback" = 1
 "py/pytest-fixture-incorrect-parentheses-style" = 1
 "py/pytest-fixture-param-without-value" = 1
@@ -468,7 +493,9 @@
 "py/quoted-annotation-in-stub" = 0
 "py/raise-literal" = 0
 "py/raise-not-implemented" = 0
+"py/raise-vanilla-args" = 295
 "py/raise-vanilla-class" = 21
+"py/raise-within-try" = 18
 "py/raise-without-from-inside-except" = 44
 "py/raising-format-tuple" = 1
 "py/raw-string-in-exception" = 182
@@ -483,11 +510,13 @@
 "py/redundant-backslash" = 0
 "py/redundant-bool-literal" = 0
 "py/redundant-final-literal" = 0
+"py/redundant-literal-union" = 0
 "py/redundant-log-base" = 0
 "py/redundant-none-literal" = 0
 "py/redundant-numeric-union" = 7
 "py/redundant-open-modes" = 3
 "py/redundant-tuple-in-exception-handler" = 0
+"py/redundant-typehint-argument" = 0
 "py/redundant-unittest-assert" = 0
 "py/regex-flag-alias" = 0
 "py/reimplemented-builtin" = 2
@@ -516,6 +545,7 @@
 "py/shebang-missing-python" = 0
 "py/shebang-not-first-line" = 0
 "py/simplifiable-condition" = 0
+"py/simplify-boolean-expression" = 0
 "py/single-item-membership-test" = 0
 "py/single-string-used-for-slots" = 0
 "py/singledispatch-method" = 0
@@ -610,6 +640,7 @@
 "py/unnecessary-dict-kwargs" = 1
 "py/unnecessary-direct-lambda-call" = 0
 "py/unnecessary-double-cast-or-process" = 0
+"py/unnecessary-dunder-call" = 3
 "py/unnecessary-ellipsis" = 0
 "py/unnecessary-empty-iterable-within-deque-call" = 1
 "py/unnecessary-encode-utf8" = 62
@@ -652,9 +683,11 @@
 "py/unreachable" = 6
 "py/unrecognized-platform-check" = 0
 "py/unrecognized-platform-name" = 0
+"py/unrecognized-version-info-check" = 0
 "py/unreliable-callable-check" = 0
 "py/unsorted-imports" = 180
 "py/unspecified-encoding" = 51
+"py/unsupported-method-call-on-all" = 0
 "py/unused-annotation" = 0
 "py/unused-async" = 19
 "py/unused-class-method-argument" = 10
@@ -673,6 +706,7 @@
 "py/use-list-literal" = 0
 "py/use-maxsplit-arg" = 7
 "py/use-sequence-for-iteration" = 0
+"py/used-prior-global-declaration" = 0
 "py/useless-class-metaclass-type" = 0
 "py/useless-comparison" = 2
 "py/useless-contextlib-suppress" = 0
@@ -698,6 +732,7 @@
 "py/while-used" = 98
 "py/write-whole-file" = 42
 "py/wrong-exception-operation" = 0
+"py/wrong-tuple-length-version-comparison" = 0
 "py/yield-from-in-async-function" = 0
 "py/yield-in-context-manager-in-async-generator" = 10
 "py/yield-in-for-loop" = 19
