@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/taste` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the comment above the code is a cross-line edit) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a comment after code may describe that one line; above it, it can read as describing what follows) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-inline-comments` |
