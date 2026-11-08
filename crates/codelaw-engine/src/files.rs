@@ -23,6 +23,10 @@ pub(crate) enum Tree<'a> {
     /// An in-memory set: `check_files` and the rule tester. Nothing on disk
     /// is read.
     Memory(&'a [(String, Language, String)]),
+    /// The files on disk, with these texts in place of theirs: a
+    /// `fix --dry-run`'s multi-file fixes, which write nothing
+    /// (SR-MULTI-FILE-FIXES decision 2).
+    Overlay(&'a std::collections::BTreeMap<String, String>),
 }
 
 /// One question a rule asked.
@@ -57,6 +61,9 @@ pub(crate) struct ProjectFile<'a> {
     as_of: Option<AsOfFn<'a>>,
     asked: Mutex<Vec<Asked>>,
     providers: Option<&'a crate::providers::Providers>,
+    /// The project's file list, walked once per file however often a rule
+    /// asks (a multi-file fix asks once per finding).
+    files: std::sync::OnceLock<Vec<String>>,
 }
 
 impl<'a> ProjectFile<'a> {
@@ -68,7 +75,7 @@ impl<'a> ProjectFile<'a> {
             bytes.extend_from_slice("\u{feff}".as_bytes());
         }
         bytes.extend_from_slice(text.as_bytes());
-        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None }
+        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, files: std::sync::OnceLock::new() }
     }
 
     /// Where the as-of date comes from.
@@ -145,7 +152,7 @@ fn exists(root: &Path, tree: Tree<'_>, path: &str) -> bool {
         return false;
     }
     match tree {
-        Tree::Disk => root.join(path).exists(),
+        Tree::Disk | Tree::Overlay(_) => root.join(path).exists(),
         Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p == path || p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
 }
@@ -155,7 +162,7 @@ fn is_dir(root: &Path, tree: Tree<'_>, path: &str) -> bool {
         return false;
     }
     match tree {
-        Tree::Disk => root.join(path).is_dir(),
+        Tree::Disk | Tree::Overlay(_) => root.join(path).is_dir(),
         Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
 }
@@ -165,7 +172,8 @@ fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
         return None;
     }
     match tree {
-        Tree::Disk => {
+        Tree::Overlay(texts) if texts.contains_key(path) => texts.get(path).cloned(),
+        Tree::Disk | Tree::Overlay(_) => {
             let p = root.join(path);
             if !p.is_file() {
                 return None;
@@ -180,7 +188,7 @@ fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
 
 fn project_files(root: &Path, tree: Tree<'_>) -> Vec<String> {
     match tree {
-        Tree::Disk => crate::discover::walk_files(root),
+        Tree::Disk | Tree::Overlay(_) => crate::discover::walk_files(root),
         Tree::Memory(files) => {
             let mut v: Vec<String> = files.iter().map(|(p, _, _)| p.clone()).collect();
             v.sort();
@@ -194,7 +202,7 @@ fn list(root: &Path, tree: Tree<'_>, path: &str) -> Option<Vec<String>> {
         return None;
     }
     let mut names: Vec<String> = match tree {
-        Tree::Disk => std::fs::read_dir(root.join(path)).ok()?.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()).collect(),
+        Tree::Disk | Tree::Overlay(_) => std::fs::read_dir(root.join(path)).ok()?.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()).collect(),
         Tree::Memory(files) => {
             let prefix = if path.is_empty() { String::new() } else { format!("{path}/") };
             files.iter().filter_map(|(p, _, _)| p.strip_prefix(prefix.as_str())).map(|r| r.split('/').next().unwrap_or(r).to_owned()).collect()
@@ -233,7 +241,7 @@ impl FileContext for ProjectFile<'_> {
         a
     }
     fn project_files(&self) -> Option<Vec<String>> {
-        let files = project_files(self.root, self.tree);
+        let files = self.files.get_or_init(|| project_files(self.root, self.tree)).clone();
         self.record(Question::Files, hash_list(&Some(files.clone())));
         Some(files)
     }

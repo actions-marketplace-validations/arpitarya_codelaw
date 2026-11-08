@@ -67,6 +67,9 @@ pub struct RuleWhy {
     /// what set it (SR-CONFIG decision 11e): for `--for`'s file, else the
     /// project root.
     pub on_edit: (bool, String),
+    /// Whether its fix may edit several files, and what set it
+    /// (SR-CONFIG decision 11g): for `--for`'s file, else the project root.
+    pub multi_file: (codelaw_config::MultiFile, String),
     /// The rule's `fix_target:` and the target it meets or misses, with
     /// its source (SR-RULE-FORMAT decision 2c), for `--for`'s file, else
     /// the project root.
@@ -161,6 +164,20 @@ impl Project {
         (r.rule.on_edit, own.to_owned())
     }
 
+    /// Whether `r`'s fix may edit several files under `layers`, and what
+    /// set it (SR-CONFIG decision 11g): the rule entries in layer order,
+    /// the last naming it winning, then `[fix] multi_file`, then `auto`.
+    pub fn multi_file(&self, r: &LoadedRule, layers: &[codelaw_config::Layer]) -> (codelaw_config::MultiFile, String) {
+        self.multi_file_of(&r.rule.id, layers)
+    }
+
+    pub(crate) fn multi_file_of(&self, id: &str, layers: &[codelaw_config::Layer]) -> (codelaw_config::MultiFile, String) {
+        if let Some(set) = layers.iter().rev().find_map(|l| l.rules.get(id).and_then(|s| s.multi_file()).map(|v| (v, l.source.clone()))) {
+            return set;
+        }
+        self.config.fix_multi_file_source().unwrap_or((codelaw_config::MultiFile::Auto, "default".to_owned()))
+    }
+
     /// `rules --why`'s `fix target:` line: the rule's requirement, and the
     /// target `abs` resolves to with its source.
     fn fix_target_why(&self, r: &LoadedRule, abs: &Path) -> Option<(String, String)> {
@@ -221,6 +238,7 @@ impl Project {
             fix: r.rule.fix.name().to_owned(),
             fix_lowered: None,
             on_edit: self.on_edit(&r, &self.config.layers_for(self.root())),
+            multi_file: self.multi_file(&r, &self.config.layers_for(self.root())),
             fix_target: self.fix_target_why(&r, &self.root().join("_")),
             for_file: None,
         };
@@ -238,6 +256,7 @@ impl Project {
         let layers = self.config.layers_for(&abs);
         why.fix_lowered = lowered(&layers);
         why.on_edit = self.on_edit(&r, &layers);
+        why.multi_file = self.multi_file(&r, &layers);
         why.fix_target = self.fix_target_why(&r, &abs);
         let set_by = layers
             .iter()
@@ -250,6 +269,9 @@ impl Project {
                 }
                 if let Some(o) = s.on_edit() {
                     v.push_str(&format!(", on_edit = {o}"));
+                }
+                if let Some(m) = s.multi_file() {
+                    v.push_str(&format!(", multi_file = {}", m.name()));
                 }
                 (l.source.clone(), v)
             })

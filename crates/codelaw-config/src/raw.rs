@@ -159,6 +159,10 @@ pub enum RuleSetting {
         /// decision 11f).
         #[serde(default)]
         targets: Option<RawTargets>,
+        /// Whether the rule's fix may edit several files, and how
+        /// (SR-CONFIG decision 11g); over `[fix] multi_file`.
+        #[serde(default)]
+        multi_file: Option<MultiFile>,
     },
     /// Not a rule's setting: `[rules] require_reason`, which the loader
     /// takes out of `[rules]`. Anywhere else it is a load error.
@@ -194,6 +198,14 @@ impl RuleSetting {
     pub fn on_edit(&self) -> Option<bool> {
         match self {
             RuleSetting::Full { on_edit, .. } => *on_edit,
+            _ => None,
+        }
+    }
+
+    /// The rule entry's `multi_file`, as written (SR-CONFIG decision 11g).
+    pub fn multi_file(&self) -> Option<MultiFile> {
+        match self {
+            RuleSetting::Full { multi_file, .. } => *multi_file,
             _ => None,
         }
     }
@@ -342,8 +354,7 @@ pub struct RawFix {
     /// on save and from the agent hook, below the per-rule entries.
     pub on_edit: Option<bool>,
     /// SR-MULTI-FILE-FIXES decision 3 (SR-CONFIG decision 11g): whether a
-    /// fix may edit several files. Loaded and validated; W-162 builds what
-    /// it does.
+    /// fix may edit several files, below the per-rule entries.
     pub multi_file: Option<MultiFile>,
 }
 
@@ -355,6 +366,16 @@ pub enum MultiFile {
     Auto,
     Suggest,
     Off,
+}
+
+impl MultiFile {
+    pub fn name(self) -> &'static str {
+        match self {
+            MultiFile::Auto => "auto",
+            MultiFile::Suggest => "suggest",
+            MultiFile::Off => "off",
+        }
+    }
 }
 
 /// `[adapters]`: SR-LINTER decision 2.

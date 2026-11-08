@@ -381,3 +381,80 @@ fn unwrap_block_dedents_a_python_block() {
     let out = fix(Language::Python, block, "def f(x):\n    if x:\n        return 1\n    else:\n        # two\n        y = 2\n        return y\n");
     assert_eq!(out.text, "def f(x):\n    if x:\n        return 1\n    # two\n    y = 2\n    return y\n");
 }
+
+/// A fresh folder of its own for one writer test.
+fn write_dir(name: &str) -> std::path::PathBuf {
+    let dir = std::env::temp_dir().join(format!("codelaw-fix-{name}-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    dir
+}
+
+fn writes(dir: &Path, files: &[(&str, &str, &str)]) -> Vec<FileWrite> {
+    files
+        .iter()
+        .map(|(name, before, after)| {
+            std::fs::write(dir.join(name), before).unwrap();
+            FileWrite { path: dir.join(name), read: before.as_bytes().to_vec(), bytes: after.as_bytes().to_vec() }
+        })
+        .collect()
+}
+
+fn leftovers(dir: &Path) -> Vec<String> {
+    let mut v: Vec<String> = std::fs::read_dir(dir).unwrap().map(|e| e.unwrap().file_name().to_string_lossy().into_owned()).filter(|n| n.ends_with(".tmp")).collect();
+    v.sort();
+    v
+}
+
+#[test]
+fn a_multi_file_fix_writes_every_file() {
+    let dir = write_dir("all");
+    let w = writes(&dir, &[("a.css", ".navBar {}\n", ".nav-bar {}\n"), ("b.html", "<p class=\"navBar\"></p>\n", "<p class=\"nav-bar\"></p>\n")]);
+    write_all_or_nothing(&w).unwrap();
+    assert_eq!(std::fs::read_to_string(dir.join("a.css")).unwrap(), ".nav-bar {}\n");
+    assert_eq!(std::fs::read_to_string(dir.join("b.html")).unwrap(), "<p class=\"nav-bar\"></p>\n");
+    assert!(leftovers(&dir).is_empty());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn a_failed_rename_puts_back_every_file_already_renamed() {
+    let dir = write_dir("none");
+    let w = writes(&dir, &[("a.css", "A\n", "A2\n"), ("b.html", "B\n", "B2\n"), ("c.js", "C\n", "C2\n")]);
+    let mut calls = 0;
+    let err = write_with(&w, &mut |from, to| {
+        calls += 1;
+        if calls == 3 { Err(std::io::Error::other("disk full")) } else { std::fs::rename(from, to) }
+    })
+    .unwrap_err();
+    assert!(matches!(err, WriteAllError::Failed(_, _)), "{err:?}");
+    for (name, before) in [("a.css", "A\n"), ("b.html", "B\n"), ("c.js", "C\n")] {
+        assert_eq!(std::fs::read_to_string(dir.join(name)).unwrap(), before, "{name} holds what it held");
+    }
+    assert!(leftovers(&dir).is_empty(), "{:?}", leftovers(&dir));
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn a_file_changed_since_it_was_read_writes_nothing() {
+    let dir = write_dir("changed");
+    let w = writes(&dir, &[("a.css", "A\n", "A2\n"), ("b.html", "B\n", "B2\n")]);
+    std::fs::write(dir.join("b.html"), "edited in the editor\n").unwrap();
+    let err = write_all_or_nothing(&w).unwrap_err();
+    assert!(matches!(&err, WriteAllError::Changed(p) if p.ends_with("b.html")), "{err:?}");
+    assert_eq!(std::fs::read_to_string(dir.join("a.css")).unwrap(), "A\n");
+    assert_eq!(std::fs::read_to_string(dir.join("b.html")).unwrap(), "edited in the editor\n");
+    assert!(leftovers(&dir).is_empty());
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn a_missing_file_writes_nothing() {
+    let dir = write_dir("missing");
+    let mut w = writes(&dir, &[("a.css", "A\n", "A2\n")]);
+    w.push(FileWrite { path: dir.join("gone.html"), read: b"x".to_vec(), bytes: b"y".to_vec() });
+    assert!(matches!(write_all_or_nothing(&w), Err(WriteAllError::Failed(_, _))));
+    assert_eq!(std::fs::read_to_string(dir.join("a.css")).unwrap(), "A\n");
+    assert!(leftovers(&dir).is_empty());
+    let _ = std::fs::remove_dir_all(&dir);
+}
