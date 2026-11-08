@@ -84,6 +84,96 @@ pub struct CompiledMatch {
     types: Vec<(String, TypeExpr)>,
     /// The names `transform:` defines.
     transform_vars: Vec<String>,
+    /// Keeps the shared regexes its matchers name alive.
+    _shared: SharedRegexes,
+}
+
+/// Each distinct `regex:` of a batch of rules, compiled once and named by
+/// every rule and grammar that uses it, as an ast-grep global util. Inline,
+/// ast-grep compiles a rule's regex again for each of its grammars and each
+/// rule apart — about 16 KB a time, most of a project's rule memory (W-172).
+/// Built in full before any rule is compiled against it, and read-only after.
+#[derive(Clone, Default)]
+pub struct SharedRegexes {
+    globals: ast_grep_config::GlobalRules,
+    ids: Arc<std::collections::HashMap<String, String>>,
+}
+
+impl SharedRegexes {
+    /// The regexes the `match:` blocks of `rules` name. A pattern that does
+    /// not compile is left inline, so its rule reports it as before.
+    pub fn of<'a>(rules: impl IntoIterator<Item = &'a RuleFile>) -> SharedRegexes {
+        fn walk(v: &serde_json::Value, out: &mut std::collections::BTreeSet<String>) {
+            match v {
+                serde_json::Value::Object(o) => {
+                    for (k, x) in o {
+                        match (k.as_str(), x) {
+                            ("regex", serde_json::Value::String(s)) => {
+                                out.insert(s.clone());
+                            }
+                            _ => walk(x, out),
+                        }
+                    }
+                }
+                serde_json::Value::Array(a) => a.iter().for_each(|x| walk(x, out)),
+                _ => {}
+            }
+        }
+        let mut found = std::collections::BTreeSet::new();
+        for rule in rules {
+            if let BlockKind::Match { rule: m, constraints, utils, auto_when, .. } = &rule.block.kind {
+                walk(&m.value(), &mut found);
+                constraints.iter().chain(utils.iter()).for_each(|v| walk(&v.value(), &mut found));
+                if let Some(a) = auto_when {
+                    walk(a, &mut found);
+                }
+            }
+        }
+        let globals = ast_grep_config::GlobalRules::default();
+        let mut ids = std::collections::HashMap::new();
+        for re in found {
+            let id = format!("__codelaw_regex_{}", ids.len());
+            let core = serde_json::from_value::<SerializableRuleCore>(serde_json::json!({ "rule": { "regex": re } }))
+                .ok()
+                .and_then(|s| s.get_matcher(DeserializeEnv::new(Grammar::JavaScript)).ok());
+            if let Some(core) = core
+                && globals.insert(&id, core, None).is_ok()
+            {
+                ids.insert(re, id);
+            }
+        }
+        SharedRegexes { globals, ids: Arc::new(ids) }
+    }
+}
+
+/// Name each shared regex instead of writing it out. A rule object's
+/// `regex:` is checked before its relational and composite keys; the shared
+/// one is a `matches:`, checked last, so the object becomes `all:` [the
+/// regex, the rest] and keeps that order.
+fn share_regexes(v: &mut serde_json::Value, ids: &std::collections::HashMap<String, String>) {
+    const LATER: [&str; 8] = ["inside", "has", "precedes", "follows", "all", "any", "not", "matches"];
+    match v {
+        serde_json::Value::Array(a) => a.iter_mut().for_each(|x| share_regexes(x, ids)),
+        serde_json::Value::Object(o) => {
+            for (_, x) in o.iter_mut() {
+                share_regexes(x, ids);
+            }
+            let Some(id) = o.get("regex").and_then(|r| r.as_str()).and_then(|r| ids.get(r)).cloned() else { return };
+            o.remove("regex");
+            let mut rest = serde_json::Map::new();
+            for k in LATER {
+                if let Some(x) = o.remove(k) {
+                    rest.insert(k.to_owned(), x);
+                }
+            }
+            let mut all = vec![serde_json::json!({ "matches": id })];
+            if !rest.is_empty() {
+                all.push(serde_json::Value::Object(rest));
+            }
+            o.insert("all".into(), serde_json::Value::Array(all));
+        }
+        _ => {}
+    }
 }
 
 pub(crate) fn captured(n: &SyntaxNode<'_>) -> Captured {
@@ -169,7 +259,7 @@ pub(crate) fn rule_core(
     utils: Option<&serde_json::Value>,
     grammar: Grammar,
 ) -> Result<RuleCore, String> {
-    rule_core_with(matcher, constraints, utils, None, grammar)
+    rule_core_with(matcher, constraints, utils, None, grammar, &SharedRegexes::default())
 }
 
 /// [`rule_core`] with ast-grep's `transform:` (SR-RULE-FORMAT decision 3b).
@@ -179,6 +269,7 @@ pub(crate) fn rule_core_with(
     utils: Option<&serde_json::Value>,
     transform: Option<&serde_json::Value>,
     grammar: Grammar,
+    shared: &SharedRegexes,
 ) -> Result<RuleCore, String> {
     use ast_grep_core::tree_sitter::LanguageExt;
     let root_kind = grammar.ast_grep("").root().kind().to_string();
@@ -186,6 +277,9 @@ pub(crate) fn rule_core_with(
     let pruned = |v: &serde_json::Value| {
         let mut v = v.clone();
         prune_unknown_kinds(&mut v, grammar, &never);
+        if !shared.ids.is_empty() {
+            share_regexes(&mut v, &shared.ids);
+        }
         v
     };
     let mut core = serde_json::Map::new();
@@ -201,12 +295,19 @@ pub(crate) fn rule_core_with(
     }
     let serial: SerializableRuleCore =
         serde_json::from_value(serde_json::Value::Object(core)).map_err(|e| format!("invalid `match:`: {e}"))?;
-    serial.get_matcher(DeserializeEnv::new(grammar)).map_err(|e| format!("invalid `match:` for {grammar:?}: {e}"))
+    let env = if shared.ids.is_empty() { DeserializeEnv::new(grammar) } else { DeserializeEnv::new(grammar).with_globals(&shared.globals) };
+    serial.get_matcher(env).map_err(|e| format!("invalid `match:` for {grammar:?}: {e}"))
 }
 
 /// Compile a rule's `match:` block for one grammar. `data` is the rule's
 /// pack's tables, for predicates that name one.
 pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<serde_json::Value>>) -> Result<CompiledMatch, String> {
+    compile_shared(rule, grammar, data, &SharedRegexes::default())
+}
+
+/// [`compile`], naming the regexes `shared` holds instead of compiling them
+/// again.
+pub fn compile_shared(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<serde_json::Value>>, shared: &SharedRegexes) -> Result<CompiledMatch, String> {
     let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when, transform } = &rule.block.kind else {
         return Err("not a `match:` rule".into());
     };
@@ -216,10 +317,10 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
         Some(serde_json::Value::Object(o)) => o.keys().cloned().collect(),
         Some(_) => return Err("`transform:` maps a new capture's name to an ast-grep transformation".into()),
     };
-    let core = rule_core_with(matcher, constraints.as_ref(), utils.as_ref(), transform.as_deref(), grammar)
+    let core = rule_core_with(matcher, constraints.as_ref(), utils.as_ref(), transform.as_deref(), grammar, shared)
         .map_err(|e| if transform.is_some() && e.contains("transform") { e.replace("`match:`", "`transform:`") } else { e })?;
     let auto_when = match auto_when {
-        Some(a) => Some(rule_core(a, None, utils.as_ref(), grammar).map_err(|e| e.replace("`match:`", "`auto_when:`"))?),
+        Some(a) => Some(rule_core_with(a, None, utils.as_ref(), None, grammar, shared).map_err(|e| e.replace("`match:`", "`auto_when:`"))?),
         None => None,
     };
     let types = match types {
@@ -254,7 +355,7 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
             return Err(format!("`where:` names `{var}`, but `$$${name}` captures a list of nodes; a predicate applies to one node (`$NAME`)"));
         }
     }
-    Ok(CompiledMatch { core, auto_when, predicates, types, transform_vars })
+    Ok(CompiledMatch { core, auto_when, predicates, types, transform_vars, _shared: shared.clone() })
 }
 
 impl CompiledMatch {

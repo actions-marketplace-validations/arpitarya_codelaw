@@ -9,7 +9,7 @@ fn loaded(text: &str, cases: Option<&str>) -> LoadedRule {
     let id = text.lines().find_map(|l| l.strip_prefix("id: ")).expect("an id").to_owned();
     let mut rule = parse_rule(Path::new(&format!("{id}.md")), text, Some(&id)).unwrap_or_else(|e| panic!("{e:?}"));
     if let Some(c) = cases {
-        rule.cases = parse_cases(Path::new("acme/eqeqeq.cases.md"), c).unwrap();
+        rule.cases = parse_cases(Path::new("acme/eqeqeq.cases.md"), c).unwrap().into();
     }
     LoadedRule {
         rule: Arc::new(rule),

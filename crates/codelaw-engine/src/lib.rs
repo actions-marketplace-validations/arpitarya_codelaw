@@ -440,6 +440,8 @@ impl Project {
         // (W-44), so both go through the same `assemble`.
         let parts = self.parts(paths)?;
         let mut out = self.assemble(&parts, paths);
+        // The report holds its own copy of every finding now (W-172).
+        drop(parts);
         // The `git/*` rules judge the range, not a file (W-146).
         let found = self.hygiene_findings(&mut out.0.warnings);
         if !found.is_empty() {

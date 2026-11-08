@@ -82,6 +82,7 @@ The decider made performance a law (L8) and asked for a caching record. Caches w
 
 - **Disk use grows with the repo**, bounded by `max_size`.
 - **A key that misses an input gives stale results;** decision 7's test is the guard (`crates/codelaw-engine/tests/engine.rs`, `cold_warm_and_partial_cache_agree`).
+- **2026-11-08 (W-172):** the cache keys a pack by its stamp hash (W-172's pack identity); entries are unchanged.
 
 ### Alternatives considered
 

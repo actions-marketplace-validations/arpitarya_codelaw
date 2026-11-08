@@ -132,21 +132,27 @@ impl DiskCache {
     /// `max_bytes` (decision 6).
     pub fn prune(&self, max_bytes: u64) {
         let Some(dir) = self.dir.as_ref() else { return };
-        let mut entries = Vec::new();
-        let Ok(buckets) = fs::read_dir(dir.join("entries")) else { return };
-        for bucket in buckets.flatten() {
-            let Ok(files) = fs::read_dir(bucket.path()) else { continue };
-            for f in files.flatten() {
-                if let Ok(meta) = f.metadata() {
-                    let modified = meta.modified().ok();
-                    entries.push((modified, f.path(), meta.len()));
+        // Sized first, listed only when over: a list of every entry is
+        // megabytes at the end of a run that keeps them all (W-172).
+        let walk = |each: &mut dyn FnMut(&fs::DirEntry, &fs::Metadata)| {
+            let Ok(buckets) = fs::read_dir(dir.join("entries")) else { return };
+            for bucket in buckets.flatten() {
+                let Ok(files) = fs::read_dir(bucket.path()) else { continue };
+                for f in files.flatten() {
+                    if let Ok(meta) = f.metadata() {
+                        each(&f, &meta);
+                    }
                 }
             }
-        }
-        let mut total: u64 = entries.iter().map(|e| e.2).sum();
+        };
+        let mut total: u64 = 0;
+        walk(&mut |_, meta| total += meta.len());
         if total <= max_bytes {
             return;
         }
+        let mut entries = Vec::new();
+        walk(&mut |f, meta| entries.push((meta.modified().ok(), f.path(), meta.len())));
+        total = entries.iter().map(|e| e.2).sum();
         entries.sort();
         for (_, path, len) in entries {
             if total <= max_bytes {

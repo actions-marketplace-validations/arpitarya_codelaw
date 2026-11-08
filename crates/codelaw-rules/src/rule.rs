@@ -377,6 +377,69 @@ pub struct Case {
 }
 
 /// A parsed, checked rule file.
+/// A rule's examples or cases, read from its file when first asked for. A
+/// pack's rules are held for the life of a process and a `check` never
+/// reads these; parsed and kept, they were the largest part of a rule's
+/// memory (W-172). A list built in memory is held as it is.
+#[derive(Clone, Debug)]
+pub struct OnDemand<T> {
+    cell: std::sync::OnceLock<Vec<T>>,
+    from: Option<(PathBuf, fn(&Path) -> Vec<T>)>,
+}
+
+impl<T> OnDemand<T> {
+    /// Read from `path` by `read` the first time the list is asked for; a
+    /// file that no longer reads gives an empty list.
+    pub fn later(path: PathBuf, read: fn(&Path) -> Vec<T>) -> OnDemand<T> {
+        OnDemand { cell: std::sync::OnceLock::new(), from: Some((path, read)) }
+    }
+}
+
+impl<T> From<Vec<T>> for OnDemand<T> {
+    fn from(v: Vec<T>) -> OnDemand<T> {
+        OnDemand { cell: std::sync::OnceLock::from(v), from: None }
+    }
+}
+
+impl<T> Default for OnDemand<T> {
+    fn default() -> OnDemand<T> {
+        Vec::new().into()
+    }
+}
+
+impl<T> std::ops::Deref for OnDemand<T> {
+    type Target = Vec<T>;
+    fn deref(&self) -> &Vec<T> {
+        self.cell.get_or_init(|| self.from.as_ref().map(|(p, read)| read(p)).unwrap_or_default())
+    }
+}
+
+impl<T> std::ops::DerefMut for OnDemand<T> {
+    fn deref_mut(&mut self) -> &mut Vec<T> {
+        let _ = std::ops::Deref::deref(self);
+        self.from = None;
+        self.cell.get_mut().expect("read just above")
+    }
+}
+
+impl<'a, T> IntoIterator for &'a OnDemand<T> {
+    type Item = &'a T;
+    type IntoIter = std::slice::Iter<'a, T>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+/// A rule file's examples, read again from the file.
+pub fn examples_of(path: &Path) -> Vec<LanguageExamples> {
+    std::fs::read_to_string(path).ok().and_then(|text| parse_rule(path, &text, None).ok()).map(|r| r.examples.to_vec()).unwrap_or_default()
+}
+
+/// A `.cases.md` file's cases, read again.
+pub fn cases_of(path: &Path) -> Vec<Case> {
+    std::fs::read_to_string(path).ok().and_then(|text| parse_cases(path, &text).ok()).unwrap_or_default()
+}
+
 #[derive(Clone, Debug)]
 pub struct RuleFile {
     pub path: PathBuf,
@@ -415,8 +478,8 @@ pub struct RuleFile {
     pub why: String,
     pub block: Block,
     pub steps: Vec<String>,
-    pub examples: Vec<LanguageExamples>,
-    pub cases: Vec<Case>,
+    pub examples: OnDemand<LanguageExamples>,
+    pub cases: OnDemand<Case>,
     /// Hash of the rule file and its sidecar: part of the rule-set key.
     pub hash: Key,
 }
@@ -1060,8 +1123,8 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         why: why.unwrap_or_default(),
         block,
         steps,
-        examples,
-        cases: Vec::new(),
+        examples: examples.into(),
+        cases: OnDemand::default(),
         hash: hash_bytes(text.as_bytes()),
     })
 }

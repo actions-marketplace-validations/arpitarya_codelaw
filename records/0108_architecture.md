@@ -244,6 +244,7 @@ The decider asked for the architecture to be designed and its gaps filled. The f
 - **Warm-process discovery adds a socket file under the cache;** stale-socket cleanup is tested (`crates/codelaw-cli/tests/warm.rs` and `warm.rs`'s unit tests, W-15).
 - **The semantic model is in the hot path** for every JS/TS and Python file that a scope-aware rule touches; it's built lazily and measured by `check_warm_10k` ([L8](0010_LAW-8-performance-budgets.md)).
 - **Not decided yet, by design:** a JavaScript rule API (DESIGN P4), and SCSS/Vue/Svelte. Each needs its own record before any work. **Type-aware rules are decided** (2026-10-27, W-104): their record is [SR-TYPES](0117_types.md), and [L3](0005_LAW-3-languages.md) decision 9 takes them into the core.
+- **2026-11-08 (W-172):** rule compilation names the batch's shared regexes instead of recompiling them (`compile.rs`); the engine re-exports the shared set.
 
 ### Alternatives considered
 

@@ -245,6 +245,7 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
 
 - **Two front doors to keep in sync,** made cheap by keeping both thin and testing parity.
 - **Stdio-only MCP** means remote agents need a local process. Deliberate ([L5](0007_LAW-5-no-model-in-the-engine.md)).
+- **2026-11-08 (W-172):** the CLI wires the on-demand rule examples and the per-process pack cache; output is unchanged.
 
 ### Alternatives considered
 

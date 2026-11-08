@@ -120,7 +120,7 @@ fn rules_at(path: &Path) -> Result<Vec<LoadedRule>, String> {
     let mut rule = parse_rule(path, &text, Some(&expected)).map_err(|e| errors_text(&e))?;
     let cases = path.with_file_name(format!("{name}.cases.md"));
     if let Ok(c) = std::fs::read_to_string(&cases) {
-        rule.cases = parse_cases(&cases, &c).map_err(|e| errors_text(&e))?;
+        rule.cases = parse_cases(&cases, &c).map_err(|e| errors_text(&e))?.into();
     }
     Ok(vec![local(rule)])
 }

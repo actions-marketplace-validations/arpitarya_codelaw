@@ -83,3 +83,7 @@ The `ubuntu-24.04` reference runner ([SR-LAW-8](../../records/0010_LAW-8-perform
 ## Reference
 
 [W-139](W-139-rule-parity-build.md) step 3 · [SR-LAW-8](../../records/0010_LAW-8-performance-budgets.md) · [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 15 · [SR-CACHE](../../records/0109_cache.md) decision 8 · W-126 (the `perf` split) · W-168
+
+## 2026-11-08 — step 3 landed by the coordinator (agent stopped: disk full)
+
+The agent's in-progress change — each distinct `regex:` compiled once and shared across rules and grammars (codelaw-match), rule examples and cases read on demand (codelaw-rules), packs kept per process from their second load and identified by a stamp hash — was verified before landing: `cargo build -p codelaw-cli`; `codelaw test` 0 failed on every pack; `cargo test` codelaw-cache 7, -engine 74, -match 43, -rules 30, -test 8, -config 29; codelaw-cli `--test laws --test commands`. **Not re-measured** — a debug build's numbers would mislead and a release build did not fit the disk that day. Next: `codelaw bench --only peak_memory_10k,check_cold_10k,mcp_rules_for_path` on a release build, then CI once `main` is pushed.
