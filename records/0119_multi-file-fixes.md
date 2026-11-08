@@ -84,7 +84,10 @@ could not climb the fix ladder without editing other files
 1. **A fix may edit several files.** A fix is a list of edit sets, each
    naming its file by its project-relative path, plus file-level operations
    (`strip-bom`). Every output carries the path:
-   - JSON and MCP group `edits` by `path`;
+   - JSON and MCP keep the finding's own file's edits in `fix.edits` and
+     group the others by `path` in `fix.files` (each with its `edits`, and
+     `strip_bom` when the fix removes the file's byte-order mark); a choice
+     carries its own `files`;
    - SARIF uses `artifactChanges`;
    - LSP uses a `WorkspaceEdit`;
    - the text and agent lines say how many files the fix edits.
@@ -139,8 +142,35 @@ could not climb the fix ladder without editing other files
 
 ### Consequences
 
-- **Built: no.** W-162 builds it as the cross-file write step of its order
-  ([the design](../work/proposals/fix-capabilities.md) §4).
+- **Built: yes** (W-162, 2026-11-08):
+  - the edit model: `FileEdit { path, edits, strip_bom }` on `Diagnostic.files`
+    and `FixChoice.files` (`codelaw-core`); a native rule writes it into its
+    finding's edits with `in_files` and `choice_in_files` (`codelaw-native`);
+  - the pass: `codelaw fix` applies multi-file fixes after every file's own,
+    one at a time (`crates/codelaw-engine/src/multi_file.rs`); safeguard 1 is
+    the per-file parse count plus "the finding is gone and no rule fires in
+    an edited file that did not fire there before"; safeguard 2 is
+    `codelaw_graph::dangling`, compared before and after: an unresolved
+    relative import, a named or default import a project module does not
+    export, an undefined CSS Module class and a markup or script class token
+    no stylesheet defines. Ids and custom properties are not graph facts:
+    their renames are found file by file and are always `suggest`;
+    safeguard 3 is `codelaw_fix::write_all_or_nothing` (temporary files,
+    then renames; a failed rename restores every file already renamed);
+    safeguard 5: the pass never runs with `on_edit`, and the per-file loop
+    never offers such a fix;
+  - a refused fix leaves every file as it was and its finding is `manual`,
+    its note `fix-refused: <why>`;
+  - outputs: JSON and MCP `fix.files`, SARIF one `artifactChanges` entry per
+    file, the text and agent lines `edits N files`, the hook's line names the
+    other files' edits and says it never applies them, the editor's quick fix
+    one `WorkspaceEdit` over every file (offered only while each other file's
+    open text is its disk text); "fix all" on save never carries one;
+  - the rule tester applies them in its virtual repo, so a rule's
+    multi-file `files` examples prove them;
+  - `crates/codelaw-cli/tests/multi_file.rs`, `crates/codelaw-lsp/tests/server.rs`
+    (`a_multi_file_fix_is_one_workspace_edit_over_every_file`) and the writer's
+    tests in `crates/codelaw-fix/src/tests.rs`.
 - L4 decisions 9, 10 and 12 point here; single-file fixes are unchanged.
 - As this is built, the 22 rules move from
   `fix_pending: "…; needs cross-file"` to `suggest`, and some to `auto`. In a
@@ -167,9 +197,8 @@ could not climb the fix ladder without editing other files
 **Reopen this decision if:** a multi-file fix writes some of its files and
 not others, or leaves a reference unresolved that resolved before it.
 
-**How to check it:** the multi-file fix tests W-162 adds under
-`crates/codelaw-cli/tests/`. Until they exist, `codelaw check` after
-`codelaw fix` reports no new `graph/*` finding.
+**How to check it:** `cargo test -p codelaw-cli --test multi_file` and
+`cargo test -p codelaw-fix` (the writer's all-or-nothing tests).
 
 ---
 
@@ -179,6 +208,6 @@ not others, or leaves a reference unresolved that resolved before it.
 
 **Records** — [SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-CONFIG](0110_config.md) · [SR-CACHE](0109_cache.md)
 
-**Code** — `crates/codelaw-core/src/diagnostic.rs`
+**Code** — `crates/codelaw-core/src/diagnostic.rs` · `crates/codelaw-engine/src/multi_file.rs` · `crates/codelaw-fix/src/transaction.rs` · `crates/codelaw-graph/src/dangling.rs` · `crates/codelaw-native/src/multi_file.rs`
 
 **Project docs** — [`work/proposals/fix-capabilities.md`](../work/proposals/fix-capabilities.md) · [W-162](../work/open/W-162-fix-capabilities-build.md)

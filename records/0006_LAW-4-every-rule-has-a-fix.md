@@ -182,7 +182,7 @@ a diff.
       ([SR-RULE-FORMAT](0112_rule-format.md) decision 2b), and a project may
       turn it either way ([SR-CONFIG](0110_config.md) decision 11e); its fix
       is still `auto` for `codelaw fix`, pre-commit and CI's `fix --check`,
-      and the hook returns it as what is left. Built: `on_edit` yes (W-166, 2026-11-05: `FixOptions.on_edit`, set by `codelaw hook` and the editor's `source.fixAll.codelaw`); the multi-file half no (W-162).
+      and the hook returns it as what is left. Built: `on_edit` yes (W-166, 2026-11-05: `FixOptions.on_edit`, set by `codelaw hook` and the editor's `source.fixAll.codelaw`); the multi-file half yes (W-162, 2026-11-08: the multi-file pass runs only in `codelaw fix`, never with `on_edit`).
 13. **A skill serves every `manual` fix.** `codelaw-fix`
     ([SR-AGENT-SURFACES](0102_agent-surfaces.md)) reads the rule's
     `## How to fix` steps and walks the person or agent through them; a rule
@@ -232,7 +232,8 @@ a diff.
   (7) and the engine rules' exceptions (15). The project's lowering (16)
   was built 2026-11-05 ([SR-CONFIG](0110_config.md) decision 11d).
   Decisions 10 and 12 were amended 2026-11-05 (multi-file fixes; `on_edit`):
-  ruled, not built (W-162, W-166).
+  built (W-166 for `on_edit`; W-162, 2026-11-08, for multi-file fixes —
+  [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) Consequences).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
   `manual` would fall from 577 to 147, and `auto` (always or for a stated

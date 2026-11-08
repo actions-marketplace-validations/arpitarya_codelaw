@@ -98,7 +98,7 @@ pub fn counts(diagnostics: &[Diagnostic]) -> Counts {
             Severity::Info => c.infos += 1,
         }
         match d.fix {
-            FixClass::Auto if !d.edits.is_empty() => c.fixable += 1,
+            FixClass::Auto if has_edits(d) => c.fixable += 1,
             FixClass::Suggest => c.suggestions += 1,
             _ => {}
         }
@@ -118,6 +118,38 @@ pub fn exit_code(report: &CheckReport, max_warnings: Option<usize>) -> i32 {
     } else {
         0
     }
+}
+
+/// Whether a finding carries an edit to apply: its own, or a multi-file
+/// fix's in other files (SR-MULTI-FILE-FIXES decision 1).
+pub fn has_edits(d: &Diagnostic) -> bool {
+    !d.edits.is_empty() || !d.files.is_empty()
+}
+
+/// `, edits 3 files` for a fix that edits more than its own file
+/// (SR-MULTI-FILE-FIXES decision 1: the text and agent lines say how many).
+pub fn files_note(d: &Diagnostic) -> String {
+    let n = d.files_edited();
+    if d.is_multi_file() && n > 1 { format!(", edits {n} files") } else { String::new() }
+}
+
+/// A multi-file fix's other files, as `--format json` and MCP write them:
+/// each file's path and its edits.
+pub fn file_edits_json(files: &[codelaw_core::FileEdit]) -> Value {
+    files
+        .iter()
+        .map(|f| {
+            let mut v = json!({
+                "path": f.path,
+                "edits": f.edits.iter().map(|e| json!({ "range": { "start": e.start, "end": e.end }, "text": e.text })).collect::<Vec<_>>(),
+            });
+            if f.strip_bom {
+                v["strip_bom"] = json!(true);
+            }
+            v
+        })
+        .collect::<Vec<_>>()
+        .into()
 }
 
 /// A finding's choices as `a | b (default)` (L4 decision 4).
@@ -151,17 +183,25 @@ pub fn diagnostic_json(d: &Diagnostic) -> Value {
             .choices
             .iter()
             .map(|c| {
-                json!({
+                let mut v = json!({
                     "label": c.label,
                     "default": c.default,
                     "edits": c.edits.iter().map(|e| json!({ "range": { "start": e.start, "end": e.end }, "text": e.text })).collect::<Vec<_>>(),
-                })
+                });
+                if !c.files.is_empty() {
+                    v["files"] = file_edits_json(&c.files);
+                }
+                v
             })
             .collect::<Vec<_>>()
             .into();
     }
     if let Some(x) = d.fix_exception {
         v["fix"]["exception"] = json!(x.name());
+    }
+    // A multi-file fix's edits in other files, grouped by path.
+    if !d.files.is_empty() {
+        v["fix"]["files"] = file_edits_json(&d.files);
     }
     // A size rule's measured value and its limit (`{ "lines": 412, "max": 300 }`).
     if let Some(data) = &d.data {
@@ -373,9 +413,9 @@ fn text(report: &CheckReport, color: bool, fixed: Option<usize>, labels: &Labels
         out.push_str(&format!("\n{}\n", paint.bold(file)));
         for d in ds {
             let fix = match d.fix {
-                FixClass::Auto if !d.edits.is_empty() => "auto".to_owned(),
-                FixClass::Suggest if !d.choices.is_empty() => format!("suggest: {}", choice_labels(d)),
-                FixClass::Suggest if !d.edits.is_empty() => "suggest".to_owned(),
+                FixClass::Auto if has_edits(d) => format!("auto{}", files_note(d)),
+                FixClass::Suggest if !d.choices.is_empty() => format!("suggest: {}{}", choice_labels(d), files_note(d)),
+                FixClass::Suggest if has_edits(d) => format!("suggest{}", files_note(d)),
                 FixClass::Manual => match d.fix_exception {
                     Some(x) => format!("manual: {x}"),
                     None => "manual".to_owned(),
@@ -430,9 +470,9 @@ pub fn check_agent_with(report: &CheckReport, labels: &Labels) -> String {
     }
     for d in &report.diagnostics {
         let next = match d.fix {
-            FixClass::Auto if !d.edits.is_empty() => "fix: auto (`codelaw fix`)".to_owned(),
-            FixClass::Suggest if !d.choices.is_empty() => format!("fix: suggest, pick one: {} (diffs in --format json)", choice_labels(d)),
-            FixClass::Suggest if !d.edits.is_empty() => "fix: suggest (diff in --format json)".to_owned(),
+            FixClass::Auto if has_edits(d) => format!("fix: auto (`codelaw fix`{})", files_note(d)),
+            FixClass::Suggest if !d.choices.is_empty() => format!("fix: suggest, pick one: {} (diffs in --format json{})", choice_labels(d), files_note(d)),
+            FixClass::Suggest if has_edits(d) => format!("fix: suggest (diff in --format json{})", files_note(d)),
             _ => match d.fix_exception {
                 Some(x) => format!("fix: manual ({x}) — {}", d.steps.join(" ")),
                 None => format!("fix: manual — {}", d.steps.join(" ")),

@@ -371,6 +371,11 @@ pub(crate) fn fix_paths(project: &mut Project, paths: &[PathBuf], options: &FixO
             report.files.push(f);
         }
     }
+    // Multi-file fixes after every file's own (SR-MULTI-FILE-FIXES), never
+    // on save or from the agent hook (safeguard 5).
+    if !options.on_edit {
+        fix_multi_file(project, &files, &skipped, options, &mut report)?;
+    }
     // The adapters (SR-ARCHITECTURE decision 19) after every file's own
     // fixes, so they see the files codelaw wrote.
     if project.adapters_on() {
@@ -442,6 +447,72 @@ pub(crate) fn fix_paths(project: &mut Project, paths: &[PathBuf], options: &FixO
     report.check.skipped = skipped;
     report.traces.sort_by(|a, b| a.file.cmp(&b.file));
     Ok(report)
+}
+
+/// The multi-file pass of `codelaw fix` (SR-MULTI-FILE-FIXES): each
+/// multi-file fix on offer in a checked file, one at a time, through the
+/// safeguards; then the diagnostics of every file it read or changed, again.
+/// Nothing runs, and nothing is read, when no finding offers one.
+fn fix_multi_file(project: &mut Project, files: &[FileEntry], skipped: &[codelaw_core::Skipped], options: &FixOptions, report: &mut FixReport) -> Result<(), EngineError> {
+    let choice = options.choice.as_deref();
+    let start: BTreeSet<String> =
+        report.check.diagnostics.iter().filter(|d| crate::multi_file::wanted(d, options.unsafe_fixes, choice)).map(|d| d.file.clone()).collect();
+    if start.is_empty() {
+        return Ok(());
+    }
+    let sources = project.graph_sources()?;
+    let this = &*project;
+    let mut pass = crate::multi_file::MultiFix::new(this, crate::multi_file::Base::Disk { write: !options.dry_run }, sources, options.unsafe_fixes, choice);
+    // A dry run left the disk as it was: start from the fixed texts.
+    if options.dry_run {
+        for f in &report.files {
+            pass.preload(&f.file, &f.fixed);
+        }
+    }
+    pass.run(&start);
+    let checked: BTreeSet<&str> = files.iter().filter(|e| !skipped.iter().any(|s| s.file == e.rel)).map(|e| e.rel.as_str()).collect();
+    for (rel, counts) in &pass.applied {
+        let fixed = pass.texts[rel].clone();
+        match report.files.iter_mut().find(|f| &f.file == rel) {
+            Some(f) => {
+                f.fixed = fixed;
+                f.written |= !options.dry_run;
+                for (r, n) in counts {
+                    *f.applied.entry(r.clone()).or_default() += n;
+                }
+            }
+            None => report.files.push(FileFix {
+                file: rel.clone(),
+                original: pass.originals.get(rel).cloned().unwrap_or_default(),
+                fixed,
+                passes: 1,
+                applied: counts.clone(),
+                remaining: Vec::new(),
+                written: !options.dry_run,
+                formatted: false,
+                trace: None,
+            }),
+        }
+    }
+    report.files.sort_by(|a, b| a.file.cmp(&b.file));
+    // What is left in each checked file the pass read or changed.
+    let again: BTreeSet<String> = start.iter().chain(pass.applied.keys()).filter(|r| checked.contains(r.as_str())).cloned().collect();
+    for rel in &again {
+        let mut diags = pass.diagnostics(rel);
+        for d in &mut diags {
+            pass.mark(d);
+        }
+        if pass.keeps_bom(rel) {
+            crate::lint::shift_for_bom(&mut diags);
+        }
+        diags.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));
+        report.check.diagnostics.retain(|d| &d.file != rel);
+        report.check.diagnostics.extend(diags.iter().cloned());
+        if let Some(f) = report.files.iter_mut().find(|f| &f.file == rel) {
+            f.remaining = diags;
+        }
+    }
+    Ok(())
 }
 
 /// Project-rule fixes, after every file's own (SR-PROJECT-GRAPH decision 6):

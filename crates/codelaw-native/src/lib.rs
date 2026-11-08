@@ -41,6 +41,7 @@ mod js_console;
 mod size;
 mod literals;
 mod markers;
+mod multi_file;
 mod test_markers;
 mod no_undef;
 mod no_unreachable;

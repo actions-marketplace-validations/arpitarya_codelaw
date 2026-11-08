@@ -411,6 +411,23 @@ impl Project {
             .iter()
             .map(|(rel, l, t)| (rel.clone(), *l, self.fix_source_in(rel, *l, t, unsafe_fixes, choice, crate::files::Tree::Memory(files)).fixed))
             .collect();
+        // Multi-file fixes after every file's own (SR-MULTI-FILE-FIXES).
+        let start: std::collections::BTreeSet<String> = texts
+            .iter()
+            .flat_map(|(rel, l, t)| self.check_source_in(rel, *l, t, crate::files::Tree::Memory(&texts)))
+            .filter(|d| crate::multi_file::wanted(d, unsafe_fixes, choice))
+            .map(|d| d.file)
+            .collect();
+        if !start.is_empty() {
+            let snapshot = texts.clone();
+            let mut pass = crate::multi_file::MultiFix::new(self, crate::multi_file::Base::Memory(&snapshot), self.virtual_sources(&snapshot), unsafe_fixes, choice);
+            pass.run(&start);
+            for (rel, _, text) in texts.iter_mut() {
+                if pass.applied.contains_key(rel.as_str()) {
+                    *text = pass.texts[rel.as_str()].clone();
+                }
+            }
+        }
         let mut sources = self.virtual_sources(&texts);
         self.fix_graph(&mut sources, &self.graph_config().unwrap_or_default(), unsafe_fixes, 10);
         for (rel, _, text) in texts.iter_mut() {
@@ -421,7 +438,7 @@ impl Project {
         texts.into_iter().map(|(r, _, t)| (r, t)).collect()
     }
 
-    fn virtual_sources(&self, files: &[(String, Language, String)]) -> Vec<Source> {
+    pub(crate) fn virtual_sources(&self, files: &[(String, Language, String)]) -> Vec<Source> {
         let mut v: Vec<Source> = files
             .iter()
             .map(|(rel, language, text)| Source { rel: rel.clone(), abs: self.config.root_dir.join(rel), language: Some(*language), text: text.clone(), reported: true })

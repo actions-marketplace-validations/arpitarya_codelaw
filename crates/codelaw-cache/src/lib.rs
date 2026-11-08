@@ -31,7 +31,7 @@ pub struct KeyBuilder(blake3::Hasher);
 impl KeyBuilder {
     pub fn new(domain: &str) -> Self {
         let mut h = blake3::Hasher::new();
-        h.update(b"codelaw-cache-v2\0");
+        h.update(b"codelaw-cache-v3\0");
         h.update(codelaw_core::VERSION.as_bytes());
         h.update(b"\0");
         h.update(domain.as_bytes());
