@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-175** may codelaw add the data package `data-polyfills` (npm and PyPI, data only, built in CI from core-js-compat's MIT data) so unicorn's `no-unnecessary-polyfills` can be ported? [proposal](open/W-175-js-module-graph-rules.md) | 2026-11-08 |
-| ↳ **blocks:** W-175 (its step 4, the last of its js rows) | |
+
+*Empty since 2026-11-08 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
@@ -39,7 +39,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
-🔴 **W-175** `agent` Graph queries for W-139's js rows that read other modules: 9 rules + `import-export-star` built, tested. Left: `no-unnecessary-polyfills`, on a data-package ruling (inbox). Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
+🟢 **W-175** `agent` Graph queries for W-139's js rows that read other modules: built (9 rules + `import-export-star`). Left: `no-unnecessary-polyfills` on the new `data-polyfills` package, ruled 11-08. Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
@@ -51,7 +51,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
+🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's, `data-browsers` (W-166) and `data-polyfills` (W-175), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
 ### cleanup (0)
 

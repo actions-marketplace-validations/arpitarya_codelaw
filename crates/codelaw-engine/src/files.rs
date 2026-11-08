@@ -61,6 +61,8 @@ pub(crate) struct ProjectFile<'a> {
     as_of: Option<AsOfFn<'a>>,
     asked: Mutex<Vec<Asked>>,
     providers: Option<&'a crate::providers::Providers>,
+    /// The project, for the data packages its rules may read.
+    project: Option<&'a crate::Project>,
     /// The project's file list, walked once per file however often a rule
     /// asks (a multi-file fix asks once per finding).
     files: std::sync::OnceLock<Vec<String>>,
@@ -77,7 +79,7 @@ impl<'a> ProjectFile<'a> {
             bytes.extend_from_slice("\u{feff}".as_bytes());
         }
         bytes.extend_from_slice(text.as_bytes());
-        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, files: std::sync::OnceLock::new(), texts: Mutex::new(std::collections::HashMap::new()) }
+        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, project: None, files: std::sync::OnceLock::new(), texts: Mutex::new(std::collections::HashMap::new()) }
     }
 
     /// Where the as-of date comes from.
@@ -89,6 +91,12 @@ impl<'a> ProjectFile<'a> {
     /// The providers' tables its rules may read.
     pub fn with_providers(mut self, providers: &'a crate::providers::Providers) -> Self {
         self.providers = Some(providers);
+        self
+    }
+
+    /// The data packages its rules may read (`FileContext::data_table`).
+    pub fn with_project(mut self, project: &'a crate::Project) -> Self {
+        self.project = Some(project);
         self
     }
 
@@ -284,6 +292,15 @@ impl FileContext for ProjectFile<'_> {
         let a = self.as_of.and_then(|f| f());
         self.record(Question::AsOf, hash_text(&a));
         a
+    }
+    fn data_table(&self, short: &str) -> Option<std::sync::Arc<serde_json::Value>> {
+        let table = match short {
+            "polyfills" => self.project?.polyfill_table(),
+            _ => None,
+        };
+        // The answer is the table's version: a refreshed table re-judges.
+        self.record(Question::Read(format!("data-table:{short}")), hash_text(&table.map(|t| t.version.clone())));
+        table.map(|t| t.value.clone())
     }
     fn class_table(&self, short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         self.providers?.table(short).map(|t| t as std::sync::Arc<dyn codelaw_core::class_table::ClassTable>)

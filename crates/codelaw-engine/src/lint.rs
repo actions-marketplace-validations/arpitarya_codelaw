@@ -521,7 +521,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
     let crlf = dominant_crlf(text);
     // Every unit, regions included, sees the host file (decision 15b).
     let as_of = || project.as_of_text();
-    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers);
+    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers).with_project(project);
     let mut findings: Vec<Finding> = Vec::new();
     let mut comments: Vec<(usize, usize)> = Vec::new();
     // Type rules no program answered: they did not run (SR-TYPES decision 6).

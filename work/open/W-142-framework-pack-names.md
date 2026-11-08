@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5), W-145"
+updated: 2026-11-08
+updated_by: "Arpit (Claude Code, Sonnet 5.5)"
 ball: arpit
 ---
 
@@ -54,6 +54,13 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 |---|---|---|
 | `codelaw-data-browsers` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
 | `@codelaw/data-browsers` | npm (first publish by hand) | — (holds no rules) |
+
+**Added 2026-11-08 by W-175:** the polyfill data package (L6 decision 15; ruled by Arpit the same day) needs its names before the release that first carries it —
+
+| package | registry | its Fux index |
+|---|---|---|
+| `codelaw-data-polyfills` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
+| `@codelaw/data-polyfills` | npm (first publish by hand) | — (holds no rules) |
 
 
 **PyPI only:** L6 ships `python` and `security-python` on PyPI alone (*"each registry carries only the packs its users install"*); these five follow them. Said by voice as also on npm (`@codelaw/rules-django` …) — not filed; say so if npm is wanted, and L6's table changes with it.

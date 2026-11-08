@@ -5,6 +5,7 @@
 mod adapters;
 mod baseline;
 pub mod browsers;
+pub mod polyfills;
 mod codelawignore;
 mod changed_functions;
 mod compile;
@@ -269,6 +270,8 @@ pub struct Project {
     pub(crate) providers: providers::Providers,
     /// The browser-support table, read on first use (W-166).
     pub(crate) browsers: std::sync::OnceLock<Option<browsers::BrowserTable>>,
+    /// The polyfill table, read on first use by a rule that asks (W-175).
+    pub(crate) polyfills: std::sync::OnceLock<Option<polyfills::PolyfillTable>>,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -390,6 +393,7 @@ impl Project {
             types: types::Types::default(),
             providers,
             browsers: std::sync::OnceLock::new(),
+            polyfills: std::sync::OnceLock::new(),
         })
     }
 
