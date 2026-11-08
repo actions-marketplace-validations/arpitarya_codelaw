@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| **W-175** may codelaw add the data package `data-polyfills` (npm and PyPI, data only, built in CI from core-js-compat's MIT data) so unicorn's `no-unnecessary-polyfills` can be ported? [proposal](open/W-175-js-module-graph-rules.md) | 2026-11-08 |
-↳ **blocks:** W-175 (its step 4, the last js row W-139 sent it)
+| 🔴 **W-175** may codelaw add the data package `data-polyfills` (npm and PyPI, data only, built in CI from core-js-compat's MIT data) so unicorn's `no-unnecessary-polyfills` can be ported? [proposal](open/W-175-js-module-graph-rules.md) | 2026-11-08 |
+| ↳ **blocks:** W-175 (its step 4, the last of its js rows) | |
 
 ---
 
