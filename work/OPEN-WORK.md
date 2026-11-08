@@ -27,15 +27,17 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (11)
+## Open items (12)
 
-### build (5)
+### build (6)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: DoD 1 — js 18–23 (224, 17 linked; 164 left), py 19–23 (235; 237 left), each labelled in item. Next: js natives (37), py add-import rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 164 rows left, py 194 (slice 24, 11-08), each labelled in item; py inference rows → W-174. Next: js natives, py natives (RET503, UP031/032, UP046/047). Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets (11-07). Steps 1–2 done: a per-rule cost on every loaded rule; `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB locally (over 72). Next: push main for CI; re-anchor hot `js/*` rules. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+
+🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 

@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the new name for the value is the author's) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/PLW0642` |
+| **Ported from** | `ruff/PLW0642`, `pylint/self-cls-assignment` |
 
 ## What it checks
 
