@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — W-172 second pass: the time side of L8's three budgets  ·  Claude Code (agent of the coordinator)
+
+- **Asked:** (coordinator) main is over `check_cold_10k`, `peak_memory_10k`, `lsp_after_edit` on CI run 42454141410 (`b20e1a1f`); optimise, never loosen.
+- **Done:** found that `b20e1a1f` predates step 3, and that step 3 left a counting global allocator in `crates/codelaw-cli/src/main.rs` (removed). Profiled (`sample`, `--timings`): ~40 % of an edit is tree-sitter `parent()`. Built: key-order pass and parent-kind gate in `codelaw-match`, `codelaw_lang::preorder_parents`, gated dispatch and a reused slot buffer in `lint.rs`, a single ancestor walk in `js/no-useless-assignment`, once-built regexes/entity set in three html natives; a clippy type alias in `codelaw-rules`. SR-LINTER and SR-ARCHITECTURE dated notes. No pack file touched. `codelaw test` 0 failed on all 27 packs; cargo test lang/match/engine/native/lsp green; workload findings identical.
+- **Decided / left open:** `peak_memory_10k` is not fixed (Mac 84–88 MiB = runner 86.1; fixed cost of packs + compiled rules ~21.7 MiB live heap; levers in the item). No number here is a reference-runner number: the Mac ran at load 14–35.
+- **Mistakes:** the shared scratchpad `bin/` was deleted under me by another session mid-run (lost the baseline binary; later runs use `scratchpad/w172/`); two lockmaster landings were refused until the records were staged.
+- **Next:** Arpit pushes `main`; read the runner's three numbers; then the memory levers or the pack re-anchors named in the item.
+
 ## 2026-11-08 — W-139 strand W-139-js, round 3: slices 24–26 (79 rules, 4 links; W-175 filed)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) the js strand's round 3 — build the 61 scope rows on W-162's capabilities and the scope model, the 37 natives in Rust, the 29 graph rows where the project graph can express them (one new item for the rest); leave the 16 type rows to W-105.
