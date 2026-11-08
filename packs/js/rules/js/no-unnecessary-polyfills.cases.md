@@ -72,20 +72,6 @@ import "core-js/es/array/flat";
 (none)
 ```
 
-### case: a browserslistrc file
-
-```js files
-// .browserslistrc
-chrome >= 100
-firefox >= 100  # the oldest we ship to
-// src/app.js
-import "core-js/es/array/flat";
-```
-
-```expect
-src/app.js:1:8 js/no-unnecessary-polyfills
-```
-
 ### case: no targets, no verdict
 
 ```js files

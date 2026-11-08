@@ -7,7 +7,8 @@
 //! Found where packs are found (SR-PACK-LOOKUP): `node_modules/@codelaw/
 //! data-polyfills/`, or `<site-packages>/codelaw_data_polyfills/`, holding
 //! `data/polyfills.json`; in a checkout of this repository also
-//! `data-packages/polyfills/`. Read from disk only (L5), once per run, and
+//! `data-packages/polyfills/` (under the project root, or `EngineOptions::
+//! data_packages`, which the rule tester sets). Read from disk only (L5), once per run, and
 //! only when a rule asks for it (`FileContext::data_table`): a run that does
 //! not turn the rule on never opens the file.
 
@@ -56,7 +57,7 @@ impl PolyfillTable {
 
 /// The package's folder: by the search packs use, in its order, then the
 /// repository's own `data-packages/polyfills/`.
-pub fn find(search: &PackSearch, root: &Path) -> Option<PathBuf> {
+pub fn find(search: &PackSearch, root: &Path, extra: Option<&Path>) -> Option<PathBuf> {
     let installed = search.order.iter().find_map(|r| {
         let (places, folder) = match r {
             Registry::Npm => (&search.npm, NPM_NAME.to_owned()),
@@ -64,7 +65,7 @@ pub fn find(search: &PackSearch, root: &Path) -> Option<PathBuf> {
         };
         places.iter().map(|p| p.dir.join(&folder)).find(|d| d.join(TABLE_FILE).is_file())
     });
-    installed.or_else(|| Some(root.join("data-packages/polyfills")).filter(|d| d.join(TABLE_FILE).is_file()))
+    installed.or_else(|| [root.join("data-packages/polyfills"), extra.map(|e| e.join("polyfills")).unwrap_or_default()].into_iter().find(|d| d.join(TABLE_FILE).is_file()))
 }
 
 impl Project {
@@ -73,7 +74,7 @@ impl Project {
     pub fn polyfill_table(&self) -> Option<&PolyfillTable> {
         self.polyfills
             .get_or_init(|| {
-                let dir = find(&crate::pack_search(&self.config, &self.options), self.root())?;
+                let dir = find(&crate::pack_search(&self.config, &self.options), self.root(), self.options.data_packages.as_deref())?;
                 let text = std::fs::read_to_string(dir.join(TABLE_FILE)).ok()?;
                 match PolyfillTable::parse(&text, &dir) {
                     Ok(t) => Some(t),

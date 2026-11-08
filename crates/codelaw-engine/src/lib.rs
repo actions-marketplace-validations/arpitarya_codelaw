@@ -65,6 +65,10 @@ use std::path::{Path, PathBuf};
 /// (SR-CONFIG decision 4). Nothing else is read — no clock, no network.
 #[derive(Clone, Debug, Default)]
 pub struct EngineOptions {
+    /// A folder holding data packages by short name (`polyfills/`), searched
+    /// after the installed ones: the rule tester sets it in a checkout of
+    /// this repository (`data-packages/`), where none is installed.
+    pub data_packages: Option<PathBuf>,
     /// `--lang`: only these languages, intersected with config.
     pub languages: Option<BTreeSet<Language>>,
     /// `--rule`: only these rules.
