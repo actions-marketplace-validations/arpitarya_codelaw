@@ -384,8 +384,11 @@ pub struct Case {
 #[derive(Clone, Debug)]
 pub struct OnDemand<T> {
     cell: std::sync::OnceLock<Vec<T>>,
-    from: Option<(PathBuf, fn(&Path) -> Vec<T>)>,
+    from: Option<(PathBuf, Reader<T>)>,
 }
+
+/// How an [`OnDemand`] list is read from its file.
+type Reader<T> = fn(&Path) -> Vec<T>;
 
 impl<T> OnDemand<T> {
     /// Read from `path` by `read` the first time the list is asked for; a

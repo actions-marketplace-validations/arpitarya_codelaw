@@ -5,8 +5,8 @@ description: "main is over three set L8 budgets on the reference runner: check_c
 item: W-172
 filed: 2026-11-07
 filed_by: "Claude Code (session 0a172e1f), W-139 step 3"
-updated: 2026-11-07
-updated_by: "Claude Code (session 0a172e1f), W-172 steps 1–2"
+updated: 2026-11-08
+updated_by: "Claude Code (W-172 agent), step 3 second pass"
 ball: agent
 ---
 
@@ -18,7 +18,7 @@ ball: agent
 |---|---|---|---|
 | 1 | Find what moved each number between `9ae07264` (last green `perf`) and `3b53d1a8` | the cause, not a guess | ✅ 11-07 — a per-rule cost, paid for every rule a project's packs ship (below) |
 | 2 | Make a rule nobody turns on cheap: packs kept in memory, dormant matchers dropped, the settings lookup skipped, `where:` before captures | `mcp_rules_for_path` back under; peak memory down by about half its rise | ✅ 11-07 — built, tests green; numbers below |
-| 3 | Bring `peak_memory_10k` and `check_cold_10k` under: what is left is the rules that are **on** — W-139 turned about 130 more on in the recommended presets | both budgets green | ⏳ next — see *What is left* |
+| 3 | Bring `peak_memory_10k`, `check_cold_10k` and `lsp_after_edit` under: what is left is the rules that are **on** — W-139 turned about 130 more on in the recommended presets | all three green | 🔶 11-08 second pass: time side built (below); `peak_memory_10k` still over on the Mac — *What is left* |
 | 4 | CI's proof: the `perf cold` / `perf warm` jobs on a pushed `main` | the reference runner's numbers | ⏳ waits on the decider pushing `main` |
 
 ## What is known
@@ -87,3 +87,31 @@ The `ubuntu-24.04` reference runner ([SR-LAW-8](../../records/0010_LAW-8-perform
 ## 2026-11-08 — step 3 landed by the coordinator (agent stopped: disk full)
 
 The agent's in-progress change — each distinct `regex:` compiled once and shared across rules and grammars (codelaw-match), rule examples and cases read on demand (codelaw-rules), packs kept per process from their second load and identified by a stamp hash — was verified before landing: `cargo build -p codelaw-cli`; `codelaw test` 0 failed on every pack; `cargo test` codelaw-cache 7, -engine 74, -match 43, -rules 30, -test 8, -config 29; codelaw-cli `--test laws --test commands`. **Not re-measured** — a debug build's numbers would mislead and a release build did not fit the disk that day. Next: `codelaw bench --only peak_memory_10k,check_cold_10k,mcp_rules_for_path` on a release build, then CI once `main` is pushed.
+
+## 2026-11-08 — second pass: where the time went, and what was left in `main`
+
+**CI's fact (run 42454141410 on pushed `main` `b20e1a1f`, ubuntu-24.04, 4 threads, p95):** `check_cold_10k` 13,388 ms against 13,118 (over), `peak_memory_10k` 86.1 MiB against 72 (over), `lsp_after_edit` 6.3 ms against 5 (over; 3.8 ms on 11-07). `mcp_rules_for_path` 22.7 ms, `check_warm_10k`, `format_warm_10k`, `startup`: fine. **That run is before step 3's landing** (`5e03af7a`, which is after `b20e1a1f`), so it measures none of step 3.
+
+**A leftover in step 3 as landed.** `crates/codelaw-cli/src/main.rs` carried an experiment (`mod xx_alloc // XX-EXPERIMENT`): a counting `#[global_allocator]` with an atomic add and an atomic max on every allocation of every thread, behind `XX_TRACE` / `XX_ALLOC`. It was never meant to land and would have cost every run on the next push. Removed; `main.rs` is byte-identical to `b20e1a1f`'s again.
+
+**The regression of `lsp_after_edit` and most of `check_cold_10k`: tree-sitter's `parent()`.** `sample` of a running `codelaw lsp` (1,500 edits of the bench's file): about 40 % of the CPU of an edit is `ts_node_parent` → `ts_node_child_with_descendant` → `ts_node_child_iterator_next` — tree-sitter finds a node's parent by walking down from the root, `O(depth × siblings)` per call, and `nthChild:` and `inside:` ask for it. `--timings` over the 10,000 files (4 threads) put four rules on top, all anchored on `identifier` or `call_expression` and asking for parents on every such node: `js/promise-param-names` (368,118 calls, 2.8 s of CPU), `js/no-unused-function-parameters` (311,732; 1.6 s), `js/promise-valid-params` (1.3 s), `js/no-unused-imports`; then two natives: `js/no-useless-assignment` (9,760 calls, 1.4 s: it asked every ancestor for its parent, `O(depth²)`) and `html/valid-id` / `html/unrecognized-char-ref` (0.8 s each: a unicode regex compiled, and an entity set of 2,231 names built, **for every file**).
+
+**What was built (engine-level; no pack file touched):**
+
+- `codelaw-match` `order` — a `match:` object's keys tried cheapest first (SR-LINTER 2026-11-08): `js/promise-valid-params` went from 1.3 s to under 0.2 s because its `has: { field: function, regex }` is now tried before its `matches: two`.
+- `codelaw-match` `gate` + `codelaw_lang::preorder_parents` + `lint.rs` — a rule whose every alternative needs a given parent kind (`inside:` at `stopBy: neighbor`) is not asked about a node with another parent (SR-ARCHITECTURE decision 15 note): `js/promise-param-names` 368,118 → 90,913 calls, 2.6 s → 0.46–0.75 s; `js/no-unused-function-parameters` 311,732 → 89,209 calls, 1.3 s → 0.4–0.6 s. Findings over the whole workload are identical, line for line, before and after (1,520).
+- `js/no-useless-assignment` walks the ancestors of a node once (1.4 s → 0.6–1.0 s); the three html natives build their regex (and the entity set) once (0.8 s each → below the top twenty).
+- The per-node rule list reuses one buffer (it was a `Vec` clone per node).
+- Test proof: `codelaw test` on all 27 packs, 0 failed; `cargo test -p codelaw-lang -p codelaw-match -p codelaw-engine -p codelaw-native -p codelaw-lsp`; clippy `-D warnings` on those and `codelaw-rules`.
+
+**Measured** (`codelaw bench --only check_cold_10k,peak_memory_10k,lsp_after_edit`, one Mac of 10 cores, **load average 14–35 the whole time** — other agents building — so a number here is a direction, not a result; the ratio of the runner to this Mac is about 2 for `lsp_after_edit` (CI 6.3 ms, this Mac 3.1–3.4 on `main` with the counting allocator)):
+
+| | `main` + counting allocator (before) | after, allocator gone | load |
+|---|--:|--:|--:|
+| `check_cold_10k` median | 9.6 / 11.1 s | 6.3–7.0 s | 14–35 |
+| `lsp_after_edit` median | 3.1 / 3.4 ms | 2.7 ms (1.9–2.3 before the allocator was removed, on a quieter minute) | 14–35 |
+| `peak_memory_10k` median | 87.8 / 86.9 MiB | 84–88 MiB | 14–35 |
+
+**`peak_memory_10k` is not fixed.** The Mac's 84–88 MiB is the runner's 86.1 (the two agree to 1 MiB), so it is still about 14 MiB over 72. Where it is (`MallocStackLogging` on a live `codelaw lsp`, `/usr/bin/time -l`): a one-file project with the nine recommended presets is 50 MiB of RSS (34 MiB footprint) — **the fixed cost of loading packs and compiling the rules that are on**, 21.7 MiB of live heap: pack load 10.3 (rule files 4.3, data tables 3.3 — `serde_json` trees of ~400 KB of JSON —, one `Arc<RuleFile>` box per rule 2.1), compile 10.3 (regexes 4.2, `match:` cores 1.8, `target:` rules 1.8). A 10,000-file run adds ~18 MiB on 4 threads (~2.3 MiB a thread, ~7 MiB for the file list and results). What is left, by size: data tables kept as `serde_json` trees (3.3 MiB; a compact or lazily parsed table), the regexes of the rules that are on (4.2 MiB; ast-grep builds each with `Regex::new`, no builder), `RuleFile`'s inline size (2.1 MiB), per-thread allocator arenas on glibc (not measurable on a Mac).
+
+**Left:** CI on the next push is the proof for all three numbers; do not call a budget met before a reference-runner run says so. If `lsp_after_edit` is still over, the next lever is the same one at the pack level — re-anchor `js/promise-param-names` and `js/no-unused-function-parameters` on `new_expression` / `function` kinds with `has:` (packs/js; W-139-js holds those files). Memory: the three items above.
