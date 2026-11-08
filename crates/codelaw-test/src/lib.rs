@@ -95,8 +95,16 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     // A type rule's examples are answered by the TypeScript
     // `CODELAW_TYPESCRIPT` names, with Node from `PATH` (SR-TYPES).
     let env = EngineOptions::from_env();
-    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, provider_root_env: env.provider_root_env, ..Default::default() };
+    let options = EngineOptions { no_cache: true, threads: Some(1), typescript_env: env.typescript_env, path_env: env.path_env, provider_root_env: env.provider_root_env, data_packages: data_packages_dir(), ..Default::default() };
     Project::from_parts(config, rules, options).expect("a single loaded rule compiles: it already passed load")
+}
+
+/// `data-packages/` of the checkout the tester runs in, found once from the
+/// current folder upward (a rule that reads a data package is tested against
+/// the table in the repository; nothing is read until the rule asks).
+fn data_packages_dir() -> Option<PathBuf> {
+    static DIR: std::sync::OnceLock<Option<PathBuf>> = std::sync::OnceLock::new();
+    DIR.get_or_init(|| std::env::current_dir().ok()?.ancestors().map(|d| d.join("data-packages")).find(|d| d.is_dir())).clone()
 }
 
 struct Tester<'a> {

@@ -22,24 +22,23 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-175** may codelaw add the data package `data-polyfills` (npm and PyPI, data only, built in CI from core-js-compat's MIT data) so unicorn's `no-unnecessary-polyfills` can be ported? [proposal](open/W-175-js-module-graph-rules.md) | 2026-11-08 |
-| ↳ **blocks:** W-175 (its step 4, the last of its js rows) | |
+
+*Empty since 2026-11-08 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
-## Open items (12)
+## Open items (11)
 
-### build (6)
+### build (5)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 72 rows left, py 164 (11-08, after W-174's 30), labelled in item; inference → W-174, js graph → W-175 (1 left). Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 164 (11-08, after W-174's 30), labelled in item; inference → W-174. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` L8 budgets: 11-08 time side built (allocator leftover removed, key order, parent gate); `peak_memory_10k` still ~14 MiB over. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 30 of 38 rows built (`preview`), 8 left with their question. Decider (not blocking): a project type checker for the rest, decision 8. Next: the 8 in-file rows. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
-🔴 **W-175** `agent` Graph queries for W-139's js rows that read other modules: 9 rules + `import-export-star` built, tested. Left: `no-unnecessary-polyfills`, on a data-package ruling (inbox). Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
@@ -51,7 +50,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
+🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's, `data-browsers` (W-166) and `data-polyfills` (W-175), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
 ### cleanup (0)
 

@@ -1,0 +1,75 @@
+# data-polyfills — codelaw's polyfill table kept current (L6 decision 15;
+# L11 D-53; W-175). Weekly, and by hand:
+#
+#     gh workflow run data-polyfills.yml -R arpitarya/codelaw
+#
+# `scripts/data-polyfills-check.py --refresh` reads core-js-compat's latest
+# published tarball from the npm registry (stdlib `urllib`: nothing is
+# installed or run), checks its integrity against the registry's and
+# regenerates data-packages/polyfills/data/polyfills.json. When the rows
+# changed, the file is committed on `data/polyfills-refresh` and proposed as
+# ONE pull request for a person to read. The network is this job's, never
+# the engine's (L5).
+#
+# 🔑 Token: GITHUB_TOKEN only.
+# ⚠ `gh pr create` needs *Allow GitHub Actions to create and approve pull
+#   requests* (Settings → Actions → General) — the decider's, as for fux-bump.
+#
+# Every `run:` is `bash -eo pipefail`; every action is pinned by commit SHA.
+# No third-party action or package (L11): `gh`, `git` and the
+# standard-library Python on the runner, and actions ci.yml already pins.
+name: data-polyfills
+on:
+  schedule:
+    - cron: '30 5 * * 1' # Mondays, 11:00 IST
+  workflow_dispatch:
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+concurrency:
+  group: data-polyfills
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push data/polyfills-refresh
+      pull-requests: write # open or update its one PR
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: the table is well-formed
+        run: python3 scripts/data-polyfills-check.py --check
+      - name: regenerate it from core-js-compat's latest release
+        run: python3 scripts/data-polyfills-check.py --refresh
+      - name: one pull request with the new rows
+        run: |
+          if git diff --quiet -- data-packages/polyfills/data/polyfills.json; then
+            echo "nothing new" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          python3 scripts/data-polyfills-check.py --check
+          branch=data/polyfills-refresh
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -q -c "$branch"
+          git add data-packages/polyfills/data/polyfills.json
+          printf 'W-175: the polyfill table regenerated from core-js-compat (data-polyfills.yml)\n\nno SR affected\n' | git commit -q -F -
+          git push -q --force origin "HEAD:refs/heads/$branch"
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          printf 'The polyfill table regenerated from core-js-compat by [data-polyfills.yml](%s) (L6 decision 15, L11 D-53). Read the diff of `generated_from`, then the rows that moved.\n' "$run_url" > "$RUNNER_TEMP/body.md"
+          pr="$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --body-file "$RUNNER_TEMP/body.md" >/dev/null
+            echo "updated #$pr" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh pr create --base main --head "$branch" --title "data-polyfills: regenerated table" --body-file "$RUNNER_TEMP/body.md" >> "$GITHUB_STEP_SUMMARY" || {
+              echo "::error title=data-polyfills::gh pr create failed — 'Allow GitHub Actions to create and approve pull requests' (Settings → Actions → General) must be on. $branch is pushed."
+              exit 1
+            }
+          fi

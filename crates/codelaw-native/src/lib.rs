@@ -149,6 +149,13 @@ pub trait FileContext: Sync {
     fn class_table(&self, _short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         None
     }
+    /// The table of the data package `short` (`polyfills`: `@codelaw/data-polyfills`,
+    /// L6 decision 15), parsed once per run and read only when a rule asks.
+    /// `None` when it is not installed. The engine records its version as
+    /// the answer, so a refreshed table re-judges the files.
+    fn data_table(&self, _short: &str) -> Option<std::sync::Arc<serde_json::Value>> {
+        None
+    }
 }
 
 /// A file with no neighbours: what a rule sees when only its text is known.

@@ -32,6 +32,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** none known; project disk is 7.2 GB against a 5 GB budget (7 approved).
 - **Next:** the other three agents' reports; then Arpit pushes `main` for the CI proof of W-126, W-169 and W-172.
 
+## 2026-11-08 — W-175 step 4: the `data-polyfills` package and `js/no-unnecessary-polyfills`  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** (coordinator, Arpit's ruling *"W-175 - go ahead data-polyfills"*) records first (L11, L6, SR-RULE-FORMAT), inbox row out and W-175 back to 🟢, registry names to W-142, then the package, its generator and the rule; lazy read; no dependency.
+- **Done:** L11 D-53 (core-js-compat's data, MIT, 3.51.0 with its SHA-256), L6 decision 15 (two data packages; `data-polyfills` generated, read lazily; ownership rows in the register and `owns:`), SR-RULE-FORMAT 2c. `data-packages/polyfills` (544 features, 3,398 entries; 327 KB), `scripts/data-polyfills-check.py` (`--check`, `--refresh [--from-tarball]`, stdlib), the weekly workflow, a CI lint step. Engine: `FileContext::data_table`, `Project::polyfill_table`, `EngineOptions::data_packages` (the rule tester). Rule: native `js/no-unnecessary-polyfills` written from unicorn 79.0.0's behaviour (`npm pack`, read, nothing copied), `suggest`, in `js/strict`; 44 checks and 3 unit tests. `codelaw test packs/js` 892 rules · 0 failed; `rules lint` 0.
+- **Decided / left open:** targets are read from the `targets` object option, a browserslist that spells versions out, or `engines`; `defaults`-style queries leave the rule silent. `.browserslistrc` is read from disk in a project but cannot be exercised in the tester's virtual repository. Left: the `corpus.toml` counts for the eleven rules (W-169's refresh), the registry names (W-142).
+- **Mistakes:** my first landing was refused by `check-work-system` (item `ball:` and an open 🔴 step, three ownership rows missing); fixed in the same change.
+- **Next:** none for W-175; W-139's remaining js rows.
+
+---
+
 ## 2026-11-08 — W-175: the module-graph queries and nine js rows (step 4 gated)  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** (coordinator) build the graph queries the ten W-139 js rows need and the rows: `import/named`, `default`, `namespace`, `no-named-as-default`, `no-named-as-default-member`, `no-rename-default`, the cross-module half of `import/export`, `no-cycle`, `no-deprecated`, `no-unused-modules`; records first; measure against L8; for `no-unnecessary-polyfills` write the data proposal and gate it.

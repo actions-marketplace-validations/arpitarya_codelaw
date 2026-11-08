@@ -11,6 +11,9 @@ owns:
   - data-packages/browsers
   - scripts/data-browsers-check.py
   - .github/workflows/data-browsers.yml
+  - scripts/data-polyfills-check.py
+  - .github/workflows/data-polyfills.yml
+  - data-packages/polyfills
 laws: [L0, L2, L3, L6]
 timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
@@ -159,18 +162,19 @@ flowchart LR
     - **Its own package, never in an engine**, released at the release's version (decision 9). It runs on Node (decision 3's second exception).
     - **The pack depends on it, and names it:** `@codelaw/rules-<name>` depends on its provider at exactly the release's version (decision 4's exception; L11 D-51), and `providers = [...]` in its `codelaw-pack.toml` names it. A pack may depend on its own provider and on nothing else. The PyPI copy of the pack declares no dependency and holds the same files.
 
-15. **Data packages** (W-166; **ruled by Arpit, 2026-11-05**, voice: *"can we have it as a separate package"* · *"let's have a CI/CD pipeline to keep a check on it"* · on PyPI: *"yeah i do"*). A **data package** holds a table the engine reads that is codelaw's own but changes on the world's schedule, not codelaw's. Today there is one: the browser-support table, `data-browsers` ([SR-RULE-FORMAT](0112_rule-format.md) decision 2c).
+15. **Data packages** (W-166; **ruled by Arpit, 2026-11-05**, voice: *"can we have it as a separate package"* · *"let's have a CI/CD pipeline to keep a check on it"* · on PyPI: *"yeah i do"*). A **data package** holds a table the engine reads that is codelaw's own but changes on the world's schedule, not codelaw's. Today there are two: the browser-support table, `data-browsers` ([SR-RULE-FORMAT](0112_rule-format.md) decision 2c), and the polyfill table, `data-polyfills` (below).
 
     | registry | name |
     |---|---|
-    | npm | `@codelaw/data-<name>` — today `@codelaw/data-browsers` |
-    | PyPI | `codelaw-data-<name>` — today `codelaw-data-browsers` |
+    | npm | `@codelaw/data-<name>` — today `@codelaw/data-browsers`, `@codelaw/data-polyfills` |
+    | PyPI | `codelaw-data-<name>` — today `codelaw-data-browsers`, `codelaw-data-polyfills` |
 
     - **Data only:** JSON, its schema version and its NOTICE. No code, and no dependency (decision 4).
     - **Its own version line**, the one exception to decision 1: the date of the data's last change, `YYYY.M.D`. It ships with every codelaw release, and between releases from its own workflow when a data change lands. The engine reads any version whose schema it knows. `--version --json` and the cache key name the version used ([L5](0007_LAW-5-no-model-in-the-engine.md) decision 2).
     - **Optional:** neither `codelaw` package depends on it. A rule that needs it and does not find it says so, and keeps its lower rung.
     - **Kept current by CI:** a scheduled workflow checks the browsers' releases weekly and opens a pull request naming the rows to review. The network is CI's, never the engine's (L5). Every row is written from the browser's own release notes or the specification, never copied from caniuse or MDN ([L2](0004_LAW-2-foss-dependencies.md)).
     - **Built** (W-166, 2026-11-05): the package's source is `data-packages/browsers/` (`data/browsers.json` schema 1, `NOTICE`, `README.md`), found by the pack search as `node_modules/@codelaw/data-browsers/` or `<site-packages>/codelaw_data_browsers/` (`crates/codelaw-engine/src/browsers.rs`); `--version --json` names it under `data.browsers`; its version is in the file's cache key; `scripts/data-browsers-check.py --check` in CI's lint job; `.github/workflows/data-browsers.yml` the weekly review. Not yet built: its registry manifests and its step in `publish.yml`, which wait for the names ([W-142](../work/open/W-142-framework-pack-names.md)); B-080.
+    - **`data-polyfills`** (W-175; **ruled by Arpit, 2026-11-08**, in the main session: *"go ahead data-polyfills"*): the table `js/no-unnecessary-polyfills` reads — per core-js feature, the first version of each engine that has it built in (`features`), and which core-js entry stands for which features (`entries`). It differs from `data-browsers` in one way: its rows are **generated**, not written by hand, from core-js-compat's published data (MIT; [L11](0013_LAW-11-dependencies.md) D-53) by `scripts/data-polyfills-check.py --refresh`, which CI runs weekly (`.github/workflows/data-polyfills.yml`) and proposes as one pull request; the table's `generated_from` names the package version and its registry integrity. Everything else of this decision holds: data only (`data/polyfills.json` schema 1, `README.md`, `NOTICE`), its own `YYYY.M.D` version line, optional (without it the rule reports nothing), the network CI's and never the engine's. Found like `data-browsers`, and in a checkout of this repository in `data-packages/polyfills/`. Read **lazily**: parsed once per run, only when a file with a bare import is checked by a rule that asks for it, so a run that does not turn the rule on pays nothing ([L8](0010_LAW-8-performance-budgets.md)). Not yet built: its registry manifests and its step in `publish.yml`, with `data-browsers`' (W-142).
 
 #### How L6 is enforced
 
