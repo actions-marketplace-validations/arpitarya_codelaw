@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving markup may change how it is styled) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/element-permitted-order` |

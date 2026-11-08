@@ -4,7 +4,8 @@
 //! queries `scope: project` rules run on it.
 //!
 //! The graph is a pure function of the files and `[graph]` config (L5):
-//! nothing here reads the disk, the clock or the network.
+//! nothing here reads the disk, the clock or the network — but for the
+//! counters of `Graph::build_timed`, which never change the graph.
 
 pub mod config;
 pub mod deprecated;
@@ -18,7 +19,7 @@ pub mod resolve;
 pub use config::GraphConfig;
 pub use deprecated::{DeprecatedUse, Marked};
 pub use facts::{Decl, DeclKind, FactLang, FileFacts, Span, SpecForm, Specifier, extract};
-pub use link::{Graph, GraphInput, Manifest, Module, Use, is_manifest, is_test_file};
+pub use link::{BuildTimes, Graph, GraphInput, Manifest, Module, Use, is_manifest, is_test_file};
 pub use query::{GraphFinding, GraphRule, Query, compile, refs, run, why_unused};
 
 /// Bumped whenever extraction changes: part of the facts cache key.

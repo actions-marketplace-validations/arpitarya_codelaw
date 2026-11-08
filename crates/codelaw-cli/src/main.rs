@@ -625,8 +625,12 @@ fn cache(action: CacheAction) -> ExitCode {
 /// project's TypeScript and Node, when found. Plain `--version` stays
 /// clap's one line, the `startup` budget's command (L8).
 fn version_json() -> String {
-    let t = codelaw_engine::types_version(Path::new("."), &EngineOptions::from_env());
+    let options = EngineOptions::from_env();
+    let t = codelaw_engine::types_version(Path::new("."), &options);
     let path = |p: &Path| codelaw_core::normalize_path(p);
+    // The data packages a run here reads, each on its own version line
+    // (L6 decision 15).
+    let browsers = codelaw_engine::browsers::installed(Path::new("."), &options).map(|(version, dir)| serde_json::json!({ "version": version, "path": path(&dir) }));
     json_line(&serde_json::json!({
         "schema_version": codelaw_report::SCHEMA_VERSION,
         "codelaw": env!("CARGO_PKG_VERSION"),
@@ -636,6 +640,7 @@ fn version_json() -> String {
             "typescript": t.typescript.map(|ts| serde_json::json!({ "version": ts.version, "path": path(&ts.path), "api": ts.api, "tested": ts.tested })),
             "node": t.node.as_deref().map(path),
         },
+        "data": { "browsers": browsers },
     }))
 }
 

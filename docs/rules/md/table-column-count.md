@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which cell is missing or extra needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a row ending in `|` with fewer cells than the header gets empty ones, which GFM already renders, so nothing changes on the page; a row with more cells loses content either way and is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD056` |
@@ -132,9 +132,17 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 #### Don't
 
 ````md
-| Name | Type |
-| ---- | ---- |
-| id | number | required |
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number |
+````
+
+#### Fixed
+
+````md
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number | |
 ````
 
 #### Do

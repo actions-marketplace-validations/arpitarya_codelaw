@@ -7,7 +7,10 @@ description: "codelaw ships as a Python package and a Node package, released tog
 status: accepted
 date: 2026-10-18
 feature: "how codelaw is packaged and released"
-owns: []
+owns:
+  - data-packages/browsers
+  - scripts/data-browsers-check.py
+  - .github/workflows/data-browsers.yml
 laws: [L0, L2, L3, L6]
 timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
@@ -167,6 +170,7 @@ flowchart LR
     - **Its own version line**, the one exception to decision 1: the date of the data's last change, `YYYY.M.D`. It ships with every codelaw release, and between releases from its own workflow when a data change lands. The engine reads any version whose schema it knows. `--version --json` and the cache key name the version used ([L5](0007_LAW-5-no-model-in-the-engine.md) decision 2).
     - **Optional:** neither `codelaw` package depends on it. A rule that needs it and does not find it says so, and keeps its lower rung.
     - **Kept current by CI:** a scheduled workflow checks the browsers' releases weekly and opens a pull request naming the rows to review. The network is CI's, never the engine's (L5). Every row is written from the browser's own release notes or the specification, never copied from caniuse or MDN ([L2](0004_LAW-2-foss-dependencies.md)).
+    - **Built** (W-166, 2026-11-05): the package's source is `data-packages/browsers/` (`data/browsers.json` schema 1, `NOTICE`, `README.md`), found by the pack search as `node_modules/@codelaw/data-browsers/` or `<site-packages>/codelaw_data_browsers/` (`crates/codelaw-engine/src/browsers.rs`); `--version --json` names it under `data.browsers`; its version is in the file's cache key; `scripts/data-browsers-check.py --check` in CI's lint job; `.github/workflows/data-browsers.yml` the weekly review. Not yet built: its registry manifests and its step in `publish.yml`, which wait for the names ([W-142](../work/open/W-142-framework-pack-names.md)); B-080.
 
 #### How L6 is enforced
 
@@ -227,6 +231,6 @@ flowchart LR
 
 **Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-PACKAGES](0107_packages.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-SPELL](0116_spell.md) · [SR-TYPES](0117_types.md)
 
-**Work items** — [W-103](../work/open/W-103-spell-pack.md) · [W-77](../work/open/W-77-skills-package.md) · [W-34](../work/open/W-34-fux-index-packages.md) · [W-31](../archive/open/W-31-registry-pack-split.md) · [W-32](../archive/open/W-32-redux-and-query-packs.md) · [W-53](../work/open/W-53-security-packs-groundwork.md)
+**Work items** — [W-103](../archive/open/W-103-spell-pack.md) · [W-77](../work/open/W-77-skills-package.md) · [W-34](../work/open/W-34-fux-index-packages.md) · [W-31](../archive/open/W-31-registry-pack-split.md) · [W-32](../archive/open/W-32-redux-and-query-packs.md) · [W-53](../work/open/W-53-security-packs-groundwork.md)
 
 **Project docs** — [`docs/DESIGN.md`](../docs/DESIGN.md)

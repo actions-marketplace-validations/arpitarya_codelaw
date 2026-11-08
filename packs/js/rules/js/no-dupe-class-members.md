@@ -2,9 +2,9 @@
 id: js/no-dupe-class-members
 title: "No two class members share a name"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "which of the two members to keep is a decision"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the later member is the one the class keeps, so the choices are deleting the earlier (the default, which keeps behaviour) or the later"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-dupe-class-members]
 since: 0.1.0
@@ -41,6 +41,16 @@ class Cart {
 }
 ```
 
+#### Fixed
+
+```js
+class Cart {
+  total() {
+    return 2;
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -63,6 +73,16 @@ class Cart {
   total() {
     return 1;
   }
+  total() {
+    return 2;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class Cart {
   total() {
     return 2;
   }

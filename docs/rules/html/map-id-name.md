@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of the two names is right depends on what refers to the map) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/map-id-name` |
@@ -132,6 +132,18 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ```html
 <map id="nav" name="menu"></map>
+```
+
+#### Fixed (name follows id)
+
+```html
+<map id="nav" name="nav"></map>
+```
+
+#### Fixed (id follows name)
+
+```html
+<map id="menu" name="menu"></map>
 ```
 
 #### Do

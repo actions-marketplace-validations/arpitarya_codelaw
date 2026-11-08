@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`)) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/convert-to-jsdoc-comments` |

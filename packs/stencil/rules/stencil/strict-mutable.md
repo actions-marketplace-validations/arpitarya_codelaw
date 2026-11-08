@@ -2,9 +2,8 @@
 id: stencil/strict-mutable
 title: "mutable: true only on props the component changes"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "whether the component should change the prop needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing"
 stability: preview
 ported_from: [stencil/strict-mutable]
 since: 0.1.0
@@ -37,6 +36,16 @@ export class Card {
 }
 ```
 
+#### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
+}
+```
+
 #### Do
 
 ```ts
@@ -59,6 +68,16 @@ export class Card {
 export class Card {
   /** The count. */
   @Prop({ mutable: true }) count = 0;
+}
+```
+
+#### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
 }
 ```
 

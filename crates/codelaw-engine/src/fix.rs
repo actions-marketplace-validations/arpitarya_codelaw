@@ -30,6 +30,10 @@ pub struct FixOptions {
     /// one with this label (else its `default`). `codelaw test` proves each
     /// choice this way (SR-LAW-4 decisions 4 and 11).
     pub choice: Option<String>,
+    /// Save in the editor or the per-edit agent hook (SR-LAW-4 decision
+    /// 12): a rule whose `on_edit` resolves `false` is left for `codelaw
+    /// fix`, reported with what is left (SR-CONFIG decision 11e).
+    pub on_edit: bool,
 }
 
 /// One file's `fix --trace` (SR-RULE-AUTHORING decision 3): the passes of
@@ -129,6 +133,8 @@ fn mode<'a>(external_fixers: bool, refused: &'a BTreeSet<String>, bom: bool, tre
 /// SR-FORMATTER; `fix_source` and the rule tester don't).
 pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options: &FixOptions, format: bool, bom: bool, tree: Tree<'_>) -> FileFix {
     let wanted = |class: FixClass| class == FixClass::Auto || (options.unsafe_fixes && class == FixClass::Suggest);
+    // The rules save and the agent hook leave for `codelaw fix`.
+    let held: BTreeSet<String> = if options.on_edit { project.on_edit_held(&entry.abs) } else { BTreeSet::new() };
     let choice = options.choice.as_deref();
     let mut before: Option<BTreeSet<String>> = None;
     // Each run records its own trace; the one kept is the run whose result
@@ -149,7 +155,7 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
                     project.ignore.is_some()
                         && c.edits.first().is_some_and(|e| project.codelawignore_holds(&c.rule, &entry.rel, line_of(current, e.start), Some(current)))
                 };
-                out.candidates.into_iter().filter(|(c, class)| wanted(*class) && !denied.contains(&c.rule) && !exempt(c)).map(|(c, _)| c).collect()
+                out.candidates.into_iter().filter(|(c, class)| wanted(*class) && !denied.contains(&c.rule) && !held.contains(&c.rule) && !exempt(c)).map(|(c, _)| c).collect()
             },
             trace,
         )
@@ -230,6 +236,9 @@ pub(crate) fn fix_text(project: &Project, entry: &FileEntry, text: &str, options
                     .unwrap_or_else(|| vec![format!("Make the change by hand; `codelaw explain {}` shows what the rule requires.", d.rule)]);
             }
         }
+    }
+    for d in remaining.iter_mut().filter(|d| d.fix == FixClass::Auto && d.note.is_none() && held.contains(&d.rule)) {
+        d.note = Some("on-edit-off".into());
     }
     remaining.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));
     let trace = trace.map(|trace| FileTrace {

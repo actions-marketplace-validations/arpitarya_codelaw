@@ -215,6 +215,8 @@ struct Frontmatter {
     fix_skill: Option<String>,
     fix_exception: Option<String>,
     fix_pending: Option<String>,
+    on_edit: Option<bool>,
+    fix_target: Option<FixTargetFm>,
     stability: Option<String>,
     host: Option<String>,
     invariant: Option<OneOrMany>,
@@ -226,6 +228,36 @@ struct Frontmatter {
     tags: Vec<String>,
     security: Option<SecurityFm>,
     since: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FixTargetFm {
+    python: Option<String>,
+    browsers: Option<String>,
+}
+
+/// The version a rule's fix is safe from (SR-RULE-FORMAT decision 2c):
+/// its `auto` findings stay `auto` only where the resolved target
+/// (SR-CONFIG decision 11f) meets it, and are `suggest` elsewhere.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum FixTarget {
+    /// The oldest Python the fix is safe on, `[3, 9]`.
+    Python(Vec<u64>),
+    /// A feature id of codelaw's browser-support table
+    /// (`@codelaw/data-browsers`): safe where every target browser
+    /// supports it unprefixed.
+    Browsers(String),
+}
+
+impl FixTarget {
+    /// `python 3.9` or `browsers <feature>`.
+    pub fn label(&self) -> String {
+        match self {
+            FixTarget::Python(v) => format!("python {}", v.iter().map(u64::to_string).collect::<Vec<_>>().join(".")),
+            FixTarget::Browsers(f) => format!("browsers `{f}`"),
+        }
+    }
 }
 
 /// The four forms of a `codelaw` block (SR-RULE-FORMAT decision 3).
@@ -245,6 +277,10 @@ pub enum BlockKind {
         /// rule's finding stays `auto` only where it holds, and is
         /// `suggest` elsewhere (SR-LAW-4 decision 2).
         auto_when: Option<Box<serde_json::Value>>,
+        /// `transform:`, ast-grep's own: new captures computed from others
+        /// (`replace`, `substring`, `convert`) for the `fix:` template
+        /// (SR-RULE-FORMAT decision 3b; W-162).
+        transform: Option<Box<serde_json::Value>>,
     },
     Graph(serde_json::Value),
     Target { target: serde_json::Value, assert: serde_json::Value },
@@ -342,6 +378,12 @@ pub struct RuleFile {
     /// A `manual` rule W-156 has not yet moved up the ladder: what it waits
     /// for. Stands in for `fix_exception` until the move lands.
     pub fix_pending: Option<String>,
+    /// Whether the rule's `auto` fix runs on save and from the per-edit
+    /// agent hook (SR-RULE-FORMAT decision 2b); `true` unless the rule
+    /// says `on_edit: false`. A project overrides it (SR-CONFIG 11e).
+    pub on_edit: bool,
+    /// `fix_target:` (SR-RULE-FORMAT decision 2c).
+    pub fix_target: Option<FixTarget>,
     pub stability: Stability,
     pub host: Option<Language>,
     pub invariants: Vec<String>,
@@ -451,7 +493,7 @@ fn yaml_value(text: &str) -> Result<serde_json::Value, String> {
 }
 
 const BLOCK_KEYS: &[&str] =
-    &["match", "constraints", "utils", "where", "type", "auto_when", "graph", "target", "assert", "native", "message", "fix"];
+    &["match", "constraints", "utils", "transform", "where", "type", "auto_when", "graph", "target", "assert", "native", "message", "fix"];
 
 fn parse_block(code: &str) -> Result<Block, String> {
     let value = yaml_value(code)?;
@@ -482,6 +524,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
             predicates: get("where"),
             types: get("type").map(Box::new),
             auto_when: get("auto_when").map(Box::new),
+            transform: get("transform").map(Box::new),
         },
         "graph" => BlockKind::Graph(get("graph").unwrap()),
         "target" => BlockKind::Target {
@@ -493,7 +536,7 @@ fn parse_block(code: &str) -> Result<Block, String> {
         ),
     };
     if !matches!(kind, BlockKind::Match { .. }) {
-        for k in ["constraints", "utils", "where", "type", "auto_when"] {
+        for k in ["constraints", "utils", "transform", "where", "type", "auto_when"] {
             if map.contains_key(k) {
                 return Err(format!("`{k}:` only goes with `match:`"));
             }
@@ -529,7 +572,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
             let msg = if msg.contains("unknown field") {
                 let valid = [
                     "id", "title", "languages", "scope", "files", "exclude", "severity", "fix", "fix_reason", "fix_skill",
-                    "fix_exception", "fix_pending", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
+                    "fix_exception", "fix_pending", "on_edit", "fix_target", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
                 ];
                 let unknown = msg.split('`').nth(1).unwrap_or_default();
                 let near = codelaw_config::did_you_mean(unknown, valid).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -614,6 +657,30 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         && fm.fix_reason.as_deref().is_none_or(|r| r.trim().is_empty())
     {
         err(&mut errors, 2, format!("`fix: {class}` needs `fix_reason:`, one line on why it can't be automatic (L4 decision 2)"));
+    }
+    // SR-RULE-FORMAT decision 2b: a rule that keeps its fix off save says
+    // what work in progress the fix would delete.
+    if fm.on_edit == Some(false) && fm.fix_reason.as_deref().is_none_or(|r| r.trim().is_empty()) {
+        err(&mut errors, 2, "`on_edit: false` needs `fix_reason:`, one line on what work in progress the fix would delete (SR-RULE-FORMAT decision 2b)".into());
+    }
+    // SR-RULE-FORMAT decision 2c: one target, on a rule with an edit.
+    let fix_target = match &fm.fix_target {
+        None => None,
+        Some(FixTargetFm { python: Some(p), browsers: None }) => match codelaw_config::parse_python_target(p) {
+            Some(v) => Some(FixTarget::Python(v)),
+            None => {
+                err(&mut errors, 2, format!("`fix_target: {{ python: \"{p}\" }}` is not a version; write it as `\"3.9\"` (SR-RULE-FORMAT decision 2c)"));
+                None
+            }
+        },
+        Some(FixTargetFm { python: None, browsers: Some(f) }) if !f.trim().is_empty() => Some(FixTarget::Browsers(f.trim().to_owned())),
+        Some(_) => {
+            err(&mut errors, 2, "`fix_target:` names one target: `{ python: \"3.9\" }` or `{ browsers: <feature id> }` (SR-RULE-FORMAT decision 2c)".into());
+            None
+        }
+    };
+    if fix_target.is_some() && fix == Some(FixClass::Manual) {
+        err(&mut errors, 2, "`fix_target:` says from which version a fix is safe; this rule's fix is `manual` (SR-RULE-FORMAT decision 2c)".into());
     }
     if let Some(skill) = &fm.fix_skill
         && !KNOWN_SKILLS.contains(&skill.as_str())
@@ -947,6 +1014,8 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         severity,
         fix: fix.expect("checked above"),
         fix_reason: fm.fix_reason,
+        on_edit: fm.on_edit.unwrap_or(true),
+        fix_target,
         fix_skill: fm.fix_skill,
         fix_exception,
         fix_pending,
@@ -1210,6 +1279,17 @@ let a: number = 1;
         assert_eq!(r.examples[0].choices[0].0, "keep const");
         let e = errors(&labelled.replace("Fixed (keep const)", "Fixed (keep var)"));
         assert!(e.iter().any(|m| m.contains("`#### Fixed (keep var)` names no choice")), "{e:?}");
+    }
+
+    #[test]
+    fn on_edit_defaults_true_and_false_needs_a_reason() {
+        let r = parse_rule(Path::new("acme/no-var.md"), GOOD, Some("acme/no-var")).unwrap();
+        assert!(r.on_edit);
+        let off = GOOD.replace("fix: auto\n", "fix: auto\non_edit: false\n");
+        let e = errors(&off);
+        assert!(e.iter().any(|m| m.contains("`on_edit: false` needs `fix_reason:`")), "{e:?}");
+        let r = parse_rule(Path::new("acme/no-var.md"), &off.replace("on_edit: false\n", "on_edit: false\nfix_reason: a draft keeps it\n"), Some("acme/no-var")).unwrap();
+        assert!(!r.on_edit);
     }
 
     #[test]

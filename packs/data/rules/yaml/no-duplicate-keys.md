@@ -2,9 +2,9 @@
 id: yaml/no-duplicate-keys
 title: "No key twice in one YAML mapping"
 languages: [yaml]
-fix: manual
-fix_reason: "which of the two values was meant can't be known from the file"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what most YAML readers keep) or the first"
+fix_exception: value
 stability: preview
 since: 0.1.0
 ---
@@ -31,6 +31,14 @@ native: yaml/no-duplicate-keys
 ```yaml
 service:
   image: nginx
+  restart: always
+  image: caddy
+```
+
+#### Fixed
+
+```yaml
+service:
   restart: always
   image: caddy
 ```

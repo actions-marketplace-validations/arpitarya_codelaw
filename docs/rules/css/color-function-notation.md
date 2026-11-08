@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (browsers before 2018 understand only the comma syntax) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/color-function-notation` |

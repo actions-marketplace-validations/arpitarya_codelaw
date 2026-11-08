@@ -64,4 +64,4 @@ SR-LAW-6 · SR-LAW-11 · SR-LAWS · [SR-FORMATTER](../../records/0105_formatter.
 
 ## Reference
 
-[W-144](W-144-rule-parity-round-2.md) · [W-141](../../work/open/W-141-formatter-parity.md) · [W-142](../../work/open/W-142-framework-pack-names.md) · prettier-plugin-tailwindcss (MIT)
+[W-144](W-144-rule-parity-round-2.md) · [W-141](W-141-formatter-parity.md) · [W-142](../../work/open/W-142-framework-pack-names.md) · prettier-plugin-tailwindcss (MIT)

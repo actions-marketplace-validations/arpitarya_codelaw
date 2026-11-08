@@ -68,22 +68,31 @@ impl NativeRule for NoDuplicateKeys {
         &["block_mapping", "flow_mapping"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-        let mut seen: BTreeMap<String, usize> = BTreeMap::new();
+        let src = ctx.source;
+        let mut seen: BTreeMap<String, Node<'_>> = BTreeMap::new();
+        let value_of = |p: Node<'_>| p.child_by_field_name("value").map(|v| text(v, src).to_owned()).unwrap_or_default();
         for pair in named_children(node.get_inner_node()) {
             if !matches!(pair.kind(), "block_mapping_pair" | "flow_pair") {
                 continue;
             }
             let Some(key) = pair.child_by_field_name("key") else { continue };
-            let Some(name) = key_value(key, ctx.source) else { continue };
-            match seen.get(&name) {
-                Some(&line) => out.push(NativeFinding {
-                    start: key.start_byte(),
-                    end: key.end_byte(),
-                    message: format!("Key `{name}` is already in this mapping on line {line}; YAML forbids a key twice"),
-                    edits: Vec::new(),
-                }),
+            let Some(name) = key_value(key, src) else { continue };
+            match seen.get(&name).copied() {
+                Some(first) => {
+                    let line = line_of(src, first.start_byte());
+                    let (fv, lv) = (value_of(first), value_of(pair));
+                    let edits = crate::util::duplicate_key_edits((first, &fv), (pair, &lv), true, &|n| {
+                        if n.kind() == "flow_pair" {
+                            crate::util::remove_list_item(n, src)
+                        } else {
+                            let (s, e) = crate::util::whole_lines(src, n.start_byte(), n.end_byte());
+                            TextEdit::delete(s, e)
+                        }
+                    });
+                    out.push(NativeFinding { start: key.start_byte(), end: key.end_byte(), message: format!("Key `{name}` is already in this mapping on line {line}; YAML forbids a key twice"), edits });
+                }
                 None => {
-                    seen.insert(name, line_of(ctx.source, key.start_byte()));
+                    seen.insert(name, pair);
                 }
             }
         }
@@ -120,11 +129,12 @@ impl NativeRule for NoUndeclaredAlias {
                 }
                 "alias_name" if !anchors.contains(text(n, ctx.source)) => {
                     let alias = n.parent().unwrap_or(n);
+                    let near = crate::util::nearest(text(n, ctx.source), anchors.iter().copied(), 2);
                     out.push(NativeFinding {
                         start: alias.start_byte(),
                         end: alias.end_byte(),
                         message: format!("`*{}` names no anchor defined before it in this document", text(n, ctx.source)),
-                        edits: Vec::new(),
+                        edits: crate::util::name_choices(&near, n.start_byte(), n.end_byte(), &|c| c.to_owned()),
                     });
                 }
                 _ => {}
@@ -270,7 +280,23 @@ impl NativeRule for NoAmbiguousNumbers {
         } else {
             return;
         };
-        out.push(NativeFinding { start: n.start_byte(), end: n.end_byte(), message, edits: Vec::new() });
+        let (s0, e0) = (n.start_byte(), n.end_byte());
+        let mut choices = vec![crate::choice("quote", true, vec![TextEdit::new(s0, e0, format!("\"{t}\""))])];
+        let sign = if t.starts_with('-') { "-" } else { "" };
+        let digits = t.trim_start_matches(['-', '+']).replace('_', "");
+        if n.kind() == "integer_scalar" {
+            let decimal = digits.trim_start_matches('0');
+            choices.push(crate::choice("as YAML 1.2 reads it", false, vec![TextEdit::new(s0, e0, format!("{sign}{}", if decimal.is_empty() { "0" } else { decimal }))]));
+            if let Ok(v) = i64::from_str_radix(&digits, 8) {
+                choices.push(crate::choice("as YAML 1.1 reads it", false, vec![TextEdit::new(s0, e0, format!("{sign}{v}"))]));
+            }
+        } else if !digits.contains('.') {
+            let v = digits.split(':').try_fold(0i64, |acc, p| p.parse::<i64>().ok().map(|x| acc * 60 + x));
+            if let Some(v) = v {
+                choices.push(crate::choice("as YAML 1.1 reads it", false, vec![TextEdit::new(s0, e0, format!("{sign}{v}"))]));
+            }
+        }
+        out.push(NativeFinding { start: s0, end: e0, message, edits: crate::choice_edits(choices) });
     }
 }
 

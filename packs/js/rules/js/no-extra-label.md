@@ -2,9 +2,7 @@
 id: js/no-extra-label
 title: "No label that is not needed"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "removing the label token from the statement is not a template edit"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/no-extra-label]
 since: 0.5.0
@@ -18,12 +16,16 @@ A `break` or `continue` does not name a label that is the innermost loop or `swi
 
 match:
   any: [{kind: break_statement}, {kind: continue_statement}]
+  pattern: $S
   has: { kind: statement_identifier, pattern: $L }
   inside:
     stopBy: { any: [{kind: for_statement}, {kind: for_in_statement}, {kind: while_statement}, {kind: do_statement}, {kind: switch_statement}] }
     any: [{kind: for_statement}, {kind: for_in_statement}, {kind: while_statement}, {kind: do_statement}, {kind: switch_statement}]
     inside: { kind: labeled_statement, has: { field: label, pattern: $L } }
+transform:
+  B: { replace: { source: $S, replace: '^(break|continue)\s+[^\s;]+', by: '$1' } }
 message: "`$L` is the innermost loop already; drop the label"
+fix: "$B"
 ```
 
 ## How to fix

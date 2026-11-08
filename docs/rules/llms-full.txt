@@ -259,7 +259,7 @@ The bundler's `localsConvention` (`[css] modules_convention`) counts: under `cam
 ## `css-modules/composes-valid` — composes points at a class that exists
 
 - **Pack:** `@codelaw/rules-css-modules` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which class to compose is the author's call)
+- **Fix:** `suggest` (the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css-modules/recommended` at `error` · `codelaw:css-modules/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css-modules/composes-valid.md
 
@@ -284,9 +284,18 @@ It reports `composes: a from "./b.module.css"` when `b.module.css` does not exis
 
 ```css files
 /* src/button.module.css */
+.primary { composes: bse from "./base.module.css"; }
+/* src/base.module.css */
+.base { color: red; }
+```
+
+##### Fixed
+
+```css files
+/* src/button.module.css */
 .primary { composes: base from "./base.module.css"; }
 /* src/base.module.css */
-.root { color: red; }
+.base { color: red; }
 ```
 
 ##### Do
@@ -304,6 +313,15 @@ It reports `composes: a from "./b.module.css"` when `b.module.css` does not exis
 
 ```scss files
 /* src/button.module.scss */
+.base { color: red; }
+.primary { composes: bsae; }
+```
+
+##### Fixed
+
+```scss files
+/* src/button.module.scss */
+.base { color: red; }
 .primary { composes: base; }
 ```
 
@@ -558,7 +576,7 @@ eslint-plugin-css-modules's `no-unused-class` reads one JS file against its styl
 ## `css/alpha-value-notation` — Alpha values are percentages
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (old browsers accept only numbers for alpha in `rgba()`)
+- **Fix:** `auto` (old browsers accept only numbers for alpha in `rgba()`; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/alpha-value-notation.md
 
@@ -619,7 +637,7 @@ Ported with stylelint-config-standard's setting, `percentage`; the `number` sett
 ## `css/annotation-no-unknown` — No unknown `!` annotations
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended annotation is the author's call)
+- **Fix:** `suggest` (an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/annotation-no-unknown.md
 
@@ -756,7 +774,7 @@ Every at-rule is in the `list` option. With no option set, the rule does nothing
 ## `css/at-rule-descriptor-no-unknown` — No unknown descriptors inside at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (whether to remove or move the declaration is the author's call)
+- **Fix:** `suggest` (the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-descriptor-no-unknown.md
 
@@ -817,7 +835,7 @@ Inside `@font-face`, `@counter-style`, `@property`, `@font-palette-values`, `@pa
 ## `css/at-rule-descriptor-value-no-unknown` — No unknown keyword values for at-rule descriptors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-descriptor-value-no-unknown.md
 
@@ -841,7 +859,7 @@ Descriptors that take a fixed set of keywords — `font-display`, `system`, `inh
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -863,7 +881,7 @@ Descriptors that take a fixed set of keywords — `font-display`, `system`, `inh
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -1026,7 +1044,7 @@ Only `@nest` has a fix (drop the keyword); `@viewport` and `@document` are repor
 ## `css/at-rule-no-unknown` — No unknown at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS
-- **Fix:** `manual` (the intended at-rule is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-no-unknown.md
 
@@ -1078,7 +1096,7 @@ On `.scss` files `scss/at-rule-no-unknown` takes this rule's place: it knows Sas
 ## `css/at-rule-no-vendor-prefix` — No vendor-prefixed at-rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the rule)
+- **Fix:** `auto` (browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/at-rule-no-vendor-prefix.md
 
@@ -1340,7 +1358,7 @@ a {
 ## `css/color-function-alias-notation` — `rgb()` and `hsl()`, not `rgba()` and `hsla()`
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers before 2018 ignore an alpha channel in `rgb()`)
+- **Fix:** `auto` (browsers before 2018 ignore an alpha channel in `rgb()`; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/color-function-alias-notation.md
 
@@ -1395,7 +1413,7 @@ Ported with stylelint-config-standard's setting, `without-alpha`.
 ## `css/color-function-notation` — Space-separated colour functions
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers before 2018 understand only the comma syntax)
+- **Fix:** `auto` (browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/color-function-notation.md
 
@@ -1719,7 +1737,7 @@ a {
 ## `css/comment-no-empty` — No empty comments
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/comment-no-empty.md
 
@@ -2213,7 +2231,7 @@ Custom property names (after `--`), in declarations, `var()` and `@property`, ma
 ## `css/declaration-block-no-duplicate-custom-properties` — No custom property declared twice in one block
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `auto` (the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-block-no-duplicate-custom-properties.md
 
@@ -2857,7 +2875,7 @@ a {
 ## `css/declaration-property-value-no-unknown` — Keyword-valued properties use a known keyword
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the property's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/declaration-property-value-no-unknown.md
 
@@ -2879,7 +2897,7 @@ A property whose value is one keyword from a fixed set — `position`, `display`
 
 ```css
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -2897,7 +2915,7 @@ a {
 
 ```scss
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -5197,7 +5215,7 @@ No media feature named in the `list` option is used. With no option set, the rul
 ## `css/media-feature-name-no-unknown` — No unknown media features
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended feature is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-feature-name-no-unknown.md
 
@@ -5486,7 +5504,7 @@ A media feature named in `list` takes only its listed values: `{ "min-width": ["
 ## `css/media-feature-name-value-no-unknown` — Media features have valid values
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended value is the author's call)
+- **Fix:** `suggest` (the feature's keywords within two edits are choices, nearest first; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-feature-name-value-no-unknown.md
 
@@ -5507,7 +5525,7 @@ A media feature with a fixed set of values (`orientation`, `hover`, `prefers-col
 ##### Don't
 
 ```css
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -5528,7 +5546,7 @@ A media feature with a fixed set of values (`orientation`, `hover`, `prefers-col
 ##### Don't
 
 ```scss
-@media (orientation: sideways) {
+@media (orientation: portait) {
   a {
     color: red;
   }
@@ -5657,7 +5675,7 @@ Every query in `@media` and `@custom-media` is grammatical under Media Queries l
 ## `css/media-type-no-deprecated` — No deprecated media types
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the media features that describe the device are the author's call)
+- **Fix:** `auto` (auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/media-type-no-deprecated.md
 
@@ -5684,7 +5702,17 @@ Media queries use no media type the specifications deprecated: `tv`, `handheld`,
 ##### Don't
 
 ```css
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed
+
+```css
+@media print {
   a {
     color: red;
   }
@@ -5705,7 +5733,17 @@ Media queries use no media type the specifications deprecated: `tv`, `handheld`,
 ##### Don't
 
 ```scss
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+##### Fixed
+
+```scss
+@media print {
   a {
     color: red;
   }
@@ -5788,7 +5826,7 @@ a {
 ## `css/nesting-selector-no-missing-scoping-root` — Nesting selectors have a parent
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended parent selector is the author's call)
+- **Fix:** `suggest` (a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/nesting-selector-no-missing-scoping-root.md
 
@@ -5814,6 +5852,14 @@ The nesting selector `&` is used only inside a style rule (or under `@scope`), w
 }
 ```
 
+##### Fixed
+
+```css
+.item {
+  color: red;
+}
+```
+
 ##### Do
 
 ```css
@@ -5829,6 +5875,14 @@ The nesting selector `&` is used only inside a style rule (or under `@scope`), w
 
 ```scss
 & .item {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+.item {
   color: red;
 }
 ```
@@ -6023,7 +6077,7 @@ Two rules in the same at-rule context do not have the same selector list (order 
 ## `css/no-empty-block` — No empty blocks
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-empty-block.md
 
@@ -6130,7 +6184,7 @@ a {
 ## `css/no-important` — No `!important`
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the selector or layer that should win instead is a design call)
+- **Fix:** `suggest` (`!important` goes; the declaration may then lose to another, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/conventions` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-important.md
 
@@ -6158,6 +6212,14 @@ a {
 }
 ```
 
+##### Fixed
+
+```css
+a {
+  color: red;
+}
+```
+
 ##### Do
 
 ```css
@@ -6175,6 +6237,14 @@ a {
 }
 ```
 
+##### Fixed
+
+```scss
+a {
+  color: red;
+}
+```
+
 ##### Do
 
 ```scss
@@ -6186,7 +6256,7 @@ a.highlight {
 ## `css/no-invalid-double-slash-comments` — No `//` comments
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS
-- **Fix:** `manual` (turning it into a comment changes what applies)
+- **Fix:** `auto` (a `//` line read as a declaration is dropped by the browser, as a comment is, so it becomes `/* … */`; a `//` that breaks a rule is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-invalid-double-slash-comments.md
 
@@ -6272,7 +6342,7 @@ a {
 ## `css/no-invalid-position-declaration` — Declarations sit inside rules
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the selector it was meant for is the author's call)
+- **Fix:** `suggest` (the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/no-invalid-position-declaration.md
 
@@ -6294,6 +6364,17 @@ A declaration sits inside a style rule, in an at-rule nested inside one, or in a
 
 ```css
 color: red;
+a {
+  color: blue;
+}
+```
+
+##### Fixed
+
+```css
+a {
+  color: blue;
+}
 ```
 
 ##### Do
@@ -6309,6 +6390,17 @@ a {
 
 ```scss
 color: red;
+a {
+  color: blue;
+}
+```
+
+##### Fixed
+
+```scss
+a {
+  color: blue;
+}
 ```
 
 ##### Do
@@ -6875,7 +6967,7 @@ a {
 ## `css/property-no-deprecated` — No deprecated properties
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (older browsers may support only the deprecated name)
+- **Fix:** `auto` (older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/property-no-deprecated.md
 
@@ -6931,7 +7023,7 @@ a {
 ## `css/property-no-vendor-prefix` — No vendor-prefixed properties
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the declaration)
+- **Fix:** `auto` (browsers that need the prefix lose the declaration; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/property-no-vendor-prefix.md
 
@@ -7188,7 +7280,7 @@ a {
 ## `css/selector-anb-no-unmatchable` — No An+B selector that matches nothing
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended position is the author's call)
+- **Fix:** `suggest` (the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-anb-no-unmatchable.md
 
@@ -7209,7 +7301,16 @@ a {
 ##### Don't
 
 ```css
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+##### Fixed
+
+```css
+li.first {
   color: red;
 }
 ```
@@ -7226,7 +7327,16 @@ li:nth-child(1) {
 ##### Don't
 
 ```scss
-li:nth-child(0) {
+li:nth-child(0),
+li.first {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+li.first {
   color: red;
 }
 ```
@@ -8743,7 +8853,7 @@ A compound selector doesn't name two ids, two types, or anything after a pseudo-
 ## `css/selector-no-vendor-prefix` — No vendor-prefixed selectors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the rule)
+- **Fix:** `auto` (browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-no-vendor-prefix.md
 
@@ -8992,7 +9102,7 @@ a:hover {
 ## `css/selector-pseudo-class-no-unknown` — No unknown pseudo-classes
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended pseudo-class is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-pseudo-class-no-unknown.md
 
@@ -9245,7 +9355,7 @@ a::before {
 ## `css/selector-pseudo-element-no-unknown` — No unknown pseudo-elements
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended pseudo-element is the author's call)
+- **Fix:** `suggest` (the known names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-pseudo-element-no-unknown.md
 
@@ -9356,7 +9466,7 @@ a {
 ## `css/selector-type-no-unknown` — No unknown type selectors
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `manual` (the intended element is the author's call)
+- **Fix:** `suggest` (the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/selector-type-no-unknown.md
 
@@ -9389,6 +9499,14 @@ tabel {
 }
 ```
 
+##### Fixed
+
+```css
+label {
+  border-collapse: collapse;
+}
+```
+
 ##### Do
 
 ```css
@@ -9402,6 +9520,14 @@ table {
 
 ```scss
 tabel {
+  border-collapse: collapse;
+}
+```
+
+##### Fixed
+
+```scss
+label {
   border-collapse: collapse;
 }
 ```
@@ -10065,7 +10191,7 @@ a {
 ## `css/value-no-vendor-prefix` — No vendor-prefixed values
 
 - **Pack:** `@codelaw/rules-css` · `codelaw-rules-css` · **Languages:** CSS, SCSS
-- **Fix:** `suggest` (browsers that need the prefix lose the value)
+- **Fix:** `auto` (browsers that need the prefix lose the value; automatic only where every target browser supports the result (fix_target))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:css/standard` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/css/value-no-vendor-prefix.md
 
@@ -11298,7 +11424,7 @@ class Book(models.Model):
 ## `django/django-non-leading-receiver-decorator` — @receiver is the first decorator
 
 - **Pack:** `codelaw-rules-django` · **Languages:** Python
-- **Fix:** `manual` (reordering decorators changes which wrapper is connected)
+- **Fix:** `suggest` (swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:django/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/django/django-non-leading-receiver-decorator.md
 
@@ -11794,7 +11920,7 @@ An `<area>` with `href` has non-empty `alt` text, and an `<area>` without `href`
 ## `html/aria-label-misuse` — aria-label is used only where it names something
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to move the label, add a role or use another element is a design decision)
+- **Fix:** `suggest` (the choices are removing the label, which nothing reads, or `role="img"`, which gives the element a name to carry; which was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/aria-label-misuse.md
 
@@ -11823,6 +11949,18 @@ An `<area>` with `href` has non-empty `alt` text, and an `<area>` without `href`
 
 ```html
 <span aria-label="Close">×</span>
+```
+
+##### Fixed (remove)
+
+```html
+<span>×</span>
+```
+
+##### Fixed (role img)
+
+```html
+<span role="img" aria-label="Close">×</span>
 ```
 
 ##### Do
@@ -11873,7 +12011,7 @@ An attribute's name matches `pattern` (lowercase letters, digits, `-` and `:` by
 ## `html/attribute-allowed-values` — Attributes have values HTML allows
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the intended value can only be guessed)
+- **Fix:** `suggest` (the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/attribute-allowed-values.md
 
@@ -11899,6 +12037,13 @@ An attribute with a fixed set of values (`type`, `dir`, `loading`, …) uses one
 <img src="a.png" alt="A" loading="later">
 ```
 
+##### Fixed
+
+```html
+<input type="email" name="email">
+<img src="a.png" alt="A" loading="eager">
+```
+
 ##### Do
 
 ```html
@@ -11909,7 +12054,7 @@ An attribute with a fixed set of values (`type`, `dir`, `loading`, …) uses one
 ## `html/attribute-misuse` — Attributes are used only where they take effect
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the attribute or its context is wrong, and only the author knows which)
+- **Fix:** `suggest` (the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type="submit"`); only the author knows which was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/attribute-misuse.md
 
@@ -11934,6 +12079,18 @@ An attribute that only works in a given context is used there: `formaction` on a
 <button type="button" formaction="/save">Save</button>
 ```
 
+##### Fixed (remove)
+
+```html
+<button type="button">Save</button>
+```
+
+##### Fixed (change the context)
+
+```html
+<button type="submit" formaction="/save">Save</button>
+```
+
 ##### Do
 
 ```html
@@ -11943,7 +12100,7 @@ An attribute that only works in a given context is used there: `formaction` on a
 ## `html/autocomplete-password` — Password fields say which password they want
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the field asks for a new or the current password depends on the form)
+- **Fix:** `suggest` (the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/security` at `error` · `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/autocomplete-password.md
 
@@ -11972,6 +12129,12 @@ An `<input type="password">` has `autocomplete`, set to `new-password` or `curre
 
 ```html
 <input type="password" name="pw">
+```
+
+##### Fixed
+
+```html
+<input autocomplete="current-password" type="password" name="pw">
 ```
 
 ##### Do
@@ -12080,7 +12243,7 @@ An end tag is just `</name>`, with no attributes.
 ## `html/close-order` — Elements are closed, and in the order they were opened
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (where the missing end tag belongs depends on the intended structure)
+- **Fix:** `auto` (auto when the unclosed element is its parent's last child and not a formatting element: its end tag goes where the parser already ends it, before the parent's, so the document is the same; any other unclosed element is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/close-order.md
 
@@ -12226,7 +12389,7 @@ The doctype is `<!DOCTYPE html>`, not an HTML 4 or XHTML one.
 ## `html/element-name` — Element names are HTML elements or valid custom elements
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming an element changes its CSS and script hooks)
+- **Fix:** `suggest` (the known element names within two edits are choices, nearest first, with a custom element name (`x-<name>`) last; which was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-name.md
 
@@ -12267,7 +12430,7 @@ Every element is either an HTML element or a custom element whose name starts wi
 ## `html/element-permitted-content` — Elements contain only content HTML allows there
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the right structure depends on what the markup is for)
+- **Fix:** `manual` (what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-content.md
 
@@ -12307,7 +12470,7 @@ Obsolete elements (`<tt>`, `<font>`, `<acronym>`, …) have no content model in 
 ## `html/element-permitted-occurrences` — Elements that may appear once do
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which of the duplicates to keep is the author's call)
+- **Fix:** `suggest` (the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-occurrences.md
 
@@ -12335,6 +12498,24 @@ Children that may appear only once in their parent do: one `<caption>`, `<thead>
 </table>
 ```
 
+##### Fixed (delete this one)
+
+```html
+<table>
+  <caption>Prices</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
+##### Fixed (merge into the first)
+
+```html
+<table>
+  <caption>Prices 2024</caption>
+  <tr><td>1</td></tr>
+</table>
+```
+
 ##### Do
 
 ```html
@@ -12347,7 +12528,7 @@ Children that may appear only once in their parent do: one `<caption>`, `<thead>
 ## `html/element-permitted-order` — Children come in the order HTML requires
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (moving markup may change how it is styled)
+- **Fix:** `auto` (auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-order.md
 
@@ -12386,7 +12567,7 @@ Children with a required order are in it: in a table, `<caption>` then `<colgrou
 ## `html/element-permitted-parent` — Elements have a parent HTML allows
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to wrap the element or change it depends on the intended structure)
+- **Fix:** `suggest` (the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-permitted-parent.md
 
@@ -12413,6 +12594,22 @@ Elements that need a particular parent have it: `<li>` in `<ul>`, `<ol>` or `<me
 </div>
 ```
 
+##### Fixed (change the parent)
+
+```html
+<ul>
+  <li>Apples</li>
+</ul>
+```
+
+##### Fixed (wrap)
+
+```html
+<div>
+  <ul><li>Apples</li></ul>
+</div>
+```
+
 ##### Do
 
 ```html
@@ -12424,7 +12621,7 @@ Elements that need a particular parent have it: `<li>` in `<ul>`, `<ol>` or `<me
 ## `html/element-required-ancestor` — Elements are inside the ancestor they need
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to add the ancestor or use other elements depends on the intent)
+- **Fix:** `suggest` (the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/element-required-ancestor.md
 
@@ -12449,6 +12646,24 @@ Elements that only work inside a given ancestor are there: `<area>` in a `<map>`
 <div>
   <dt>Term</dt>
   <dd>Definition</dd>
+</div>
+```
+
+##### Fixed (change the parent)
+
+```html
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+##### Fixed (wrap)
+
+```html
+<div>
+  <dl><dt>Term</dt>
+  <dd>Definition</dd></dl>
 </div>
 ```
 
@@ -12575,7 +12790,7 @@ Every `<h1>`–`<h6>` has text, or an image with `alt` text.
 ## `html/empty-title` — <title> has text
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the page title needs a human)
+- **Fix:** `suggest` (the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/empty-title.md
 
@@ -12597,6 +12812,14 @@ The `<title>` element has text.
 
 ```html
 <title></title>
+<h1>Release notes</h1>
+```
+
+##### Fixed
+
+```html
+<title>Release notes</title>
+<h1>Release notes</h1>
 ```
 
 ##### Do
@@ -12731,7 +12954,7 @@ A `<form>` has a submit button, inside it or associated with it by `form=`.
 ## `html/heading-level` — Headings start at <h1> and go down one level at a time
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (changing a heading level changes its style and the outline)
+- **Fix:** `suggest` (the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/document` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/heading-level.md
 
@@ -12774,7 +12997,7 @@ The first heading is `<h1>`, there is one `<h1>`, and each heading is at most on
 ## `html/hidden-focusable` — Focusable elements are not aria-hidden
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether to unhide it, take it out of the tab order or remove it depends on the design)
+- **Fix:** `suggest` (the choices are `tabindex="-1"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/hidden-focusable.md
 
@@ -12797,6 +13020,24 @@ An element keyboard focus can reach — a link, a form control, anything with `t
 
 ```html
 <a href="/home" aria-hidden="true">Home</a>
+```
+
+##### Fixed (tabindex -1)
+
+```html
+<a tabindex="-1" href="/home" aria-hidden="true">Home</a>
+```
+
+##### Fixed (remove aria-hidden)
+
+```html
+<a href="/home">Home</a>
+```
+
+##### Fixed (inert)
+
+```html
+<a inert href="/home" aria-hidden="true">Home</a>
 ```
 
 ##### Do
@@ -12889,7 +13130,7 @@ Every `<img>` has an `alt` attribute: a description, or `alt=""` for a purely de
 ## `html/img-title` — Decorative images have no title
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the image is decorative or informative is the author's call)
+- **Fix:** `suggest` (the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/img-title.md
 
@@ -12912,6 +13153,18 @@ An `<img>` with empty `alt` has no `title`.
 
 ```html
 <img src="logo.png" alt="" title="Acme">
+```
+
+##### Fixed (remove the title)
+
+```html
+<img src="logo.png" alt="">
+```
+
+##### Fixed (title as alt)
+
+```html
+<img src="logo.png" alt="Acme">
 ```
 
 ##### Do
@@ -13092,7 +13345,7 @@ The `<title>` text is at most 70 characters.
 ## `html/map-dup-name` — Image maps have unique names
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming a map means updating the `usemap` that points at it)
+- **Fix:** `suggest` (the later <map> goes: `usemap` always finds the first, so it is never used; the reviewer confirms it wasn't meant to replace the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/map-dup-name.md
 
@@ -13117,6 +13370,12 @@ No two `<map>` elements share a `name`.
 <map name="nav"></map>
 ```
 
+##### Fixed
+
+```html
+<map name="nav"></map>
+```
+
 ##### Do
 
 ```html
@@ -13127,7 +13386,7 @@ No two `<map>` elements share a `name`.
 ## `html/map-id-name` — A map's id and name match
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which of the two names is right depends on what refers to the map)
+- **Fix:** `suggest` (the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/map-id-name.md
 
@@ -13149,6 +13408,18 @@ When a `<map>` has both `id` and `name`, they are the same.
 
 ```html
 <map id="nav" name="menu"></map>
+```
+
+##### Fixed (name follows id)
+
+```html
+<map id="nav" name="nav"></map>
+```
+
+##### Fixed (id follows name)
+
+```html
+<map id="menu" name="menu"></map>
 ```
 
 ##### Do
@@ -13623,7 +13894,7 @@ Split it, so each file stays short:
 ## `html/meta-refresh` — Meta refresh redirects at once
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (redirecting at once or removing the refresh changes the page's behaviour)
+- **Fix:** `suggest` (the choices are making the refresh instant, when it names a URL, or removing it; either changes when, or whether, the page moves on)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error` · `codelaw:html/security` at `error` · `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/meta-refresh.md
 
@@ -13652,6 +13923,20 @@ A `<meta http-equiv="refresh">` redirects immediately (`0;url=…`); it doesn't 
 
 ```html
 <meta http-equiv="refresh" content="5;url=/next">
+<title>Moved</title>
+```
+
+##### Fixed (instant)
+
+```html
+<meta http-equiv="refresh" content="0;url=/next">
+<title>Moved</title>
+```
+
+##### Fixed (remove)
+
+```html
+<title>Moved</title>
 ```
 
 ##### Do
@@ -13774,7 +14059,7 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 ## `html/no-abstract-role` — No abstract ARIA roles
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the concrete role depends on what the element is)
+- **Fix:** `suggest` (the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-abstract-role.md
 
@@ -13796,6 +14081,18 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 
 ```html
 <div role="landmark">News</div>
+```
+
+##### Fixed (remove)
+
+```html
+<div>News</div>
+```
+
+##### Fixed (concrete role)
+
+```html
+<div role="region">News</div>
 ```
 
 ##### Do
@@ -13842,7 +14139,7 @@ The `name` of a form control matches `pattern` (lowercase, words joined by `-` o
 ## `html/no-conditional-comment` — No Internet Explorer conditional comments
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the markup inside is still needed is the author's call)
+- **Fix:** `auto` (no browser codelaw targets reads conditional comments: a comment hidden from them goes, and the markers around content every browser shows go, the content kept, so the page renders the same)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-conditional-comment.md
 
@@ -13876,7 +14173,7 @@ The document has no conditional comments (`<!--[if IE]>…<![endif]-->`).
 ## `html/no-deprecated-attr` — No obsolete attributes
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the replacement is usually CSS, which needs a class and a rule)
+- **Fix:** `auto` (auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-deprecated-attr.md
 
@@ -13899,6 +14196,12 @@ Elements don't use attributes HTML has made obsolete, such as `align`, `bgcolor`
 
 ```html
 <img src="a.png" alt="Chart" align="left">
+```
+
+##### Fixed
+
+```html
+<img src="a.png" alt="Chart" style="float: left">
 ```
 
 ##### Do
@@ -13972,7 +14275,7 @@ A `class` attribute lists each class once.
 ## `html/no-duplicate-id` — Ids are unique in the document
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (renaming an id breaks the CSS, scripts and links that use it)
+- **Fix:** `suggest` (the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-duplicate-id.md
 
@@ -13996,6 +14299,20 @@ No two elements in the document have the same `id`. Ids inside a `<template>` on
 ```html
 <h2 id="intro">Intro</h2>
 <p id="intro">Text</p>
+```
+
+##### Fixed (drop the id)
+
+```html
+<h2 id="intro">Intro</h2>
+<p>Text</p>
+```
+
+##### Fixed (rename)
+
+```html
+<h2 id="intro">Intro</h2>
+<p id="intro-2">Text</p>
 ```
 
 ##### Do
@@ -14150,7 +14467,7 @@ Elements don't have a `style` attribute, except one that only sets `display` or 
 ## `html/no-missing-references` — Id references point at an element
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the id or the reference is wrong, and only the author knows which)
+- **Fix:** `suggest` (the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/document` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-missing-references.md
 
@@ -14174,6 +14491,12 @@ Attributes that refer to ids — `for`, `form`, `list`, `headers`, `aria-labelle
 <input type="text" aria-describedby="hint">
 ```
 
+##### Fixed
+
+```html
+<input type="text">
+```
+
 ##### Do
 
 ```html
@@ -14184,7 +14507,7 @@ Attributes that refer to ids — `for`, `form`, `list`, `headers`, `aria-labelle
 ## `html/no-multiple-main` — One visible <main> per document
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (which one is the main content is a design decision)
+- **Fix:** `suggest` (every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/no-multiple-main.md
 
@@ -14207,6 +14530,13 @@ A document has at most one `<main>` without the `hidden` attribute.
 ```html
 <main>Feed</main>
 <main>Sidebar</main>
+```
+
+##### Fixed
+
+```html
+<main>Feed</main>
+<div>Sidebar</div>
 ```
 
 ##### Do
@@ -14492,7 +14822,7 @@ Only the file itself is checked: an HTML region inside another file (a Markdown 
 ## `html/prefer-button` — Buttons are <button> elements
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the element changes, so CSS and scripts that select `input` need updating)
+- **Fix:** `suggest` (`<input type="submit" value="V">` becomes `<button type="submit" value="V">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/prefer-button.md
 
@@ -14517,6 +14847,12 @@ Buttons are written as `<button>`, not `<input type="button">`, `submit`, `reset
 <input type="submit" value="Send">
 ```
 
+##### Fixed
+
+```html
+<button type="submit" value="Send">Send</button>
+```
+
 ##### Do
 
 ```html
@@ -14526,7 +14862,7 @@ Buttons are written as `<button>`, not `<input type="button">`, `submit`, `reset
 ## `html/prefer-native-element` — Native elements instead of ARIA roles
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (swapping the element changes its styles and scripts)
+- **Fix:** `suggest` (the element becomes the native one its role names, the role and an implied `tabindex="0"` dropped (a button gets `type="button"`); its styles and scripts may target the old tag, which the reviewer checks)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/prefer-native-element.md
 
@@ -14857,7 +15193,7 @@ A `<button>` has text a screen reader can announce: content, `aria-label`, `aria
 ## `html/th-scope` — Header cells in complex tables have scope
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (whether each header labels a row or a column is the author's call)
+- **Fix:** `suggest` (the choices are `scope="col"` and `scope="row"`, the default by where the header stands (the first row heads columns, a row's first cell heads the row); the reviewer confirms it)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/th-scope.md
 
@@ -14990,7 +15326,7 @@ When a landmark appears more than once (two `<nav>`, two `<aside>`, …), each h
 ## `html/unrecognized-char-ref` — Character references exist and are terminated
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the intended character is not always clear)
+- **Fix:** `auto` (auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/unrecognized-char-ref.md
 
@@ -15031,7 +15367,7 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ## `html/valid-autocomplete` — autocomplete values are valid
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (the right field name depends on what the field collects)
+- **Fix:** `suggest` (the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error` · `codelaw:html/a11y` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/valid-autocomplete.md
 
@@ -15053,8 +15389,13 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ##### Don't
 
 ```html
-<input type="email" name="email" autocomplete="mail">
-<input type="number" name="n" autocomplete="email">
+<input type="email" name="email" autocomplete="emial">
+```
+
+##### Fixed
+
+```html
+<input type="email" name="email" autocomplete="email">
 ```
 
 ##### Do
@@ -15067,7 +15408,7 @@ Every named character reference (`&name;`) is one HTML defines, and ends with `;
 ## `html/valid-for` — A label points at a control
 
 - **Pack:** `@codelaw/rules-html` · `codelaw-rules-html` · **Languages:** HTML
-- **Fix:** `manual` (either the id or the element is wrong, and only the author knows which)
+- **Fix:** `suggest` (the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:html/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/html/valid-for.md
 
@@ -15090,6 +15431,15 @@ A `<label for>` refers to the id of a form control a label can name (`input`, `s
 ```html
 <label for="name">Name</label>
 <div id="name"></div>
+<input id="full-name">
+```
+
+##### Fixed
+
+```html
+<label for="full-name">Name</label>
+<div id="name"></div>
+<input id="full-name">
 ```
 
 ##### Do
@@ -17376,7 +17726,7 @@ const all = [...base, ...(extra ? [x] : [])];
 ## `js/consistent-existence-index-check` — Check indexOf against -1 the same way
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/consistent-existence-index-check.md
 
@@ -17645,7 +17995,7 @@ function find(list, id) {
 ## `js/constructor-super` — A derived class's constructor calls super(); a base class's does not
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (what `super()` must receive depends on the base class)
+- **Fix:** `suggest` (the choices are `super(...arguments)` first in the constructor (the default: what an implicit constructor does) or `super()`; which the parent needs is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/constructor-super.md
 
@@ -17676,6 +18026,17 @@ class Cat extends Animal {
 }
 ```
 
+##### Fixed
+
+```js
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
+    this.lives = 9;
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -17694,6 +18055,17 @@ class Cat extends Animal {
 ```jsx
 class Cat extends Animal {
   constructor() {
+    this.lives = 9;
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
     this.lives = 9;
   }
 }
@@ -18691,7 +19063,7 @@ it("syncs", function () {
 ## `js/dom-node-dataset` — Use dataset for data- attributes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do)
+- **Fix:** `suggest` (`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/dom-node-dataset.md
 
@@ -19027,13 +19399,13 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ## `js/eqeqeq` — === rather than ==
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`)
+- **Fix:** `suggest` (`===` compares without converting, so code that relied on `"1" == 1` changes behaviour; the author confirms the types match)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/eqeqeq.md
 
 ### What it checks
 
-`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix covers `==`; a `!=` finding is reported for the same reason.
+`==` and `!=` are written `===` and `!==`. Comparisons with `null` are left alone (`x == null` tests for both `null` and `undefined`). The fix writes the strict operator; it is `suggest`, as the result changes when the operands' types differ.
 
 **Why:** `==` converts types before comparing, so `"0" == 0` and `[] == false` are true.
 
@@ -19048,7 +19420,7 @@ const c = crypto.createCipheriv("aes-128-gcm", key, iv);
 ##### Don't
 
 ```js
-if (count == limit) {
+if (count == limit || state != "done") {
   stop();
 }
 ```
@@ -19056,7 +19428,7 @@ if (count == limit) {
 ##### Do
 
 ```js
-if (count === limit) {
+if (count === limit || state !== "done") {
   stop();
 }
 ```
@@ -19193,7 +19565,7 @@ throw new Error("config file is missing");
 ## `js/escape-case` — Upper-case hex digits in escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix upper-cases the digits, which a fix template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/escape-case.md
 
@@ -20443,7 +20815,7 @@ function* ids() {
 ## `js/getter-return` — A getter returns a value on every path
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (the value a getter should return is the author's decision)
+- **Fix:** `suggest` (the path that falls off the end gets `return undefined;`, which it already returns; the reviewer confirms that is the value meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/getter-return.md
 
@@ -20475,6 +20847,19 @@ const box = {
 };
 ```
 
+##### Fixed
+
+```js
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
+  },
+};
+```
+
 ##### Do
 
 ```js
@@ -20495,6 +20880,19 @@ const box = {
     if (this.items) {
       return this.items.length;
     }
+  },
+};
+```
+
+##### Fixed
+
+```jsx
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
   },
 };
 ```
@@ -22499,7 +22897,7 @@ function clearCache() {}
 ## `js/jsdoc-check-syntax` — No Closure optional syntax in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`))
+- **Fix:** `suggest` (`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-syntax.md
 
@@ -22607,7 +23005,7 @@ function greet(name) {}
 ## `js/jsdoc-check-types` — Primitive type names in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`))
+- **Fix:** `suggest` (a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-check-types.md
 
@@ -22823,7 +23221,7 @@ function parseDate() {}
 ## `js/jsdoc-convert-to-jsdoc-comments` — Functions documented in JSDoc, not // comments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`))
+- **Fix:** `suggest` (a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-convert-to-jsdoc-comments.md
 
@@ -23030,7 +23428,7 @@ function reset() {}
 ## `js/jsdoc-escape-inline-tags` — A bare @word in a description is escaped
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks))
+- **Fix:** `suggest` (the word may be a tag the author meant TypeScript to read; they confirm it is text)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-escape-inline-tags.md
 
@@ -23341,7 +23739,7 @@ function total() {}
 ## `js/jsdoc-multiline-blocks` — /** and */ on their own lines
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-multiline-blocks.md
 
@@ -23548,7 +23946,7 @@ function run() {}
 ## `js/jsdoc-no-defaults` — Defaults in the signature, not in JSDoc
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's)
+- **Fix:** `suggest` (the default leaves the documentation; the author checks the signature carries the same one)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-defaults.md
 
@@ -23656,7 +24054,7 @@ function greet(name = "you") {}
 ## `js/jsdoc-no-multi-asterisks` — One asterisk per JSDoc line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed))
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/jsdoc` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-multi-asterisks.md
 
@@ -23755,7 +24153,7 @@ function start() {}
 ## `js/jsdoc-no-types` — No JSDoc types in TypeScript
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed))
+- **Fix:** `suggest` (the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/jsdoc-no-types.md
 
@@ -27624,7 +28022,7 @@ A JSX link to an external URL with `target="_blank"` has `rel="noopener"`.
 ## `js/logical-assignment-operators` — a ||= b rather than a = a || b
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of three patterns matched)
+- **Fix:** `suggest` (the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/logical-assignment-operators.md
 
@@ -32221,7 +32619,7 @@ function List({ items }: { items: string[] }) {
 ## `js/no-console-spaces` — No leading or trailing space in console arguments
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (trimming the string is a computed edit a template cannot make)
+- **Fix:** `suggest` (the space may be deliberate (two spaces for alignment); the author confirms the output)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-console-spaces.md
 
@@ -32348,7 +32746,7 @@ total = 1;
 ## `js/no-constant-binary-expression` — No binary expression whose result is fixed
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the intended grouping or comparison needs the author)
+- **Fix:** `suggest` (the choices are dropping the operand that never decides the result (the default, behaviour-preserving) or regrouping, `a + b ?? c` as `a + (b ?? c)`; a constant comparison is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-constant-binary-expression.md
 
@@ -32375,6 +32773,12 @@ operator precedence.
 const total = price + tax ?? 0;
 ```
 
+##### Fixed
+
+```js
+const total = price + tax;
+```
+
 ##### Do
 
 ```js
@@ -32387,6 +32791,12 @@ const total = price + (tax ?? 0);
 
 ```jsx
 const total = price + tax ?? 0;
+```
+
+##### Fixed
+
+```jsx
+const total = price + tax;
 ```
 
 ##### Do
@@ -32403,6 +32813,12 @@ const total = price + (tax ?? 0);
 const total = price + tax ?? 0;
 ```
 
+##### Fixed
+
+```ts
+const total = price + tax;
+```
+
 ##### Do
 
 ```ts
@@ -32415,6 +32831,12 @@ const total = price + (tax ?? 0);
 
 ```tsx
 const total = price + tax ?? 0;
+```
+
+##### Fixed
+
+```tsx
+const total = price + tax;
 ```
 
 ##### Do
@@ -33055,7 +33477,7 @@ const re = /\f/;
 ## `js/no-debugger` — No debugger statements
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a debugging aid put there on purpose while debugging, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-debugger.md
 
@@ -33416,7 +33838,7 @@ cache = {};
 ## `js/no-div-regex` — No regex starting with =
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the edit inside the pattern is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-div-regex.md
 
@@ -33641,7 +34063,7 @@ await cookieStore.set('theme', 'dark');
 ## `js/no-double-comparison` — x > a || x === a is x >= a
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator of the rewrite depends on which of four patterns matched)
+- **Fix:** `suggest` (`x >= y` and `x > y || x === y` differ when the operands have different types (`"1" >= 1` is true, the pair is false); the author confirms they match)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-double-comparison.md
 
@@ -33788,7 +34210,7 @@ function add(a, b, c) {
 ## `js/no-dupe-class-members` — No two class members share a name
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (which of the two members to keep is a decision)
+- **Fix:** `suggest` (the later member is the one the class keeps, so the choices are deleting the earlier (the default, which keeps behaviour) or the later)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-dupe-class-members.md
 
@@ -33821,6 +34243,16 @@ class Cart {
 }
 ```
 
+##### Fixed
+
+```js
+class Cart {
+  total() {
+    return 2;
+  }
+}
+```
+
 ##### Do
 
 ```js
@@ -33843,6 +34275,16 @@ class Cart {
   total() {
     return 1;
   }
+  total() {
+    return 2;
+  }
+}
+```
+
+##### Fixed
+
+```jsx
+class Cart {
   total() {
     return 2;
   }
@@ -33973,7 +34415,7 @@ if (isAdmin) {
 ## `js/no-dupe-keys` — No two keys in an object literal are the same
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (which value should win can't be known from the code)
+- **Fix:** `suggest` (the later key is the one the object keeps, so the choices are deleting the earlier (the default, which keeps the value; its own evaluation goes with it) or the later)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-dupe-keys.md
 
@@ -34002,6 +34444,14 @@ const user = {
 };
 ```
 
+##### Fixed
+
+```js
+const user = {
+  name: "Grace",
+};
+```
+
 ##### Do
 
 ```js
@@ -34022,6 +34472,14 @@ const user = {
 };
 ```
 
+##### Fixed
+
+```jsx
+const user = {
+  name: "Grace",
+};
+```
+
 ##### Do
 
 ```jsx
@@ -34034,7 +34492,7 @@ const user = {
 ## `js/no-duplicate-case` — No two case labels in a switch are the same
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which label was meant is a decision)
+- **Fix:** `suggest` (no value reaches the later case: the whole clause goes when the clause before it exits, otherwise only its label, so what falls through still runs; the reviewer confirms the case was not meant to test another value)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-duplicate-case.md
 
@@ -34066,6 +34524,16 @@ switch (status) {
 }
 ```
 
+##### Fixed
+
+```js
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 ##### Do
 
 ```js
@@ -34090,6 +34558,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+##### Fixed
+
+```jsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -34122,6 +34600,16 @@ switch (status) {
 }
 ```
 
+##### Fixed
+
+```ts
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 ##### Do
 
 ```ts
@@ -34146,6 +34634,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+##### Fixed
+
+```tsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -34494,7 +34992,7 @@ export const icon = (name) => icons[name];
 ## `js/no-else-return` — No else after return
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (unwrapping the block re-indents its statements, and a declaration in it could clash with one outside)
+- **Fix:** `suggest` (a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-else-return.md
 
@@ -35088,7 +35586,7 @@ const { a = {} } = options;
 ## `js/no-empty-static-block` — No empty static blocks
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-empty-static-block.md
 
@@ -35955,7 +36453,7 @@ if (user) {
 ## `js/no-extra-label` — No label that is not needed
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the label token from the statement is not a template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-extra-label.md
 
@@ -36046,7 +36544,7 @@ outer: for (const x of xs) {
 ## `js/no-fallthrough` — A switch case does not fall through into the next by accident
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the fall-through is intended needs the author)
+- **Fix:** `suggest` (the choices are `break;` ending the case, which stops the fall-through, or a `// falls through` comment saying it is meant, which keeps behaviour; only the author knows which)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-fallthrough.md
 
@@ -36072,6 +36570,32 @@ through` before the next case.
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (break)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```js
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -36116,6 +36640,32 @@ switch (kind) {
 }
 ```
 
+##### Fixed (break)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```jsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -36154,6 +36704,32 @@ switch (kind) {
 }
 ```
 
+##### Fixed (break)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```ts
+switch (kind) {
+  case "a":
+    first();
+    // falls through
+  case "b":
+    second();
+    break;
+}
+```
+
 ##### Do
 
 ```ts
@@ -36186,6 +36762,32 @@ switch (kind) {
 switch (kind) {
   case "a":
     first();
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (break)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    break;
+  case "b":
+    second();
+    break;
+}
+```
+
+##### Fixed (falls through)
+
+```tsx
+switch (kind) {
+  case "a":
+    first();
+    // falls through
   case "b":
     second();
     break;
@@ -37420,7 +38022,7 @@ try {
 ## `js/no-implicit-coercion` — Explicit conversions, not !!x or +x
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the call to write depends on the operator matched)
+- **Fix:** `suggest` (`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-implicit-coercion.md
 
@@ -37787,7 +38389,7 @@ const msg = `Hello ${name}`;
 ## `js/no-inline-comments` — Comments on their own line
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the comment above the code is a cross-line edit)
+- **Fix:** `suggest` (a comment after code may describe that one line; above it, it can read as describing what follows)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/taste` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-inline-comments.md
 
@@ -39288,7 +39890,7 @@ if (a) {
 ## `js/no-loss-of-precision` — Number literals keep their value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to use a BigInt, a string or a rounder value depends on how the number is used)
+- **Fix:** `suggest` (the choices are the literal the engine already stores (behaviour-preserving) or, for an integer, a BigInt, which keeps every digit but is another type)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-loss-of-precision.md
 
@@ -39314,6 +39916,18 @@ mean what it says.
 const id = 9007199254740993;
 ```
 
+##### Fixed (the value it holds)
+
+```js
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```js
+const id = 9007199254740993n;
+```
+
 ##### Do
 
 ```js
@@ -39326,6 +39940,18 @@ const id = 9007199254740993n;
 
 ```jsx
 const id = 9007199254740993;
+```
+
+##### Fixed (the value it holds)
+
+```jsx
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```jsx
+const id = 9007199254740993n;
 ```
 
 ##### Do
@@ -39342,6 +39968,18 @@ const id = 9007199254740993n;
 const id = 9007199254740993;
 ```
 
+##### Fixed (the value it holds)
+
+```ts
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```ts
+const id = 9007199254740993n;
+```
+
 ##### Do
 
 ```ts
@@ -39354,6 +39992,18 @@ const id = 9007199254740993n;
 
 ```tsx
 const id = 9007199254740993;
+```
+
+##### Fixed (the value it holds)
+
+```tsx
+const id = 9007199254740992;
+```
+
+##### Fixed (BigInt)
+
+```tsx
+const id = 9007199254740993n;
 ```
 
 ##### Do
@@ -39606,7 +40256,7 @@ app.use(helmet({  }));
 ## `js/no-misleading-character-class` — No character class holding a character made of several code points
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether an alternation or a different class was meant needs the author)
+- **Fix:** `suggest` (the choices are writing each several-code-point character as an alternative beside the class (the default), or the `u` flag when the class holds astral characters; either changes what the pattern matches, to what it shows)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-misleading-character-class.md
 
@@ -41756,7 +42406,7 @@ const mode = 0o755;
 ## `js/no-octal-escape` — No octal escapes
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the equivalent `\u` or `\x` escape is computed from the octal value)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-octal-escape.md
 
@@ -43528,7 +44178,7 @@ b = 2;
 ## `js/no-setter-return` — A setter does not return a value
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (whether the returned expression was meant as a side effect needs a reader)
+- **Fix:** `auto` (a setter's return value is thrown away, so `return e;` becomes `e; return;`, a last `return` goes, and a value that can do nothing goes with it; behaviour is unchanged)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-setter-return.md
 
@@ -43834,7 +44484,7 @@ run(x);
 ## `js/no-sparse-arrays` — No holes in array literals
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether a value is missing or a comma is extra needs a reader)
+- **Fix:** `suggest` (the choices are deleting the extra comma, shortening the array, or filling the hole with `undefined`, keeping its length; which was meant is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-sparse-arrays.md
 
@@ -43860,6 +44510,18 @@ methods.
 const colors = ["red", , "blue"];
 ```
 
+##### Fixed (delete the extra comma)
+
+```js
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```js
+const colors = ["red", undefined, "blue"];
+```
+
 ##### Do
 
 ```js
@@ -43872,6 +44534,18 @@ const colors = ["red", "green", "blue"];
 
 ```jsx
 const colors = ["red", , "blue"];
+```
+
+##### Fixed (delete the extra comma)
+
+```jsx
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```jsx
+const colors = ["red", undefined, "blue"];
 ```
 
 ##### Do
@@ -43888,6 +44562,18 @@ const colors = ["red", "green", "blue"];
 const colors = ["red", , "blue"];
 ```
 
+##### Fixed (delete the extra comma)
+
+```ts
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```ts
+const colors = ["red", undefined, "blue"];
+```
+
 ##### Do
 
 ```ts
@@ -43900,6 +44586,18 @@ const colors = ["red", "green", "blue"];
 
 ```tsx
 const colors = ["red", , "blue"];
+```
+
+##### Fixed (delete the extra comma)
+
+```tsx
+const colors = ["red", "blue"];
+```
+
+##### Fixed (fill with undefined)
+
+```tsx
+const colors = ["red", undefined, "blue"];
 ```
 
 ##### Do
@@ -44583,7 +45281,7 @@ items.forEach((x) => {
 ## `js/no-this-before-super` — this is not used before super() in a derived constructor
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX
-- **Fix:** `manual` (moving statements across `super()` can change what the base class sees)
+- **Fix:** `suggest` (the `super(…)` call moves above the first statement using `this` when its arguments read neither `this` nor anything declared in between; the parent's constructor then runs earlier, which is the fix but is a change)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-this-before-super.md
 
@@ -45478,7 +46176,7 @@ const cache = new Map();
 ## `js/no-unexpected-multiline` — A line break doesn't silently join two lines into one expression
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the lines were meant to join can only be known from intent)
+- **Fix:** `suggest` (the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unexpected-multiline.md
 
@@ -45506,6 +46204,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+##### Fixed (split)
+
+```js
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```js
+const total = sum(items).forEach(log);
+```
+
 ##### Do
 
 ```js
@@ -45520,6 +46231,19 @@ const total = sum;
 ```jsx
 const total = sum
 (items).forEach(log);
+```
+
+##### Fixed (split)
+
+```jsx
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```jsx
+const total = sum(items).forEach(log);
 ```
 
 ##### Do
@@ -45538,6 +46262,19 @@ const total = sum
 (items).forEach(log);
 ```
 
+##### Fixed (split)
+
+```ts
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```ts
+const total = sum(items).forEach(log);
+```
+
 ##### Do
 
 ```ts
@@ -45552,6 +46289,19 @@ const total = sum;
 ```tsx
 const total = sum
 (items).forEach(log);
+```
+
+##### Fixed (split)
+
+```tsx
+const total = sum;
+(items).forEach(log);
+```
+
+##### Fixed (join)
+
+```tsx
+const total = sum(items).forEach(log);
 ```
 
 ##### Do
@@ -46061,7 +46811,7 @@ const rest = list.slice(1);
 ## `js/no-unneeded-ternary` — No x ? true : false
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern)
+- **Fix:** `suggest` (a condition that is not already a boolean becomes `Boolean(…)`, which the author may prefer to write another way)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unneeded-ternary.md
 
@@ -46568,7 +47318,7 @@ if (!(key in cache)) {
 ## `js/no-unsafe-optional-chaining` — No ?. chain used where undefined throws
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the right fallback value depends on the code)
+- **Fix:** `suggest` (the choices are a fallback (`?? {}` for destructuring, `?? []` for spreading, `?.` carried through a call or access), the default, or plain `.` when the value is always there)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unsafe-optional-chaining.md
 
@@ -46982,7 +47732,7 @@ A default import or namespace import is reported on its name, and the fix remove
 ## `js/no-unused-labels` — Every label is used
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-unused-labels.md
 
@@ -47259,7 +48009,7 @@ export const load = (path) => readFile(path);
 ## `js/no-useless-assignment` — No value is stored that nothing reads
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the store is dead or the read is missing needs the author)
+- **Fix:** `auto` (auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-assignment.md
 
@@ -47289,6 +48039,16 @@ function total(items) {
 }
 ```
 
+##### Fixed
+
+```js
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 ##### Do
 
 ```js
@@ -47305,6 +48065,16 @@ function total(items) {
 ```jsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+##### Fixed
+
+```jsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -47331,6 +48101,16 @@ function total(items) {
 }
 ```
 
+##### Fixed
+
+```ts
+function total(items) {
+  let sum;
+  sum = items.length;
+  return sum;
+}
+```
+
 ##### Do
 
 ```ts
@@ -47347,6 +48127,16 @@ function total(items) {
 ```tsx
 function total(items) {
   let sum = 0;
+  sum = items.length;
+  return sum;
+}
+```
+
+##### Fixed
+
+```tsx
+function total(items) {
+  let sum;
   sum = items.length;
   return sum;
 }
@@ -47369,7 +48159,7 @@ last assignment outside any loop. A variable a nested function touches is skippe
 ## `js/no-useless-backreference` — No backreference that can only match the empty string
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (what the reference was meant to repeat needs the author)
+- **Fix:** `suggest` (the backreference, with its quantifier, always matches the empty string, so it goes; the reviewer confirms the pattern was not meant to match more)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-backreference.md
 
@@ -47396,6 +48186,12 @@ always matches the empty string.
 const re = /\1(a)/;
 ```
 
+##### Fixed
+
+```js
+const re = /(a)/;
+```
+
 ##### Do
 
 ```js
@@ -47408,6 +48204,12 @@ const re = /(a)\1/;
 
 ```jsx
 const re = /\1(a)/;
+```
+
+##### Fixed
+
+```jsx
+const re = /(a)/;
 ```
 
 ##### Do
@@ -47424,6 +48226,12 @@ const re = /(a)\1/;
 const re = /\1(a)/;
 ```
 
+##### Fixed
+
+```ts
+const re = /(a)/;
+```
+
 ##### Do
 
 ```ts
@@ -47436,6 +48244,12 @@ const re = /(a)\1/;
 
 ```tsx
 const re = /\1(a)/;
+```
+
+##### Fixed
+
+```tsx
+const re = /(a)/;
 ```
 
 ##### Do
@@ -48963,7 +49777,7 @@ function f() {
 ## `js/no-useless-spread` — No spread of an array literal
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (removing the brackets and the dots around the items is not one template edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-spread.md
 
@@ -49775,7 +50589,7 @@ area = Math.PI * r * r;
 ## `js/no-zero-fractions` — No zero fraction on a number
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fix strips characters from the literal, which a template cannot compute)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-zero-fractions.md
 
@@ -50000,7 +50814,7 @@ const hex = n.toString(16);
 ## `js/numeric-separators-style` — Group digits of long numbers
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the grouped literal is a computed edit)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/numeric-separators-style.md
 
@@ -50193,7 +51007,7 @@ const point = { x, y };
 ## `js/operator-assignment` — x += 1 rather than x = x + 1
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the operator token cannot be carried into a fix template)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/operator-assignment.md
 
@@ -53280,7 +54094,7 @@ if (Number.isNaN(value)) {
 ## `js/prefer-numeric-literals` — 0b101 rather than parseInt("101", 2)
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the literal's prefix depends on the radix, which a template cannot choose)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-numeric-literals.md
 
@@ -53956,7 +54770,7 @@ const args = Array.prototype.slice.call(arguments);
 ## `js/prefer-query-selector` — querySelector rather than getElementById
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the selector string is built from the id, which a template cannot escape)
+- **Fix:** `suggest` (`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-query-selector.md
 
@@ -54978,7 +55792,7 @@ const ext = name.slice(-3);
 ## `js/prefer-string-starts-ends-with` — startsWith() rather than a ^ regex test
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the string literal is the pattern without its anchor, which a template cannot strip)
+- **Fix:** `suggest` (`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/prefer-string-starts-ends-with.md
 
@@ -60035,7 +60849,7 @@ const re = /a*/;
 ## `js/regexp-no-unused-capturing-group` — No capturing group whose capture is never read
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/regexp` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/regexp-no-unused-capturing-group.md
 
@@ -65313,7 +66127,7 @@ if (Number.isNaN(price)) {
 ## `js/use-simple-number-keys` — Plain decimal numbers as object keys
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the decimal form has to be computed from the literal, which codelaw's fix templates cannot do)
+- **Fix:** `auto`
 - **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/use-simple-number-keys.md
 
@@ -65721,7 +66535,7 @@ if (role === "admin") {
 ## `json/no-duplicate-keys` — No key twice in one JSON object
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** JSON
-- **Fix:** `manual` (which of the two values was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what JSON.parse and Python read) or the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/json/no-duplicate-keys.md
 
@@ -65745,6 +66559,15 @@ Each key appears once in a JSON object. Keys are compared by value, so `"a"` and
 ```json
 {
   "name": "app",
+  "version": "1.0.0",
+  "name": "web-app"
+}
+```
+
+##### Fixed
+
+```json
+{
   "version": "1.0.0",
   "name": "web-app"
 }
@@ -66117,7 +66940,7 @@ For details, see [the setup guide](docs/setup.md).
 ## `md/fence-language` — Fenced code blocks name their language
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which language the code is in can't always be told from the code)
+- **Fix:** `suggest` (the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/fence-language.md
 
@@ -66144,6 +66967,30 @@ npm install codelaw
 ```
 ````
 
+##### Fixed (plain text)
+
+````md
+```text
+npm install codelaw
+```
+````
+
+##### Fixed (shell)
+
+````md
+```sh
+npm install codelaw
+```
+````
+
+##### Fixed (json)
+
+````md
+```json
+npm install codelaw
+```
+````
+
 ##### Do
 
 ````md
@@ -66155,7 +67002,7 @@ npm install codelaw
 ## `md/first-line-heading` — A document starts with its title heading
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (the title text needs the author)
+- **Fix:** `suggest` (the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/first-line-heading.md
 
@@ -66187,6 +67034,15 @@ The first block of a document, after any front matter and HTML comments, is a le
 This tool formats code.
 
 # Formatter
+````
+
+##### Fixed
+
+````md
+# Formatter
+
+This tool formats code.
+
 ````
 
 ##### Do
@@ -66241,7 +67097,7 @@ The fix renumbers the whole outline at once: a raised heading's subsections move
 ## `md/link-fragments` — In-page links point at a heading or anchor that exists
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which section the link meant needs the author)
+- **Fix:** `auto` (auto when a heading's anchor is the fragment written as an anchor (`#Install` is `#install`); otherwise the anchors within two edits are choices, nearest first; a fragment with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/link-fragments.md
 
@@ -66545,7 +67401,7 @@ Configure it.
 ## `md/no-emphasis-as-heading` — Headings are headings, not bold lines
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which heading level the line should become depends on the outline)
+- **Fix:** `suggest` (the choices are a heading one level under the heading above it (the default) or at that heading's level, written with the emphasised words; the outline changes, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-emphasis-as-heading.md
 
@@ -66593,7 +67449,7 @@ Run the installer.
 ## `md/no-empty-links` — Links have a destination
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (where the link should go needs the author)
+- **Fix:** `suggest` (unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-empty-links.md
 
@@ -66618,10 +67474,22 @@ A link has a destination: not `()`, `(<>)` or a bare `(#)`.
 See [the changelog]().
 ````
 
+##### Fixed
+
+````md
+See the changelog.
+````
+
 ##### Don't
 
 ````md
 See [the changelog](#).
+````
+
+##### Fixed
+
+````md
+See the changelog.
 ````
 
 ##### Do
@@ -66633,7 +67501,7 @@ See [the changelog](CHANGELOG.md).
 ## `md/no-inline-html` — No raw HTML in Markdown
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (the Markdown equivalent, if there is one, needs the author)
+- **Fix:** `auto` (auto for an inline element Markdown writes the same way — `<em>` and `<i>` as `*x*`, `<strong>` and `<b>` as `**x**`, `<code>` as a code span, a line-ending `<br>` as `\` — with no attribute and plain content; any other HTML is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/conventions` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/no-inline-html.md
 
@@ -66785,7 +67653,7 @@ Written in JavaScript.
 ## `md/reference-links-images` — Reference links use a label that is defined
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (where the reference should point needs the author)
+- **Fix:** `suggest` (the defined labels within two edits of the missing one are choices, nearest first; a label with none near needs its definition written, and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/reference-links-images.md
 
@@ -66814,7 +67682,17 @@ A reference link or image — `[text][label]`, `[label][]`, `![alt][label]` — 
 ##### Don't
 
 ````md
+Read [the spec][spek].
+
+[spec]: https://spec.commonmark.org/
+````
+
+##### Fixed
+
+````md
 Read [the spec][spec].
+
+[spec]: https://spec.commonmark.org/
 ````
 
 ##### Do
@@ -66828,7 +67706,7 @@ Read [the spec][spec].
 ## `md/relative-links` — Relative links point at a file that exists
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (whether the file moved, was renamed or was never written needs the author)
+- **Fix:** `suggest` (the files beside the target whose names are within two edits, then files of the same name elsewhere in the project, are choices, nearest first; a link with none is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/relative-links.md
 
@@ -66851,19 +67729,32 @@ A link or image whose destination is a path, not a URL, names a file or folder o
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./faq.md).
 <!-- docs/setup.md -->
 # Setup
+<!-- docs/FAQ.md -->
+# FAQ
+````
+
+##### Fixed
+
+````md
+<!-- docs/guide.md -->
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
+<!-- docs/setup.md -->
+# Setup
+<!-- docs/FAQ.md -->
+# FAQ
 ````
 
 ##### Do
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
 <!-- docs/setup.md -->
 # Setup
-<!-- FAQ.md -->
+<!-- docs/FAQ.md -->
 # FAQ
 ````
 
@@ -66917,7 +67808,7 @@ The document's headings follow `headings`, a list such as `["# Title", "## Usage
 ## `md/single-h1` — One level-1 heading per document
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which heading is the title, and what level the others become, needs the author)
+- **Fix:** `suggest` (a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/single-h1.md
 
@@ -66973,7 +67864,7 @@ markdownlint applies the rule only when the first line of the file is the level-
 ## `md/table-column-count` — Table rows have as many cells as the header
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** Markdown
-- **Fix:** `manual` (which cell is missing or extra needs the author)
+- **Fix:** `auto` (a row ending in `|` with fewer cells than the header gets empty ones, which GFM already renders, so nothing changes on the page; a row with more cells loses content either way and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:md/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/md/table-column-count.md
 
@@ -66995,9 +67886,17 @@ Every row of a pipe table has the same number of cells as its header row.
 ##### Don't
 
 ````md
-| Name | Type |
-| ---- | ---- |
-| id | number | required |
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number |
+````
+
+##### Fixed
+
+````md
+| Name | Type | Note |
+| ---- | ---- | ---- |
+| id | number | |
 ````
 
 ##### Do
@@ -68812,7 +69711,7 @@ module.exports.parse = function parse(text) {
 ## `node/global-require` — require() at the top of the module
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads)
+- **Fix:** `suggest` (hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/global-require.md
 
@@ -68840,6 +69739,15 @@ function render(md) {
 }
 ```
 
+##### Fixed
+
+```js
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 ##### Do
 
 ```js
@@ -68857,6 +69765,15 @@ function render(md) {
 ```jsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+##### Fixed
+
+```jsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -68882,6 +69799,15 @@ function render(md) {
 }
 ```
 
+##### Fixed
+
+```ts
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 ##### Do
 
 ```ts
@@ -68899,6 +69825,15 @@ function render(md) {
 ```tsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+##### Fixed
+
+```tsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -69273,7 +70208,7 @@ function find(id, cb) {
 ## `node/no-deprecated-api` — No deprecated Node.js APIs
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each deprecated API has its own replacement)
+- **Fix:** `auto` (auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-deprecated-api.md
 
@@ -69288,6 +70223,8 @@ Code doesn't use Node.js APIs the documentation deprecates — `new Buffer()`, `
 ### How to fix
 
 1. Replace the call with the API the message names.
+
+`codelaw fix` renames the aliases itself, and drops an import nothing else reads.
 
 ### Examples
 
@@ -69359,7 +70296,7 @@ is not read.
 ## `node/no-exports-assign` — No assigning to exports
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether `module.exports` or a property was meant needs the author)
+- **Fix:** `suggest` (assigning to `module.exports` makes the module export that value, which it did not before; the reviewer confirms it was meant and that no `exports.x` use depends on the old object)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-exports-assign.md
 
@@ -70173,7 +71110,7 @@ const { port } = require("./config");
 ## `node/no-process-exit` — No process.exit()
 
 - **Pack:** `@codelaw/rules-node` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (how to end the program cleanly depends on what is still running)
+- **Fix:** `suggest` (code after the call now runs and open handles keep the process alive, so the reviewer picks setting the exit code or throwing (both offered for a call with an exit code))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:node/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/node/no-process-exit.md
 
@@ -70200,6 +71137,22 @@ if (failed) {
 }
 ```
 
+##### Fixed (set exit code)
+
+```js
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```js
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 ##### Do
 
 ```js
@@ -70215,6 +71168,22 @@ if (failed) {
 ```jsx
 if (failed) {
   process.exit(1);
+}
+```
+
+##### Fixed (set exit code)
+
+```jsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```jsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 
@@ -70236,6 +71205,22 @@ if (failed) {
 }
 ```
 
+##### Fixed (set exit code)
+
+```ts
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```ts
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 ##### Do
 
 ```ts
@@ -70251,6 +71236,22 @@ if (failed) {
 ```tsx
 if (failed) {
   process.exit(1);
+}
+```
+
+##### Fixed (set exit code)
+
+```tsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+##### Fixed (throw)
+
+```tsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 
@@ -71725,7 +72726,7 @@ show(text);
 ## `numpy/numpy-deprecated-function` — No deprecated NumPy functions
 
 - **Pack:** `codelaw-rules-numpy` · **Languages:** Python
-- **Fix:** `manual` (each has its own replacement name)
+- **Fix:** `auto` (each is a plain alias of its replacement, so renaming it keeps the behaviour)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:numpy/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/numpy/numpy-deprecated-function.md
 
@@ -71827,7 +72828,7 @@ x = rng.normal(size=3)
 ## `numpy/numpy2-deprecation` — No names NumPy 2 removed
 
 - **Pack:** `codelaw-rules-numpy` · **Languages:** Python
-- **Fix:** `manual` (each removed name has its own replacement, given in the NumPy 2 migration guide)
+- **Fix:** `auto` (auto for the names that are plain aliases of a name that also exists in NumPy 1 (`np.Inf`, `np.float_`, `np.product`, `np.row_stack` and the like); every other removed name needs the migration guide's rewrite)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:numpy/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/numpy/numpy2-deprecation.md
 
@@ -71862,7 +72863,7 @@ x = np.nan
 ## `pandas/pandas-nunique-constant-series-check` — No nunique() to test a constant series
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the faster check is written by hand)
+- **Fix:** `suggest` (the replacement reads the first value and compares it with the rest; the reviewer confirms how an empty series and NaN should count)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-nunique-constant-series-check.md
 
@@ -72101,7 +73102,7 @@ wide = df.pivot_table(index='d', columns='k', values='v', aggfunc='sum')
 ## `pandas/pandas-use-of-dot-read-table` — read_csv, not read_table
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the separator argument has to be added)
+- **Fix:** `auto` (auto when the call passes no separator of its own (no `sep`, `delimiter`, `delim_whitespace`, second positional or splat); a call that does is reported as a suggestion)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-dot-read-table.md
 
@@ -72202,7 +73203,7 @@ arr = df['a'].to_numpy()
 ## `pandas/pandas-use-of-inplace-argument` — No inplace=True
 
 - **Pack:** `codelaw-rules-pandas` · **Languages:** Python
-- **Fix:** `manual` (the call must become an assignment of its result, which changes the statement)
+- **Fix:** `suggest` (the statement becomes an assignment of the result, so other references to the object no longer see the change; the reviewer confirms (offered for a call on a plain name used as a statement))
 - **Severity when named:** `error` · **Turned on by:** `codelaw:pandas/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/pandas/pandas-use-of-inplace-argument.md
 
@@ -75337,7 +76338,7 @@ class A:
 ## `py/empty-comment` — No empty comments
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/empty-comment.md
 
@@ -75415,7 +76416,7 @@ class Shape(ABC):
 ## `py/empty-type-checking-block` — No empty TYPE_CHECKING block
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** no preset
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/empty-type-checking-block.md
 
@@ -75934,7 +76935,7 @@ def greet():
 ## `py/f-string-missing-placeholders` — An f-string has a placeholder
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/f-string-missing-placeholders.md
 
@@ -76352,7 +77353,7 @@ msg = "done"
 ## `py/format-unused-named-argument` — Every keyword passed to `.format` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-unused-named-argument.md
 
@@ -76385,7 +77386,7 @@ The fix is offered only when the removed values are plain names or literals.
 ## `py/format-unused-positional-argument` — Every positional argument to `.format` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/format-unused-positional-argument.md
 
@@ -82127,7 +83128,7 @@ message = "%s" % (1,)
 ## `py/percent-format-unused-named-argument` — Every key given to `%` is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/percent-format-unused-named-argument.md
 
@@ -87427,7 +88428,7 @@ f = open("notes.txt", encoding="utf-8")
 ## `py/unused-annotation` — Every annotated local is used
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:py/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/unused-annotation.md
 
@@ -94054,7 +95055,7 @@ const p = <Theme.Provider value={theme}>{children}</Theme.Provider>;
 ## `react/jsx-no-duplicate-props` — No prop given twice on one element
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (which value should win needs the author)
+- **Fix:** `auto` (the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/jsx-no-duplicate-props.md
 
@@ -96785,7 +97786,7 @@ const c = <circle r={4} />;
 ## `react/no-nested-components` — Components are not defined inside other components
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (moving the component out means passing in the values it closed over as props)
+- **Fix:** `suggest` (a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-nested-components.md
 
@@ -96815,6 +97816,15 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```js
+const Item = ({ text }) => <li>{text}</li>;
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```js
@@ -96838,6 +97848,17 @@ function List({ items }) {
 }
 ```
 
+##### Fixed
+
+```jsx
+function Item({ text }) {
+    return <li>{text}</li>;
+  }
+function List({ items }) {
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
 ##### Do
 
 ```jsx
@@ -96857,6 +97878,15 @@ function List({ items }) {
 ```tsx
 function List({ items }: { items: string[] }) {
   const Item = ({ text }: { text: string }) => <li>{text}</li>;
+  return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
+}
+```
+
+##### Fixed
+
+```tsx
+const Item = ({ text }: { text: string }) => <li>{text}</li>;
+function List({ items }: { items: string[] }) {
   return <ul>{items.map((t) => <Item key={t} text={t} />)}</ul>;
 }
 ```
@@ -97106,7 +98136,7 @@ class Row extends PureComponent {
 ## `react/no-ref-in-render` — A ref's current value is not read or written during render
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving the access into an effect or an event handler changes when it runs)
+- **Fix:** `suggest` (a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-ref-in-render.md
 
@@ -97156,22 +98186,22 @@ function useLatest(value) {
 ##### Don't
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```jsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97183,6 +98213,18 @@ function Counter() {
 function useLatest<T>(value: T) {
   const ref = useRef(value);
   ref.current = value;
+  return ref;
+}
+```
+
+##### Fixed
+
+```ts
+function useLatest<T>(value: T) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
+  });
   return ref;
 }
 ```
@@ -97204,22 +98246,22 @@ function useStore() {
 ##### Don't
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  renders.current += 1;
-  return <p>{renders.current}</p>;
+function useLatest(value) {
+  const ref = useRef(value);
+  ref.current = value;
+  return ref;
 }
 ```
 
 ##### Do
 
 ```tsx
-function Counter() {
-  const renders = useRef(0);
-  useEffect(() => {
-    renders.current += 1;
+function useLatest(value) {
+  const ref = useRef(value);
+  useLayoutEffect(() => {
+    ref.current = value;
   });
-  return <button onClick={() => alert(renders.current)}>renders</button>;
+  return ref;
 }
 ```
 
@@ -97395,7 +98437,7 @@ class Toggle extends Component {
 ## `react/no-set-state-in-effect` — An effect doesn't set state synchronously
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether to derive the value, lift the state or subscribe is a design choice)
+- **Fix:** `suggest` (an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-set-state-in-effect.md
 
@@ -97426,6 +98468,15 @@ function useFullName(first, last) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```js
+function useFullName(first, last) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -97477,6 +98528,15 @@ function useFullName(first: string, last: string) {
   useEffect(() => {
     setFull(first + ' ' + last);
   }, [first, last]);
+  return full;
+}
+```
+
+##### Fixed
+
+```ts
+function useFullName(first: string, last: string) {
+  const full = first + ' ' + last;
   return full;
 }
 ```
@@ -99334,7 +100394,7 @@ The type is renamed with its uses in the file; an exported type is reported with
 ## `react/purity` — Render doesn't call Math.random(), Date.now() or other impure functions
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (where the value should come from instead — state, an effect, an event — depends on what it is for)
+- **Fix:** `suggest` (an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/purity.md
 
@@ -99362,6 +100422,15 @@ is a local binding that shadows the global (`Math` as a parameter).
 ```js
 function useRandomKey() {
   return Math.random().toString(36);
+}
+```
+
+##### Fixed
+
+```js
+function useRandomKey() {
+  const [value] = useState(() => Math.random().toString(36));
+  return value;
 }
 ```
 
@@ -99404,6 +100473,15 @@ function useToday(): string {
 }
 ```
 
+##### Fixed
+
+```ts
+function useToday(): string {
+  const [value] = useState(() => new Date().toDateString());
+  return value;
+}
+```
+
 ##### Do
 
 ```ts
@@ -99420,6 +100498,15 @@ function useToday(): string {
 ```tsx
 function Field({ label }: { label: string }) {
   const id = crypto.randomUUID();
+  return <label htmlFor={id}>{label}</label>;
+}
+```
+
+##### Fixed
+
+```tsx
+function Field({ label }: { label: string }) {
+  const [id] = useState(() => crypto.randomUUID());
   return <label htmlFor={id}>{label}</label>;
 }
 ```
@@ -99591,7 +100678,7 @@ class Row extends PureComponent {
 ## `react/require-render-return` — A class component's render() returns
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
-- **Fix:** `manual` (what to render needs the author)
+- **Fix:** `suggest` (a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/require-render-return.md
 
@@ -99800,7 +100887,7 @@ function T({ id }) {
 ## `react/rules-of-hooks` — Hooks are called at the top level of components and hooks
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (moving a hook can change what the code does on the renders that skipped it)
+- **Fix:** `suggest` (a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/rules-of-hooks.md
 
@@ -99877,20 +100964,24 @@ function Profile({ id }) {
 ##### Don't
 
 ```ts
-function useProfile(id: string) {
+function Profile({ id }) {
   if (!id) {
     return null;
   }
-  return useState(id);
+  const [user] = useState(null);
+  return user;
 }
 ```
 
 ##### Do
 
 ```ts
-function useProfile(id: string) {
-  const state = useState(id);
-  return id ? state : null;
+function Profile({ id }) {
+  const [user] = useState(null);
+  if (!id) {
+    return null;
+  }
+  return user;
 }
 ```
 
@@ -100491,7 +101582,7 @@ function Calc({ expr }) {
 ## `react/use-memo` — useMemo's callback computes and returns a value
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (whether the code belongs in useEffect, useCallback or plain render code is the author's call)
+- **Fix:** `suggest` (an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/use-memo.md
 
@@ -100535,20 +101626,16 @@ function useTotal(items) {
 ##### Don't
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => {
-    rows.sort(byDate);
-  }, [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```jsx
-function Report({ rows }) {
-  const sorted = useMemo(() => [...rows].sort(byDate), [rows]);
-  return <Table rows={sorted} />;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100557,16 +101644,16 @@ function Report({ rows }) {
 ##### Don't
 
 ```ts
-function useLabel(id: string) {
-  return useMemo((prefix: string) => prefix + id, [id]);
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```ts
-function useLabel(id: string) {
-  return useMemo(() => 'item-' + id, [id]);
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100575,18 +101662,16 @@ function useLabel(id: string) {
 ##### Don't
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useMemo(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(async () => sum(items), [items]);
 }
 ```
 
 ##### Do
 
 ```tsx
-function Log({ value }: { value: number }) {
-  useEffect(() => console.log(value), [value]);
-  return <p>{value}</p>;
+function useTotal(items) {
+  return useMemo(() => sum(items), [items]);
 }
 ```
 
@@ -100659,7 +101744,7 @@ const l = <>Line<br /></>;
 ## `redux-toolkit/no-blind-payload-return` — A reducer builds its state, not the action's payload
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the reducer has to name the fields it takes from the payload)
+- **Fix:** `suggest` (`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-blind-payload-return.md
 
@@ -100967,7 +102052,7 @@ import { configureStore } from '@reduxjs/toolkit';
 ## `redux-toolkit/no-mutating-reducer` — A hand-written reducer doesn't change its state in place
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the update has to be rewritten to return a new value)
+- **Fix:** `suggest` (a `state.push(x)` or `state.key = v` followed at once by `return state` becomes `return [...state, x]` or `return { ...state, key: v }`; whoever held the old state no longer sees the change, which is the fix but is a change. Any other mutation is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-mutating-reducer.md
 
@@ -101220,7 +102305,7 @@ const usersSlice = createSlice({
 ## `redux-toolkit/no-object-selector` — useSelector selects one value per call
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the one call is split into one per value, and the destructuring goes)
+- **Fix:** `suggest` (the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-object-selector.md
 
@@ -101437,7 +102522,7 @@ function placeOrder(dispatch) {
 ## `redux-toolkit/no-side-effects-in-reducer` — A reducer has no side effects
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the side effect has to move to a thunk, a listener or a `prepare` callback)
+- **Fix:** `suggest` (a case reducer whose side effect sits in an object built from `action.payload` gets a `prepare` callback that builds the object, and reads it from the payload; the action creator's argument stays the same, the effect now runs when the action is made. Any other effect is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/no-side-effects-in-reducer.md
 
@@ -101468,6 +102553,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+##### Fixed
+
+```js
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });
@@ -101508,6 +102612,25 @@ const todosSlice = createSlice({
 });
 ```
 
+##### Fixed
+
+```jsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 ##### Do
 
 ```jsx
@@ -101538,6 +102661,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+##### Fixed
+
+```ts
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });
@@ -101578,6 +102720,25 @@ const todosSlice = createSlice({
 });
 ```
 
+##### Fixed
+
+```tsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 ##### Do
 
 ```tsx
@@ -101600,7 +102761,7 @@ const todosSlice = createSlice({
 ## `redux-toolkit/object-shorthand-mapdispatch` — connect's mapDispatch is an object of action creators
 
 - **Pack:** `@codelaw/rules-redux-toolkit` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each wrapped dispatch call is replaced by the action creator it calls)
+- **Fix:** `suggest` (a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:redux-toolkit/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/redux-toolkit/object-shorthand-mapdispatch.md
 
@@ -102487,7 +103648,7 @@ a {
 ## `scss/at-rule-no-unknown` — No unknown at-rules (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended at-rule is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/at-rule-no-unknown.md
 
@@ -102516,6 +103677,14 @@ Every at-rule is one CSS or Sass defines: `@mixin`, `@include`, `@use`, `@if`, `
 
 ```scss
 @mixn button {
+  color: red;
+}
+```
+
+##### Fixed
+
+```scss
+@mixin button {
   color: red;
 }
 ```
@@ -102914,7 +104083,7 @@ The pattern applies to declarations, not to the names in an `@each` or a mixin's
 ## `scss/double-slash-comment-empty` — No empty `//` comments
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `auto`
+- **Fix:** `auto` (Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/double-slash-comment-empty.md
 
@@ -103144,7 +104313,7 @@ a {
 ## `scss/function-no-unknown` — No unknown functions (SCSS)
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (the intended function is the author's call)
+- **Fix:** `suggest` (the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/function-no-unknown.md
 
@@ -103174,6 +104343,14 @@ Every function called is a CSS function, a Sass built-in (global or `module.name
 ```scss
 .a {
   width: percentag(0.5);
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  width: percentage(0.5);
 }
 ```
 
@@ -103355,7 +104532,7 @@ $sizes: ("small": 1px);
 ## `scss/max-nesting-depth` — Limit nesting depth
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (flattening a selector is the author's call)
+- **Fix:** `suggest` (a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/max-nesting-depth.md
 
@@ -103390,6 +104567,20 @@ A style rule nests at most `max` levels inside other style rules (default 3): `.
         .e {
           color: red;
         }
+      }
+    }
+  }
+}
+```
+
+##### Fixed
+
+```scss
+.a {
+  .b {
+    .c {
+      .d .e {
+        color: red;
       }
     }
   }
@@ -103493,7 +104684,7 @@ a {
 ## `scss/no-duplicate-dollar-variables` — No duplicate `$variables`
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which declaration wins is the author's call)
+- **Fix:** `auto` (auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-dollar-variables.md
 
@@ -103516,6 +104707,12 @@ A `$variable` is declared once per scope. A later `!default` declaration is not 
 
 ```scss
 $gap: 4px;
+$gap: 8px;
+```
+
+##### Fixed
+
+```scss
 $gap: 8px;
 ```
 
@@ -103567,7 +104764,7 @@ A file doesn't `@use`, `@forward` or `@import` the same URL twice.
 ## `scss/no-duplicate-mixins` — No duplicate mixins
 
 - **Pack:** `@codelaw/rules-scss` · `codelaw-rules-scss` · **Languages:** SCSS
-- **Fix:** `manual` (which definition should stay is the author's call)
+- **Fix:** `auto` (auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/scss/no-duplicate-mixins.md
 
@@ -103591,6 +104788,14 @@ A mixin is defined once per scope.
 @mixin shadow {
   box-shadow: none;
 }
+@mixin shadow {
+  box-shadow: 0 0 1px;
+}
+```
+
+##### Fixed
+
+```scss
 @mixin shadow {
   box-shadow: 0 0 1px;
 }
@@ -104055,7 +105260,7 @@ In a page that uses AngularJS, `href="{{…}}"` and `src="{{…}}"` are written 
 ## `sec-html/csp-meta-unsafe` — A meta Content Security Policy does not allow unsafe script
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the page's scripts have to be given nonces or hashes, or moved to files)
+- **Fix:** `suggest` (`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/csp-meta-unsafe.md
 
@@ -104079,6 +105284,12 @@ A `<meta http-equiv="Content-Security-Policy">` does not allow `'unsafe-inline'`
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+```
+
+##### Fixed
+
+```html
+<meta http-equiv="Content-Security-Policy" content="script-src 'self'">
 ```
 
 ##### Do
@@ -104130,7 +105341,7 @@ A `<form method="post">` has a hidden anti-forgery field, or a template tag that
 ## `sec-html/iframe-allow-powerful` — A cross-origin iframe is not given a powerful feature
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (which framed sites deserve the permission is the owner's decision)
+- **Fix:** `suggest` (the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/iframe-allow-powerful.md
 
@@ -104153,6 +105364,12 @@ An `<iframe>` whose `src` is on another origin does not list `camera`, `micropho
 
 ```html
 <iframe src="https://meet.example.com/room" allow="camera; microphone"></iframe>
+```
+
+##### Fixed
+
+```html
+<iframe src="https://meet.example.com/room"></iframe>
 ```
 
 ##### Do
@@ -104193,7 +105410,7 @@ An `<iframe>` has a `sandbox` attribute, and one that allows scripts does not al
 ## `sec-html/no-credentials-in-url` — No username and password in a URL
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (where the credential should live is the author's decision)
+- **Fix:** `suggest` (the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-credentials-in-url.md
 
@@ -104227,7 +105444,7 @@ A URL attribute does not carry `user:password@` in front of its host.
 ## `sec-html/no-external-base` — <base> stays on this origin
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (which origin the page may use is a decision for its owner)
+- **Fix:** `suggest` (the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-external-base.md
 
@@ -104250,6 +105467,13 @@ A `<base href>` is a path, not a URL on another origin.
 
 ```html
 <base href="https://cdn.example.com/app/">
+<link rel="stylesheet" href="app.css">
+```
+
+##### Fixed
+
+```html
+<link rel="stylesheet" href="https://cdn.example.com/app/app.css">
 ```
 
 ##### Do
@@ -104296,7 +105520,7 @@ No element has an inline event handler (`onclick`, `onerror`, `onload`, …).
 ## `sec-html/no-javascript-url` — No javascript: URLs
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the script has to move out of the URL into a listener or a real link)
+- **Fix:** `suggest` (an `<a href="javascript:void(0)">` runs nothing and becomes `<button type="button">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-javascript-url.md
 
@@ -104319,6 +105543,12 @@ An `href`, `src`, `action`, `formaction`, `xlink:href` or `<object data>` is nev
 
 ```html
 <a href="javascript:void(0)">Menu</a>
+```
+
+##### Fixed
+
+```html
+<button type="button">Menu</button>
 ```
 
 ##### Do
@@ -104359,7 +105589,7 @@ A `src`, a form `action`, a stylesheet or script `href` and a download link neve
 ## `sec-html/no-plugin-embed` — No <object>, <embed> or <applet>
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (what replaces the plugin depends on what it showed)
+- **Fix:** `suggest` (an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-plugin-embed.md
 
@@ -104382,7 +105612,7 @@ The page does not use `<object>`, `<embed>` or `<applet>` (an `<object>` that ho
 ##### Don't
 
 ```html
-<embed src="movie.swf">
+<embed src="movie.mp4">
 ```
 
 ##### Do
@@ -104458,7 +105688,7 @@ An HTML comment does not hold a password, key, token, private IP address, intern
 ## `sec-html/no-srcdoc-script` — An iframe's srcdoc holds no script
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (the framed document has to become a file or be sandboxed)
+- **Fix:** `suggest` (the choices are an empty `sandbox` (the default), or `sandbox="allow-scripts"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-srcdoc-script.md
 
@@ -104483,6 +105713,18 @@ An `<iframe srcdoc>` does not contain a `<script>`, an event handler or a `javas
 <iframe srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
 ```
 
+##### Fixed (sandbox)
+
+```html
+<iframe sandbox srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
+##### Fixed (sandbox, scripts allowed)
+
+```html
+<iframe sandbox="allow-scripts" srcdoc="&lt;script&gt;track()&lt;/script&gt;"></iframe>
+```
+
 ##### Do
 
 ```html
@@ -104492,7 +105734,7 @@ An `<iframe srcdoc>` does not contain a `<script>`, an event handler or a `javas
 ## `sec-html/no-template-html-sink` — No template binding that writes HTML
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the value is trusted, and how to sanitise it, is the author's call)
+- **Fix:** `suggest` (the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-template-html-sink.md
 
@@ -104517,6 +105759,12 @@ A template does not bind a value as HTML: Angular `[innerHTML]` and `[outerHTML]
 <div [innerHTML]="comment"></div>
 ```
 
+##### Fixed
+
+```html
+<div [textContent]="comment"></div>
+```
+
 ##### Do
 
 ```html
@@ -104526,7 +105774,7 @@ A template does not bind a value as HTML: Angular `[innerHTML]` and `[outerHTML]
 ## `sec-html/no-unsafe-template-interpolation` — No template syntax that turns escaping off
 
 - **Pack:** `@codelaw/rules-security-html` · `codelaw-rules-security-html` · **Languages:** HTML
-- **Fix:** `manual` (whether the value is trusted, and how to sanitise it, is the author's call)
+- **Fix:** `suggest` (`{{{ x }}}` becomes `{{ x }}`, `|safe` goes and `<%- x %>` becomes `<%= x %>`, so the template escapes the value; markup the value was meant to carry then shows as text, which the reviewer confirms. `autoescape off` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/sec-html/no-unsafe-template-interpolation.md
 
@@ -115792,7 +117040,7 @@ export function init() {
 ## `stencil/decorators-context` — Stencil decorators only inside @Component classes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the class should be a component needs the author)
+- **Fix:** `suggest` (a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/decorators-context.md
 
@@ -115848,7 +117096,7 @@ export class Store {
 ## `stencil/enforce-slot-jsdoc` — Every slot a component renders has a @slot tag, and every @slot tag a slot
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TSX
-- **Fix:** `manual` (the slot's description, or whether it should exist, needs the author)
+- **Fix:** `suggest` (a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/enforce-slot-jsdoc.md
 
@@ -115876,6 +117124,23 @@ tag hides a slot from its users, and a stale one promises a slot that isn't ther
 ```tsx
 /**
  * A card.
+ * @slot header - The card's title row.
+ * @slot footer - The card's actions.
+ */
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return <slot name="header" />;
+  }
+}
+```
+
+##### Fixed
+
+```tsx
+/**
+ * A card.
+ * @slot header - The card's title row.
  */
 @Component({ tag: 'my-card' })
 export class Card {
@@ -115911,7 +117176,7 @@ export class Card {
 ## `stencil/host-data-deprecated` — No hostData()
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the attributes move into `render()` by hand)
+- **Fix:** `auto` (auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/host-data-deprecated.md
 
@@ -115941,6 +117206,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -115965,6 +117241,17 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  render() {
+    return h(Host, { class: 'card' });
+  }
+}
+```
+
 ##### Do
 
 ```tsx
@@ -115979,7 +117266,7 @@ export class Card {
 ## `stencil/methods-must-be-public` — @Method() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the method is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/methods-must-be-public.md
 
@@ -116043,7 +117330,7 @@ export class Card {
 ## `stencil/no-unused-watch` — @Watch watches a @Prop or @State
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which member was meant needs the author)
+- **Fix:** `suggest` (the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/no-unused-watch.md
 
@@ -116071,6 +117358,26 @@ export class Card {
 }
 ```
 
+##### Fixed (open)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
+}
+```
+
 ##### Do
 
 ```ts
@@ -116090,6 +117397,26 @@ export class Card {
 export class Card {
   @State() open = false;
   @Watch('opened') onOpen() {}
+}
+```
+
+##### Fixed (open)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  @Watch('open') onOpen() {}
+}
+```
+
+##### Fixed (remove)
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  @State() open = false;
+  onOpen() {}
 }
 ```
 
@@ -116226,7 +117553,7 @@ export class Card {
 ## `stencil/prefer-vdom-listener` — DOM events are handled in render(), not with @Listen
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (the handler moves into the rendered markup by hand)
+- **Fix:** `suggest` (in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/prefer-vdom-listener.md
 
@@ -116256,6 +117583,18 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
+}
+```
+
 ##### Do
 
 ```ts
@@ -116273,6 +117612,18 @@ export class Card {
 @Component({ tag: 'my-card' })
 export class Card {
   @Listen('click') onClick() {}
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  onClick() {}
+  render() {
+    return h(Host, { onClick: (ev) => this.onClick(ev) });
+  }
 }
 ```
 
@@ -116347,7 +117698,7 @@ export class Card {
 ## `stencil/props-must-be-public` — @Prop() members are public
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the field is public API needs the author)
+- **Fix:** `auto` (TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/props-must-be-public.md
 
@@ -116536,7 +117887,7 @@ export class Card {
 ## `stencil/strict-mutable` — mutable: true only on props the component changes
 
 - **Pack:** `@codelaw/rules-stencil` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether the component should change the prop needs the author)
+- **Fix:** `auto` (`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:stencil/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/stencil/strict-mutable.md
 
@@ -116565,6 +117916,16 @@ export class Card {
 }
 ```
 
+##### Fixed
+
+```ts
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -116587,6 +117948,16 @@ export class Card {
 export class Card {
   /** The count. */
   @Prop({ mutable: true }) count = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+@Component({ tag: 'my-card' })
+export class Card {
+  /** The count. */
+  @Prop() count = 0;
 }
 ```
 
@@ -117877,7 +119248,7 @@ option's value is a function, a method or a name.
 ## `tanstack-query/no-mutating-set-query-data` — A `setQueryData` updater does not change the cached data in place
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the update has to be rewritten to build a new value)
+- **Fix:** `suggest` (an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-mutating-set-query-data.md
 
@@ -117914,6 +119285,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```js
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```js
@@ -117933,6 +119310,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
   }
   return oldData;
 });
+```
+
+##### Fixed
+
+```jsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
 ```
 
 ##### Do
@@ -117956,6 +119339,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```ts
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```ts
@@ -117977,6 +119366,12 @@ queryClient.setQueryData(['posts', { id }], (oldData) => {
 });
 ```
 
+##### Fixed
+
+```tsx
+queryClient.setQueryData(['posts', { id }], (oldData) => oldData ? { ...oldData, title: 'my new post title' } : oldData);
+```
+
 ##### Do
 
 ```tsx
@@ -117996,7 +119391,7 @@ is recognised by its name, on any object.
 ## `tanstack-query/no-removed-v4-options` — A query takes no option TanStack Query v5 removed
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument)
+- **Fix:** `suggest` (suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-removed-v4-options.md
 
@@ -118307,7 +119702,7 @@ recognised only when it is imported from a `@tanstack/*-query` package; a QueryC
 ## `tanstack-query/no-rest-destructuring` — No rest destructuring of a query result
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (which fields the component needs is a choice only its author can make)
+- **Fix:** `suggest` (when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-rest-destructuring.md
 
@@ -118335,7 +119730,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118359,7 +119754,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118383,7 +119778,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118407,7 +119802,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -118430,7 +119825,7 @@ also finds a query result by its type when typed linting is on; codelaw has no t
 ## `tanstack-query/no-unstable-deps` — A query hook's result is not a React hook dependency
 
 - **Pack:** `@codelaw/rules-tanstack-query` · **Languages:** JavaScript, JSX, TypeScript, TSX
-- **Fix:** `manual` (the fields to list depend on what the effect, callback or memo reads)
+- **Fix:** `suggest` (when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:tanstack-query/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/tanstack-query/no-unstable-deps.md
 
@@ -134757,7 +136152,7 @@ A list with comments in it is reported without a fix, because the comments would
 ## `toml/no-duplicate-keys` — No key or table defined twice in TOML
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** TOML
-- **Fix:** `manual` (which of the two definitions was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the first or the last, since TOML refuses both and only the author knows which was meant. A table defined twice is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/toml/no-duplicate-keys.md
 
@@ -134782,7 +136177,15 @@ A key is defined once in its table, and a `[table]` header appears once. That co
 [tool.pytest]
 addopts = "-q"
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-q"
+```
+
+##### Fixed
+
+```toml
+[tool.pytest]
+addopts = "-q"
+testpaths = ["tests"]
 ```
 
 ##### Do
@@ -136006,7 +137409,7 @@ enum Color { Red,
 ## `ts/no-duplicate-enum-values` — No two enum members share a value
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (which value is right needs the author)
+- **Fix:** `suggest` (the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-duplicate-enum-values.md
 
@@ -136034,6 +137437,24 @@ enum Color {
 }
 ```
 
+##### Fixed (alias)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```ts
+enum Color {
+  Red = 1,
+  Green = 2,
+}
+```
+
 ##### Do
 
 ```ts
@@ -136051,6 +137472,24 @@ enum Color {
 enum Color {
   Red = 1,
   Green = 1,
+}
+```
+
+##### Fixed (alias)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = Red,
+}
+```
+
+##### Fixed (next value)
+
+```tsx
+enum Color {
+  Red = 1,
+  Green = 2,
 }
 ```
 
@@ -137578,7 +139017,7 @@ handler(1);
 ## `ts/no-unsafe-declaration-merging` — No interface that merges with a class of the same name
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether to rename or to move the members into the class needs the author)
+- **Fix:** `auto` (auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unsafe-declaration-merging.md
 
@@ -137608,6 +139047,15 @@ class Point {
 }
 ```
 
+##### Fixed
+
+```ts
+class Point {
+  declare z: number;
+  x = 0;
+}
+```
+
 ##### Do
 
 ```ts
@@ -137628,6 +139076,15 @@ interface Point {
   z: number;
 }
 class Point {
+  x = 0;
+}
+```
+
+##### Fixed
+
+```tsx
+class Point {
+  declare z: number;
   x = 0;
 }
 ```
@@ -137814,7 +139271,7 @@ is declared `any` or `unknown` is reported too; typescript-eslint allows it.
 ## `ts/no-unused-expressions` — No expression statements that do nothing
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (whether a call, an assignment or nothing was meant needs the author)
+- **Fix:** `suggest` (the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-expressions.md
 
@@ -137841,6 +139298,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```ts
@@ -137859,6 +139331,21 @@ function close(conn: Connection) {
 }
 ```
 
+##### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+##### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 ##### Do
 
 ```tsx
@@ -137870,7 +139357,7 @@ function close(conn: Connection) {
 ## `ts/no-unused-vars` — Every declared name is used
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
-- **Fix:** `manual` (removing a declaration can drop the side effects of its initialiser)
+- **Fix:** `auto` (auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unused-vars.md
 
@@ -138929,7 +140416,7 @@ The idea comes from the YAML 1.1 and 1.2 specifications. `y` and `n` are not rep
 ## `yaml/no-ambiguous-numbers` — No numbers that YAML 1.1 and 1.2 read differently
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author)
+- **Fix:** `suggest` (the choices are quoting it (the default: the string YAML 1.2 reads, for a time), the number YAML 1.2 reads, or the number YAML 1.1 reads, each now read the same by both)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-ambiguous-numbers.md
 
@@ -138956,6 +140443,14 @@ ports:
   - 22:22
 ```
 
+##### Fixed
+
+```yaml
+mode: "0755"
+ports:
+  - "22:22"
+```
+
 ##### Do
 
 ```yaml
@@ -138971,7 +140466,7 @@ The idea comes from the YAML 1.1 and 1.2 specifications.
 ## `yaml/no-duplicate-keys` — No key twice in one YAML mapping
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (which of the two values was meant can't be known from the file)
+- **Fix:** `auto` (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what most YAML readers keep) or the first)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-duplicate-keys.md
 
@@ -138999,6 +140494,14 @@ service:
   image: caddy
 ```
 
+##### Fixed
+
+```yaml
+service:
+  restart: always
+  image: caddy
+```
+
 ##### Do
 
 ```yaml
@@ -139010,7 +140513,7 @@ service:
 ## `yaml/no-undeclared-alias` — Every alias refers to an anchor defined before it
 
 - **Pack:** `@codelaw/rules-data` · `codelaw-rules-data` · **Languages:** YAML
-- **Fix:** `manual` (whether the anchor is missing, misspelt or defined too late needs the author)
+- **Fix:** `suggest` (the anchors defined before the alias within two edits are choices, nearest first; an alias whose anchor comes later, or with none near, is manual)
 - **Severity when named:** `error` · **Turned on by:** `codelaw:data/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/yaml/no-undeclared-alias.md
 
@@ -139032,11 +140535,21 @@ An alias `*name` refers to an anchor `&name` defined earlier in the same documen
 ##### Don't
 
 ```yaml
+defaults: &defaults
+  port: 443
+production:
+  <<: *default
+  host: example.com
+```
+
+##### Fixed
+
+```yaml
+defaults: &defaults
+  port: 443
 production:
   <<: *defaults
   host: example.com
-defaults: &defaults
-  port: 443
 ```
 
 ##### Do

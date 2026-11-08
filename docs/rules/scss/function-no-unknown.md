@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreFunctions` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended function is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/function-no-unknown` |
@@ -180,6 +180,14 @@ codelaw config --print --for <file>            # the resolved setting, and where
 ```scss
 .a {
   width: percentag(0.5);
+}
+```
+
+#### Fixed
+
+```scss
+.a {
+  width: percentage(0.5);
 }
 ```
 

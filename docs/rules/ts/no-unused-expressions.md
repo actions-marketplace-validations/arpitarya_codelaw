@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether a call, an assignment or nothing was meant needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-unused-expressions`, `eslint/no-unused-expressions` |
@@ -135,6 +135,21 @@ function close(conn: Connection) {
 }
 ```
 
+#### Fixed (delete)
+
+```ts
+function close(conn: Connection) {
+}
+```
+
+#### Fixed (call)
+
+```ts
+function close(conn: Connection) {
+  conn.close();
+}
+```
+
 #### Do
 
 ```ts
@@ -150,6 +165,21 @@ function close(conn: Connection) {
 ```tsx
 function close(conn: Connection) {
   conn.close;
+}
+```
+
+#### Fixed (delete)
+
+```tsx
+function close(conn: Connection) {
+}
+```
+
+#### Fixed (call)
+
+```tsx
+function close(conn: Connection) {
+  conn.close();
 }
 ```
 

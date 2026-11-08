@@ -132,11 +132,12 @@ pub fn run(paths: Vec<PathBuf>, payload: Option<&str>, profile: Option<String>) 
     // A hook never waits for a cold type program (L8 decision 8).
     let options = EngineOptions { touched_paths: paths.clone(), profile, profile_surface: Some(("ci", "codelaw hook")), no_cold_types: true, ..EngineOptions::from_env() };
     let mut project = Project::load(&start, options).map_err(|e| e.to_string())?;
-    // `auto` only, written: L4 decision 8. `suggest` goes back as a diff.
+    // `auto` only, written: L4 decision 8. `suggest` goes back as a diff,
+    // and a rule whose `on_edit` is `false` as what is left (decision 12).
     let mut report = if paths.is_empty() {
         codelaw_engine::FixReport::default()
     } else {
-        project.fix(&paths, &FixOptions { unsafe_fixes: false, dry_run: false, trace: false, ..Default::default() }).map_err(|e| e.to_string())?
+        project.fix(&paths, &FixOptions { unsafe_fixes: false, dry_run: false, trace: false, on_edit: true, ..Default::default() }).map_err(|e| e.to_string())?
     };
     // An edited text config file: what its L3 files report into it
     // (SR-ARCHITECTURE decision 15d), fixed nowhere.

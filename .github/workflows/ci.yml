@@ -18,7 +18,7 @@
 #             one job per pack, on `build linux-x64-gnu`'s binary (W-126)
 #   build ×8  one maturin wheel per platform; the npm binary is taken OUT of it, so
 #             both registries ship the same bytes (L6 decision 2); each runs its
-#             binary's --version and every pack's tests on its own platform
+#             binary's --version and every pack's tests on its own platform; a crash on the way leaves its core and a symbolized backtrace as the artifact `crash-<key>` (W-169)
 #   action    W-97: action.yml (`uses: ./`) on fixtures/github-action, from this run's linux wheel
 #   package   every npm tarball and wheel — the skills package (W-77) among them —
 #             and the release checks (SHA256SUMS included); on main, a build attestation of every file publish.yml uploads
@@ -180,6 +180,8 @@ jobs:
         run: python3 scripts/docs-sync.py --check
       - name: the rule pages agree with the rule files (scripts/rule-docs.py; SR-WORK-REGISTRY)
         run: python3 scripts/rule-docs.py --check
+      - name: the browser-support table is well-formed and cites its sources (L6 decision 15, W-166)
+        run: python3 scripts/data-browsers-check.py --check
       - id: rustc # the pinned toolchain, read from the file — nothing is installed to learn it
         run: echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
       - id: verdict
@@ -290,8 +292,12 @@ jobs:
     # 2026-10-30). Nothing `needs` this job. A gated group (a set budget)
     # fails the run on a breach — L8 decision 7 — and so publish.yml's gate;
     # an ungated one is `continue-on-error` and holds neither.
+    # `needs: build` waits for all eight legs, but only linux-x64-gnu's binary
+    # is used: another platform's failure does not skip the measurement (run
+    # 42053047689: linux-arm64-musl red, perf skipped). With no linux-x64-gnu
+    # artifact the download fails, and the run is red already.
     needs: [perf-plan, build]
-    if: needs.perf-plan.outputs.run == 'true'
+    if: ${{ !cancelled() && needs.perf-plan.outputs.run == 'true' }}
     name: perf ${{ matrix.group }}
     runs-on: ubuntu-24.04 # L8 reference machine (the decider, 2026-10-24); never ubuntu-latest
     timeout-minutes: 20
@@ -509,7 +515,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork
     name: build ${{ matrix.key }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 35 # 20, plus the crash capture's unstripped rebuild (W-169)
     strategy:
       fail-fast: false
       matrix:
@@ -566,8 +572,11 @@ jobs:
           key: ${{ steps.wheel.outputs.cache-primary-key }}
       - name: the npm binary is the wheel's binary
         run: python scripts/package.py extract out/wheel/*.whl out/bin/${{ matrix.key }}
+      - name: a crash leaves a core (W-169)
+        run: scripts/crash-capture.sh arm "$RUNNER_TEMP/crash"
       - name: the binary runs, says its version, and passes every pack's tests
         run: |
+          ulimit -c unlimited 2>/dev/null || true # the core of a crash below (W-169); Windows dumps through WER
           b="out/bin/${{ matrix.key }}/codelaw"; [ -f "$b.exe" ] && b="$b.exe"
           python scripts/version.py --check --binary "$b"
           # Every pack runs, and a failing pack prints its failing checks: the
@@ -579,6 +588,22 @@ jobs:
             "$b" rules lint "$p" | tail -1
           done
           exit "$rc"
+      - name: the crash, symbolized (W-169)
+        # The core, the shipped binary, an unstripped twin built here (never
+        # shipped) and backtrace.txt — every thread's stack from gdb or lldb.
+        if: failure()
+        timeout-minutes: 15
+        run: |
+          b="out/bin/${{ matrix.key }}/codelaw"; [ -f "$b.exe" ] && b="$b.exe"
+          scripts/crash-capture.sh collect "$RUNNER_TEMP/crash" "$b" ${{ matrix.target }} ${{ matrix.maturin }}
+          [ -f "$RUNNER_TEMP/crash/backtrace.txt" ] && { echo '### the crash (W-169)'; echo '```'; head -c 60000 "$RUNNER_TEMP/crash/backtrace.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY" || true
+      - if: failure()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: crash-${{ matrix.key }}
+          path: ${{ runner.temp }}/crash/
+          if-no-files-found: ignore
+          retention-days: 14
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: build-${{ matrix.key }}

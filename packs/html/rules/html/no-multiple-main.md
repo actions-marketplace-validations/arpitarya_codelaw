@@ -2,9 +2,9 @@
 id: html/no-multiple-main
 title: "One visible <main> per document"
 languages: [html]
-fix: manual
-fix_reason: "which one is the main content is a design decision"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/no-multiple-main]
 since: 0.1.0
@@ -31,6 +31,13 @@ native: html/no-multiple-main
 ```html
 <main>Feed</main>
 <main>Sidebar</main>
+```
+
+#### Fixed
+
+```html
+<main>Feed</main>
+<div>Sidebar</div>
 ```
 
 #### Do

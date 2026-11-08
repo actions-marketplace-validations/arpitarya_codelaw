@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving a hook can change what the code does on the renders that skipped it) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react-hooks/rules-of-hooks`, `eslint-plugin-react-hooks/hooks` |
@@ -186,20 +186,24 @@ function Profile({ id }) {
 #### Don't
 
 ```ts
-function useProfile(id: string) {
+function Profile({ id }) {
   if (!id) {
     return null;
   }
-  return useState(id);
+  const [user] = useState(null);
+  return user;
 }
 ```
 
 #### Do
 
 ```ts
-function useProfile(id: string) {
-  const state = useState(id);
-  return id ? state : null;
+function Profile({ id }) {
+  const [user] = useState(null);
+  if (!id) {
+    return null;
+  }
+  return user;
 }
 ```
 

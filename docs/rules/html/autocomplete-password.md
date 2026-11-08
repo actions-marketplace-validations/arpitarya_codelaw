@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` · `codelaw:html/security` at `error` · `codelaw:sec-html/recommended` at `error` · `codelaw:sec-html/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `preferred` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the field asks for a new or the current password depends on the form) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/autocomplete-password` |
@@ -179,6 +179,12 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ```html
 <input type="password" name="pw">
+```
+
+#### Fixed
+
+```html
+<input autocomplete="current-password" type="password" name="pw">
 ```
 
 #### Do

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of the two members to keep is a decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the later member is the one the class keeps, so the choices are deleting the earlier (the default, which keeps behaviour) or the later) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-dupe-class-members` |
@@ -142,6 +142,16 @@ class Cart {
 }
 ```
 
+#### Fixed
+
+```js
+class Cart {
+  total() {
+    return 2;
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -164,6 +174,16 @@ class Cart {
   total() {
     return 1;
   }
+  total() {
+    return 2;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class Cart {
   total() {
     return 2;
   }

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right structure depends on what the markup is for) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/element-permitted-content` |

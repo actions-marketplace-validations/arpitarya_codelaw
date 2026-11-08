@@ -16,6 +16,23 @@
         "info": { "$ref": "#/definitions/severity" }
       }
     },
+    "targets": {
+      "description": "The oldest versions the code supports (SR-CONFIG decision 11f): a target-gated fix is `auto` only where the target meets the rule's `fix_target`, else `suggest`.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "python": {
+          "description": "The oldest Python, `\"3.10\"`. Unset, the lower bound of `project.requires-python` in the nearest `pyproject.toml`.",
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+        },
+        "browsers": {
+          "description": "Each browser's oldest version, `\"<browser> >= <version>\"`, the browser one of chrome, edge, firefox, safari, ios_saf, samsung. Unset, a `browserslist` whose every query has that form.",
+          "type": "array",
+          "items": { "type": "string", "pattern": "^\\s*(chrome|edge|firefox|safari|ios_saf|samsung)\\s*>=\\s*[0-9]+(\\.[0-9]+)*\\s*$" }
+        }
+      }
+    },
     "scope": {
       "type": "object",
       "additionalProperties": false,
@@ -23,7 +40,8 @@
         "files": { "$ref": "#/definitions/globs" },
         "exclude": { "$ref": "#/definitions/globs" },
         "rules": { "$ref": "#/definitions/rules" },
-        "remap": { "$ref": "#/definitions/remap" }
+        "remap": { "$ref": "#/definitions/remap" },
+        "targets": { "$ref": "#/definitions/targets" }
       }
     },
     "profile": {
@@ -76,7 +94,12 @@
             "reason": {
               "description": "Why the rule is turned off (SR-CONFIG decision 11c): only with `severity = \"off\"`. Mandatory when `[rules] require_reason` is true.",
               "type": "string"
-            }
+            },
+            "on_edit": {
+              "description": "Whether the rule's `auto` fix runs on save and from the agent hook (SR-CONFIG decision 11e); `false` leaves it for `codelaw fix`, pre-commit and CI. Either direction; over `[fix] on_edit` and the rule's own default.",
+              "type": "boolean"
+            },
+            "targets": { "$ref": "#/definitions/targets", "description": "This rule's targets, over a scope's and `[targets]` (SR-CONFIG decision 11f)." }
           }
         }
       ]
@@ -477,6 +500,16 @@
           "type": "string",
           "default": ".codelaw/spell/words.txt"
         }
+      }
+    },
+    "targets": {
+      "x-codelaw-record": "SR-CONFIG",
+      "description": "The oldest versions the code supports (SR-CONFIG decision 11f): `python` and `browsers`, an input to target-gated fixes; a scope's and a rule entry's `targets` are over it. The nearest config naming a key wins.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "python": { "$ref": "#/definitions/targets/properties/python" },
+        "browsers": { "$ref": "#/definitions/targets/properties/browsers" }
       }
     },
     "todo": {

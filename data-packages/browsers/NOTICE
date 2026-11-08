@@ -1,0 +1,12 @@
+codelaw-data-browsers / @codelaw/data-browsers — codelaw's own browser-support table.
+
+Every row is written by codelaw's maintainers from a browser vendor's own
+release notes, feature-status entry or bug tracker, or from the
+specification; each row lists those sources under "sources". Nothing is
+copied from caniuse (CC-BY-4.0) or from MDN's browser-compat-data (CC0),
+which codelaw does not use (L2).
+
+A browser a row leaves out is one no source has confirmed yet: a fix that
+needs it stays a suggestion.
+
+Licence: MIT, as codelaw.

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of the two definitions was meant can't be known from the file) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the first or the last, since TOML refuses both and only the author knows which was meant. A table defined twice is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -134,7 +134,15 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 [tool.pytest]
 addopts = "-q"
 testpaths = ["tests"]
-addopts = "-ra"
+addopts = "-q"
+```
+
+#### Fixed
+
+```toml
+[tool.pytest]
+addopts = "-q"
+testpaths = ["tests"]
 ```
 
 #### Do

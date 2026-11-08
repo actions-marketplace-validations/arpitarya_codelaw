@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what replaces the plugin depends on what it showed) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | OWASP A02:2025 · security severity `low` |
@@ -133,7 +133,7 @@ codelaw config --print --for <file>            # the resolved setting, and where
 #### Don't
 
 ```html
-<embed src="movie.swf">
+<embed src="movie.mp4">
 ```
 
 #### Do

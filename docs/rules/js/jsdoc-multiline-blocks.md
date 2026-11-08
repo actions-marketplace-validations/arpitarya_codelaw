@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/jsdoc` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own)) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/multiline-blocks` |

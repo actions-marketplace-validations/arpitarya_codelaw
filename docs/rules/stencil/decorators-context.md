@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the class should be a component needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/decorators-context` |

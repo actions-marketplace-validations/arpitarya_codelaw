@@ -2,9 +2,9 @@
 id: md/relative-links
 title: "Relative links point at a file that exists"
 languages: [markdown]
-fix: manual
-fix_reason: "whether the file moved, was renamed or was never written needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the files beside the target whose names are within two edits, then files of the same name elsewhere in the project, are choices, nearest first; a link with none is manual"
+fix_exception: value
 stability: preview
 since: 0.1.0
 ---
@@ -30,18 +30,32 @@ native: md/relative-links
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./faq.md).
 <!-- docs/setup.md -->
 # Setup
+<!-- docs/FAQ.md -->
+# FAQ
+````
+
+#### Fixed
+
+````md
+<!-- docs/guide.md -->
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
+<!-- docs/setup.md -->
+# Setup
+<!-- docs/FAQ.md -->
+# FAQ
 ````
 
 #### Do
 
 ````md
 <!-- docs/guide.md -->
-Start with [the setup](./setup.md), then read the [FAQ](../FAQ.md).
+Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).
 <!-- docs/setup.md -->
 # Setup
-<!-- FAQ.md -->
+<!-- docs/FAQ.md -->
 # FAQ
 ````
+

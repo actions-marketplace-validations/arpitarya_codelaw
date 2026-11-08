@@ -2,9 +2,8 @@
 id: html/no-conditional-comment
 title: "No Internet Explorer conditional comments"
 languages: [html]
-fix: manual
-fix_reason: "whether the markup inside is still needed is the author's call"
-fix_pending: "auto"
+fix: auto
+fix_reason: "no browser codelaw targets reads conditional comments: a comment hidden from them goes, and the markers around content every browser shows go, the content kept, so the page renders the same"
 stability: preview
 ported_from: [html-validate/no-conditional-comment]
 since: 0.1.0

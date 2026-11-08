@@ -2,9 +2,9 @@
 id: js/getter-return
 title: "A getter returns a value on every path"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "the value a getter should return is the author's decision"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the path that falls off the end gets `return undefined;`, which it already returns; the reviewer confirms that is the value meant"
+fix_exception: value
 stability: preview
 ported_from: [eslint/getter-return]
 since: 0.1.0
@@ -40,6 +40,19 @@ const box = {
 };
 ```
 
+#### Fixed
+
+```js
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
+  },
+};
+```
+
 #### Do
 
 ```js
@@ -60,6 +73,19 @@ const box = {
     if (this.items) {
       return this.items.length;
     }
+  },
+};
+```
+
+#### Fixed
+
+```jsx
+const box = {
+  get size() {
+    if (this.items) {
+      return this.items.length;
+    }
+    return undefined;
   },
 };
 ```

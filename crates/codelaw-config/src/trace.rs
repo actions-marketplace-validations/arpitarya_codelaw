@@ -106,6 +106,9 @@ fn duration(d: std::time::Duration) -> Value {
     if ms.is_multiple_of(1000) { json!(format!("{}s", ms / 1000)) } else { json!(format!("{ms}ms")) }
 }
 
+/// Each browser's minimum version, as `(name, [major, minor, …])` — `[targets] browsers` resolved for one file and rule.
+pub type BrowserMinimums = Vec<(String, Vec<u64>)>;
+
 impl Config {
     fn source(&self, file: &ConfigFile, path: &[&str]) -> String {
         match file.line_of(path) {
@@ -219,6 +222,8 @@ impl Config {
         push("cache.max_size", size(self.cache_max_size()), s);
         let (_, s) = root_key(&["fix", "external_timeout"], |r| r.fix.external_timeout.map(|_| Value::Null), Value::Null);
         push("fix.external_timeout", duration(self.external_timeout()), s);
+        let (v, s) = root_key(&["fix", "on_edit"], |r| r.fix.on_edit.map(|x| json!(x)), Value::Null);
+        push("fix.on_edit", v, s);
         let (v, s) = root_key(&["adapters", "enabled"], |r| r.adapters.enabled.as_ref().map(|x| json!(x)), Value::Null);
         push("adapters.enabled", v, s);
         let (_, s) = root_key(&["adapters", "timeout"], |r| r.adapters.timeout.map(|_| Value::Null), Value::Null);
@@ -418,6 +423,48 @@ impl Config {
     /// Every setting of rule `id` that applies to `file` (the root when
     /// `None`), lowest precedence first, with its source: each config's
     /// `[rules]`, then the matching `[[overrides]]` (decision 4).
+    /// One of `file`'s targets from the config alone, and the place that
+    /// set it (SR-CONFIG decision 11f), highest first: `rule`'s entry (the
+    /// last layer naming it), the matching scopes (the last), the nearest
+    /// `[targets]`. The engine falls back to `pyproject.toml` and
+    /// `browserslist` when this is `None`.
+    fn target_from_config<T>(&self, file: &Path, rule: Option<&str>, key: &str, get: impl Fn(&crate::raw::RawTargets) -> Option<T>) -> Option<(T, String)> {
+        if let Some(id) = rule {
+            let layers = self.layers_for(file);
+            if let Some(hit) = layers.iter().rev().find_map(|l| l.rules.get(id).and_then(|s| s.targets()).and_then(&get).map(|v| (v, format!("{} (`{id}`'s `targets.{key}`)", l.source)))) {
+                return Some(hit);
+            }
+        }
+        if let Some(hit) = self.scopes_for(file).iter().rev().find_map(|(f, s)| get(&s.targets).map(|v| (v, format!("{} (`targets.{key}`)", self.scope_label(f, s))))) {
+            return Some(hit);
+        }
+        self.files
+            .iter()
+            .filter(|f| file.starts_with(&f.dir))
+            .collect::<Vec<_>>()
+            .into_iter()
+            .rev()
+            .find_map(|f| f.raw.targets.as_ref().and_then(&get).map(|v| (v, self.source(f, &["targets", key]))))
+    }
+
+    /// `targets.python` for `file` (and `rule`), from the config.
+    pub fn python_target(&self, file: &Path, rule: Option<&str>) -> Option<(Vec<u64>, String)> {
+        self.target_from_config(file, rule, "python", |t| t.python.as_deref().and_then(crate::raw::parse_python_target))
+    }
+
+    /// `targets.browsers` for `file` (and `rule`), from the config: each
+    /// browser and its minimum version.
+    pub fn browsers_target(&self, file: &Path, rule: Option<&str>) -> Option<(BrowserMinimums, String)> {
+        self.target_from_config(file, rule, "browsers", |t| t.browsers.as_ref().map(|b| b.iter().filter_map(|q| crate::raw::parse_browser_target(q)).collect()))
+    }
+
+    /// `[fix] on_edit` and the line that set it (SR-CONFIG decision 11e);
+    /// `None` when unset.
+    pub fn fix_on_edit_source(&self) -> Option<(bool, String)> {
+        let root = self.files.first()?;
+        root.raw.fix.on_edit.map(|v| (v, self.source(root, &["fix", "on_edit"])))
+    }
+
     pub fn rule_setting_sources(&self, file: Option<&Path>, id: &str) -> Vec<(String, &RuleSetting)> {
         let target = self.target(file);
         let mut out = Vec::new();

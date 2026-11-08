@@ -3,6 +3,8 @@ id: py/f-string-missing-placeholders
 title: "An f-string has a placeholder"
 languages: [python]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [ruff/F541, pylint/f-string-without-interpolation]
 since: 0.1.0

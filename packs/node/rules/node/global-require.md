@@ -2,9 +2,8 @@
 id: node/global-require
 title: "require() at the top of the module"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle"
 stability: preview
 ported_from: [eslint-plugin-n/global-require]
 since: 0.5.0
@@ -17,6 +16,9 @@ since: 0.5.0
 ```codelaw
 match:
   pattern: $R($$$A)
+  any:
+    - inside: { kind: variable_declarator, stopBy: neighbor, inside: { kind: lexical_declaration, stopBy: neighbor, pattern: $DECL } }
+    - pattern: $R($$$A)
   inside:
     stopBy: end
     any: [{kind: statement_block}, {kind: arrow_function}, {kind: class_body}, {kind: if_statement}, {kind: for_statement}, {kind: for_in_statement}, {kind: while_statement}, {kind: do_statement}, {kind: switch_body}]
@@ -25,6 +27,8 @@ constraints:
 where:
   $R: undeclared
 message: "Move this `require()` to the top of the module"
+fix:
+  - move-to: { target: $DECL, position: after-imports }
 ```
 
 ## How to fix
@@ -41,6 +45,15 @@ message: "Move this `require()` to the top of the module"
 ```js
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+#### Fixed
+
+```js
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```
@@ -66,6 +79,15 @@ function render(md) {
 }
 ```
 
+#### Fixed
+
+```jsx
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 #### Do
 
 ```jsx
@@ -87,6 +109,15 @@ function render(md) {
 }
 ```
 
+#### Fixed
+
+```ts
+const marked = require("marked");
+function render(md) {
+  return marked.parse(md);
+}
+```
+
 #### Do
 
 ```ts
@@ -104,6 +135,15 @@ function render(md) {
 ```tsx
 function render(md) {
   const marked = require("marked");
+  return marked.parse(md);
+}
+```
+
+#### Fixed
+
+```tsx
+const marked = require("marked");
+function render(md) {
   return marked.parse(md);
 }
 ```

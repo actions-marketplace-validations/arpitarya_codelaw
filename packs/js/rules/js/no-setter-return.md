@@ -2,9 +2,8 @@
 id: js/no-setter-return
 title: "A setter does not return a value"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "whether the returned expression was meant as a side effect needs a reader"
-fix_pending: "auto"
+fix: auto
+fix_reason: "a setter's return value is thrown away, so `return e;` becomes `e; return;`, a last `return` goes, and a value that can do nothing goes with it; behaviour is unchanged"
 stability: preview
 ported_from: [eslint/no-setter-return]
 since: 0.1.0

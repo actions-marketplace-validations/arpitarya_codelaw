@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended value can only be guessed) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/attribute-allowed-values`, `htmlhint/src-not-empty` |
@@ -134,6 +134,13 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 ```html
 <input type="emial" name="email">
 <img src="a.png" alt="A" loading="later">
+```
+
+#### Fixed
+
+```html
+<input type="email" name="email">
+<img src="a.png" alt="A" loading="eager">
 ```
 
 #### Do

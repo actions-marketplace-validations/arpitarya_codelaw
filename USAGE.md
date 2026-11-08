@@ -222,6 +222,36 @@ Every rule has a fix class: `auto` (applied by `codelaw fix`, on save and by the
 
 `fix = "auto"` on a `suggest` rule is a config error naming the rule's own class. `codelaw rules --why <id>` and `codelaw config --print` show the lowered class and the line that set it.
 
+### Fixes that wait for `codelaw fix`
+
+Some `auto` fixes delete work in progress: an unused binding a draft is about to use, a `debugger` placed on purpose, an empty block still being filled in. Those rules ship `on_edit: false`: save in the editor and the agent hook leave them, and `codelaw fix`, pre-commit and CI's `fix --check` still apply them. Turn it either way, per rule or for every rule:
+
+```toml
+[fix]
+on_edit = false                                   # save and the hook apply no fix; codelaw fix does
+
+[rules]
+"js/no-debugger" = { on_edit = true }             # this one again on save and from the hook
+```
+
+Lowest first: the rule's own default, `[fix] on_edit`, `[rules]`, a scope, a profile. `codelaw rules --why <id>` shows `on edit:` and what set it; `codelaw config --print` lists every rule that is not the default `true` ([SR-CONFIG](records/0110_config.md) decision 11e).
+
+### Target versions
+
+Some fixes are safe only from a version on: `@functools.cache` needs Python 3.9. Such a fix is automatic only when codelaw knows the oldest version the code supports; otherwise it is a suggestion, and the finding names the line that would make it automatic.
+
+```toml
+[targets]
+python = "3.10"                                      # else requires-python's lower bound in the nearest pyproject.toml
+browsers = ["chrome >= 111", "firefox >= 113", "safari >= 16.4"]
+
+[scope.legacy]
+files = ["legacy/**"]
+targets = { python = "3.8" }                         # a scope's is over [targets]; a rule entry's `targets` over both
+```
+
+Browsers are `chrome`, `edge`, `firefox`, `safari`, `ios_saf` and `samsung`. A `browserslist` in `package.json` or `.browserslistrc` counts only when every query is `<browser> >= <version>`. CSS prefix and colour-notation fixes also need codelaw's browser-support table, an optional package: `npm install -D @codelaw/data-browsers` or `pip install codelaw-data-browsers`; a feature it has no row for stays a suggestion. `codelaw config --print` shows `targets.python` and `targets.browsers` with their source; `codelaw migrate ruff` copies Ruff's `target-version` ([SR-CONFIG](records/0110_config.md) decision 11f).
+
 ### Saying why a rule is off
 
 A rule entry that sets `severity = "off"`, in `[rules]` or a scope, may say why. `require_reason = true` makes the reason mandatory:

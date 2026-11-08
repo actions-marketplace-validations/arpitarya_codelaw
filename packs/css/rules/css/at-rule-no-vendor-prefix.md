@@ -2,8 +2,9 @@
 id: css/at-rule-no-vendor-prefix
 title: "No vendor-prefixed at-rules"
 languages: [css, scss]
-fix: suggest
-fix_reason: "browsers that need the prefix lose the rule"
+fix: auto
+fix_target: { browsers: "css-at-rule:$FIXED" }
+fix_reason: "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   ignoreAtRules: { type: "string[]", default: [], description: "at-rules to accept; `/regex/` for a pattern" }

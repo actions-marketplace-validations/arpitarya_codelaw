@@ -2,8 +2,9 @@
 id: css/property-no-deprecated
 title: "No deprecated properties"
 languages: [css, scss]
-fix: suggest
-fix_reason: "older browsers may support only the deprecated name"
+fix: auto
+fix_target: { browsers: "css-property:$FIXED" }
+fix_reason: "older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target)"
 stability: preview
 options:
   ignoreProperties: { type: "string[]", default: [], description: "properties to accept; `/regex/` for a pattern" }

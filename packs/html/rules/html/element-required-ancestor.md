@@ -2,9 +2,9 @@
 id: html/element-required-ancestor
 title: "Elements are inside the ancestor they need"
 languages: [html]
-fix: manual
-fix_reason: "whether to add the ancestor or use other elements depends on the intent"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/element-required-ancestor]
 since: 0.1.0
@@ -33,6 +33,24 @@ native: html/element-required-ancestor
 <div>
   <dt>Term</dt>
   <dd>Definition</dd>
+</div>
+```
+
+#### Fixed (change the parent)
+
+```html
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+#### Fixed (wrap)
+
+```html
+<div>
+  <dl><dt>Term</dt>
+  <dd>Definition</dd></dl>
 </div>
 ```
 

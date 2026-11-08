@@ -2,9 +2,9 @@
 id: css/no-important
 title: "No `!important`"
 languages: [css, scss]
-fix: manual
-fix_reason: "the selector or layer that should win instead is a design call"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`!important` goes; the declaration may then lose to another, which the reviewer checks"
+fix_exception: restructure
 stability: preview
 ported_from: [stylelint/declaration-no-important]
 since: 0.1.0
@@ -36,6 +36,14 @@ a {
 }
 ```
 
+#### Fixed
+
+```css
+a {
+  color: red;
+}
+```
+
 #### Do
 
 ```css
@@ -50,6 +58,14 @@ a.highlight {
 ```scss
 a {
   color: red !important;
+}
+```
+
+#### Fixed
+
+```scss
+a {
+  color: red;
 }
 ```
 

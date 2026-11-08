@@ -51,3 +51,24 @@
 ```expect
 (none)
 ```
+
+### case: a parent with a declaration of its own is not joined
+
+```scss
+.a {
+  .b {
+    .c {
+      .d {
+        color: blue;
+        .e {
+          color: red;
+        }
+      }
+    }
+  }
+}
+```
+
+```expect
+6:9 scss/max-nesting-depth
+```

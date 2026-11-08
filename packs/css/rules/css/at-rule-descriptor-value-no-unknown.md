@@ -2,9 +2,9 @@
 id: css/at-rule-descriptor-value-no-unknown
 title: "No unknown keyword values for at-rule descriptors"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended value is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual"
+fix_exception: value
 stability: stable
 ported_from: [stylelint/at-rule-descriptor-value-no-unknown]
 since: 0.1.0
@@ -32,7 +32,7 @@ native: css/at-rule-descriptor-value-no-unknown
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -54,7 +54,7 @@ native: css/at-rule-descriptor-value-no-unknown
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 

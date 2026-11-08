@@ -2,9 +2,8 @@
 id: js/no-duplicate-case
 title: "No two case labels in a switch are the same"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "which label was meant is a decision"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "no value reaches the later case: the whole clause goes when the clause before it exits, otherwise only its label, so what falls through still runs; the reviewer confirms the case was not meant to test another value"
 stability: preview
 ported_from: [eslint/no-duplicate-case]
 since: 0.1.0
@@ -40,6 +39,16 @@ switch (status) {
 }
 ```
 
+#### Fixed
+
+```js
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 #### Do
 
 ```js
@@ -64,6 +73,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+#### Fixed
+
+```jsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```
@@ -96,6 +115,16 @@ switch (status) {
 }
 ```
 
+#### Fixed
+
+```ts
+switch (status) {
+  case 200:
+    ok();
+    break;
+}
+```
+
 #### Do
 
 ```ts
@@ -120,6 +149,16 @@ switch (status) {
     break;
   case 200:
     retry();
+    break;
+}
+```
+
+#### Fixed
+
+```tsx
+switch (status) {
+  case 200:
+    ok();
     break;
 }
 ```

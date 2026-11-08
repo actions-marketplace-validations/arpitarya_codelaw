@@ -2,9 +2,8 @@
 id: yaml/no-ambiguous-numbers
 title: "No numbers that YAML 1.1 and 1.2 read differently"
 languages: [yaml]
-fix: manual
-fix_reason: "whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are quoting it (the default: the string YAML 1.2 reads, for a time), the number YAML 1.2 reads, or the number YAML 1.1 reads, each now read the same by both"
 stability: preview
 since: 0.1.0
 ---
@@ -32,6 +31,14 @@ native: yaml/no-ambiguous-numbers
 mode: 0755
 ports:
   - 22:22
+```
+
+#### Fixed
+
+```yaml
+mode: "0755"
+ports:
+  - "22:22"
 ```
 
 #### Do

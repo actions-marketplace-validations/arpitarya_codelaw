@@ -2,9 +2,8 @@
 id: html/hidden-focusable
 title: "Focusable elements are not aria-hidden"
 languages: [html]
-fix: manual
-fix_reason: "whether to unhide it, take it out of the tab order or remove it depends on the design"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `tabindex=\"-1\"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it"
 stability: preview
 ported_from: [html-validate/hidden-focusable]
 tags: [a11y]
@@ -32,6 +31,24 @@ native: html/hidden-focusable
 
 ```html
 <a href="/home" aria-hidden="true">Home</a>
+```
+
+#### Fixed (tabindex -1)
+
+```html
+<a tabindex="-1" href="/home" aria-hidden="true">Home</a>
+```
+
+#### Fixed (remove aria-hidden)
+
+```html
+<a href="/home">Home</a>
+```
+
+#### Fixed (inert)
+
+```html
+<a inert href="/home" aria-hidden="true">Home</a>
 ```
 
 #### Do

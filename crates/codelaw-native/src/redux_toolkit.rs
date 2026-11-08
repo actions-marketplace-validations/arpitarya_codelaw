@@ -15,7 +15,7 @@ use crate::js_ast::{
 };
 use crate::util::{named_children, text};
 use crate::{NativeContext, NativeFinding, NativeRule};
-use codelaw_core::Language;
+use codelaw_core::{Language, TextEdit};
 use codelaw_lang::SyntaxNode;
 use codelaw_semantic::SemanticModel;
 use tree_sitter::Node;
@@ -24,6 +24,28 @@ const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescr
 
 fn finding(n: Node<'_>, message: impl Into<String>) -> NativeFinding {
     NativeFinding { start: n.start_byte(), end: n.end_byte(), message: message.into(), edits: Vec::new() }
+}
+
+fn finding_fix(n: Node<'_>, message: impl Into<String>, edits: Vec<TextEdit>) -> NativeFinding {
+    NativeFinding { start: n.start_byte(), end: n.end_byte(), message: message.into(), edits }
+}
+
+/// The leading whitespace of the line `at` is on.
+fn indent(src: &str, at: usize) -> &str {
+    let line = src[..at].rfind('\n').map(|i| i + 1).unwrap_or(0);
+    let lead = &src[line..];
+    &lead[..lead.len() - lead.trim_start_matches([' ', '\t']).len()]
+}
+
+/// The statement holding an expression, and the statement after it in
+/// the same block.
+fn statement_and_next(e: Node<'_>) -> Option<(Node<'_>, Node<'_>)> {
+    let stmt = e.parent().filter(|p| p.kind() == "expression_statement")?;
+    let mut next = stmt.next_named_sibling()?;
+    while next.kind() == "comment" {
+        next = next.next_named_sibling()?;
+    }
+    Some((stmt, next))
 }
 
 fn calls(call: Node<'_>, src: &str, names: &[&str]) -> bool {
@@ -138,6 +160,44 @@ fn mutations<'t>(f: Node<'t>, state: &str, src: &str) -> Vec<Node<'t>> {
 
 // ---------------------------------------------------------------- no-mutating-reducer
 
+/// The edits for a change followed at once by `return state;`:
+/// `state.push(x)` returns `[...state, x]`, `state.key = v` returns
+/// `{ ...state, key: v }`.
+fn copy_then_return(m: Node<'_>, state: &str, src: &str) -> Option<Vec<TextEdit>> {
+    let (stmt, next) = statement_and_next(m)?;
+    if next.kind() != "return_statement" || next.named_child(0).is_none_or(|v| text(v, src) != state) {
+        return None;
+    }
+    let copy = match m.kind() {
+        "call_expression" => {
+            let callee = m.child_by_field_name("function")?;
+            if text(callee.child_by_field_name("object")?, src) != state || text(callee.child_by_field_name("property")?, src) != "push" {
+                return None;
+            }
+            let args = m.child_by_field_name("arguments")?;
+            let inner = src[args.start_byte() + 1..args.end_byte() - 1].trim().trim_end_matches(',');
+            if inner.is_empty() || crate::util::mentions(inner, state) {
+                return None;
+            }
+            format!("[...{state}, {inner}]")
+        }
+        "assignment_expression" => {
+            let left = m.child_by_field_name("left").filter(|l| l.kind() == "member_expression")?;
+            if text(left.child_by_field_name("object")?, src) != state {
+                return None;
+            }
+            let key = left.child_by_field_name("property").filter(|p| p.kind() == "property_identifier")?;
+            let value = text(m.child_by_field_name("right")?, src);
+            if crate::util::mentions(value, state) {
+                return None;
+            }
+            format!("{{ ...{state}, {}: {value} }}", text(key, src))
+        }
+        _ => return None,
+    };
+    Some(vec![TextEdit::new(stmt.start_byte(), next.end_byte(), format!("return {copy};"))])
+}
+
 pub struct NoMutatingReducer;
 
 impl NativeRule for NoMutatingReducer {
@@ -158,7 +218,8 @@ impl NativeRule for NoMutatingReducer {
         }
         let Some((state, _)) = reducer_params(f, src) else { return };
         for m in mutations(f, state, src) {
-            out.push(finding(m, format!("This changes `{state}` in place; a hand-written reducer returns a new value, or is written with `createSlice`, whose Immer draft may be changed")));
+            let edits = copy_then_return(m, state, src).unwrap_or_default();
+            out.push(finding_fix(m, format!("This changes `{state}` in place; a hand-written reducer returns a new value, or is written with `createSlice`, whose Immer draft may be changed"), edits));
         }
     }
 }
@@ -204,6 +265,38 @@ fn side_effect(n: Node<'_>, src: &str) -> Option<String> {
     }
 }
 
+/// The edit that moves a side effect into a `prepare` callback: a case
+/// reducer `name(state, action) { … }` whose effect sits in an object
+/// literal built from `action.payload` (and nothing of `state`) becomes
+/// `name: { reducer(state, action) { … action.payload … }, prepare(payload)
+/// { return { payload: <the object> }; } }`, when the rest of the reducer
+/// doesn't read `action`.
+fn to_prepare(f: Node<'_>, effect: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    if f.kind() != "method_definition" {
+        return None;
+    }
+    let (state, Some(action)) = reducer_params(f, src)? else { return None };
+    let object = std::iter::successors(Some(effect), |n| n.parent()).take_while(|n| n.id() != f.id()).filter(|n| n.kind() == "object").last()?;
+    let payload = format!("{action}.payload");
+    let obj = text(object, src);
+    if crate::util::mentions(obj, state) || !obj.contains(&payload) || obj.replace(&payload, "").contains(action) {
+        return None;
+    }
+    let rest = format!("{}{}", &src[f.start_byte()..object.start_byte()], &src[object.end_byte()..f.end_byte()]);
+    let params_end = f.child_by_field_name("parameters")?.end_byte();
+    if src[params_end..object.start_byte()].contains(action) || src[object.end_byte()..f.end_byte()].contains(action) {
+        return None;
+    }
+    let _ = rest;
+    let name = text(f.child_by_field_name("name")?, src);
+    let pad = indent(src, f.start_byte());
+    let method = format!("reducer{}{}{}", &src[f.child_by_field_name("parameters")?.start_byte()..object.start_byte()], payload, &src[object.end_byte()..f.end_byte()]);
+    let method: String = method.split('\n').enumerate().map(|(i, l)| if i == 0 || l.is_empty() { l.to_owned() } else { format!("  {l}") }).collect::<Vec<_>>().join("\n");
+    let built = obj.replace(&payload, "payload");
+    let out = format!("{name}: {{\n{pad}  {method},\n{pad}  prepare(payload) {{\n{pad}    return {{ payload: {built} }};\n{pad}  }},\n{pad}}}");
+    Some(vec![TextEdit::new(f.start_byte(), f.end_byte(), out)])
+}
+
 pub struct NoSideEffectsInReducer;
 
 impl NativeRule for NoSideEffectsInReducer {
@@ -225,10 +318,12 @@ impl NativeRule for NoSideEffectsInReducer {
         // The reducer and every callback inside it.
         let Some(b) = body(f) else { return };
         let mut stack = vec![b];
+        let mut first = true;
         while let Some(n) = stack.pop() {
             stack.extend(named_children(n));
             if let Some(what) = side_effect(n, src) {
-                out.push(finding(n, format!("A reducer that {what} has a side effect; reducers compute the next state from `state` and `action` alone — do this in a thunk, a listener or a `prepare` callback")));
+                let edits = if std::mem::take(&mut first) { to_prepare(f, n, src).unwrap_or_default() } else { Vec::new() };
+                out.push(finding_fix(n, format!("A reducer that {what} has a side effect; reducers compute the next state from `state` and `action` alone — do this in a thunk, a listener or a `prepare` callback"), edits));
             }
         }
     }
@@ -426,6 +521,32 @@ fn blind(v: Node<'_>, action: &str, src: &str) -> bool {
     is_payload(v, action, src) || (v.kind() == "object" && members(v).iter().any(|m| m.kind() == "spread_element" && m.named_child(0).is_some_and(|a| is_payload(a, action, src))))
 }
 
+/// The edits that replace `return action.payload;` in a `createSlice`
+/// case reducer with one `state.key = action.payload.key;` per key of the
+/// slice's literal `initialState`.
+fn assign_fields(f: Node<'_>, ret: Node<'_>, v: Node<'_>, state: &str, action: &str, src: &str) -> Option<Vec<TextEdit>> {
+    if text(unparen(v), src) != format!("{action}.payload") {
+        return None;
+    }
+    let slice = std::iter::successors(f.parent(), |p| p.parent()).find(|a| calls(*a, src, &["createSlice"]))?;
+    let options = arguments(slice).first().copied().map(unparen).filter(|o| o.kind() == "object")?;
+    let init = members(options).into_iter().find(|m| member_name(*m, src) == Some("initialState")).and_then(|m| m.child_by_field_name("value")).map(unparen).filter(|o| o.kind() == "object")?;
+    let mut keys = Vec::new();
+    for m in members(init) {
+        match m.kind() {
+            "pair" if m.child_by_field_name("key").is_some_and(|k| k.kind() == "property_identifier") => keys.push(member_name(m, src)?),
+            "shorthand_property_identifier" => keys.push(text(m, src)),
+            _ => return None,
+        }
+    }
+    if keys.is_empty() {
+        return None;
+    }
+    let pad = indent(src, ret.start_byte());
+    let lines: Vec<String> = keys.iter().map(|k| format!("{state}.{k} = {action}.payload.{k};")).collect();
+    Some(vec![TextEdit::new(ret.start_byte(), ret.end_byte(), lines.join(&format!("\n{pad}")))])
+}
+
 pub struct NoBlindPayloadReturn;
 
 impl NativeRule for NoBlindPayloadReturn {
@@ -458,7 +579,8 @@ impl NativeRule for NoBlindPayloadReturn {
             match n.kind() {
                 "return_statement" => {
                     if let Some(v) = n.named_child(0).filter(|v| blind(*v, action, src)) {
-                        out.push(finding(unparen(v), message));
+                        let edits = if immer { assign_fields(f, n, v, state, action, src).unwrap_or_default() } else { Vec::new() };
+                        out.push(finding_fix(unparen(v), message, edits));
                     }
                 }
                 // `Object.assign(state, action.payload)` on an Immer draft.
@@ -575,6 +697,52 @@ impl NativeRule for NoSequentialDispatch {
 
 // ---------------------------------------------------------------- object-shorthand-mapdispatch
 
+/// The object form of a `mapDispatch` whose every member is
+/// `(a, b) => dispatch(creator(a, b))`: `{ key: creator }` (`{ creator }`
+/// when the names agree). A `mapDispatch` named by a `const` read only
+/// here goes with it.
+fn shorthand(model: &SemanticModel, root: Node<'_>, arg: Node<'_>, func: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let dispatch = params(func).first().and_then(|p| param_name(*p, src))?;
+    let obj = body(func).map(unparen).filter(|b| b.kind() == "object")?;
+    let mut entries = Vec::new();
+    for m in members(obj) {
+        let key = (m.kind() == "pair").then(|| member_name(m, src)).flatten()?;
+        let f = m.child_by_field_name("value").map(unparen).filter(|v| v.kind() == "arrow_function")?;
+        let names: Vec<&str> = params(f).into_iter().map(|p| param_name(p, src)).collect::<Option<_>>()?;
+        let call = body(f).map(unparen).filter(|b| b.kind() == "call_expression")?;
+        if text(call.child_by_field_name("function")?, src) != dispatch {
+            return None;
+        }
+        let inner = arguments(call);
+        let [creator_call] = inner.as_slice() else { return None };
+        let creator_call = unparen(*creator_call);
+        let creator = creator_call.child_by_field_name("function").filter(|c| c.kind() == "identifier")?;
+        let passed: Vec<&str> = arguments(creator_call).into_iter().map(|a| text(a, src)).collect();
+        if passed != names {
+            return None;
+        }
+        let c = text(creator, src);
+        entries.push(if c == key { c.to_owned() } else { format!("{key}: {c}") });
+    }
+    if entries.is_empty() {
+        return None;
+    }
+    let mut edits = vec![TextEdit::new(arg.start_byte(), arg.end_byte(), format!("{{ {} }}", entries.join(", ")))];
+    if unparen(arg).kind() == "identifier" {
+        let sym = model.symbol_at(arg.start_byte())?;
+        if model.symbol(sym).refs.len() == 1 {
+            let (s, e) = *model.symbol(sym).decls.first()?;
+            let decl = root.descendant_for_byte_range(s, e)?.parent().filter(|d| d.kind() == "variable_declarator")?;
+            let stmt = decl.parent().filter(|st| st.kind() == "lexical_declaration" && named_children(*st).len() == 1)?;
+            let (a, b) = crate::util::whole_lines(src, stmt.start_byte(), stmt.end_byte());
+            // The blank line after it goes too.
+            let b = if src[b..].starts_with('\n') { b + 1 } else { b };
+            edits.push(TextEdit::delete(a, b));
+        }
+    }
+    Some(edits)
+}
+
 pub struct ObjectShorthandMapDispatch;
 
 impl NativeRule for ObjectShorthandMapDispatch {
@@ -612,8 +780,9 @@ impl NativeRule for ObjectShorthandMapDispatch {
             _ => None,
         };
         // A `mapDispatch` that reads `ownProps` needs the function form.
-        if func.is_some_and(|f| params(f).len() < 2) {
-            out.push(finding(arg, "`mapDispatch` as a function; pass an object of action creators, `connect(mapState, { added })`, and `connect` binds them to `dispatch`"));
+        if let Some(func) = func.filter(|f| params(*f).len() < 2) {
+            let edits = shorthand(model, root, arg, func, ctx.source).unwrap_or_default();
+            out.push(finding_fix(arg, "`mapDispatch` as a function; pass an object of action creators, `connect(mapState, { added })`, and `connect` binds them to `dispatch`", edits));
         }
     }
 }
@@ -622,6 +791,50 @@ impl NativeRule for ObjectShorthandMapDispatch {
 
 fn is_selector_hook(name: &str) -> bool {
     name == "useSelector" || (name.starts_with("use") && name.ends_with("Selector") && name[3..].starts_with(|c: char| c.is_ascii_uppercase()))
+}
+
+/// `const { a, b } = useSelector((s) => ({ a: s.a, b: s.b }));` as one
+/// `const a = useSelector((s) => s.a);` per key, when the pattern takes
+/// exactly the object's keys, by name.
+fn one_per_key(call: Node<'_>, selector: Node<'_>, obj: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let decl = call.parent().filter(|d| d.kind() == "variable_declarator")?;
+    let stmt = decl.parent().filter(|s| s.kind() == "lexical_declaration" && named_children(*s).len() == 1)?;
+    let pattern = decl.child_by_field_name("name").filter(|p| p.kind() == "object_pattern")?;
+    let names: Vec<&str> = named_children(pattern).into_iter().map(|p| (p.kind() == "shorthand_property_identifier_pattern").then(|| text(p, src))).collect::<Option<_>>()?;
+    let mut values = Vec::new();
+    for m in members(obj) {
+        let (key, value) = match m.kind() {
+            "pair" => (member_name(m, src)?, text(m.child_by_field_name("value")?, src)),
+            "shorthand_property_identifier" => return None,
+            _ => return None,
+        };
+        values.push((key, value));
+    }
+    if values.len() != names.len() || values.iter().any(|(k, _)| !names.contains(k)) || selector.kind() != "arrow_function" {
+        return None;
+    }
+    let hook = text(call.child_by_field_name("function")?, src);
+    let head = &src[selector.start_byte()..selector.child_by_field_name("body")?.start_byte()];
+    let keyword = stmt.child(0).map(|k| text(k, src)).unwrap_or("const");
+    let pad = indent(src, stmt.start_byte());
+    let lines: Vec<String> = values.iter().map(|(k, v)| format!("{keyword} {k} = {hook}({head}{v});")).collect();
+    Some(vec![TextEdit::new(stmt.start_byte(), stmt.end_byte(), lines.join(&format!("\n{pad}")))])
+}
+
+/// `shallowEqual` from `react-redux` as the hook's second argument, when
+/// the file imports from `react-redux` by name.
+fn shallow_equal(call: Node<'_>, ctx: &NativeContext<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let model = ctx.semantic?;
+    let args = call.child_by_field_name("arguments")?;
+    let close = args.end_byte() - 1;
+    let mut edits = vec![TextEdit::insert(close, ", shallowEqual")];
+    let has = model.imports.iter().any(|i| i.source == "react-redux" && matches!(&i.imported, codelaw_semantic::Imported::Named(n) if n == "shallowEqual"));
+    if !has {
+        let spec = model.imports.iter().filter(|i| i.source == "react-redux" && matches!(i.imported, codelaw_semantic::Imported::Named(_))).last()?;
+        edits.push(TextEdit::insert(spec.end, ", shallowEqual"));
+    }
+    let _ = src;
+    Some(edits)
 }
 
 pub struct NoObjectSelector;
@@ -660,7 +873,14 @@ impl NativeRule for NoObjectSelector {
             Some(b)
         };
         if let Some(obj) = returned.map(unparen).filter(|o| o.kind() == "object") {
-            out.push(finding(obj, "The selector returns a new object every time, so the component re-renders on every dispatched action; call `useSelector` once per value"));
+            let mut choices = Vec::new();
+            if let Some(e) = one_per_key(call, selector, obj, src) {
+                choices.push(crate::choice("one per value", true, e));
+            }
+            if let Some(e) = shallow_equal(call, ctx, src) {
+                choices.push(crate::choice("shallowEqual", false, e));
+            }
+            out.push(finding_fix(obj, "The selector returns a new object every time, so the component re-renders on every dispatched action; call `useSelector` once per value", crate::choice_edits(choices)));
         }
     }
 }

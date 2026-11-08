@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:sec-html/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which origin the page may use is a decision for its owner) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.2.0 |
 | **Security** | OWASP A05:2025 · security severity `medium` |
@@ -133,6 +133,13 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ```html
 <base href="https://cdn.example.com/app/">
+<link rel="stylesheet" href="app.css">
+```
+
+#### Fixed
+
+```html
+<link rel="stylesheet" href="https://cdn.example.com/app/app.css">
 ```
 
 #### Do

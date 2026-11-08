@@ -2,9 +2,9 @@
 id: sec-html/no-external-base
 title: "<base> stays on this origin"
 languages: [html]
-fix: manual
-fix_reason: "which origin the page may use is a decision for its owner"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual"
+fix_exception: security
 stability: preview
 security: { owasp: ["A05:2025"], severity: medium }
 since: 0.2.0
@@ -31,6 +31,13 @@ native: sec-html/no-external-base
 
 ```html
 <base href="https://cdn.example.com/app/">
+<link rel="stylesheet" href="app.css">
+```
+
+#### Fixed
+
+```html
+<link rel="stylesheet" href="https://cdn.example.com/app/app.css">
 ```
 
 #### Do

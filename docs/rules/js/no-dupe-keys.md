@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value should win can't be known from the code) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the later key is the one the object keeps, so the choices are deleting the earlier (the default, which keeps the value; its own evaluation goes with it) or the later) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-dupe-keys` |
@@ -138,6 +138,14 @@ const user = {
 };
 ```
 
+#### Fixed
+
+```js
+const user = {
+  name: "Grace",
+};
+```
+
 #### Do
 
 ```js
@@ -154,6 +162,14 @@ const user = {
 ```jsx
 const user = {
   name: "Ada",
+  name: "Grace",
+};
+```
+
+#### Fixed
+
+```jsx
+const user = {
   name: "Grace",
 };
 ```

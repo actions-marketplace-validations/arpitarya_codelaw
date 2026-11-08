@@ -2,9 +2,9 @@
 id: html/no-deprecated-attr
 title: "No obsolete attributes"
 languages: [html]
-fix: manual
-fix_reason: "the replacement is usually CSS, which needs a class and a rule"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/no-deprecated-attr]
 since: 0.1.0
@@ -31,6 +31,12 @@ native: html/no-deprecated-attr
 
 ```html
 <img src="a.png" alt="Chart" align="left">
+```
+
+#### Fixed
+
+```html
+<img src="a.png" alt="Chart" style="float: left">
 ```
 
 #### Do

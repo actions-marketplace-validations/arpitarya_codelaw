@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAnnotations` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended annotation is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/annotation-no-unknown` |

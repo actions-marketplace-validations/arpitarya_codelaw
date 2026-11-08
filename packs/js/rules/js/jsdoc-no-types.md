@@ -2,9 +2,8 @@
 id: js/jsdoc-no-types
 title: "No JSDoc types in TypeScript"
 languages: [typescript, tsx]
-fix: manual
-fix_reason: "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed)"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go"
 stability: preview
 ported_from: [eslint-plugin-jsdoc/no-types]
 since: 0.5.0
@@ -21,6 +20,8 @@ match:
     - regex: '^/\*\*[^*/]'
     - regex: '(^/\*\*|\n)[ \t]*(\*[ \t]*)?@(param|arg|argument|returns?)[ \t]*\{'
 message: "The signature already gives this type; drop the `{type}` from the JSDoc tag"
+fix:
+  - edit-text: { pattern: '((?:\A/\*\*|\n)[ \t]*(?:\*[ \t]*)?@(?:param|arg|argument|returns?))[ \t]*\{[^{}\n]*\}', replace: '${1}' }
 ```
 
 ## How to fix

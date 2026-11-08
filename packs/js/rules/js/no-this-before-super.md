@@ -2,9 +2,9 @@
 id: js/no-this-before-super
 title: "this is not used before super() in a derived constructor"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "moving statements across `super()` can change what the base class sees"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the `super(…)` call moves above the first statement using `this` when its arguments read neither `this` nor anything declared in between; the parent's constructor then runs earlier, which is the fix but is a change"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/no-this-before-super]
 since: 0.1.0

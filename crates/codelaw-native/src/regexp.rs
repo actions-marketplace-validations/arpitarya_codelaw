@@ -286,6 +286,22 @@ impl NativeRule for NoInvalidRegexp {
     }
 }
 
+/// The length of the quantifier at the start of `rest`: `*`, `+`, `?` or
+/// `{n}`, `{n,}`, `{n,m}`, each with an optional lazy `?`.
+fn quantifier_len(rest: &str) -> usize {
+    let n = if rest.starts_with(['*', '+', '?']) {
+        1
+    } else if rest.starts_with('{') {
+        match rest.find('}') {
+            Some(close) if rest[1..close].chars().all(|c| c.is_ascii_digit() || c == ',') && rest[1..close].starts_with(|c: char| c.is_ascii_digit()) => close + 1,
+            _ => 0,
+        }
+    } else {
+        0
+    };
+    if n > 0 && rest[n..].starts_with('?') { n + 1 } else { n }
+}
+
 pub struct NoUselessBackreference;
 
 impl NativeRule for NoUselessBackreference {
@@ -326,7 +342,17 @@ impl NativeRule for NoUselessBackreference {
             if let Some(why) = why {
                 let shown = &pattern[r.start..r.end];
                 let (start, end) = if n.kind() == "regex" { (base + r.start, base + r.end) } else { (n.start_byte(), n.end_byte()) };
-                out.push(NativeFinding { start, end, message: format!("`{shown}` always matches the empty string: it is {why}"), edits: Vec::new() });
+                // It matches the empty string, so it and its quantifier go;
+                // not when a digit follows, which would join the escape.
+                let edits = if n.kind() == "regex" {
+                    let rest = &pattern[r.end..];
+                    let q = quantifier_len(rest);
+                    let after = &rest[q..];
+                    (!after.starts_with(|c: char| c.is_ascii_digit())).then(|| vec![codelaw_core::TextEdit::delete(base + r.start, base + r.end + q)]).unwrap_or_default()
+                } else {
+                    Vec::new()
+                };
+                out.push(NativeFinding { start, end, message: format!("`{shown}` always matches the empty string: it is {why}"), edits });
             }
         }
     }
@@ -366,7 +392,31 @@ impl NativeRule for NoMisleadingCharacterClass {
                 } else {
                     "it holds a character made of several code points"
                 };
-                out.push(NativeFinding { start: base + start - 1, end: base + end + 1, message: format!("This character class doesn't match what it shows: {why}"), edits: Vec::new() });
+                let mut choices = Vec::new();
+                // The several-code-point characters as alternatives beside
+                // the class: `[❤️a]` is `(?:❤️|[a])`.
+                if (joined || regional) && !body.starts_with('^') && !body.contains(['\\', '-', '[']) {
+                    let mut clusters: Vec<String> = Vec::new();
+                    for (i, c) in chars.iter().enumerate() {
+                        let joins = misleading(*c) || (i > 0 && chars[i - 1] == '\u{200D}');
+                        let pairs = i > 0 && (0x1F1E6..=0x1F1FF).contains(&(*c as u32)) && clusters.last().is_some_and(|l| l.chars().count() == 1 && l.chars().all(|x| (0x1F1E6..=0x1F1FF).contains(&(x as u32))));
+                        match clusters.last_mut() {
+                            Some(last) if joins || pairs => last.push(*c),
+                            _ => clusters.push(c.to_string()),
+                        }
+                    }
+                    let (multi, single): (Vec<&String>, Vec<&String>) = clusters.iter().partition(|c| c.chars().count() > 1);
+                    let mut alts: Vec<String> = multi.into_iter().cloned().collect();
+                    if !single.is_empty() {
+                        alts.push(format!("[{}]", single.into_iter().cloned().collect::<String>()));
+                    }
+                    choices.push(crate::choice("alternation", true, vec![codelaw_core::TextEdit::new(base + start - 1, base + end + 1, format!("(?:{})", alts.join("|")))]));
+                }
+                // Astral characters are one character each under `u`.
+                if surrogate && !joined && !regional && n.kind() == "regex" && scan(&pattern, true).error.is_none() {
+                    choices.push(crate::choice("add the u flag", choices.is_empty(), vec![codelaw_core::TextEdit::insert(n.end_byte(), "u")]));
+                }
+                out.push(NativeFinding { start: base + start - 1, end: base + end + 1, message: format!("This character class doesn't match what it shows: {why}"), edits: crate::choice_edits(choices) });
             }
         }
     }

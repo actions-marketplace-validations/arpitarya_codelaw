@@ -41,3 +41,15 @@ y = 2
 ```expect
 4:2 toml/no-duplicate-keys
 ```
+
+### case: two values are two choices, neither applied unasked
+
+```toml
+[tool.pytest]
+addopts = "-q"
+addopts = "-ra"
+```
+
+```expect
+3:1 toml/no-duplicate-keys
+```

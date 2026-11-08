@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:tanstack-query/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which fields the component needs is a choice only its author can make) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `@tanstack/eslint-plugin-query/no-rest-destructuring` |
@@ -136,7 +136,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -160,7 +160,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -184,7 +184,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 
@@ -208,7 +208,7 @@ import { useQuery } from '@tanstack/react-query';
 
 function useTodos() {
   const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });
-  return [data, rest];
+  return [data, rest.isPending];
 }
 ```
 

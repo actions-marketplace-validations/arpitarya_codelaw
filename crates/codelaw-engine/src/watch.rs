@@ -68,8 +68,7 @@ impl Project {
         let graph = if !self.graph_rules().is_empty() || self.deprecations_on() || self.tests_on() {
             let config = self.graph_config()?;
             let sources = self.graph_sources()?;
-            let this = &*self;
-            let facts = self.pool.install(|| sources.par_iter().map(|s| this.source_facts(s)).collect());
+            let facts = self.all_facts(sources.par_iter());
             Some(GraphParts { config, sources, facts })
         } else {
             None
@@ -519,7 +518,7 @@ impl Watch {
                 read.push(i);
             }
             let sources = &g.sources;
-            let facts: Vec<Option<FileFacts>> = project.pool.install(|| read.par_iter().map(|&i| project.source_facts(&sources[i])).collect());
+            let facts: Vec<Option<FileFacts>> = project.all_facts(read.par_iter().map(|&i| &sources[i]));
             for (&i, f) in read.iter().zip(facts) {
                 g.facts[i] = f;
             }

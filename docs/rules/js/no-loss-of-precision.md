@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to use a BigInt, a string or a rounder value depends on how the number is used) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are the literal the engine already stores (behaviour-preserving) or, for an integer, a BigInt, which keeps every digit but is another type) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-loss-of-precision`, `eslint-plugin-unicorn/no-loss-of-precision` |
@@ -135,6 +135,18 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 const id = 9007199254740993;
 ```
 
+#### Fixed (the value it holds)
+
+```js
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```js
+const id = 9007199254740993n;
+```
+
 #### Do
 
 ```js
@@ -147,6 +159,18 @@ const id = 9007199254740993n;
 
 ```jsx
 const id = 9007199254740993;
+```
+
+#### Fixed (the value it holds)
+
+```jsx
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```jsx
+const id = 9007199254740993n;
 ```
 
 #### Do
@@ -163,6 +187,18 @@ const id = 9007199254740993n;
 const id = 9007199254740993;
 ```
 
+#### Fixed (the value it holds)
+
+```ts
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```ts
+const id = 9007199254740993n;
+```
+
 #### Do
 
 ```ts
@@ -175,6 +211,18 @@ const id = 9007199254740993n;
 
 ```tsx
 const id = 9007199254740993;
+```
+
+#### Fixed (the value it holds)
+
+```tsx
+const id = 9007199254740992;
+```
+
+#### Fixed (BigInt)
+
+```tsx
+const id = 9007199254740993n;
 ```
 
 #### Do

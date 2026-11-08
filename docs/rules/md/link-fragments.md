@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:md/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignore_case` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which section the link meant needs the author) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when a heading's anchor is the fragment written as an anchor (`#Install` is `#install`); otherwise the anchors within two edits are choices, nearest first; a fragment with none near is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `markdownlint/MD051` |

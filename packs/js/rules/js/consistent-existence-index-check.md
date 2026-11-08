@@ -2,9 +2,7 @@
 id: js/consistent-existence-index-check
 title: "Check indexOf against -1 the same way"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-unicorn/consistent-existence-index-check]
 since: 0.5.0
@@ -23,6 +21,7 @@ match:
     - pattern: $I >= 0
     - pattern: $I > -1
   has: { field: left, kind: identifier, pattern: $I }
+  all: [{ has: { field: operator, pattern: $$OP } }]
   inside:
     stopBy: end
     kind: statement_block
@@ -33,6 +32,7 @@ match:
         - has: { field: name, pattern: $I }
         - has: { field: value, kind: call_expression, has: { field: function, kind: member_expression, has: { field: property, regex: '^(indexOf|lastIndexOf|findIndex|findLastIndex)$' } } }
 message: "Compare the index with `=== -1` or `!== -1`"
+fix: "$I $OP|map(<:===, >=:!==, >:!==) -1"
 ```
 
 ## How to fix

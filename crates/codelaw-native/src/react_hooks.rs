@@ -168,6 +168,46 @@ fn unconditional(n: Node<'_>, f: Node<'_>, src: &str) -> bool {
     !own_nodes(f).into_iter().any(|x| x.kind() == "return_statement" && x.end_byte() <= n.start_byte())
 }
 
+
+/// How the file reaches a React hook `name`: `React.name` through a
+/// default or namespace import of `react`; `name` when it is imported by
+/// name (with the specifier to add, when it isn't yet); `name` when the
+/// file imports nothing from `react`, as its other hooks are reached.
+fn react_hook(model: &SemanticModel, name: &str) -> Option<(String, Option<TextEdit>)> {
+    let from_react: Vec<_> = model.imports.iter().filter(|i| i.source == "react" && !i.type_only).collect();
+    if from_react.is_empty() {
+        return Some((name.to_owned(), None));
+    }
+    if from_react.iter().any(|i| matches!(&i.imported, codelaw_semantic::Imported::Named(n) if n == name)) {
+        return Some((name.to_owned(), None));
+    }
+    if let Some(last) = from_react.iter().filter(|i| matches!(i.imported, codelaw_semantic::Imported::Named(_))).last() {
+        if model.symbols.iter().any(|s| s.name == name) {
+            return None;
+        }
+        return Some((name.to_owned(), Some(TextEdit::insert(last.end, format!(", {name}")))));
+    }
+    let whole = from_react.iter().find(|i| matches!(i.imported, codelaw_semantic::Imported::Default | codelaw_semantic::Imported::Namespace))?;
+    let local = model.symbol(whole.local?).name.clone();
+    Some((format!("{local}.{name}"), None))
+}
+
+/// The statement of `f`'s body that holds `n`.
+fn body_statement<'t>(f: Node<'t>, n: Node<'t>) -> Option<Node<'t>> {
+    let body = f.child_by_field_name("body").filter(|b| b.kind() == "statement_block")?;
+    let mut cur = n;
+    while cur.parent()?.id() != body.id() {
+        cur = cur.parent()?;
+    }
+    Some(cur)
+}
+
+/// The leading whitespace of the line `at` starts.
+fn pad_at(src: &str, at: usize) -> &str {
+    let line = src[..at].rfind('\n').map(|i| i + 1).unwrap_or(0);
+    &src[line..at]
+}
+
 pub struct NoSetStateInRender;
 
 impl NativeRule for NoSetStateInRender {
@@ -200,6 +240,54 @@ impl NativeRule for NoSetStateInRender {
 }
 
 const EFFECTS: &[&str] = &["useEffect", "useLayoutEffect", "useInsertionEffect"];
+
+/// The edits for an effect that only sets one state from its
+/// dependencies: `const [x, setX] = useState(…)` and the effect go, and
+/// `const x = <the value>;` stands where the effect was — when `setX` is
+/// called nowhere else, the value reads only names the dependency list
+/// holds, and nothing reads `x` before the effect.
+fn derive_state(model: &SemanticModel, effect: Node<'_>, callback: Node<'_>, call: Node<'_>, setter: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let body = callback.child_by_field_name("body")?;
+    let only = if body.kind() == "statement_block" {
+        let stmts: Vec<Node> = named_children(body).into_iter().filter(|c| c.kind() != "comment").collect();
+        match stmts.as_slice() {
+            [one] if one.kind() == "expression_statement" => one.named_child(0)?,
+            _ => return None,
+        }
+    } else {
+        body
+    };
+    if only.id() != call.id() {
+        return None;
+    }
+    let value = arguments(call);
+    let [value] = value.as_slice() else { return None };
+    let deps = arguments(effect).get(1).copied().filter(|d| d.kind() == "array")?;
+    let dep_names: Vec<&str> = named_children(deps).into_iter().map(|d| (d.kind() == "identifier").then(|| text(d, src))).collect::<Option<_>>()?;
+    let mut stack = vec![*value];
+    while let Some(n) = stack.pop() {
+        if n.kind() == "identifier" && !dep_names.contains(&text(n, src)) {
+            return None;
+        }
+        if is_function(n) {
+            return None;
+        }
+        stack.extend(named_children(n));
+    }
+    let sym = model.symbol_at(setter.start_byte())?;
+    if model.symbol(sym).refs.len() != 1 {
+        return None;
+    }
+    let decl = state_setter(model, setter, src)?;
+    let state = decl.child_by_field_name("name").and_then(|p| p.named_child(0)).filter(|n| n.kind() == "identifier")?;
+    let decl_stmt = decl.parent().filter(|d| d.kind() == "lexical_declaration" && named_children(*d).len() == 1)?;
+    let effect_stmt = effect.parent().filter(|p| p.kind() == "expression_statement")?;
+    if decl_stmt.parent()?.id() != effect_stmt.parent()?.id() || crate::util::mentions(&src[decl_stmt.end_byte()..effect_stmt.start_byte()], text(state, src)) {
+        return None;
+    }
+    let (a, b) = crate::util::whole_lines(src, decl_stmt.start_byte(), decl_stmt.end_byte());
+    Some(vec![TextEdit::delete(a, b), TextEdit::new(effect_stmt.start_byte(), effect_stmt.end_byte(), format!("const {} = {};", text(state, src), text(*value, src)))])
+}
 
 pub struct NoSetStateInEffect;
 
@@ -235,7 +323,8 @@ impl NativeRule for NoSetStateInEffect {
                 continue;
             }
             let name = text(callee, src);
-            out.push(finding(call, format!("`{name}` is called synchronously in `{hook}`; the component renders again right after every commit"), Vec::new()));
+            let edits = derive_state(model, effect, callback, call, callee, src).unwrap_or_default();
+            out.push(finding(call, format!("`{name}` is called synchronously in `{hook}`; the component renders again right after every commit"), edits));
         }
     }
 }
@@ -318,8 +407,24 @@ impl NativeRule for NoRefInRender {
         } else {
             format!("`{name}.current` is read during render; React doesn't re-render when a ref changes, so read it in an effect or an event handler")
         };
-        out.push(finding(member, message, Vec::new()));
+        let edits = if written { ref_in_effect(model, f, member, src).unwrap_or_default() } else { Vec::new() };
+        out.push(finding(member, message, edits));
     }
+}
+
+/// The edit that moves a `ref.current = …;` statement of the render body
+/// into `useLayoutEffect(() => { … });`, which runs after every render
+/// before the browser paints.
+fn ref_in_effect(model: &SemanticModel, f: Node<'_>, member: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let stmt = body_statement(f, member)?;
+    if stmt.kind() != "expression_statement" || stmt.named_child(0).is_none_or(|e| e.kind() != "assignment_expression" || e.child_by_field_name("left").map(|l| l.id()) != Some(member.id())) {
+        return None;
+    }
+    let (hook, import) = react_hook(model, "useLayoutEffect")?;
+    let pad = pad_at(src, stmt.start_byte());
+    let mut edits = vec![TextEdit::new(stmt.start_byte(), stmt.end_byte(), format!("{hook}(() => {{\n{pad}  {}\n{pad}}});", text(stmt, src)))];
+    edits.extend(import);
+    Some(edits)
 }
 
 /// The impure calls eslint-plugin-react-hooks 7 knows (`Math.random`,
@@ -329,6 +434,37 @@ const IMPURE: &[(&str, &str)] = &[("Math", "random"), ("Date", "now"), ("perform
 /// Whether an identifier names a global: no declaration in the file binds it.
 fn is_global(model: &SemanticModel, ident: Node<'_>) -> bool {
     ident.kind() == "identifier" && model.reference_at(ident.start_byte()).is_some_and(|r| r.symbol.is_none())
+}
+
+/// The edit that computes an impure value once, in a `useState`
+/// initializer: `const v = <expr>;` becomes `const [v] = useState(() =>
+/// <expr>);`, and a final `return <expr>;` becomes `const [value] = …;
+/// return value;`. The value then stays the same across renders.
+fn once_in_state(model: &SemanticModel, f: Node<'_>, n: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let stmt = body_statement(f, n)?;
+    if crate::js_ast::descendants_same_function(stmt).iter().all(|x| x.id() != n.id()) {
+        return None;
+    }
+    let (hook, import) = react_hook(model, "useState")?;
+    let mut edits = match stmt.kind() {
+        "lexical_declaration" if named_children(stmt).len() == 1 => {
+            let decl = stmt.named_child(0)?;
+            let name = decl.child_by_field_name("name").filter(|x| x.kind() == "identifier")?;
+            let value = decl.child_by_field_name("value")?;
+            vec![TextEdit::new(name.start_byte(), value.end_byte(), format!("[{}] = {hook}(() => {})", text(name, src), text(value, src)))]
+        }
+        "return_statement" if stmt.next_named_sibling().is_none() => {
+            let value = stmt.named_child(0)?;
+            if model.symbols.iter().any(|s| s.name == "value") {
+                return None;
+            }
+            let pad = pad_at(src, stmt.start_byte());
+            vec![TextEdit::new(stmt.start_byte(), stmt.end_byte(), format!("const [value] = {hook}(() => {});\n{pad}return value;", text(value, src)))]
+        }
+        _ => return None,
+    };
+    edits.extend(import);
+    Some(edits)
 }
 
 pub struct Purity;
@@ -369,7 +505,8 @@ impl NativeRule for Purity {
         if render_function(n, src).is_none() {
             return;
         }
-        out.push(finding(n, format!("`{what}` gives a different result on every render; call it in an effect, an event handler or a `useState` initializer"), Vec::new()));
+        let edits = render_function(n, src).and_then(|(f, _)| once_in_state(model, f, n, src)).unwrap_or_default();
+        out.push(finding(n, format!("`{what}` gives a different result on every render; call it in an effect, an event handler or a `useState` initializer"), edits));
     }
 }
 
@@ -378,6 +515,49 @@ const FUNCTION_NODES: &[&str] = &["function_declaration", "function_expression",
 /// Whether a class extends `Component` or `PureComponent`.
 fn is_component_class(class: Node<'_>, src: &str) -> bool {
     named_children(class).into_iter().any(|c| c.kind() == "class_heritage" && text(c, src).contains("Component"))
+}
+
+/// The edits that move a nested component's statement above the
+/// top-level statement holding its parent, when it reads nothing the
+/// parent declares (no prop or local becomes a prop).
+fn hoist_component(model: &SemanticModel, f: Node<'_>, outer: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let stmt = body_statement(outer, f)?;
+    let own = match stmt.kind() {
+        "lexical_declaration" if named_children(stmt).len() == 1 && stmt.named_child(0)?.child_by_field_name("value").map(unparen).map(|v| v.id()) == Some(f.id()) => true,
+        "function_declaration" => stmt.id() == f.id(),
+        _ => false,
+    };
+    if !own {
+        return None;
+    }
+    // Every name it reads is its own, or bound outside the parent.
+    let mut stack = vec![f];
+    while let Some(n) = stack.pop() {
+        stack.extend(named_children(n));
+        if n.kind() != "identifier" {
+            continue;
+        }
+        if let Some(sym) = model.reference_at(n.start_byte()).and_then(|r| r.symbol) {
+            let at = model.symbol(sym).decls.first()?.0;
+            let in_parent = outer.start_byte() <= at && at < outer.end_byte();
+            let in_self = f.start_byte() <= at && at < f.end_byte();
+            if in_parent && !in_self {
+                return None;
+            }
+        }
+    }
+    let mut top = outer;
+    while let Some(p) = top.parent() {
+        if p.kind() == "program" {
+            break;
+        }
+        top = p;
+    }
+    if top.parent().is_none_or(|p| p.kind() != "program") {
+        return None;
+    }
+    let (a, b) = crate::util::whole_lines(src, stmt.start_byte(), stmt.end_byte());
+    Some(vec![TextEdit::insert(top.start_byte(), format!("{}\n", text(stmt, src))), TextEdit::delete(a, b)])
 }
 
 pub struct NoNestedComponents;
@@ -391,6 +571,9 @@ impl NativeRule for NoNestedComponents {
     }
     fn kinds(&self) -> &'static [&'static str] {
         FUNCTION_NODES
+    }
+    fn needs_semantic(&self) -> bool {
+        true
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let f = node.get_inner_node();
@@ -409,7 +592,8 @@ impl NativeRule for NoNestedComponents {
             };
             if let Some(outer) = outer {
                 let at = f.child_by_field_name("name").or_else(|| f.parent().filter(|p| p.kind() == "variable_declarator").and_then(|p| p.child_by_field_name("name"))).unwrap_or(f);
-                out.push(finding(at, format!("`{name}` is a component defined inside `{outer}`: it is a new component on every render, so its state resets; define it at the top level"), Vec::new()));
+                let edits = if is_function(a) { ctx.semantic.and_then(|m| hoist_component(m, f, a, src)) } else { None };
+                out.push(finding(at, format!("`{name}` is a component defined inside `{outer}`: it is a new component on every render, so its state resets; define it at the top level"), edits.unwrap_or_default()));
                 return;
             }
         }
@@ -463,7 +647,25 @@ impl NativeRule for UseMemo {
         } else {
             return;
         };
-        out.push(finding(call, format!("`useMemo` is misused: {problem}"), Vec::new()));
+        let mut edits = Vec::new();
+        if is_async(callback) && !own_nodes(callback).iter().any(|n| n.kind() == "await_expression") {
+            // `async` without `await`: the value, not a promise of it.
+            let mut c = callback.walk();
+            if let Some(kw) = callback.children(&mut c).find(|x| x.kind() == "async") {
+                let rest = &src[kw.end_byte()..];
+                edits.push(TextEdit::delete(kw.start_byte(), kw.end_byte() + rest.len() - rest.trim_start().len()));
+            }
+        } else if !is_async(callback) && !is_generator(callback) && !params(callback).is_empty() {
+            // Parameters React never passes, read nowhere.
+            let ps = callback.child_by_field_name("parameters").or_else(|| callback.child_by_field_name("parameter"));
+            let names: Vec<&str> = params(callback).into_iter().map(|p| text(p, src)).collect();
+            if let (Some(ps), Some(b)) = (ps, callback.child_by_field_name("body"))
+                && names.iter().all(|n| n.chars().all(|c| c.is_alphanumeric() || c == '_' || c == '$') && !crate::util::mentions(text(b, src), n))
+            {
+                edits.push(TextEdit::new(ps.start_byte(), ps.end_byte(), "()"));
+            }
+        }
+        out.push(finding(call, format!("`useMemo` is misused: {problem}"), edits));
     }
 }
 

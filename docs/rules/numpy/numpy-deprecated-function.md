@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:numpy/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (each has its own replacement name) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (each is a plain alias of its replacement, so renaming it keeps the behaviour) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/NPY003` |

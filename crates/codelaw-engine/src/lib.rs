@@ -4,6 +4,7 @@
 
 mod adapters;
 mod baseline;
+pub mod browsers;
 mod codelawignore;
 mod changed_functions;
 mod compile;
@@ -26,6 +27,7 @@ mod query;
 mod project;
 pub mod providers;
 pub mod suppress;
+pub mod targets;
 mod timings;
 mod types;
 mod watch;
@@ -263,6 +265,8 @@ pub struct Project {
     pub(crate) types: types::Types,
     /// The providers' tables (SR-RULE-PACKS decision 19).
     pub(crate) providers: providers::Providers,
+    /// The browser-support table, read on first use (W-166).
+    pub(crate) browsers: std::sync::OnceLock<Option<browsers::BrowserTable>>,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -383,6 +387,7 @@ impl Project {
             aliases,
             types: types::Types::default(),
             providers,
+            browsers: std::sync::OnceLock::new(),
         })
     }
 
@@ -477,6 +482,12 @@ impl Project {
         self.fix_source_in(rel_path, language, source, unsafe_fixes, None, files::Tree::Disk)
     }
 
+    /// `fix_source` for save in the editor (SR-LAW-4 decision 12): `auto`
+    /// only, and not a rule whose `on_edit` is `false` (SR-CONFIG 11e).
+    pub fn fix_source_on_edit(&self, rel_path: &str, language: Language, source: &str) -> FileFix {
+        self.fix_source_opts(rel_path, language, source, false, None, true, files::Tree::Disk)
+    }
+
     /// `fix_source` with `--unsafe`, applying the choice labelled `choice`
     /// where a finding has choices (SR-LAW-4 decisions 4 and 11).
     pub fn fix_source_choice(&self, rel_path: &str, language: Language, source: &str, choice: &str) -> FileFix {
@@ -493,12 +504,26 @@ impl Project {
         choice: Option<&str>,
         tree: files::Tree<'_>,
     ) -> FileFix {
+        self.fix_source_opts(rel_path, language, source, unsafe_fixes, choice, false, tree)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn fix_source_opts(
+        &self,
+        rel_path: &str,
+        language: Language,
+        source: &str,
+        unsafe_fixes: bool,
+        choice: Option<&str>,
+        on_edit: bool,
+        tree: files::Tree<'_>,
+    ) -> FileFix {
         let entry = FileEntry { abs: self.config.root_dir.join(rel_path), rel: rel_path.to_owned(), language };
         let (text, bom) = match source.strip_prefix('\u{feff}') {
             Some(t) => (t, true),
             None => (source, false),
         };
-        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned) }, false, bom, tree);
+        let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned), on_edit }, false, bom, tree);
         if bom {
             f.original.insert(0, '\u{feff}');
             f.fixed.insert(0, '\u{feff}');

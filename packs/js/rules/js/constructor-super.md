@@ -2,9 +2,9 @@
 id: js/constructor-super
 title: "A derived class's constructor calls super(); a base class's does not"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "what `super()` must receive depends on the base class"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `super(...arguments)` first in the constructor (the default: what an implicit constructor does) or `super()`; which the parent needs is the reviewer's call"
+fix_exception: restructure
 stability: preview
 ported_from: [eslint/constructor-super]
 since: 0.1.0
@@ -39,6 +39,17 @@ class Cat extends Animal {
 }
 ```
 
+#### Fixed
+
+```js
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
+    this.lives = 9;
+  }
+}
+```
+
 #### Do
 
 ```js
@@ -57,6 +68,17 @@ class Cat extends Animal {
 ```jsx
 class Cat extends Animal {
   constructor() {
+    this.lives = 9;
+  }
+}
+```
+
+#### Fixed
+
+```jsx
+class Cat extends Animal {
+  constructor() {
+    super(...arguments);
     this.lives = 9;
   }
 }

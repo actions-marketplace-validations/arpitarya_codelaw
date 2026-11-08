@@ -2,9 +2,9 @@
 id: md/reference-links-images
 title: "Reference links use a label that is defined"
 languages: [markdown]
-fix: manual
-fix_reason: "where the reference should point needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the defined labels within two edits of the missing one are choices, nearest first; a label with none near needs its definition written, and is manual"
+fix_exception: value
 stability: preview
 options:
   ignored_labels: { type: "string[]", default: ["x"], description: "labels never reported (`x` is a task-list checkbox)" }
@@ -33,7 +33,17 @@ native: md/reference-links-images
 #### Don't
 
 ````md
+Read [the spec][spek].
+
+[spec]: https://spec.commonmark.org/
+````
+
+#### Fixed
+
+````md
 Read [the spec][spec].
+
+[spec]: https://spec.commonmark.org/
 ````
 
 #### Do
@@ -43,3 +53,4 @@ Read [the spec][spec].
 
 [spec]: https://spec.commonmark.org/
 ````
+

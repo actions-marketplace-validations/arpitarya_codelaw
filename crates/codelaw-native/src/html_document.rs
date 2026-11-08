@@ -97,6 +97,22 @@ fn rank_option(ctx: &crate::NativeContext<'_>, key: &str, default: u32) -> u32 {
     }
 }
 
+/// The edits that move a heading, and the headings of its subsection
+/// after it, up by the levels it skipped.
+fn lower_section(dom: &Dom, i: usize, level: u32, expected: u32) -> Vec<TextEdit> {
+    let src: &str = &dom.source;
+    let delta = level - expected;
+    let mut out = crate::html_dom::rename_elem(src, &dom.elems[i], &format!("h{expected}"));
+    for j in dom.all().filter(|&j| j > i) {
+        let Some(l) = heading_level(&dom.elems[j].tag) else { continue };
+        if l <= level {
+            break;
+        }
+        out.extend(crate::html_dom::rename_elem(src, &dom.elems[j], &format!("h{}", l - delta)));
+    }
+    out
+}
+
 html_rule!(HeadingLevel, "html/heading-level", |dom, meta, ctx, out| {
     let allow_multiple_h1 = ctx.options.get("allowMultipleH1").and_then(|v| v.as_bool()).unwrap_or(false);
     let min_initial = rank_option(ctx, "minInitialRank", 1);
@@ -136,7 +152,7 @@ fn visit(dom: &Dom, i: usize, roots: &[String], stack: &mut Vec<Root>, allow_mul
                 let expected = root.current + 1;
                 if level != expected && !(depth == 1 && expected == 1 && level <= min_initial) {
                     if root.current > 0 {
-                        out.push(finding(s, t, format!("Headings go down one level at a time: expected <h{expected}>, found <h{level}>")));
+                        out.push(crate::html_dom::finding_with(s, t, format!("Headings go down one level at a time: expected <h{expected}>, found <h{level}>"), lower_section(dom, i, level, expected)));
                     } else if depth == 1 {
                         let msg = if min_initial > 1 {
                             format!("The first heading must be <h{min_initial}> or higher, found <h{level}>")
@@ -213,7 +229,12 @@ html_rule!(NoMissingReferences, "html/no-missing-references", |dom, meta, ctx, o
             let refs = if list { tokens_with_offsets(a.value_or_empty(), a.value_start) } else { vec![(a.value_start, a.value_end, a.value_or_empty())] };
             for (s, t, id) in refs {
                 if !ids.contains(id) {
-                    out.push(finding(s, t, format!("`{}` points at the id `{id}`, which no element has", a.name)));
+                    // The ids nearest it, or no reference at all.
+                    let src: &str = &dom.source;
+                    let mut choices: Vec<codelaw_core::FixChoice> = crate::util::nearest(id, ids.iter().map(|x| x.as_ref()), 2).into_iter().enumerate().map(|(n, k)| crate::choice(k, n == 0, vec![TextEdit::new(s, t, k)])).collect();
+                    let only = !list || a.value_or_empty().split_ascii_whitespace().count() == 1;
+                    choices.push(crate::choice("remove", choices.is_empty(), vec![if only { crate::html_dom::remove_attr(src, a) } else { TextEdit::delete(s, t) }]));
+                    out.push(crate::html_dom::finding_with(s, t, format!("`{}` points at the id `{id}`, which no element has", a.name), crate::choice_edits(choices)));
                 }
             }
         }

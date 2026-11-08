@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended value is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/at-rule-descriptor-value-no-unknown` |
@@ -133,7 +133,7 @@ codelaw config --print --for <file>                           # the resolved set
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 
@@ -155,7 +155,7 @@ codelaw config --print --for <file>                           # the resolved set
 @font-face {
   font-family: "Inter";
   src: url("inter.woff2");
-  font-display: quick;
+  font-display: swp;
 }
 ```
 

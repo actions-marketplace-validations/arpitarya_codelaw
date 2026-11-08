@@ -2,9 +2,9 @@
 id: html/element-permitted-order
 title: "Children come in the order HTML requires"
 languages: [html]
-fix: manual
-fix_reason: "moving markup may change how it is styled"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion"
+fix_exception: restructure
 stability: preview
 ported_from: [html-validate/element-permitted-order]
 since: 0.1.0

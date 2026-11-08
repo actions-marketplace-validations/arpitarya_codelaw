@@ -9,6 +9,8 @@ use crate::resolve::{PackageJson, PyProject, Resolver, Target, dirname, join};
 use globset::GlobSet;
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::Instant;
 
 /// One file given to the graph.
 pub struct GraphInput {
@@ -48,6 +50,22 @@ pub struct Graph {
     /// The packages whose entries could not be mapped to source.
     pub opaque_packages: BTreeSet<String>,
     keep: GlobSet,
+    /// Counts the time spent resolving, when [`Graph::build_timed`] asked.
+    resolving: Option<[AtomicU64; 2]>,
+}
+
+/// Where [`Graph::build_timed`] spent its time (`--timings`, SR-CLI-MCP
+/// decision 2; `codelaw bench --graph`, W-168). Only the counters read the
+/// clock: the graph built is the same with or without them (L5).
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct BuildTimes {
+    /// The file set and the manifests read into the resolver.
+    pub index_nanos: u64,
+    /// Resolving import specifiers to files, summed over every call.
+    pub resolve_nanos: u64,
+    pub resolve_calls: u64,
+    /// Linking — uses, re-exports, entry points — without the resolving.
+    pub link_nanos: u64,
 }
 
 /// A manifest the graph reads: `package.json`, `tsconfig.json`,
@@ -63,6 +81,16 @@ pub fn is_manifest(name: &str) -> bool {
 
 impl Graph {
     pub fn build(inputs: Vec<GraphInput>, manifests: &[Manifest], config: GraphConfig) -> Graph {
+        Self::build_with(inputs, manifests, config, false).0
+    }
+
+    /// [`Graph::build`], and where it spent its time.
+    pub fn build_timed(inputs: Vec<GraphInput>, manifests: &[Manifest], config: GraphConfig) -> (Graph, BuildTimes) {
+        Self::build_with(inputs, manifests, config, true)
+    }
+
+    fn build_with(inputs: Vec<GraphInput>, manifests: &[Manifest], config: GraphConfig, timed: bool) -> (Graph, BuildTimes) {
+        let started = Instant::now();
         let mut files: BTreeSet<String> = inputs.iter().map(|i| i.path.clone()).collect();
         let mut packages = Vec::new();
         let mut tsconfigs: Vec<(String, Value)> = Vec::new();
@@ -87,9 +115,18 @@ impl Graph {
             })
             .collect();
         let keep = config.keep_set();
-        let mut g = Graph { modules, resolver, config, uses: BTreeMap::new(), opaque_packages: BTreeSet::new(), keep };
+        let resolving = timed.then(|| [AtomicU64::new(0), AtomicU64::new(0)]);
+        let mut g = Graph { modules, resolver, config, uses: BTreeMap::new(), opaque_packages: BTreeSet::new(), keep, resolving };
+        let index_nanos = started.elapsed().as_nanos() as u64;
+        let linking = Instant::now();
         g.link();
-        g
+        let mut times = BuildTimes { index_nanos, ..Default::default() };
+        if let Some([nanos, calls]) = g.resolving.take() {
+            times.resolve_nanos = nanos.into_inner();
+            times.resolve_calls = calls.into_inner();
+            times.link_nanos = (linking.elapsed().as_nanos() as u64).saturating_sub(times.resolve_nanos);
+        }
+        (g, times)
     }
 
     pub fn is_kept_path(&self, path: &str) -> bool {
@@ -101,10 +138,16 @@ impl Graph {
     }
 
     fn resolve(&self, from: &str, spec: &str) -> Vec<Target> {
-        match self.lang(from) {
+        let started = self.resolving.as_ref().map(|_| Instant::now());
+        let found = match self.lang(from) {
             Some(FactLang::Python) => self.resolver.resolve_py(from, spec).into_iter().collect(),
             _ => self.resolver.resolve_js(from, spec),
+        };
+        if let (Some([nanos, calls]), Some(t)) = (&self.resolving, started) {
+            nanos.fetch_add(t.elapsed().as_nanos() as u64, Ordering::Relaxed);
+            calls.fetch_add(1, Ordering::Relaxed);
         }
+        found
     }
 
     fn add_use(&mut self, module: &str, name: &str, u: Use) {

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:pandas/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the separator argument has to be added) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the call passes no separator of its own (no `sep`, `delimiter`, `delim_whitespace`, second positional or splat); a call that does is reported as a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `ruff/PD012` |

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which value should win can't be known from the code) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/declaration-block-no-duplicate-custom-properties` |

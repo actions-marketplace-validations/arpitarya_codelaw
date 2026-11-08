@@ -471,7 +471,8 @@ fn hook_fixes_the_edited_file_and_returns_what_is_left() {
     let err = String::from_utf8(out.stderr).unwrap();
     assert_eq!(out.status.code(), Some(2), "{err}");
     assert!(err.contains("codelaw auto-fixed a.js: format/unformatted ×1"), "{err}");
-    assert!(err.contains("a.js:2:1 error js/for-direction") && err.contains("fix: manual (value) — 1."), "{err}");
+    // `suggest` since W-156 step 4: left for the agent, its two flips offered.
+    assert!(err.contains("a.js:2:1 error js/for-direction") && err.contains("fix: suggest — pick the choice that fits") && err.contains("[flip the update, default]"), "{err}");
     assert!(err.contains("never suppress or disable a rule"), "{err}");
     let fixed = fs::read_to_string(d.join("a.js")).unwrap();
     assert!(fixed.starts_with("let a = 1;\n"), "{fixed}");

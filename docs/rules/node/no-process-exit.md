@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:node/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how to end the program cleanly depends on what is still running) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (code after the call now runs and open handles keep the process alive, so the reviewer picks setting the exit code or throwing (both offered for a call with an exit code)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-n/no-process-exit`, `eslint-plugin-unicorn/no-process-exit` |
@@ -135,6 +135,22 @@ if (failed) {
 }
 ```
 
+#### Fixed (set exit code)
+
+```js
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+#### Fixed (throw)
+
+```js
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 #### Do
 
 ```js
@@ -150,6 +166,22 @@ if (failed) {
 ```jsx
 if (failed) {
   process.exit(1);
+}
+```
+
+#### Fixed (set exit code)
+
+```jsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+#### Fixed (throw)
+
+```jsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 
@@ -171,6 +203,22 @@ if (failed) {
 }
 ```
 
+#### Fixed (set exit code)
+
+```ts
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+#### Fixed (throw)
+
+```ts
+if (failed) {
+  throw new Error("process exit " + 1);
+}
+```
+
 #### Do
 
 ```ts
@@ -186,6 +234,22 @@ if (failed) {
 ```tsx
 if (failed) {
   process.exit(1);
+}
+```
+
+#### Fixed (set exit code)
+
+```tsx
+if (failed) {
+  process.exitCode = 1;
+}
+```
+
+#### Fixed (throw)
+
+```tsx
+if (failed) {
+  throw new Error("process exit " + 1);
 }
 ```
 

@@ -7,7 +7,7 @@ filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-05
 updated_by: "Claude Code (Opus 5.5)"
-ball: agent
+ball: closed
 ---
 
 # W-141 — The formatter, closer to Prettier (and Oxc's formatters)
@@ -18,15 +18,15 @@ ball: agent
 |---|---|---|---|
 | 1 | CSS: a comment's `*/` and the next selector stay on separate lines | a defect gone | ✅ 10-30 |
 | 2 | HTML: void elements written as Prettier writes them (`<meta charset="utf-8" />`) | most of the HTML gap | ✅ 10-30 (HTML 18.4% → 68.7%) |
-| 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | 🟡 rerun done; what is left is inside Biome and markup_fmt — see § Built |
+| 3 | Rerun the measurement; then Markdown code blocks, CSS `calc()` breaks, JS/TS comment placement | each language within 2% of Prettier | ✅ 11-05 — codelaw's four causes fixed; every difference left named in SR-FORMATTER (§ Closed 2026-11-05) |
 | 4 | The corpus and the comparison kept as a repeatable check | the number cannot slip back unseen | ✅ 10-30 |
-| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ✅ oxfmt measured; Oxc's crates ratified 2026-11-05 (L11 D-52); ✅ built behind the formatter 2026-11-05 (§ Built 2026-11-05) · 🟡 step 4 waits on W-139 |
+| W-148 | From Oxlint: Oxc's formatters, 18 rules, 38 bug rules — merged in; its steps under [§ W-148](#merged-in-w-148) | one item, not two | ✅ oxfmt measured; Oxc's crates ratified 2026-11-05 (L11 D-52); ✅ built behind the formatter 2026-11-05 (§ Built 2026-11-05) · step 4 is W-139's DoD 2d |
 
 **Ruled 2026-11-05 — Oxc's formatter crates ratified under L11. Arpit (voice):** *"Approve it."*; then (text) *"file it."* `oxc_formatter_css`, `_markdown`, `_yaml`, their parsers, `oxc_formatter_core`, `oxc_allocator` (MIT, a pinned git revision) are [SR-LAW-11](../../records/0013_LAW-11-dependencies.md) D-52. **Next (agent):** § W-148 step 1 — pin a revision (write it, the transitive count and its `members`/`tree` ledger lines into D-52, which `tests/dependencies.rs` reads), build them behind `codelaw format` for CSS, SCSS, YAML and Markdown, rerun `format-corpus.py`, and measure L8, the layout check and the binary size; then [SR-FORMATTER](../../records/0105_formatter.md) records what was built.
 
 **Merged 2026-10-30 (Arpit, text):** *"There are too many work items. See if we can review all the work items and merge them into few of them."* → *"go ahead, merge them."* Merged in: W-148.
 
-**Source:** [W-138's proposal](../proposals/rule-parity.md) §7 — `codelaw format` 0.4.0 against Prettier 3.9.10 (Ruff 0.16.9 for Python), default settings, byte-identical outputs: JSON 100%, Python 100%, JS 95%, TS 94%, YAML 89%, SCSS 83%, Markdown 73%, **CSS 42%, HTML 17%**.
+**Source:** [W-138's proposal](../../work/proposals/rule-parity.md) §7 — `codelaw format` 0.4.0 against Prettier 3.9.10 (Ruff 0.16.9 for Python), default settings, byte-identical outputs: JSON 100%, Python 100%, JS 95%, TS 94%, YAML 89%, SCSS 83%, Markdown 73%, **CSS 42%, HTML 17%**.
 
 **Model:** Opus (Claude Code): formatter changes in two printers, each checked against the corpus.
 
@@ -47,7 +47,7 @@ Seen in the samples:
 |---|---|---|
 | 1 · CSS defect | the comment/selector join fixed, with a case | ✅ |
 | 2 · HTML void | Prettier's ` />`, or a record ruling for codelaw's form | ✅ |
-| 3 · the rest | Markdown, CSS, SCSS, YAML, JS, TS each ≥ 98% identical on the corpus, or the difference named in SR-FORMATTER | ⏳ |
+| 3 · the rest | Markdown, CSS, SCSS, YAML, JS, TS each ≥ 98% identical on the corpus, or the difference named in SR-FORMATTER | ✅ none at 98 %; every difference named, with its files, in [SR-FORMATTER](../../records/0105_formatter.md) Consequences (2026-11-05) |
 | 3b · Prettier keys | `[format]` keys for `arrowParens`, `bracketSpacing`, `jsxSingleQuote`, `quoteProps` (W-138 R3, ruled 2026-10-30); the other seven Prettier options stay at Prettier's default | ✅ `arrow_parens`, `bracket_spacing`, `jsx_quote_style`, `quote_props` (no `consistent`: Biome has none) |
 | 4 · repeatable | the corpus (sources and licences listed, not vendored where large) and a script that prints the table — in `perf/` or `fixtures/`; not in CI unless cheap | ✅ `scripts/format-corpus.py` (pinned sources, fetched outside the repo) + `scripts/format-parity.py --corpus`; not in CI |
 
@@ -91,6 +91,29 @@ Markdown's gap to oxfmt is fenced JS: Biome keeps strict-mode-invalid examples (
 
 **Left:** DoD 3 (≥ 98 % or the difference named in SR-FORMATTER) — what remains is in Biome (JS/TS), markup_fmt (HTML) and Oxc (CSS/SCSS/Markdown); W-148 step 4 waits on W-139.
 
+## Closed 2026-11-05 (Claude Code, Opus 5.5) — DoD 3
+
+Reran the corpus (`format-parity.py --corpus … --prettier 3.9.10 --diffs`) and read every differing file. Four causes were codelaw's own code, fixed in `engines.rs`:
+
+- JavaScript only a script allows (`071`, `delete x`, a parameter named `eval`) is parsed again as a script, as Babel retries (`.mjs` and TS stay modules; the verifier too) — Markdown's fenced examples md-051, md-073, md-111.
+- A `<script>` body's width counted its indent twice (markup_fmt's `indent_level` already includes it) — html-026, html-120.
+- A whitespace-only `<script>`/`<style>` prints `<script></script>`; an empty element keeps `></button>` on its line — html-040, -090, -123, -136.
+- The doctype: `<!doctype html>` for HTML5, a legacy one keeps its keyword with its whitespace made one space.
+
+| language | files | before | after |
+|---|--:|--:|--:|
+| CSS | 79 | 88.6 % | 88.6 % |
+| SCSS | 150 | 86.0 % | 86.0 % |
+| YAML | 150 | 97.3 % | 97.3 % |
+| Markdown | 150 | 94.7 % | **96.7 %** |
+| HTML | 147 | 69.4 % | **73.5 %** |
+| JS · JSX | 139 | 97.1 % | 97.1 % |
+| TS · TSX | 129 | 82.2 % | 82.2 % |
+
+The rest is inside the engines, each cause named with an example and its file count in [SR-FORMATTER](../../records/0105_formatter.md) Consequences: Oxc (CSS's unspaced `calc(a*-1)`; SCSS's trailing-comment width, interpolation breaks, `not (`, map indentation; YAML's value-with-comment; Markdown's `:::` blank line and BOM-headed fences), markup_fmt (HTML's inline-element breaks, `<caption>`, `<textarea>`), Biome 2.5.15 behind Prettier 3.9 (TS unions on one line, `if (!(`, `&&` arguments; two fenced JS shapes). None is an option codelaw leaves unmapped. W-148 step 4 is W-139's DoD 2d.
+
+**Proof:** `cargo test -p codelaw-format` 24 passed (two new: `sloppy_mode_javascript_is_formatted_as_a_script`, `html_doctype_and_embeds_match_prettier`, each checked against Prettier 3.9.10's output); `codelaw test` on `html`, `security-html`, `js`, `node` the same before and after (0 failed; `js` 4 warnings both); `cargo test -p codelaw-cli --test security_html --test security --test agent_format` passed. **L8:** the HTML passes are one linear scan; the script retry runs only when the module parse fails; `format --check` on the corpus's HTML and JS, debug build on a loaded machine, 4.5–6.4 s before against 3.4–7.0 s after — no change beyond the noise.
+
 ## Blockers
 
 None.
@@ -107,13 +130,13 @@ None.
 
 ## Reference
 
-[Proposal](../proposals/rule-parity.md) §7 · `work/proposals/rule-parity/method/` · W-07 (the formatter) · B-045 · [W-148](W-141-formatter-parity.md) (Oxc's formatters measured on this corpus: CSS 88.6%, Markdown 97.3%)
+[Proposal](../../work/proposals/rule-parity.md) §7 · `work/proposals/rule-parity/method/` · W-07 (the formatter) · B-045 · [W-148](W-141-formatter-parity.md) (Oxc's formatters measured on this corpus: CSS 88.6%, Markdown 97.3%)
 
 ## Merged in: W-148
 
 <a id="merged-in-w-148"></a>
 
-**W-148 — From Oxlint: Oxc's formatters, 18 rules, 38 bug rules**, merged into W-141 on 2026-10-30; its file is archived at [`archive/open/W-148-oxc-formatters-and-oxlint-rules.md`](../../archive/open/W-148-oxc-formatters-and-oxlint-rules.md). As it stood:
+**W-148 — From Oxlint: Oxc's formatters, 18 rules, 38 bug rules**, merged into W-141 on 2026-10-30; its file is archived at [`archive/open/W-148-oxc-formatters-and-oxlint-rules.md`](W-148-oxc-formatters-and-oxlint-rules.md). As it stood:
 
 ### At a glance
 
@@ -126,7 +149,7 @@ None.
 
 **Arpit, 2026-10-30 (voice):** *"Put it in backlog. Everything else, put it under a work. File it under a work item."* (the backlog part is `codelaw migrate oxlint|oxfmt`, B-066) · then *"File it."*
 
-**Researched 2026-10-30 (Cowork, Opus 5.5):** *"Research auxlint and what can be used from that into code law."* — no tool by that name; read as Oxlint (Oxc, MIT). [Proposal §12](../proposals/rule-parity.md).
+**Researched 2026-10-30 (Cowork, Opus 5.5):** *"Research auxlint and what can be used from that into code law."* — no tool by that name; read as Oxlint (Oxc, MIT). [Proposal §12](../../work/proposals/rule-parity.md).
 
 **Model:** Opus (Claude Code): a formatter swap measured against a corpus, and a dependency case under L11.
 
@@ -179,4 +202,4 @@ None for steps 1–2. Step 4 🟡 W-139.
 
 ### Reference
 
-[W-141](W-141-formatter-parity.md) · [W-139](W-139-rule-parity-build.md) · [W-143](W-143-vue-svelte-astro-graphql.md) · `work/proposals/rule-parity/oxlint.csv` · `method/oxlint-rules.jsonl` · [oxc-project/oxc](https://github.com/oxc-project/oxc) (MIT)
+[W-141](W-141-formatter-parity.md) · [W-139](../../work/open/W-139-rule-parity-build.md) · [W-143](../../work/open/W-143-vue-svelte-astro-graphql.md) · `work/proposals/rule-parity/oxlint.csv` · `method/oxlint-rules.jsonl` · [oxc-project/oxc](https://github.com/oxc-project/oxc) (MIT)

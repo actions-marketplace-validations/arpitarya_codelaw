@@ -275,8 +275,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which class to compose is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the classes the module defines within two edits of the missing name are offered as choices, nearest first; the reviewer picks the one meant. A name with none near, or a `composes` in the wrong place, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -292,15 +292,15 @@
     }
    ],
    "options": {},
-   "dont": ".root { color: red; }",
-   "do": ".base { color: red; }",
+   "dont": ".primary { composes: bse from \"./base.module.css\"; }",
+   "do": ".primary { composes: base from \"./base.module.css\"; }",
    "fix_steps": [
     "Correct the class name or the path.",
     "Move `composes` into the rule whose selector is the one class that composes."
    ],
    "example": {
     "language": "css",
-    "dont": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.root { color: red; }",
+    "dont": "/* src/button.module.css */\n.primary { composes: bse from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }",
     "do": "/* src/button.module.css */\n.primary { composes: base from \"./base.module.css\"; }\n/* src/base.module.css */\n.base { color: red; }"
    },
    "ported_from": [],
@@ -475,8 +475,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "old browsers accept only numbers for alpha in `rgba()`",
+   "fix": "auto",
+   "fix_reason": "old browsers accept only numbers for alpha in `rgba()`; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -533,8 +533,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended annotation is the author's call",
+   "fix": "suggest",
+   "fix_reason": "an annotation within two edits of `!important` becomes it, which then takes effect; any other is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -636,8 +636,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to remove or move the declaration is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -685,8 +685,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the descriptor's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -698,14 +698,14 @@
     }
    ],
    "options": {},
-   "dont": "font-display: quick;",
+   "dont": "font-display: swp;",
    "do": "font-display: swap;",
    "fix_steps": [
     "Replace the value with one the descriptor accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: quick;\n}",
+    "dont": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: swp;\n}",
     "do": "@font-face {\n  font-family: \"Inter\";\n  src: url(\"inter.woff2\");\n  font-display: swap;\n}"
    },
    "ported_from": [
@@ -833,8 +833,8 @@
    "languages": [
     "css"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended at-rule is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -888,8 +888,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the rule",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1091,8 +1091,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers before 2018 ignore an alpha channel in `rgb()`",
+   "fix": "auto",
+   "fix_reason": "browsers before 2018 ignore an alpha channel in `rgb()`; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1137,8 +1137,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers before 2018 understand only the comma syntax",
+   "fix": "auto",
+   "fix_reason": "browsers before 2018 understand only the comma syntax; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -1402,7 +1402,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -1796,8 +1796,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win can't be known from the code",
+   "fix": "auto",
+   "fix_reason": "the earlier declaration is never used, so it goes; not when the later value reads the property, which is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -2297,8 +2297,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the property's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -2310,14 +2310,14 @@
     }
    ],
    "options": {},
-   "dont": "position: centre;",
+   "dont": "position: relativ;",
    "do": "position: relative;",
    "fix_steps": [
     "Replace the value with one the property accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "a {\n  position: centre;\n}",
+    "dont": "a {\n  position: relativ;\n}",
     "do": "a {\n  position: relative;\n}"
    },
    "ported_from": [
@@ -3647,8 +3647,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended feature is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -3847,8 +3847,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the feature's keywords within two edits are choices, nearest first; a value with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -3860,14 +3860,14 @@
     }
    ],
    "options": {},
-   "dont": "@media (orientation: sideways) {",
+   "dont": "@media (orientation: portait) {",
    "do": "@media (orientation: portrait) {",
    "fix_steps": [
     "Use a value the media feature accepts."
    ],
    "example": {
     "language": "css",
-    "dont": "@media (orientation: sideways) {\n  a {\n    color: red;\n  }\n}",
+    "dont": "@media (orientation: portait) {\n  a {\n    color: red;\n  }\n}",
     "do": "@media (orientation: portrait) {\n  a {\n    color: red;\n  }\n}"
    },
    "ported_from": [
@@ -3994,8 +3994,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the media features that describe the device are the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4013,14 +4013,14 @@
      "description": "media types to accept"
     }
    },
-   "dont": "@media tv {",
+   "dont": "@media tv, print {",
    "do": "@media screen {",
    "fix_steps": [
     "Replace the media type with `screen`, `print` or `all`, adding media features that describe the device."
    ],
    "example": {
     "language": "css",
-    "dont": "@media tv {\n  a {\n    color: red;\n  }\n}",
+    "dont": "@media tv, print {\n  a {\n    color: red;\n  }\n}",
     "do": "@media screen {\n  a {\n    color: red;\n  }\n}"
    },
    "ported_from": [
@@ -4097,8 +4097,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended parent selector is the author's call",
+   "fix": "suggest",
+   "fix_reason": "a leading `& ` with no parent rule goes, so the selector stands on its own; the reviewer confirms it wasn't meant to be nested. A bare `&` is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4295,7 +4295,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4388,8 +4388,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector or layer that should win instead is a design call",
+   "fix": "suggest",
+   "fix_reason": "`!important` goes; the declaration may then lose to another, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -4437,8 +4437,8 @@
    "languages": [
     "css"
    ],
-   "fix": "manual",
-   "fix_reason": "turning it into a comment changes what applies",
+   "fix": "auto",
+   "fix_reason": "a `//` line read as a declaration is dropped by the browser, as a comment is, so it becomes `/* … */`; a `//` that breaks a rule is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4538,8 +4538,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector it was meant for is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the declaration applies to nothing, so it goes; the reviewer confirms it wasn't meant to be inside a rule",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -4551,14 +4551,14 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "a {",
+   "dont": "color: blue;",
+   "do": null,
    "fix_steps": [
     "Move the declaration into the style rule it belongs to."
    ],
    "example": {
     "language": "css",
-    "dont": "color: red;",
+    "dont": "color: red;\na {\n  color: blue;\n}",
     "do": "a {\n  color: red;\n}"
    },
    "ported_from": [
@@ -5017,8 +5017,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "older browsers may support only the deprecated name",
+   "fix": "auto",
+   "fix_reason": "older browsers may support only the deprecated name; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -5069,8 +5069,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the declaration",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the declaration; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -5260,8 +5260,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended position is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the selector that matches nothing goes from its list, or with its rule when it is the only one; the reviewer confirms another position wasn't meant",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -5273,14 +5273,14 @@
     }
    ],
    "options": {},
-   "dont": "li:nth-child(0) {",
+   "dont": "li:nth-child(0),",
    "do": "li:nth-child(1) {",
    "fix_steps": [
     "Use the position that was meant; the first element is `1`."
    ],
    "example": {
     "language": "css",
-    "dont": "li:nth-child(0) {\n  color: red;\n}",
+    "dont": "li:nth-child(0),\nli.first {\n  color: red;\n}",
     "do": "li:nth-child(1) {\n  color: red;\n}"
    },
    "ported_from": [
@@ -6413,8 +6413,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the rule",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -6609,8 +6609,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended pseudo-class is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual, and a pseudo-element written with one colon gets its second",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -6807,8 +6807,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended pseudo-element is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -6902,8 +6902,8 @@
     "css",
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended element is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "stable",
    "since": "0.1.0",
@@ -7485,8 +7485,8 @@
     "css",
     "scss"
    ],
-   "fix": "suggest",
-   "fix_reason": "browsers that need the prefix lose the value",
+   "fix": "auto",
+   "fix_reason": "browsers that need the prefix lose the value; automatic only where every target browser supports the result (fix_target)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8223,8 +8223,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "reordering decorators changes which wrapper is connected",
+   "fix": "suggest",
+   "fix_reason": "swapping the two decorators changes which function is connected; the reviewer confirms the wrapper order was not deliberate (offered only when `@receiver` is the second of exactly those two)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -8722,8 +8722,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to move the label, add a role or use another element is a design decision",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the label, which nothing reads, or `role=\"img\"`, which gives the element a name to carry; which was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8828,8 +8828,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended value can only be guessed",
+   "fix": "suggest",
+   "fix_reason": "the enumerated values within two edits of the written one are choices, nearest first, and a boolean attribute loses its value; a value with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8877,8 +8877,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the attribute or its context is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the attribute, which does nothing here, or setting what it needs to work (`type=\"submit\"`); only the author knows which was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -8925,8 +8925,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the field asks for a new or the current password depends on the form",
+   "fix": "suggest",
+   "fix_reason": "the choices are `new-password` and `current-password`, the default `new-password` in a form with two password fields and `current-password` otherwise",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9134,8 +9134,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "where the missing end tag belongs depends on the intended structure",
+   "fix": "auto",
+   "fix_reason": "auto when the unclosed element is its parent's last child and not a formatting element: its end tag goes where the parser already ends it, before the parent's, so the document is the same; any other unclosed element is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9324,8 +9324,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming an element changes its CSS and script hooks",
+   "fix": "suggest",
+   "fix_reason": "the known element names within two edits are choices, nearest first, with a custom element name (`x-<name>`) last; which was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9380,7 +9380,7 @@
     "html"
    ],
    "fix": "manual",
-   "fix_reason": "the right structure depends on what the markup is for",
+   "fix_reason": "what the rule finds is content its parent's content model forbids (a <button> in an <a>), which the parser keeps as written: nothing in the code says which element should give way, so the markup is restructured by hand",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9427,8 +9427,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the duplicates to keep is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are deleting the extra element or merging its content into the first; which keeps what the author meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9474,8 +9474,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "moving markup may change how it is styled",
+   "fix": "auto",
+   "fix_reason": "auto for a <summary> that isn't first in its <details>, which the browser uses wherever it stands, so moving it first renders the same; any other child out of order is moved up as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9521,8 +9521,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to wrap the element or change it depends on the intended structure",
+   "fix": "suggest",
+   "fix_reason": "the choices are changing the parent to the element it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9569,8 +9569,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to add the ancestor or use other elements depends on the intent",
+   "fix": "suggest",
+   "fix_reason": "the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9764,8 +9764,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the page title needs a human",
+   "fix": "suggest",
+   "fix_reason": "the empty title takes the text of the document's first `<h1>`; the reviewer confirms it names the page. A document with no plain `<h1>` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -9788,7 +9788,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<title></title>",
+    "dont": "<title></title>\n<h1>Release notes</h1>",
     "do": "<title>Pricing — Acme</title>"
    },
    "ported_from": [
@@ -9985,8 +9985,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "changing a heading level changes its style and the outline",
+   "fix": "suggest",
+   "fix_reason": "the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10052,8 +10052,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to unhide it, take it out of the tab order or remove it depends on the design",
+   "fix": "suggest",
+   "fix_reason": "the choices are `tabindex=\"-1\"` (out of the tab order), removing `aria-hidden` (shown to screen readers) or `inert` (neither); each changes who can reach it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10216,8 +10216,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the image is decorative or informative is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the `title`, keeping the image decorative, or moving its text into `alt`, making it described; only the author knows which",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10517,8 +10517,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming a map means updating the `usemap` that points at it",
+   "fix": "suggest",
+   "fix_reason": "the later <map> goes: `usemap` always finds the first, so it is never used; the reviewer confirms it wasn't meant to replace the first",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10564,8 +10564,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two names is right depends on what refers to the map",
+   "fix": "suggest",
+   "fix_reason": "the choices are making `name` follow `id` or `id` follow `name`; a `usemap` that names the other one stops matching, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10679,8 +10679,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "redirecting at once or removing the refresh changes the page's behaviour",
+   "fix": "suggest",
+   "fix_reason": "the choices are making the refresh instant, when it names a URL, or removing it; either changes when, or whether, the page moves on",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -10722,7 +10722,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<meta http-equiv=\"refresh\" content=\"5;url=/next\">",
+    "dont": "<meta http-equiv=\"refresh\" content=\"5;url=/next\">\n<title>Moved</title>",
     "do": "<meta http-equiv=\"refresh\" content=\"0;url=/next\">"
    },
    "ported_from": [
@@ -10893,8 +10893,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the concrete role depends on what the element is",
+   "fix": "suggest",
+   "fix_reason": "the choices are removing the role, which browsers ignore anyway, or the concrete role it stands for (`landmark` as `region`); which is meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11002,8 +11002,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the markup inside is still needed is the author's call",
+   "fix": "auto",
+   "fix_reason": "no browser codelaw targets reads conditional comments: a comment hidden from them goes, and the markers around content every browser shows go, the content kept, so the page renders the same",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11049,8 +11049,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the replacement is usually CSS, which needs a class and a rule",
+   "fix": "auto",
+   "fix_reason": "auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11189,8 +11189,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "renaming an id breaks the CSS, scripts and links that use it",
+   "fix": "suggest",
+   "fix_reason": "the choices are dropping the later id or renaming it `<id>-2`; links, labels and scripts that meant the later element then need the new id, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11455,8 +11455,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the id or the reference is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the choices are the existing ids within two edits, nearest first, or removing the reference; which element was meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11502,8 +11502,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which one is the main content is a design decision",
+   "fix": "suggest",
+   "fix_reason": "every visible <main> after the first becomes a <div>; the page then has one main landmark, which the reviewer confirms is the right one",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11922,8 +11922,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the element changes, so CSS and scripts that select `input` need updating",
+   "fix": "suggest",
+   "fix_reason": "`<input type=\"submit\" value=\"V\">` becomes `<button type=\"submit\" value=\"V\">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -11970,8 +11970,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "swapping the element changes its styles and scripts",
+   "fix": "suggest",
+   "fix_reason": "the element becomes the native one its role names, the role and an implied `tabindex=\"0\"` dropped (a button gets `type=\"button\"`); its styles and scripts may target the old tag, which the reviewer checks",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12467,8 +12467,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether each header labels a row or a column is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the choices are `scope=\"col\"` and `scope=\"row\"`, the default by where the header stands (the first row heads columns, a row's first cell heads the row); the reviewer confirms it",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12623,8 +12623,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended character is not always clear",
+   "fix": "auto",
+   "fix_reason": "auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12682,8 +12682,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the right field name depends on what the field collects",
+   "fix": "suggest",
+   "fix_reason": "the field names within two edits of an unknown token are choices, nearest first; a field that doesn't fit its input type, or a token with none near, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12699,7 +12699,7 @@
     }
    ],
    "options": {},
-   "dont": "<input type=\"email\" name=\"email\" autocomplete=\"mail\">",
+   "dont": "<input type=\"email\" name=\"email\" autocomplete=\"emial\">",
    "do": "<input type=\"email\" name=\"email\" autocomplete=\"email\">",
    "fix_steps": [
     "Pick the field name that describes the data (the WHATWG autofill list).",
@@ -12707,7 +12707,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<input type=\"email\" name=\"email\" autocomplete=\"mail\">\n<input type=\"number\" name=\"n\" autocomplete=\"email\">",
+    "dont": "<input type=\"email\" name=\"email\" autocomplete=\"emial\">",
     "do": "<input type=\"email\" name=\"email\" autocomplete=\"email\">\n<input type=\"number\" name=\"n\" autocomplete=\"off\">"
    },
    "ported_from": [
@@ -12734,8 +12734,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "either the id or the element is wrong, and only the author knows which",
+   "fix": "suggest",
+   "fix_reason": "the ids of the document's labelable controls are choices, nearest the written one first; a document with none is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -12754,7 +12754,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<label for=\"name\">Name</label>\n<div id=\"name\"></div>",
+    "dont": "<label for=\"name\">Name</label>\n<div id=\"name\"></div>\n<input id=\"full-name\">",
     "do": "<label for=\"name\">Name</label>\n<input type=\"text\" id=\"name\">"
    },
    "ported_from": [
@@ -14200,8 +14200,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the rewrite depends on the operator (`< 0` becomes `=== -1`, the other two `!== -1`), and one rule carries one template",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -14341,8 +14341,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what `super()` must receive depends on the base class",
+   "fix": "suggest",
+   "fix_reason": "the choices are `super(...arguments)` first in the constructor (the default: what an implicit constructor does) or `super()`; which the parent needs is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -14862,8 +14862,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the camel-cased `dataset` key is computed from the attribute name, which a fix template cannot do",
+   "fix": "suggest",
+   "fix_reason": "`.dataset` gives `undefined` where `getAttribute` gave `null`, and keys like `data-x-1` map to `x-1`; the author confirms the reads",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -15050,23 +15050,23 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the strict operator replaces the loose one token for token, and one fix template cannot carry both `===` and `!==`",
+   "fix": "suggest",
+   "fix_reason": "`===` compares without converting, so code that relied on `\"1\" == 1` changes behaviour; the author confirms the types match",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
    "presets": [],
    "options": {},
-   "dont": "if (count == limit) {",
-   "do": "if (count === limit) {",
+   "dont": "if (count == limit || state != \"done\") {",
+   "do": "if (count === limit || state !== \"done\") {",
    "fix_steps": [
     "Write `===` for `==` and `!==` for `!=`; check that both sides have the same type first."
    ],
    "example": {
     "language": "javascript",
-    "dont": "if (count == limit) {\n  stop();\n}",
-    "do": "if (count === limit) {\n  stop();\n}"
+    "dont": "if (count == limit || state != \"done\") {\n  stop();\n}",
+    "do": "if (count === limit || state !== \"done\") {\n  stop();\n}"
    },
    "ported_from": [
     "eslint/eqeqeq"
@@ -15145,8 +15145,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix upper-cases the digits, which a fix template cannot compute",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -15756,8 +15756,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the value a getter should return is the author's decision",
+   "fix": "suggest",
+   "fix_reason": "the path that falls off the end gets `return undefined;`, which it already returns; the reviewer confirms that is the value meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -16791,8 +16791,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`{T=} name` becomes `{T} [name]`)",
+   "fix": "suggest",
+   "fix_reason": "`[name]` also tells readers the parameter is optional, which the author confirms is what `=` meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -16837,8 +16837,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`String` becomes `string`)",
+   "fix": "suggest",
+   "fix_reason": "a type written `String` may mean the wrapper object on purpose; the author confirms the primitive is meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -16939,8 +16939,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (`// text` becomes `/** text */`)",
+   "fix": "suggest",
+   "fix_reason": "a plain comment above a function may be a note to the maintainer rather than its documentation; the author confirms it is meant for readers of the API",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17035,8 +17035,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the word is wrapped in backticks)",
+   "fix": "suggest",
+   "fix_reason": "the word may be a tag the author meant TypeScript to read; they confirm it is text",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17182,8 +17182,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the text moves to a line of its own)",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17276,8 +17276,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the default moves into the function signature, and codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's",
+   "fix": "suggest",
+   "fix_reason": "the default leaves the documentation; the author checks the signature carries the same one",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17327,8 +17327,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the extra `*` is removed)",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -17375,8 +17375,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's (the `{type}` is removed)",
+   "fix": "suggest",
+   "fix_reason": "the JSDoc type may say more than the signature (a narrower type, a union the code checks); the author confirms it can go",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -19094,8 +19094,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator of the rewrite depends on which of three patterns matched",
+   "fix": "suggest",
+   "fix_reason": "the assignment no longer runs when the value is already set, so a setter or a proxy on the target is not called",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -21537,8 +21537,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "trimming the string is a computed edit a template cannot make",
+   "fix": "suggest",
+   "fix_reason": "the space may be deliberate (two spaces for alignment); the author confirms the output",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -21641,8 +21641,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended grouping or comparison needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are dropping the operand that never decides the result (the default, behaviour-preserving) or regrouping, `a + b ?? c` as `a + (b ?? c)`; a constant comparison is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -21991,7 +21991,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a debugging aid put there on purpose while debugging, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22186,8 +22186,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the edit inside the pattern is not a template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22331,8 +22331,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator of the rewrite depends on which of four patterns matched",
+   "fix": "suggest",
+   "fix_reason": "`x >= y` and `x > y || x === y` differ when the operands have different types (`\"1\" >= 1` is true, the pair is false); the author confirms they match",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -22428,8 +22428,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two members to keep is a decision",
+   "fix": "suggest",
+   "fix_reason": "the later member is the one the class keeps, so the choices are deleting the earlier (the default, which keeps behaviour) or the later",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22528,8 +22528,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win can't be known from the code",
+   "fix": "suggest",
+   "fix_reason": "the later key is the one the object keeps, so the choices are deleting the earlier (the default, which keeps the value; its own evaluation goes with it) or the later",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22579,8 +22579,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which label was meant is a decision",
+   "fix": "suggest",
+   "fix_reason": "no value reaches the later case: the whole clause goes when the clause before it exits, otherwise only its label, so what falls through still runs; the reviewer confirms the case was not meant to test another value",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -22823,8 +22823,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "unwrapping the block re-indents its statements, and a declaration in it could clash with one outside",
+   "fix": "suggest",
+   "fix_reason": "a declaration in the `else` block moves into the enclosing scope, where it could clash with one of the same name",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -23122,7 +23122,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -23595,8 +23595,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the label token from the statement is not a template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -23640,8 +23640,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the fall-through is intended needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are `break;` ending the case, which stops the fall-through, or a `// falls through` comment saying it is meant, which keeps behaviour; only the author knows which",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -24442,8 +24442,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the call to write depends on the operator matched",
+   "fix": "suggest",
+   "fix_reason": "`Number(x)` and `+x` differ for a BigInt (`+1n` throws, `Number(1n)` is `1`), so the author confirms what the value holds",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -24680,8 +24680,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the comment above the code is a cross-line edit",
+   "fix": "suggest",
+   "fix_reason": "a comment after code may describe that one line; above it, it can read as describing what follows",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -25440,8 +25440,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to use a BigInt, a string or a rounder value depends on how the number is used",
+   "fix": "suggest",
+   "fix_reason": "the choices are the literal the engine already stores (behaviour-preserving) or, for an integer, a BigInt, which keeps every digit but is another type",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -25633,8 +25633,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether an alternation or a different class was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are writing each several-code-point character as an alternative beside the class (the default), or the `u` flag when the class holds astral characters; either changes what the pattern matches, to what it shows",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -26792,8 +26792,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the equivalent `\\u` or `\\x` escape is computed from the octal value",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -27747,8 +27747,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the returned expression was meant as a side effect needs a reader",
+   "fix": "auto",
+   "fix_reason": "a setter's return value is thrown away, so `return e;` becomes `e; return;`, a last `return` goes, and a value that can do nothing goes with it; behaviour is unchanged",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -27948,8 +27948,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a value is missing or a comma is extra needs a reader",
+   "fix": "suggest",
+   "fix_reason": "the choices are deleting the extra comma, shortening the array, or filling the hole with `undefined`, keeping its length; which was meant is the author's",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -28389,8 +28389,8 @@
     "javascript",
     "jsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving statements across `super()` can change what the base class sees",
+   "fix": "suggest",
+   "fix_reason": "the `super(…)` call moves above the first statement using `this` when its arguments read neither `this` nor anything declared in between; the parent's constructor then runs earlier, which is the fix but is a change",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -28884,8 +28884,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the lines were meant to join can only be known from intent",
+   "fix": "suggest",
+   "fix_reason": "the choices are a `;` ending the first line, splitting the two, or joining them, keeping what JavaScript parses today; only the author knows which was meant",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -29261,8 +29261,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "a non-boolean condition needs `Boolean(…)` or `!`, decided per pattern",
+   "fix": "suggest",
+   "fix_reason": "a condition that is not already a boolean becomes `Boolean(…)`, which the author may prefer to write another way",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -29543,8 +29543,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the right fallback value depends on the code",
+   "fix": "suggest",
+   "fix_reason": "the choices are a fallback (`?? {}` for destructuring, `?? []` for spreading, `?.` carried through a call or access), the default, or plain `.` when the value is always there",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -29789,7 +29789,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -29970,8 +29970,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the store is dead or the read is missing needs the author",
+   "fix": "auto",
+   "fix_reason": "auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -30021,8 +30021,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what the reference was meant to repeat needs the author",
+   "fix": "suggest",
+   "fix_reason": "the backreference, with its quantifier, always matches the empty string, so it goes; the reviewer confirms the pattern was not meant to match more",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -30878,8 +30878,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing the brackets and the dots around the items is not one template edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31364,8 +31364,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fix strips characters from the literal, which a template cannot compute",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31509,8 +31509,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the grouped literal is a computed edit",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -31650,8 +31650,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the operator token cannot be carried into a fix template",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -33610,8 +33610,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the literal's prefix depends on the radix, which a template cannot choose",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -33980,8 +33980,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the selector string is built from the id, which a template cannot escape",
+   "fix": "suggest",
+   "fix_reason": "`querySelector` reads its argument as a selector and `getElementById` as a name; the author confirms nothing else relied on the old call",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -34608,8 +34608,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the string literal is the pattern without its anchor, which a template cannot strip",
+   "fix": "suggest",
+   "fix_reason": "`.startsWith()` is a string method: a value that is not a string (`null`, a number) threw nothing with `.test()` and throws now",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -37664,7 +37664,7 @@
     "tsx"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -41020,8 +41020,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the decimal form has to be computed from the literal, which codelaw's fix templates cannot do",
+   "fix": "auto",
+   "fix_reason": null,
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -41260,8 +41260,8 @@
    "languages": [
     "json"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two values was meant can't be known from the file",
+   "fix": "auto",
+   "fix_reason": "auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what JSON.parse and Python read) or the first",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -41686,8 +41686,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which language the code is in can't always be told from the code",
+   "fix": "suggest",
+   "fix_reason": "the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -41734,8 +41734,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "the title text needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -41838,8 +41838,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which section the link meant needs the author",
+   "fix": "auto",
+   "fix_reason": "auto when a heading's anchor is the fragment written as an anchor (`#Install` is `#install`); otherwise the anchors within two edits are choices, nearest first; a fragment with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42217,8 +42217,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which heading level the line should become depends on the outline",
+   "fix": "suggest",
+   "fix_reason": "the choices are a heading one level under the heading above it (the default) or at that heading's level, written with the emphasised words; the outline changes, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42271,8 +42271,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "where the link should go needs the author",
+   "fix": "suggest",
+   "fix_reason": "unwrapping keeps the link's text but drops the link; the reviewer confirms that is the intent, or writes the destination instead",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42319,8 +42319,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "the Markdown equivalent, if there is one, needs the author",
+   "fix": "auto",
+   "fix_reason": "auto for an inline element Markdown writes the same way — `<em>` and `<i>` as `*x*`, `<strong>` and `<b>` as `**x**`, `<code>` as a code span, a line-ending `<br>` as `\\` — with no attribute and plain content; any other HTML is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42525,8 +42525,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "where the reference should point needs the author",
+   "fix": "suggest",
+   "fix_reason": "the defined labels within two edits of the missing one are choices, nearest first; a label with none near needs its definition written, and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42551,15 +42551,15 @@
      "description": "also check `[label]` shortcuts, which plain bracketed text looks like"
     }
    },
-   "dont": null,
-   "do": "[spec]: https://spec.commonmark.org/",
+   "dont": "Read [the spec][spek].",
+   "do": "Read [the spec][spec].",
    "fix_steps": [
     "Check the label for a typo against the definitions.",
     "Fix the label, or add the missing `[label]: url` definition."
    ],
    "example": {
     "language": "markdown",
-    "dont": "Read [the spec][spec].",
+    "dont": "Read [the spec][spek].\n\n[spec]: https://spec.commonmark.org/",
     "do": "Read [the spec][spec].\n\n[spec]: https://spec.commonmark.org/"
    },
    "ported_from": [
@@ -42586,8 +42586,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the file moved, was renamed or was never written needs the author",
+   "fix": "suggest",
+   "fix_reason": "the files beside the target whose names are within two edits, then files of the same name elsewhere in the project, are choices, nearest first; a link with none is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42599,16 +42599,16 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "<!-- FAQ.md -->",
+   "dont": "Start with [the setup](./setup.md), then read the [FAQ](./faq.md).",
+   "do": "Start with [the setup](./setup.md), then read the [FAQ](./FAQ.md).",
    "fix_steps": [
     "Find where the file went: `git log --follow --stat -- <path>` shows a rename.",
     "Point the link at the file's new path, or remove the link if the file is gone."
    ],
    "example": {
     "language": "markdown",
-    "dont": "<!-- docs/guide.md -->\nStart with [the setup](./setup.md), then read the [FAQ](../FAQ.md).\n<!-- docs/setup.md -->\n# Setup",
-    "do": "<!-- docs/guide.md -->\nStart with [the setup](./setup.md), then read the [FAQ](../FAQ.md).\n<!-- docs/setup.md -->\n# Setup\n<!-- FAQ.md -->\n# FAQ"
+    "dont": "<!-- docs/guide.md -->\nStart with [the setup](./setup.md), then read the [FAQ](./faq.md).\n<!-- docs/setup.md -->\n# Setup\n<!-- docs/FAQ.md -->\n# FAQ",
+    "do": "<!-- docs/guide.md -->\nStart with [the setup](./setup.md), then read the [FAQ](./FAQ.md).\n<!-- docs/setup.md -->\n# Setup\n<!-- docs/FAQ.md -->\n# FAQ"
    },
    "ported_from": [],
    "security": null,
@@ -42685,8 +42685,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which heading is the title, and what level the others become, needs the author",
+   "fix": "suggest",
+   "fix_reason": "a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42739,8 +42739,8 @@
    "languages": [
     "markdown"
    ],
-   "fix": "manual",
-   "fix_reason": "which cell is missing or extra needs the author",
+   "fix": "auto",
+   "fix_reason": "a row ending in `|` with fewer cells than the header gets empty ones, which GFM already renders, so nothing changes on the page; a row with more cells loses content either way and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -42752,15 +42752,15 @@
     }
    ],
    "options": {},
-   "dont": "| Name | Type |",
-   "do": "| Name | Type | Note |",
+   "dont": "| id | number |",
+   "do": "| id | number | required |",
    "fix_steps": [
     "Compare the row with the header.",
     "Add the missing cells or remove the extra ones, or add a header column if the data needs it."
    ],
    "example": {
     "language": "markdown",
-    "dont": "| Name | Type |\n| ---- | ---- |\n| id | number | required |",
+    "dont": "| Name | Type | Note |\n| ---- | ---- | ---- |\n| id | number |",
     "do": "| Name | Type | Note |\n| ---- | ---- | ---- |\n| id | number | required |"
    },
    "ported_from": [
@@ -43957,8 +43957,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "a require inside a function may be deliberate lazy loading or a way round a require cycle; moving it changes when the module loads",
+   "fix": "suggest",
+   "fix_reason": "hoisting a `const x = require(...)` moves the load to module start; the reviewer confirms it was not deliberate lazy loading or a way round a cycle",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -44177,8 +44177,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each deprecated API has its own replacement",
+   "fix": "auto",
+   "fix_reason": "auto where the deprecated API is the same function under another name (`util.isArray` is `Array.isArray`, `os.tmpDir` is `os.tmpdir`, the `crypto` aliases of `randomBytes`), so only the warning goes; every other API changes the call's shape and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -44225,8 +44225,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether `module.exports` or a property was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "assigning to `module.exports` makes the module export that value, which it did not before; the reviewer confirms it was meant and that no `exports.x` use depends on the old object",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -44636,8 +44636,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "how to end the program cleanly depends on what is still running",
+   "fix": "suggest",
+   "fix_reason": "code after the call now runs and open handles keep the process alive, so the reviewer picks setting the exit code or throwing (both offered for a call with an exit code)",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -45407,8 +45407,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "each has its own replacement name",
+   "fix": "auto",
+   "fix_reason": "each is a plain alias of its replacement, so renaming it keeps the behaviour",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -45540,8 +45540,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "each removed name has its own replacement, given in the NumPy 2 migration guide",
+   "fix": "auto",
+   "fix_reason": "auto for the names that are plain aliases of a name that also exists in NumPy 1 (`np.Inf`, `np.float_`, `np.product`, `np.row_stack` and the like); every other removed name needs the migration guide's rewrite",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -45585,8 +45585,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the faster check is written by hand",
+   "fix": "suggest",
+   "fix_reason": "the replacement reads the first value and compares it with the rest; the reviewer confirms how an empty series and NaN should count",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -45890,8 +45890,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the separator argument has to be added",
+   "fix": "auto",
+   "fix_reason": "auto when the call passes no separator of its own (no `sep`, `delimiter`, `delim_whitespace`, second positional or splat); a call that does is reported as a suggestion",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -46023,8 +46023,8 @@
    "languages": [
     "python"
    ],
-   "fix": "manual",
-   "fix_reason": "the call must become an assignment of its result, which changes the statement",
+   "fix": "suggest",
+   "fix_reason": "the statement becomes an assignment of the result, so other references to the object no longer see the change; the reviewer confirms (offered for a call on a plain name used as a statement)",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -49850,7 +49850,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -49934,7 +49934,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.5.0",
@@ -50567,7 +50567,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51019,7 +51019,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -51062,7 +51062,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -58189,7 +58189,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -64688,7 +64688,7 @@
     "python"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -69858,8 +69858,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value should win needs the author",
+   "fix": "auto",
+   "fix_reason": "the earlier of two props never takes effect, since the last one wins; it goes, automatically, when its value is a literal or a name, which nothing evaluates to any effect. An earlier value that calls something is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -71481,8 +71481,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the component out means passing in the values it closed over as props",
+   "fix": "suggest",
+   "fix_reason": "a nested component that reads nothing its parent declares moves above the parent's top-level statement; its state then survives the parent's renders, which is the fix but is a change. One that reads the parent's props or locals is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -71664,8 +71664,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving the access into an effect or an event handler changes when it runs",
+   "fix": "suggest",
+   "fix_reason": "a body-level `ref.current = …` moves into `useLayoutEffect(() => { … })`, run after every render before paint, the hook added to the `react` import; a ref read during render is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -71810,8 +71810,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to derive the value, lift the state or subscribe is a design choice",
+   "fix": "suggest",
+   "fix_reason": "an effect that only sets one state from its dependencies becomes a value computed during render, the state and the effect gone; the first render then shows the value at once. Any other effect is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -72923,8 +72923,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "where the value should come from instead — state, an effect, an event — depends on what it is for",
+   "fix": "suggest",
+   "fix_reason": "an impure value that a body-level `const` or the final `return` computes moves into a `useState` initializer, computed once; the value then stays the same across renders, which the reviewer confirms is meant. Any other impure call is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -73063,8 +73063,8 @@
     "jsx",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "what to render needs the author",
+   "fix": "suggest",
+   "fix_reason": "a `render()` whose last statement is a bare JSX expression gets `return` in front of it, so it draws what it builds; any other `render()` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73155,8 +73155,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "moving a hook can change what the code does on the renders that skipped it",
+   "fix": "suggest",
+   "fix_reason": "a hook called after an early return moves above the statement holding it, when nothing it reads or declares sits in between; it then runs on renders that returned early, which is the fix but is a change. Every other misplaced hook is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73574,8 +73574,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the code belongs in useEffect, useCallback or plain render code is the author's call",
+   "fix": "suggest",
+   "fix_reason": "an `async` callback with no `await` loses `async`, so the value is cached instead of a promise of it, and parameters nothing reads are dropped; every other misuse is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -73670,8 +73670,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the reducer has to name the fields it takes from the payload",
+   "fix": "suggest",
+   "fix_reason": "`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73811,8 +73811,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten to return a new value",
+   "fix": "suggest",
+   "fix_reason": "a `state.push(x)` or `state.key = v` followed at once by `return state` becomes `return [...state, x]` or `return { ...state, key: v }`; whoever held the old state no longer sees the change, which is the fix but is a change. Any other mutation is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -73906,8 +73906,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the one call is split into one per value, and the destructuring goes",
+   "fix": "suggest",
+   "fix_reason": "the choices are one `useSelector` per value, when the result is destructured by exactly its keys (the default), or `shallowEqual` as the equality function when the file imports from `react-redux`; each changes when the component re-renders",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74006,8 +74006,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the side effect has to move to a thunk, a listener or a `prepare` callback",
+   "fix": "suggest",
+   "fix_reason": "a case reducer whose side effect sits in an object built from `action.payload` gets a `prepare` callback that builds the object, and reads it from the payload; the action creator's argument stays the same, the effect now runs when the action is made. Any other effect is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74053,8 +74053,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each wrapped dispatch call is replaced by the action creator it calls",
+   "fix": "suggest",
+   "fix_reason": "a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -74781,8 +74781,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended at-rule is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass at-rules within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75284,7 +75284,7 @@
     "scss"
    ],
    "fix": "auto",
-   "fix_reason": null,
+   "fix_reason": "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix.",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75545,8 +75545,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "the intended function is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the known CSS and Sass functions within two edits are offered as choices, nearest first; a name with none near is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75838,8 +75838,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "flattening a selector is the author's call",
+   "fix": "suggest",
+   "fix_reason": "a too-deep rule whose parent holds nothing else is joined with it (`.d { .e {} }` becomes `.d .e {}`), compiling to the same CSS; the reviewer confirms the flatter source is wanted. Any other nesting is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -75976,8 +75976,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which declaration wins is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when nothing between the two declarations reads the variable, so the earlier value is a dead store and goes; otherwise the earlier value is read and the fix is the author's",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -76070,8 +76070,8 @@
    "languages": [
     "scss"
    ],
-   "fix": "manual",
-   "fix_reason": "which definition should stay is the author's call",
+   "fix": "auto",
+   "fix_reason": "auto when no `@include` of the mixin stands between the two definitions, so nothing uses the earlier one and it goes; otherwise which definition each include meant is the author's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -76624,8 +76624,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the page's scripts have to be given nonces or hashes, or moved to files",
+   "fix": "suggest",
+   "fix_reason": "`'unsafe-inline'` is replaced with a `'sha256-…'` hash of each inline script, or dropped when there is none, when no element has an inline event handler; a script edited later then needs its hash again. `'unsafe-eval'`, `*` and `data:` are manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76743,8 +76743,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which framed sites deserve the permission is the owner's decision",
+   "fix": "suggest",
+   "fix_reason": "the powerful features are removed from `allow` (the attribute with them when nothing else is left); the framed page then can't use them, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76852,8 +76852,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "where the credential should live is the author's decision",
+   "fix": "suggest",
+   "fix_reason": "the `user:password@` part of the URL is removed; the link then asks for credentials instead of carrying them, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76910,8 +76910,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "which origin the page may use is a decision for its owner",
+   "fix": "suggest",
+   "fix_reason": "the `<base>` goes and every relative URL of the page is written absolute against its `href`, so each still goes where it went; the reviewer confirms the other origin is meant. A page with a `srcset`, a template URL or a dot segment is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -76931,7 +76931,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<base href=\"https://cdn.example.com/app/\">",
+    "dont": "<base href=\"https://cdn.example.com/app/\">\n<link rel=\"stylesheet\" href=\"app.css\">",
     "do": "<base href=\"/app/\">"
    },
    "ported_from": [],
@@ -77020,8 +77020,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the script has to move out of the URL into a listener or a real link",
+   "fix": "suggest",
+   "fix_reason": "an `<a href=\"javascript:void(0)\">` runs nothing and becomes `<button type=\"button\">`, its other attributes kept; it then looks like a button until styled. A `javascript:` URL that runs script is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77133,8 +77133,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "what replaces the plugin depends on what it showed",
+   "fix": "suggest",
+   "fix_reason": "an `<embed>` of a picture, a video or a sound, by its `type` or file extension, becomes `<img>`, `<video controls>` or `<audio controls>`; anything else (Flash, a document) is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77146,7 +77146,7 @@
     }
    ],
    "options": {},
-   "dont": "<embed src=\"movie.swf\">",
+   "dont": "<embed src=\"movie.mp4\">",
    "do": "<video src=\"movie.mp4\" controls></video>",
    "fix_steps": [
     "Use `<img>`, `<video>` or `<audio>` for media.",
@@ -77155,7 +77155,7 @@
    ],
    "example": {
     "language": "html",
-    "dont": "<embed src=\"movie.swf\">",
+    "dont": "<embed src=\"movie.mp4\">",
     "do": "<video src=\"movie.mp4\" controls></video>"
    },
    "ported_from": [],
@@ -77295,8 +77295,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "the framed document has to become a file or be sandboxed",
+   "fix": "suggest",
+   "fix_reason": "the choices are an empty `sandbox` (the default), or `sandbox=\"allow-scripts\"` when the framed document must run; either gives it an opaque origin, and `allow-same-origin` is never offered",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77353,8 +77353,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is trusted, and how to sanitise it, is the author's call",
+   "fix": "suggest",
+   "fix_reason": "the HTML binding becomes its text binding (`[innerHTML]` to `[textContent]`, `v-html` to `v-text`, `x-html` to `x-text`), so the value shows as text; markup it was meant to carry then shows escaped. `[outerHTML]` has no text twin and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -77411,8 +77411,8 @@
    "languages": [
     "html"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the value is trusted, and how to sanitise it, is the author's call",
+   "fix": "suggest",
+   "fix_reason": "`{{{ x }}}` becomes `{{ x }}`, `|safe` goes and `<%- x %>` becomes `<%= x %>`, so the template escapes the value; markup the value was meant to carry then shows as text, which the reviewer confirms. `autoescape off` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -87663,8 +87663,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the class should be a component needs the author",
+   "fix": "suggest",
+   "fix_reason": "a Stencil decorator outside a @Component class does nothing, so it is removed; the reviewer confirms the class was not meant to be a component",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87708,8 +87708,8 @@
    "languages": [
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the slot's description, or whether it should exist, needs the author",
+   "fix": "suggest",
+   "fix_reason": "a `@slot` tag for a slot the component never renders is deleted, when every rendered slot has a literal name; a rendered slot with no tag needs its description written, and is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.2.0",
@@ -87721,15 +87721,15 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": "* @slot header - The card's title row.",
+   "dont": "* @slot footer - The card's actions.",
+   "do": null,
    "fix_steps": [
     "For a slot reported as rendered without a tag, add `@slot <name> - <what it holds>` (or `@slot - <what it holds>` for the default slot) to the JSDoc above `@Component`.",
     "For a tag reported as never rendered, remove the tag, or render the `<slot>` it describes."
    ],
    "example": {
     "language": "tsx",
-    "dont": "/**\n * A card.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
+    "dont": "/**\n * A card.\n * @slot header - The card's title row.\n * @slot footer - The card's actions.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}",
     "do": "/**\n * A card.\n * @slot header - The card's title row.\n */\n@Component({ tag: 'my-card' })\nexport class Card {\n  render() {\n    return <slot name=\"header\" />;\n  }\n}"
    },
    "ported_from": [
@@ -87755,8 +87755,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the attributes move into `render()` by hand",
+   "fix": "auto",
+   "fix_reason": "auto when `hostData()` only returns its attributes and the component has no `render()`: it becomes `render() { return h(Host, <attributes>); }`, which sets the same attributes on the host, with `h` and `Host` added to the `@stencil/core` import; any other `hostData()` is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87802,8 +87802,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the method is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Method() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87848,8 +87848,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which member was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are the @Prop and @State names within two edits of the watched one, nearest first and the default, or removing the @Watch; the handler then runs, or never could, which the reviewer confirms",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -87982,8 +87982,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the handler moves into the rendered markup by hand",
+   "fix": "suggest",
+   "fix_reason": "in a component with no `render()` or `hostData()`, the @Listen on a host event becomes an `on<Event>` handler on the `<Host>` a new `render()` draws; the component then renders a host it didn't before, which the reviewer confirms. Any other @Listen is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88073,8 +88073,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the field is public API needs the author",
+   "fix": "auto",
+   "fix_reason": "TypeScript's `private` and `protected` exist only for the compiler, so removing one from a @Prop() changes nothing at run time",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88212,8 +88212,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the component should change the prop needs the author",
+   "fix": "auto",
+   "fix_reason": "`mutable: true` only allows the component to assign the prop, and nothing in it does, so removing it (and an options object it leaves empty) changes nothing",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -88912,8 +88912,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the update has to be rewritten to build a new value",
+   "fix": "suggest",
+   "fix_reason": "an updater that only sets keys of, or pushes onto, the value it returns is rewritten to return a copy; a reviewer confirms nothing else held the old object. Any other updater is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -88959,8 +88959,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "each removed option is replaced by different code: an effect, `placeholderData`, `structuralSharing` or a hook argument",
+   "fix": "suggest",
+   "fix_reason": "suggest for `keepPreviousData: true`, which becomes `placeholderData: keepPreviousData` with the import added (the placeholder now also shows across key changes the old option skipped); the callbacks, `isDataEqual` and `context` need code moved elsewhere and stay manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.3.0",
@@ -89054,8 +89054,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which fields the component needs is a choice only its author can make",
+   "fix": "suggest",
+   "fix_reason": "when the rest object is read only as `rest.field`, those fields are destructured by name; the component then re-renders on fewer changes, which is the point but is a change. A rest object passed on whole is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -89075,7 +89075,7 @@
    ],
    "example": {
     "language": "javascript",
-    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest];\n}",
+    "dont": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, ...rest } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, rest.isPending];\n}",
     "do": "import { useQuery } from '@tanstack/react-query';\n\nfunction useTodos() {\n  const { data, isPending } = useQuery({ queryKey: ['todos'], queryFn: fetchTodos });\n  return [data, isPending];\n}"
    },
    "ported_from": [
@@ -89103,8 +89103,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "the fields to list depend on what the effect, callback or memo reads",
+   "fix": "suggest",
+   "fix_reason": "when the result is read only through its fields, it is destructured and the dependency array lists the fields; the callback then sees each field's latest value, which a reviewer confirms. Any other use is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -96999,8 +96999,8 @@
    "languages": [
     "toml"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two definitions was meant can't be known from the file",
+   "fix": "auto",
+   "fix_reason": "auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the first or the last, since TOML refuses both and only the author knows which was meant. A table defined twice is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -97013,14 +97013,14 @@
    ],
    "options": {},
    "dont": "addopts = \"-q\"",
-   "do": null,
+   "do": "addopts = \"-ra\"",
    "fix_steps": [
     "Decide which definition is right.",
     "Delete the other one, or merge the two tables into one."
    ],
    "example": {
     "language": "toml",
-    "dont": "[tool.pytest]\naddopts = \"-q\"\ntestpaths = [\"tests\"]\naddopts = \"-ra\"",
+    "dont": "[tool.pytest]\naddopts = \"-q\"\ntestpaths = [\"tests\"]\naddopts = \"-q\"",
     "do": "[tool.pytest]\naddopts = \"-ra\"\ntestpaths = [\"tests\"]"
    },
    "ported_from": [],
@@ -97925,8 +97925,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "which value is right needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are an explicit alias of the first member with that value, keeping both equal, or the next unused number, making them differ; which one is meant is the reviewer's call",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99112,8 +99112,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether to rename or to move the members into the class needs the author",
+   "fix": "auto",
+   "fix_reason": "auto when the interface holds only property signatures, has no `extends` or type parameters, is not exported and names nothing the class declares: they become `declare` fields of the class, which emit nothing, so the type and the runtime are unchanged; any other interface is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99298,8 +99298,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "whether a call, an assignment or nothing was meant needs the author",
+   "fix": "suggest",
+   "fix_reason": "the statement does nothing, so the choices are what it was meant to do: delete it (the default), call it, or make a comparison an assignment; the reviewer picks, since only the author knows the intent",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -99345,8 +99345,8 @@
     "typescript",
     "tsx"
    ],
-   "fix": "manual",
-   "fix_reason": "removing a declaration can drop the side effects of its initialiser",
+   "fix": "auto",
+   "fix_reason": "auto for a name nothing reads or writes: an import with another binding left, a variable (an initialiser that could do something kept as a statement), a function, an interface or type alias, a catch binding; removing an import's last binding drops the module's load and is suggest; a parameter, a destructured name or a class is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -100251,8 +100251,8 @@
    "languages": [
     "yaml"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author",
+   "fix": "suggest",
+   "fix_reason": "the choices are quoting it (the default: the string YAML 1.2 reads, for a time), the number YAML 1.2 reads, or the number YAML 1.1 reads, each now read the same by both",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -100297,8 +100297,8 @@
    "languages": [
     "yaml"
    ],
-   "fix": "manual",
-   "fix_reason": "which of the two values was meant can't be known from the file",
+   "fix": "auto",
+   "fix_reason": "auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what most YAML readers keep) or the first",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -100343,8 +100343,8 @@
    "languages": [
     "yaml"
    ],
-   "fix": "manual",
-   "fix_reason": "whether the anchor is missing, misspelt or defined too late needs the author",
+   "fix": "suggest",
+   "fix_reason": "the anchors defined before the alias within two edits are choices, nearest first; an alias whose anchor comes later, or with none near, is manual",
    "severity": "error",
    "stability": "preview",
    "since": "0.1.0",
@@ -100356,15 +100356,15 @@
     }
    ],
    "options": {},
-   "dont": null,
-   "do": null,
+   "dont": "<<: *default",
+   "do": "<<: *defaults",
    "fix_steps": [
     "Find the anchor the alias meant.",
     "Move the anchored node above the alias, fix the spelling, or add the anchor."
    ],
    "example": {
     "language": "yaml",
-    "dont": "production:\n  <<: *defaults\n  host: example.com\ndefaults: &defaults\n  port: 443",
+    "dont": "defaults: &defaults\n  port: 443\nproduction:\n  <<: *default\n  host: example.com",
     "do": "defaults: &defaults\n  port: 443\nproduction:\n  <<: *defaults\n  host: example.com"
    },
    "ported_from": [],

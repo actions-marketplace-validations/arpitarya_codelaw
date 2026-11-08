@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/document` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `allowMultipleH1`, `minInitialRank`, `sectioningRoots` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (changing a heading level changes its style and the outline) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the heading that skips levels, and the headings of its subsection, move up by the levels skipped; the outline changes, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/heading-level` |

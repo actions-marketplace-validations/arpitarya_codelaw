@@ -2,9 +2,9 @@
 id: css/declaration-property-value-no-unknown
 title: "Keyword-valued properties use a known keyword"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended value is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the property's keywords within two edits are choices, nearest first; a value with none near is manual"
+fix_exception: value
 stability: preview
 ported_from: [stylelint/declaration-property-value-no-unknown, stylelint-scss/declaration-property-value-no-unknown]
 since: 0.1.0
@@ -30,7 +30,7 @@ native: css/declaration-property-value-no-unknown
 
 ```css
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 
@@ -48,7 +48,7 @@ a {
 
 ```scss
 a {
-  position: centre;
+  position: relativ;
 }
 ```
 

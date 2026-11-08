@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreCase`, `requireSemicolon` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended character is not always clear) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the reference only lacks its `;` (`&copy` is `&copy;`), which renders the same; a name HTML doesn't know gets the known names within two edits as a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/unrecognized-char-ref` |

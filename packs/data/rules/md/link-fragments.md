@@ -2,9 +2,9 @@
 id: md/link-fragments
 title: "In-page links point at a heading or anchor that exists"
 languages: [markdown]
-fix: manual
-fix_reason: "which section the link meant needs the author"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto when a heading's anchor is the fragment written as an anchor (`#Install` is `#install`); otherwise the anchors within two edits are choices, nearest first; a fragment with none near is manual"
+fix_exception: value
 stability: preview
 options:
   ignore_case: { type: "boolean", default: false, description: "compare fragments with anchors ignoring case" }

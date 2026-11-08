@@ -3,6 +3,8 @@ id: js/no-unused-labels
 title: "Every label is used"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a name a draft may be about to use, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [eslint/no-unused-labels]
 since: 0.1.0

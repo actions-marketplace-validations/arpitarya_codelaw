@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the reference was meant to repeat needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the backreference, with its quantifier, always matches the empty string, so it goes; the reviewer confirms the pattern was not meant to match more) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-useless-backreference`, `eslint-plugin-regexp/no-useless-backreference` |
@@ -136,6 +136,12 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 const re = /\1(a)/;
 ```
 
+#### Fixed
+
+```js
+const re = /(a)/;
+```
+
 #### Do
 
 ```js
@@ -148,6 +154,12 @@ const re = /(a)\1/;
 
 ```jsx
 const re = /\1(a)/;
+```
+
+#### Fixed
+
+```jsx
+const re = /(a)/;
 ```
 
 #### Do
@@ -164,6 +176,12 @@ const re = /(a)\1/;
 const re = /\1(a)/;
 ```
 
+#### Fixed
+
+```ts
+const re = /(a)/;
+```
+
 #### Do
 
 ```ts
@@ -176,6 +194,12 @@ const re = /(a)\1/;
 
 ```tsx
 const re = /\1(a)/;
+```
+
+#### Fixed
+
+```tsx
+const re = /(a)/;
 ```
 
 #### Do

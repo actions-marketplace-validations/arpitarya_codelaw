@@ -29,6 +29,18 @@ impl Project {
         let abs = file.map(|f| self.locate_path(f).0);
         let mut out = self.config.trace(abs.as_deref(), env);
         let layers = self.config.layers_for(abs.as_deref().unwrap_or(self.root()));
+        // The resolved targets and their sources (SR-CONFIG decision 11f):
+        // for a folder, as a file in it sees them.
+        let probe = match abs.as_deref() {
+            Some(a) if a.is_dir() => a.join("_"),
+            Some(a) => a.to_owned(),
+            None => self.root().join("_"),
+        };
+        let py = self.python_target(&probe, None);
+        out.push(Traced { key: "targets.python".into(), value: py.value.map_or(Value::Null, |v| json!(crate::targets::dotted(&v))), source: py.source });
+        let br = self.browsers_target(&probe, None);
+        let browsers = br.value.map_or(Value::Null, |b| json!(b.iter().map(|(n, v)| format!("{n} >= {}", crate::targets::dotted(v))).collect::<Vec<_>>()));
+        out.push(Traced { key: "targets.browsers".into(), value: browsers, source: br.source });
         for c in self.compiled.iter() {
             let r = &c.loaded;
             let id = &r.rule.id;
@@ -54,6 +66,13 @@ impl Project {
             if let Some(f) = lowered {
                 let at = sources.iter().rev().find(|(_, s)| s.fix().is_some()).map(|(s, _)| s.clone()).unwrap_or_default();
                 out.push(Traced { key: format!("rules.{}.fix", serde_json::to_string(id).expect("a string")), value: json!(f.name()), source: at });
+            }
+            // Whether its `auto` fix runs on save and from the agent hook,
+            // when the rule or the config says other than the default
+            // (SR-CONFIG decision 11e).
+            let (on_edit, at) = self.on_edit(r, &layers);
+            if !on_edit || !at.starts_with("the rule's default") {
+                out.push(Traced { key: format!("rules.{}.on_edit", serde_json::to_string(id).expect("a string")), value: json!(on_edit), source: at });
             }
             // Why the rule is off, from the entry that turned it off
             // (SR-CONFIG decision 11c).

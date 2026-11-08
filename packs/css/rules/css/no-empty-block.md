@@ -3,6 +3,8 @@ id: css/no-empty-block
 title: "No empty blocks"
 languages: [css, scss]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix."
 stability: stable
 ported_from: [stylelint/block-no-empty]
 since: 0.1.0

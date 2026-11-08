@@ -35,6 +35,59 @@ fn tanstack_hook<'s>(model: &SemanticModel, call: Node<'_>, src: &'s str, hooks:
     (hooks.contains(&name) && import_of(model, f, &is_tanstack).is_some()).then_some(name)
 }
 
+
+// ---------------------------------------------------------------- shared edits
+
+/// Whether `name` is free in the file: no identifier, shorthand property
+/// or binding spells it (a member's property name doesn't count).
+fn name_is_free(root: Node<'_>, name: &str, src: &str) -> bool {
+    let mut stack = vec![root];
+    while let Some(n) = stack.pop() {
+        if matches!(n.kind(), "identifier" | "shorthand_property_identifier" | "shorthand_property_identifier_pattern" | "type_identifier") && text(n, src) == name {
+            return false;
+        }
+        stack.extend(named_children(n));
+    }
+    true
+}
+
+/// The fields a binding is read through, when every read of `sym` is a
+/// plain member read `sym.field` — not called through, assigned or
+/// deleted — except the reads `other` accepts: the fields in first-read
+/// order, and the edits that make each `sym.field` read `field`.
+fn member_reads(model: &SemanticModel, root: Node<'_>, sym: usize, src: &str, other: &dyn Fn(Node<'_>) -> bool) -> Option<(Vec<String>, Vec<TextEdit>, Vec<usize>)> {
+    let mut fields: Vec<String> = Vec::new();
+    let mut edits = Vec::new();
+    let mut rest = Vec::new();
+    let mut refs: Vec<usize> = model.symbol(sym).refs.clone();
+    refs.sort_by_key(|&r| model.references[r].start);
+    for r in refs {
+        let reference = &model.references[r];
+        let id = root.descendant_for_byte_range(reference.start, reference.end)?;
+        let parent = id.parent()?;
+        let plain = parent.kind() == "member_expression"
+            && parent.child_by_field_name("object").is_some_and(|o| o.id() == id.id())
+            && parent.child_by_field_name("property").is_some_and(|p| p.kind() == "property_identifier")
+            && !parent.parent().is_some_and(|g| {
+                matches!(g.kind(), "assignment_expression" | "augmented_assignment_expression" | "update_expression") && g.child_by_field_name("left").or_else(|| g.child_by_field_name("argument")).is_some_and(|l| l.id() == parent.id())
+                    || g.kind() == "unary_expression" && g.child(0).is_some_and(|o| o.kind() == "delete")
+                    || g.kind() == "call_expression" && g.child_by_field_name("function").is_some_and(|f| f.id() == parent.id()) && !parent.child_by_field_name("property").is_some_and(|p| matches!(text(p, src), "mutate" | "mutateAsync" | "refetch" | "reset" | "fetchNextPage" | "fetchPreviousPage"))
+            });
+        if plain {
+            let field = text(parent.child_by_field_name("property")?, src).to_owned();
+            edits.push(TextEdit::new(parent.start_byte(), parent.end_byte(), field.clone()));
+            if !fields.contains(&field) {
+                fields.push(field);
+            }
+        } else if other(id) {
+            rest.push(r);
+        } else {
+            return None;
+        }
+    }
+    (!fields.is_empty()).then_some((fields, edits, rest))
+}
+
 // ---------------------------------------------------------------- exhaustive-deps
 
 /// A dependency as the query key or the query function names it: `a.b.c`
@@ -360,7 +413,7 @@ impl NativeRule for NoRestDestructuring {
         if value.kind() == "identifier" {
             // `const q = useQuery(…); const { data, ...rest } = q;`
             if has_rest(name) && query_result_hook(model, root, value, src, QUERY_HOOKS).is_some() {
-                out.push(finding(n, REST_MESSAGE, Vec::new()));
+                out.push(finding(n, REST_MESSAGE, rest_edits(model, root, name, src).unwrap_or_default()));
             }
             return;
         }
@@ -375,9 +428,31 @@ impl NativeRule for NoRestDestructuring {
                 }
             }
         } else if has_rest(name) {
-            out.push(finding(n, REST_MESSAGE, Vec::new()));
+            out.push(finding(n, REST_MESSAGE, rest_edits(model, root, name, src).unwrap_or_default()));
         }
     }
+}
+
+/// The edits that replace `...rest` with the fields `rest` is read
+/// through, when it is read only as `rest.field` and each field's name is
+/// free (or already destructured beside it).
+fn rest_edits(model: &SemanticModel, root: Node<'_>, pattern: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let items = named_children(pattern);
+    let rest = items.iter().find(|c| c.kind() == "rest_pattern")?;
+    let ident = rest.named_child(0).filter(|i| i.kind() == "identifier")?;
+    let sym = model.declared_at(ident.start_byte())?;
+    let already: Vec<&str> = items.iter().filter(|c| c.kind() == "shorthand_property_identifier_pattern").map(|c| text(*c, src)).collect();
+    let (fields, mut edits, _) = member_reads(model, root, sym, src, &|_| false)?;
+    let new: Vec<&String> = fields.iter().filter(|f| !already.contains(&f.as_str())).collect();
+    if new.iter().any(|f| !name_is_free(root, f, src)) {
+        return None;
+    }
+    if new.is_empty() {
+        edits.push(crate::util::remove_list_item(*rest, src));
+    } else {
+        edits.push(TextEdit::new(rest.start_byte(), rest.end_byte(), new.iter().map(|f| f.as_str()).collect::<Vec<_>>().join(", ")));
+    }
+    Some(edits)
 }
 
 // ---------------------------------------------------------------- no-unstable-deps
@@ -472,6 +547,30 @@ fn unstable_binding<'s>(model: &SemanticModel, root: Node<'_>, ident: Node<'_>, 
     (value.kind() == "call_expression").then(|| unstable_source(model, root, value, src, 0)).flatten()
 }
 
+/// The edits that destructure `const q = useX(…)` into the fields `q` is
+/// read through, list those fields where a dependency array names `q`,
+/// and read each field by name: when every other read is `q.field` and
+/// each field's name is free in the file.
+fn destructure_edits(model: &SemanticModel, root: Node<'_>, dep: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    let sym = model.symbol_at(dep.start_byte())?;
+    let &(start, end) = model.symbol(sym).decls.first()?;
+    let id = root.descendant_for_byte_range(start, end)?;
+    if id.kind() != "identifier" || id.parent()?.kind() != "variable_declarator" {
+        return None;
+    }
+    let in_deps = |n: Node<'_>| n.parent().is_some_and(|p| p.kind() == "array" && p.parent().is_some_and(|a| a.kind() == "arguments"));
+    let (fields, mut edits, rest) = member_reads(model, root, sym, src, &in_deps)?;
+    if rest.is_empty() || fields.iter().any(|f| !name_is_free(root, f, src)) {
+        return None;
+    }
+    edits.push(TextEdit::new(id.start_byte(), id.end_byte(), format!("{{ {} }}", fields.join(", "))));
+    for r in rest {
+        let reference = &model.references[r];
+        edits.push(TextEdit::new(reference.start, reference.end, fields.join(", ")));
+    }
+    Some(edits)
+}
+
 pub struct NoUnstableDeps;
 
 impl NativeRule for NoUnstableDeps {
@@ -499,7 +598,7 @@ impl NativeRule for NoUnstableDeps {
                 out.push(finding(
                     dep,
                     format!("The result of `{query_hook}` is a new object on every render, so `{react_hook}` runs every time; destructure it and list the fields you use"),
-                    Vec::new(),
+                    destructure_edits(model, root, dep, src).unwrap_or_default(),
                 ));
             }
         }
@@ -839,6 +938,30 @@ const REMOVED: &[(&str, &str)] = &[
     ("context", "the `context` option was removed in v5; pass the `QueryClient` as the hook's second argument"),
 ];
 
+/// The edits for `keepPreviousData: true`: `placeholderData:
+/// keepPreviousData`, with `keepPreviousData` added to the file's named
+/// import from TanStack Query. None when the object already has a
+/// `placeholderData`, the name is taken, or no named import can take it.
+fn keep_previous_edits(model: &SemanticModel, object: Node<'_>, m: Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
+    if m.kind() != "pair" || m.child_by_field_name("value").is_none_or(|v| v.kind() != "true") {
+        return None;
+    }
+    if members(object).iter().any(|x| member_name(*x, src) == Some("placeholderData")) {
+        return None;
+    }
+    let mut edits = vec![TextEdit::new(m.start_byte(), m.end_byte(), "placeholderData: keepPreviousData")];
+    let imported = model.imports.iter().any(|i| is_tanstack(&i.source) && matches!(&i.imported, Imported::Named(n) if n == "keepPreviousData") && i.local.is_some_and(|l| model.symbol(l).name == "keepPreviousData"));
+    if !imported {
+        let root = root_of(object);
+        if !name_is_free(root, "keepPreviousData", src) {
+            return None;
+        }
+        let spec = model.imports.iter().filter(|i| is_tanstack(&i.source) && !i.type_only && matches!(i.imported, Imported::Named(_))).last()?;
+        edits.push(TextEdit::insert(spec.end, ", keepPreviousData"));
+    }
+    Some(edits)
+}
+
 pub struct NoRemovedV4Options;
 
 impl NativeRule for NoRemovedV4Options {
@@ -864,7 +987,8 @@ impl NativeRule for NoRemovedV4Options {
             for m in members(object) {
                 let Some(name) = member_name(m, src) else { continue };
                 if let Some((_, why)) = REMOVED.iter().find(|(o, _)| *o == name) {
-                    out.push(finding(m, format!("`{name}` is not a TanStack Query v5 query option: {why}"), Vec::new()));
+                    let edits = if name == "keepPreviousData" { keep_previous_edits(model, object, m, src).unwrap_or_default() } else { Vec::new() };
+                    out.push(finding(m, format!("`{name}` is not a TanStack Query v5 query option: {why}"), edits));
                 }
             }
         }
@@ -1187,6 +1311,75 @@ fn mutation_at<'t>(ident: Node<'t>, src: &str) -> Option<Node<'t>> {
     }
 }
 
+/// The edit that turns an updater which changes `old` and returns it into
+/// one that returns a copy: a body of `old.key = value;` statements (or
+/// `old.push(…);` ones), optionally inside `if (old) { … }`, then
+/// `return old;`, becomes `{ ...old, key: value }` (or `[...old, …]`),
+/// `old ? … : old` when it was guarded.
+fn copy_edits(updater: Node<'_>, old: &str, src: &str) -> Option<Vec<TextEdit>> {
+    let body = updater.child_by_field_name("body").filter(|b| b.kind() == "statement_block")?;
+    let stmts: Vec<Node> = named_children(body).into_iter().filter(|c| c.kind() != "comment").collect();
+    let (last, changes) = stmts.split_last()?;
+    if last.kind() != "return_statement" || last.named_child(0).is_none_or(|v| text(v, src) != old) {
+        return None;
+    }
+    let (guarded, changes): (bool, Vec<Node>) = match changes {
+        [one] if one.kind() == "if_statement" => {
+            let cond = one.child_by_field_name("condition")?;
+            let inner = cond.named_child(0)?;
+            if text(inner, src) != old || one.child_by_field_name("alternative").is_some() {
+                return None;
+            }
+            let block = one.child_by_field_name("consequence").filter(|b| b.kind() == "statement_block")?;
+            (true, named_children(block).into_iter().filter(|c| c.kind() != "comment").collect())
+        }
+        _ => (false, changes.to_vec()),
+    };
+    if changes.is_empty() {
+        return None;
+    }
+    let mut fields = Vec::new();
+    let mut pushed = Vec::new();
+    for c in &changes {
+        let e = (c.kind() == "expression_statement").then(|| c.named_child(0)).flatten()?;
+        match e.kind() {
+            "assignment_expression" => {
+                let left = e.child_by_field_name("left").filter(|l| l.kind() == "member_expression")?;
+                let obj = left.child_by_field_name("object")?;
+                let prop = left.child_by_field_name("property").filter(|p| p.kind() == "property_identifier")?;
+                if text(obj, src) != old {
+                    return None;
+                }
+                let value = e.child_by_field_name("right")?;
+                if text(value, src).contains(old) {
+                    return None;
+                }
+                fields.push(format!("{}: {}", text(prop, src), text(value, src)));
+            }
+            "call_expression" => {
+                let f = e.child_by_field_name("function").filter(|f| f.kind() == "member_expression")?;
+                if text(f.child_by_field_name("object")?, src) != old || text(f.child_by_field_name("property")?, src) != "push" {
+                    return None;
+                }
+                let args = e.child_by_field_name("arguments")?;
+                let inner = &src[args.start_byte() + 1..args.end_byte() - 1];
+                if inner.contains(old) {
+                    return None;
+                }
+                pushed.push(inner.trim().trim_end_matches(',').to_owned());
+            }
+            _ => return None,
+        }
+    }
+    let copy = match (fields.is_empty(), pushed.is_empty()) {
+        (false, true) => format!("{{ ...{old}, {} }}", fields.join(", ")),
+        (true, false) => format!("[...{old}, {}]", pushed.join(", ")),
+        _ => return None,
+    };
+    let value = if guarded { format!("{old} ? {copy} : {old}") } else if copy.starts_with('{') { format!("({copy})") } else { copy };
+    Some(vec![TextEdit::new(body.start_byte(), body.end_byte(), value)])
+}
+
 pub struct NoMutatingSetQueryData;
 
 impl NativeRule for NoMutatingSetQueryData {
@@ -1230,8 +1423,9 @@ impl NativeRule for NoMutatingSetQueryData {
         let mut found: Vec<Node> = refs.into_iter().filter_map(|r| mutation_at(r, src)).collect();
         found.sort_by_key(|m| m.start_byte());
         found.dedup_by_key(|m| m.id());
+        let mut whole = copy_edits(updater, name, src);
         for m in found {
-            out.push(finding(m, format!("`{method}`'s updater changes the cached `{name}` in place; return a new value (`{{ ...{name}, … }}`, `[...{name}, …]`) so the cache and its observers see the change"), Vec::new()));
+            out.push(finding(m, format!("`{method}`'s updater changes the cached `{name}` in place; return a new value (`{{ ...{name}, … }}`, `[...{name}, …]`) so the cache and its observers see the change"), whole.take().unwrap_or_default()));
         }
     }
 }

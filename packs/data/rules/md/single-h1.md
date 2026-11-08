@@ -2,9 +2,9 @@
 id: md/single-h1
 title: "One level-1 heading per document"
 languages: [markdown]
-fix: manual
-fix_reason: "which heading is the title, and what level the others become, needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual"
+fix_exception: restructure
 stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }

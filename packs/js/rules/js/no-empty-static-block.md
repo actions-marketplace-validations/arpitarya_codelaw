@@ -3,6 +3,8 @@ id: js/no-empty-static-block
 title: "No empty static blocks"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
+on_edit: false
+fix_reason: "Deletes a placeholder still being filled in, so save and the agent hook leave it for codelaw fix."
 stability: preview
 ported_from: [eslint/no-empty-static-block]
 since: 0.1.0

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreAtRules` |
-| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (browsers that need the prefix lose the rule) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (browsers that need the prefix lose the rule; automatic only where every target browser supports the result (fix_target)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/at-rule-no-vendor-prefix` |

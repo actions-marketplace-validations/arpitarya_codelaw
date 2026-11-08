@@ -253,16 +253,87 @@ pub trait NativeRule: Send + Sync {
     /// `fix_reason:` states; `None` keeps the rule's. The finding never
     /// rises above the rule's own class. Called once per finding, after
     /// `check`, with the same context.
-    fn rung_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
-        None
+    /// By default, `Suggest` when `check` marked the finding's edits with
+    /// [`as_suggestion`].
+    fn rung_of(&self, finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Option<FixClass> {
+        finding.edits.iter().any(|e| e.start == SUGGEST_AT && e.end == SUGGEST_AT).then_some(FixClass::Suggest)
     }
     /// A `suggest` finding's labelled alternatives (SR-LAW-4 decision 4),
     /// when the right edit is one of a few the code determines; the
     /// finding's own `edits` are then ignored. Called once per finding,
     /// after `check`, with the same context.
-    fn choices_of(&self, _finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<FixChoice> {
-        Vec::new()
+    /// By default, the choices `check` wrote into the finding's `edits`
+    /// with [`choice_edits`].
+    fn choices_of(&self, finding: &NativeFinding, _ctx: &NativeContext<'_>) -> Vec<FixChoice> {
+        choices_in(&finding.edits)
     }
+}
+
+/// The marker that makes a finding of an `auto` rule a suggestion
+/// ([`as_suggestion`]): an edit no file can hold.
+const SUGGEST_AT: usize = usize::MAX - 1;
+
+/// A finding's edits marked as a suggestion: the default
+/// [`NativeRule::rung_of`] reports it as `suggest` (L4 decision 2), and
+/// [`plain_edits`] drops the marker before the edits are applied.
+pub fn as_suggestion(mut edits: Vec<TextEdit>) -> Vec<TextEdit> {
+    if !edits.is_empty() && !edits.iter().any(|e| e.start == CHOICE_AT) {
+        edits.push(TextEdit { start: SUGGEST_AT, end: SUGGEST_AT, text: String::new() });
+    }
+    edits
+}
+
+/// A finding's edits without the markers `check` wrote into them.
+pub fn plain_edits(edits: Vec<TextEdit>) -> Vec<TextEdit> {
+    edits.into_iter().filter(|e| e.start != SUGGEST_AT && e.start != CHOICE_AT).collect()
+}
+
+/// The marker opening one choice in a finding's `edits` ([`choice_edits`]):
+/// an edit no file can hold.
+const CHOICE_AT: usize = usize::MAX;
+
+/// A finding's labelled choices written into its `edits`, so `check` can
+/// compute them where it has the tree: each choice is a marker edit
+/// carrying its label, then its own edits. The default
+/// [`NativeRule::choices_of`] reads them back, and the engine ignores a
+/// finding's `edits` once it has choices. A choice with no edits is
+/// dropped; with fewer than two left, the one left is the finding's edit.
+pub fn choice_edits(choices: Vec<FixChoice>) -> Vec<TextEdit> {
+    let choices: Vec<FixChoice> = choices.into_iter().filter(|c| !c.edits.is_empty()).collect();
+    if choices.len() < 2 {
+        return choices.into_iter().next().map(|c| c.edits).unwrap_or_default();
+    }
+    let mut out = Vec::new();
+    for c in choices {
+        out.push(TextEdit { start: CHOICE_AT, end: CHOICE_AT, text: format!("{}{}", if c.default { '1' } else { '0' }, c.label) });
+        out.extend(c.edits);
+    }
+    out
+}
+
+/// The choices [`choice_edits`] wrote into `edits`; none when it wrote
+/// plain edits.
+pub fn choices_in(edits: &[TextEdit]) -> Vec<FixChoice> {
+    let mut out: Vec<FixChoice> = Vec::new();
+    for e in edits {
+        if e.start == SUGGEST_AT {
+            continue;
+        }
+        if e.start == CHOICE_AT && e.end == CHOICE_AT {
+            let (flag, label) = e.text.split_at(1);
+            out.push(FixChoice { label: label.to_owned(), default: flag == "1", edits: Vec::new() });
+        } else if let Some(c) = out.last_mut() {
+            c.edits.push(e.clone());
+        } else {
+            return Vec::new();
+        }
+    }
+    out
+}
+
+/// One labelled choice.
+pub fn choice(label: impl Into<String>, default: bool, edits: Vec<TextEdit>) -> FixChoice {
+    FixChoice { label: label.into(), default, edits }
 }
 
 /// A second place for a finding, in a plain-text config file

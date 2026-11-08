@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which of the two values was meant can't be known from the file) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the key is set twice to the same value, so the later one goes; otherwise the choices keep the last (the default: what JSON.parse and Python read) or the first) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -132,6 +132,15 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 ```json
 {
   "name": "app",
+  "version": "1.0.0",
+  "name": "web-app"
+}
+```
+
+#### Fixed
+
+```json
+{
   "version": "1.0.0",
   "name": "web-app"
 }

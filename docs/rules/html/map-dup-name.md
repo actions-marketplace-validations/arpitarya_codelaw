@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming a map means updating the `usemap` that points at it) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the later <map> goes: `usemap` always finds the first, so it is never used; the reviewer confirms it wasn't meant to replace the first) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/map-dup-name` |
@@ -132,6 +132,12 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 
 ```html
 <map name="nav"></map>
+<map name="nav"></map>
+```
+
+#### Fixed
+
+```html
 <map name="nav"></map>
 ```
 

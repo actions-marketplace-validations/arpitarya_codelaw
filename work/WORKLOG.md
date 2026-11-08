@@ -24,6 +24,148 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 — W-169: the crash capture landed; the segfault not reproduced locally  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-169 — make the build legs save a core and a symbolized backtrace on a crash; stress `rules lint` on every pack locally under release and sanitizer builds; fix it if found.
+- **Done:** `scripts/crash-capture.sh` (`arm`, `collect`) and the build legs' two steps and `crash-<key>` artifact, SR-PACKAGES decision 11 and the ownership row — landed as `8ad936ec`. Local: release, ASan (Rust; Rust + C grammars) and TSan on all 27 packs, 19,305 runs — no crash, no sanitizer report. The paths read (rule loading, `unsafe`, tree-sitter FFI, the allocator) are in the item.
+- **Decided / left open:** no fix without a backtrace, so no regression test. The capture is unproven until the decider pushes `main`.
+- **Mistakes:** the first sanitizer `test` pass ran while auto-land merged newer `packs/` into the worktree; 51 failures were that skew, not crashes — rerun on packs frozen with `git archive`. A worktree removed mid-session (W-171 cleanup) took this session's item edit; redone in a new change.
+- **Next:** the first red build leg after the push: read `crash-<key>`'s `backtrace.txt`.
+
+---
+
+## 2026-11-07 — W-139 steps 3–4: checks, corpus counts, L8, before/after  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-139 step 3 — `codelaw test` on every pack, corpus counts for the 233 rules of 11-05, the L8 budgets; then step 4; resumed after the usage limit (W-171).
+- **Done:** merged main into `lm/W-139` (`72832b42`). 27 packs 0 failed. Shallow corpus (387 MB), run one pack at a time, then deleted; every `corpus.toml` written. `md/no-empty-links` narrowed (254 false findings on anchor and bracketed links, from W-156's patterns) and `js/no-undefined` narrowed (TypeScript's `undefined` type; the corpus fixpoint failed), each with cases. Proposal §13 and the README carry the before/after. L8: the 233 cost nothing measurable beside the Mac's noise, but main is over three set budgets on the reference runner. Filed W-172.
+- **Decided / left open:** W-139 stays open: DoD 1 has about 1,042 rows to build. The loud preview rules are listed in the item for review before any promotion.
+- **Mistakes:** the first bench pass used `--out` for `--output` and was re-run. An attribution bench against 10-30's packs could not run, because those packs predate `fix_exception`.
+- **Next:** W-172's bisect, then DoD 1's remaining rows.
+
+## 2026-11-07 — W-168 closed: step 6 ruled, no budget yet  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) write Arpit's step-6 ruling, close and archive W-168, name the budgeting follow-up, remove the worktree.
+- **Done:** ruling in the item, INTERVIEW, `perf/budgets.toml`, RESULTS.md; inbox row and sub-row removed; W-168 archived; W-167 step 6 added (budget 10k and 100k from CI once the design is built); the old W-168 worktree's `.fux` re-index output restored and deleted, worktree and branch removed.
+- **Decided / left open:** Arpit, 2026-11-07: *"No budget yet (Recommended)"*. Left: W-167 step 6.
+- **Mistakes:** none.
+- **Next:** W-167 (Cowork) reads RESULTS.md.
+
+---
+
+## 2026-11-07 — W-168 steps 1–5: the graph measured at 10k–1M files  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-168 — a graph workload for `codelaw bench`, per-stage timings, 10k/50k/100k/500k/1M cold, warm and one-file hook with memory and cache size, real repos where on disk, the write-up for W-167; no budgets (step 6 to the inbox). Resumed 11-07 after the usage limit stopped the session on 11-05.
+- **Done:** `bench --graph`, the `graph-*` `--timings` phases, all five sizes run one at a time under the scratchpad and deleted after each (the 11-05 runner survived the stop and finished 1M at 11-07 10:34), ionic-framework and tanstack-query timed from the corpus checkout; `experiments/graph-scale/RESULTS.md`, six unset rows in `perf/budgets.toml`, SR-CLI-MCP and SR-PROJECT-GRAPH notes; the inbox row.
+- **Decided / left open:** the workload de-exports all but each module's helper (first draft left every export unused: 55k findings at 10k, which made `graph-rules` look like the break). Left open: which sizes get a budget (inbox); a 50k+ real repo pin (DoD 4) and the CI `perf` job (DoD 5) wait on that ruling.
+- **Mistakes:** none found; numbers are from a loaded machine (load 12–60 for 10k–100k) and 500k/1M are one sample each — said so in the results.
+- **Next:** the decider rules W-168 step 6; W-167 reads RESULTS.md.
+
+---
+
+## 2026-11-07 — W-162 change 3: `unwrap-block` and `move`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) continue W-162: finish computed edits, then the proposal's order; restore `.fux` before each submit.
+- **Done:** `unwrap-block` and `move` (SR-RULE-FORMAT 3c); `js/no-else-return`, `js/no-inline-comments`, `js/no-useless-spread` moved. The landed change-2 worktree was removed by hand as `lockmaster doctor` advised (`git worktree remove`, `git branch -d`), after `lockmaster abandon` was refused by the permission classifier.
+- **Decided / left open:** an empty spread and a block holding a multi-line string offer no fix. `no-duplicate-imports` waits on `merge-into` (it edits the earlier import).
+- **Mistakes:** none new.
+- **Next:** `merge-into`, then the native fixes.
+
+---
+
+## 2026-11-07 — W-162 change 2: `edit-text`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) resume W-162 after the usage-limit stop (W-171 kept the worktree): re-derive status, merge main, land each capability as a complete change.
+- **Done:** the stop had left `edit-text`'s code auto-committed on `lm/W-162` (a0875296, not on main) and eight rule files uncommitted; merged main, finished the change: `edit-text` (SR-RULE-FORMAT 3c), eight `js/jsdoc-*` rules moved, docs regenerated. `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `jsdoc-empty-tags`, `implements-on-classes` and `prefer-import-tag` move text between lines or nodes; they wait on `move`. The `.fux/index` files fux re-indexed in the worktree are not this change's and stay unstaged.
+- **Mistakes:** none new.
+- **Next:** W-162 change 3 — `unwrap-block` (`no-else-return`, `py/max-depth`).
+
+---
+
+## 2026-11-05 — W-156 step 4: the native moves  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-156 step 4 — move the native (Rust) rules up the fix ladder, one pack per change, leaving W-162's rules; close W-156 when only those remain.
+- **Done:** choices for native rules ride in a finding's `edits` (`choice_edits`, read back by the default `choices_of`). node landed (node: auto 2 → 3, suggest 18 → 18, manual 15 → 14 (pending 6 → 5)). tanstack-query landed (tanstack-query: auto 3 → 3, suggest 5 → 9, manual 5 → 1 (pending 4 → 0)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 2, manual 4 → 3 (pending 3 → 2)). ts landed (ts: auto 20 → 22, suggest 16 → 18, manual 29 → 25 (pending 14 → 10)). scss landed (scss: auto 18 → 20, suggest 10 → 13, manual 23 → 18 (pending 9 → 4)). redux-toolkit landed (redux-toolkit: auto 0 → 0, suggest 0 → 5, manual 12 → 7 (pending 7 → 2)). react landed (react: auto 18 → 19, suggest 39 → 46, manual 94 → 86 (pending 27 → 19)). stencil landed (stencil: auto 4 → 8, suggest 0 → 4, manual 14 → 6 (pending 10 → 2)). security-html landed (security-html: auto 1 → 1, suggest 6 → 15, manual 12 → 3 (pending 9 → 0)). data landed (data: auto 11 → 17, suggest 8 → 15, manual 28 → 15 (pending 20 → 7)). js landed (js: auto 160 → 162, suggest 167 → 181, manual 255 → 239 (pending 60 → 44)). html landed (html: auto 12 → 14, suggest 11 → 27, manual 62 → 44 (pending 32 → 14)). html landed (html: auto 14 → 17, suggest 27 → 35, manual 44 → 33 (pending 14 → 2)). css landed (css: auto 36 → 39, suggest 16 → 30, manual 94 → 77 (pending 37 → 20)).
+- **Decided / left open:** none yet.
+- **Mistakes:** none.
+- **Next:** the next pack.
+
+---
+
+## 2026-11-05 — W-170 closed: config completion in the top-level `[rules]`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-170 — three `codelaw-lsp` config-completion tests fail on main; find the cause, fix it, close.
+- **Done:** named the three (`completions_come_from_the_schema_and_the_packs`, `fix_offers_only_the_rule_s_own_rung_and_below`, `the_server_publishes_completes_and_fixes_a_config_as_typed`); cause W-158's `rootRules` schema node (`c0346694`), which `is_rules` did not recognise; fixed in `config.rs` (`rootRules` is a rules table, `require_reason` a key, not a rule); SR-EDITOR decision 9 notes it; W-170 archived.
+- **Decided / left open:** no assertion changed. `cargo clippy -p codelaw-lsp` stops on a pre-existing `type_complexity` error in `codelaw-config`, not this change's.
+- **Mistakes:** none.
+- **Next:** none for W-170.
+
+---
+
+## 2026-11-05 — W-162 change 1: computed edits, tiers 1–2  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-162 — build the fix capabilities W-161 designed, computed edits first, moving the rules waiting on each; land each capability as its own change.
+- **Done:** ast-grep's `transform:` beside `match:`; the template filters (`map`, `number`, `escape`, `unescape-octal`, `count`, `upper`, `lower`, `upper-first`) with a strict `try_interpolate` so a refusing filter offers no fix; operator tokens captured with `$$OP`. 19 `js/*` rules moved (SR-RULE-FORMAT 3b's Built note lists them). `codelaw test packs/js` 0 failed; `rules --fix-stats --check` passes.
+- **Decided / left open:** `prefer-template` and `no-useless-concat` wait on native fixes (a chain of any length; mixed quotes); `prefer-keyboard-event-key` needs an edit outside its match. Tier 3 (`edit-text`, `unwrap-block`, `move`) next.
+- **Mistakes:** a binary copied over an existing one in place was SIGKILLed by macOS (code signature cache); copy to a removed path instead.
+- **Next:** W-162 change 2 — tier 3 primitives, starting with `edit-text` for the eleven `jsdoc-*` rules.
+
+---
+
+## 2026-11-05 — W-141 closed: formatter differences fixed or named  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-141 — rerun the corpus, group the differences per language by cause, fix the ones codelaw's own code controls, name the engines' ones in SR-FORMATTER (DoD 3), close W-141 if met.
+- **Done:** four fixes in `crates/codelaw-format/src/engines.rs` — JavaScript retried as a script (Babel's retry), a `<script>` body's width counted once, blank `<script>`/`<style>` emptied with empty elements' closing tags kept on their line, the doctype as Prettier writes it; two tests checked against Prettier 3.9.10's output. Markdown 94.7 → 96.7 %, HTML 69.4 → 73.5 %; the rest named in SR-FORMATTER Consequences per engine (Oxc, markup_fmt, Biome), each with an example and its file count. W-141 archived; W-148 step 4 already lives in W-139's DoD 2d.
+- **Decided / left open:** `<!DOCTYPE HTML>` is written `<!doctype html>` at once, where Prettier keeps the keyword and changes it on its own second run — codelaw's output must be stable (decision 4). Oxc refuses to dispatch a fence whose code starts with U+FEFF (by design); left named, not worked around.
+- **Mistakes:** the shared `CARGO_TARGET_DIR` linked another worktree's `codelaw-core` into this build (`pattern does not mention field transform`); built in a lane target dir in the session scratchpad instead (2 GB, deleted at the end). A first BOM fix in Oxc's dispatcher was dead code (Oxc never calls it for such a block) and was removed.
+- **Next:** none for W-141; a Biome or Oxc pin bump reruns `format-parity.py --corpus` and updates SR-FORMATTER's named list.
+
+## 2026-11-05 — W-166 closed: the browser table and its weekly check  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 3 — codelaw's browser-support table as the L6 decision 15 data package, cited rows for the nine CSS rules, the weekly CI check; close W-166.
+- **Done:** `data-packages/browsers/` (7 rows, each browser only where a vendor source confirms it: chromestatus, Chrome blog, Bugzilla, WebKit blog), the engine's reader, `$FIXED` feature ids, eight CSS rules gated, `--version --json`, `data-browsers-check.py`, `data-browsers.yml`, CI lint step; W-166 archived.
+- **Decided / left open:** `css/media-feature-name-no-vendor-prefix` stays `manual` (its fix converts the value; `fix_target:` on `manual` is a load error). Publishing manifests wait on W-142's names; more rows — B-080.
+- **Mistakes:** none new.
+- **Next:** B-080 when W-142 reserves the names.
+
+---
+
+## 2026-11-05 — W-166 step 2: `[targets]` and `fix_target:`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 2 — `[targets]` per project, scope and rule; `fix_target:`; the two lru_cache rules target-gated.
+- **Done:** loader, schema, engine resolution (`targets.rs`, `browsers.rs` reader), the lint gate, cache key, `config --print`, `rules --why`, `migrate ruff`, USAGE; two rule files.
+- **Decided / left open:** only the two `auto` lru_cache rules take `fix_target:` now; the other ten of §2.1 are `suggest` and take it with W-156's moves (the coordinator scoped rule files to the 2).
+- **Mistakes:** step 1's SR-CLI-MCP line named `fix.on_edit` without citing SR-ARCHITECTURE and turned the schema veto test red; fixed in b9ed8528. End-of-turn landings again carried half-built code (8f8e94df, 50fe8c6a); this change completes it.
+- **Next:** W-166 step 3, the browser-support table.
+
+---
+
+## 2026-11-05 — W-166 step 1: `on_edit`  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) W-166 step 1 — `on_edit` per rule and `[fix] on_edit`; save and the hook honour it; the 14 defaults.
+- **Done:** loader, rule format, engine (`FixOptions.on_edit`), hook, LSP fix-all, `config --print`, `rules --why`, schema, USAGE; 14 rule files `on_edit: false`.
+- **Decided / left open:** the LSP's `source.fixAll.codelaw` counts as save (the proposal's §1.1 table); `on_edit: false` needs `fix_reason:` (2b's "says so in one line").
+- **Mistakes:** the end-of-turn auto-land landed the half-built code (c697d2ac) before its records; the records followed in this change.
+- **Next:** W-166 step 2, `[targets]`.
+
+---
+
+## 2026-11-05 — W-103 closed: the spell pack byte-identical on npm and PyPI  ·  Claude Code (Opus 5.5)
+
+- **Asked:** finish W-103 — prove DoD 5 locally, mark SR-SPELL built, close the item.
+- **Done:** `build-packs.py --verify` with the shared release binary (output in the scratchpad, deleted): the spell tarball and wheel hold the same 27 files, the three data tables the same SHA-256 as the tree; SR-SPELL `built: yes`; W-103 archived, links repointed.
+- **Decided / left open:** no new check — `check_parity` and `package.py check` (CI `package` job) already fail on a difference. DoD 5's "`init` does not add the pack" is superseded by W-112. Outside the DoD: the `typos` comparison (L11, the decider's) and the cross-file `suggest` tier.
+- **Mistakes:** none.
+- **Next:** none for W-103.
+
+## 2026-11-05 — W-126: first matrix runs skipped `perf`; fix  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) after Arpit pushed `d5006de0` and `3b53d1a8`, three measurement runs of the new `perf`, times into W-126.
+- **Done:** dispatched `ci` 42053908300; with 42053047689 and 42053750244, every `perf <group>` skipped — `build linux-arm64-musl` red (`rules lint packs/js/` segfaults). `perf-op` now runs on `!cancelled()`.
+- **Decided / left open:** the segfault is not W-126's; named in the item for the js pack's owner. No budget touched.
+- **Mistakes:** `needs: build` with the default `success()` skipped perf on any platform's failure — missed when the matrix was built.
+- **Next:** three runs once this commit is pushed.
+
 ## 2026-11-05 — W-166 step 0: main green on `[fix] on_edit`  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-166; first fix main — `every_record_defined_key_is_in_the_schema` failed on `[fix] on_edit`.
@@ -45,10 +187,10 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ## 2026-11-05 — W-156 step 4: capability markers, the 37 re-judged, the moves begun  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *build W-156 step 4 — move rules up the ladder pack by pack, mark the capability-blocked ones with W-162, give W-161's re-judged rules their exception.*
-- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496. security-js landed (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)). security-python landed (security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4)). security-ts landed (security-ts: auto 0 → 0, suggest 3 → 6, manual 13 → 10 (pending 4 → 1)). react landed (react: auto 11 → 18, suggest 17 → 39, manual 123 → 94 (pending 56 → 27)). js landed (js: auto 128 → 147, suggest 112 → 150, manual 342 → 285 (pending 150 → 90)). ts landed (ts: auto 19 → 20, suggest 12 → 16, manual 34 → 29 (pending 19 → 14)). nextjs landed (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)).
+- **Done:** 114 capability-blocked rules marked `(W-162)` (2 name W-105, W-166); W-161 §3's 37 take `fix_exception:`. `fix_pending:` 533 → 496. security-js landed (security-js: auto 0 → 0, suggest 17 → 32, manual 49 → 34 (pending 23 → 8)). security-python landed (security-python: auto 0 → 0, suggest 18 → 29, manual 43 → 32 (pending 17 → 4)). security-ts landed (security-ts: auto 0 → 0, suggest 3 → 6, manual 13 → 10 (pending 4 → 1)). react landed (react: auto 11 → 18, suggest 17 → 39, manual 123 → 94 (pending 56 → 27)). js landed (js: auto 128 → 147, suggest 112 → 150, manual 342 → 285 (pending 150 → 90)). ts landed (ts: auto 19 → 20, suggest 12 → 16, manual 34 → 29 (pending 19 → 14)). nextjs landed (nextjs: auto 0 → 0, suggest 0 → 6, manual 22 → 16 (pending 11 → 5)). node landed (node: auto 2 → 2, suggest 15 → 18, manual 18 → 15 (pending 9 → 6)). numpy landed (numpy: auto 0 → 2, suggest 1 → 1, manual 3 → 1 (pending 2 → 0)). pandas landed (pandas: auto 0 → 1, suggest 7 → 9, manual 5 → 2 (pending 3 → 0)). django landed (django: auto 0 → 0, suggest 0 → 1, manual 7 → 6 (pending 2 → 1)). data landed (data: auto 11 → 11, suggest 6 → 8, manual 30 → 28 (pending 22 → 20)). python landed (python: auto 159 → 159, suggest 197 → 197, manual 150 → 150 (pending 66 → 66)). redux-toolkit landed (redux-toolkit: auto 0 → 0, suggest 0 → 0, manual 12 → 12 (pending 7 → 7)). css-modules landed (css-modules: auto 0 → 0, suggest 1 → 1, manual 4 → 4 (pending 3 → 3)).
 - **Decided / left open:** the five odd `needs` labels folded as W-161 §1 counts them; `browser-targets` names W-166, the TS code fixes W-105.
-- **Mistakes:** none.
-- **Next:** the moves, pack by pack.
+- **Mistakes:** the first claim was one zsh word (unsplit), so 5523d4fd landed the docs without the rule files (dbfeeb99 landed them); editing an already-landed row made IMPLEMENTATION and CHANGELOG conflict, resolved by merging main.
+- **Next:** the 186 native rules' fixes (Rust); the 168 capability-blocked wait on W-162.
 
 ## 2026-11-05 — W-167 and W-168 filed: graph architecture design, graph measured at 10k–1M files  ·  Cowork (Opus 5.5)
 
@@ -148,6 +290,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** the end-of-turn auto-land put the 176 copied js/native files on `main` (3798ca70) before the 75 js files had their `fix_exception:` (the strand's staged copies lacked it), so `main` refused the js pack until this change landed. Fixed here from the strand's specs.
 - **Next:** W-139 step 3 — fetch the corpus, write the 231's counts, L8 budgets.
 
+
+## 2026-11-05 — W-105: the version watch proven on GitHub; perf still skipped  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator, after the push) the dispatch proof, three `perf` runs of `check_types_*` on the batched helper, the budget proposal to the inbox.
+- **Done:** `typescript-bump.yml` dispatched plain (nothing to do), with a newer nightly (PR #7, `ci.yml` dispatched on it) and with a pre-API nightly (issue #6); both closed. W-106's definition of done met.
+- **Decided / left open:** no budget row: all three post-push `ci.yml` runs skipped `perf` (the `linux-arm64-musl` build is red and `perf-op` needed every leg). W-126's fix `9b8ca7b7` is on local `main` only; pushing it is the decider's. W-126's runs serve both items.
+- **Mistakes:** a script edit truncated the item file in the worktree; restored from git before landing.
+- **Next:** `9b8ca7b7` pushed, three `perf` runs, then the inbox row (min(target, 1.5 × the worst p95); no design target).
 
 ## 2026-11-05 — W-105: the type helper profiled and batched; corpus counts re-run; the dispatch proof waits on a push  ·  Claude Code (Opus 5.5)
 

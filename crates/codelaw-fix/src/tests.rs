@@ -201,3 +201,66 @@ fn each_branch_of_an_any_gets_the_steps_on_its_own_captures() {
     let out = fix(Language::Javascript, block, "expect(f).toBeCalled();\nexpect(g).toThrowError();\n");
     assert_eq!(out.text, "expect(f).toHaveBeenCalled();\nexpect(g).toThrow();\n");
 }
+
+#[test]
+fn a_filter_computes_the_replacement() {
+    // W-162: `|map` on an operator captured with `$$OP` (SR-RULE-FORMAT 3b).
+    let block = "match:\n  any:\n    - pattern: $A == $B\n    - pattern: $A != $B\n  has: { field: operator, pattern: $$OP }\nmessage: m\nfix:\n  - replace: { target: $OP, with: \"$OP|map(==:===, !=:!==)\" }";
+    let out = fix(Language::Javascript, block, "if (a == b || c != d) {}\n");
+    assert_eq!(out.text, "if (a === b || c !== d) {}\n");
+}
+
+#[test]
+fn a_transform_gives_the_template_a_new_capture() {
+    // W-162: ast-grep's own `transform:` beside `match:`.
+    let block = "match:\n  pattern: el.getAttribute($S)\ntransform:\n  K:\n    substring: { source: $S, startChar: 6, endChar: -1 }\n  C:\n    convert: { source: $K, toCase: camelCase }\nmessage: m\nfix: \"el.dataset.$C\"";
+    let out = fix(Language::Javascript, block, "el.getAttribute('data-foo-bar');\n");
+    assert_eq!(out.text, "el.dataset.fooBar;\n");
+}
+
+#[test]
+fn a_filter_that_cannot_produce_a_value_offers_no_fix() {
+    let (rule, compiled) = matcher(Language::Javascript, "match:\n  pattern: $A < $B\n  has: { field: operator, pattern: $$OP }\nmessage: m\nfix:\n  - replace: { target: $OP, with: \"$OP|map(==:===)\" }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "a < b;\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).unwrap_err().contains("no entry for `<`"));
+}
+
+#[test]
+fn edit_text_edits_inside_a_comment_in_order() {
+    // W-162: `edit-text` (SR-RULE-FORMAT 3c), two steps chained on one node.
+    let block = "match:\n  kind: comment\n  regex: '^/\\*\\*[ \\t]*[^\\s*]'\nmessage: m\nfix:\n  - edit-text: { pattern: '\\A/\\*\\*[ \\t]*([^\\s*][^\\n]*)\\n([ \\t]*)\\*', replace: \"/**\\n${2}* ${1}\\n${2}*\" }\n  - edit-text: { pattern: '\\n([ \\t]*)(\\*[ \\t]*)?([^\\s*][^\\n]*?)[ \\t]*\\*/\\z', replace: \"\\n${1}* ${3}\\n${1}*/\" }";
+    let out = fix(Language::Javascript, block, "/** a\n * b */\nf();\n");
+    assert_eq!(out.text, "/**\n * a\n * b\n */\nf();\n");
+}
+
+#[test]
+fn edit_text_that_finds_nothing_offers_no_fix() {
+    let (rule, compiled) = matcher(Language::Javascript, "match:\n  kind: comment\nmessage: m\nfix:\n  - edit-text: { pattern: 'zzz', replace: 'y' }");
+    let spec = parse_fix(rule.block.fix.as_ref().unwrap()).unwrap();
+    let src = "// a\n";
+    let root = codelaw_lang::parse(Language::Javascript, src);
+    let ctx = FixContext { source: src, root: &root, language: Language::Javascript, semantic: None };
+    let m = find(Language::Javascript, &compiled, &root, src);
+    assert!(edits_for(&spec, &m[0], &ctx).is_err());
+    assert!(parse_fix(&serde_json::json!([{ "edit-text": { "pattern": "(", "replace": "" } }])).unwrap_err().contains("not a regular expression"));
+}
+
+#[test]
+fn unwrap_block_replaces_the_else_with_its_statements() {
+    // W-162: `unwrap-block` (SR-RULE-FORMAT 3c).
+    let block = "match:\n  kind: if_statement\n  has: { field: alternative, kind: else_clause, pattern: $E, has: { kind: statement_block, pattern: $B } }\nmessage: m\nfix:\n  - unwrap-block: { target: $B, within: $E }";
+    let src = "function f(n) {\n  if (n) {\n    return 1;\n  } else {\n    // two\n    g();\n    return 2;\n  }\n}\n";
+    let out = fix(Language::Javascript, block, src);
+    assert_eq!(out.text, "function f(n) {\n  if (n) {\n    return 1;\n  }\n  // two\n  g();\n  return 2;\n}\n");
+}
+
+#[test]
+fn move_puts_the_target_on_its_own_line_above() {
+    let block = "match:\n  kind: comment\n  follows: { regex: '.', pattern: $P }\nmessage: m\nfix:\n  - move: { before: $P }";
+    let out = fix(Language::Javascript, block, "if (a) {\n  const max = 3; // retries\n}\n");
+    assert_eq!(out.text, "if (a) {\n  // retries\n  const max = 3;\n}\n");
+}

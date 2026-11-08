@@ -2,9 +2,9 @@
 id: js/no-dupe-keys
 title: "No two keys in an object literal are the same"
 languages: [javascript, jsx]
-fix: manual
-fix_reason: "which value should win can't be known from the code"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the later key is the one the object keeps, so the choices are deleting the earlier (the default, which keeps the value; its own evaluation goes with it) or the later"
+fix_exception: value
 stability: preview
 ported_from: [eslint/no-dupe-keys]
 since: 0.1.0
@@ -37,6 +37,14 @@ const user = {
 };
 ```
 
+#### Fixed
+
+```js
+const user = {
+  name: "Grace",
+};
+```
+
 #### Do
 
 ```js
@@ -53,6 +61,14 @@ const user = {
 ```jsx
 const user = {
   name: "Ada",
+  name: "Grace",
+};
+```
+
+#### Fixed
+
+```jsx
+const user = {
   name: "Grace",
 };
 ```

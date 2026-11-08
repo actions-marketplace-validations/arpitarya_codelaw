@@ -2,9 +2,9 @@
 id: md/first-line-heading
 title: "A document starts with its title heading"
 languages: [markdown]
-fix: manual
-fix_reason: "the title text needs the author"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual"
+fix_exception: authored
 stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }
@@ -36,6 +36,15 @@ native: md/first-line-heading
 This tool formats code.
 
 # Formatter
+````
+
+#### Fixed
+
+````md
+# Formatter
+
+This tool formats code.
+
 ````
 
 #### Do

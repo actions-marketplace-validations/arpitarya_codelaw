@@ -2,9 +2,9 @@
 id: redux-toolkit/no-blind-payload-return
 title: "A reducer builds its state, not the action's payload"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the reducer has to name the fields it takes from the payload"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`return action.payload` in a slice whose `initialState` is an object literal becomes one assignment per key of it; a payload with other keys then stops reaching the state, which the reviewer confirms. Any other return is manual"
+fix_exception: value
 stability: preview
 since: 0.1.0
 ---

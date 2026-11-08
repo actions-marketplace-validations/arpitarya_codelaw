@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to add the ancestor or use other elements depends on the intent) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are changing the parent to the ancestor it needs (when the children are all it holds) or wrapping the run of them in one; either changes the markup's structure, which the reviewer confirms) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/element-required-ancestor` |
@@ -135,6 +135,24 @@ codelaw config --print --for <file>                  # the resolved setting, and
 <div>
   <dt>Term</dt>
   <dd>Definition</dd>
+</div>
+```
+
+#### Fixed (change the parent)
+
+```html
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+```
+
+#### Fixed (wrap)
+
+```html
+<div>
+  <dl><dt>Term</dt>
+  <dd>Definition</dd></dl>
 </div>
 ```
 

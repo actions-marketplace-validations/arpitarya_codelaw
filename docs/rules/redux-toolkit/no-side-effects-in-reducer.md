@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:redux-toolkit/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the side effect has to move to a thunk, a listener or a `prepare` callback) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a case reducer whose side effect sits in an object built from `action.payload` gets a `prepare` callback that builds the object, and reads it from the payload; the action creator's argument stays the same, the effect now runs when the action is made. Any other effect is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -143,6 +143,25 @@ const todosSlice = createSlice({
 });
 ```
 
+#### Fixed
+
+```js
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 #### Do
 
 ```js
@@ -173,6 +192,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+#### Fixed
+
+```jsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });
@@ -213,6 +251,25 @@ const todosSlice = createSlice({
 });
 ```
 
+#### Fixed
+
+```ts
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
+    },
+  },
+});
+```
+
 #### Do
 
 ```ts
@@ -243,6 +300,25 @@ const todosSlice = createSlice({
   reducers: {
     todoAdded(state, action) {
       state.push({ id: nanoid(), text: action.payload });
+    },
+  },
+});
+```
+
+#### Fixed
+
+```tsx
+const todosSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    todoAdded: {
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+      prepare(payload) {
+        return { payload: { id: nanoid(), text: payload } };
+      },
     },
   },
 });

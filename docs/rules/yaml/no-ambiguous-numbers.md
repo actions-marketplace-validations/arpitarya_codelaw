@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the octal or base-60 meaning or the YAML 1.2 meaning was intended needs the author) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are quoting it (the default: the string YAML 1.2 reads, for a time), the number YAML 1.2 reads, or the number YAML 1.1 reads, each now read the same by both) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -134,6 +134,14 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 mode: 0755
 ports:
   - 22:22
+```
+
+#### Fixed
+
+```yaml
+mode: "0755"
+ports:
+  - "22:22"
 ```
 
 #### Do

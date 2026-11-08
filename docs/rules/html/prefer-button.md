@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the element changes, so CSS and scripts that select `input` need updating) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`<input type="submit" value="V">` becomes `<button type="submit" value="V">V</button>`, every attribute kept; styles that target `input` stop matching. An image input, or one with no value, is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/prefer-button` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 
 ```html
 <input type="submit" value="Send">
+```
+
+#### Fixed
+
+```html
+<button type="submit" value="Send">Send</button>
 ```
 
 #### Do

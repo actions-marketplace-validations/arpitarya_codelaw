@@ -143,7 +143,7 @@ Start from `TEMPLATE.md`.
 | [0113](0113_rule-authoring.md) | **SR-RULE-AUTHORING** | Writing rules by hand or with an agent skill; the debug tools; four test levels | accepted | partly |
 | [0114](0114_editor.md) | **SR-EDITOR** | The LSP server in the binary and the thin VS Code extension | accepted | partly |
 | [0115](0115_cli-and-mcp.md) | **SR-CLI-MCP** | The CLI and the MCP server — one engine, two doors, same answers | accepted | partly |
-| [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | partly |
+| [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | yes |
 | [0117](0117_types.md) | **SR-TYPES** | Type-aware TypeScript rules — the project's own TypeScript ≥ 7.1, asked through codelaw's Node helper a fixed vocabulary of type questions; `ts/type-error`; preview until 7.1 is GA | accepted | partly |
 | [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | yes |
 | [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | no |
@@ -169,6 +169,9 @@ yet is owned by an open `W-nn`.
 | `scripts/fux-index.py` | SR-PACKAGES | decision 14: the optional Fux index packages, built in CI from a pinned fux |
 | `scripts/typescript-watch.py` | SR-TYPES | decision 7: npm's newest TypeScript with the 7.1 API against the pin, and the bump that pins it and widens the tested range (W-105) |
 | `.github/workflows/typescript-bump.yml` | SR-TYPES | decision 7: the daily job that proposes a TypeScript re-pin as one PR, or one issue naming what broke (W-105) |
+| `scripts/data-browsers-check.py` | SR-LAW-6 | decision 15: the browser-support table's checks — `--check` in CI's lint job, `--review` for the weekly job (W-166) |
+| `.github/workflows/data-browsers.yml` | SR-LAW-6 | decision 15: the weekly job that opens one PR naming the browser table's rows to review (W-166) |
+| `data-packages/browsers` | SR-LAW-6 | decision 15: the `data-browsers` package's source — the table, its NOTICE and README (W-166) |
 | `scripts/vsix.py` | SR-PACKAGES | decision 6: the editor extension's eight platform `.vsix` files, built and checked in CI (W-95) |
 | `.claude/hooks/guard-open-work-inbox.sh` | SR-WORK-OPEN-QUEUE | rule 45a, in-session |
 | `.claude/hooks/inject-inbox.sh` | SR-WORK-BLOCKERS | decision 7 |
@@ -272,6 +275,7 @@ yet is owned by an open `W-nn`.
 | `scripts/staging-index.py` | SR-PACKAGES | decision 11: the localhost staging index the install smoke publishes to and installs from |
 | `scripts/withdraw.sh` | SR-PACKAGES | decision 12 |
 | `scripts/npm-trust.sh` | SR-PACKAGES | decision 11: the one-time npm trusted-publisher setup |
+| `scripts/crash-capture.sh` | SR-PACKAGES | decision 11: a build leg's crash — core, unstripped twin, backtrace (W-169) |
 | `action.yml` | SR-PACKAGES | decision 15: codelaw's GitHub Action (W-97) |
 | `fixtures/migrate` | SR-CLI-MCP | decision 15: the three repos `codelaw migrate` is tested on (W-94) |
 | `fixtures/github-action` | SR-PACKAGES | decision 15: the project CI's `action` job runs the Action on (W-97) |
@@ -308,6 +312,7 @@ A component may be narrowed to symbols: `` `path::name,name` ``.
 | `crates/codelaw-match/src/data.rs` | SR-RULE-FORMAT | decision 3e: the data tree a `target:` rule reads |
 | `crates/codelaw-match/src/target.rs` | SR-RULE-FORMAT | decision 3e: `target:` paths and `assert:` checks |
 | `crates/codelaw-match/src/schema.rs` | SR-RULE-FORMAT | decision 3e: the `schema:` check and its departures from draft-07 |
+| `crates/codelaw-match/src/filters.rs` | SR-RULE-FORMAT | decision 3b: the template filters (map, number, escape, …) and their refusals (W-162) |
 | `crates/codelaw-fix/src/structured.rs` | SR-RULE-FORMAT | decisions 3c and 3e: a `target:` rule's fix steps and their verification |
 | `crates/codelaw-adapters` | SR-ARCHITECTURE | decision 19: the adapter contract (lookup, versions, process handling, cache key) the crate implements |
 | `crates/codelaw-engine/src/adapters.rs` | SR-LINTER | decision 2: which adapters run, the per-tool mapping and the ported-rule dedupe |

@@ -2,9 +2,8 @@
 id: css/at-rule-descriptor-no-unknown
 title: "No unknown descriptors inside at-rules"
 languages: [css, scss]
-fix: manual
-fix_reason: "whether to remove or move the declaration is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are the at-rule's descriptors within two edits, nearest first (the default), or deleting the declaration, which the browser ignores anyway"
 stability: stable
 ported_from: [stylelint/at-rule-descriptor-no-unknown]
 since: 0.1.0

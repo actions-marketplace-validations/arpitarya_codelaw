@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the replacement is usually CSS, which needs a class and a rule) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for an attribute no browser acts on (`version`, `language`, `profile`, …), which goes; a presentational one becomes the inline style it stood for, as a suggestion; any other is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/no-deprecated-attr` |
@@ -133,6 +133,12 @@ codelaw config --print --for <file>           # the resolved setting, and where 
 
 ```html
 <img src="a.png" alt="Chart" align="left">
+```
+
+#### Fixed
+
+```html
+<img src="a.png" alt="Chart" style="float: left">
 ```
 
 #### Do

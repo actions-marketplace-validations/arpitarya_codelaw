@@ -28,6 +28,8 @@ pub(crate) struct Scope {
     exclude_set: GlobSet,
     pub rules: BTreeMap<String, RuleSetting>,
     pub remap: Option<BTreeMap<String, String>>,
+    /// SR-CONFIG decision 11f: each key the last one written.
+    pub targets: crate::raw::RawTargets,
     /// The profile it belongs to.
     pub profile: Option<String>,
     /// Where the project wrote it, as a path of keys below the config's
@@ -72,6 +74,14 @@ impl Scope {
                 }
             }
         }
+        if let Some(t) = &raw.targets {
+            if t.python.is_some() {
+                self.targets.python = t.python.clone();
+            }
+            if t.browsers.is_some() {
+                self.targets.browsers = t.browsers.clone();
+            }
+        }
         for (from, to) in raw.remap.iter().flatten() {
             self.remap.get_or_insert_with(Default::default).insert(from.clone(), to.clone());
         }
@@ -91,6 +101,7 @@ impl Scope {
             exclude_set: GlobSet::empty(),
             rules: BTreeMap::new(),
             remap: None,
+            targets: Default::default(),
             profile: profile.map(str::to_owned),
             toml_path,
             presets: Vec::new(),
@@ -110,9 +121,11 @@ fn merge_setting(base: &RuleSetting, over: &RuleSetting) -> RuleSetting {
     let fix = over.fix().or(base.fix()).map(str::to_owned);
     // A reason belongs to the entry that turned the rule off.
     let reason = if over.severity().is_some() { over.reason() } else { over.reason().or(base.reason()) }.map(str::to_owned);
+    let on_edit = over.on_edit().or(base.on_edit());
+    let targets = over.targets().or(base.targets()).cloned();
     match severity {
-        Some(s) if options.is_empty() && fix.is_none() && reason.is_none() => RuleSetting::Severity(s),
-        severity => RuleSetting::Full { severity, options, fix, reason },
+        Some(s) if options.is_empty() && fix.is_none() && reason.is_none() && on_edit.is_none() && targets.is_none() => RuleSetting::Severity(s),
+        severity => RuleSetting::Full { severity, options, fix, reason, on_edit, targets },
     }
 }
 
@@ -197,7 +210,7 @@ pub(crate) fn build(
     for (i, o) in raw.overrides.iter().enumerate() {
         let name = format!("override-{}", i + 1);
         let mut s = Scope::new(&name, None, Some(vec!["overrides".into(), i.to_string()]));
-        s.apply(&RawScope { files: Some(o.files.clone()), exclude: Some(o.exclude.clone()), rules: o.rules.clone(), remap: o.remap.clone() }, None);
+        s.apply(&RawScope { files: Some(o.files.clone()), exclude: Some(o.exclude.clone()), rules: o.rules.clone(), remap: o.remap.clone(), targets: None }, None);
         scopes.push(s);
     }
     let known: Vec<String> = scopes.iter().map(|s| s.name.clone()).collect();
@@ -227,7 +240,7 @@ pub(crate) fn build(
         }
         for (i, o) in p.overrides.iter().enumerate() {
             let mut s = Scope::new(&format!("override-{}", i + 1), Some(pname), Some(vec![key.into(), pname.clone(), "overrides".into(), i.to_string()]));
-            s.apply(&RawScope { files: Some(o.files.clone()), exclude: Some(o.exclude.clone()), rules: o.rules.clone(), remap: o.remap.clone() }, None);
+            s.apply(&RawScope { files: Some(o.files.clone()), exclude: Some(o.exclude.clone()), rules: o.rules.clone(), remap: o.remap.clone(), targets: None }, None);
             list.push(s);
         }
         for s in &mut list {

@@ -141,6 +141,8 @@ fn a_ruff_pyproject_repo() {
     let config = fs::read_to_string(d.join("codelaw.toml")).unwrap();
     assert!(config.contains("[scope.ruff-1]\nfiles = [\"**/__init__.py\"]\nrules = { \"py/unused-import\" = \"off\" }"), "{config}");
     assert!(config.contains("[format.python]\nline_width = 100"), "{config}");
+    // Ruff's `target-version` is the Python target (SR-CONFIG decision 11f).
+    assert!(config.contains("[targets]\npython = \"3.10\""), "{config}");
     assert!(!config.contains("graph/"), "no whole-repo preset is pulled in: {config}");
 }
 

@@ -274,6 +274,9 @@ impl Project {
             .part(format!("{:?}{:?}", self.options.languages, self.options.rules))
             // The providers' tables the rules read (SR-RULE-PACKS decision 19).
             .part(self.providers.key())
+            // The file's targets from `pyproject.toml` and `browserslist`,
+            // and the browser table's version (SR-CONFIG decision 11f).
+            .part(self.targets_key(entry))
             // A dated `codelaw-ignore` is judged on the as-of date.
             .part(self.exception_key(&file.text))
             .part(match &types {
@@ -571,8 +574,18 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         let declared = rule.loaded.rule.fix;
         // The finding's own rung, never above its rule's (L4 decision 2).
         let reach = f.rung.map_or(declared, |r| r.max(declared));
+        // A target-gated fix is `auto` only where the file's target meets
+        // the rule's `fix_target` (SR-RULE-FORMAT decision 2c); elsewhere
+        // `suggest`, its note naming the line that would make it `auto`.
+        let (reach, gate) = match &rule.loaded.rule.fix_target {
+            Some(t) if reach == FixClass::Auto => match project.target_gate(entry, rule.id(), t, &|| crate::targets::fixed_text(text, f.start, f.end, f.edits.as_deref().unwrap_or_default())) {
+                Ok(()) => (reach, None),
+                Err(why) => (FixClass::Suggest, Some(why)),
+            },
+            _ => (reach, None),
+        };
         let external = matches!(rule.fix, Some(FixSpec::External(_)));
-        let mut note = f.note;
+        let mut note = f.note.or(gate);
         let mut edits = Vec::new();
         let mut choices = Vec::new();
         let refused = |e: &[TextEdit]| mode.refused.is_some_and(|r| r.contains(&Candidate { rule: rule.id().to_owned(), edits: e.to_vec() }.key(text)));
@@ -994,7 +1007,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         }
                     };
                     let choices = if wants_fix { choices } else { Vec::new() };
-                    let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then_some(f.edits);
+                    let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then(|| codelaw_native::plain_edits(f.edits));
                     out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also, rung, choices });
                 }
             }

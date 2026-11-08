@@ -279,6 +279,27 @@ pub fn requirement(req: &str) -> Option<Requirement> {
     Some(Requirement { name: name.to_owned(), normalized: normalize(name), clauses })
 }
 
+/// The lower bound of a specifier such as `requires-python`'s, as major and
+/// minor (SR-CONFIG decision 11f): `>=3.10`, `~=3.10` and `==3.10.*` give
+/// 3.10, `>3.9` gives 3.10; `<4`, `!=3.9` or `*` give none. The highest
+/// bound of all the clauses wins.
+pub fn lower_bound(spec: &str) -> Option<Vec<u64>> {
+    let req = requirement(&format!("python{}", spec.trim()))?;
+    req.clauses
+        .iter()
+        .filter_map(|c| {
+            let v = Pep440::parse(&c.version)?;
+            let (major, minor) = (v.part(0), v.part(1));
+            match c.op.as_str() {
+                ">=" | "~=" | "==" | "===" => Some(vec![major, minor]),
+                ">" if v.release.len() <= 2 => Some(vec![major, minor + 1]),
+                ">" => Some(vec![major, minor]),
+                _ => None,
+            }
+        })
+        .max()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -298,6 +319,13 @@ mod tests {
         assert_eq!(v("1.0ALPHA1"), v("1.0a1"));
         assert!(v("1.0rc1").is_prerelease() && !v("1.0.post1").is_prerelease());
         assert!(Pep440::parse("not a version").is_none());
+    }
+
+    #[test]
+    fn lower_bounds_of_requires_python() {
+        for (spec, want) in [(">=3.10", Some(vec![3, 10])), ("~=3.10", Some(vec![3, 10])), (">3.9", Some(vec![3, 10])), ("==3.11.*", Some(vec![3, 11])), (">=3.8,<4", Some(vec![3, 8])), ("<4", None), ("*", None), ("", None)] {
+            assert_eq!(lower_bound(spec), want, "{spec}");
+        }
     }
 
     #[test]

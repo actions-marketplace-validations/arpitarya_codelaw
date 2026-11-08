@@ -85,6 +85,8 @@ struct Defs<'a> {
     /// Array-of-tables path to the number of elements so far.
     elements: BTreeMap<Vec<String>, usize>,
     out: &'a mut Vec<NativeFinding>,
+    /// A plain key's path to the pair that set it first.
+    firsts: BTreeMap<Vec<String>, (usize, usize)>,
 }
 
 impl Defs<'_> {
@@ -102,11 +104,15 @@ impl Defs<'_> {
     }
 
     fn report(&mut self, at: Node<'_>, shown: &[String], line: usize, what: &str) {
+        self.report_with(at, shown, line, what, Vec::new());
+    }
+
+    fn report_with(&mut self, at: Node<'_>, shown: &[String], line: usize, what: &str, edits: Vec<TextEdit>) {
         self.out.push(NativeFinding {
             start: at.start_byte(),
             end: at.end_byte(),
             message: format!("{what} `{}` is already defined on line {line}; TOML forbids defining it twice", shown.join(".")),
-            edits: Vec::new(),
+            edits,
         });
     }
 
@@ -129,6 +135,21 @@ impl Defs<'_> {
                 (Some((Def::Dotted, _)), false) => {}
                 (None, true) => {
                     self.defs.insert(path.clone(), (Def::Value, line));
+                    self.firsts.insert(path.clone(), (pair.start_byte(), pair.end_byte()));
+                }
+                (Some((Def::Value, prev)), true) => {
+                    // A key set twice in the same table: keep one of them.
+                    let src = self.src;
+                    let first = self.firsts.get(&path).and_then(|&(s, e)| pair.parent()?.named_descendant_for_byte_range(s, e)).filter(|f| f.kind() == "pair" && f.start_byte() != pair.start_byte());
+                    let edits = first.map(|f| {
+                        let value = |p: Node<'_>| pair_value(p).map(|v| text(v, src).to_owned()).unwrap_or_default();
+                        crate::util::duplicate_key_edits((f, &value(f)), (pair, &value(pair)), false, &|n| {
+                            let (s, e) = crate::util::whole_lines(src, n.start_byte(), n.end_byte());
+                            TextEdit::delete(s, e)
+                        })
+                    });
+                    self.report_with(key, &parts, prev, "Key", edits.unwrap_or_default());
+                    return;
                 }
                 (Some((_, prev)), _) => {
                     self.report(key, &parts, prev, "Key");
@@ -145,7 +166,7 @@ impl Defs<'_> {
 
     /// Keys inside `{ … }` are their own scope.
     fn inline_table(&mut self, table: Node<'_>) {
-        let mut inner = Defs { src: self.src, defs: BTreeMap::new(), elements: BTreeMap::new(), out: &mut *self.out };
+        let mut inner = Defs { src: self.src, defs: BTreeMap::new(), elements: BTreeMap::new(), out: &mut *self.out, firsts: BTreeMap::new() };
         for p in named_children(table).into_iter().filter(|c| c.kind() == "pair") {
             inner.pair(&[], p);
         }
@@ -224,7 +245,7 @@ impl NativeRule for NoDuplicateKeys {
         &["document"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-        let mut defs = Defs { src: ctx.source, defs: BTreeMap::new(), elements: BTreeMap::new(), out };
+        let mut defs = Defs { src: ctx.source, defs: BTreeMap::new(), elements: BTreeMap::new(), out, firsts: BTreeMap::new() };
         for item in named_children(node.get_inner_node()) {
             match item.kind() {
                 "pair" => defs.pair(&[], item),

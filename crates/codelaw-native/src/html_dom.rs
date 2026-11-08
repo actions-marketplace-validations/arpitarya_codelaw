@@ -1175,3 +1175,40 @@ pub(crate) mod tests {
         assert_eq!(d.stray_end_tags.len(), 2_000);
     }
 }
+
+/// The end of an element's tag name in its start tag.
+pub fn tag_name_end(src: &str, e: &Elem) -> usize {
+    let rest = &src[e.start + 1..];
+    e.start + 1 + rest.find(|c: char| c.is_ascii_whitespace() || c == '>' || c == '/').unwrap_or(rest.len())
+}
+
+/// The edits renaming an element: its start tag and its end tag.
+pub fn rename_elem(src: &str, e: &Elem, to: &str) -> Vec<TextEdit> {
+    let mut out = vec![TextEdit::new(e.start + 1, tag_name_end(src, e), to)];
+    if let Some((ts, te)) = e.end_tag {
+        out.push(TextEdit::new(ts + 2, te - 1, to));
+    }
+    out
+}
+
+/// The edit deleting an element, with its line when nothing else shares it.
+pub fn remove_elem(src: &str, e: &Elem) -> TextEdit {
+    let end = e.end_tag.map_or(e.open_end, |(_, te)| te).max(e.end);
+    let (s, t) = crate::util::whole_lines(src, e.start, end);
+    TextEdit::delete(s, t)
+}
+
+/// The edit giving an attribute a value: its value when quoted, else the
+/// whole attribute.
+pub fn set_attr(a: &Attr, value: &str) -> TextEdit {
+    if a.quoted {
+        TextEdit::new(a.value_start, a.value_end, value)
+    } else {
+        TextEdit::new(a.start, a.end, format!("{}=\"{value}\"", a.name))
+    }
+}
+
+/// The edit adding an attribute right after the tag name.
+pub fn add_attr(src: &str, e: &Elem, attr: &str) -> TextEdit {
+    TextEdit::insert(tag_name_end(src, e), format!(" {attr}"))
+}

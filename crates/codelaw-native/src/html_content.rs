@@ -68,6 +68,38 @@ fn content_violation(dom: &Dom, meta: Meta<'_>, child: usize, parent: usize, rul
     hit
 }
 
+/// The source of an element, start tag to end tag.
+fn elem_text<'s>(src: &'s str, e: &crate::html_dom::Elem) -> &'s str {
+    &src[e.start..e.end_tag.map_or(e.end, |(_, te)| te)]
+}
+
+/// The edits wrapping the run of consecutive element siblings around `i`
+/// that `belongs` accepts in a new `<tag>`, or renaming their parent to
+/// `tag` when they are all it holds: the two choices for a child in the
+/// wrong place.
+fn wrap_or_rename(dom: &Dom, src: &str, i: usize, tag: &str, belongs: &dyn Fn(usize) -> bool) -> Vec<TextEdit> {
+    let Some(parent) = dom.elems[i].parent else { return Vec::new() };
+    let kids: Vec<usize> = dom.child_elems(parent).collect();
+    let at = kids.iter().position(|&k| k == i).unwrap_or(0);
+    let mut first = at;
+    while first > 0 && belongs(kids[first - 1]) {
+        first -= 1;
+    }
+    let mut last = at;
+    while last + 1 < kids.len() && belongs(kids[last + 1]) {
+        last += 1;
+    }
+    let (a, b) = (&dom.elems[kids[first]], &dom.elems[kids[last]]);
+    let b_end = b.end_tag.map_or(b.end, |(_, te)| te);
+    let mut choices = Vec::new();
+    let p = &dom.elems[parent];
+    if first == 0 && last + 1 == kids.len() && p.end_tag.is_some() && !p.implied {
+        choices.push(crate::choice("change the parent", false, crate::html_dom::rename_elem(src, p, tag)));
+    }
+    choices.push(crate::choice("wrap", false, vec![TextEdit::insert(a.start, format!("<{tag}>")), TextEdit::insert(b_end, format!("</{tag}>"))]));
+    crate::choice_edits(choices)
+}
+
 html_rule!(ElementPermittedContent, "html/element-permitted-content", |dom, meta, ctx, out| {
     for i in dom.all() {
         let Some(parent) = checked_parent(dom, i) else { continue };
@@ -104,7 +136,18 @@ html_rule!(ElementPermittedOccurrences, "html/element-permitted-occurrences", |d
         for rule in rules.iter().filter(|r| r.ends_with('?')) {
             let matching: Vec<usize> = kids.iter().copied().filter(|&c| in_category(dom, meta, c, rule, true)).collect();
             for &extra in matching.iter().skip(1) {
-                out.push(dom.at_elem(extra, format!("{} may appear only once inside {}", describe(rule), lt(&dom.elems[i].tag))));
+                let mut f = dom.at_elem(extra, format!("{} may appear only once inside {}", describe(rule), lt(&dom.elems[i].tag)));
+                let src: &str = &dom.source;
+                let (first, x) = (&dom.elems[matching[0]], &dom.elems[extra]);
+                let mut choices = vec![crate::choice("delete this one", false, vec![crate::html_dom::remove_elem(src, x)])];
+                if let (Some((fts, _)), Some((xts, _))) = (first.end_tag, x.end_tag) {
+                    let inner = src[x.open_end..xts].trim();
+                    if !inner.is_empty() {
+                        choices.push(crate::choice("merge into the first", false, vec![TextEdit::insert(fts, format!(" {inner}")), crate::html_dom::remove_elem(src, x)]));
+                    }
+                }
+                f.edits = crate::choice_edits(choices);
+                out.push(f);
             }
         }
     }
@@ -129,7 +172,18 @@ html_rule!(ElementPermittedOrder, "html/element-permitted-order", |dom, meta, ct
             if pos >= rules.len() {
                 if rules.iter().any(|r| in_category(dom, meta, c, r, true)) {
                     if let Some(p) = prev {
-                        out.push(dom.at_elem(c, format!("{} must come before {} here", lt(&dom.elems[c].tag), lt(&dom.elems[p].tag))));
+                        // Move the child up, to before the first sibling it
+                        // must come before. A <summary> is its <details>'s
+                        // wherever it stands, so that move renders the same.
+                        let src: &str = &dom.source;
+                        let target = dom.child_elems(i).find(|&k| k != c && rules.iter().position(|r| in_category(dom, meta, k, r, true)) > rules.iter().position(|r| in_category(dom, meta, c, r, true))).unwrap_or(p);
+                        let (ce, te) = (&dom.elems[c], &dom.elems[target]);
+                        let pad = crate::python_util::indent_at(src, te.start);
+                        let (a, b) = crate::util::whole_lines(src, ce.start, ce.end_tag.map_or(ce.end, |(_, x)| x));
+                        let edits = vec![TextEdit::insert(te.start, format!("{}\n{pad}", elem_text(src, ce))), TextEdit::delete(a, b)];
+                        let mut f = dom.at_elem(c, format!("{} must come before {} here", lt(&dom.elems[c].tag), lt(&dom.elems[p].tag)));
+                        f.edits = if ce.is("summary") && dom.elems[i].is("details") { edits } else { crate::as_suggestion(edits) };
+                        out.push(f);
                     }
                     break;
                 }
@@ -151,7 +205,13 @@ html_rule!(ElementPermittedParent, "html/element-permitted-parent", |dom, meta, 
             continue;
         }
         let allowed: Vec<String> = rules.as_array().into_iter().flatten().filter_map(|r| r.as_str()).map(describe).collect();
-        out.push(dom.at_elem(i, format!("{} must be a child of {}, not of {}", lt(&dom.elems[i].tag), join_or(&allowed), lt(&dom.elems[parent].tag))));
+        let mut f = dom.at_elem(i, format!("{} must be a child of {}, not of {}", lt(&dom.elems[i].tag), join_or(&allowed), lt(&dom.elems[parent].tag)));
+        let tag = rules.as_array().into_iter().flatten().filter_map(|r| r.as_str()).find(|r| r.chars().all(|c| c.is_ascii_alphanumeric()) && meta.elem(r).is_some());
+        if let Some(tag) = tag {
+            let own = dom.elems[i].tag.clone();
+            f.edits = wrap_or_rename(dom, &dom.source, i, tag, &|k| dom.elems[k].tag == own);
+        }
+        out.push(f);
     }
 });
 
@@ -166,7 +226,15 @@ html_rule!(ElementRequiredAncestor, "html/element-required-ancestor", |dom, meta
         }
         let wanted: Vec<String> =
             rules.iter().map(|r| if r.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') { lt(r) } else { format!("`{r}`") }).collect();
-        out.push(dom.at_elem(i, format!("{} must be inside {}", lt(&dom.elems[i].tag), join_or(&wanted))));
+        let mut f = dom.at_elem(i, format!("{} must be inside {}", lt(&dom.elems[i].tag), join_or(&wanted)));
+        // The outermost element of a required-ancestor selector (`dl > dt`).
+        let head = |r: &str| r.split('>').next().unwrap_or("").trim().to_owned();
+        if let Some(tag) = rules.iter().map(|r| head(r)).find(|r| r.chars().all(|c| c.is_ascii_alphanumeric()) && meta.elem(r).is_some()) {
+            let tag = tag.as_str();
+            let needs = |k: usize| meta.list(&dom.elems[k].tag, "requiredAncestors").iter().any(|r| head(r) == tag);
+            f.edits = wrap_or_rename(dom, &dom.source, i, tag, &needs);
+        }
+        out.push(f);
     }
 });
 
@@ -269,7 +337,20 @@ html_rule!(AttributeAllowedValues, "html/attribute-allowed-values", |dom, meta, 
             };
             let (s, t) = if a.value.is_some() { (a.value_start, a.value_end.max(a.value_start)) } else { (a.name_start, a.name_end) };
             let (s, t) = if s == t { (a.start, a.end) } else { (s, t) };
-            out.push(finding(s, t, msg));
+            // The enumerated values nearest the written one.
+            let mut edits = Vec::new();
+            if let (Some(v), Some(Value::Array(entries))) = (a.value.as_deref(), rule.get("enum"))
+                && a.quoted
+                && rule.get("list") != Some(&Value::Bool(true))
+            {
+                let names: Vec<&str> = entries.iter().filter_map(|x| x.as_str()).collect();
+                let near = crate::util::nearest(&v.to_lowercase(), names, 2);
+                edits = crate::util::name_choices(&near, a.value_start, a.value_end, &|c| c.to_owned());
+            }
+            if rule.get("boolean") == Some(&Value::Bool(true)) && a.value.is_some() {
+                edits = vec![TextEdit::new(a.start, a.end, a.name.clone())];
+            }
+            out.push(finding_with(s, t, msg, edits));
         }
     }
 });
@@ -354,7 +435,22 @@ html_rule!(AttributeMisuse, "html/attribute-misuse", |dom, meta, ctx, out| {
                     Some(full) => full.to_owned(),
                     None => format!("`{}` has no effect on {} here: {why}", a.name, lt(&e.tag)),
                 };
-                out.push(finding(a.name_start, a.name_end, msg));
+                let src: &str = &dom.source;
+                let mut choices = vec![crate::choice("remove", false, vec![remove_attr(src, a)])];
+                // A value of another attribute it needs (`type="submit"`).
+                if let Some(v) = allowed.get("if-attribute-value") {
+                    let key = v.get("key").and_then(|k| k.as_str()).unwrap_or("");
+                    if let Some(want) = v.get("values").and_then(|x| x.as_array()).and_then(|x| x.first()).and_then(|x| x.as_str())
+                        && !key.is_empty()
+                    {
+                        let put = match e.attr(key) {
+                            Some(k) => crate::html_dom::set_attr(k, want),
+                            None => crate::html_dom::add_attr(src, e, &format!("{key}=\"{want}\"")),
+                        };
+                        choices.push(crate::choice("change the context", false, vec![put]));
+                    }
+                }
+                out.push(finding_with(a.name_start, a.name_end, msg, crate::choice_edits(choices)));
             }
         }
     }
@@ -383,7 +479,27 @@ html_rule!(NoDeprecatedAttr, "html/no-deprecated-attr", |dom, meta, ctx, out| {
         }
         for a in &e.attrs {
             if meta.attr(&e.tag, &a.name).and_then(|m| m.get("deprecated")).is_some_and(|d| d != &Value::Bool(false)) {
-                out.push(finding(a.name_start, a.name_end, format!("`{}` on {} is obsolete", a.name, lt(&e.tag))));
+                let src: &str = &dom.source;
+                // Attributes no browser acts on go as they are; a
+                // presentational one becomes the style it stood for.
+                const INERT: &[(&str, &str)] = &[("html", "version"), ("script", "language"), ("head", "profile"), ("meta", "scheme"), ("a", "charset"), ("link", "charset"), ("a", "rev"), ("link", "rev"), ("img", "longdesc"), ("iframe", "longdesc")];
+                let value = a.value_or_empty().to_ascii_lowercase();
+                let style = match (a.name.as_str(), value.as_str()) {
+                    ("align", "left" | "right") if e.is("img") => Some(format!("float: {value}")),
+                    ("align", "left" | "right" | "center" | "justify") if !e.is("img") => Some(format!("text-align: {value}")),
+                    ("bgcolor", v) if !v.is_empty() && !a.is_dynamic() => Some(format!("background-color: {}", a.value_or_empty())),
+                    ("valign", "top" | "middle" | "bottom" | "baseline") => Some(format!("vertical-align: {value}")),
+                    ("nowrap", _) => Some("white-space: nowrap".to_owned()),
+                    _ => None,
+                };
+                let edits = if INERT.contains(&(e.tag.as_str(), a.name.as_str())) {
+                    vec![remove_attr(src, a)]
+                } else if let Some(style) = style.filter(|_| !e.has("style")) {
+                    crate::as_suggestion(vec![TextEdit::new(a.start, a.end, format!("style=\"{style}\""))])
+                } else {
+                    Vec::new()
+                };
+                out.push(finding_with(a.name_start, a.name_end, format!("`{}` on {} is obsolete", a.name, lt(&e.tag)), edits));
             }
         }
     }
@@ -401,7 +517,13 @@ html_rule!(ElementName, "html/element-name", |dom, meta, ctx, out| {
         if e.in_foreign || e.implied || meta.elem(&e.tag).is_some() || e.tag.contains(':') || allow.contains(&e.tag) || custom.is_match(&e.tag) {
             continue;
         }
-        out.push(dom.at_elem(i, format!("{} is not an HTML element, and a custom element's name needs a hyphen", lt(&e.tag))));
+        let mut f = dom.at_elem(i, format!("{} is not an HTML element, and a custom element's name needs a hyphen", lt(&e.tag)));
+        let src: &str = &dom.source;
+        let known: Vec<&str> = meta.table.and_then(|t| t.get("elements")).and_then(|x| x.as_object()).map(|m| m.keys().map(String::as_str).collect()).unwrap_or_default();
+        let mut choices: Vec<codelaw_core::FixChoice> = crate::util::nearest(&e.tag, known, 2).into_iter().enumerate().map(|(n, k)| crate::choice(k, n == 0, crate::html_dom::rename_elem(src, e, k))).collect();
+        choices.push(crate::choice("custom element", choices.is_empty(), crate::html_dom::rename_elem(src, e, &format!("x-{}", e.tag))));
+        f.edits = crate::choice_edits(choices);
+        out.push(f);
     }
 });
 
@@ -426,7 +548,20 @@ html_rule!(CloseOrder, "html/close-order", |dom, meta, ctx, out| {
     for i in dom.all() {
         let e = &dom.elems[i];
         if e.closed == Closed::Unclosed && !e.in_foreign {
-            out.push(dom.at_elem(i, format!("{} is never closed", lt(&e.tag))));
+            let mut f = dom.at_elem(i, format!("{} is never closed", lt(&e.tag)));
+            // Its end tag goes where the parser ends it: before its parent's.
+            // A formatting element is reopened after, so it is left alone.
+            const FORMATTING: &[&str] = &["a", "b", "big", "code", "em", "font", "i", "nobr", "s", "small", "strike", "strong", "tt", "u"];
+            if let Some(p) = e.parent.map(|p| &dom.elems[p])
+                && let Some((ts, _)) = p.end_tag
+                && !FORMATTING.contains(&e.tag.as_str())
+                && dom.child_elems(e.parent.expect("a parent")).last() == Some(i)
+            {
+                let src: &str = &dom.source;
+                let before = src[..ts].trim_end_matches([' ', '\t', '\n', '\r']).len().max(e.open_end);
+                f.edits = vec![TextEdit::insert(before, format!("</{}>", e.tag))];
+            }
+            out.push(f);
         }
     }
 });

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:redux-toolkit/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (each wrapped dispatch call is replaced by the action creator it calls) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a `mapDispatch` whose every member is `(a) => dispatch(creator(a))` becomes the object `{ creator }`, and its `const` goes when nothing else reads it; `connect` then passes every argument to the creator, not only those named. Any other `mapDispatch` is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 

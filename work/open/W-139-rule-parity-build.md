@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): build into codelaw's packs every rule W
 item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5), step 2a"
+updated: 2026-11-07
+updated_by: "Claude Code (Opus 5.5), steps 3–4"
 ball: agent
 ---
 
@@ -19,8 +19,8 @@ ball: agent
 | 1 | W-138's research and Arpit's ruling | a decided list | ✅ 2026-10-30 — build all: 1,690 + 16 taste + 39 framework = **1,745**; round 2 (W-144) ruled the same day — **2,572 in all** |
 | 2 | Write each rule fresh in its pack, with cases, a fix (auto, suggest or manual + skill) and its doc | the depth the single-language tools have | 🔄 slice by slice — see *Progress* |
 | 2a | Remove L4's manual ceiling — `packs/fix-ladder.toml`, its check in `--fix-stats --check` and `laws.rs`, the ceiling column in the pack READMEs — and land the 231 held ports from `~/my_programs/codelaw-w139-held/` | every written, green rule ships | ✅ 2026-11-05 — ceiling removed; 233 rules landed (see *Step 2a*) |
-| 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ⏳ |
-| 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ⏳ |
+| 3 | `codelaw test` on every pack, the corpus counts, the L8 budgets | nothing slower, nothing wrong | ✅ 2026-11-07 — 27 packs 0 failed; corpus counts written; 2 rules narrowed; L8 measured — main over three budgets, filed W-172 (see *Steps 3–4*) |
+| 4 | Counts per pack before and after, in the proposal and the README | the gap closed, measured | ✅ 2026-11-07 — [the proposal](../proposals/rule-parity.md) §13; the README's Rule packs line: 1,548 of 2,590 ports built |
 
 **Arpit, 2026-10-30 (voice):** *"One big item for Opus to research it and once the research is done, then one big work item to build it."*
 
@@ -54,8 +54,8 @@ ball: agent
 | 2b · packs | five new PyPI packs `django`, `fastapi`, `airflow`, `numpy`, `pandas` for Ruff's 39 framework rules (`ruff.csv`, class `out-of-scope`); L6 amended; names W-142 | 🔄 packs and L6 ✅ slice 7; 29 of 39 rules — left: `FAST003`, `AIR001`, `AIR004`, `AIR202`, `AIR301`–`AIR321` (data tables) |
 | 2c · npm packs | `testing` and `nextjs`, npm only; L6 amended (decision 11's table, the counts, CLAUDE.md's L6 line); names W-147 | `nextjs` ✅ slice 6; `testing` 🔄 slice 14 (169/182; 13 need engine work, listed below the table) — namespace **`testing`** (ids `testing/<rule>`, presets `testing/jest`, `testing/vitest`, `testing/testing-library`, `testing/playwright`): the coordinator's call 2026-10-30 under the decider's *"don't wait"*, **reversible by rename** under W-142 |
 | 2d · defaults (from W-148) | the 38 tranche B/C ports Oxlint ranks `correctness` (`oxlint.csv`) corpus-run; those with no false positive proposed for `recommended` | ⏳ |
-| 3 · checks | `codelaw test` 0 failed on every pack; the layout check clean; corpus counts; L8 budgets measured, not loosened | ⏳ |
-| 4 · docs | `scripts/rule-docs.py` pages, `docs-sync.py` counts, CHANGELOG, the proposal's before/after table | ⏳ |
+| 3 · checks | `codelaw test` 0 failed on every pack; the layout check clean; corpus counts; L8 budgets measured, not loosened | ✅ for what is built (2026-11-07): measured, not loosened — main is over three budgets on the reference runner, W-172. Re-run as DoD 1's rows land |
+| 4 · docs | `scripts/rule-docs.py` pages, `docs-sync.py` counts, CHANGELOG, the proposal's before/after table | ✅ for what is built (2026-11-07): `rule-docs.py --check` and `docs-sync.py --check` agree, proposal §13 |
 
 ## Progress — slices landed
 
@@ -154,6 +154,17 @@ Rows of the Python strand a declarative matcher cannot express; each waits for a
 | Pylint `cyclic-import`, `duplicate-code`, `import-error`, `no-name-in-module`, `relative-beyond-top-level`, `arguments-differ`, `signature-differs`, `abstract-method`, `inconsistent-mro`, `invalid-overridden-method`, the `using-*-in-unsupported-version` set, `used-before-assignment` and the other flow checks; the pylintrc checks (`bad-configuration-section`, `unknown-option-value`, …) have no Python source to match | cross-file resolution, class hierarchies, the target version, data flow |
 | `py/incorrect-decorator-order`, `py/fallible-context-manager` (RUF074, RUF075) | not built: Ruff-preview rules whose exact behaviour could not be confirmed offline |
 
+## Steps 3–4 — done 2026-11-07 (Claude Code)
+
+- **`codelaw test`, every pack:** 27 packs and 2,122 rules, 0 failed, on one release binary built from `lm/W-139` after main was merged in (`72832b42`). `consumer_layout` passes (3 tests); `rule-docs.py --check` and `docs-sync.py --check` agree.
+- **Corpus:** fetched shallow (387 MB, 14 repos). Each pack ran on its own, and its copy was deleted after. Every corpus pack's `corpus.toml` now holds the 233 rules of 2026-11-05 (66 with findings). It was deleted at the end; `scripts/corpus.py fetch` re-clones it.
+- **On-by-default rules reviewed:** only one count moved. `md/no-empty-links` (on in `md/recommended` at `error`) went 0 → 254, after W-156's `[$T](#)` and `[$T](<>)` patterns (11-05). Those patterns also match `[x](#anchor)` and `[x](<a b.md>)`. Narrowed so each pattern holds only with the destination check, with a case; 254 → 0. None of the nine new rules in on-by-default presets (`md/required-headings`, `md/link-image-style`, the six `js/regexp-*`, `scss/declaration-nested-properties-no-divided-groups`) has a finding.
+- **A broken invariant:** `js/no-undefined` (preview, `js/taste`) rewrote TypeScript's `undefined` *type* (`T | undefined`) to `void 0`, which is not a fixpoint on 8 corpus files. Narrowed to skip `literal_type`, with two cases; 305 → 190, 0 failed.
+- **Loud preview rules, for review before any promotion** (none on by default): `scss/no-dollar-variables` 1,864, `ts/member-ordering` 1,683, `css/no-unknown-custom-properties` 782, `py/unused-function-argument` 541, `css/function-no-unknown` 219, `html/no-unknown-attributes` 153, `css/selector-max-compound-selectors` 153, `js/no-useless-template-literals` 107, `py/unused-method-argument` 91, `py/multiple-with-statements` 87.
+- **L8:** two `codelaw bench` sessions (startup, warm, cold, memory) compared today's packs against the same packs without the 233, on one binary, on this Mac at load average 21–67. Neither arm beat the other beyond noise: cold 6.83 s against 6.74 s in the quietest pair, and warm swung twice over in both directions across sessions. **On the reference runner, main is over three set budgets:** `check_cold_10k` 13,465 ms (13,118), `peak_memory_10k` 124 MiB (72), `mcp_rules_for_path` 129 ms (65), all green on the 11-05 nightly before the big push. Filed as **W-172**: bisect, then optimise; `perf/budgets.toml` is untouched (L8 decision 5).
+- **Step 4:** [the proposal](../proposals/rule-parity.md) §13 lists each pack: 689 rules on 10-30, 2,122 today; 1,548 of the 2,590 port-list rows are answered (a lower bound — Ruff rows linked by code alone are missed). README: the ported/own split (1,947 / 175) and a before-and-after line.
+- **Not closed:** DoD 1 is not met — about 1,042 rows are left, nearly all in `js` (451) and `python` (481): the *Remaining* tables below. W-143, W-142 and W-102 still wait on it.
+
 ## Step 2a — done 2026-11-05 (Claude Code)
 
 - **Ceiling removed:** `packs/fix-ladder.toml` deleted; `FixStats::ceiling`, `over_ceiling` and `read_ceilings` out of `fix_ladder.rs`, the ceiling column out of `--fix-stats`; `rules_cmd.rs`'s ceiling lines out (`--check` stays for W-156's `fix_pending:` check); `laws.rs`'s test is now `l4_fix_stats_counts_every_pack`; `scripts/rule-docs.py` and the 27 pack READMEs drop the column. Only the ceiling's lines in W-156's files were touched.
@@ -227,4 +238,4 @@ None — W-138 and W-144 ruled 2026-10-30.
 
 ## Reference
 
-[W-138](../../archive/open/W-138-rule-parity-research.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-145](../../archive/open/W-145-tailwind-pack-and-class-sorting.md) · [W-142](W-142-framework-pack-names.md) · [W-147](W-142-framework-pack-names.md) · [W-148](W-141-formatter-parity.md) · W-03 · W-105
+[W-138](../../archive/open/W-138-rule-parity-research.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-145](../../archive/open/W-145-tailwind-pack-and-class-sorting.md) · [W-142](W-142-framework-pack-names.md) · [W-147](W-142-framework-pack-names.md) · [W-148](../../archive/open/W-141-formatter-parity.md) · W-03 · W-105

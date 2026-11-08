@@ -2,9 +2,7 @@
 id: js/operator-assignment
 title: "x += 1 rather than x = x + 1"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "the operator token cannot be carried into a fix template"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint/operator-assignment, eslint-plugin-unicorn/operator-assignment]
 since: 0.5.0
@@ -32,10 +30,12 @@ match:
       - has:
           field: operator
           regex: ^(\+|-|\*|/|%|\*\*|<<|>>|>>>|&|\||\^)$
+          pattern: $$OP
       - has:
           field: right
           pattern: $Y
 message: Use the compound assignment operator
+fix: "$X $OP= $Y"
 ```
 
 ## How to fix

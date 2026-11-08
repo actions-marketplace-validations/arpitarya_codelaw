@@ -2,9 +2,9 @@
 id: css/selector-type-no-unknown
 title: "No unknown type selectors"
 languages: [css, scss]
-fix: manual
-fix_reason: "the intended element is the author's call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the HTML, SVG and MathML element names within two edits are choices, nearest first; a name with none near is manual"
+fix_exception: value
 stability: stable
 options:
   ignore: { type: "string[]", default: ["custom-elements"], description: "`custom-elements` allows hyphenated names; `default-namespace` skips un-namespaced types" }
@@ -37,6 +37,14 @@ tabel {
 }
 ```
 
+#### Fixed
+
+```css
+label {
+  border-collapse: collapse;
+}
+```
+
 #### Do
 
 ```css
@@ -50,6 +58,14 @@ table {
 
 ```scss
 tabel {
+  border-collapse: collapse;
+}
+```
+
+#### Fixed
+
+```scss
+label {
   border-collapse: collapse;
 }
 ```

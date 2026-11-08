@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `ignoreMediaTypes` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the media features that describe the device are the author's call) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the deprecated type is a query of its own in a list with another query: it matches nothing, so it goes; a list of only that query is manual) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/media-type-no-deprecated` |
@@ -176,7 +176,17 @@ codelaw config --print --for <file>                # the resolved setting, and w
 #### Don't
 
 ```css
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed
+
+```css
+@media print {
   a {
     color: red;
   }
@@ -197,7 +207,17 @@ codelaw config --print --for <file>                # the resolved setting, and w
 #### Don't
 
 ```scss
-@media tv {
+@media tv, print {
+  a {
+    color: red;
+  }
+}
+```
+
+#### Fixed
+
+```scss
+@media print {
   a {
     color: red;
   }

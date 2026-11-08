@@ -3,7 +3,7 @@ type: Standing Record
 kind: component
 name: SR-SPELL
 title: "SR-SPELL (0116) — spelling as its own rule pack: a known-typo check on by default, a dictionary check opt-in, codelaw's own word data"
-description: "The spell pack (@codelaw/rules-spell, codelaw-rules-spell): what text it reads, its rules and their fix classes, where its word data comes from and lives, its config and its budget. Partly built (W-103): the pack, its three generated tables (known typos, the dictionary, the locale pairs), the [spell] section and all seven rules, spell/inconsistent-term a project rule on the graph stage; the budget is not set. W-112: the words file, codelaw init adding the pack, codelaw spell learn."
+description: "The spell pack (@codelaw/rules-spell, codelaw-rules-spell): what text it reads, its rules and their fix classes, where its word data comes from and lives, its config and its budget. Built (W-103, closed 2026-11-05): the pack, its three generated tables (known typos, the dictionary, the locale pairs), the [spell] section and all seven rules, spell/inconsistent-term a project rule on the graph stage; the spell budget 2,500 ms; the npm tarball and the PyPI wheel hold the same bytes. W-112: the words file, codelaw init adding the pack, codelaw spell learn."
 status: accepted
 date: 2026-10-27
 feature: "spell checking — the spell pack"
@@ -16,7 +16,7 @@ owns:
   - crates/codelaw-cli/tests/spell.rs
   - crates/codelaw-cli/src/spell_cmd.rs
 laws: [L2, L3, L4, L5, L6, L8, L10, L11]
-timestamp: 2026-11-05T12:00:00Z
+timestamp: 2026-11-05T21:00:00Z
 content_sha: ""
 ratifies: "Arpit, 2026-10-27 (Cowork, voice), on the CSpell research: the typo list — \"Let's go with B.\" (codelaw builds its own from SCOWL); SCOWL and VarCon — \"Approve both.\"; the software-terms dictionary — \"Approve it.\"; packaging — \"want it as a separate package.\"; defaults and where the data lives — \"Go with the recommendation.\"; writing it up — \"go ahead\". W-103."
 ---
@@ -107,6 +107,14 @@ question its maintainers left open. The forks and the rulings are in
      extended but runs nothing until `preview = true` or its rules graduate.
      `codelaw`, the word in the rules folder's README `init` writes, is
      learned on every first run.
+   - **Packaging, as built (W-103, 2026-11-05):** both artefacts are
+     `scripts/package.py`'s (`stage_pack`, `pack_tarball`, `wheel_for_pack`);
+     `scripts/build-packs.py` checks each against `packs/spell/` byte for
+     byte, and `package.py check` in CI's `package` job fails when the npm
+     and the PyPI copy of any pack differ (L6 decision 11). At 0.4.3 the
+     tarball is 1,033,879 bytes and the wheel 1,052,102, holding the same
+     27 files; `typos.json`, `words.json` and `locale.json` have the same
+     SHA-256 in both and in the tree.
    - **Hooks only** (W-146, 2026-11-05): in a repo codelaw already configures,
      `init --git-hooks …` (any of `pre-commit`, `post-commit`, `commit-msg`)
      installs only the hooks — the spell pack, its preset and the words file
@@ -418,7 +426,7 @@ question its maintainers left open. The forks and the rulings are in
 ### Reference (required)
 
 - [`work/compare/spell-checking.compare.md`](../work/compare/spell-checking.compare.md) — the forks, the research and the rulings.
-- [`work/open/W-103-spell-pack.md`](../work/open/W-103-spell-pack.md) — the build.
+- [`archive/open/W-103-spell-pack.md`](../archive/open/W-103-spell-pack.md) — the build.
 - [L11 §3](0013_LAW-11-dependencies.md#3--the-list) — D-42, D-43, D-44.
 
 ### Veto condition
@@ -438,7 +446,7 @@ with no ratified row in L11 §3, or from `typos`, codespell or Wikipedia.
 
 **Project docs**
 
-- [`work/compare/spell-checking.compare.md`](../work/compare/spell-checking.compare.md) · [`work/open/W-103-spell-pack.md`](../work/open/W-103-spell-pack.md) · [`work/BACKLOG.md`](../work/BACKLOG.md)
+- [`work/compare/spell-checking.compare.md`](../work/compare/spell-checking.compare.md) · [`archive/open/W-103-spell-pack.md`](../archive/open/W-103-spell-pack.md) · [`work/BACKLOG.md`](../work/BACKLOG.md)
 
 **External**
 
