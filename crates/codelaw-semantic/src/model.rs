@@ -316,6 +316,59 @@ impl SemanticModel {
         best
     }
 
+    /// The scope of kind `kind` whose node starts at `start` (a Python
+    /// `def` or `class` statement).
+    pub fn scope_starting_at(&self, kind: ScopeKind, start: usize) -> Option<ScopeId> {
+        self.scopes.iter().position(|s| s.kind == kind && s.start == start)
+    }
+
+    /// The symbol a Python name read at byte `at` in `scope` resolves to:
+    /// the scope's own bindings only count when declared before `at` (the
+    /// load happens after the binding), enclosing function and module
+    /// scopes count whole, and enclosing class scopes are skipped (LEGB).
+    pub fn lookup(&self, scope: ScopeId, name: &str, at: usize) -> Option<SymbolId> {
+        let mut cur = Some(scope);
+        while let Some(sc) = cur {
+            let s = &self.scopes[sc];
+            if (sc == scope || s.kind != ScopeKind::Class)
+                && let Some(ids) = s.bindings.get(name)
+            {
+                let hit = ids.iter().copied().find(|&id| sc != scope || self.symbols[id].decls.iter().any(|d| d.1 <= at));
+                if hit.is_some() {
+                    return hit;
+                }
+            }
+            cur = s.parent;
+        }
+        None
+    }
+
+    /// Python `nonlocal name` in `scope`: whether an enclosing function
+    /// scope binds the name. Class and module scopes cannot; an enclosing
+    /// function that itself declares the name `nonlocal` passes the
+    /// question up (its own statement is the one to report), and one that
+    /// declares it `global` ends it.
+    pub fn nonlocal_bound(&self, scope: ScopeId, name: &str) -> bool {
+        let mut cur = self.scopes[scope].parent;
+        while let Some(sc) = cur {
+            let s = &self.scopes[sc];
+            match s.kind {
+                ScopeKind::Function => {
+                    if s.bindings.contains_key(name) || s.redirects.get(name) == Some(&Redirect::Nonlocal) {
+                        return true;
+                    }
+                    if s.redirects.get(name) == Some(&Redirect::Global) {
+                        return false;
+                    }
+                }
+                ScopeKind::Module => return false,
+                _ => {}
+            }
+            cur = s.parent;
+        }
+        false
+    }
+
     pub(crate) fn push_scope(&mut self, parent: Option<ScopeId>, kind: ScopeKind, start: usize, end: usize) -> ScopeId {
         self.scopes.push(Scope { parent, kind, start, end, bindings: BTreeMap::new(), redirects: BTreeMap::new() });
         self.scopes.len() - 1
