@@ -110,8 +110,8 @@ pub fn kinds_named(rule: &RuleFile) -> Vec<String> {
     }
     let mut out = Vec::new();
     if let BlockKind::Match { rule: m, constraints, utils, .. } = &rule.block.kind {
-        walk(m, &mut out);
-        constraints.iter().chain(utils.iter()).for_each(|v| walk(v, &mut out));
+        walk(&m.value(), &mut out);
+        constraints.iter().chain(utils.iter()).for_each(|v| walk(&v.value(), &mut out));
     }
     out.sort();
     out.dedup();
@@ -210,6 +210,7 @@ pub fn compile(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String, Arc<se
     let BlockKind::Match { rule: matcher, constraints, utils, predicates, types, auto_when, transform } = &rule.block.kind else {
         return Err("not a `match:` rule".into());
     };
+    let (matcher, constraints, utils) = (&matcher.value(), constraints.as_ref().map(codelaw_rules::Json::value), utils.as_ref().map(codelaw_rules::Json::value));
     let transform_vars: Vec<String> = match transform.as_deref() {
         None => Vec::new(),
         Some(serde_json::Value::Object(o)) => o.keys().cloned().collect(),

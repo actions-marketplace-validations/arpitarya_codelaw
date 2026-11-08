@@ -260,15 +260,33 @@ impl FixTarget {
     }
 }
 
+/// A JSON value kept as its compact text, read back on demand. A pack's
+/// `match:` trees are read when a rule is compiled or explained, and held
+/// for every rule a pack ships for the life of the process: as text they
+/// take a tenth of the memory a parsed tree does (W-172).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Json(Box<str>);
+
+impl Json {
+    pub fn new(value: &serde_json::Value) -> Json {
+        Json(value.to_string().into_boxed_str())
+    }
+
+    /// The value, parsed again from the text [`Json::new`] wrote.
+    pub fn value(&self) -> serde_json::Value {
+        serde_json::from_str(&self.0).expect("Json holds text serde_json wrote")
+    }
+}
+
 /// The four forms of a `codelaw` block (SR-RULE-FORMAT decision 3).
 #[derive(Clone, Debug, PartialEq)]
 pub enum BlockKind {
     /// An ast-grep rule, plus its optional `constraints`, `utils` and
     /// codelaw's semantic `where` predicates.
     Match {
-        rule: serde_json::Value,
-        constraints: Option<serde_json::Value>,
-        utils: Option<serde_json::Value>,
+        rule: Json,
+        constraints: Option<Json>,
+        utils: Option<Json>,
         predicates: Option<serde_json::Value>,
         /// `type:`, the type questions (decision 3f; SR-TYPES); boxed, as
         /// few rules have one.
@@ -519,9 +537,9 @@ fn parse_block(code: &str) -> Result<Block, String> {
     // taken is not looked at again below.
     let kind = match forms[0] {
         "match" => BlockKind::Match {
-            rule: map.remove("match").unwrap(),
-            constraints: map.remove("constraints"),
-            utils: map.remove("utils"),
+            rule: Json::new(&map.remove("match").unwrap()),
+            constraints: map.remove("constraints").as_ref().map(Json::new),
+            utils: map.remove("utils").as_ref().map(Json::new),
             predicates: map.remove("where"),
             types: map.remove("type").map(Box::new),
             auto_when: map.remove("auto_when").map(Box::new),
