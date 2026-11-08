@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:next/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the tags into `next/head` changes the imports) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`<Head>` moves its children into the document's head when the page renders, which a `<head>` in a page does not; `Head` is imported from `next/head` where the file does not, and a file that binds `Head` to something else is fixed by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/pages/**`; never `**/pages/_document.*` |
@@ -136,6 +136,8 @@ const p = <head><title>Home</title></head>;
 #### Do
 
 ```js path=pages/index.js
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -150,6 +152,8 @@ const p = <head><title>Home</title></head>;
 #### Do
 
 ```jsx path=pages/index.jsx
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 
@@ -164,6 +168,8 @@ const p = <head><title>Home</title></head>;
 #### Do
 
 ```tsx path=pages/index.tsx
+import Head from "next/head";
+
 const p = <Head><title>Home</title></Head>;
 ```
 

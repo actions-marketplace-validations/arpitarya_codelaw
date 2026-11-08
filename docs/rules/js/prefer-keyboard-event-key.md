@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the key name for a numeric code comes from a table) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`key` names the key as typed, so a code compared with a number is rewritten only for the named keys (Enter, Escape, the arrows, …) whose `key` does not change with the layout or Shift; letters, digits and a `keyCode` read any other way are rewritten by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/prefer-keyboard-event-key` |

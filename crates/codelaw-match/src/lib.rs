@@ -291,9 +291,28 @@ impl CompiledMatch {
     /// Match one node under the rule's resolved options (`calls:` reads
     /// them; an option missing from `options` is the rule's default).
     pub fn try_match_with(&self, node: SyntaxNode<'_>, semantic: Option<&SemanticModel>, options: &BTreeMap<String, serde_json::Value>) -> Option<Match> {
-        let auto = self.auto_when.as_ref().is_none_or(|a| a.match_node(node.clone()).is_some());
-        let m = self.core.match_node(node)?;
+        // The cheap questions first (W-172): a node the match, its `where:`
+        // or its `auto_when:` turns down costs no captures, and a node the
+        // match turns down is not asked `auto_when:`.
+        let m = self.core.match_node(node.clone())?;
         let env = m.get_env();
+        let range = m.range();
+        let source: &str = {
+            use ast_grep_core::Doc;
+            m.get_doc().get_source()
+        };
+        for (var, predicate) in &self.predicates {
+            let target = if var == MATCH_KEY { Some(m.get_inner_node()) } else { env.get_match(var.trim_start_matches('$')).map(|n| n.get_inner_node()) };
+            let holds = match (target, semantic) {
+                (Some(t), Some(model)) => predicate.holds(model, &Subject { start: t.start_byte(), node: Some(t), source, options }),
+                (None, _) if var != MATCH_KEY && predicate.skips_unbound() => true,
+                _ => false,
+            };
+            if !holds {
+                return None;
+            }
+        }
+        let auto = self.auto_when.as_ref().is_none_or(|a| a.match_node(node).is_some());
         let mut single = BTreeMap::new();
         let mut multi = BTreeMap::new();
         let mut transformed = BTreeMap::new();
@@ -312,22 +331,6 @@ impl CompiledMatch {
                 // An empty `$$$NAME` is still a capture: it interpolates as "".
                 let nodes = env.get_multiple_matches(var);
                 multi.insert(var.to_owned(), nodes.iter().map(captured).collect());
-            }
-        }
-        let range = m.range();
-        let source: &str = {
-            use ast_grep_core::Doc;
-            m.get_doc().get_source()
-        };
-        for (var, predicate) in &self.predicates {
-            let target = if var == MATCH_KEY { Some(m.get_inner_node()) } else { env.get_match(var.trim_start_matches('$')).map(|n| n.get_inner_node()) };
-            let holds = match (target, semantic) {
-                (Some(t), Some(model)) => predicate.holds(model, &Subject { start: t.start_byte(), node: Some(t), source, options }),
-                (None, _) if var != MATCH_KEY && predicate.skips_unbound() => true,
-                _ => false,
-            };
-            if !holds {
-                return None;
             }
         }
         Some(Match { start: range.start, end: range.end, kind: m.kind().to_string(), single, multi, auto, transformed })

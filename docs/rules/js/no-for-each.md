@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a `return` in the callback becomes `continue`, and an index parameter becomes `.entries()`) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`for … of` iterates what the value's iterator gives, where `forEach` visits an array's indices: a sparse array, or a `Map` (whose `forEach` passes the value and `for … of` the entry), changes; a callback with a `return`, an index parameter, `async`, or a block-less body is rewritten by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-unicorn/no-for-each` |

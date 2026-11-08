@@ -3,11 +3,44 @@ type: Log
 description: "Dated lessons — what this project learned the hard way, newest first. A log, not a record: the date is part of the lesson."
 ---
 
+## 2026-11-07 — a shared cargo target hands you another worktree's binary
+
+`target/debug/codelaw` is shared by every lane (MACHINE.md). Between your `cargo build` and your test run, another worktree's build can replace it, and the test then runs code your tree doesn't hold — once it passed a rule whose `Fixed` blocks still read `XX`, once the whole pack died with exit 137. **Copy the binary right after your own build and test with the copy**; a result that contradicts the code you just wrote is the binary first, the code second.
+
+---
+
 # LESSONS — what this build learned the hard way
 
 Newest first. A lesson whose remedy is a *rule* belongs in a record and is
 named here only as the failure that produced it. A lesson whose remedy is
 *judgment* lives here. ⚠ Nothing here is normative.
+
+---
+
+## 2026-11-07 — `git stash` is one stack for every worktree; `pop` takes whoever's is on top
+
+W-172 stashed its eight files to merge `main`, and while the merge ran W-162,
+in another worktree, stashed too. `git stash pop` took the top entry — W-162's
+(`On lm/W-162: w162-change5`, 40 pack files and 19 untracked ones) — applied it
+in W-172's worktree and dropped it. Caught at once by `git status`; put back
+with `git stash store` of the dropped commit before W-162 popped, and W-172's
+own entry applied by its hash. **In a repository with parallel worktrees, never
+`pop` by position: `git stash push -m <item>` and `git stash apply <hash>`, or
+commit to the branch and merge instead** — lockmaster's end-of-turn landing
+commits the claim anyway.
+
+## 2026-11-07 — a rule nobody turns on still costs memory and time, once per process
+
+W-139 grew the packs a project extends from ~440 rules to ~1,600, most of them
+in no preset the project uses. Every one was parsed, compiled for each of its
+grammars — ast-grep builds each `regex:` once per grammar, about 16 KB apiece —
+and kept, and every file asked each one for its settings: peak memory 60 →
+124 MiB and `rules_for_path` 40 → 129 ms on the reference runner, with no
+engine commit to bisect to. **A per-rule cost scales with the packs, not with
+the code: measure one binary against packs with and without the rules, and
+read a heap profile by call site (`heap --sortBySize`, `malloc_history
+-callTree -invert`), before bisecting.** Two packs from different weeks do not
+load into each other's engine, so a commit bisect mixes both arms.
 
 ---
 

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended key can't be inferred) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (one choice per loop target: it becomes the key, and the dict gets an entry per item instead of one; none is the default) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B035` |
@@ -130,6 +130,12 @@ codelaw config --print --for <file>                    # the resolved setting, a
 
 ```py
 sizes = {"size": len(name) for name in names}
+```
+
+#### Fixed (name)
+
+```py
+sizes = {name: len(name) for name in names}
 ```
 
 #### Do

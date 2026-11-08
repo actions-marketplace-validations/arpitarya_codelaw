@@ -1,8 +1,8 @@
 {
   "files": {
-    ".claude/hooks/auto-land.py": "edea8b8d73d6cf930aa28e8caa13999b02b6c1d2c3dcf5bb50032db2245a20c0",
+    ".claude/hooks/auto-land.py": "c839bee6b480f708bb15be5b80b805cff7cb023c12f0dde9af24849a541afd6e",
     ".claude/hooks/block-main.py": "57d209ceeed9292dca00442ea3c6e004348fbd47487def79cb4238c01567fdfb",
-    ".claude/hooks/claim-guard.py": "08638d6960bffcfb1f9a3a9c6b36812761cc3339fd22648a95c5e53a755dc5e3",
+    ".claude/hooks/claim-guard.py": "ad102d604eda2d9a0383850dec08e99e9d6e3e51e836e90c59c0498fe75b49dc",
     ".claude/hooks/disk-budget.py": "56ac3beaf5cbff2e17acae976d45d8eee5be3fedeb7a62507167ccd408d324cc",
     ".claude/hooks/guard-open-work-inbox.sh": "2100bea49ebe037c7c0b35cedef6c4a2f5e8189c4ea3e7d76e7292e44737d10c",
     ".claude/hooks/inject-inbox.sh": "091a13576448241782ae330d03ee5afbdc34e8fd46b7494c51a91acbda282a1b",
@@ -11,11 +11,12 @@
     ".claude/hooks/require-progress.sh": "1f18eb786a477a21c0b27fa3abb95a27d78d157be339a6f8ef64398ca76a7d29",
     ".claude/hooks/session-lock.sh": "febe0bec484001ae2a10f0133da2e830a1ecbe161a6509a2646bd1ce0a2283f8",
     ".claude/hooks/stop-if-blocked.sh": "18f8fdbe8ca93dfc2008a4f73ac7cd04ef6bc780ae8899b680ee3f4fa1281c45",
+    ".claude/hooks/work-files.py": "cd46eebe7c00e7a404b40ce43f97bd384106b5a2bb776888ec693875bacd2e5e",
     ".claude/hooks/worktree-cleanup.py": "cdaeb8a416068f21d32ebc3b6e860bd62710729b91a78fdcc4a0b1388ef55c40",
-    ".claude/skills/docket/SKILL.md": "bb5a3a52501a78e43bf6da5ca830bd7a875496fc19274a394b66dc3521b4a7e8",
-    ".claude/skills/landing/SKILL.md": "23ed61a9054ccfbad24a762b3a261158d074a97218b04196507d632bfbbe8783"
+    ".claude/skills/docket/SKILL.md": "86e2b5e7b7144285d884f547e02dfca80dd403df86f1f7640fd710088560b093",
+    ".claude/skills/landing/SKILL.md": "7bbdbd6e543f6ecb40225ac6691963b6bc4d02854bec8b36653f8136a7230f1f"
   },
-  "kit": "a3abe1b1f28508114d92fcd81b6fcdd7287dc4004061354c24b444f7c8357af8",
+  "kit": "b000a1bd0300977a703dd5fbb5ad73e3016f2faaa01d2d8ab6d55c057641cbc1",
   "settings": [
     "$CLAUDE_PROJECT_DIR/.claude/hooks/guard-open-work-inbox.sh",
     "$CLAUDE_PROJECT_DIR/.claude/hooks/inject-inbox.sh",
@@ -36,7 +37,9 @@
     "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/now-ledger.py\" show",
     "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/now-ledger.py\" start",
     "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/now-ledger.py\" stop",
-    "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/now-ledger.py\" sync"
+    "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/now-ledger.py\" sync",
+    "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/work-files.py\" edit",
+    "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/work-files.py\" stop"
   ],
   "version": "0.0.1"
 }

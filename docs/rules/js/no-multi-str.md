@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a template literal keeps the indentation of the next line, so the author chooses the form) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/no-multi-str` |
@@ -140,8 +140,7 @@ two';
 #### Do
 
 ```js
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### JSX
@@ -156,8 +155,7 @@ two';
 #### Do
 
 ```jsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### TypeScript
@@ -172,8 +170,7 @@ two';
 #### Do
 
 ```ts
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ### TSX
@@ -188,8 +185,7 @@ two';
 #### Do
 
 ```tsx
-const s = 'one ' +
-  'two';
+const s = 'one two';
 ```
 
 ---

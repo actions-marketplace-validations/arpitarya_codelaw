@@ -163,7 +163,7 @@ impl Catalog {
             };
             let pack = Arc::new(pack);
             for r in &pack.rules {
-                let r = Arc::new(r.clone());
+                let r = r.clone();
                 for up in &r.ported_from {
                     let ids = c.by_upstream.entry(up.clone()).or_default();
                     if !ids.contains(&r.id) {

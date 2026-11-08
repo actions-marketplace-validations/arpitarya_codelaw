@@ -45,12 +45,59 @@ css_rule!(AtRuleDescriptorNoUnknown, "css/at-rule-descriptor-no-unknown", |sheet
     }
 });
 
+/// The syntax component names of `@property`.
+const SYNTAX_TYPES: &[&str] = &[
+    "angle", "color", "custom-ident", "image", "integer", "length", "length-percentage", "number", "percentage", "resolution", "string", "time", "transform-function",
+    "transform-list", "url",
+];
+
+/// Names written for a syntax component name, and what each means.
+const SYNTAX_ALIASES: &[(&str, &[&str])] = &[
+    ("size", &["length", "length-percentage"]),
+    ("dimension", &["length", "length-percentage"]),
+    ("int", &["integer"]),
+    ("float", &["number"]),
+    ("num", &["number"]),
+    ("colour", &["color"]),
+    ("percent", &["percentage"]),
+    ("ident", &["custom-ident"]),
+    ("identifier", &["custom-ident"]),
+    ("uri", &["url"]),
+    ("str", &["string"]),
+    ("transform", &["transform-function", "transform-list"]),
+];
+
+/// When the one problem of a syntax string (`start..end`, inside its
+/// quotes) is a type name that isn't one, the names it may have meant,
+/// each a choice (the first the default): its known meanings, else the
+/// names within two edits.
+fn syntax_choices(src: &str, start: usize, end: usize) -> Vec<TextEdit> {
+    let s = &src[start..end];
+    let mut unknown = Vec::new();
+    let mut from = 0;
+    while let Some(o) = s[from..].find('<') {
+        let at = from + o + 1;
+        let Some(len) = s[at..].find('>') else { return Vec::new() };
+        let name = &s[at..at + len];
+        if !SYNTAX_TYPES.contains(&name) {
+            unknown.push((start + at, start + at + len, name));
+        }
+        from = at + len;
+    }
+    let [(a, b, name)] = unknown[..] else { return Vec::new() };
+    let lower = name.to_ascii_lowercase();
+    let names: Vec<&str> = match SYNTAX_ALIASES.iter().find(|(k, _)| *k == lower) {
+        Some((_, v)) => v.to_vec(),
+        None => crate::util::nearest(&lower, SYNTAX_TYPES.iter().copied(), 2),
+    };
+    // Only when the names fix the whole string.
+    let names: Vec<&str> = names.into_iter().filter(|n| syntax_problem(&format!("{}{n}{}", &src[start..a], &src[b..end])).is_none()).collect();
+    crate::util::name_choices(&names, a, b, &|n| n.to_owned())
+}
+
 /// `<syntax>` strings of `@property`: problems, if any.
 fn syntax_problem(s: &str) -> Option<String> {
-    const TYPES: &[&str] = &[
-        "angle", "color", "custom-ident", "image", "integer", "length", "length-percentage", "number", "percentage", "resolution", "string", "time", "transform-function",
-        "transform-list", "url",
-    ];
+    const TYPES: &[&str] = SYNTAX_TYPES;
     let s = s.trim();
     if s == "*" {
         return None;
@@ -126,7 +173,7 @@ css_rule!(SyntaxStringNoInvalid, "css/syntax-string-no-invalid", |sheet, src, ct
             continue;
         }
         if let Some(why) = syntax_problem(crate::util::unquote(v)) {
-            out.push(finding(n.params.0, n.params.1, format!("Invalid syntax string: {why}")));
+            out.push(fixed(n.params.0, n.params.1, format!("Invalid syntax string: {why}"), syntax_choices(src, n.params.0 + 1, n.params.1 - 1)));
         }
     }
 });
@@ -210,6 +257,27 @@ fn prelude_problem(at: &str, p: &str) -> Option<&'static str> {
     }
 }
 
+/// The prelude an invalid one becomes when the code says what it meant:
+/// an identifier dashed (`@property size` is `--size`), a single-quoted
+/// `@charset` double-quoted, the prelude of an at-rule that takes none
+/// removed (the empty string). `None` when the right prelude is a value
+/// the code does not hold.
+fn prelude_repair(at: &str, p: &str) -> Option<String> {
+    match at {
+        "property" | "font-palette-values" | "position-try" => {
+            let name = p.trim_start_matches('-');
+            let fixed = format!("--{name}");
+            (is_ident(name) && dashed(&fixed)).then_some(fixed)
+        }
+        "charset" => {
+            let inner = p.strip_prefix('\'')?.strip_suffix('\'')?;
+            (!inner.is_empty() && inner.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')).then(|| format!("\"{inner}\""))
+        }
+        "font-face" | "starting-style" | "view-transition" => (!p.is_empty()).then(String::new),
+        _ => None,
+    }
+}
+
 css_rule!(AtRulePreludeNoInvalid, "css/at-rule-prelude-no-invalid", |sheet, src, ctx, out| {
     let ignore = opt_list(ctx, "ignoreAtRules");
     for i in at_rules(sheet) {
@@ -226,7 +294,8 @@ css_rule!(AtRulePreludeNoInvalid, "css/at-rule-prelude-no-invalid", |sheet, src,
         }
         if let Some(want) = prelude_problem(at, p) {
             let (s, e) = if p.is_empty() { (n.start, n.name.1) } else { n.params };
-            out.push(finding(s, e, format!("Invalid prelude for `@{raw}`: expected {want}")));
+            let edits = prelude_repair(at, p).map(|new| if new.is_empty() { vec![TextEdit::delete(n.name.1, n.params.1)] } else { vec![TextEdit::new(n.params.0, n.params.1, new)] });
+            out.push(fixed(s, e, format!("Invalid prelude for `@{raw}`: expected {want}"), edits.unwrap_or_default()));
         }
     }
 });
@@ -292,7 +361,17 @@ css_rule!(NoInvalidPositionAtImportRule, "css/no-invalid-position-at-import-rule
                 let name = sheet.at_name(i, src);
                 if name == "import" {
                     if late || n.parent.is_some() {
-                        out.push(finding(n.start, n.end, "`@import` must come before every other rule except `@charset` and `@layer` statements; browsers ignore it here"));
+                        // Move it up, where it starts to apply, or delete it,
+                        // keeping what the page renders today.
+                        let end = if src[n.end..].starts_with(';') { n.end + 1 } else { n.end };
+                        let top = sheet.top.iter().map(|&t| &sheet.nodes[t]).find(|t| !(t.kind == Kind::AtRule && matches!(text(src, t.name).to_ascii_lowercase().as_str(), "charset" | "import" | "layer"))).map(|t| t.start);
+                        let remove = crate::util::remove_css_statement(src, n.start, n.end);
+                        let mut choices = Vec::new();
+                        if let Some(top) = top.filter(|_| n.parent.is_none()) {
+                            choices.push(crate::choice("move up", false, vec![TextEdit::insert(top, format!("{}\n", &src[n.start..end])), remove.clone()]));
+                        }
+                        choices.push(crate::choice("delete", false, vec![remove]));
+                        out.push(crate::css_syntax::fixed(n.start, n.end, "`@import` must come before every other rule except `@charset` and `@layer` statements; browsers ignore it here", crate::choice_edits(choices)));
                     }
                 } else if name != "charset" && !(name == "layer" && n.block.is_none()) && !matches_any(&ignore, text(src, n.name)) {
                     late = true;
@@ -350,15 +429,48 @@ fn keyframe_selectors(sheet: &Sheet, src: &str) -> Vec<Vec<((usize, usize), Stri
 }
 
 css_rule!(KeyframeBlockNoDuplicateSelectors, "css/keyframe-block-no-duplicate-selectors", |sheet, src, ctx, out| {
-    for block in keyframe_selectors(sheet, src) {
-        let mut seen = BTreeSet::new();
-        for (r, t) in block {
-            if !seen.insert(t.clone()) {
-                out.push(finding(r.0, r.1, format!("Keyframe `{}` is declared twice in this `@keyframes`", text(src, r))));
+    for kf in at_rules(sheet).filter(|&i| sheet.at_name(i, src) == "keyframes") {
+        // The keyframe block each selector opened first.
+        let mut seen: BTreeMap<String, usize> = BTreeMap::new();
+        for &c in sheet.nodes[kf].children.iter().filter(|&&c| sheet.nodes[c].kind == Kind::Rule) {
+            let sels = sheet.keyframe_selectors(c, src).into_owned();
+            for &r in &sels {
+                let t = text(src, r).to_ascii_lowercase();
+                match seen.get(&t) {
+                    Some(&first) => {
+                        let edits = if sels.len() == 1 && sheet.keyframe_selectors(first, src).len() == 1 { keyframe_choices(sheet, src, first, c) } else { Vec::new() };
+                        out.push(crate::css_syntax::fixed(r.0, r.1, format!("Keyframe `{}` is declared twice in this `@keyframes`", text(src, r)), edits));
+                    }
+                    None => {
+                        seen.insert(t, c);
+                    }
+                }
             }
         }
     }
 });
+
+/// Two keyframe blocks of one selector each, `first` before `later`:
+/// merge them in source order (what browsers render today, later
+/// declarations winning), keep the first, or keep the later.
+fn keyframe_choices(sheet: &Sheet, src: &str, first: usize, later: usize) -> Vec<TextEdit> {
+    let (Some((o1, c1)), Some((o2, c2))) = (sheet.nodes[first].block, sheet.nodes[later].block) else { return Vec::new() };
+    if c1 >= src.len() || c2 >= src.len() {
+        return Vec::new();
+    }
+    let (f, l) = (&sheet.nodes[first], &sheet.nodes[later]);
+    let body = src[o2 + 1..c2].trim_end();
+    let at = o1 + 1 + src[o1 + 1..c1].trim_end().len();
+    let drop_later = crate::util::remove_css_statement(src, l.start, l.end);
+    let drop_first = crate::util::remove_css_statement(src, f.start, f.end);
+    let mut choices = Vec::new();
+    if !body.trim().is_empty() {
+        choices.push(crate::choice("merge", true, vec![TextEdit::insert(at, body), drop_later.clone()]));
+    }
+    choices.push(crate::choice("keep first", choices.is_empty(), vec![drop_later]));
+    choices.push(crate::choice("keep last", false, vec![drop_first]));
+    crate::choice_edits(choices)
+}
 
 css_rule!(KeyframeDeclarationNoImportant, "css/keyframe-declaration-no-important", |sheet, src, ctx, out| {
     for i in sheet.decls() {

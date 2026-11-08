@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (how errors should propagate has to be decided) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `return`, `break` or `continue` ending a `finally` moves to right after the `try` (the `finally` goes when that was all it held and a handler stays, else `pass` stands in): an exception now propagates instead of being swallowed, which is the fix and a change. A jump elsewhere in the block is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B012`, `pylint/lost-exception`, `pylint/return-in-finally`, `pylint/break-in-finally` |
@@ -135,6 +135,17 @@ def read(path):
         return load(path)
     finally:
         return None
+```
+
+#### Fixed
+
+```py
+def read(path):
+    try:
+        return load(path)
+    finally:
+        pass
+    return None
 ```
 
 #### Do

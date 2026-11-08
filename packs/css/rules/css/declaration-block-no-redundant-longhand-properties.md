@@ -2,9 +2,9 @@
 id: css/declaration-block-no-redundant-longhand-properties
 title: "Shorthands instead of complete sets of longhands"
 languages: [css, scss]
-fix: manual
-fix_reason: "combining longhands into a shorthand value needs the shorthand's grammar"
-fix_pending: "auto-subset"
+fix: auto
+fix_reason: "auto for a box-model shorthand (margin, padding, inset, gap, border-width, -style and -color, overflow, overscroll-behavior, place-*, their block and inline forms, scroll-margin and scroll-padding) when each longhand is set once with one value and no var() or env(), all or none !important, the shorthand not in the block and nothing between them that overlaps: the shorthand takes the last longhand's place with their values in its order; other shorthands reset longhands the set doesn't name, so they stay manual"
+fix_exception: value
 stability: preview
 ported_from: [stylelint/declaration-block-no-redundant-longhand-properties]
 since: 0.1.0

@@ -5,6 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "a value that carries markup on purpose shows its tags as text once it is written with `textContent`"
 stability: preview
+ported_from: [eslint-plugin-unicorn/no-unsafe-dom-html]
 security: { cwe: [79], owasp: ["A05:2025"], severity: high }
 since: 0.3.0
 options:

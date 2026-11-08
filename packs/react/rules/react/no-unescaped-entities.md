@@ -2,9 +2,7 @@
 id: react/no-unescaped-entities
 title: "No unescaped >, \", ' or } in JSX text"
 languages: [javascript, jsx, tsx]
-fix: manual
-fix_reason: "the right escape depends on the character and the author's style"
-fix_pending: "auto; needs computed-edit (W-162)"
+fix: auto
 stability: preview
 ported_from: [eslint-plugin-react/no-unescaped-entities]
 since: 0.1.0
@@ -19,6 +17,11 @@ match:
   kind: jsx_text
   regex: '[>"''}]'
 message: "Escape this character in JSX text, e.g. `&apos;` or `{\"'\"}`"
+fix:
+  - edit-text: { pattern: '>', replace: '&gt;' }
+  - edit-text: { pattern: '"', replace: '&quot;' }
+  - edit-text: { pattern: "'", replace: '&apos;' }
+  - edit-text: { pattern: '\}', replace: '&#125;' }
 ```
 
 ## How to fix

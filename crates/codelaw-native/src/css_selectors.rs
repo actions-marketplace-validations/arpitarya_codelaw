@@ -52,10 +52,13 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
         let list = sheet.selectors(i, src);
         // The same selector twice in one list.
         let mut in_list = BTreeSet::new();
-        for c in list.iter() {
+        for (k, c) in list.iter().enumerate() {
             let t = normalize_selector(text(src, (c.start, c.end)));
             if !in_list.insert(t.clone()) {
-                out.push(finding(c.start, c.end, format!("`{t}` appears twice in this selector list")));
+                // The same selector twice selects nothing more: it goes, with
+                // the comma before it.
+                let edits = if k > 0 { vec![TextEdit::delete(list[k - 1].end, c.end)] } else { Vec::new() };
+                out.push(crate::css_syntax::fixed(c.start, c.end, format!("`{t}` appears twice in this selector list"), edits));
             }
         }
         let mut all: Vec<String> = resolved(sheet, i, src).into_iter().map(|x| x.0).collect();
@@ -66,7 +69,26 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
         match ctx_map.get(&key) {
             Some(&first) => {
                 let sel = text(src, n.name);
-                out.push(finding(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first))));
+                // Two rules side by side cascade as one: the second's
+                // declarations join the end of the first.
+                let edits = sheet.nodes.iter().position(|x| x.start == first && x.kind == Kind::Rule).and_then(|f| {
+                    let fr = &sheet.nodes[f];
+                    let ((_, fclose), (sopen, sclose)) = (fr.block?, n.block?);
+                    if !src[fr.end..n.start].trim().is_empty() || fr.parent != n.parent || fclose >= src.len() || sclose >= src.len() {
+                        return None;
+                    }
+                    let inner = src[sopen + 1..sclose].trim_end();
+                    let head = src[..fclose].trim_end().len();
+                    // The second rule goes with the blank line before it.
+                    let a = src[..n.start].trim_end().len();
+                    let b = if src[n.end..].starts_with('\n') { n.end } else { n.end };
+                    let joined = match inner.strip_prefix('\n') {
+                        Some(lines) => format!("\n{lines}"),
+                        None => format!(" {}", inner.trim()),
+                    };
+                    Some(vec![TextEdit::insert(head, joined), TextEdit::delete(a, b)])
+                });
+                out.push(crate::css_syntax::fixed(n.name.0, n.name.1, format!("`{sel}` repeats the selector of the rule on line {}; merge the two", line(src, first)), edits.unwrap_or_default()));
             }
             None => {
                 ctx_map.insert(key, n.start);
@@ -84,8 +106,8 @@ fn has_declaration(sheet: &Sheet, i: usize) -> bool {
     })
 }
 
-/// An earlier selector: its specificity, text and offset.
-type Prior = ((u32, u32, u32), String, usize);
+/// An earlier selector: its specificity, text, offset and rule.
+type Prior = ((u32, u32, u32), String, usize, usize);
 
 const LEGACY_ELEMENTS: &[&str] = &["before", "after", "first-line", "first-letter"];
 
@@ -105,6 +127,26 @@ fn reference(sel: &str, pseudo_elements: &BTreeSet<String>) -> Option<String> {
         .map(|p| &sel[p.start..p.end])
         .collect();
     (!parts.is_empty()).then(|| parts.concat())
+}
+
+/// The edit swapping rule `a` and the rule `b` right after it (`auto`):
+/// between two rules whose specificities differ, specificity decides, not
+/// order, so the swap changes nothing. Only when nothing but whitespace
+/// separates them, each has one selector and holds only declarations
+/// (nothing nested moves with it).
+fn swap_rules(sheet: &Sheet, src: &str, a: usize, b: usize) -> Option<Vec<TextEdit>> {
+    let (na, nb) = (&sheet.nodes[a], &sheet.nodes[b]);
+    if na.parent != nb.parent || na.end > nb.start || !src[na.end..nb.start].trim().is_empty() {
+        return None;
+    }
+    for &r in &[a, b] {
+        let n = &sheet.nodes[r];
+        if sheet.selectors(r, src).len() != 1 || n.block.is_none_or(|(_, close)| close >= src.len()) || n.children.iter().any(|&c| !matches!(sheet.nodes[c].kind, Kind::Decl | Kind::Comment)) {
+            return None;
+        }
+    }
+    let between = &src[na.end..nb.start];
+    Some(vec![TextEdit::new(na.start, nb.end, format!("{}{between}{}", &src[nb.start..nb.end], &src[na.start..na.end]))])
 }
 
 css_rule!(NoDescendingSpecificity, "css/no-descending-specificity", |sheet, src, ctx, out| {
@@ -129,10 +171,11 @@ css_rule!(NoDescendingSpecificity, "css/no-descending-specificity", |sheet, src,
             let own = normalize_selector(text(src, (c.start, c.end)));
             let shown = if own == res { format!("`{own}`") } else { format!("`{own}` (`{res}`)") };
             let prior = map.entry(r).or_default();
-            if let Some((_, sel, at)) = prior.iter().find(|p| p.0 > spec) {
-                out.push(finding(c.start, c.end, format!("{shown} comes after `{sel}` (line {}), which is more specific; put the less specific selector first", line(src, *at))));
+            if let Some((_, sel, at, earlier)) = prior.iter().find(|p| p.0 > spec) {
+                let edits = swap_rules(sheet, src, *earlier, i).unwrap_or_default();
+                out.push(crate::css_syntax::fixed(c.start, c.end, format!("{shown} comes after `{sel}` (line {}), which is more specific; put the less specific selector first", line(src, *at)), edits));
             }
-            prior.push((spec, res, n.start));
+            prior.push((spec, res, n.start, i));
         }
     }
 });
@@ -348,6 +391,37 @@ css_rule!(SelectorTypeNoUnknown, "css/selector-type-no-unknown", |sheet, src, ct
     }
 });
 
+/// The raw line breaks of a string from `j` (a break) to its closing
+/// quote `q`: each break's range, `\r\n` as one.
+fn raw_breaks(b: &[u8], mut j: usize, e: usize, q: u8) -> Vec<(usize, usize)> {
+    let mut out = Vec::new();
+    while j < e && b[j] != q {
+        match b[j] {
+            b'\\' => j += 2,
+            b'\r' if b.get(j + 1) == Some(&b'\n') => {
+                out.push((j, j + 2));
+                j += 2;
+            }
+            b'\n' | b'\r' => {
+                out.push((j, j + 1));
+                j += 1;
+            }
+            _ => j += 1,
+        }
+    }
+    out
+}
+
+/// The two ways a string's raw line breaks can go: a space, or an escaped
+/// line break `\A` the string keeps. Both change what the selector
+/// matches (it is dropped today), so neither is the default. (A `\` before
+/// each break would join the lines, but the grammar refuses it, so the
+/// engine never applies it.)
+fn newline_choices(breaks: &[(usize, usize)]) -> Vec<TextEdit> {
+    let each = |f: &dyn Fn(usize, usize) -> TextEdit| breaks.iter().map(|&(s, e)| f(s, e)).collect::<Vec<_>>();
+    crate::choice_edits(vec![crate::choice("space", false, each(&|s, e| TextEdit::new(s, e, " "))), crate::choice("escape", false, each(&|s, e| TextEdit::new(s, e, "\\A ")))])
+}
+
 /// Strings in a range that hold an unescaped line break.
 fn strings_with_newline(src: &str, s: usize, e: usize, out: &mut Vec<crate::NativeFinding>) {
     let b = src.as_bytes();
@@ -364,7 +438,12 @@ fn strings_with_newline(src: &str, s: usize, e: usize, out: &mut Vec<crate::Nati
                     }
                     if b[j] == b'\n' || b[j] == b'\r' {
                         let line_end = src[j..].find('\n').map_or(j, |o| j + o);
-                        out.push(finding(i, line_end.min(e), "Line break inside a string; escape it as `\\A` or end the line with `\\`"));
+                        let breaks = raw_breaks(b, j, e, q);
+                        out.push(crate::css_syntax::fixed(i, line_end.min(e), "Line break inside a string; escape it as `\\A` or end the line with `\\`", newline_choices(&breaks)));
+                        j = breaks.last().map_or(j + 1, |r| r.1);
+                        while j < e && b[j] != q {
+                            j += if b[j] == b'\\' { 2 } else { 1 };
+                        }
                         break;
                     }
                     j += 1;

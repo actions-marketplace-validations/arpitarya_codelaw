@@ -15,11 +15,20 @@
 #       plus macOS's own crash report. Windows keeps the minidump only.
 #
 # The shipped binary is stripped (packaging/python/pyproject.toml `strip`), so
-# its frames are bare addresses. The twin is the SAME maturin build with
-# `strip = false` — same toolchain, target, flags and sources, so the same
-# code — built here only on a crash and never shipped; backtrace.txt says
-# whether its .text is byte-identical to the shipped one (Linux), so a reader
-# knows whether the names can be trusted. Debug info never enters a package.
+# its frames are bare addresses. The twin is the SAME maturin build with the
+# strip turned off for the final link only — same toolchain, target, flags and
+# sources, so the same code — built here only on a crash and never shipped;
+# backtrace.txt says whether its .text is byte-identical to the shipped one
+# (Linux), so a reader knows whether the names can be trusted. Debug info
+# never enters a package.
+#
+# Two settings strip: maturin's (`-C strip=symbols` on the final crate) and
+# Cargo's release default (`-C strip=debuginfo`), which zig — the linker of
+# the --zig legs — treats as stripping everything; so `--strip false` alone
+# gave a twin as stripped as the shipped binary (W-169, run 42348986474).
+# `-C strip=none` on the final crate alone keeps the symbol table and relinks
+# only codelaw-cli; a profile override (`profile.release.strip`) instead
+# rebuilds every crate and moved the code.
 set -euo pipefail
 cmd="${1:?usage: crash-capture.sh arm DIR | collect DIR BINARY TARGET [MATURIN FLAGS…]}"
 dir="${2:?a directory for the cores}"
@@ -56,14 +65,8 @@ twin() {
   rustup toolchain install "$v" --profile minimal --target "$target" --no-self-update >/dev/null 2>&1 || true
   command -v maturin >/dev/null || pip install --disable-pip-version-check -q "maturin[zig]==${MATURIN_VERSION:?}"
   (cd "$root" && python scripts/package.py prepare-wheel >/dev/null)
-  local py="$root/packaging/python/pyproject.toml"
-  cp "$py" "$dir/pyproject.toml.shipped"
-  sed 's/^strip = true$/strip = false/' "$dir/pyproject.toml.shipped" > "$py"
-  local rc=0
-  (cd "$root/packaging/python" && maturin build --release --locked --target "$target" "$@" --out "$dir/twin-wheel") || rc=$?
-  cp "$dir/pyproject.toml.shipped" "$py" && rm "$dir/pyproject.toml.shipped"
-  [ "$rc" = 0 ] || return "$rc"
-  python "$root/scripts/package.py" extract "$dir"/twin-wheel/*.whl "$dir/twin" >/dev/null
+  (cd "$root/packaging/python" && maturin build --release --locked --target "$target" "$@" --strip false --out "$dir/twin-wheel" -- -C strip=none) || return
+  python "$root/scripts/package.py" extract "$dir"/twin-wheel/*.whl "$dir/twin" >/dev/null || return
   rm -rf "$dir/twin-wheel"
 }
 
@@ -89,6 +92,7 @@ collect() {
   local sym="$shipped"
   if twin "$target" "$@" >> "$dir/twin-build.log" 2>&1; then
     sym="$dir/twin/$(basename "$bin")"
+    echo "twin: $(nm "$sym" 2>/dev/null | wc -l | tr -d ' ') symbols" >> "$report"
     if [ "$os" = linux ]; then
       objcopy -O binary --only-section=.text "$shipped" "$dir/.a" && objcopy -O binary --only-section=.text "$sym" "$dir/.b"
       if cmp -s "$dir/.a" "$dir/.b"; then echo "twin: .text byte-identical to the shipped binary — its names are the crash's" >> "$report"

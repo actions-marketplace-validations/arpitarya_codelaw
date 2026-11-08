@@ -89,6 +89,106 @@ fn parse_percent(s: &str) -> Result<Vec<Percent>, PercentError> {
     Ok(out)
 }
 
+/// Where a plain string literal's text starts in the source, so an offset
+/// into its value is one into the source: one string, no escapes, no `f`.
+fn content_start(n: Node<'_>, src: &str) -> Option<usize> {
+    let n = unparen(n);
+    let t = text(n, src);
+    if n.kind() != "string" || t.contains('\\') {
+        return None;
+    }
+    let plen = t.find(['"', '\''])?;
+    if !t[..plen].chars().all(|c| "uUrRbB".contains(c)) {
+        return None;
+    }
+    let q = if t[plen..].starts_with("\"\"\"") || t[plen..].starts_with("'''") { 3 } else { 1 };
+    Some(n.start_byte() + plen + q)
+}
+
+/// Where a `%` format string first goes wrong: the offset of the `%`
+/// opening the bad placeholder, of its conversion character when it has
+/// one Python doesn't know, and whether a key is left open.
+fn percent_fault(s: &str) -> Option<(usize, Option<usize>, bool)> {
+    let b = s.as_bytes();
+    let mut i = 0;
+    while i < b.len() {
+        if b[i] != b'%' {
+            i += 1;
+            continue;
+        }
+        let pct = i;
+        i += 1;
+        let mut keyed = false;
+        if b.get(i) == Some(&b'(') {
+            keyed = true;
+            let mut depth = 1;
+            i += 1;
+            while i < b.len() && depth > 0 {
+                match b[i] {
+                    b'(' => depth += 1,
+                    b')' => depth -= 1,
+                    _ => {}
+                }
+                i += 1;
+            }
+            if depth > 0 {
+                return Some((pct, None, true));
+            }
+        }
+        while i < b.len() && b"#0- +".contains(&b[i]) {
+            i += 1;
+        }
+        let mut stars = false;
+        for _ in 0..2 {
+            if b.get(i) == Some(&b'*') {
+                stars = true;
+                i += 1;
+            } else {
+                while i < b.len() && b[i].is_ascii_digit() {
+                    i += 1;
+                }
+            }
+            if b.get(i) == Some(&b'.') {
+                i += 1;
+            } else {
+                break;
+            }
+        }
+        while i < b.len() && b"hlL".contains(&b[i]) {
+            i += 1;
+        }
+        let Some(&c) = b.get(i) else { return Some((pct, None, false)) };
+        i += 1;
+        if c == b'%' && !keyed && !stars {
+            continue;
+        }
+        if !b"diouxXeEfFgGcrsa%".contains(&c) {
+            return Some((pct, Some(i - 1), false));
+        }
+    }
+    None
+}
+
+/// A tuple literal's items, or a dict literal's values, as source text.
+fn items_text(n: Node<'_>, src: &str, values: bool) -> Option<Vec<String>> {
+    let n = unparen(n);
+    let mut out = Vec::new();
+    for c in kids(n) {
+        match c.kind() {
+            "comment" | "list_splat" | "dictionary_splat" => return None,
+            "pair" if values => out.push(text(c.child_by_field_name("value")?, src).to_owned()),
+            _ if !values => out.push(text(c, src).to_owned()),
+            _ => return None,
+        }
+    }
+    Some(out)
+}
+
+/// A tuple literal of these items.
+fn tuple_of(items: &[String]) -> String {
+    if items.len() == 1 { format!("({},)", items[0]) } else { format!("({})", items.join(", ")) }
+}
+
 /// What a `%` right-hand side is, as far as the syntax shows.
 enum Rhs<'t> {
     Tuple(usize),
@@ -147,17 +247,37 @@ fn percent(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, w
         return;
     }
     let Some(fmt) = string_value(left, src) else { return };
+    // The string raises ValueError today: the `%` escaped as `%%` (it was
+    // text), or the placeholder completed. Neither is the default.
+    let fault = content_start(left, src).and_then(|at| percent_fault(&fmt).map(|f| (at, f)));
     let placeholders = match parse_percent(&fmt) {
         Ok(p) => p,
         Err(PercentError::Invalid(why)) => {
             if want == P::Invalid {
-                out.push(hit(n, format!("This `%` format string is invalid: {why}")));
+                let edits = match fault {
+                    Some((at, (pct, None, open))) => {
+                        let mut choices = vec![crate::choice("escape", false, vec![TextEdit::insert(at + pct, "%")])];
+                        if open {
+                            choices.push(crate::choice("close", false, vec![TextEdit::insert(at + fmt.len(), ")s")]));
+                        }
+                        crate::choice_edits(choices)
+                    }
+                    _ => Vec::new(),
+                };
+                out.push(hit_fix(n, format!("This `%` format string is invalid: {why}"), edits));
             }
             return;
         }
         Err(PercentError::Unsupported(c)) => {
             if want == P::Unsupported {
-                out.push(hit(n, format!("`%{c}` is not a `%` conversion Python supports")));
+                let edits = match fault {
+                    Some((at, (pct, Some(conv), _))) if c.is_ascii() => crate::choice_edits(vec![
+                        crate::choice("escape", false, vec![TextEdit::insert(at + pct, "%")]),
+                        crate::choice("s", false, vec![TextEdit::new(at + conv, at + conv + 1, "s")]),
+                    ]),
+                    _ => Vec::new(),
+                };
+                out.push(hit_fix(n, format!("`%{c}` is not a `%` conversion Python supports"), edits));
             }
             return;
         }
@@ -174,15 +294,51 @@ fn percent(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, w
     if !named.is_empty() && positional > 0 {
         report(out, P::Mixed, "This `%` format string mixes positional and named placeholders".into());
     }
-    if has_star && (!named.is_empty() || matches!(rhs, Rhs::Dict(..))) {
-        report(out, P::StarNeedsSequence, "A `*` width or precision takes its value from a sequence, not a mapping".into());
+    // A dict literal with one value per positional place, as a tuple of its
+    // values in their order: it assumes that order is the intended one.
+    let as_tuple = || match (&rhs, items_text(right, src, true)) {
+        (Rhs::Dict(keys, true), Some(vals)) if named.is_empty() && vals.len() == positional && keys.len() == vals.len() => {
+            vec![TextEdit::new(unparen(right).start_byte(), unparen(right).end_byte(), tuple_of(&vals))]
+        }
+        _ => Vec::new(),
+    };
+    if has_star && (!named.is_empty() || matches!(rhs, Rhs::Dict(..))) && want == P::StarNeedsSequence {
+        out.push(hit_fix(n, "A `*` width or precision takes its value from a sequence, not a mapping", as_tuple()));
     }
     match &rhs {
         Rhs::Tuple(count) => {
             if !named.is_empty() {
-                report(out, P::ExpectedMapping, "Named placeholders need a mapping, but a tuple is given".into());
+                // One tuple item per name, in the placeholders' order, as a
+                // dict: it assumes the two orders match.
+                let mut order: Vec<&str> = Vec::new();
+                for p in &placeholders {
+                    if let Some(k) = p.key.as_deref().filter(|k| !order.contains(k)) {
+                        order.push(k);
+                    }
+                }
+                let edits = match items_text(right, src, false) {
+                    Some(items) if positional == 0 && items.len() == order.len() && order.iter().all(|k| !k.contains(['"', '\\'])) => {
+                        let pairs: Vec<String> = order.iter().zip(&items).map(|(k, v)| format!("\"{k}\": {v}")).collect();
+                        vec![TextEdit::new(unparen(right).start_byte(), unparen(right).end_byte(), format!("{{{}}}", pairs.join(", ")))]
+                    }
+                    _ => Vec::new(),
+                };
+                if want == P::ExpectedMapping {
+                    out.push(hit_fix(n, "Named placeholders need a mapping, but a tuple is given", edits));
+                }
             } else if positional != *count {
-                report(out, P::CountMismatch, format!("The format string has {positional} placeholder(s) but {count} value(s) are given"));
+                // Too many values: the extra ones go when running them does
+                // nothing. Too few needs values the code doesn't hold.
+                let items: Vec<Node> = kids(unparen(right));
+                let edits = if *count > positional && positional > 0 && items[positional..].iter().all(|x| is_pure(*x)) {
+                    let keep: Vec<String> = items[..positional].iter().map(|x| text(*x, src).to_owned()).collect();
+                    vec![TextEdit::new(unparen(right).start_byte(), unparen(right).end_byte(), tuple_of(&keep))]
+                } else {
+                    Vec::new()
+                };
+                if want == P::CountMismatch {
+                    out.push(hit_fix(n, format!("The format string has {positional} placeholder(s) but {count} value(s) are given"), edits));
+                }
             }
         }
         Rhs::Single => {
@@ -192,7 +348,11 @@ fn percent(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, w
         }
         Rhs::Dict(keys, all_str) => {
             if positional > 1 {
-                report(out, P::ExpectedSequence, "Positional placeholders need a sequence, but a dict is given".into());
+                if want == P::ExpectedSequence && !has_star {
+                    out.push(hit_fix(n, "Positional placeholders need a sequence, but a dict is given", as_tuple()));
+                } else {
+                    report(out, P::ExpectedSequence, "Positional placeholders need a sequence, but a dict is given".into());
+                }
                 if named.is_empty() {
                     report(out, P::CountMismatch, format!("The format string has {positional} placeholder(s) but 1 value is given"));
                 }
@@ -341,6 +501,65 @@ fn parse_brace_into(chars: &[char], out: &mut Vec<Arg>, depth: usize) -> Result<
     Ok(())
 }
 
+/// The stray brace of a `.format` string: its offset, and which.
+fn brace_fault(s: &str) -> Option<(usize, char)> {
+    let b = s.as_bytes();
+    let mut i = 0;
+    while i < b.len() {
+        match b[i] {
+            b'{' if b.get(i + 1) == Some(&b'{') => i += 2,
+            b'}' if b.get(i + 1) == Some(&b'}') => i += 2,
+            b'}' => return Some((i, '}')),
+            b'{' => {
+                let start = i;
+                let mut level = 1;
+                i += 1;
+                while i < b.len() && level > 0 {
+                    match b[i] {
+                        b'{' => level += 1,
+                        b'}' => level -= 1,
+                        _ => {}
+                    }
+                    i += 1;
+                }
+                if level > 0 {
+                    return Some((start, '{'));
+                }
+            }
+            _ => i += 1,
+        }
+    }
+    None
+}
+
+/// Where each automatic `{}` field's number goes (right after its `{`),
+/// and its place among the fields; none when a field nests another.
+fn auto_fields(s: &str) -> Option<Vec<(usize, usize)>> {
+    let b = s.as_bytes();
+    let (mut i, mut k) = (0, 0);
+    let mut out = Vec::new();
+    while i < b.len() {
+        match b[i] {
+            b'{' if b.get(i + 1) == Some(&b'{') => i += 2,
+            b'}' if b.get(i + 1) == Some(&b'}') => i += 2,
+            b'{' => {
+                let end = s[i + 1..].find('}').map(|e| i + 1 + e)?;
+                let field = &s[i + 1..end];
+                if field.contains('{') {
+                    return None;
+                }
+                if field.is_empty() || field.starts_with(['!', ':']) {
+                    out.push((i + 1, k));
+                }
+                k += 1;
+                i = end + 1;
+            }
+            _ => i += 1,
+        }
+    }
+    Some(out)
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum B {
     Invalid,
@@ -365,7 +584,17 @@ fn brace(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, wan
         Ok(f) => f,
         Err(e) => {
             if want == B::Invalid {
-                out.push(hit(n, format!("This `.format` string is invalid: {e}")));
+                // It raises ValueError today: a stray brace doubled (it was
+                // text), or a `{` closed as an empty field.
+                let edits = match (content_start(recv, src), brace_fault(&fmt)) {
+                    (Some(at), Some((i, '}'))) => vec![TextEdit::insert(at + i, "}")],
+                    (Some(at), Some((i, _))) => crate::choice_edits(vec![
+                        crate::choice("escape", false, vec![TextEdit::insert(at + i, "{")]),
+                        crate::choice("field", false, vec![TextEdit::insert(at + i + 1, "}")]),
+                    ]),
+                    _ => Vec::new(),
+                };
+                out.push(hit_fix(n, format!("This `.format` string is invalid: {e}"), edits));
             }
             return;
         }
@@ -377,7 +606,13 @@ fn brace(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>, wan
     let manual = fields.iter().any(|f| matches!(f, Arg::Index(_)));
     if auto && manual {
         if want == B::Mixing {
-            out.push(hit(n, "This `.format` string mixes automatic `{}` and numbered `{0}` fields"));
+            // Each `{}` numbered by its place among the fields, its evident
+            // meaning; the string raises ValueError today.
+            let edits = match (content_start(recv, src), auto_fields(&fmt)) {
+                (Some(at), Some(places)) => places.into_iter().map(|(i, k)| TextEdit::insert(at + i, k.to_string())).collect(),
+                _ => Vec::new(),
+            };
+            out.push(hit_fix(n, "This `.format` string mixes automatic `{}` and numbered `{0}` fields", edits));
         }
         return;
     }

@@ -22,42 +22,38 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **Push `main` to GitHub** — local `main` is 146 commits ahead of `origin/main`; Claude Code's push is refused by the permission classifier (2026-11-07), so only Arpit can run `git push origin main`. W-105's and W-126's CI timings, W-169's crash capture and the CI fixes since 11-05 (lint, licences, clippy, tests) wait on it. | 2026-11-07 |
-| ↳ **blocks:** W-105, W-126, W-169 | |
+| 🔴 **Push `main` to GitHub** — local `main` is 123 commits ahead of `origin/main` (last push `7cdb480b`, 11-07); Claude Code's push is refused by the permission classifier, so only Arpit can run `git push origin main`. W-126's three `perf` runs, W-169's five green build runs, W-172's CI proof and the zip alerts' closing (W-173's Ruff bump) wait on it. | 2026-11-08 |
+| ↳ **blocks:** W-126, W-169 | |
 
 ---
 
-## Open items (13)
+## Open items (12)
 
 ### build (6)
 
-🔴 **W-105** `arpit` Type-aware TypeScript: nine rules; helper batched, version watch proven 11-05 (PR #7, issue #6). Budgets wait on three `perf` runs, skipped until W-126's `9b8ca7b7` is pushed; next the RC (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: steps 3–4 done — 27 packs 0 failed, corpus counted, 2 rules narrowed, proposal §13 (1,548 of 2,590 built). L8 → W-172. Next: DoD 1. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 164 rows left, py 194 (slice 24, 11-08), each labelled in item; py inference rows → W-174. Next: js natives, py natives (RET503, UP031/032, UP046/047). Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-172** `agent` main over three L8 budgets on the reference runner (11-07): `check_cold_10k` 13,465 > 13,118 ms, `peak_memory_10k` 124 > 72 MiB, `mcp_rules_for_path` 129 > 65 ms; green 11-05. Next: bisect, optimise. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+🟢 **W-172** `agent` main over three L8 budgets (11-07). Steps 1–2 done: a per-rule cost on every loaded rule; `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB locally (over 72). Next: push main for CI; re-anchor hot `js/*` rules. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+
+🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
-🟢 **W-156** `agent` Fix ladder (L4). Engine and lowering built; 139 capability-blocked rules marked (W-162). The `match:` moves done; native moves under way (css landed): 64 rules left to move. Next: the next pack's native fixes. Filed by Arpit (Claude app). [detail](open/W-156-fix-ladder.md)
-
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits: filters, `transform:`, `edit-text`, `unwrap-block`, `move` built (30 `js/*` moved; 73 still wait). Next: `merge-into`, native fixes, then scope rename. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
-
-
+🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 36 wait (cross-file), 6 on W-105. Next: cross-file read, then write. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 ### ci/cd (4)
 
-🔴🧨 **W-169** `arpit` `codelaw rules lint` segfaults in CI now and then (arm64-musl js, x64 react). Crash capture landed 11-07, proven once `main` is pushed; local stress and ASan/TSan: nothing. Next: CI's backtrace, then the fix. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🔴🧨 **W-169** `arpit` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🔴 **W-126** `arpit` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built 11-05; first runs skipped it (arm64-musl red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🔴 **W-126** `arpit` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
 🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's and `data-browsers` (W-166), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
-### cleanup (1)
-
-🟢 **W-171** `agent` Six worktrees of agents stopped by the usage limit 11-05, ruled keep 11-07: five landed and removed (W-139, W-141, W-162, W-168, W-169); W-156's is left, its agent still at work. Filed by now-ledger.py (Claude Code). [detail](open/W-171-session-cleanup.md)
+### cleanup (0)
 
 ### testing (0)
 
@@ -70,6 +66,5 @@ here. Read that record before changing anything below it.
 ### research (1)
 
 🟢 **W-167** `cowork` Architecture design for graph generation at 100k–1M files: today's pipeline, prior art (Glean, Kythe, SCIP, salsa, Knip, Nx), 2–3 options as a proposal; step 3 reads W-168's numbers. Filed by Arpit (Cowork). [detail](open/W-167-graph-architecture-design.md)
-
 
 ---

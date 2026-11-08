@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether the method is a required hook or an optional no-op is a design decision) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`@abstractmethod` goes right above the `def`, imported from `abc` when it isn't: a subclass that doesn't define the method can no longer be instantiated, so review the optional hooks. A name `abstractmethod` taken by something else is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B027` |
@@ -136,6 +136,20 @@ class Shape(ABC):
     @abstractmethod
     def area(self): ...
 
+    def draw(self):
+        pass
+```
+
+#### Fixed
+
+```py
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self): ...
+
+    @abstractmethod
     def draw(self):
         pass
 ```

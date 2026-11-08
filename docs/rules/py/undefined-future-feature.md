@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended feature can't be guessed from a misspelling) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the features within two edits of the name are choices, the nearest the default, beside removing the name; a SyntaxError today, so each choice changes what runs) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F407` |
@@ -130,7 +130,18 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 #### Don't
 
 ```py
-from __future__ import braces
+from __future__ import annotatons
+```
+
+#### Fixed (annotations)
+
+```py
+from __future__ import annotations
+```
+
+#### Fixed (remove)
+
+```py
 ```
 
 #### Do

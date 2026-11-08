@@ -5,7 +5,7 @@ languages: [javascript, jsx, typescript, tsx]
 fix: suggest
 fix_reason: "looping over the own keys or guarding with `Object.hasOwn` both drop inherited keys; the author picks the form"
 stability: preview
-ported_from: [eslint/guard-for-in]
+ported_from: [eslint/guard-for-in, eslint-plugin-sonarjs/for-in]
 since: 0.5.0
 ---
 

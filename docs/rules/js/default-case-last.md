@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving a clause can change fall-through behaviour) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (moved automatically when no clause falls into another across the move: `default`, the clause before it and the last clause each end with `break`, `return`, `throw` or `continue`; otherwise moving it changes which statements run, and it is moved by hand) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/default-case-last`, `eslint-plugin-sonarjs/prefer-default-last` |
@@ -136,6 +136,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -148,6 +149,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -162,6 +164,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -174,6 +177,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -188,6 +192,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -200,6 +205,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 
@@ -214,6 +220,7 @@ switch (x) {
     break;
   case 1:
     b();
+    break;
 }
 ```
 
@@ -226,6 +233,7 @@ switch (x) {
     break;
   default:
     a();
+    break;
 }
 ```
 

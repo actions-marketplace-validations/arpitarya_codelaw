@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "turning `{}` fields into `%s` with arguments rewrites the string"
 fix_exception: restructure
 stability: preview
-ported_from: [ruff/G004]
+ported_from: [ruff/G004, pylint/logging-fstring-interpolation]
 since: 0.5.0
 ---
 

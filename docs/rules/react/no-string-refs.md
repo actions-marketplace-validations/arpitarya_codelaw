@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the ref object has to be created where the component can reach it) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the ref object has to be created where the component can reach it: a `useRef` in a function component, a `createRef` field in a class) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/no-string-refs` |

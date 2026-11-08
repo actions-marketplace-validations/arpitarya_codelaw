@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (an `@import` tag is added and each `import("…").Name` renamed; codelaw's edits replace whole nodes, and a comment is one node, so the edit inside its text is the author's) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the type comes in once by a new file-level `@import` block, whose place among the file's imports, and whose name against the names the file already binds, are the author's to decide) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-jsdoc/prefer-import-tag` |

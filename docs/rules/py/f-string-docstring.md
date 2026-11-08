@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the docstring's wording has to change to drop the placeholder) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `f` goes and `{{ }}` are undoubled: the text becomes `__doc__`, placeholders as written; tools that read docstrings (Click, Typer, FastAPI) then see it. An interpolation spanning lines or holding the quote is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B021` |
@@ -131,6 +131,13 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```py
 def greet():
     f"""Say hello to {NAME}."""
+```
+
+#### Fixed
+
+```py
+def greet():
+    """Say hello to {NAME}."""
 ```
 
 #### Do

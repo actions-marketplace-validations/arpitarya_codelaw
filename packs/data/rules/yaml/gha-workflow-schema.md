@@ -5,7 +5,7 @@ languages: [yaml]
 files: ["**/.github/workflows/*.yml", "**/.github/workflows/*.yaml"]
 fix: manual
 fix_reason: "a misshapen job or step has several possible meanings; the author picks the one they intended"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [schemastore/github-workflow.json]
 since: 0.1.0

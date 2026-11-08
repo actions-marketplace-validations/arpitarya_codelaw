@@ -62,12 +62,15 @@ mod regexp;
 pub mod regex_ast;
 mod regexp_rules;
 mod react_ts_extra;
+mod rewrites;
 mod css_lists;
 mod css_style;
 mod scss_extra;
 mod html_extra;
 mod md_extra;
 mod oxlint_extra;
+mod js_parity;
+mod py_parity;
 mod stencil;
 mod tailwind;
 mod typescript;
@@ -602,6 +605,8 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &accessors::GetterReturn,
     &conventions::ImportGroups,
     &expressions::NoConstantBinaryExpression,
+    &rewrites::PreferTemplate,
+    &rewrites::GhaPinSha,
     &duplicates::NoDupeArgs,
     &duplicates::NoDupeClassMembers,
     &duplicates::NoDupeElseIf,
@@ -865,7 +870,7 @@ pub fn registry() -> &'static [&'static dyn NativeRule] {
 }
 
 /// `REGISTRY` and the rule families kept in their own lists.
-static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).copied().collect());
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(py_parity::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]

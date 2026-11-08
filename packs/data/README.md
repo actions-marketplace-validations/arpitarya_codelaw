@@ -37,11 +37,11 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 17 | 15 | 15 | 5 | 0 | 3 | 0 | 7 |
+| 17 | 16 | 15 | 10 | 0 | 4 | 0 | 1 |
 
 <!-- /rule-docs:fix-ladder -->
 
-47 rules: 17 `auto`, 15 `suggest`, 15 `manual`. Every rule is
+48 rules: 17 `auto`, 16 `suggest`, 15 `manual`. Every rule is
 **reimplemented**, not vendored: the checks, messages and docs are written
 fresh, and each ported rule's `ported_from:` names its source. Rules that need
 more than a pattern are native rules in `crates/codelaw-native/src/data_*.rs`;

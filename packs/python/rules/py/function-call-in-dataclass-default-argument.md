@@ -2,9 +2,8 @@
 id: py/function-call-in-dataclass-default-argument
 title: "No call as a dataclass field default"
 languages: [python]
-fix: manual
-fix_reason: "whether the value is meant to be shared or built per instance is the author's call"
-fix_pending: "suggest-choices; needs add-import (W-162)"
+fix: suggest
+fix_reason: "each instance now builds its own value, which is the usual intent but not if one shared value was meant; a call with no arguments becomes the factory itself, any other a `lambda`; `field` is imported from `dataclasses` where the file does not"
 stability: preview
 ported_from: [ruff/RUF009]
 since: 0.5.0
@@ -19,6 +18,9 @@ match:
   kind: assignment
   has: {field: type, kind: type}
   all:
+    - any:
+        - has: {field: right, kind: call, all: [{has: {field: arguments, regex: '^\(\s*\)$'}}, {has: {field: function, pattern: $FN}}], pattern: $BARE}
+        - has: {field: right, kind: call, not: {has: {field: arguments, regex: '^\(\s*\)$'}}, pattern: $CALL}
     - has:
         field: right
         kind: call
@@ -29,6 +31,10 @@ match:
         inside: {kind: decorated_definition, has: {kind: decorator, regex: '^@(dataclasses\.)?dataclass\b'}}
     - not: {inside: {kind: function_definition, stopBy: end}}
 message: "This call runs once when the class is defined; use `field(default_factory=...)` for a per-instance value"
+fix:
+  - replace: { target: $BARE, with: "field(default_factory=$FN)" }
+  - replace: { target: $CALL, with: "field(default_factory=lambda: $CALL)" }
+  - ensure-import: { module: dataclasses, name: field }
 ```
 
 ## How to fix
@@ -51,6 +57,8 @@ class Job:
 #### Do
 
 ```python
+from dataclasses import field
+
 @dataclass
 class Job:
     created: datetime = field(default_factory=datetime.now)

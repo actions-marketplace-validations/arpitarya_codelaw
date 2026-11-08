@@ -2,9 +2,8 @@
 id: js/no-array-from-fill
 title: "Array.from with a mapper rather than fill()"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "`Array.from` may already have a mapper argument, and the fill value moves into a new arrow function"
-fix_pending: "suggest; needs computed-edit (W-162)"
+fix: suggest
+fix_reason: "`fill` evaluates its value once and the mapper once per element: a call or an object literal there gives each element its own value; a `fill` with a start or end, or an `Array.from` with a mapper already, is rewritten by hand"
 stability: preview
 ported_from: [eslint-plugin-unicorn/no-array-from-fill]
 since: 0.5.0
@@ -19,7 +18,12 @@ since: 0.5.0
 match:
   kind: call_expression
   pattern: Array.from($$$A).fill($$$B)
+  any:
+    - all: [{ pattern: Array.from($ONE).fill($VAL) }, { pattern: $CALL }]
+    - regex: ''
 message: "`Array.from({ length }, () => value)` builds the array in one step"
+fix:
+  - replace: { target: $CALL, with: "Array.from($ONE, () => $VAL|arrow-body)" }
 ```
 
 ## How to fix

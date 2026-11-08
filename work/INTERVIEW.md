@@ -24,6 +24,12 @@ entry.**
 
 ## 1 · State of play
 
+**2026-11-08 (Claude Code, coordinator): the parallel run continues.** In flight: W-162 cross-file (last capability), W-172 peak memory (107 > 72 MiB; `mcp_rules_for_path` fixed), W-139's js and python strands (~400 rows). Waiting on Arpit: a push of `main` (115+ commits; the classifier refuses Claude Code's push) for W-126, W-169 step 3, W-172's CI proof and the zip alerts; a release for W-95.
+
+**2026-11-07 (Cowork, docket): W-105's `check_types_*` budgets ruled — *"Leave unset"*** (reported only, L8 decision 6); W-105 🟣 on the 11-10 RC re-pin. W-173's Ruff `=0.0.21` was ruled and landed the same afternoon by Claude Code (`5f472943`). The inbox is empty.
+
+**2026-11-07 (Claude Code): `main` pushed by Arpit to `7cdb480b`** (Claude Code's push is refused by the permission classifier, so pushes are his). GitHub then reported five Dependabot advisories on `zip` 8.6.0 — W-173.
+
 **Ruled 2026-11-07 (Arpit, Claude Code, multiple choice): W-168 step 6** — *"No budget yet (Recommended)"*: the six `graph_*` rows stay context-only until W-167's design is built; then 10k and 100k get budgets from CI runs (L8 decision 4's method). W-168 closed and archived; its numbers are [`experiments/graph-scale/RESULTS.md`](../experiments/graph-scale/RESULTS.md), the budgeting follow-up is [W-167](open/W-167-graph-architecture-design.md) step 6. [W-168](../archive/open/W-168-graph-scale-measurement.md)
 
 **2026-11-05 (Claude Code): `main` pushed** — Arpit pushed to `d5006de0` (*"git push done"*), then the 19 commits after it were pushed to `3b53d1a8`. W-126's and W-105's runs are unblocked.

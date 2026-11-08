@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to use an immutable value or set a fresh one per context is a design choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a list becomes a tuple and a set a frozenset (their comprehensions and `list()`/`set()` calls too); code that changes the value in place stops working, so review the uses. A dict or a computed default is manual, as its immutable form is the author's call) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B039` |
@@ -132,6 +132,14 @@ codelaw config --print --for <file>                 # the resolved setting, and 
 from contextvars import ContextVar
 
 items = ContextVar("items", default=[])
+```
+
+#### Fixed
+
+```py
+from contextvars import ContextVar
+
+items = ContextVar("items", default=())
 ```
 
 #### Do

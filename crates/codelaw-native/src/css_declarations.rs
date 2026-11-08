@@ -240,7 +240,7 @@ css_rule!(DeclarationBlockNoShorthandPropertyOverrides, "css/declaration-block-n
     let resets = table(ctx.data, "css/shorthands").and_then(|t| t.get("resets")).and_then(|v| v.as_object());
     for block in blocks(sheet) {
         let mut seen: BTreeMap<String, String> = BTreeMap::new();
-        for i in block {
+        for &i in &block {
             let p = prop(sheet, i, src);
             let lower = p.to_ascii_lowercase();
             let prefix = vendor_prefix(&lower).unwrap_or("").to_owned();
@@ -250,7 +250,20 @@ css_rule!(DeclarationBlockNoShorthandPropertyOverrides, "css/declaration-block-n
             for long in covered {
                 if let Some(original) = seen.get(&format!("{prefix}{long}")) {
                     let r = sheet.nodes[i].name;
-                    out.push(finding(r.0, r.1, format!("`{p}` resets `{original}`, which is declared before it")));
+                    // The overridden longhand never applies: delete it (the
+                    // default, rendering the same), or move it after.
+                    let earlier = block.iter().copied().find(|&k| prop(sheet, k, src) == original.as_str());
+                    let edits = earlier.map(|k| {
+                        let e = &sheet.nodes[k];
+                        let end = if src[e.end..].starts_with(';') { e.end + 1 } else { e.end };
+                        let after = if src[sheet.nodes[i].end..].starts_with(';') { sheet.nodes[i].end + 1 } else { sheet.nodes[i].end };
+                        let pad = crate::python_util::indent_at(src, e.start);
+                        crate::choice_edits(vec![
+                            crate::choice("delete the longhand", true, vec![crate::util::remove_css_statement(src, e.start, e.end)]),
+                            crate::choice("move it after", false, vec![crate::util::remove_css_statement(src, e.start, e.end), TextEdit::insert(after, format!("\n{pad}{}", &src[e.start..end]))]),
+                        ])
+                    });
+                    out.push(fixed(r.0, r.1, format!("`{p}` resets `{original}`, which is declared before it"), edits.unwrap_or_default()));
                 }
             }
             seen.insert(lower, p.to_owned());
@@ -435,7 +448,19 @@ css_rule!(FontFamilyNoMissingGenericFamilyKeyword, "css/font-family-no-missing-g
         if fams.iter().any(|(_, name, quoted)| (!quoted && keywords.contains(&name.to_ascii_lowercase())) || matches_any(&ignore, name)) {
             continue;
         }
-        out.push(finding(last.0.0, last.0.1, "No generic family (`sans-serif`, `serif`, `monospace`, …) ends this font list"));
+        // The generic family the listed fonts belong to, by a table of
+        // common fonts; the three main ones as choices, that one first.
+        let kind = |f: &str| -> Option<&'static str> {
+            let f = f.to_ascii_lowercase();
+            const SANS: &[&str] = &["arial", "helvetica", "helvetica neue", "verdana", "tahoma", "trebuchet ms", "segoe ui", "roboto", "inter", "open sans", "system-ui", "calibri"];
+            const SERIF: &[&str] = &["times", "times new roman", "georgia", "garamond", "palatino", "cambria", "baskerville"];
+            const MONO: &[&str] = &["courier", "courier new", "consolas", "menlo", "monaco", "fira code", "source code pro", "jetbrains mono"];
+            if SANS.contains(&f.as_str()) { Some("sans-serif") } else if SERIF.contains(&f.as_str()) { Some("serif") } else if MONO.contains(&f.as_str()) { Some("monospace") } else { None }
+        };
+        let guess = fams.iter().find_map(|(_, name, _)| kind(name));
+        let at = last.0.1;
+        let edits = crate::choice_edits(["sans-serif", "serif", "monospace"].iter().map(|g| crate::choice(*g, guess == Some(*g), vec![TextEdit::insert(at, format!(", {g}"))])).collect());
+        out.push(fixed(last.0.0, last.0.1, "No generic family (`sans-serif`, `serif`, `monospace`, …) ends this font list", edits));
     }
 });
 
@@ -491,26 +516,49 @@ css_rule!(NamedGridAreasNoInvalid, "css/named-grid-areas-no-invalid", |sheet, sr
             continue;
         }
         if rows.iter().any(|row| row.len() != rows[0].len()) {
-            out.push(finding(r.0, r.1, "Every grid row string must have the same number of cells"));
+            // Short rows padded with empty cells, when every area is then a rectangle.
+            let width = rows.iter().map(Vec::len).max().unwrap_or(0);
+            let padded: Vec<Vec<String>> = rows.iter().map(|row| row.iter().cloned().chain(std::iter::repeat_n(".".to_owned(), width - row.len())).collect()).collect();
+            let edits = if not_rectangles(&padded).is_empty() {
+                significant(&vals)
+                    .into_iter()
+                    .filter(|n| n.kind == VKind::Str)
+                    .zip(&rows)
+                    .filter(|(n, row)| row.len() < width && n.end - n.start >= 2)
+                    .map(|(n, row)| TextEdit::insert(n.end - 1, " .".repeat(width - row.len())))
+                    .collect()
+            } else {
+                Vec::new()
+            };
+            out.push(fixed(r.0, r.1, "Every grid row string must have the same number of cells", edits));
             continue;
         }
-        let mut areas: BTreeMap<&str, Vec<(usize, usize)>> = BTreeMap::new();
-        for (y, row) in rows.iter().enumerate() {
-            for (x, cell) in row.iter().enumerate() {
-                if !cell.starts_with('.') {
-                    areas.entry(cell.as_str()).or_default().push((y, x));
-                }
-            }
-        }
-        for (name, cells) in areas {
-            let (y0, y1) = (cells.iter().map(|c| c.0).min().unwrap_or(0), cells.iter().map(|c| c.0).max().unwrap_or(0));
-            let (x0, x1) = (cells.iter().map(|c| c.1).min().unwrap_or(0), cells.iter().map(|c| c.1).max().unwrap_or(0));
-            if cells.len() != (y1 - y0 + 1) * (x1 - x0 + 1) {
-                out.push(finding(r.0, r.1, format!("Grid area `{name}` is not a single filled-in rectangle")));
-            }
+        for name in not_rectangles(&rows) {
+            out.push(finding(r.0, r.1, format!("Grid area `{name}` is not a single filled-in rectangle")));
         }
     }
 });
+
+/// The named areas of a grid that are not one filled-in rectangle.
+fn not_rectangles(rows: &[Vec<String>]) -> Vec<&str> {
+    let mut areas: BTreeMap<&str, Vec<(usize, usize)>> = BTreeMap::new();
+    for (y, row) in rows.iter().enumerate() {
+        for (x, cell) in row.iter().enumerate() {
+            if !cell.starts_with('.') {
+                areas.entry(cell.as_str()).or_default().push((y, x));
+            }
+        }
+    }
+    areas
+        .into_iter()
+        .filter(|(_, cells)| {
+            let (y0, y1) = (cells.iter().map(|c| c.0).min().unwrap_or(0), cells.iter().map(|c| c.0).max().unwrap_or(0));
+            let (x0, x1) = (cells.iter().map(|c| c.1).min().unwrap_or(0), cells.iter().map(|c| c.1).max().unwrap_or(0));
+            cells.len() != (y1 - y0 + 1) * (x1 - x0 + 1)
+        })
+        .map(|(name, _)| name)
+        .collect()
+}
 
 css_rule!(NoInvalidPositionDeclaration, "css/no-invalid-position-declaration", |sheet, src, ctx, out| {
     let nesting = set(ctx.data, "css/at-rules", "nesting");
@@ -652,11 +700,79 @@ css_rule!(DeclarationBlockNoRedundantLonghandProperties, "css/declaration-block-
                     continue;
                 }
                 let first = *decls.iter().min().unwrap_or(&i);
-                out.push(finding(sheet.nodes[first].start, sheet.nodes[i].end, format!("These {} longhands can be one `{short_p}` declaration", decls.len())));
+                let longs: Vec<&str> = longs.iter().filter_map(|l| l.as_str()).collect();
+                let edits = shorthand_edits(sheet, src, &block, short, &longs, &decls).unwrap_or_default();
+                out.push(fixed(sheet.nodes[first].start, sheet.nodes[i].end, format!("These {} longhands can be one `{short_p}` declaration", decls.len()), edits));
             }
         }
     }
 });
+
+/// The shorthands whose value is their longhands' values in order, one
+/// each, and which set nothing else: the box-model families.
+const BOX_SHORTHANDS: &[&str] = &[
+    "margin", "padding", "inset", "gap", "grid-gap", "border-width", "border-style", "border-color", "overflow", "overscroll-behavior", "place-items", "place-content", "place-self",
+    "margin-block", "margin-inline", "padding-block", "padding-inline", "inset-block", "inset-inline", "scroll-margin", "scroll-padding",
+];
+
+/// The words a property sharing an edge with `short`'s longhands starts
+/// with: a declaration of one between them may overlap (`margin-inline-start`
+/// between `margin-left` and `margin-right`).
+fn family(short: &str) -> &'static [&'static str] {
+    match short {
+        "inset" | "inset-block" | "inset-inline" => &["top", "right", "bottom", "left", "inset"],
+        "gap" | "grid-gap" => &["gap", "row-gap", "column-gap", "grid-gap", "grid-row-gap", "grid-column-gap"],
+        "place-items" | "place-content" | "place-self" => &["align-", "justify-", "place-"],
+        "overflow" => &["overflow"],
+        "overscroll-behavior" => &["overscroll"],
+        s if s.starts_with("margin") => &["margin"],
+        s if s.starts_with("padding") => &["padding"],
+        s if s.starts_with("border") => &["border"],
+        s if s.starts_with("scroll-margin") => &["scroll-margin"],
+        _ => &["scroll-padding"],
+    }
+}
+
+/// The edits writing a complete set of longhands as `short` (`auto`): the
+/// last longhand becomes the shorthand, its values in the shorthand's
+/// order, and the others go. Only for a box-model shorthand, unprefixed,
+/// each longhand once with one component value and no `var()` or `env()`,
+/// the same `!important` on all, the shorthand not in the block, and no
+/// declaration between them of a property that may overlap. `None`
+/// outside that subset.
+fn shorthand_edits(sheet: &Sheet, src: &str, block: &[usize], short: &str, longs: &[&str], decls: &[usize]) -> Option<Vec<TextEdit>> {
+    let props: Vec<String> = block.iter().map(|&d| prop(sheet, d, src).to_ascii_lowercase()).collect();
+    if !BOX_SHORTHANDS.contains(&short) || props.iter().any(|p| p == short) {
+        return None;
+    }
+    if longs.iter().any(|l| props.iter().filter(|p| p == l).count() != 1) {
+        return None;
+    }
+    let (lo, hi) = (*decls.iter().min()?, *decls.iter().max()?);
+    let fam = family(short);
+    for (k, &d) in block.iter().enumerate() {
+        if d > lo && d < hi && !decls.contains(&d) && fam.iter().any(|f| props[k].starts_with(f) || props[k] == f.trim_end_matches('-')) {
+            return None;
+        }
+        if decls.contains(&d) && sheet.nodes[d].important.is_some_and(|r| !text(src, r).eq_ignore_ascii_case("!important")) {
+            return None;
+        }
+    }
+    let mut values = Vec::new();
+    for &d in decls {
+        let v = value(sheet, d, src);
+        let lower = v.to_ascii_lowercase();
+        if lower.contains("var(") || lower.contains("env(") || v.contains("/*") || significant(&sheet.values(d, src)).len() != 1 {
+            return None;
+        }
+        values.push(v);
+    }
+    let important = if sheet.nodes[hi].important.is_some() { " !important" } else { "" };
+    let last = &sheet.nodes[hi];
+    let mut edits = vec![TextEdit::new(last.start, last.end, format!("{short}: {}{important}", values.join(" ")))];
+    edits.extend(decls.iter().filter(|&&d| d != hi).map(|&d| decl_removal(sheet, d, src)));
+    Some(edits)
+}
 
 /// The shorthands whose repeated values collapse, and whether they take four sides.
 fn condensable(p: &str) -> Option<bool> {

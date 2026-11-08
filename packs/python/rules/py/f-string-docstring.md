@@ -2,9 +2,9 @@
 id: py/f-string-docstring
 title: "Docstrings aren't f-strings"
 languages: [python]
-fix: manual
-fix_reason: "the docstring's wording has to change to drop the placeholder"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "the `f` goes and `{{ }}` are undoubled: the text becomes `__doc__`, placeholders as written; tools that read docstrings (Click, Typer, FastAPI) then see it. An interpolation spanning lines or holding the quote is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B021]
 since: 0.1.0
@@ -31,6 +31,13 @@ native: py/f-string-docstring
 ```py
 def greet():
     f"""Say hello to {NAME}."""
+```
+
+#### Fixed
+
+```py
+def greet():
+    """Say hello to {NAME}."""
 ```
 
 #### Do

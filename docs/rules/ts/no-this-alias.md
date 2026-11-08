@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the callbacks that use the alias must become arrow functions by hand) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the callbacks that use the alias become arrow functions, which changes their own `this` and `arguments`) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/no-this-alias` |

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which definition is meant, and whether to rename or remove the other, needs a person) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for the same import twice, the later alone on its statement: it goes, and the name stays bound to the same object; an unused definition before a redefinition is deleted as a suggestion, since its decorators and defaults no longer run; any other redefinition is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F811`, `pylint/function-redefined` |
@@ -132,6 +132,14 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 ```py
 def load():
     return 1
+
+def load():
+    return 2
+```
+
+#### Fixed
+
+```py
 
 def load():
     return 2

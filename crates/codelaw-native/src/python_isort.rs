@@ -16,7 +16,7 @@ pub fn natural_cmp(a: &str, b: &str) -> Ordering {
     natural(&a.to_lowercase(), &b.to_lowercase()).then_with(|| natural(a, b))
 }
 
-fn natural(a: &str, b: &str) -> Ordering {
+pub(crate) fn natural(a: &str, b: &str) -> Ordering {
     let (mut x, mut y) = (a.chars().peekable(), b.chars().peekable());
     loop {
         match (x.peek().copied(), y.peek().copied()) {

@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "removing or renaming a parameter changes every caller"
 fix_exception: restructure
 stability: preview
-ported_from: [ruff/ARG001]
+ported_from: [ruff/ARG001, pylint/unused-argument]
 since: 0.5.0
 ---
 

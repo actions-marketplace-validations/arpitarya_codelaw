@@ -26,6 +26,31 @@ pub struct Snapshot {
     /// advisory_sources` name, and how that went (W-128).
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub sources: BTreeMap<String, SourceState>,
+    /// The commit each GitHub Action tag or branch the workflows name
+    /// pointed to: `owner/repo@ref` → its 40-hex SHA (W-162). Read by
+    /// `yaml/gha-pin-sha`, offline.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub actions: BTreeMap<String, String>,
+}
+
+/// The `owner/repo` and the ref of a `uses:` value, when it names a GitHub
+/// Action by a ref that is not already a full commit SHA.
+pub fn action_ref(uses: &str) -> Option<(String, String)> {
+    let v = uses.trim().trim_matches(['"', '\'']);
+    if v.starts_with("./") || v.starts_with("docker://") {
+        return None;
+    }
+    let (path, r) = v.split_once('@')?;
+    let mut parts = path.split('/');
+    let (owner, repo) = (parts.next()?, parts.next()?);
+    let ok = |s: &str| !s.is_empty() && s.bytes().all(|b| b.is_ascii_alphanumeric() || b"-_.".contains(&b));
+    if !ok(owner) || !ok(repo) || r.is_empty() || r.contains(char::is_whitespace) {
+        return None;
+    }
+    if r.len() == 40 && r.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return None;
+    }
+    Some((format!("{owner}/{repo}"), r.to_owned()))
 }
 
 /// How one advisory source answered the refresh.

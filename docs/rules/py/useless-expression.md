@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (what the expression was meant for needs a person) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are deleting the statement and, when it ends a function, returning it; reading an attribute can run a property, so neither is automatic or the default. A statement sharing its line is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/B018`, `pylint/pointless-statement`, `pylint/expression-not-assigned` |
@@ -131,6 +131,13 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```py
 def name(user):
     user.name
+    return user
+```
+
+#### Fixed
+
+```py
+def name(user):
     return user
 ```
 

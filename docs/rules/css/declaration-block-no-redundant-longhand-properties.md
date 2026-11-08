@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (combining longhands into a shorthand value needs the shorthand's grammar) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a box-model shorthand (margin, padding, inset, gap, border-width, -style and -color, overflow, overscroll-behavior, place-*, their block and inline forms, scroll-margin and scroll-padding) when each longhand is set once with one value and no var() or env(), all or none !important, the shorthand not in the block and nothing between them that overlaps: the shorthand takes the last longhand's place with their values in its order; other shorthands reset longhands the set doesn't name, so they stay manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/declaration-block-no-redundant-longhand-properties` |

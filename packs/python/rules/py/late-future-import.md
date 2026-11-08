@@ -2,9 +2,9 @@
 id: py/late-future-import
 title: "`from __future__` imports come first"
 languages: [python]
-fix: manual
-fix_reason: "moving statements above it can change the order the module runs in"
-fix_pending: "auto"
+fix: auto
+fix_reason: "a late `from __future__` import is a SyntaxError, so the module never ran: it moves above the first statement that isn't a docstring or another `__future__` import, its only meaning. One inside a block, or sharing its line, is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/F404, pylint/misplaced-future]
 since: 0.1.0

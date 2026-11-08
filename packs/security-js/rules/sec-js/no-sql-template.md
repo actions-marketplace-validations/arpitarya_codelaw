@@ -4,7 +4,7 @@ title: "No SQL built from a template or concatenation"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "the statement and its values have to be separated by hand, and the placeholder style depends on the driver"
-fix_pending: "suggest-choices; needs computed-edit (W-162)"
+fix_exception: security
 stability: preview
 ported_from: [bandit/B608, ruff/S608]
 security: { cwe: [89], owasp: ["A05:2025"], severity: high }

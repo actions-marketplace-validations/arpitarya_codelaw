@@ -2,9 +2,8 @@
 id: py/reuse-of-groupby-generator
 title: "A `groupby` group is used once"
 languages: [python]
-fix: manual
-fix_reason: "how to keep the items (a list, `itertools.tee`) is the author's choice"
-fix_pending: "suggest"
+fix: suggest
+fix_reason: "`group = list(group)` goes first in the loop body: the later uses see the items instead of an exhausted iterator, which is the fix and a change in what they get"
 stability: preview
 ported_from: [ruff/B031]
 since: 0.1.0
@@ -32,6 +31,17 @@ native: py/reuse-of-groupby-generator
 import itertools
 
 for key, group in itertools.groupby(rows):
+    first = list(group)
+    rest = list(group)
+```
+
+#### Fixed
+
+```py
+import itertools
+
+for key, group in itertools.groupby(rows):
+    group = list(group)
     first = list(group)
     rest = list(group)
 ```

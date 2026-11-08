@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint/arrow-body-style` |
+| **Ported from** | `eslint/arrow-body-style`, `eslint-plugin-sonarjs/arrow-function-convention` |
 
 ## What it checks
 

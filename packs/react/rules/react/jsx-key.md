@@ -4,7 +4,7 @@ title: "Elements in an array or a map() callback have a key"
 languages: [javascript, jsx, tsx]
 fix: manual
 fix_reason: "the key must be a stable identity of the item, which only the author knows"
-fix_pending: "auto-subset; needs computed-edit (W-162)"
+fix_exception: value
 stability: preview
 ported_from: [eslint-plugin-react/jsx-key]
 since: 0.1.0

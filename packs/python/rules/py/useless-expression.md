@@ -2,9 +2,9 @@
 id: py/useless-expression
 title: "No expression statement that does nothing"
 languages: [python]
-fix: manual
-fix_reason: "what the expression was meant for needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are deleting the statement and, when it ends a function, returning it; reading an attribute can run a property, so neither is automatic or the default. A statement sharing its line is manual"
+fix_exception: restructure
 stability: preview
 ported_from: [ruff/B018, pylint/pointless-statement, pylint/expression-not-assigned]
 since: 0.1.0
@@ -31,6 +31,13 @@ native: py/useless-expression
 ```py
 def name(user):
     user.name
+    return user
+```
+
+#### Fixed
+
+```py
+def name(user):
     return user
 ```
 

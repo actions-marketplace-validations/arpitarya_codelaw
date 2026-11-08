@@ -2,9 +2,8 @@
 id: py/unary-prefix-increment
 title: "No `++x` or `--x`"
 languages: [python]
-fix: manual
-fix_reason: "whether an increment or a plain value was meant needs a person"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "as a statement the choices are `x += 1` (`-=` for `--`) and deleting it; inside an expression the two signs go. `++x` is a no-op today, but `__pos__` may not be (Decimal), so none is automatic or the default"
 stability: preview
 ported_from: [ruff/B002, pylint/nonexistent-operator]
 since: 0.1.0
@@ -31,6 +30,19 @@ native: py/unary-prefix-increment
 ```py
 count = 1
 ++count
+```
+
+#### Fixed (increment)
+
+```py
+count = 1
+count += 1
+```
+
+#### Fixed (delete)
+
+```py
+count = 1
 ```
 
 #### Do

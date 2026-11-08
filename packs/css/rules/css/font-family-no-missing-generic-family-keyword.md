@@ -2,9 +2,8 @@
 id: css/font-family-no-missing-generic-family-keyword
 title: "Font lists end with a generic family"
 languages: [css, scss]
-fix: manual
-fix_reason: "which generic family suits the fonts is a design call"
-fix_pending: "suggest-choices"
+fix: suggest
+fix_reason: "the choices are `sans-serif`, `serif` and `monospace` appended to the list, the default the family a table of common fonts puts the listed ones in; with none known there is no default"
 stability: preview
 options:
   ignoreFontFamilies: { type: "string[]", default: [], description: "families that need no generic fallback, such as icon fonts" }
