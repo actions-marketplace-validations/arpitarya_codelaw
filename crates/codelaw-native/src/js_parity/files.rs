@@ -563,7 +563,7 @@ frule!(ImportNoUselessPathSegments, "js/import-no-useless-path-segments", &["pro
             if ups(&rel) < ups(&cur) {
                 let tail_ext = |p: &str| p.rsplit('/').next().is_some_and(|l| l.contains('.'));
                 let mut r = rel.clone();
-                if !tail_ext(&cur) && let Some(i) = r.rfind('.') && r[i..].find('/').is_none() && i > r.rfind('/').map_or(0, |j| j) {
+                if !tail_ext(&cur) && let Some(i) = r.rfind('.') && r[i..].find('/').is_none() && i > r.rfind('/').unwrap_or(0) {
                     r.truncate(i);
                 }
                 if resolve(ctx, &r, PROBE) == file {
@@ -723,11 +723,7 @@ fn has_get_builtin_module(range: &str) -> bool {
                     }
                     lower = Some(lower.map_or(v.clone(), |l| l.max(v)));
                 }
-                semver::Op::Less | semver::Op::LessEq => {
-                    if c.major <= 21 {
-                        upper_21 = true;
-                    }
-                }
+                semver::Op::Less | semver::Op::LessEq if c.major <= 21 => upper_21 = true,
                 _ => {}
             }
         }

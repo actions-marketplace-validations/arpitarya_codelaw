@@ -326,8 +326,7 @@ rule!(NoRedundantComparison, "js/no-redundant-comparison", &["binary_expression"
             let mut edits = Vec::new();
             if !has_comment(n) {
                 let (s, e) = if i == 0 { (at.start_byte(), ops[1].start_byte()) } else { (ops[i - 1].end_byte(), at.end_byte()) };
-                let e2 = if i == 0 { e } else { e };
-                edits.push(TextEdit::delete(s, e2));
+                edits.push(TextEdit::delete(s, e));
                 if !c.plain || !matches!(c.op.as_str(), "===" | "!==") {
                     edits = as_suggestion(edits);
                 }
