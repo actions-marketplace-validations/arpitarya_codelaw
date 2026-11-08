@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — W-139 strand W-139-js, round 3: slices 24–26 (79 rules, 4 links; W-175 filed)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the js strand's round 3 — build the 61 scope rows on W-162's capabilities and the scope model, the 37 natives in Rust, the 29 graph rows where the project graph can express them (one new item for the rest); leave the 16 type rows to W-105.
+- **Done:** upstream behaviour read from source and tests at the pinned versions by four research sub-agents (unicorn `v79.0.0`, SonarJS 4.2.2's `gitHead` — behaviour only —, eslint-plugin-import 2.32.0, import-x 4.17.1, n 18.5.0). Slice 24: 52 scope rules on the semantic model (`js_parity/{scope,scope_fix,sonar_scope}.rs`; 12 `auto`, 6 `suggest`, 34 `manual`), SonarJS `no-dead-store` linked. Slice 25: 15 file-system rules on `NativeContext::file` (`files.rs`), 3 rows linked to the graph's `node/` rules, **W-175** filed for the 10 that read other modules. Slice 26: 12 natives (`shape.rs`). Every row left is re-labelled in the item (js 164 → 81). `codelaw test packs/js` 881 rules, 0 failed; `packs/node` 0 failed; `cargo test -p codelaw-native` 279 passed; clippy clean for the modules; `rules lint` 0; `--fix-stats --check`; corpus counts written.
+- **Decided / left open:** the "graph" rows that need only the file's path, other files' existence or `package.json` are native rules (SR-ARCHITECTURE 15b), not `graph:` rules; `js/isolated-functions` lets an undeclared name be read (codelaw doesn't know where the function runs; upstream reports it unless ESLint's globals declare it), after the corpus showed `document` reported in every Playwright `page.evaluate`. The 19 jsdoc rows need a JSDoc parser — the next js slice.
+- **Mistakes:** a Python edit opened `js_parity.rs` for writing before computing its text, and emptied it; restored from git. The shared cargo target served W-162's `codelaw-core` as fresh to this tree (`Diagnostic` with a field this tree lacks); every build here touches the crates' `lib.rs` first, which in turn can do the same to other lanes — a LESSONS candidate if it recurs. `ctx.options` holds every declared option at its default, so an empty default (`""`, `{}`) has to be treated as unset.
+- **Next:** the js JSDoc rows (a JSDoc parser in `codelaw-native`) and the six other natives listed in the item.
+
+---
+
 ## 2026-11-08 — Disk full: everything stopped, build output cleaned, MACHINE.md's disk facts  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *"stop everything merge everything the cleanup everything i do not have any memory left. put the details of memory in machine.md."*

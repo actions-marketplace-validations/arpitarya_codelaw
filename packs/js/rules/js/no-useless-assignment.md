@@ -6,7 +6,7 @@ fix: auto
 fix_reason: "auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual"
 fix_exception: value
 stability: preview
-ported_from: [eslint/no-useless-assignment]
+ported_from: [eslint/no-useless-assignment, eslint-plugin-sonarjs/no-dead-store]
 since: 0.1.0
 ---
 

@@ -7,7 +7,7 @@ fix: manual
 fix_reason: "the right path depends on where the module went"
 fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
-ported_from: [eslint-plugin-n/no-missing-require]
+ported_from: [eslint-plugin-n/no-missing-require, eslint-plugin-import/no-unresolved]
 since: 0.1.0
 ---
 
