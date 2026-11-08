@@ -176,15 +176,43 @@ html_rule!(NoRawCharacters, "html/no-raw-characters", |dom, meta, ctx, out| {
     }
 });
 
+/// The character references HTML knows, as a rule reads them: the set and the
+/// names that need no `;`, longest first. Built once per thread for a table,
+/// not once per file (W-172).
+struct Entities {
+    set: BTreeSet<String>,
+    legacy: Vec<String>,
+}
+
+/// The table a thread built last: its address and length, whether case is ignored, the set.
+type KeptEntities = Option<(usize, usize, bool, std::rc::Rc<Entities>)>;
+
+fn entities_of(list: &[Value], ignore_case: bool) -> std::rc::Rc<Entities> {
+    thread_local! {
+        static KEPT: std::cell::RefCell<KeptEntities> = const { std::cell::RefCell::new(None) };
+    }
+    let key = (list.as_ptr() as usize, list.len(), ignore_case);
+    if let Some(kept) = KEPT.with(|k| k.borrow().as_ref().filter(|(p, n, c, _)| (*p, *n, *c) == key).map(|(_, _, _, e)| e.clone())) {
+        return kept;
+    }
+    let norm = |s: &str| if ignore_case { s.to_ascii_lowercase() } else { s.to_owned() };
+    let set: BTreeSet<String> = list.iter().filter_map(|x| x.as_str()).map(norm).collect();
+    let mut legacy: Vec<String> = set.iter().filter(|e| !e.ends_with(';')).cloned().collect();
+    legacy.sort_by_key(|e| std::cmp::Reverse(e.len()));
+    let built = std::rc::Rc::new(Entities { set, legacy });
+    KEPT.with(|k| *k.borrow_mut() = Some((key.0, key.1, key.2, built.clone())));
+    built
+}
+
 html_rule!(UnrecognizedCharRef, "html/unrecognized-char-ref", |dom, meta, ctx, out| {
+    static CHAR_REF: std::sync::LazyLock<Regex> = std::sync::LazyLock::new(|| Regex::new(r"(?i)&(?:[\da-z]+|#x?[\da-f]+)").expect("valid regex"));
     let Some(Value::Array(list)) = ctx.data.get("html/entities").map(|v| v.as_ref()) else { return };
     let ignore_case = ctx.options.get("ignoreCase").and_then(|v| v.as_bool()).unwrap_or(false);
     let require_semicolon = ctx.options.get("requireSemicolon").and_then(|v| v.as_bool()).unwrap_or(true);
     let norm = |s: &str| if ignore_case { s.to_ascii_lowercase() } else { s.to_owned() };
-    let entities: BTreeSet<String> = list.iter().filter_map(|x| x.as_str()).map(norm).collect();
-    let mut legacy: Vec<&String> = entities.iter().filter(|e| !e.ends_with(';')).collect();
-    legacy.sort_by_key(|e| std::cmp::Reverse(e.len()));
-    let re = Regex::new(r"(?i)&(?:[\da-z]+|#x?[\da-f]+)").expect("valid regex");
+    let known_refs = entities_of(list, ignore_case);
+    let (entities, legacy) = (&known_refs.set, &known_refs.legacy);
+    let re = &*CHAR_REF;
     let src = ctx.source;
     let check = |start: usize, end: usize, is_attr: bool, out: &mut Vec<crate::NativeFinding>| {
         let s = &src[start..end];
@@ -384,7 +412,8 @@ html_rule!(ScriptType, "html/script-type", |dom, meta, ctx, out| {
 
 html_rule!(ValidId, "html/valid-id", |dom, meta, ctx, out| {
     let relaxed = ctx.options.get("relaxed").and_then(|v| v.as_bool()).unwrap_or(false);
-    let bad_char = Regex::new(r"[^\p{L}\p{N}_-]").expect("valid regex");
+    static BAD_CHAR: std::sync::LazyLock<Regex> = std::sync::LazyLock::new(|| Regex::new(r"[^\p{L}\p{N}_-]").expect("valid regex"));
+    let bad_char = &*BAD_CHAR;
     for e in &dom.elems {
         let Some(a) = e.attr("id").filter(|a| a.value.is_some() && !a.is_dynamic()) else { continue };
         let v = a.value_or_empty();

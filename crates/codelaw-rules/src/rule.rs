@@ -376,9 +376,6 @@ pub struct Case {
     pub fixed: Option<String>,
 }
 
-/// What reads a file's examples or cases.
-type OnDemandRead<T> = fn(&Path) -> Vec<T>;
-
 /// A parsed, checked rule file.
 /// A rule's examples or cases, read from its file when first asked for. A
 /// pack's rules are held for the life of a process and a `check` never
@@ -387,8 +384,11 @@ type OnDemandRead<T> = fn(&Path) -> Vec<T>;
 #[derive(Clone, Debug)]
 pub struct OnDemand<T> {
     cell: std::sync::OnceLock<Vec<T>>,
-    from: Option<(PathBuf, OnDemandRead<T>)>,
+    from: Option<(PathBuf, Reader<T>)>,
 }
+
+/// How an [`OnDemand`] list is read from its file.
+type Reader<T> = fn(&Path) -> Vec<T>;
 
 impl<T> OnDemand<T> {
     /// Read from `path` by `read` the first time the list is asked for; a

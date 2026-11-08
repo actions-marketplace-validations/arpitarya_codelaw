@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — Coordinator: the green queue handed to four agents  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement open work green items"*.
+- **Done:** read the queue and the pushed CI run 42454141410 (`b20e1a1f`): red in the lint guard replay, `perf cold`/`perf warm` (check_cold_10k 13.39 s > 13.12, peak_memory_10k 86 > 72 MiB, lsp_after_edit 6.3 > 5 ms) and corpus js/css/data; all 8 build legs green. Four agents on lockmaster changes: W-172 (perf), the main-CI fixes (W-126/W-169 — css `no-descending-specificity` fixpoint landed `a5f3aa64`), W-175 (landed `b78b45f8`, 9 rows + `import-export-star`), W-174 (running). W-167 left alone (`cowork`, rule 37a); W-139's remaining natives wait on free disk and CPU.
+- **Decided / left open:** W-175 step 4 filed to the inbox (`data-polyfills` package, L11). W-175's five tranche-A rows are in the opt-in `js/project` preset, not `js/recommended` (they build the graph; L8) — the agent's call, one preset edit to overrule. Agents' green results are provisional until CI: they share `target/debug/codelaw` and one run's binary was replaced mid-test.
+- **Mistakes:** none known; project disk is 7.2 GB against a 5 GB budget (7 approved).
+- **Next:** the other three agents' reports; then Arpit pushes `main` for the CI proof of W-126, W-169 and W-172.
+
 ## 2026-11-08 — W-175: the module-graph queries and nine js rows (step 4 gated)  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** (coordinator) build the graph queries the ten W-139 js rows need and the rows: `import/named`, `default`, `namespace`, `no-named-as-default`, `no-named-as-default-member`, `no-rename-default`, the cross-module half of `import/export`, `no-cycle`, `no-deprecated`, `no-unused-modules`; records first; measure against L8; for `no-unnecessary-polyfills` write the data proposal and gate it.
@@ -33,6 +41,22 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Next:** Arpit's ruling on `data-polyfills`; then `js/no-unnecessary-polyfills` and a corpus refresh for the ten rules.
 
 ---
+
+## 2026-11-08 — W-172 second pass: the time side of L8's three budgets  ·  Claude Code (agent of the coordinator)
+
+- **Asked:** (coordinator) main is over `check_cold_10k`, `peak_memory_10k`, `lsp_after_edit` on CI run 42454141410 (`b20e1a1f`); optimise, never loosen.
+- **Done:** found that `b20e1a1f` predates step 3, and that step 3 left a counting global allocator in `crates/codelaw-cli/src/main.rs` (removed). Profiled (`sample`, `--timings`): ~40 % of an edit is tree-sitter `parent()`. Built: key-order pass and parent-kind gate in `codelaw-match`, `codelaw_lang::preorder_parents`, gated dispatch and a reused slot buffer in `lint.rs`, a single ancestor walk in `js/no-useless-assignment`, once-built regexes/entity set in three html natives; a clippy type alias in `codelaw-rules`. SR-LINTER and SR-ARCHITECTURE dated notes. No pack file touched. `codelaw test` 0 failed on all 27 packs; cargo test lang/match/engine/native/lsp green; workload findings identical.
+- **Decided / left open:** `peak_memory_10k` is not fixed (Mac 84–88 MiB = runner 86.1; fixed cost of packs + compiled rules ~21.7 MiB live heap; levers in the item). No number here is a reference-runner number: the Mac ran at load 14–35.
+- **Mistakes:** the shared scratchpad `bin/` was deleted under me by another session mid-run (lost the baseline binary; later runs use `scratchpad/w172/`); two lockmaster landings were refused until the records were staged.
+- **Next:** Arpit pushes `main`; read the runner's three numbers; then the memory levers or the pack re-anchors named in the item.
+
+## 2026-11-08 — W-174: Python inference — SR-PY-INFERENCE and 30 of the 38 rows  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** (coordinator) W-174 — propose the Python counterpart of SR-TYPES (which layer answers which question group, cost against L8, no new dependency), then build the cheapest layer first: scope facts, flow, in-file class hierarchy, value types decidable from one file; rows that need a real checker stay open with their question.
+- **Done:** record 0120 SR-PY-INFERENCE (four lazy layers; registered with its five owned files). `codelaw-semantic`: `lookup`, `nonlocal_bound`, `scope_starting_at` (methods only — nothing added to the model build, so `check_cold_10k` is untouched), and `python_flow`, a definite-assignment pass over one scope (branches join, loops walked twice, `try` handlers start from names the body may not have bound, `NoReturn` calls and `sys.exit` end paths, `a and (b := …)` binds where it held, a read under the same `if` condition is not reported). `codelaw-native`: `py_scope.rs` (5), `py_flow.rs` (6), `py_classes.rs` (13, a table of the file's classes with C3 MRO; an imported base makes the ancestry open and the rule silent), `py_values.rs` (6). 30 rules, all `preview`, in no preset: 4 `suggest` (RUF027 and RUF052 because Ruff's fixes are unsafe and L4 decision 3 says an upstream fix that can change behaviour is not `auto`), 26 `manual`. Ruff sources and fixtures fetched at 0.16.9 and Pylint 4.1.3's functional tests read for behaviour only; the flow rules run over 150 CPython 3.14 stdlib files, the hits read, three false positives fixed (chained assignment, a builtin read at module level, a walrus inside an `and` condition). Item, OPEN-WORK, W-139 (slice 27, DoD 1: python 194 → 164), IMPLEMENTATION, docs (`rule-docs.py`, `docs-sync.py`) updated in the same change.
+- **Decided / left open:** left 8 rows with their question (W-174 *Left*): `signature-differs`, `access-member-before-definition`, `not-async-context-manager`, `non-iterator-returned`, `redefined-variable-type`, `invalid-format-index`, `missing-format-attribute` (all in-file buildable next) and `boolean-datetime` (can never fire under the 3.9+ floor; recommend re-ruling `not-applicable`). For Arpit, not blocking: decision 8 of SR-PY-INFERENCE — the project's own Python type checker (`ty`, pyright or mypy), found and asked like the project's TypeScript, for the rows that need a call's return or an imported class. Cross-file bases wait on class facts in the project graph. No corpus was on the machine; corpus snapshots left to the other agent's refresh.
+- **Mistakes:** the session scratchpad is shared with sibling agents — another agent overwrote a `gen.py` I had written there and the shared `target/debug/codelaw` is whichever worktree built last (a test run used a stale binary that did not know the new rules). Worked in a unique scratchpad folder and copied the binary after each build.
+- **Next:** the 8 in-file rows (an attribute table in `py_classes.rs` first), then class facts in the project graph so the override rows follow imported bases.
 
 ## 2026-11-08 — Main's CI after the first push: SR guard, corpus, clippy (W-169, W-126)  ·  Claude Code (Sonnet 5.5)
 

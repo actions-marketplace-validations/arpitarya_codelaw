@@ -62,6 +62,34 @@ pub fn text_of(root: &Root) -> &str {
     root.get_text()
 }
 
+/// Each node of a tree in the order `Node::dfs` visits them: its id and the
+/// kind id of its parent (`u16::MAX` for the tree's root). One walk with a
+/// cursor, which knows the parent; asking a node for its parent walks down
+/// from the root (W-172).
+pub fn preorder_parents(root: &SyntaxNode<'_>) -> Vec<(usize, u16)> {
+    let top = root.get_inner_node();
+    let mut out = Vec::new();
+    let mut cursor = top.walk();
+    let mut parents: Vec<u16> = Vec::new();
+    loop {
+        let node = cursor.node();
+        out.push((node.id(), parents.last().copied().unwrap_or(u16::MAX)));
+        if cursor.goto_first_child() {
+            parents.push(node.kind_id());
+            continue;
+        }
+        loop {
+            if cursor.goto_next_sibling() {
+                break;
+            }
+            if !cursor.goto_parent() {
+                return out;
+            }
+            parents.pop();
+        }
+    }
+}
+
 /// The number of error and missing nodes; the fix verifier compares it
 /// before and after an edit (L4 decision 5).
 pub fn syntax_error_count(root: &Root) -> usize {

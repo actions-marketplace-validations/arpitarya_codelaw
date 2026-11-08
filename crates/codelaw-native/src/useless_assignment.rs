@@ -33,8 +33,21 @@ impl Event {
     }
 }
 
-fn ancestors<'t>(n: Node<'t>) -> impl Iterator<Item = Node<'t>> {
-    std::iter::successors(n.parent(), |p| p.parent())
+/// The ancestors of `n`, nearest first. One walk down from `root`: asking each
+/// ancestor for its parent walks down from the root once per ancestor, which
+/// is what this rule spent most of its time on.
+fn ancestors<'t>(root: Node<'t>, n: Node<'t>) -> Vec<Node<'t>> {
+    let mut chain = Vec::new();
+    let mut at = root;
+    while at.id() != n.id() {
+        chain.push(at);
+        match at.child_with_descendant(n) {
+            Some(next) => at = next,
+            None => return Vec::new(),
+        }
+    }
+    chain.reverse();
+    chain
 }
 
 fn uses_arguments(function: Node<'_>, src: &str) -> bool {
@@ -49,23 +62,23 @@ fn uses_arguments(function: Node<'_>, src: &str) -> bool {
     false
 }
 
-fn block_of(n: Node<'_>) -> Option<Node<'_>> {
-    ancestors(n).find(|a| matches!(a.kind(), "statement_block" | "program"))
+fn block_of<'t>(chain: &[Node<'t>]) -> Option<Node<'t>> {
+    chain.iter().copied().find(|a| matches!(a.kind(), "statement_block" | "program"))
 }
 
 const LOOPS: &[&str] = &["for_statement", "for_in_statement", "while_statement", "do_statement"];
 
 /// The function-like node a node belongs to (or the program).
-fn owner(n: Node<'_>) -> Option<Node<'_>> {
-    ancestors(n).find(|a| is_function(a.kind()) || a.kind() == "arrow_function" || a.kind() == "program")
+fn owner<'t>(chain: &[Node<'t>]) -> Option<Node<'t>> {
+    chain.iter().copied().find(|a| is_function(a.kind()) || a.kind() == "arrow_function" || a.kind() == "program")
 }
 
 /// The statement a write sits in, if that statement is a plain assignment
 /// `x = …;` directly in a block.
-fn assignment_statement(ident: Node<'_>) -> Option<Node<'_>> {
-    let assign = ident.parent().filter(|p| p.kind() == "assignment_expression")?;
-    let stmt = assign.parent().filter(|p| p.kind() == "expression_statement")?;
-    stmt.parent().filter(|b| matches!(b.kind(), "statement_block" | "program"))?;
+fn assignment_statement<'t>(chain: &[Node<'t>]) -> Option<Node<'t>> {
+    chain.first().filter(|p| p.kind() == "assignment_expression")?;
+    let stmt = chain.get(1).copied().filter(|p| p.kind() == "expression_statement")?;
+    chain.get(2).filter(|b| matches!(b.kind(), "statement_block" | "program"))?;
     Some(stmt)
 }
 
@@ -94,7 +107,8 @@ impl NativeRule for NoUselessAssignment {
             }
             let Some(&(ds, de)) = s.decls.first() else { continue };
             let Some(decl) = root.descendant_for_byte_range(ds, de) else { continue };
-            let home = owner(decl);
+            let decl_chain = ancestors(root, decl);
+            let home = owner(&decl_chain);
             // In sloppy code `arguments` aliases the parameters, so a store to
             // one can be read through it.
             if s.kind == SymbolKind::Param && home.is_some_and(|h| uses_arguments(h, ctx.source)) {
@@ -103,13 +117,14 @@ impl NativeRule for NoUselessAssignment {
             let mut events = Vec::new();
             let mut captured = false;
             // The declaration's initialiser is the first store.
-            if let Some(d) = decl.parent().filter(|p| p.kind() == "variable_declarator" && p.child_by_field_name("value").is_some()) {
+            if let Some(d) = decl_chain.first().filter(|p| p.kind() == "variable_declarator" && p.child_by_field_name("value").is_some()) {
                 events.push(Event::Write { at: d.end_byte(), start: ds, end: de });
             }
             for &r in &s.refs {
                 let reference = &model.references[r];
                 let Some(n) = root.descendant_for_byte_range(reference.start, reference.end) else { continue };
-                if owner(n) != home {
+                let chain = ancestors(root, n);
+                if owner(&chain) != home {
                     captured = true;
                     break;
                 }
@@ -117,7 +132,7 @@ impl NativeRule for NoUselessAssignment {
                     events.push(Event::Read { at: reference.start });
                 }
                 if reference.write {
-                    let at = n.parent().filter(|p| p.kind() == "assignment_expression").map(|p| p.end_byte()).unwrap_or(reference.end);
+                    let at = chain.first().filter(|p| p.kind() == "assignment_expression").map(|p| p.end_byte()).unwrap_or(reference.end);
                     events.push(Event::Write { at, start: reference.start, end: reference.end });
                 }
             }
@@ -128,8 +143,10 @@ impl NativeRule for NoUselessAssignment {
             for (i, e) in events.iter().enumerate() {
                 let Event::Write { start, end, .. } = *e else { continue };
                 let Some(ident) = root.descendant_for_byte_range(start, end) else { continue };
-                let in_loop = ancestors(ident).take_while(|a| Some(*a) != home).any(|a| LOOPS.contains(&a.kind()));
-                let in_try = ancestors(ident).take_while(|a| Some(*a) != home).any(|a| matches!(a.kind(), "try_statement" | "catch_clause"));
+                let chain = ancestors(root, ident);
+                let within = || chain.iter().copied().take_while(|a| Some(*a) != home);
+                let in_loop = within().any(|a| LOOPS.contains(&a.kind()));
+                let in_try = within().any(|a| matches!(a.kind(), "try_statement" | "catch_clause"));
                 if in_loop || in_try {
                     continue;
                 }
@@ -141,7 +158,8 @@ impl NativeRule for NoUselessAssignment {
                         let Some(nid) = root.descendant_for_byte_range(*ns, *ne) else { continue };
                         // The overwrite must be unconditional: a plain statement in
                         // the same block as this store.
-                        assignment_statement(nid).is_some() && block_of(nid) == block_of(ident)
+                        let next_chain = ancestors(root, nid);
+                        assignment_statement(&next_chain).is_some() && block_of(&next_chain) == block_of(&chain)
                     }
                     _ => false,
                 };
@@ -150,7 +168,7 @@ impl NativeRule for NoUselessAssignment {
                     // A literal initialiser overwritten before any read goes:
                     // `let sum = 0;` becomes `let sum;`.
                     let edits = (overwritten && start == ds)
-                        .then(|| ident.parent().filter(|p| p.kind() == "variable_declarator"))
+                        .then(|| chain.first().copied().filter(|p| p.kind() == "variable_declarator"))
                         .flatten()
                         .and_then(|d| {
                             let v = d.child_by_field_name("value")?;
