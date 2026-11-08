@@ -77,7 +77,7 @@ fn node_at<'t>(root: Node<'t>, start: usize, end: usize) -> Option<Node<'t>> {
     root.descendant_for_byte_range(start, end)
 }
 
-fn refs_of<'m>(m: &'m SemanticModel, sym: SymbolId) -> Vec<&'m Reference> {
+fn refs_of(m: &SemanticModel, sym: SymbolId) -> Vec<&Reference> {
     m.symbol(sym).refs.iter().map(|&r| &m.references[r]).collect()
 }
 

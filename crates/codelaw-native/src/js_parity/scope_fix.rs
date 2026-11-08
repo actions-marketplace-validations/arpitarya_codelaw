@@ -53,7 +53,7 @@ fn node_at<'t>(root: Node<'t>, start: usize, end: usize) -> Option<Node<'t>> {
     root.descendant_for_byte_range(start, end)
 }
 
-fn refs_of<'m>(m: &'m SemanticModel, sym: SymbolId) -> Vec<&'m Reference> {
+fn refs_of(m: &SemanticModel, sym: SymbolId) -> Vec<&Reference> {
     m.symbol(sym).refs.iter().map(|&r| &m.references[r]).collect()
 }
 
@@ -654,10 +654,10 @@ srule!(NoImmediateMutation, "js/no-immediate-mutation", &["program", "statement_
         // The variable and its initial value.
         let (var, value) = match first.kind() {
             "lexical_declaration" | "variable_declaration" => {
-                let Some(last) = named_children(first).into_iter().filter(|c| c.kind() == "variable_declarator").last() else { continue };
+                let Some(last) = named_children(first).into_iter().rfind(|c| c.kind() == "variable_declarator") else { continue };
                 match (last.child_by_field_name("name"), last.child_by_field_name("value")) {
                     (Some(nm), Some(v)) if nm.kind() == "identifier" => (nm, v),
-                    (Some(nm), None) if nm.kind() == "identifier" && first.kind() != "lexical_declaration" || decl_kind(first, src) == "let" => {
+                    (Some(nm), None) if nm.kind() == "identifier" && (first.kind() != "lexical_declaration" || decl_kind(first, src) == "let") => {
                         // `let x;` then `x = v;`
                         let declarators: Vec<Node<'_>> = named_children(first).into_iter().filter(|c| c.kind() == "variable_declarator").collect();
                         if declarators.iter().any(|d| d.child_by_field_name("value").is_some()) || next.kind() != "expression_statement" {
