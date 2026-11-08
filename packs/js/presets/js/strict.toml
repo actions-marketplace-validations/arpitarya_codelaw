@@ -105,6 +105,7 @@ description = "eslint-plugin-unicorn 79.0.0 recommended, reimplemented: the stri
 "js/no-unnecessary-array-flat-depth" = "error"
 "js/no-unnecessary-array-flat-map" = "error"
 "js/no-unnecessary-array-splice-count" = "error"
+"js/no-unnecessary-polyfills" = "error"
 "js/no-unnecessary-await" = "error"
 "js/no-unnecessary-boolean-comparison" = "error"
 "js/no-unnecessary-fetch-options" = "error"
