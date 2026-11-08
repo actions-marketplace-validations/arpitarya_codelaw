@@ -16,6 +16,8 @@
 pub mod data;
 mod calls;
 mod explain;
+mod gate;
+mod order;
 mod predicate;
 pub mod schema;
 pub mod source;
@@ -23,6 +25,7 @@ pub mod target;
 mod types;
 
 pub use explain::{ClauseResult, Explainer, NodeExplanation};
+pub use gate::ParentGate;
 pub use predicate::{Predicate, Subject, parse_predicates};
 pub use target::{CompiledTarget, Pred, Slot, TargetFinding, compile_target};
 pub use types::{TypeExpr, parse_types};
@@ -84,6 +87,8 @@ pub struct CompiledMatch {
     types: Vec<(String, TypeExpr)>,
     /// The names `transform:` defines.
     transform_vars: Vec<String>,
+    /// The parents a node may have for this rule to be asked about it.
+    gate: ParentGate,
     /// Keeps the shared regexes its matchers name alive.
     _shared: SharedRegexes,
 }
@@ -277,6 +282,7 @@ pub(crate) fn rule_core_with(
     let pruned = |v: &serde_json::Value| {
         let mut v = v.clone();
         prune_unknown_kinds(&mut v, grammar, &never);
+        order::cheap_first(&mut v, utils.and_then(serde_json::Value::as_object));
         if !shared.ids.is_empty() {
             share_regexes(&mut v, &shared.ids);
         }
@@ -355,10 +361,17 @@ pub fn compile_shared(rule: &RuleFile, grammar: Grammar, data: &BTreeMap<String,
             return Err(format!("`where:` names `{var}`, but `$$${name}` captures a list of nodes; a predicate applies to one node (`$NAME`)"));
         }
     }
-    Ok(CompiledMatch { core, auto_when, predicates, types, transform_vars, _shared: shared.clone() })
+    let gate = ParentGate::of(matcher, utils.as_ref(), grammar);
+    Ok(CompiledMatch { core, auto_when, predicates, types, transform_vars, gate, _shared: shared.clone() })
 }
 
 impl CompiledMatch {
+    /// The parent kinds a node may have for this rule to match it (W-172):
+    /// the engine does not ask about a node the gate turns down.
+    pub fn parent_gate(&self) -> &ParentGate {
+        &self.gate
+    }
+
     /// The node kinds this rule can match, or `None` for any (decision 15:
     /// rules are dispatched by kind).
     pub fn kinds(&self) -> Option<Vec<u16>> {

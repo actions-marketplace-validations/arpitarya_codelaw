@@ -984,15 +984,51 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
             _ => None,
         })
         .collect();
+    // A rule whose `match:` needs a certain kind of parent is not asked about
+    // a node whose parent has another; the walk that visits the nodes knows
+    // the parent, where asking a node for it walks down from the root.
+    let gates: Vec<Option<&codelaw_match::ParentGate>> = unit
+        .rules
+        .iter()
+        .map(|(_, rule, _)| match &rule.matcher {
+            Matcher::Match(_) => rule.compiled_match(grammar).map(codelaw_match::CompiledMatch::parent_gate).filter(|g| !g.is_empty()),
+            _ => None,
+        })
+        .collect();
+    let parents = gates.iter().any(Option::is_some).then(|| codelaw_lang::preorder_parents(&unit.root.root()));
+    // The walks agree node for node; if one ever did not, no gate is applied.
+    let mut aligned = parents.is_some();
+    let mut visited = 0usize;
+    // The rules to ask about one node, in rule order; one buffer for the unit.
+    let mut slots: Vec<usize> = Vec::new();
     for node in unit.root.root().dfs() {
         let k = node.kind_id() as usize;
-        let mut slots: Vec<usize> = by_kind.get(k).cloned().unwrap_or_default();
+        let parent_kind = match &parents {
+            Some(p) if aligned => match p.get(visited) {
+                Some(&(id, kind)) if id == node.node_id() => Some(kind),
+                _ => {
+                    aligned = false;
+                    None
+                }
+            },
+            _ => None,
+        };
+        visited += 1;
+        slots.clear();
+        if let Some(own) = by_kind.get(k) {
+            slots.extend_from_slice(own);
+        }
         if !any_kind.is_empty() {
             slots.extend(&any_kind);
             slots.sort_unstable();
         }
-        for slot in slots {
+        for &slot in &slots {
             if failed[slot].is_some() {
+                continue;
+            }
+            if let (Some(parent), Some(gate)) = (parent_kind, gates[slot])
+                && !gate.allows(k as u16, parent)
+            {
                 continue;
             }
             let (index, rule, cfg) = &unit.rules[slot];
