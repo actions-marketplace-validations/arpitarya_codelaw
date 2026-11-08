@@ -31,6 +31,5 @@ await page.evaluate(() => document.querySelector(sel));
 ```
 
 ```expect
-2:27 js/isolated-functions
 2:50 js/isolated-functions
 ```

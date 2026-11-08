@@ -7,7 +7,7 @@ fix: manual
 fix_reason: "which dependency field and version to add is the package owner's choice"
 fix_pending: "suggest-choices; needs cross-file (W-162)"
 stability: preview
-ported_from: [eslint-plugin-n/no-extraneous-require]
+ported_from: [eslint-plugin-n/no-extraneous-require, eslint-plugin-import/no-extraneous-dependencies, eslint-plugin-sonarjs/no-implicit-dependencies]
 since: 0.1.0
 ---
 

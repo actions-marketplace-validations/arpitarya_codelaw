@@ -13,6 +13,9 @@ use tree_sitter::Node;
 
 mod scope;
 mod scope_fix;
+mod sonar_scope;
+mod files;
+mod shape;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
@@ -744,4 +747,46 @@ pub static RULES: &[&dyn NativeRule] = &[
     &scope_fix::PreferSmallerScope,
     &scope_fix::NoUnnecessaryDefaultArguments,
     &scope_fix::NoUnsafePromiseAllSettledValues,
+    &sonar_scope::AvoidMutatingNestedPropertiesOfShallowClones,
+    &sonar_scope::FunctionInsideLoop,
+    &sonar_scope::InconsistentFunctionCall,
+    &sonar_scope::MemoizeCacheKey,
+    &sonar_scope::MisplacedLoopCounter,
+    &sonar_scope::NoDebounceThrottleInRender,
+    &sonar_scope::NoEmptyCollection,
+    &sonar_scope::NoUnusedCollection,
+    &sonar_scope::NoExtraArguments,
+    &sonar_scope::NoGratuitousExpressions,
+    &sonar_scope::NoInvariantReturns,
+    &sonar_scope::NoMutateReactiveStateInUpdatedHook,
+    &sonar_scope::NoUseOfEmptyReturnValue,
+    &sonar_scope::NoVariableUsageBeforeDeclaration,
+    &sonar_scope::StatefulRegex,
+    &files::FilenameCase,
+    &files::FileNameDifferFromClass,
+    &files::ImportUnambiguous,
+    &files::NoExportsInScripts,
+    &files::ImportStyle,
+    &files::NoInternalApiUse,
+    &files::ImportNoSelfImport,
+    &files::ImportExtensions,
+    &files::ImportNoUselessPathSegments,
+    &files::ImportNoRelativePackages,
+    &files::NodeFileExtensionInImport,
+    &files::NodeNoUnpublishedBin,
+    &files::NodePreferProcessGetBuiltinModule,
+    &files::ImportExport,
+    &files::NoMissingLocalResource,
+    &shape::ConsistentArrowReturnStyle,
+    &shape::NoDuplicateLoops,
+    &shape::NoRedundantComparison,
+    &shape::PreferContinue,
+    &shape::PreferEarlyReturn,
+    &shape::PreferSingleReplace,
+    &shape::PreferHoistingBranchCode,
+    &shape::OneVar,
+    &shape::NoSameLineConditional,
+    &shape::NoConflictingConstraints,
+    &shape::NoInvalidIntegrity,
+    &shape::ConsistentClassMemberOrder,
 ];

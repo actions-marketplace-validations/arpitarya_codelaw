@@ -1042,7 +1042,9 @@ srule!(IsolatedFunctions, "js/isolated-functions", &["function_declaration", "fu
         let outside = match r.symbol {
             Some(s) if Some(s) == own_name => false,
             Some(s) => m.symbol(s).decls.first().is_some_and(|d| !in_range(d.0, n)),
-            None => r.write || !m.is_builtin_reference(r),
+            // A name the file does not declare is the environment's global
+            // (`document` in a page, `self` in a worker): it may be read there.
+            None => r.write,
         };
         if outside && let Some(id) = node_at(js_ast::root_of(n), r.start, r.end) {
             out.push(finding(id, format!("`{}` comes from outside this isolated function: it won't exist where the function runs; pass it in as an argument", r.name), vec![]));

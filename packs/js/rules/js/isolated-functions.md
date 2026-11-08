@@ -11,7 +11,7 @@ ported_from: [eslint-plugin-unicorn/isolated-functions]
 since: 0.5.0
 ---
 
-A function that is serialised and run elsewhere — passed to `makeSynchronous()` or `workerize()` (the `functions` option), the first argument of `page.evaluate()` or `browser.execute()`, the `func` of `chrome.scripting.executeScript()`, or marked with an `@isolated` comment — refers to nothing outside itself. Each reference to a variable declared outside it, each name the language does not define (`document`, `window`, unless declared), each write to a global, and each `this` or `super` is reported. The language's own globals (`Math`, `JSON`, …) may be read. ESLint's `selectors` and `overrideGlobals` options are not taken.
+A function that is serialised and run elsewhere — passed to `makeSynchronous()` or `workerize()` (the `functions` option), the first argument of `page.evaluate()` or `browser.execute()`, the `func` of `chrome.scripting.executeScript()`, or marked with an `@isolated` comment — refers to nothing outside itself. Each reference to a variable declared outside it, each write to a global, and each `this` or `super` is reported. Globals may be read: the language's own (`Math`, `JSON`, …) and, since codelaw does not know which environment the function runs in, any name the file does not declare (`document` in a page, `self` in a worker) — upstream reports those unless the ESLint config declares them. ESLint's `selectors` and `overrideGlobals` options are not taken.
 
 **Why:** The function's source text runs in another realm (a worker, a page, a tab), where the outer variables do not exist.
 

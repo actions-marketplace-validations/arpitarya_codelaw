@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — W-139 strand W-139-js, round 3: slice 24 (the 61 scope rows: 52 built, 1 linked)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the js strand's round 3 — build the 61 scope rows on W-162's capabilities and the scope model, the 37 natives in Rust, the 29 graph rows where the project graph can express them (one new item for the rest); leave the 16 type rows to W-105.
+- **Done:** upstream behaviour read from source and tests at the pinned versions by three research sub-agents (unicorn `v79.0.0`, SonarJS 4.2.2's `gitHead` — behaviour only —, eslint-plugin-import/import-x/n); slice 24 — 52 native `js/*` rules on the semantic model in `js_parity/{scope,scope_fix,sonar_scope}.rs` (12 `auto`, 6 `suggest`, 34 `manual`; unicorn 32 in `js/strict`, SonarJS 15 in `js/sonarjs`, ESLint 5), SonarJS `no-dead-store` linked to `js/no-useless-assignment`; the 8 scope rows left re-labelled (code-path graph 2, `using` grammar 2, next slice 3, default no-op 1). `codelaw test packs/js` 857 rules, 0 failed; `cargo test -p codelaw-native` 279 passed; clippy clean for the modules; `rules lint` 0; `--fix-stats --check`; corpus counts written.
+- **Decided / left open:** `js/isolated-functions` lets an undeclared name be read (codelaw doesn't know the environment the function runs in; upstream reports it unless ESLint's globals declare it) — after the corpus showed `document` reported in every Playwright `page.evaluate`. The natives (37) and the graph rows (29) are the next slices.
+- **Mistakes:** a Python edit opened `js_parity.rs` for writing before the text it wrote was computed, and emptied it; restored from git and redone. The shared cargo target served another worktree's `codelaw-core` as fresh (its `Diagnostic` has a field this tree's lacks); every build here touches the crates' `lib.rs` first.
+- **Next:** the js natives and the file-system/graph rows (slices 25–26); file the graph item for the rows the graph can't express.
+
+---
+
 ## 2026-11-07 – 11-08 — Coordinating the parallel build run (W-139, W-141, W-156, W-162, W-166, W-168–W-173)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *"continue"*, *"continue with green items and implement till closure"*, *"continue implementing till everything is implemented and closed keeping going in parallel"*.
