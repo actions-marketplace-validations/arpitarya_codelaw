@@ -102,4 +102,17 @@
 #   every owning record is current on main. Not reworded; a965a49 (W-166
 #   closed) is the first commit on main's first-parent line that holds all
 #   eight, and every commit after it passes.
-a965a499bc82fb7f94c89bc36e6b7320dee7ba57
+# - 2026-11-08, CI run 42454141410's `lint` (the decider's push of b20e1a1f), pre-approved:
+#   a965a49 -> b90259d. Forty-four commits since a965a49 fail the replay, from the
+#   2026-11-05 – 11-08 parallel runs of W-139 (-js, -py, the CSS and Python
+#   natives), W-156, W-162, W-168 and W-172: the kit's end-of-turn auto-land of
+#   half-built changes ("landed at the end of a turn"), the strands' rule files
+#   (packs/python/rules/py/*, packs/js/rules/js/*, css-modules) landed without
+#   records/0101_rule-packs.md, and engine/native source without its owning SR
+#   (35ade22 is the first the run named; a7dc492, c90bb13, 990e2fd and 85ddb9a
+#   are the newest). Every owning record is current on main. Most are not
+#   pushed-over but sit under later landings, so none is reworded; b90259d
+#   (W-172 step 3) is the first commit on main's first-parent line that holds
+#   all forty-four, and every commit after it passes (checked locally with the
+#   replay over b90259d..HEAD).
+b90259d03c6c41c10dd3176751410837edeaf35e
