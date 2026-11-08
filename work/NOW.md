@@ -12,9 +12,13 @@ Rule: [SR-WORK-NOW](../records/0061_WORK-now.md).
 
 | session | surface | started | working on |
 |---|---|---|---|
-| 3ae9bb46-993d-4181-bf61-71e189463e09 | Claude Code | 2026-10-30 11:57 |  |
+| 0a172e1f-7104-4fed-983f-3baacccdc91a | Claude Code | 2026-11-08 12:14 |  |
+| d73e9989-7267-4bed-b23e-939540cf4a56 | Claude Code | 2026-11-08 12:15 | coordinating four agents: W-172 (perf budgets), main-CI fixes (W-126/W-169), W-175, W-174 |
 
 ## Resources this session created
 
 | kind | where | host | session | created |
 |---|---|---|---|---|
+| worktree | `/Users/arpitarya/my_programs/codelaw/.claude/worktrees/W-172` | Arpits-MacBook | d73e9989-7267-4bed-b23e-939540cf4a56 | 2026-11-08 |
+| worktree | `/Users/arpitarya/my_programs/codelaw/.claude/worktrees/W-174` | Arpits-MacBook | d73e9989-7267-4bed-b23e-939540cf4a56 | 2026-11-08 |
+| worktree | `/Users/arpitarya/my_programs/codelaw/.claude/worktrees/W-169` | Arpits-MacBook | d73e9989-7267-4bed-b23e-939540cf4a56 | 2026-11-08 |

@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — Coordinator: the green queue handed to four agents  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement open work green items"*.
+- **Done:** read the queue and the pushed CI run 42454141410 (`b20e1a1f`): red in the lint guard replay, `perf cold`/`perf warm` (check_cold_10k 13.39 s > 13.12, peak_memory_10k 86 > 72 MiB, lsp_after_edit 6.3 > 5 ms) and corpus js/css/data; all 8 build legs green. Four agents on lockmaster changes: W-172 (perf), the main-CI fixes (W-126/W-169 — css `no-descending-specificity` fixpoint landed `a5f3aa64`), W-175 (landed `b78b45f8`, 9 rows + `import-export-star`), W-174 (running). W-167 left alone (`cowork`, rule 37a); W-139's remaining natives wait on free disk and CPU.
+- **Decided / left open:** W-175 step 4 filed to the inbox (`data-polyfills` package, L11). W-175's five tranche-A rows are in the opt-in `js/project` preset, not `js/recommended` (they build the graph; L8) — the agent's call, one preset edit to overrule. Agents' green results are provisional until CI: they share `target/debug/codelaw` and one run's binary was replaced mid-test.
+- **Mistakes:** none known; project disk is 7.2 GB against a 5 GB budget (7 approved).
+- **Next:** the other three agents' reports; then Arpit pushes `main` for the CI proof of W-126, W-169 and W-172.
+
 ## 2026-11-08 — W-175: the module-graph queries and nine js rows (step 4 gated)  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** (coordinator) build the graph queries the ten W-139 js rows need and the rows: `import/named`, `default`, `namespace`, `no-named-as-default`, `no-named-as-default-member`, `no-rename-default`, the cross-module half of `import/export`, `no-cycle`, `no-deprecated`, `no-unused-modules`; records first; measure against L8; for `no-unnecessary-polyfills` write the data proposal and gate it.
