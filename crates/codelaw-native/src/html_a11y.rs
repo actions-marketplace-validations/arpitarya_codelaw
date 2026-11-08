@@ -196,7 +196,8 @@ html_rule!(EmptyTitle, "html/empty-title", |dom, meta, ctx, out| {
 
 html_rule!(MetaRefresh, "html/meta-refresh", |dom, meta, ctx, out| {
     let allow_long = ctx.options.get("allowLongDelay").and_then(|v| v.as_bool()).unwrap_or(false);
-    let re = regex::Regex::new(r"(?i)^(\d+)(?:\s*;\s*url=(.*))?").expect("valid regex");
+    static REFRESH: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(r"(?i)^(\d+)(?:\s*;\s*url=(.*))?").expect("valid regex"));
+    let re = &*REFRESH;
     for i in dom.by_tag("meta") {
         let e = &dom.elems[i];
         if e.value_lower("http-equiv").as_deref() != Some("refresh") {

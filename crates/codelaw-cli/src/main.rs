@@ -644,24 +644,7 @@ fn version_json() -> String {
     }))
 }
 
-mod xx_alloc { // XX-EXPERIMENT
-    use std::alloc::{GlobalAlloc, Layout, System};
-    use std::sync::atomic::{AtomicUsize, Ordering::Relaxed};
-    pub struct C; pub static NOW: AtomicUsize = AtomicUsize::new(0); pub static PEAK: AtomicUsize = AtomicUsize::new(0);
-    unsafe impl GlobalAlloc for C {
-        unsafe fn alloc(&self, l: Layout) -> *mut u8 { let n = NOW.fetch_add(l.size(), Relaxed) + l.size(); PEAK.fetch_max(n, Relaxed); unsafe { System.alloc(l) } }
-        unsafe fn dealloc(&self, p: *mut u8, l: Layout) { NOW.fetch_sub(l.size(), Relaxed); unsafe { System.dealloc(p, l) } }
-        unsafe fn realloc(&self, p: *mut u8, l: Layout, s: usize) -> *mut u8 { if s > l.size() { let n = NOW.fetch_add(s - l.size(), Relaxed) + s - l.size(); PEAK.fetch_max(n, Relaxed); } else { NOW.fetch_sub(l.size() - s, Relaxed); } unsafe { System.realloc(p, l, s) } }
-    }
-    #[global_allocator] static A: C = C;
-}
 fn main() -> ExitCode {
-    if std::env::var_os("XX_TRACE").is_some() { std::thread::spawn(|| { let t = std::time::Instant::now(); loop { std::thread::sleep(std::time::Duration::from_millis(100)); eprintln!("xx-trace {:.1}s now {:.1} peak {:.1}", t.elapsed().as_secs_f64(), xx_alloc::NOW.load(std::sync::atomic::Ordering::Relaxed) as f64 / 1048576.0, xx_alloc::PEAK.load(std::sync::atomic::Ordering::Relaxed) as f64 / 1048576.0); } }); }
-    let c = main_();
-    if std::env::var_os("XX_ALLOC").is_some() { eprintln!("xx-alloc peak {:.1} MiB now {:.1} MiB", xx_alloc::PEAK.load(std::sync::atomic::Ordering::Relaxed) as f64 / 1048576.0, xx_alloc::NOW.load(std::sync::atomic::Ordering::Relaxed) as f64 / 1048576.0); }
-    c
-}
-fn main_() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
     if let [a, b] = args.as_slice()
         && [a, b].iter().any(|x| *x == "--version" || *x == "-V")
