@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving an import above other code changes the order the module runs in) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the import moves above the first statement imports must come before; a diff to accept, as the code above may be what the import needs to run (a path set, an environment variable) (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/E402`, `pylint/wrong-import-position` |
@@ -120,7 +120,7 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 
 ## How to fix
 
-1. Move the import up to the module's import section.
+1. Accept the move where it is offered: `codelaw fix --unsafe` moves the import above the first statement that isn't one.
 2. If it must run after the code above it, keep it and suppress the finding with a comment saying why.
 
 ## Examples

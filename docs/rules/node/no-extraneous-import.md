@@ -11,11 +11,11 @@
 | **Turned on by** | `codelaw:node/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which dependency field and version to add is the package owner's choice) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the package is added to the nearest `package.json` at the version installed (`^<version>` from `node_modules`), as a choice of `dependencies` (the default) or `devDependencies` (the default for a test file); a diff to accept. A package not installed offers no fix: its version is the owner's choice (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Scope** | project — reads the whole repository through the project graph, not one file at a time |
-| **Ported from** | `eslint-plugin-n/no-extraneous-import` |
+| **Ported from** | `eslint-plugin-n/no-extraneous-import`, `eslint-plugin-import/no-extraneous-dependencies`, `eslint-plugin-sonarjs/no-implicit-dependencies` |
 
 ## What it checks
 
@@ -121,8 +121,9 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 
 ## How to fix
 
-1. Add the package to the nearest `package.json` (`dependencies` if the shipped code needs it, `devDependencies` if only tests and tooling do), with your package manager's `add` command.
-2. A type-only import is satisfied by its `@types/` package.
+1. Accept the fix where it is offered: `codelaw fix --unsafe --choice dependencies` (or `devDependencies` if only tests and tooling use it) adds the installed version to the nearest `package.json`.
+2. Otherwise add it with your package manager's `add` command.
+3. A type-only import is satisfied by its `@types/` package.
 
 ## Examples
 
@@ -136,16 +137,44 @@ codelaw config --print --for <file>             # the resolved setting, and wher
 // src/app.js
 import lodash from "lodash";
 console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (dependencies)
+
+```js files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
+// src/app.js
+import lodash from "lodash";
+console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (devDependencies)
+
+```js files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0" }, "devDependencies": { "lodash": "^4.17.21" } }
+// src/app.js
+import lodash from "lodash";
+console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 #### Do
 
 ```js files
 // package.json
-{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "4.17.21" } }
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
 // src/app.js
 import lodash from "lodash";
 console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 ### JSX
@@ -158,16 +187,44 @@ console.log(lodash);
 // src/app.jsx
 import lodash from "lodash";
 export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (dependencies)
+
+```jsx files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
+// src/app.jsx
+import lodash from "lodash";
+export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (devDependencies)
+
+```jsx files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0" }, "devDependencies": { "lodash": "^4.17.21" } }
+// src/app.jsx
+import lodash from "lodash";
+export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 #### Do
 
 ```jsx files
 // package.json
-{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "4.17.21" } }
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
 // src/app.jsx
 import lodash from "lodash";
 export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 ### TypeScript
@@ -180,16 +237,44 @@ export const App = () => <p>{String(lodash)}</p>;
 // src/app.ts
 import lodash from "lodash";
 console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (dependencies)
+
+```ts files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
+// src/app.ts
+import lodash from "lodash";
+console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (devDependencies)
+
+```ts files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0" }, "devDependencies": { "lodash": "^4.17.21" } }
+// src/app.ts
+import lodash from "lodash";
+console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 #### Do
 
 ```ts files
 // package.json
-{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "4.17.21" } }
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
 // src/app.ts
 import lodash from "lodash";
 console.log(lodash);
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 ### TSX
@@ -202,16 +287,44 @@ console.log(lodash);
 // src/app.tsx
 import lodash from "lodash";
 export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (dependencies)
+
+```tsx files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
+// src/app.tsx
+import lodash from "lodash";
+export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
+```
+
+#### Fixed (devDependencies)
+
+```tsx files
+// package.json
+{ "name": "app", "dependencies": { "react": "19.0.0" }, "devDependencies": { "lodash": "^4.17.21" } }
+// src/app.tsx
+import lodash from "lodash";
+export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 #### Do
 
 ```tsx files
 // package.json
-{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "4.17.21" } }
+{ "name": "app", "dependencies": { "react": "19.0.0", "lodash": "^4.17.21" } }
 // src/app.tsx
 import lodash from "lodash";
 export const App = () => <p>{String(lodash)}</p>;
+// node_modules/lodash/package.json
+{ "name": "lodash", "version": "4.17.21" }
 ```
 
 ---

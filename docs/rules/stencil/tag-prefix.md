@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/conventions` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `prefix` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming a tag changes every page that uses it) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: which part of the tag the project's prefix replaces, or whether it is added in front, is the author's; every page that uses the element follows the new tag (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 

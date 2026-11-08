@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — W-175: the module-graph queries and nine js rows (step 4 gated)  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** (coordinator) build the graph queries the ten W-139 js rows need and the rows: `import/named`, `default`, `namespace`, `no-named-as-default`, `no-named-as-default-member`, `no-rename-default`, the cross-module half of `import/export`, `no-cycle`, `no-deprecated`, `no-unused-modules`; records first; measure against L8; for `no-unnecessary-polyfills` write the data proposal and gate it.
+- **Done:** SR-PROJECT-GRAPH decision 6 amended (the queries, what stays silent, the cost). `crates/codelaw-graph/src/names.rs` and the compile checks in `query.rs`; one fact, `FileFacts::default_name` (`FACTS_VERSION` 7); 13 graph tests on virtual repos. Ten `preview` rules in `packs/js/rules/js/` with cases, written from eslint-plugin-import 2.32.0 and import-x 4.17.1's packed `lib/` and docs (`npm pack`, read in the scratchpad, nothing copied); `suggest` for `import-named`, `import-namespace` (the nearest export, local name kept) and `import-no-unused-modules`; `manual` with `restructure` or `value` for the rest. `codelaw test packs/js` 891 rules · 0 failed; `rules lint packs/js` 0. Checked on jotai and zustand. Step 4: the `data-polyfills` proposal and the one question are in the item file and the inbox.
+- **Decided / left open:** the tranche A five went into the opt-in `js/project`, not `js/recommended` as W-139's method says — a project rule builds the graph, which `check_cold_10k` would pay for on every JavaScript repo; the decider may overrule (SR-RULE-PACKS decision 18 names it). `js/import-export` (tranche A, slice 25) is still in no preset. Open for the decider: the `data-polyfills` package (L6 decision 15 pattern, no dependency). `corpus.toml` counts for the ten rules wait for the js refresh in W-169.
+- **Mistakes:** the shared `CARGO_TARGET_DIR` holds one `target/debug/codelaw`, which another agent's build had replaced when I ran my cases (the old binary said `unknown graph: import: key`); every test run now uses a copy of the binary made right after my own build.
+- **Next:** Arpit's ruling on `data-polyfills`; then `js/no-unnecessary-polyfills` and a corpus refresh for the ten rules.
+
+---
+
 ## 2026-11-08 — W-139 strand W-139-js, round 3: slices 24–26 (79 rules, 4 links; W-175 filed)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) the js strand's round 3 — build the 61 scope rows on W-162's capabilities and the scope model, the 37 natives in Rust, the 29 graph rows where the project graph can express them (one new item for the rest); leave the 16 type rows to W-105.

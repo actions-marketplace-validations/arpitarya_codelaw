@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every use of the name, also in scripts) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case in every declaration, `var()`, `style` attribute and script string that names it, as one fix; a guess: a use in markup or a string literal may be another word, so the rename is a diff to accept (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/custom-property-pattern` |
@@ -169,8 +169,8 @@ codelaw config --print --for <file>               # the resolved setting, and wh
 
 ## How to fix
 
-1. Rename the custom property to match the pattern.
-2. Update every `var()` and script that reads it.
+1. Accept the rename: `codelaw fix --unsafe` renames the custom property everywhere it is declared or read (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it and its readers by hand.
 
 ## Examples
 
@@ -191,6 +191,35 @@ codelaw config --print --for <file>               # the resolved setting, and wh
   --brand-color: red;
 }
 ```
+
+#### Don't
+
+```css
+/* src/a.css */
+:root {
+  --brandColor: red;
+}
+.a {
+  color: var(--brandColor);
+}
+// src/a.js
+document.body.style.setProperty("--brandColor", "blue");
+```
+
+#### Do
+
+```css
+/* src/a.css */
+:root {
+  --brand-color: red;
+}
+.a {
+  color: var(--brand-color);
+}
+// src/a.js
+document.body.style.setProperty("--brand-color", "blue");
+```
+
 ### SCSS
 
 #### Don't

@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every `@include` of the mixin) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when every file that includes the mixin reaches it through `@use`, `@forward` or `@import`: the rename then changes every `@include`, as one fix; a user that reaches it another way makes it a diff to accept, and another file defining the same name offers none (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/at-mixin-pattern` |
@@ -168,8 +168,9 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ## How to fix
 
-1. Rename the mixin to match the pattern.
-2. Rename every `@include` of it.
+1. `codelaw fix` renames the mixin to kebab-case here and in every `@include` of it.
+2. Where the rename is a suggestion, check the diff and accept it with `codelaw fix --unsafe`.
+3. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -188,6 +189,34 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 ```scss
 @mixin button-base {
   color: red;
+}
+```
+
+#### Don't
+
+```scss
+// src/_mixins.scss
+@mixin ButtonBase {
+  color: red;
+}
+// src/app.scss
+@use "mixins";
+.a {
+  @include mixins.ButtonBase;
+}
+```
+
+#### Do
+
+```scss
+// src/_mixins.scss
+@mixin button-base {
+  color: red;
+}
+// src/app.scss
+@use "mixins";
+.a {
+  @include mixins.button-base;
 }
 ```
 

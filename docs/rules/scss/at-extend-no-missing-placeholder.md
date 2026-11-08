@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/recommended` at `error` · `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (turning a class into a placeholder changes the stylesheet's output) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (restructure: turning the class into a placeholder removes the class from the compiled CSS, which the markup that uses it needs; moving the shared declarations into a `%placeholder` is a change to the stylesheet's design (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/at-extend-no-missing-placeholder` |

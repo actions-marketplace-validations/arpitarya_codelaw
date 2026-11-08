@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the module the name comes from has to be confirmed by a person) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when exactly one star import of the file binds the name and the module is the project's: that star becomes the names the file uses from it, read from the module; a suggestion when the file has two star imports. A name no project module binds offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F405` |
@@ -120,8 +120,8 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 
 ## How to fix
 
-1. Find which star-imported module provides the name.
-2. Import it by name from that module.
+1. `codelaw fix` replaces the star that binds the name with the names the file uses from it, where the module is the project's.
+2. Otherwise find which star-imported module provides the name, and import it by name from that module.
 
 ## Examples
 
@@ -130,17 +130,31 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 #### Don't
 
 ```py
-from os.path import *
+# shapes.py
+def area(r):
+    return 3.14 * r * r
 
-print(join("a", "b"))
+def perimeter(r):
+    return 6.28 * r
+# app.py
+from shapes import *
+
+print(area(2))
 ```
 
 #### Do
 
 ```py
-from os.path import join
+# shapes.py
+def area(r):
+    return 3.14 * r * r
 
-print(join("a", "b"))
+def perimeter(r):
+    return 6.28 * r
+# app.py
+from shapes import area
+
+print(area(2))
 ```
 
 ---

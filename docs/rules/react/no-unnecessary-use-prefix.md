@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming the function means renaming every caller, in other files too) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when nothing imports the function: it is renamed without its `use` with every call in its module; an exported one is renamed in every project module that imports it too, as one fix, a diff to accept (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `@eslint-react/no-unnecessary-use-prefix` |
@@ -123,8 +123,8 @@ codelaw config --print --for <file>                   # the resolved setting, an
 
 ## How to fix
 
-1. Rename the function without the `use` prefix (`useFormat` → `format`), and rename its callers.
-2. If it is meant to become a hook, leave a comment naming the hook it will call.
+1. `codelaw fix` drops the `use` prefix and renames every call; for an exported one, check the diff and accept it with `codelaw fix --unsafe`.
+2. If the function should be a hook, make it call one instead (keep its name).
 
 ## Examples
 
@@ -166,6 +166,14 @@ const greeting = (name) => <p>Hello, {name}</p>;
 
 ```ts
 function useTotal(items: number[]): number {
+  return items.reduce((a, b) => a + b, 0);
+}
+```
+
+#### Fixed
+
+```ts
+function total(items: number[]): number {
   return items.reduce((a, b) => a + b, 0);
 }
 ```

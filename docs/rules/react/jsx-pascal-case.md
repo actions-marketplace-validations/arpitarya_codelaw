@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the new name is the author's, and every import of the component follows it) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the component is renamed in PascalCase where it is declared and wherever it is used, its importers and closing tags included, as one fix; a diff to accept, as code outside the project may import it. A component this project doesn't declare offers no rename (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-react/jsx-pascal-case` |
@@ -124,7 +124,8 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ## How to fix
 
-1. Rename the component to PascalCase (`UserCard`) where it's defined and everywhere it's imported.
+1. Accept the rename: `codelaw fix --unsafe` renames the component where it is declared and wherever it is used (the diff names each file).
+2. A component this project doesn't declare offers no rename: rename it by hand.
 
 ## Examples
 
@@ -133,13 +134,43 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 #### Don't
 
 ```js
+function User_Card() {
+  return <p />;
+}
 const c = <User_Card />;
 ```
 
 #### Do
 
 ```js
+function UserCard() {
+  return <p />;
+}
 const c = <UserCard />;
+```
+
+#### Don't
+
+```js
+// src/card.jsx
+export function User_Card() {
+  return <p />;
+}
+// src/app.jsx
+import { User_Card } from "./card";
+export const App = () => <User_Card></User_Card>;
+```
+
+#### Do
+
+```js
+// src/card.jsx
+export function UserCard() {
+  return <p />;
+}
+// src/app.jsx
+import { UserCard } from "./card";
+export const App = () => <UserCard></UserCard>;
 ```
 
 ### JSX
@@ -147,13 +178,43 @@ const c = <UserCard />;
 #### Don't
 
 ```jsx
+function User_Card() {
+  return <p />;
+}
 const c = <User_Card />;
 ```
 
 #### Do
 
 ```jsx
+function UserCard() {
+  return <p />;
+}
 const c = <UserCard />;
+```
+
+#### Don't
+
+```jsx
+// src/card.jsx
+export function User_Card() {
+  return <p />;
+}
+// src/app.jsx
+import { User_Card } from "./card";
+export const App = () => <User_Card></User_Card>;
+```
+
+#### Do
+
+```jsx
+// src/card.jsx
+export function UserCard() {
+  return <p />;
+}
+// src/app.jsx
+import { UserCard } from "./card";
+export const App = () => <UserCard></UserCard>;
 ```
 
 ### TSX
@@ -161,13 +222,43 @@ const c = <UserCard />;
 #### Don't
 
 ```tsx
+function User_Card() {
+  return <p />;
+}
 const c = <User_Card />;
 ```
 
 #### Do
 
 ```tsx
+function UserCard() {
+  return <p />;
+}
 const c = <UserCard />;
+```
+
+#### Don't
+
+```tsx
+// src/card.tsx
+export function User_Card() {
+  return <p />;
+}
+// src/app.tsx
+import { User_Card } from "./card";
+export const App = () => <User_Card></User_Card>;
+```
+
+#### Do
+
+```tsx
+// src/card.tsx
+export function UserCard() {
+  return <p />;
+}
+// src/app.tsx
+import { UserCard } from "./card";
+export const App = () => <UserCard></UserCard>;
 ```
 
 ---

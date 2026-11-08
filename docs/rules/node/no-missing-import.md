@@ -11,11 +11,11 @@
 | **Turned on by** | `codelaw:node/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right path depends on where the module went) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the specifier is pointed at the project file nearest in spelling that exists, or one of the nearest when several tie (choices); a diff to accept, as the module may have moved elsewhere or need restoring. No file near in spelling offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Scope** | project — reads the whole repository through the project graph, not one file at a time |
-| **Ported from** | `eslint-plugin-n/no-missing-import` |
+| **Ported from** | `eslint-plugin-n/no-missing-import`, `eslint-plugin-import/no-unresolved` |
 
 ## What it checks
 
@@ -121,8 +121,9 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 
 ## How to fix
 
-1. Point the specifier at the file that exists (check the extension and the folder), or restore the missing file.
-2. A path to a generated file the repo doesn't hold is reported too: generate it before `codelaw check`, or suppress the line with a reason.
+1. Accept the fix where it is offered: `codelaw fix --unsafe` points the specifier at the nearest file that exists (with choices, pick one).
+2. Otherwise point it at the file that exists (check the extension and the folder), or restore the missing file.
+3. A path to a generated file the repo doesn't hold is reported too: generate it before `codelaw check`, or suppress the line with a reason.
 
 ## Examples
 

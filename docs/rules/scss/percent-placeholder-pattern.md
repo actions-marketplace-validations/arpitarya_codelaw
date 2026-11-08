@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every `@extend` of the placeholder) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case here and in every `@extend` of the project, as one fix; a placeholder is global, so an `@extend` elsewhere may mean another one, and the rename is a diff to accept (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/percent-placeholder-pattern` |
@@ -168,8 +168,8 @@ codelaw config --print --for <file>                    # the resolved setting, a
 
 ## How to fix
 
-1. Rename the placeholder to match the pattern.
-2. Rename every `@extend` of it.
+1. Accept the rename: `codelaw fix --unsafe` renames the placeholder and every `@extend` of it (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -188,6 +188,34 @@ codelaw config --print --for <file>                    # the resolved setting, a
 ```scss
 %button-base {
   color: red;
+}
+```
+
+#### Don't
+
+```scss
+// src/_base.scss
+%ButtonBase {
+  color: red;
+}
+// src/button.scss
+@use "base";
+.button {
+  @extend %ButtonBase;
+}
+```
+
+#### Do
+
+```scss
+// src/_base.scss
+%button-base {
+  color: red;
+}
+// src/button.scss
+@use "base";
+.button {
+  @extend %button-base;
 }
 ```
 

@@ -14,6 +14,7 @@ pub mod facts;
 pub mod flags;
 pub mod link;
 pub mod modules;
+pub mod names;
 pub mod query;
 pub mod resolve;
 
@@ -25,12 +26,14 @@ pub use link::{BuildTimes, Graph, GraphInput, Manifest, Module, Use, is_manifest
 pub use query::{GraphFinding, GraphRule, Query, compile, refs, run, why_unused};
 
 /// Bumped whenever extraction changes: part of the facts cache key.
-pub const FACTS_VERSION: &str = "graph-facts-6";
+pub const FACTS_VERSION: &str = "graph-facts-7";
 
 /// Whether the graph reads facts from a language.
 pub fn reads(language: codelaw_core::Language) -> bool {
     language.is_js_family() || matches!(language, codelaw_core::Language::Python | codelaw_core::Language::Css | codelaw_core::Language::Scss | codelaw_core::Language::Html)
 }
 
+#[cfg(test)]
+mod names_tests;
 #[cfg(test)]
 mod tests;

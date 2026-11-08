@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:data/codeowners` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `path`, `allow_unowned`, `ignore` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (who owns a path is a decision about people; the finding names the paths and the lines, and the owner is the team's to choose) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: who owns a path is a decision about people; the finding names the paths and the lines, and the owner is the team's to choose. A stale pattern's line is in `CODEOWNERS`, a plain-text config file `codelaw fix` never writes (SR-LAW-3 decision 10) (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `package.json`, `pyproject.toml`, `codelaw.toml` |

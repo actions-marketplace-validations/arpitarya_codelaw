@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/conventions` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (every caller of the function must be renamed too) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when nothing imports the function: it is renamed `use…` with every call in its module; an exported one is renamed in every project module that imports it too, as one fix, a diff to accept, as code outside the project may import it (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 
@@ -122,8 +122,8 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 
 ## How to fix
 
-1. Rename the function to start with `use` (e.g. `loadUser` → `useUser`).
-2. Rename its callers.
+1. `codelaw fix` renames the function `use…` with every call to it; for an exported one, check the diff and accept it with `codelaw fix --unsafe`.
+2. A name taken already, or an importer that reaches it through a namespace, `require` or a re-export, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -145,6 +145,30 @@ function useCurrentUser() {
 }
 ```
 
+#### Don't
+
+```js
+// src/user.js
+export function currentUser() {
+  return useContext(UserContext);
+}
+// src/app.js
+import { currentUser } from "./user";
+export const u = () => currentUser();
+```
+
+#### Do
+
+```js
+// src/user.js
+export function useCurrentUser() {
+  return useContext(UserContext);
+}
+// src/app.js
+import { useCurrentUser } from "./user";
+export const u = () => useCurrentUser();
+```
+
 ### JSX
 
 #### Don't
@@ -161,6 +185,30 @@ function currentUser() {
 function useCurrentUser() {
   return useContext(UserContext);
 }
+```
+
+#### Don't
+
+```jsx
+// src/user.jsx
+export function currentUser() {
+  return useContext(UserContext);
+}
+// src/app.jsx
+import { currentUser } from "./user";
+export const u = () => currentUser();
+```
+
+#### Do
+
+```jsx
+// src/user.jsx
+export function useCurrentUser() {
+  return useContext(UserContext);
+}
+// src/app.jsx
+import { useCurrentUser } from "./user";
+export const u = () => useCurrentUser();
 ```
 
 ### TypeScript
@@ -181,6 +229,30 @@ function useCurrentUser() {
 }
 ```
 
+#### Don't
+
+```ts
+// src/user.ts
+export function currentUser() {
+  return useContext(UserContext);
+}
+// src/app.ts
+import { currentUser } from "./user";
+export const u = () => currentUser();
+```
+
+#### Do
+
+```ts
+// src/user.ts
+export function useCurrentUser() {
+  return useContext(UserContext);
+}
+// src/app.ts
+import { useCurrentUser } from "./user";
+export const u = () => useCurrentUser();
+```
+
 ### TSX
 
 #### Don't
@@ -197,6 +269,30 @@ function currentUser() {
 function useCurrentUser() {
   return useContext(UserContext);
 }
+```
+
+#### Don't
+
+```tsx
+// src/user.tsx
+export function currentUser() {
+  return useContext(UserContext);
+}
+// src/app.tsx
+import { currentUser } from "./user";
+export const u = () => currentUser();
+```
+
+#### Do
+
+```tsx
+// src/user.tsx
+export function useCurrentUser() {
+  return useContext(UserContext);
+}
+// src/app.tsx
+import { useCurrentUser } from "./user";
+export const u = () => useCurrentUser();
 ```
 
 ---

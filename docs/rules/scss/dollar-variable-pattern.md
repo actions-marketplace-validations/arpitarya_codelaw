@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:scss/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every use of the variable) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when every file that uses the variable reaches it through `@use`, `@forward` or `@import`: the rename then changes every use, as one fix; a user that reaches it another way makes the rename a diff to accept, and another file declaring the same name offers none (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Ported from** | `stylelint-scss/dollar-variable-pattern` |
@@ -168,8 +168,9 @@ codelaw config --print --for <file>                # the resolved setting, and w
 
 ## How to fix
 
-1. Rename the variable to match the pattern.
-2. Rename every use of it.
+1. `codelaw fix` renames the variable to kebab-case here and in every file that uses it.
+2. Where the rename is a suggestion (a user reaches the file some other way), check the diff and accept it with `codelaw fix --unsafe`.
+3. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it and every use by hand.
 
 ## Examples
 
@@ -185,6 +186,30 @@ $FontSize: 16px;
 
 ```scss
 $font-size: 16px;
+```
+
+#### Don't
+
+```scss
+// src/_tokens.scss
+$FontSize: 16px;
+// src/app.scss
+@use "tokens";
+.a {
+  font-size: tokens.$FontSize;
+}
+```
+
+#### Do
+
+```scss
+// src/_tokens.scss
+$font-size: 16px;
+// src/app.scss
+@use "tokens";
+.a {
+  font-size: tokens.$font-size;
+}
 ```
 
 ## Differences from the source
