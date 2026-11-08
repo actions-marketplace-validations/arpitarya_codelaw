@@ -4,7 +4,7 @@ title: "A void function returns no value"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "either the return type or the returned value is wrong; the author decides which"
-fix_pending: "suggest-choices; needs type-info (W-162)"
+fix_pending: "suggest-choices; needs type-info (W-105)"
 stability: preview
 ported_from: [biome/correctness/noVoidTypeReturn]
 since: 0.5.0

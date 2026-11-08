@@ -187,7 +187,15 @@ module_rule!(ClassNaming, "css-modules/class-naming", |sheet, src, ctx, out| {
             } else {
                 format!("`styles.{}` is not valid JavaScript, so it needs brackets", c.name)
             };
-            out.push(finding(c.start, c.end, format!("The class `{}`: {why}", c.name)));
+            let mut f = finding(c.start, c.end, format!("The class `{}`: {why}", c.name));
+            // Renamed in the module and in every `styles.…` that reads it
+            // (SR-MULTI-FILE-FIXES), when the convention gives the name.
+            let new = if style == "kebab" { crate::multi_file::kebab(&c.name) } else { crate::multi_file::camel(&c.name) };
+            let fits = if style == "kebab" { crate::multi_file::is_kebab(&new) } else { identifier(&new) };
+            if new != c.name && fits && !c.name.contains("#{") {
+                f.edits = crate::multi_file::rename(ctx, crate::multi_file::NameKind::ModuleClass, &c.name, &new).map(crate::multi_file::Plan::edits).unwrap_or_default();
+            }
+            out.push(f);
         }
     }
 });

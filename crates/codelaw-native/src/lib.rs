@@ -41,6 +41,7 @@ mod js_console;
 mod size;
 mod literals;
 mod markers;
+mod multi_file;
 mod test_markers;
 mod no_undef;
 mod no_unreachable;
@@ -62,6 +63,7 @@ mod regexp;
 pub mod regex_ast;
 mod regexp_rules;
 mod react_ts_extra;
+mod renames;
 mod rewrites;
 mod css_lists;
 mod css_style;
@@ -70,6 +72,7 @@ mod html_extra;
 mod md_extra;
 mod oxlint_extra;
 mod js_parity;
+mod py_parity;
 mod stencil;
 mod tailwind;
 mod typescript;
@@ -79,7 +82,7 @@ mod useless_escape;
 mod use_instead;
 mod util;
 
-use codelaw_core::{FixChoice, FixClass, Language, Severity, TextEdit};
+use codelaw_core::{FileEdit, FixChoice, FixClass, Language, Severity, TextEdit};
 use codelaw_lang::SyntaxNode;
 use codelaw_semantic::SemanticModel;
 use std::collections::BTreeMap;
@@ -285,9 +288,71 @@ pub fn as_suggestion(mut edits: Vec<TextEdit>) -> Vec<TextEdit> {
     edits
 }
 
-/// A finding's edits without the markers `check` wrote into them.
+/// A finding's edits in its own file, without the markers `check` wrote
+/// into them: the edits [`in_files`] put in other files are left out.
 pub fn plain_edits(edits: Vec<TextEdit>) -> Vec<TextEdit> {
-    edits.into_iter().filter(|e| e.start != SUGGEST_AT && e.start != CHOICE_AT).collect()
+    edits.into_iter().take_while(|e| !is_file_marker(e)).filter(|e| e.start != SUGGEST_AT && e.start != CHOICE_AT).collect()
+}
+
+/// The marker opening one other file's edits ([`in_files`]): its text is
+/// the file's path.
+const FILE_AT: usize = usize::MAX - 2;
+/// The marker of a file whose byte-order mark the fix removes: its text is
+/// the file's path.
+const BOM_AT: usize = usize::MAX - 3;
+
+fn is_file_marker(e: &TextEdit) -> bool {
+    (e.start == FILE_AT || e.start == BOM_AT) && e.end == e.start
+}
+
+/// A multi-file fix written into a finding's edits (SR-MULTI-FILE-FIXES
+/// decision 1), so `check` can compute it where it has the tree: this
+/// file's edits, then each other file's, opened by a marker carrying its
+/// path. A `FileEdit` for this file's own path is in the host file's
+/// offsets (an embedded region's rule reaching outside its region). The
+/// engine reads them back with [`files_in`]; [`plain_edits`] keeps only
+/// the first part. Inside a choice, as one of [`choice_edits`]'s edit sets.
+pub fn in_files(own: Vec<TextEdit>, files: Vec<FileEdit>) -> Vec<TextEdit> {
+    let mut out = own;
+    for f in files {
+        if f.edits.is_empty() && !f.strip_bom {
+            continue;
+        }
+        let at = if f.strip_bom { BOM_AT } else { FILE_AT };
+        out.push(TextEdit { start: at, end: at, text: f.path });
+        out.extend(f.edits);
+    }
+    out
+}
+
+/// The other files' edits [`in_files`] wrote into a finding's `edits`.
+pub fn files_in(edits: &[TextEdit]) -> Vec<FileEdit> {
+    let mut out: Vec<FileEdit> = Vec::new();
+    // The file later edits go to, once a marker opened one.
+    let mut at: Option<usize> = None;
+    for e in edits {
+        if e.start == SUGGEST_AT || e.start == CHOICE_AT {
+            continue;
+        }
+        if is_file_marker(e) {
+            let i = match out.iter().position(|f| f.path == e.text) {
+                Some(i) => i,
+                None => {
+                    out.push(FileEdit::new(e.text.clone(), Vec::new()));
+                    out.len() - 1
+                }
+            };
+            out[i].strip_bom |= e.start == BOM_AT;
+            at = Some(i);
+        } else if let Some(i) = at {
+            out[i].edits.push(e.clone());
+        }
+    }
+    for f in &mut out {
+        f.edits.sort_by_key(|e| (e.start, e.end));
+    }
+    out.sort_by(|a, b| a.path.cmp(&b.path));
+    out
 }
 
 /// The marker opening one choice in a finding's `edits` ([`choice_edits`]):
@@ -301,14 +366,14 @@ const CHOICE_AT: usize = usize::MAX;
 /// finding's `edits` once it has choices. A choice with no edits is
 /// dropped; with fewer than two left, the one left is the finding's edit.
 pub fn choice_edits(choices: Vec<FixChoice>) -> Vec<TextEdit> {
-    let choices: Vec<FixChoice> = choices.into_iter().filter(|c| !c.edits.is_empty()).collect();
+    let choices: Vec<FixChoice> = choices.into_iter().filter(|c| !c.edits.is_empty() || !c.files.is_empty()).collect();
     if choices.len() < 2 {
-        return choices.into_iter().next().map(|c| c.edits).unwrap_or_default();
+        return choices.into_iter().next().map(|c| in_files(c.edits, c.files)).unwrap_or_default();
     }
     let mut out = Vec::new();
     for c in choices {
         out.push(TextEdit { start: CHOICE_AT, end: CHOICE_AT, text: format!("{}{}", if c.default { '1' } else { '0' }, c.label) });
-        out.extend(c.edits);
+        out.extend(in_files(c.edits, c.files));
     }
     out
 }
@@ -316,26 +381,39 @@ pub fn choice_edits(choices: Vec<FixChoice>) -> Vec<TextEdit> {
 /// The choices [`choice_edits`] wrote into `edits`; none when it wrote
 /// plain edits.
 pub fn choices_in(edits: &[TextEdit]) -> Vec<FixChoice> {
-    let mut out: Vec<FixChoice> = Vec::new();
+    // Each choice's edit set, as `in_files` wrote it.
+    let mut sets: Vec<(FixChoice, Vec<TextEdit>)> = Vec::new();
     for e in edits {
         if e.start == SUGGEST_AT {
             continue;
         }
         if e.start == CHOICE_AT && e.end == CHOICE_AT {
             let (flag, label) = e.text.split_at(1);
-            out.push(FixChoice { label: label.to_owned(), default: flag == "1", edits: Vec::new() });
-        } else if let Some(c) = out.last_mut() {
-            c.edits.push(e.clone());
+            sets.push((FixChoice::new(label, flag == "1", Vec::new()), Vec::new()));
+        } else if let Some((_, set)) = sets.last_mut() {
+            set.push(e.clone());
         } else {
             return Vec::new();
         }
     }
-    out
+    sets.into_iter()
+        .map(|(mut c, set)| {
+            c.files = files_in(&set);
+            c.edits = plain_edits(set);
+            c
+        })
+        .collect()
 }
 
 /// One labelled choice.
 pub fn choice(label: impl Into<String>, default: bool, edits: Vec<TextEdit>) -> FixChoice {
-    FixChoice { label: label.into(), default, edits }
+    FixChoice::new(label, default, edits)
+}
+
+/// One labelled choice whose edits reach other files
+/// (SR-MULTI-FILE-FIXES decision 1).
+pub fn choice_in_files(label: impl Into<String>, default: bool, edits: Vec<TextEdit>, files: Vec<FileEdit>) -> FixChoice {
+    FixChoice { label: label.into(), default, edits, files }
 }
 
 /// A second place for a finding, in a plain-text config file
@@ -408,6 +486,12 @@ static TODO_MD: markers::TodoMarker = markers::TodoMarker { id: "md/todo-marker"
 
 /// Every native rule; ids are unique, order doesn't matter.
 static REGISTRY: &[&dyn NativeRule] = &[
+    &renames::NewCap,
+    &renames::JsxPascalCase,
+    &renames::HookPrefix,
+    &renames::NoDefaultExport,
+    &renames::NoDefaultImport,
+    &renames::JsxNoUndef,
     &TODO_JS,
     &TODO_PY,
     &TODO_CSS,
@@ -869,7 +953,7 @@ pub fn registry() -> &'static [&'static dyn NativeRule] {
 }
 
 /// `REGISTRY` and the rule families kept in their own lists.
-static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).copied().collect());
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(py_parity::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]

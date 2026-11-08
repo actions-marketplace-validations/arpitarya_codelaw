@@ -40,7 +40,7 @@ pub fn fingerprints(diagnostics: &[Diagnostic]) -> Vec<String> {
 /// The class a reader can act on: a fix with no edits is `manual`.
 fn effective_class(d: &Diagnostic) -> &'static str {
     match d.fix {
-        FixClass::Auto | FixClass::Suggest if d.edits.is_empty() => "manual",
+        FixClass::Auto | FixClass::Suggest if d.edits.is_empty() && d.files.is_empty() && d.choices.is_empty() => "manual",
         c => c.name(),
     }
 }
@@ -338,6 +338,7 @@ mod tests {
             data: None,
             choices: Vec::new(),
             fix_exception: None,
+            files: Vec::new(),
         }
     }
 

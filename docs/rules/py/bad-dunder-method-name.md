@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the intended name is the author's) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/PLW3201` |
+| **Ported from** | `ruff/PLW3201`, `pylint/bad-dunder-name` |
 
 ## What it checks
 

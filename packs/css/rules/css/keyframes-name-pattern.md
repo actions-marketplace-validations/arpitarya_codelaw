@@ -2,9 +2,8 @@
 id: css/keyframes-name-pattern
 title: "Keyframes names are kebab-case"
 languages: [css, scss]
-fix: manual
-fix_reason: "renaming must update every `animation` that uses the name"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "renamed to kebab-case in its `@keyframes` and in every `animation` and `animation-name` of the project, as one fix; a diff to accept, as a stylesheet may build the name another way (SR-MULTI-FILE-FIXES)"
 stability: stable
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$", description: "a regular expression names must match" }
@@ -22,8 +21,8 @@ native: css/keyframes-name-pattern
 
 ## How to fix
 
-1. Rename the keyframes to match the pattern.
-2. Update every `animation` and `animation-name` that uses it.
+1. Accept the rename: `codelaw fix --unsafe` renames the keyframes and every `animation` and `animation-name` that uses them (the diff names each file).
+2. A quoted name, a pattern that isn't kebab-case, or a new name already taken offers no rename: rename it by hand.
 
 ## Examples
 
@@ -48,6 +47,37 @@ native: css/keyframes-name-pattern
   }
 }
 ```
+
+#### Don't
+
+```css
+/* src/fade.css */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+/* src/card.css */
+.card {
+  animation: fadeIn 1s;
+}
+```
+
+#### Do
+
+```css
+/* src/fade.css */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* src/card.css */
+.card {
+  animation: fade-in 1s;
+}
+```
+
 ### SCSS
 
 #### Don't

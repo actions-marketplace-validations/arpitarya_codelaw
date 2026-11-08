@@ -59,6 +59,16 @@ pub enum Primitive {
     FixMarker,
     /// `graph: { flags: registry }`: remove an entry with no read left.
     RemoveEntry,
+    /// `graph: { import: { declared: false } }`: add the package to the
+    /// nearest `package.json` at the version installed (SR-MULTI-FILE-FIXES;
+    /// the engine computes it, as it reads `node_modules`).
+    AddDependency,
+    /// `graph: { import: { resolves: false } }`: point the specifier at the
+    /// project file nearest in spelling.
+    NearestPath,
+    /// `graph: { module: { classes: undefined } }`: correct `styles.x` to
+    /// the module's nearest class.
+    NearestClass,
 }
 
 /// A `fix:` of `when`/`else` branches over `local_references`.
@@ -97,7 +107,10 @@ fn primitives(v: Option<&Value>) -> Result<Vec<Primitive>, String> {
             "keep-branch" => Ok(Primitive::KeepBranch),
             "fix-marker" => Ok(Primitive::FixMarker),
             "remove-entry" => Ok(Primitive::RemoveEntry),
-            other => Err(format!("unknown graph fix primitive `{other}` (strip-export-keyword, remove-declaration, remove-rule, respell, keep-branch, fix-marker, remove-entry)")),
+            "add-dependency" => Ok(Primitive::AddDependency),
+            "nearest-path" => Ok(Primitive::NearestPath),
+            "nearest-class" => Ok(Primitive::NearestClass),
+            other => Err(format!("unknown graph fix primitive `{other}` (strip-export-keyword, remove-declaration, remove-rule, respell, keep-branch, fix-marker, remove-entry, add-dependency, nearest-path, nearest-class)")),
         })
         .collect()
 }
@@ -248,8 +261,18 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
                 _ => "remove-entry",
             }));
         }
-    } else if used.any(|p| matches!(p, Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry)) {
+    } else if used.clone().any(|p| matches!(p, Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry)) {
         return Err("`respell` is the fix of a `graph: terms:` rule only; `keep-branch`, `fix-marker` and `remove-entry` of a `graph: flags:` rule".into());
+    }
+    // Each fix read from other files has its one query.
+    for (p, ok, name) in [
+        (Primitive::AddDependency, matches!(query, Query::Imports { check: ImportCheck::Undeclared, .. }), "`add-dependency` is the fix of a `graph: import: { declared: false }` rule"),
+        (Primitive::NearestPath, matches!(query, Query::Imports { check: ImportCheck::Missing, .. }), "`nearest-path` is the fix of a `graph: import: { resolves: false }` rule"),
+        (Primitive::NearestClass, query == Query::UndefinedModuleClasses, "`nearest-class` is the fix of a `graph: module: { classes: undefined }` rule"),
+    ] {
+        if !ok && gf.when_local.iter().chain(&gf.otherwise).any(|x| *x == p) {
+            return Err(name.into());
+        }
     }
     Ok(GraphRule { query, fix: gf, certainty_from_dynamic })
 }
@@ -409,7 +432,7 @@ fn fix_edits(fix: &GraphFix, d: &Decl, python_all: bool) -> Vec<TextEdit> {
                     return vec![TextEdit::delete(a, b)];
                 }
             }
-            Primitive::RemoveRule | Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry => {}
+            Primitive::RemoveRule | Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry | Primitive::AddDependency | Primitive::NearestPath | Primitive::NearestClass => {}
         }
     }
     Vec::new()

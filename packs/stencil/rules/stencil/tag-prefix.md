@@ -3,8 +3,8 @@ id: stencil/tag-prefix
 title: "Component tags start with the project's prefix"
 languages: [typescript, tsx]
 fix: manual
-fix_reason: "renaming a tag changes every page that uses it"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "value: which part of the tag the project's prefix replaces, or whether it is added in front, is the author's; every page that uses the element follows the new tag (W-162)"
+fix_exception: value
 stability: preview
 options:
   prefix: { type: string, default: "", description: "the prefix every tag must start with" }

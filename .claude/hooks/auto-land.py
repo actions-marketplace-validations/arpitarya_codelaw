@@ -7,7 +7,8 @@ Claude Code does.
                              so `lockmaster start` records whose change it is;
                              land waiting handoffs in the background
     edit   PostToolUse       note each file this session writes in main's checkout
-    stop   Stop              say what earlier landings did; tell the agent, once,
+    stop   Stop              say what earlier landings did (and, once, a landing
+                             waiting on main's checkout); tell the agent, once,
                              about a landing held back, a handoff that did not
                              land, or edits left in main's checkout; then land
                              this session's open changes (they stay open) and
@@ -16,14 +17,18 @@ Claude Code does.
                              background (the session is going away)
 
 lockmaster is found at `$LOCKMASTER_SRC`, in this repository's own `src/`
-(lockmaster itself), in a `lockmaster` checkout beside this repository, or as
-an installed package. Without it the hook does nothing.
+(lockmaster itself), as a package this interpreter imports, or in the
+environment of the `lockmaster` command on PATH (`uv tool install lockmaster`,
+pipx). A checkout beside the repository is never used: every other repository
+runs the published package (SR-ARCHITECTURE decision 17, W-16). Without it the
+hook does nothing.
 It never fails a session: every error is swallowed and the turn ends as usual.
 Python >= 3.9, standard library only.
 """
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -56,11 +61,23 @@ def candidates():
     root = main_root(ROOT)
     if root is not None:
         yield root / "src"
-        yield root.parent / "lockmaster" / "src"
+
+
+def command_env():
+    """The site-packages holding the `lockmaster` command's own package: a `uv tool`
+    or pipx install lives in an environment this interpreter cannot import."""
+    exe = shutil.which("lockmaster")
+    if not exe:
+        return None
+    env = Path(exe).resolve().parent.parent
+    for site in sorted(env.glob("lib/python3*/site-packages")) + [env / "Lib" / "site-packages"]:
+        if (site / "lockmaster" / "land.py").is_file():
+            return str(site)
+    return None
 
 
 def find_src():
-    """The directory to put on sys.path, "" when lockmaster is installed, None when absent."""
+    """The directory to put on sys.path, "" when lockmaster is importable, None when absent."""
     for c in candidates():
         if (c / "lockmaster" / "land.py").is_file():
             return str(c)
@@ -68,7 +85,7 @@ def find_src():
         import lockmaster  # noqa: F401
         return ""
     except ImportError:
-        return None
+        return command_env()
 
 
 def load():
@@ -83,7 +100,9 @@ def load():
 
 
 def command(src):
-    return "PYTHONPATH={} python3 -m lockmaster".format(src) if src else "lockmaster"
+    if not src or src == command_env():
+        return "lockmaster"
+    return "PYTHONPATH={} python3 -m lockmaster".format(src)
 
 
 def detach(src, args, cwd):
@@ -195,6 +214,10 @@ def stop(sid, hook):
     for c in step(repo.changes) or []:
         if (c.get("landed_at") or 0) > since and land._mine(c, sid, cwd):
             landed.append("landed {} as {}".format(c["item"], (c.get("landed") or "")[:10]))
+    # W-10: a landing waiting on main's checkout lands by itself; it is said, never blocks.
+    for item, reason in step(lambda: getattr(land, "waiting_reports", lambda *a, **k: [])(
+            repo, session=sid, cwd=cwd)) or []:
+        landed.append("{} is waiting: {}".format(item, reason))
     told = notes.setdefault("told_handoffs", {})
     for h in step(lambda: land.handoffs(repo)) or []:
         if h.get("reason") and told.get(h["item"]) != h.get("tried"):

@@ -912,7 +912,9 @@ css_rule!(CustomPropertyPattern, "css/custom-property-pattern", |sheet, src, ctx
     let mut report = |s: usize, e: usize, name: &str| {
         // An interpolated name (`--#{$prefix}color`) is known only once Sass runs.
         if !name.contains("#{") && !re.is_match(name) {
-            out.push(finding(s, e, format!("Custom property `--{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+            let mut f = finding(s, e, format!("Custom property `--{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::CustomProperty, name, &re, crate::multi_file::kebab);
+            out.push(f);
         }
     };
     for i in sheet.walk() {

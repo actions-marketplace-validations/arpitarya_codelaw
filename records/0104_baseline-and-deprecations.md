@@ -324,6 +324,7 @@ $ codelaw check --as-of 2027-04-01          # what breaks on the day it expires?
 - **The baseline is committed and reviewed**, and CODEOWNERS approval on it is a process cost.
 - **As-of defaults to the `HEAD` commit date**, so a long-lived branch sees its own date. Accepted; `--as-of` overrides.
 - **Counts, not locations:** a use removed and another added in the same file net out on the count. Accepted (Notion's trade-off). The touch policy is what closes the hole — see the veto condition.
+- **2026-11-08 (W-162):** a finding rebuilt from the baseline carries no other-file edits (its `files` is empty); the fingerprint is unchanged ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

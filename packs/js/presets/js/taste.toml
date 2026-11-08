@@ -15,3 +15,4 @@ description = "ESLint's style-only rules and two TSLint ones, which no defect st
 "js/sort-vars" = "warn"
 "js/switch-final-break" = "warn"
 "js/vars-on-top" = "warn"
+"js/one-var" = "warn"

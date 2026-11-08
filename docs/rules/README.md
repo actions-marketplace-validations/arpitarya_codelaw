@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2580 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2667 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 805 | 17 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 857 | 21 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 35 | 0 |
@@ -55,7 +55,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 741 | 21 |
+| [python](#python) | — | `codelaw-rules-python` | 776 | 31 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 2 | 0 |
@@ -78,6 +78,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/arrow-body-style`](js/arrow-body-style.md) | No braces around a single returned expression | `auto` | — | *[rules] only* |
 | [`js/assertions-in-test-cases`](js/assertions-in-test-cases.md) | A test makes an assertion | `manual` | — | `js/sonarjs` |
 | [`js/async-test-assertions`](js/async-test-assertions.md) | Await an async assertion in a test | `suggest` | — | `js/sonarjs` |
+| [`js/avoid-mutating-nested-properties-of-shallow-clones`](js/avoid-mutating-nested-properties-of-shallow-clones.md) | No changing a nested object of a shallow clone | `suggest` | — | `js/sonarjs` |
 | [`js/aws-apigateway-public-api`](js/aws-apigateway-public-api.md) | API Gateway methods require authorisation | `manual` | — | `js/sonarjs` |
 | [`js/aws-ec2-rds-dms-public`](js/aws-ec2-rds-dms-public.md) | No publicly accessible instance or database | `suggest` | — | `js/sonarjs` |
 | [`js/aws-ec2-unencrypted-ebs-volume`](js/aws-ec2-unencrypted-ebs-volume.md) | EBS volumes are encrypted | `suggest` | — | `js/sonarjs` |
@@ -97,6 +98,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/aws-sns-unencrypted-topics`](js/aws-sns-unencrypted-topics.md) | SNS topics are encrypted | `manual` | — | `js/sonarjs` |
 | [`js/aws-sqs-unencrypted-queue`](js/aws-sqs-unencrypted-queue.md) | SQS queues are encrypted | `manual` | — | `js/sonarjs` |
 | [`js/better-dom-traversing`](js/better-dom-traversing.md) | firstChild and firstElementChild rather than indexing the child lists | `suggest` | — | `js/strict` |
+| [`js/block-scoped-var`](js/block-scoped-var.md) | No `var` used outside the block that declares it | `manual` | — | *[rules] only* |
 | [`js/bool-param-default`](js/bool-param-default.md) | An optional boolean parameter has a default | `manual` | — | *[rules] only* |
 | [`js/branches-sharing-code`](js/branches-sharing-code.md) | No statement repeated at the start or end of both branches | `suggest` | — | *[rules] only* |
 | [`js/camelcase`](js/camelcase.md) | camelCase names | `suggest` | — | *[rules] only* |
@@ -116,9 +118,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/consistent-compound-words`](js/consistent-compound-words.md) | A compound word in a name is one word, not two | `suggest` | — | `js/strict` |
 | [`js/consistent-conditional-object-spread`](js/consistent-conditional-object-spread.md) | Spread a conditional object one way | `suggest` | — | `js/strict` |
 | [`js/consistent-date-clone`](js/consistent-date-clone.md) | Clone a Date without getTime() | `auto` | — | `js/strict` |
+| [`js/consistent-destructuring`](js/consistent-destructuring.md) | Use the name a property was destructured into | `suggest` | — | *[rules] only* |
 | [`js/consistent-empty-array-spread`](js/consistent-empty-array-spread.md) | Spread an array, not a string, in the empty branch | `auto` | — | `js/strict` |
 | [`js/consistent-existence-index-check`](js/consistent-existence-index-check.md) | Check indexOf against -1 the same way | `auto` | — | `js/strict` |
 | [`js/consistent-export-decorator-position`](js/consistent-export-decorator-position.md) | Class decorators before export, not between export and class | `auto` | — | `js/strict` |
+| [`js/consistent-function-scoping`](js/consistent-function-scoping.md) | No inner function that uses nothing from its outer function | `manual` | `checkArrowFunctions` | `js/strict` |
 | [`js/consistent-json-file-read`](js/consistent-json-file-read.md) | Read JSON files as text | `manual` | — | `js/strict` |
 | [`js/consistent-optional-chaining`](js/consistent-optional-chaining.md) | One base, one kind of member access, in an && or \|\| chain | `suggest` | — | `js/strict` |
 | [`js/consistent-return`](js/consistent-return.md) | return undefined explicitly beside valued returns | `suggest` | — | *[rules] only* |
@@ -163,6 +167,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/func-name-matching`](js/func-name-matching.md) | A named function expression has the name it is assigned to | `manual` | — | *[rules] only* |
 | [`js/func-names`](js/func-names.md) | A function expression has a name | `manual` | — | `js/taste` |
 | [`js/func-style`](js/func-style.md) | Functions as expressions, not declarations | `manual` | — | `js/taste` |
+| [`js/function-inside-loop`](js/function-inside-loop.md) | No function made in a loop that reads a variable the loop changes | `manual` | — | `js/sonarjs` |
 | [`js/function-name`](js/function-name.md) | Function names in camelCase | `manual` | — | *[rules] only* |
 | [`js/future-reserved-words`](js/future-reserved-words.md) | No variable named after a reserved word | `manual` | — | `js/sonarjs` |
 | [`js/generator-without-yield`](js/generator-without-yield.md) | A generator yields | `manual` | — | `js/sonarjs` |
@@ -196,10 +201,12 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/import-no-unassigned-import`](js/import-no-unassigned-import.md) | No import only for side effects | `manual` | — | *[rules] only* |
 | [`js/import-no-webpack-loader-syntax`](js/import-no-webpack-loader-syntax.md) | No webpack loaders in import paths | `manual` | — | *[rules] only* |
 | [`js/import-prefer-default-export`](js/import-prefer-default-export.md) | A module with one export makes it the default | `manual` | — | *[rules] only* |
+| [`js/inconsistent-function-call`](js/inconsistent-function-call.md) | No function called both with and without `new` | `manual` | — | `js/sonarjs` |
 | [`js/init-declarations`](js/init-declarations.md) | A variable is initialised where it is declared | `manual` | — | `js/taste` |
 | [`js/insecure-cookie`](js/insecure-cookie.md) | Cookies are secure | `suggest` | — | `js/sonarjs` |
 | [`js/insecure-jwt-token`](js/insecure-jwt-token.md) | No unsigned JWTs | `manual` | — | `js/sonarjs` |
 | [`js/inverted-assertion-arguments`](js/inverted-assertion-arguments.md) | Actual first, expected second | `suggest` | — | `js/sonarjs` |
+| [`js/isolated-functions`](js/isolated-functions.md) | No outside variables in a function that runs somewhere else | `manual` | `functions`, `comments` | `js/strict` |
 | [`js/iteration-fallback-style`](js/iteration-fallback-style.md) | Guard an optional loop source instead of iterating an empty fallback | `auto` | — | *[rules] only* |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
@@ -263,6 +270,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/max-statements`](js/max-statements.md) | No function with more than ten statements | `manual` | — | *[rules] only* |
 | [`js/max-switch-cases`](js/max-switch-cases.md) | No switch with more than 30 cases | `manual` | — | `js/sonarjs` |
 | [`js/max-union-size`](js/max-union-size.md) | No union of more than three types outside an alias | `manual` | — | *[rules] only* |
+| [`js/memoize-cache-key`](js/memoize-cache-key.md) | No `memoize()` of a function of several arguments without a resolver | `manual` | — | `js/sonarjs` |
+| [`js/misplaced-loop-counter`](js/misplaced-loop-counter.md) | No `for` loop whose update changes something its condition doesn't test | `manual` | — | `js/sonarjs` |
 | [`js/new-cap`](js/new-cap.md) | Constructors are capitalised | `manual` | — | *[rules] only* |
 | [`js/new-for-builtins`](js/new-for-builtins.md) | new for constructors, no new for Symbol and BigInt | `suggest` | — | `js/strict` |
 | [`js/no-abusive-eslint-disable`](js/no-abusive-eslint-disable.md) | Name the rules a disable comment turns off | `manual` | — | `js/strict` |
@@ -293,10 +302,12 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-await-in-promise-methods`](js/no-await-in-promise-methods.md) | No await inside Promise.all(\[...\]) | `suggest` | — | `js/strict` |
 | [`js/no-barrel-files`](js/no-barrel-files.md) | No barrel file | `manual` | — | *[rules] only* |
 | [`js/no-bitwise`](js/no-bitwise.md) | No bitwise operators | `suggest` | — | *[rules] only* |
+| [`js/no-blob-to-file`](js/no-blob-to-file.md) | No `File` made from a `Blob` only to be uploaded or turned into a URL | `suggest` | — | `js/strict` |
 | [`js/no-boolean-sort-comparator`](js/no-boolean-sort-comparator.md) | A sort comparator returns a number | `suggest` | — | `js/strict` |
 | [`js/no-break-in-nested-loop`](js/no-break-in-nested-loop.md) | No unlabelled break out of a loop or switch nested in a loop | `manual` | — | `js/strict` |
 | [`js/no-built-in-override`](js/no-built-in-override.md) | No declaration named like a built-in object | `manual` | — | *[rules] only* |
 | [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `suggest` | — | *[rules] only* |
+| [`js/no-canvas-to-image`](js/no-canvas-to-image.md) | No round trip of canvas pixels through an image | `manual` | — | `js/strict` |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `suggest` | — | `js/recommended` |
 | [`js/no-case-label-in-switch`](js/no-case-label-in-switch.md) | No label inside a case | `manual` | — | `js/sonarjs` |
 | [`js/no-chained-comparison`](js/no-chained-comparison.md) | No a < b < c | `suggest` | — | `js/strict` |
@@ -320,8 +331,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-constructor-return`](js/no-constructor-return.md) | A constructor returns no value | `auto` | — | *[rules] only* |
 | [`js/no-continue`](js/no-continue.md) | No continue | `auto` | — | `js/taste` |
 | [`js/no-control-regex`](js/no-control-regex.md) | No control characters in regular expressions | `manual` | — | `js/recommended` |
+| [`js/no-debounce-throttle-in-render`](js/no-debounce-throttle-in-render.md) | No `debounce()` or `throttle()` made while rendering | `manual` | — | `js/sonarjs` |
 | [`js/no-debug-commands-in-ui-tests`](js/no-debug-commands-in-ui-tests.md) | No pause or debug command left in a UI test | `auto` | — | `js/sonarjs` |
 | [`js/no-debugger`](js/no-debugger.md) | No debugger statements | `auto` | — | `js/recommended` |
+| [`js/no-declarations-before-early-exit`](js/no-declarations-before-early-exit.md) | No declaration above an early exit that doesn't need it | `auto` | — | `js/strict` |
 | [`js/no-default-export`](js/no-default-export.md) | No default exports | `manual` | — | `js/conventions` |
 | [`js/no-default-import`](js/no-default-import.md) | Import by name, not the default | `manual` | — | *[rules] only* |
 | [`js/no-default-utility-imports`](js/no-default-utility-imports.md) | No default import of lodash or underscore | `manual` | — | `js/sonarjs` |
@@ -347,6 +360,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-else-return`](js/no-else-return.md) | No else after return | `suggest` | — | `js/strict` |
 | [`js/no-empty`](js/no-empty.md) | No empty blocks | `auto` | — | `js/recommended` |
 | [`js/no-empty-character-class`](js/no-empty-character-class.md) | No empty character classes in regular expressions | `manual` | — | `js/recommended` |
+| [`js/no-empty-collection`](js/no-empty-collection.md) | No reading a collection nothing ever adds to | `manual` | — | `js/sonarjs` |
 | [`js/no-empty-file`](js/no-empty-file.md) | No empty file | `manual` | — | `js/strict` |
 | [`js/no-empty-function`](js/no-empty-function.md) | No empty functions | `manual` | — | *[rules] only* |
 | [`js/no-empty-parameterized-test-dataset`](js/no-empty-parameterized-test-dataset.md) | No each() with an empty table | `manual` | — | `js/sonarjs` |
@@ -361,6 +375,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | `js/sonarjs` |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-extend-native`](js/no-extend-native.md) | No changes to built-in prototypes | `manual` | — | *[rules] only* |
+| [`js/no-extra-arguments`](js/no-extra-arguments.md) | No call with more arguments than the function takes | `manual` | — | `js/sonarjs` |
 | [`js/no-extra-bind`](js/no-extra-bind.md) | No bind() on a function that does not use this | `auto` | — | *[rules] only* |
 | [`js/no-extra-boolean-cast`](js/no-extra-boolean-cast.md) | No needless !! or Boolean() in a condition | `auto` | — | `js/recommended` |
 | [`js/no-extra-label`](js/no-extra-label.md) | No label that is not needed | `auto` | — | *[rules] only* |
@@ -370,6 +385,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-floating-point-equality`](js/no-floating-point-equality.md) | No === between a computed number and a decimal literal | `suggest` | — | `js/sonarjs` |
 | [`js/no-focused-tests`](js/no-focused-tests.md) | No focused tests left in the suite | `suggest` | — | `js/markers`, `js/sonarjs` |
 | [`js/no-for-each`](js/no-for-each.md) | for…of rather than forEach | `suggest` | — | `js/strict` |
+| [`js/no-for-loop`](js/no-for-loop.md) | `for…of` instead of an index loop over an array | `auto` | — | `js/strict` |
 | [`js/no-forced-browser-interaction`](js/no-forced-browser-interaction.md) | No forced click or type in a UI test | `manual` | — | `js/sonarjs` |
 | [`js/no-func-assign`](js/no-func-assign.md) | A function declaration is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-global-assign`](js/no-global-assign.md) | No assignment to built-in globals | `manual` | — | `js/recommended` |
@@ -377,6 +393,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-global-is-nan`](js/no-global-is-nan.md) | Number.isNaN, not the global isNaN | `suggest` | — | `js/recommended` |
 | [`js/no-global-object-property-assignment`](js/no-global-object-property-assignment.md) | No properties on the global object | `manual` | — | `js/strict` |
 | [`js/no-global-this`](js/no-global-this.md) | No this at the top level | `manual` | — | `js/sonarjs` |
+| [`js/no-gratuitous-expressions`](js/no-gratuitous-expressions.md) | No condition already decided by an enclosing `if` | `manual` | — | `js/sonarjs` |
 | [`js/no-hardcoded-ip`](js/no-hardcoded-ip.md) | No hard-coded IP address | `manual` | — | `js/sonarjs` |
 | [`js/no-hardcoded-passwords`](js/no-hardcoded-passwords.md) | No password in the code | `manual` | — | `js/sonarjs` |
 | [`js/no-hardcoded-secrets`](js/no-hardcoded-secrets.md) | No secret in a variable name | `manual` | — | `js/sonarjs` |
@@ -385,10 +402,12 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-identical-expressions`](js/no-identical-expressions.md) | No identical operands | `manual` | — | `js/sonarjs` |
 | [`js/no-identical-functions`](js/no-identical-functions.md) | No two functions with the same body | `manual` | — | `js/sonarjs` |
 | [`js/no-ignored-exceptions`](js/no-ignored-exceptions.md) | No empty catch | `manual` | — | `js/sonarjs` |
+| [`js/no-immediate-mutation`](js/no-immediate-mutation.md) | No changing a new literal in the very next statement | `auto` | — | `js/strict` |
 | [`js/no-implicit-coercion`](js/no-implicit-coercion.md) | Explicit conversions, not !!x or +x | `suggest` | — | *[rules] only* |
 | [`js/no-implied-eval`](js/no-implied-eval.md) | No string code in setTimeout | `manual` | — | *[rules] only* |
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-impossible-length-comparison`](js/no-impossible-length-comparison.md) | No length < 0 | `manual` | — | `js/strict` |
+| [`js/no-incomplete-accessor-override`](js/no-incomplete-accessor-override.md) | No overriding only the getter or only the setter of an inherited pair | `manual` | — | `js/strict` |
 | [`js/no-incomplete-assertions`](js/no-incomplete-assertions.md) | No chai assertion that stops at a language chain | `manual` | — | `js/sonarjs` |
 | [`js/no-incorrect-query-selector`](js/no-incorrect-query-selector.md) | querySelector() rather than the first element of querySelectorAll() | `suggest` | — | `js/strict` |
 | [`js/no-incorrect-template-string-interpolation`](js/no-incorrect-template-string-interpolation.md) | No ${} in a plain string | `manual` | — | `js/strict` |
@@ -408,8 +427,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-invalid-response-options`](js/no-invalid-response-options.md) | No body on a Response whose status forbids one | `suggest` | — | `js/strict` |
 | [`js/no-invalid-style-set-property`](js/no-invalid-style-set-property.md) | setProperty() takes a CSS property name and a separate priority | `suggest` | — | `js/strict` |
 | [`js/no-invalid-temporal-arithmetic`](js/no-invalid-temporal-arithmetic.md) | No days or weeks added to a Temporal.Instant | `suggest` | — | `js/strict` |
+| [`js/no-invalid-this`](js/no-invalid-this.md) | No `this` where strict code makes it `undefined` | `manual` | — | *[rules] only* |
 | [`js/no-invalid-url-protocol-comparison`](js/no-invalid-url-protocol-comparison.md) | url.protocol ends with a colon | `suggest` | — | `js/strict` |
 | [`js/no-invalid-well-known-symbol-methods`](js/no-invalid-well-known-symbol-methods.md) | No async Symbol.dispose or async Symbol.iterator generator | `suggest` | — | `js/strict` |
+| [`js/no-invariant-returns`](js/no-invariant-returns.md) | No function that returns the same value on every path | `manual` | — | `js/sonarjs` |
 | [`js/no-inverted-boolean-check`](js/no-inverted-boolean-check.md) | No !(a === b) | `manual` | — | `js/sonarjs` |
 | [`js/no-irregular-whitespace`](js/no-irregular-whitespace.md) | No irregular whitespace in templates, regular expressions, JSX text or comments | `suggest` | — | `js/recommended` |
 | [`js/no-iterator`](js/no-iterator.md) | No __iterator__ | `suggest` | — | *[rules] only* |
@@ -417,19 +438,25 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-keyword-prefix`](js/no-keyword-prefix.md) | No new or class prefix in names | `manual` | — | *[rules] only* |
 | [`js/no-label-var`](js/no-label-var.md) | No label with a variable's name | `manual` | — | *[rules] only* |
 | [`js/no-labels`](js/no-labels.md) | No labels | `manual` | — | *[rules] only* |
+| [`js/no-late-current-target-access`](js/no-late-current-target-access.md) | No `event.currentTarget` after the handler has awaited | `manual` | — | `js/strict` |
+| [`js/no-late-event-control`](js/no-late-event-control.md) | No `preventDefault()` or `stopPropagation()` after the handler has awaited | `manual` | — | `js/strict` |
 | [`js/no-literal-call`](js/no-literal-call.md) | No call on a literal | `manual` | — | `js/sonarjs` |
 | [`js/no-lone-blocks`](js/no-lone-blocks.md) | No needless nested blocks | `auto` | — | *[rules] only* |
 | [`js/no-lonely-if`](js/no-lonely-if.md) | else { if } is else if | `auto` | — | `js/strict` |
+| [`js/no-loop-func`](js/no-loop-func.md) | No function made in a loop that reads a variable the loop changes | `manual` | — | *[rules] only* |
+| [`js/no-loop-iterable-mutation`](js/no-loop-iterable-mutation.md) | No changing a collection while a `for…of` loop iterates it | `manual` | — | `js/strict` |
 | [`js/no-loss-of-precision`](js/no-loss-of-precision.md) | Number literals keep their value | `suggest` | — | `js/recommended` |
 | [`js/no-magic-array-flat-depth`](js/no-magic-array-flat-depth.md) | Name the depth given to flat() | `manual` | — | `js/strict` |
 | [`js/no-magic-numbers`](js/no-magic-numbers.md) | No unnamed number in an expression | `manual` | — | *[rules] only* |
 | [`js/no-map-spread`](js/no-map-spread.md) | No object spread of each item in map() | `suggest` | — | *[rules] only* |
 | [`js/no-mime-sniff`](js/no-mime-sniff.md) | Keep X-Content-Type-Options | `suggest` | — | `js/sonarjs` |
 | [`js/no-misleading-character-class`](js/no-misleading-character-class.md) | No character class holding a character made of several code points | `suggest` | — | `js/recommended` |
+| [`js/no-mismatched-map-key`](js/no-mismatched-map-key.md) | No `map.has(a)` guarding `map.get(b)` | `manual` | — | `js/strict` |
 | [`js/no-misrefactored-shorthand-assign`](js/no-misrefactored-shorthand-assign.md) | No compound assignment that repeats its target | `suggest` | — | `js/recommended`, `js/strict` |
 | [`js/no-mixed-completion-style`](js/no-mixed-completion-style.md) | A test callback is async or takes done, not both | `manual` | — | *[rules] only* |
 | [`js/no-multi-assign`](js/no-multi-assign.md) | No chained assignment | `auto` | — | *[rules] only* |
 | [`js/no-multi-str`](js/no-multi-str.md) | No multiline strings with a backslash | `auto` | — | *[rules] only* |
+| [`js/no-mutate-reactive-state-in-updated-hook`](js/no-mutate-reactive-state-in-updated-hook.md) | No changing reactive state in Vue's `updated` hook | `manual` | — | `js/sonarjs` |
 | [`js/no-named-default`](js/no-named-default.md) | import x rather than import { default as x } | `auto` | — | `js/strict` |
 | [`js/no-negated-array-predicate`](js/no-negated-array-predicate.md) | every() rather than a negated some(), and the reverse | `auto` | — | `js/strict` |
 | [`js/no-negated-comparison`](js/no-negated-comparison.md) | No negated equality comparison | `auto` | — | `js/strict` |
@@ -467,6 +494,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-redundant-use-strict`](js/no-redundant-use-strict.md) | No redundant "use strict" | `auto` | — | `js/recommended` |
 | [`js/no-referrer-policy`](js/no-referrer-policy.md) | A strict Referrer-Policy | `suggest` | — | `js/sonarjs` |
 | [`js/no-regex-spaces`](js/no-regex-spaces.md) | No runs of spaces in a regular expression | `auto` | — | `js/recommended` |
+| [`js/no-repeated-call-wrappers`](js/no-repeated-call-wrappers.md) | No function whose every call is wrapped the same way | `manual` | — | *[rules] only* |
 | [`js/no-restricted-exports`](js/no-restricted-exports.md) | No export named default | `suggest` | — | *[rules] only* |
 | [`js/no-return-array-push`](js/no-return-array-push.md) | No return of push() | `manual` | — | `js/strict` |
 | [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `auto` | — | *[rules] only* |
@@ -493,11 +521,16 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-this-before-super`](js/no-this-before-super.md) | this is not used before super() in a derived constructor | `suggest` | — | `js/recommended` |
 | [`js/no-this-in-exported-function`](js/no-this-in-exported-function.md) | No this in an exported function | `manual` | — | *[rules] only* |
 | [`js/no-this-in-static`](js/no-this-in-static.md) | The class name, not this, in a static method | `suggest` | — | `js/recommended` |
+| [`js/no-this-outside-of-class`](js/no-this-outside-of-class.md) | No `this` outside a class | `manual` | — | `js/strict` |
 | [`js/no-throw-literal`](js/no-throw-literal.md) | Throw Error objects | `suggest` | — | *[rules] only* |
+| [`js/no-top-level-assignment-in-function`](js/no-top-level-assignment-in-function.md) | No assigning a module-level variable inside a function | `manual` | — | `js/strict` |
+| [`js/no-top-level-side-effects`](js/no-top-level-side-effects.md) | No changing a global when a module is imported | `manual` | — | `js/strict` |
 | [`js/no-transition-all`](js/no-transition-all.md) | No transition of every property | `manual` | — | `js/strict` |
 | [`js/no-trivial-assertions`](js/no-trivial-assertions.md) | No assertion that compares two literals | `manual` | — | `js/sonarjs` |
 | [`js/no-typeof-undefined`](js/no-typeof-undefined.md) | x === undefined rather than typeof x === "undefined" | `suggest` | — | `js/strict` |
 | [`js/no-unassigned-vars`](js/no-unassigned-vars.md) | A variable that is read is also assigned | `manual` | — | `js/recommended` |
+| [`js/no-uncalled-method`](js/no-uncalled-method.md) | No array or string method read without being called | `manual` | — | `js/strict` |
+| [`js/no-undeclared-class-members`](js/no-undeclared-class-members.md) | No `this.x` the class does not declare | `suggest` | — | `js/strict` |
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `manual` | `env`, `globals`, `typeof` | `js/recommended`, `js/sonarjs` |
 | [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-undefined`](js/no-undefined.md) | No undefined identifier | `suggest` | — | `js/taste` |
@@ -507,12 +540,14 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `suggest` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | *[rules] only* |
 | [`js/no-uniq-key`](js/no-uniq-key.md) | No React key made fresh on each render | `manual` | — | `js/sonarjs` |
+| [`js/no-unmodified-loop-condition`](js/no-unmodified-loop-condition.md) | No loop condition the loop never changes | `manual` | — | *[rules] only* |
 | [`js/no-unnecessary-array-flat-depth`](js/no-unnecessary-array-flat-depth.md) | No flat(1) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-array-flat-map`](js/no-unnecessary-array-flat-map.md) | flat() rather than flatMap(x => x) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-array-splice-count`](js/no-unnecessary-array-splice-count.md) | No length as splice count | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-await`](js/no-unnecessary-await.md) | No await on a value that is not a promise | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-boolean-comparison`](js/no-unnecessary-boolean-comparison.md) | No comparison of a boolean expression with true or false | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-callback-wrapper`](js/no-unnecessary-callback-wrapper.md) | Pass the function, not a wrapper | `suggest` | — | *[rules] only* |
+| [`js/no-unnecessary-default-arguments`](js/no-unnecessary-default-arguments.md) | No argument that equals the parameter's default | `auto` | — | *[rules] only* |
 | [`js/no-unnecessary-fetch-options`](js/no-unnecessary-fetch-options.md) | No method: "GET" in fetch options | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-global-this`](js/no-unnecessary-global-this.md) | A known global read directly, not off globalThis | `suggest` | — | `js/strict` |
 | [`js/no-unnecessary-nested-ternary`](js/no-unnecessary-nested-ternary.md) | No nested ternary that repeats a branch | `auto` | — | `js/strict` |
@@ -532,17 +567,22 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unsafe-json-serialization`](js/no-unsafe-json-serialization.md) | No Map, Set or BigInt literal handed straight to JSON.stringify | `suggest` | — | `js/strict` |
 | [`js/no-unsafe-negation`](js/no-unsafe-negation.md) | No negating the left side of in or instanceof | `suggest` | — | `js/recommended` |
 | [`js/no-unsafe-optional-chaining`](js/no-unsafe-optional-chaining.md) | No ?. chain used where undefined throws | `suggest` | — | `js/recommended` |
+| [`js/no-unsafe-promise-all-settled-values`](js/no-unsafe-promise-all-settled-values.md) | No `.value` of a `Promise.allSettled()` result without checking its status | `manual` | — | `js/strict` |
 | [`js/no-unsafe-property-key`](js/no-unsafe-property-key.md) | No object, array or BigInt literal as a property key | `manual` | — | `js/strict` |
 | [`js/no-unsafe-sqlite-interpolation`](js/no-unsafe-sqlite-interpolation.md) | No values interpolated into an SQL statement | `manual` | — | `js/strict` |
 | [`js/no-unsafe-string-replacement`](js/no-unsafe-string-replacement.md) | A replacement function, not a computed string, in replace() | `suggest` | — | `js/strict` |
 | [`js/no-unthrown-error`](js/no-unthrown-error.md) | Throw the error you create | `suggest` | — | `js/sonarjs` |
 | [`js/no-unused-builtin-method-return`](js/no-unused-builtin-method-return.md) | Use the result of a method that returns a new value | `manual` | — | `js/strict` |
+| [`js/no-unused-collection`](js/no-unused-collection.md) | No collection that is filled but never read | `manual` | — | `js/sonarjs` |
 | [`js/no-unused-function-parameters`](js/no-unused-function-parameters.md) | No unused trailing parameter | `suggest` | — | `js/recommended` |
 | [`js/no-unused-imports`](js/no-unused-imports.md) | No unused imports | `suggest` | — | `js/recommended` |
 | [`js/no-unused-labels`](js/no-unused-labels.md) | Every label is used | `auto` | — | `js/recommended` |
 | [`js/no-unused-private-class-members`](js/no-unused-private-class-members.md) | Every private class member is read | `auto` | — | `js/recommended` |
+| [`js/no-unused-properties`](js/no-unused-properties.md) | No property of a local object literal that nothing reads | `suggest` | — | *[rules] only* |
 | [`js/no-unused-vars`](js/no-unused-vars.md) | Every declared name is used | `auto` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `js/recommended` |
 | [`js/no-url-in-search-params`](js/no-url-in-search-params.md) | No full URL passed to URLSearchParams | `suggest` | — | `js/strict` |
+| [`js/no-use-before-define`](js/no-use-before-define.md) | No variable, function or class used before it is defined | `manual` | `functions`, `classes`, `variables`, `allowNamedExports` | *[rules] only* |
+| [`js/no-use-of-empty-return-value`](js/no-use-of-empty-return-value.md) | No use of the result of a function that returns nothing | `manual` | — | `js/sonarjs` |
 | [`js/no-useless-assignment`](js/no-useless-assignment.md) | No value is stored that nothing reads | `auto` | — | `js/recommended` |
 | [`js/no-useless-backreference`](js/no-useless-backreference.md) | No backreference that can only match the empty string | `suggest` | — | `js/recommended` |
 | [`js/no-useless-boolean-cast`](js/no-useless-boolean-cast.md) | No Boolean() around a predicate callback's result | `auto` | — | `js/strict` |
@@ -565,7 +605,9 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-logical-operand`](js/no-useless-logical-operand.md) | No boolean literal that decides nothing in && or \|\| | `auto` | — | `js/strict` |
 | [`js/no-useless-override`](js/no-useless-override.md) | No method override that only calls super | `auto` | — | `js/strict` |
 | [`js/no-useless-promise-resolve-reject`](js/no-useless-promise-resolve-reject.md) | No Promise.resolve in an async function return | `auto` | — | `js/strict` |
+| [`js/no-useless-re-export`](js/no-useless-re-export.md) | No named re-export that `export *` from the same module already covers | `auto` | — | `js/strict` |
 | [`js/no-useless-react-setstate`](js/no-useless-react-setstate.md) | No state setter called with its own state | `manual` | — | `js/sonarjs` |
+| [`js/no-useless-recursion`](js/no-useless-recursion.md) | No function that only returns a call to itself | `manual` | — | `js/strict` |
 | [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
 | [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `auto` | — | `js/strict` |
@@ -574,6 +616,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-template-literals`](js/no-useless-template-literals.md) | No template literal without substitutions | `manual` | — | `js/strict` |
 | [`js/no-useless-undefined`](js/no-useless-undefined.md) | No return undefined | `auto` | — | `js/strict` |
 | [`js/no-var`](js/no-var.md) | let or const instead of var | `suggest` | — | `js/typescript` |
+| [`js/no-variable-usage-before-declaration`](js/no-variable-usage-before-declaration.md) | No `var` used before its declaration | `manual` | — | *[rules] only* |
 | [`js/no-void`](js/no-void.md) | No void operator | `auto` | — | *[rules] only* |
 | [`js/no-void-type-return`](js/no-void-type-return.md) | A void function returns no value | `manual` | — | `js/recommended` |
 | [`js/no-vue-class-component`](js/no-vue-class-component.md) | No Vue class components | `manual` | — | `js/sonarjs` |
@@ -589,6 +632,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/object-alt-content`](js/object-alt-content.md) | object elements have fallback content | `manual` | — | `js/sonarjs` |
 | [`js/object-shorthand`](js/object-shorthand.md) | { x } rather than { x: x } | `auto` | — | *[rules] only* |
 | [`js/operator-assignment`](js/operator-assignment.md) | x += 1 rather than x = x + 1 | `auto` | — | `js/strict` |
+| [`js/prefer-abort-signal-timeout`](js/prefer-abort-signal-timeout.md) | `AbortSignal.timeout()` for a controller aborted only by a timer | `suggest` | — | `js/strict` |
 | [`js/prefer-add-event-listener`](js/prefer-add-event-listener.md) | addEventListener rather than an on-property | `manual` | — | `js/strict` |
 | [`js/prefer-add-event-listener-options`](js/prefer-add-event-listener-options.md) | An options object rather than a capture boolean | `auto` | — | `js/strict` |
 | [`js/prefer-aggregate-error`](js/prefer-aggregate-error.md) | Throw an AggregateError of the collected errors | `suggest` | — | `js/strict` |
@@ -607,6 +651,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-bigint-literals`](js/prefer-bigint-literals.md) | BigInt literal rather than BigInt() of a constant | `auto` | — | `js/strict` |
 | [`js/prefer-blob-reading-methods`](js/prefer-blob-reading-methods.md) | blob.text() rather than FileReader | `manual` | — | `js/strict` |
 | [`js/prefer-block-statement-over-iife`](js/prefer-block-statement-over-iife.md) | A block rather than an arrow IIFE used only for scope | `auto` | — | `js/strict` |
+| [`js/prefer-class-fields`](js/prefer-class-fields.md) | A class field for a constant the constructor assigns first | `auto` | — | `js/strict` |
 | [`js/prefer-classlist-toggle`](js/prefer-classlist-toggle.md) | classList.toggle() rather than add or remove by a condition | `auto` | — | `js/strict` |
 | [`js/prefer-code-point`](js/prefer-code-point.md) | codePointAt rather than charCodeAt | `suggest` | — | `js/strict` |
 | [`js/prefer-combined-guards`](js/prefer-combined-guards.md) | One guard for two that exit the same way | `auto` | — | `js/strict` |
@@ -626,7 +671,9 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-escaped-irregular-whitespace`](js/prefer-escaped-irregular-whitespace.md) | Irregular whitespace in a string is written as an escape | `auto` | — | `js/strict` |
 | [`js/prefer-event-target`](js/prefer-event-target.md) | EventTarget rather than EventEmitter | `manual` | — | `js/strict` |
 | [`js/prefer-exponentiation-operator`](js/prefer-exponentiation-operator.md) | ** rather than Math.pow | `auto` | — | *[rules] only* |
+| [`js/prefer-export-from`](js/prefer-export-from.md) | `export … from` for an import that is only re-exported | `auto` | — | `js/strict` |
 | [`js/prefer-flat-math-min-max`](js/prefer-flat-math-min-max.md) | One Math.min or Math.max call rather than nested ones | `auto` | — | `js/strict` |
+| [`js/prefer-get-or-insert-computed`](js/prefer-get-or-insert-computed.md) | `getOrInsertComputed()` for a value that has to be computed | `auto` | — | `js/strict` |
 | [`js/prefer-global-number-constants`](js/prefer-global-number-constants.md) | NaN and Infinity rather than Number.NaN and Number.POSITIVE_INFINITY | `auto` | — | `js/strict` |
 | [`js/prefer-global-this`](js/prefer-global-this.md) | globalThis rather than global | `auto` | — | `js/strict` |
 | [`js/prefer-group-by`](js/prefer-group-by.md) | Object.groupBy() rather than reducing into arrays | `suggest` | — | `js/strict` |
@@ -660,6 +707,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-number-is-safe-integer`](js/prefer-number-is-safe-integer.md) | Number.isSafeInteger() rather than its two halves | `suggest` | — | `js/strict` |
 | [`js/prefer-number-properties`](js/prefer-number-properties.md) | Number.isNaN rather than isNaN | `suggest` | — | `js/strict` |
 | [`js/prefer-numeric-literals`](js/prefer-numeric-literals.md) | 0b101 rather than parseInt("101", 2) | `auto` | — | *[rules] only* |
+| [`js/prefer-object-define-properties`](js/prefer-object-define-properties.md) | One `Object.defineProperties()` for consecutive `Object.defineProperty()` calls | `auto` | — | `js/strict` |
 | [`js/prefer-object-destructuring-defaults`](js/prefer-object-destructuring-defaults.md) | Destructuring defaults rather than a defaults object spread under the options | `suggest` | — | `js/strict` |
 | [`js/prefer-object-from-entries`](js/prefer-object-from-entries.md) | Object.fromEntries() rather than reducing pairs | `auto` | — | `js/strict` |
 | [`js/prefer-object-has-own`](js/prefer-object-has-own.md) | Object.hasOwn rather than hasOwnProperty.call | `auto` | — | *[rules] only* |
@@ -673,6 +721,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-promise-shorthand`](js/prefer-promise-shorthand.md) | Promise.resolve rather than new Promise(r => r(x)) | `suggest` | — | `js/sonarjs` |
 | [`js/prefer-promise-static-methods`](js/prefer-promise-static-methods.md) | Promise.resolve() or Promise.reject() rather than new Promise | `auto` | — | `js/strict` |
 | [`js/prefer-promise-try`](js/prefer-promise-try.md) | Promise.try() rather than a promise that resolves to a call | `auto` | — | `js/strict` |
+| [`js/prefer-promise-with-resolvers`](js/prefer-promise-with-resolvers.md) | `Promise.withResolvers()` for a promise whose resolvers are taken out | `auto` | — | `js/strict` |
 | [`js/prefer-prototype-methods`](js/prefer-prototype-methods.md) | Array.prototype.x rather than \[\].x | `auto` | — | `js/strict` |
 | [`js/prefer-query-selector`](js/prefer-query-selector.md) | querySelector rather than getElementById | `suggest` | — | `js/strict` |
 | [`js/prefer-queue-microtask`](js/prefer-queue-microtask.md) | queueMicrotask rather than Promise.resolve().then | `suggest` | — | `js/strict` |
@@ -683,6 +732,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-response-static-json`](js/prefer-response-static-json.md) | Response.json rather than new Response(JSON.stringify()) | `suggest` | — | `js/strict` |
 | [`js/prefer-rest-params`](js/prefer-rest-params.md) | Rest parameters instead of arguments | `manual` | — | `js/typescript` |
 | [`js/prefer-scoped-selector`](js/prefer-scoped-selector.md) | Start an element's selector with :scope when it has a combinator | `suggest` | — | `js/strict` |
+| [`js/prefer-set-has`](js/prefer-set-has.md) | A `Set` for a list that is only searched | `auto` | `minimumItems` | `js/strict` |
 | [`js/prefer-set-methods`](js/prefer-set-methods.md) | Set methods rather than filtering a spread | `suggest` | — | `js/strict` |
 | [`js/prefer-set-size`](js/prefer-set-size.md) | Set size rather than spreading to an array | `auto` | — | `js/strict` |
 | [`js/prefer-short-arrow-method`](js/prefer-short-arrow-method.md) | An arrow property rather than an object method that only returns | `auto` | — | *[rules] only* |
@@ -694,6 +744,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-single-boolean-return`](js/prefer-single-boolean-return.md) | Return the condition, not true/false | `manual` | — | `js/strict`, `js/sonarjs` |
 | [`js/prefer-single-call`](js/prefer-single-call.md) | One push() with several items | `suggest` | — | `js/strict` |
 | [`js/prefer-single-object-destructuring`](js/prefer-single-object-destructuring.md) | One destructuring of an object, not two in a row | `auto` | — | `js/strict` |
+| [`js/prefer-smaller-scope`](js/prefer-smaller-scope.md) | A variable declared in the block that uses it | `auto` | — | `js/strict` |
 | [`js/prefer-specific-assertions`](js/prefer-specific-assertions.md) | toBeNull(), toBeUndefined() and toHaveLength() rather than toBe() with them | `suggest` | — | `js/sonarjs` |
 | [`js/prefer-split-limit`](js/prefer-split-limit.md) | A limit on split() when only the first parts are read | `auto` | — | `js/strict` |
 | [`js/prefer-spread`](js/prefer-spread.md) | Spread instead of .apply() | `auto` | — | `js/typescript` |
@@ -849,6 +900,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/sort-keys`](js/sort-keys.md) | Object keys in ascending order | `suggest` | — | `js/taste` |
 | [`js/sort-vars`](js/sort-vars.md) | Variables of one declaration in ascending order | `auto` | — | `js/taste` |
 | [`js/stable-tests`](js/stable-tests.md) | No retrying flaky tests | `manual` | — | `js/sonarjs` |
+| [`js/stateful-regex`](js/stateful-regex.md) | No global regular expression used in a way its `lastIndex` breaks | `manual` | — | `js/sonarjs` |
 | [`js/strict`](js/strict.md) | No "use strict" in a module | `auto` | — | *[rules] only* |
 | [`js/strict-transport-security`](js/strict-transport-security.md) | Keep the HSTS header | `suggest` | — | `js/sonarjs` |
 | [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last case | `auto` | — | `js/taste` |
@@ -1998,6 +2050,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/bad-open-mode`](py/bad-open-mode.md) | open() takes a valid mode | `manual` | — | *[rules] only* |
 | [`py/bad-reversed-sequence`](py/bad-reversed-sequence.md) | reversed() is given a sequence | `manual` | — | *[rules] only* |
 | [`py/bad-staticmethod-argument`](py/bad-staticmethod-argument.md) | A staticmethod takes no self | `manual` | — | *[rules] only* |
+| [`py/bad-str-strip-call`](py/bad-str-strip-call.md) | strip() takes a set of characters, not a word | `suggest` | — | *[rules] only* |
 | [`py/bad-string-format-character`](py/bad-string-format-character.md) | % formats use valid conversion characters | `manual` | — | *[rules] only* |
 | [`py/bad-thread-instantiation`](py/bad-thread-instantiation.md) | Thread(target=f), not Thread(f) | `suggest` | — | *[rules] only* |
 | [`py/bad-version-info-comparison`](py/bad-version-info-comparison.md) | A version check in a stub uses < or >= | `manual` | — | *[rules] only* |
@@ -2085,6 +2138,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/default-factory-kwarg`](py/default-factory-kwarg.md) | defaultdict's factory is positional | `suggest` | — | *[rules] only* |
 | [`py/del-attr-with-constant`](py/del-attr-with-constant.md) | del obj.name, not delattr(obj, 'name') | `auto` | — | *[rules] only* |
 | [`py/delete-full-slice`](py/delete-full-slice.md) | x.clear(), not del x\[:\] | `suggest` | — | *[rules] only* |
+| [`py/deprecated-abc-decorator`](py/deprecated-abc-decorator.md) | @abstractmethod under the plain decorator, not abc.abstractproperty | `auto` | — | *[rules] only* |
 | [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | *[rules] only* |
 | [`py/deprecated-decorator`](py/deprecated-decorator.md) | No decorator the standard library has deprecated | `manual` | — | *[rules] only* |
 | [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | *[rules] only* |
@@ -2163,6 +2217,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/function-call-in-default-argument`](py/function-call-in-default-argument.md) | No function calls in default arguments | `suggest` | `extend_immutable_calls` | `py/recommended` |
 | [`py/function-uses-loop-variable`](py/function-uses-loop-variable.md) | Closures don't capture a loop variable by name | `suggest` | — | `py/recommended` |
 | [`py/future-annotations-in-stub`](py/future-annotations-in-stub.md) | No __future__ annotations in stubs | `auto` | — | *[rules] only* |
+| [`py/generator-return-from-iter-method`](py/generator-return-from-iter-method.md) | A simple __iter__ returns Iterator, not Generator | `suggest` | — | *[rules] only* |
 | [`py/generic-not-last-base-class`](py/generic-not-last-base-class.md) | `Generic[...]` is the last base class | `suggest` | — | *[rules] only* |
 | [`py/getattr-with-constant`](py/getattr-with-constant.md) | No `getattr` with a constant name | `auto` | — | `py/recommended` |
 | [`py/glob`](py/glob.md) | Path.glob, not glob.glob | `manual` | — | *[rules] only* |
@@ -2170,8 +2225,10 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/global-statement`](py/global-statement.md) | No global statement | `manual` | — | *[rules] only* |
 | [`py/global-variable-not-assigned`](py/global-variable-not-assigned.md) | No global for a name never assigned | `suggest` | — | *[rules] only* |
 | [`py/global-variable-undefined`](py/global-variable-undefined.md) | A `global` name is defined at module level | `manual` | — | *[rules] only* |
+| [`py/hardcoded-string-charset`](py/hardcoded-string-charset.md) | A string module constant, not its characters spelled out | `auto` | — | *[rules] only* |
 | [`py/hashlib-digest-hex`](py/hashlib-digest-hex.md) | hexdigest(), not digest().hex() | `auto` | — | *[rules] only* |
 | [`py/if-else-block-instead-of-dict-get`](py/if-else-block-instead-of-dict-get.md) | d.get(k, default), not if k in d | `suggest` | — | *[rules] only* |
+| [`py/if-else-block-instead-of-dict-lookup`](py/if-else-block-instead-of-dict-lookup.md) | A lookup table, not an if chain of returns | `manual` | — | *[rules] only* |
 | [`py/if-else-block-instead-of-if-exp`](py/if-else-block-instead-of-if-exp.md) | A conditional expression for a two-way assignment | `suggest` | — | *[rules] only* |
 | [`py/if-exp-instead-of-or-operator`](py/if-exp-instead-of-or-operator.md) | a or b, not a if a else b | `auto` | — | *[rules] only* |
 | [`py/if-expr-min-max`](py/if-expr-min-max.md) | min()/max(), not a conditional | `suggest` | — | *[rules] only* |
@@ -2184,10 +2241,12 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/if-with-same-arms`](py/if-with-same-arms.md) | Merge if branches with the same body | `manual` | — | *[rules] only* |
 | [`py/implicit-class-var-in-dataclass`](py/implicit-class-var-in-dataclass.md) | A dataclass's unannotated attribute is not a field | `manual` | — | *[rules] only* |
 | [`py/implicit-cwd`](py/implicit-cwd.md) | Path.cwd(), not Path().resolve() | `suggest` | — | *[rules] only* |
+| [`py/implicit-namespace-package`](py/implicit-namespace-package.md) | A package folder has an __init__.py | `manual` | — | *[rules] only* |
 | [`py/implicit-optional`](py/implicit-optional.md) | Optional parameters say Optional | `suggest` | — | *[rules] only* |
 | [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | *[rules] only* |
 | [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | *[rules] only* |
 | [`py/import-outside-top-level`](py/import-outside-top-level.md) | Imports are at the top of the module | `manual` | — | *[rules] only* |
+| [`py/import-self`](py/import-self.md) | A module does not import itself | `manual` | — | *[rules] only* |
 | [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `auto` | — | `py/recommended` |
 | [`py/impossible-comparison`](py/impossible-comparison.md) | An `and` of comparisons is not always false | `manual` | — | *[rules] only* |
 | [`py/in-dict-keys`](py/in-dict-keys.md) | k in d, not k in d.keys() | `suggest` | — | *[rules] only* |
@@ -2207,6 +2266,10 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/invalid-bool-returned`](py/invalid-bool-returned.md) | __bool__ returns a bool | `manual` | — | *[rules] only* |
 | [`py/invalid-bytes-return-type`](py/invalid-bytes-return-type.md) | __bytes__ returns bytes | `manual` | — | *[rules] only* |
 | [`py/invalid-bytes-returned`](py/invalid-bytes-returned.md) | __bytes__ returns bytes | `manual` | — | *[rules] only* |
+| [`py/invalid-character-backspace`](py/invalid-character-backspace.md) | A backspace character in a string is written \b | `auto` | — | *[rules] only* |
+| [`py/invalid-character-esc`](py/invalid-character-esc.md) | A ESC character in a string is written \x1b | `auto` | — | *[rules] only* |
+| [`py/invalid-character-sub`](py/invalid-character-sub.md) | A SUB (control-Z) character in a string is written \x1a | `auto` | — | *[rules] only* |
+| [`py/invalid-character-zero-width-space`](py/invalid-character-zero-width-space.md) | A zero-width space character in a string is written \u200b | `auto` | — | *[rules] only* |
 | [`py/invalid-class-name`](py/invalid-class-name.md) | Class names are CapWords | `suggest` | — | *[rules] only* |
 | [`py/invalid-class-object`](py/invalid-class-object.md) | __class__ is assigned a class | `manual` | — | *[rules] only* |
 | [`py/invalid-envvar-default`](py/invalid-envvar-default.md) | os.getenv's default is a string | `suggest` | — | *[rules] only* |
@@ -2228,6 +2291,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/invalid-length-returned`](py/invalid-length-returned.md) | __len__ returns a non-negative int | `manual` | — | *[rules] only* |
 | [`py/invalid-match-args-definition`](py/invalid-match-args-definition.md) | __match_args__ is a tuple of strings | `manual` | — | *[rules] only* |
 | [`py/invalid-mock-access`](py/invalid-mock-access.md) | Mock assertions are called | `auto` | — | *[rules] only* |
+| [`py/invalid-module-name`](py/invalid-module-name.md) | A module's name is lowercase with underscores | `manual` | `ignore_names` | *[rules] only* |
 | [`py/invalid-pathlib-with-suffix`](py/invalid-pathlib-with-suffix.md) | with_suffix takes a leading dot | `suggest` | — | *[rules] only* |
 | [`py/invalid-print-syntax`](py/invalid-print-syntax.md) | No Python 2 `print >>` | `suggest` | — | `py/recommended` |
 | [`py/invalid-repr-returned`](py/invalid-repr-returned.md) | __repr__ returns a str | `manual` | — | *[rules] only* |
@@ -2257,6 +2321,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/logging-redundant-exc-info`](py/logging-redundant-exc-info.md) | No exc_info=True on logger.exception | `auto` | — | *[rules] only* |
 | [`py/logging-string-concat`](py/logging-string-concat.md) | No + in a logging message | `manual` | — | *[rules] only* |
 | [`py/logging-string-format`](py/logging-string-format.md) | No str.format in a logging call | `manual` | — | *[rules] only* |
+| [`py/logging-too-few-args`](py/logging-too-few-args.md) | A logging call passes an argument for each placeholder | `manual` | — | *[rules] only* |
+| [`py/logging-too-many-args`](py/logging-too-many-args.md) | A logging call passes no more arguments than its message has placeholders | `manual` | — | *[rules] only* |
 | [`py/logging-unsupported-format`](py/logging-unsupported-format.md) | A logging format uses only known conversions | `manual` | — | *[rules] only* |
 | [`py/logging-warn`](py/logging-warn.md) | logging.warning, not warn | `auto` | — | *[rules] only* |
 | [`py/long-sleep-not-forever`](py/long-sleep-not-forever.md) | sleep_forever(), not a day-long sleep | `suggest` | — | *[rules] only* |
@@ -2323,17 +2389,21 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/nested-star-import`](py/nested-star-import.md) | `import *` only at module level | `manual` | — | `py/recommended` |
 | [`py/never-union`](py/never-union.md) | No Never or NoReturn in a union | `suggest` | — | *[rules] only* |
 | [`py/no-bare-except`](py/no-bare-except.md) | No bare `except:` | `suggest` | — | `py/recommended` |
+| [`py/no-classmethod-decorator`](py/no-classmethod-decorator.md) | @classmethod, not from_text = classmethod(from_text) | `auto` | — | *[rules] only* |
 | [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended` |
 | [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | *[rules] only* |
 | [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended` |
 | [`py/no-print`](py/no-print.md) | No `print()` in library code | `suggest` | — | `py/conventions` |
+| [`py/no-return-argument-annotation-in-stub`](py/no-return-argument-annotation-in-stub.md) | A stub's parameter is annotated Never, not NoReturn | `auto` | — | *[rules] only* |
 | [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | *[rules] only* |
 | [`py/no-self-use`](py/no-self-use.md) | A method that never reads `self` is a function or a static method | `manual` | — | *[rules] only* |
 | [`py/no-slots-in-namedtuple-subclass`](py/no-slots-in-namedtuple-subclass.md) | namedtuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-slots-in-str-subclass`](py/no-slots-in-str-subclass.md) | str subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-slots-in-tuple-subclass`](py/no-slots-in-tuple-subclass.md) | tuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
 | [`py/no-star-import`](py/no-star-import.md) | No `from module import *` | `manual` | — | `py/recommended` |
+| [`py/no-staticmethod-decorator`](py/no-staticmethod-decorator.md) | @staticmethod, not parse = staticmethod(parse) | `auto` | — | *[rules] only* |
 | [`py/no-tunable-literals`](py/no-tunable-literals.md) | No hard-coded timeouts, limits or thresholds | `manual` | — | `py/conventions` |
+| [`py/non-ascii-file-name`](py/non-ascii-file-name.md) | A module's file name is ASCII | `manual` | — | *[rules] only* |
 | [`py/non-ascii-import-name`](py/non-ascii-import-name.md) | Imported names are ASCII | `manual` | — | *[rules] only* |
 | [`py/non-ascii-name`](py/non-ascii-name.md) | Names are ASCII | `manual` | — | *[rules] only* |
 | [`py/non-augmented-assignment`](py/non-augmented-assignment.md) | x += 1, not x = x + 1 | `suggest` | — | *[rules] only* |
@@ -2346,6 +2416,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | *[rules] only* |
 | [`py/non-pep646-unpack`](py/non-pep646-unpack.md) | *Ts, not Unpack\[Ts\] | `auto` | — | *[rules] only* |
 | [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | *[rules] only* |
+| [`py/non-self-return-type`](py/non-self-return-type.md) | A method that returns self is annotated Self | `suggest` | — | *[rules] only* |
 | [`py/non-unique-enums`](py/non-unique-enums.md) | Each enum member has its own value | `manual` | — | *[rules] only* |
 | [`py/none-comparison`](py/none-comparison.md) | Compare with `None` using `is` | `suggest` | — | `py/recommended` |
 | [`py/none-not-at-end-of-union`](py/none-not-at-end-of-union.md) | None goes last in a union | `suggest` | — | *[rules] only* |
@@ -2407,10 +2478,12 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/percent-format-unused-named-argument`](py/percent-format-unused-named-argument.md) | Every key given to `%` is used | `auto` | — | `py/recommended` |
 | [`py/pointless-string-statement`](py/pointless-string-statement.md) | No string as a statement | `suggest` | — | *[rules] only* |
 | [`py/post-init-default`](py/post-init-default.md) | No defaults on __post_init__ parameters | `manual` | — | *[rules] only* |
+| [`py/potential-index-error`](py/potential-index-error.md) | An index is inside a literal's length | `manual` | — | *[rules] only* |
 | [`py/prefer-typing-namedtuple`](py/prefer-typing-namedtuple.md) | A named tuple is a `typing.NamedTuple` class | `manual` | — | *[rules] only* |
 | [`py/print-empty-string`](py/print-empty-string.md) | print(), not print('') | `auto` | — | *[rules] only* |
 | [`py/printf-in-get-text-func-call`](py/printf-in-get-text-func-call.md) | No % formatting inside a gettext call | `suggest` | — | *[rules] only* |
 | [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | *[rules] only* |
+| [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | *[rules] only* |
 | [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | *[rules] only* |
 | [`py/property-without-return`](py/property-without-return.md) | A property returns a value | `manual` | — | *[rules] only* |
 | [`py/py-path`](py/py-path.md) | pathlib, not py.path | `manual` | — | *[rules] only* |
@@ -2486,6 +2559,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/repeated-global`](py/repeated-global.md) | One global statement | `auto` | — | *[rules] only* |
 | [`py/repeated-keyword-argument`](py/repeated-keyword-argument.md) | No keyword passed twice | `manual` | — | *[rules] only* |
 | [`py/replace-stdout-stderr`](py/replace-stdout-stderr.md) | capture_output=True, not stdout=PIPE, stderr=PIPE | `suggest` | — | *[rules] only* |
+| [`py/replace-str-enum`](py/replace-str-enum.md) | A string enum inherits StrEnum | `auto` | — | *[rules] only* |
 | [`py/replace-universal-newlines`](py/replace-universal-newlines.md) | text=, not universal_newlines= | `auto` | — | *[rules] only* |
 | [`py/return-in-generator`](py/return-in-generator.md) | No return value in a generator | `manual` | — | *[rules] only* |
 | [`py/return-in-init`](py/return-in-init.md) | No return value in __init__ | `suggest` | — | *[rules] only* |
@@ -2517,6 +2591,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `manual` | — | `py/recommended` |
 | [`py/starmap-zip`](py/starmap-zip.md) | map(f, a, b), not starmap(f, zip(a, b)) | `suggest` | — | *[rules] only* |
 | [`py/static-key-dict-comprehension`](py/static-key-dict-comprehension.md) | A dict comprehension's key varies | `suggest` | — | `py/recommended` |
+| [`py/stdlib-module-shadowing`](py/stdlib-module-shadowing.md) | A module does not take a standard-library module's name | `manual` | `strict_checking`, `allowed_modules` | *[rules] only* |
 | [`py/stop-iteration-return`](py/stop-iteration-return.md) | A generator returns instead of raising StopIteration | `suggest` | — | *[rules] only* |
 | [`py/str-or-repr-defined-in-stub`](py/str-or-repr-defined-in-stub.md) | No __str__ or __repr__ in stubs | `auto` | — | *[rules] only* |
 | [`py/string-or-bytes-too-long`](py/string-or-bytes-too-long.md) | No long string literals in stubs | `auto` | — | *[rules] only* |
@@ -2546,12 +2621,21 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/t-suffixed-type-alias`](py/t-suffixed-type-alias.md) | A private type alias does not end in T | `manual` | — | *[rules] only* |
 | [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | *[rules] only* |
 | [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers` |
+| [`py/too-few-public-methods`](py/too-few-public-methods.md) | A class defines at least `min` public methods | `manual` | `max` | *[rules] only* |
+| [`py/too-many-boolean-expressions`](py/too-many-boolean-expressions.md) | An if condition joins at most `max` Boolean terms | `manual` | `max` | *[rules] only* |
 | [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended` |
+| [`py/too-many-instance-attributes`](py/too-many-instance-attributes.md) | A class sets at most `max` instance attributes | `manual` | `max` | *[rules] only* |
+| [`py/too-many-locals`](py/too-many-locals.md) | A function has at most `max` local variables | `manual` | `max` | *[rules] only* |
+| [`py/too-many-public-methods`](py/too-many-public-methods.md) | A class has at most `max` public methods | `manual` | `max` | *[rules] only* |
+| [`py/too-many-return-statements`](py/too-many-return-statements.md) | A function has at most `max` return statements | `manual` | `max` | *[rules] only* |
+| [`py/too-many-statements`](py/too-many-statements.md) | A function has at most `max` statements | `manual` | `max` | *[rules] only* |
+| [`py/too-many-statements-in-try-clause`](py/too-many-statements-in-try-clause.md) | A try clause holds at most `max` statements | `manual` | `max` | *[rules] only* |
 | [`py/trailing-comma-on-bare-tuple`](py/trailing-comma-on-bare-tuple.md) | No accidental one-element tuple | `manual` | — | *[rules] only* |
 | [`py/trailing-comma-tuple`](py/trailing-comma-tuple.md) | No tuple made by a trailing comma | `manual` | — | *[rules] only* |
 | [`py/trio-sync-call`](py/trio-sync-call.md) | Await trio's async functions | `suggest` | — | *[rules] only* |
 | [`py/true-false-comparison`](py/true-false-comparison.md) | Don't compare with `True` or `False` | `suggest` | — | `py/recommended` |
 | [`py/try-consider-else`](py/try-consider-else.md) | A return after the guarded work goes in else | `manual` | — | *[rules] only* |
+| [`py/type-alias-without-annotation`](py/type-alias-without-annotation.md) | A stub's type alias is annotated TypeAlias | `auto` | — | *[rules] only* |
 | [`py/type-bivariance`](py/type-bivariance.md) | A TypeVar is not both covariant and contravariant | `manual` | — | *[rules] only* |
 | [`py/type-check-without-type-error`](py/type-check-without-type-error.md) | A failed type check raises TypeError | `suggest` | — | *[rules] only* |
 | [`py/type-comparison`](py/type-comparison.md) | Don't compare types with `==` | `auto` | — | `py/recommended` |
@@ -2564,6 +2648,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unannotated-assignment-in-stub`](py/unannotated-assignment-in-stub.md) | A stub annotates its variables | `manual` | — | *[rules] only* |
 | [`py/unary-prefix-increment`](py/unary-prefix-increment.md) | No `++x` or `--x` | `suggest` | — | `py/recommended` |
 | [`py/unassigned-special-variable-in-stub`](py/unassigned-special-variable-in-stub.md) | A stub gives __all__ its value | `manual` | — | *[rules] only* |
+| [`py/unbalanced-dict-unpacking`](py/unbalanced-dict-unpacking.md) | Unpacking a dict literal matches its size | `manual` | — | *[rules] only* |
+| [`py/unbalanced-tuple-unpacking`](py/unbalanced-tuple-unpacking.md) | An unpacking has as many targets as the literal has values | `manual` | — | *[rules] only* |
 | [`py/uncapitalized-environment-variables`](py/uncapitalized-environment-variables.md) | Environment variable names are in capitals | `suggest` | — | *[rules] only* |
 | [`py/unconventional-import-alias`](py/unconventional-import-alias.md) | numpy is imported as np | `suggest` | — | *[rules] only* |
 | [`py/undefined-export`](py/undefined-export.md) | `__all__` names only defined names | `suggest` | — | `py/recommended` |
@@ -2642,6 +2728,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unrecognized-platform-name`](py/unrecognized-platform-name.md) | A platform check in a stub names a known platform | `manual` | — | *[rules] only* |
 | [`py/unrecognized-version-info-check`](py/unrecognized-version-info-check.md) | A stub's version check has a form type checkers understand | `manual` | — | *[rules] only* |
 | [`py/unreliable-callable-check`](py/unreliable-callable-check.md) | Test for callables with `callable()` | `suggest` | — | `py/recommended` |
+| [`py/unsorted-dunder-slots`](py/unsorted-dunder-slots.md) | `__slots__` is sorted | `auto` | — | *[rules] only* |
 | [`py/unsorted-imports`](py/unsorted-imports.md) | Imports are sorted | `auto` | `known_first_party`, `line_length` | `py/recommended` |
 | [`py/unspecified-encoding`](py/unspecified-encoding.md) | open() in text mode names its encoding | `suggest` | — | *[rules] only* |
 | [`py/unsupported-method-call-on-all`](py/unsupported-method-call-on-all.md) | `__all__` grows with `+=`, not a method call | `suggest` | — | *[rules] only* |

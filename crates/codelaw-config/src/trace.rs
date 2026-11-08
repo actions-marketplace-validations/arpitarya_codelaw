@@ -224,6 +224,8 @@ impl Config {
         push("fix.external_timeout", duration(self.external_timeout()), s);
         let (v, s) = root_key(&["fix", "on_edit"], |r| r.fix.on_edit.map(|x| json!(x)), Value::Null);
         push("fix.on_edit", v, s);
+        let (v, s) = root_key(&["fix", "multi_file"], |r| r.fix.multi_file.map(|x| json!(x.name())), json!("auto"));
+        push("fix.multi_file", v, s);
         let (v, s) = root_key(&["adapters", "enabled"], |r| r.adapters.enabled.as_ref().map(|x| json!(x)), Value::Null);
         push("adapters.enabled", v, s);
         let (_, s) = root_key(&["adapters", "timeout"], |r| r.adapters.timeout.map(|_| Value::Null), Value::Null);
@@ -463,6 +465,13 @@ impl Config {
     pub fn fix_on_edit_source(&self) -> Option<(bool, String)> {
         let root = self.files.first()?;
         root.raw.fix.on_edit.map(|v| (v, self.source(root, &["fix", "on_edit"])))
+    }
+
+    /// `[fix] multi_file` and the line that set it (SR-CONFIG decision
+    /// 11g); `None` when unset.
+    pub fn fix_multi_file_source(&self) -> Option<(crate::raw::MultiFile, String)> {
+        let root = self.files.first()?;
+        root.raw.fix.multi_file.map(|v| (v, self.source(root, &["fix", "multi_file"])))
     }
 
     pub fn rule_setting_sources(&self, file: Option<&Path>, id: &str) -> Vec<(String, &RuleSetting)> {

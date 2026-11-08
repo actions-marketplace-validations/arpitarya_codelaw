@@ -231,15 +231,46 @@ impl Project {
                     note = Some("certainty: uncertain".to_owned());
                 }
                 let declared = rule.loaded.rule.fix;
-                let (class, edits) = if declared == FixClass::Manual {
+                let mut choices = Vec::new();
+                let (mut class, edits) = if declared == FixClass::Manual {
                     (FixClass::Manual, Vec::new())
                 } else if f.edits.is_empty() {
-                    note.get_or_insert_with(|| "fix-unavailable".into());
-                    (FixClass::Manual, Vec::new())
+                    // A fix read from other files (SR-MULTI-FILE-FIXES).
+                    match crate::graph_fixes::fix(g, &f, graph, &by_rel, self.root()) {
+                        Some(crate::graph_fixes::Fix::Edits(e)) => (declared.max(FixClass::Suggest), e),
+                        Some(crate::graph_fixes::Fix::Choices(c)) => {
+                            choices = c;
+                            (declared.max(FixClass::Suggest), Vec::new())
+                        }
+                        None => {
+                            note.get_or_insert_with(|| "fix-unavailable".into());
+                            (FixClass::Manual, Vec::new())
+                        }
+                    }
                 } else {
                     (declared, f.edits.clone())
                 };
-                let steps = if class == FixClass::Manual {
+                // A choice editing another file obeys `multi_file` (decision 3).
+                let mut fix_exception = None;
+                let mut off_step = None;
+                if choices.iter().any(|c| c.files.iter().any(|x| x.path != f.file)) {
+                    match self.multi_file_of(rule.id(), &layers).0 {
+                        codelaw_config::MultiFile::Off => {
+                            let each: Vec<String> = choices
+                                .iter()
+                                .map(|c| format!("{}: {}", c.label, c.files.iter().map(|x| format!("in `{}`, {}", x.path, x.edits.iter().map(|e| format!("insert `{}`", e.text)).collect::<Vec<_>>().join("; "))).collect::<Vec<_>>().join(" · ")))
+                                .collect();
+                            off_step = Some(format!("`multi_file = \"off\"` turns off fixes that edit several files; make one of these edits by hand — {}.", each.join(" | ")));
+                            choices.clear();
+                            class = FixClass::Manual;
+                            fix_exception = Some(codelaw_core::FixException::Restructure);
+                        }
+                        codelaw_config::MultiFile::Suggest | codelaw_config::MultiFile::Auto => {}
+                    }
+                }
+                let steps = if let Some(s) = off_step {
+                    vec![s]
+                } else if class == FixClass::Manual {
                     if rule.loaded.rule.steps.is_empty() {
                         vec![format!("Make the change by hand; `codelaw explain {}` shows what the rule requires.", rule.id())]
                     } else {
@@ -263,8 +294,9 @@ impl Project {
                     source: rule.loaded.source.label(),
                     note,
                     data: None,
-                    choices: Vec::new(),
-                    fix_exception: None,
+                    choices,
+                    fix_exception: fix_exception.or_else(|| (class == FixClass::Manual).then(|| crate::lint::manual_exception(&rule.loaded.rule))),
+                    files: Vec::new(),
                 });
             }
         }
@@ -410,6 +442,19 @@ impl Project {
             .iter()
             .map(|(rel, l, t)| (rel.clone(), *l, self.fix_source_in(rel, *l, t, unsafe_fixes, choice, crate::files::Tree::Memory(files)).fixed))
             .collect();
+        // Multi-file fixes after every file's own (SR-MULTI-FILE-FIXES).
+        let start: std::collections::BTreeSet<String> =
+            self.check_files(&texts).into_iter().filter(|d| crate::multi_file::wanted(d, unsafe_fixes, choice)).map(|d| d.file).collect();
+        if !start.is_empty() {
+            let snapshot = texts.clone();
+            let mut pass = crate::multi_file::MultiFix::new(self, crate::multi_file::Base::Memory(&snapshot), self.virtual_sources(&snapshot), unsafe_fixes, choice);
+            pass.run(&start);
+            for (rel, _, text) in texts.iter_mut() {
+                if pass.applied.contains_key(rel.as_str()) {
+                    *text = pass.texts[rel.as_str()].clone();
+                }
+            }
+        }
         let mut sources = self.virtual_sources(&texts);
         self.fix_graph(&mut sources, &self.graph_config().unwrap_or_default(), unsafe_fixes, 10);
         for (rel, _, text) in texts.iter_mut() {
@@ -420,7 +465,7 @@ impl Project {
         texts.into_iter().map(|(r, _, t)| (r, t)).collect()
     }
 
-    fn virtual_sources(&self, files: &[(String, Language, String)]) -> Vec<Source> {
+    pub(crate) fn virtual_sources(&self, files: &[(String, Language, String)]) -> Vec<Source> {
         let mut v: Vec<Source> = files
             .iter()
             .map(|(rel, language, text)| Source { rel: rel.clone(), abs: self.config.root_dir.join(rel), language: Some(*language), text: text.clone(), reported: true })

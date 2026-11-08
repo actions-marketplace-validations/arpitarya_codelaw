@@ -4,9 +4,8 @@ title: "A CSS Module class that is read exists"
 languages: [javascript, jsx, typescript, tsx]
 scope: project
 severity: error
-fix: manual
-fix_reason: "whether to add the class or fix the name is the author's call"
-fix_pending: "suggest-choices; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "`styles.x` is corrected to the module's class nearest in spelling, or one of the nearest when several tie (choices); a diff to accept, as adding the class may be what was meant. No near class offers no fix (SR-MULTI-FILE-FIXES)"
 stability: preview
 since: 0.3.0
 ported_from: [eslint-plugin-css-modules/no-undef-class]
@@ -23,12 +22,15 @@ graph:
   module:
     classes: undefined
 message: "`styles.$CLASS`: `$FILE` defines no `.$CLASS`"
+fix:
+  do: [nearest-class]
 ```
 
 ## How to fix
 
-1. Correct the name in the JavaScript or TypeScript file, or add the class to the module.
-2. If the bundler maps names (`localsConvention`), set `[css] modules_convention` so the mapped names count.
+1. Accept the fix where it is offered: `codelaw fix --unsafe` corrects the name to the module's nearest class.
+2. Otherwise correct the name, or add the class to the module.
+3. If the bundler maps names (`localsConvention`), set `[css] modules_convention` so the mapped names count.
 
 ## Examples
 

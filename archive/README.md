@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-162-fix-capabilities-build.md`](open/W-162-fix-capabilities-build.md) | 2026-11-08 | done — [SR-MULTI-FILE-FIXES](../records/0119_multi-file-fixes.md) and [SR-RULE-FORMAT](../records/0112_rule-format.md) 3a–3c: the fix capabilities built; the 36 cross-file rules moved (29 up, 7 `manual`); the 6 type-information rules wait on W-105 |
 | [`W-156-fix-ladder.md`](open/W-156-fix-ladder.md) | 2026-11-07 | done — [SR-LAW-4](../records/0006_LAW-4-every-rule-has-a-fix.md): the ladder in the engine and every rule on its rung; 77 wait on a capability (W-162 42, W-105 1) |
 | [`W-171-session-cleanup.md`](open/W-171-session-cleanup.md) | 2026-11-07 | done — [SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md): the six kept worktrees of 11-05 landed and removed |
 | [`W-168-graph-scale-measurement.md`](open/W-168-graph-scale-measurement.md) | 2026-11-07 | done — [`experiments/graph-scale/RESULTS.md`](../experiments/graph-scale/RESULTS.md), [SR-CLI-MCP](../records/0115_cli-and-mcp.md) decisions 2 and 10, [SR-PROJECT-GRAPH](../records/0103_project-graph.md) decision 5; ruled no budget yet — the follow-up is [W-167](../work/open/W-167-graph-architecture-design.md) step 6 |
@@ -54,7 +55,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 | [`W-157-config-completion.md`](open/W-157-config-completion.md) | 2026-10-31 | done — [SR-EDITOR](../records/0114_editor.md) decision 9 (the server completes and checks codelaw's own config), [SR-CONFIG](../records/0110_config.md) decisions 6 and 8 (`#:schema` from `init`) |
 | [`W-158-codelawignore-every-rule.md`](open/W-158-codelawignore-every-rule.md) | 2026-11-05 | done — [SR-BASELINE](../records/0104_baseline-and-deprecations.md) decision 12 (`.codelawignore` for every rule), [SR-CONFIG](../records/0110_config.md) decision 11c (`reason` on an `"off"`, `[rules] require_reason`) |
 | [`W-170-lsp-config-completion-tests.md`](open/W-170-lsp-config-completion-tests.md) | 2026-11-05 | done — [SR-EDITOR](../records/0114_editor.md) decision 9: config completion recognises the top-level `[rules]` (`rootRules`, W-158) again; `require_reason` completes |
-| [`W-161-fix-capabilities-research.md`](open/W-161-fix-capabilities-research.md) | 2026-11-05 | done — six fix-capability designs and the build order in [`work/proposals/fix-capabilities.md`](../work/proposals/fix-capabilities.md); built by [W-162](../work/open/W-162-fix-capabilities-build.md) |
+| [`W-161-fix-capabilities-research.md`](open/W-161-fix-capabilities-research.md) | 2026-11-05 | done — six fix-capability designs and the build order in [`work/proposals/fix-capabilities.md`](../work/proposals/fix-capabilities.md); built by [W-162](open/W-162-fix-capabilities-build.md) |
 | [`W-164-readme-opening.md`](open/W-164-readme-opening.md) | 2026-11-05 | done — the README and `packaging/README.md` open with the ruled lead and the deterministic, no-AI second line |
 | [`W-103-spell-pack.md`](open/W-103-spell-pack.md) | 2026-11-05 | done — the spell pack on npm and PyPI, byte-identical; [SR-SPELL](../records/0116_spell.md) built |
 | [`W-165-stale-branches.md`](open/W-165-stale-branches.md) | 2026-11-05 | done — twelve unmerged local branches, ruled keep ([SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md)) |

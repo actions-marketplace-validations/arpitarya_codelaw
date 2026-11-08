@@ -146,7 +146,7 @@ Start from `TEMPLATE.md`.
 | [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | yes |
 | [0117](0117_types.md) | **SR-TYPES** | Type-aware TypeScript rules — the project's own TypeScript ≥ 7.1, asked through codelaw's Node helper a fixed vocabulary of type questions; `ts/type-error`; preview until 7.1 is GA | accepted | partly |
 | [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | yes |
-| [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | no |
+| [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | yes |
 
 ---
 
@@ -184,6 +184,7 @@ yet is owned by an open `W-nn`.
 | `.claude/hooks/block-main.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: only lockmaster writes to main |
 | `.claude/hooks/claim-guard.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: a write outside the claim is warned |
 | `.claude/hooks/auto-land.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: at the end of every turn it lands what a change holds, and picks up Cowork's handoffs |
+| `.claude/hooks/work-files.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: at `Stop`, tells a session once that it changed files but no work file (lockmaster's L10) |
 | `.claude/hooks/fux-index-hint.sh` | SR-WORK-DOCS | advisory only — the Fux setup's PreToolUse hint to search the committed fux index before grepping; never blocks (W-75) |
 | `lockmaster.toml` | SR-WORK-SESSION | decision 15 — this repo's landing checks and merge drivers |
 | `.claude/hooks/disk-budget.py` | SR-LAW-9 | decision 4 |

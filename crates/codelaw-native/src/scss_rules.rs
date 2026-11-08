@@ -381,7 +381,9 @@ scss_rule!(DollarVariablePattern, "scss/dollar-variable-pattern", |sheet, src, c
         let n = &sheet.nodes[i];
         let name = text(src, n.name);
         if n.kind == Kind::Decl && name.starts_with('$') && !name.contains('.') && !name.contains("#{") && !re.is_match(&name[1..]) {
-            out.push(finding(n.start, n.name.1, format!("`{name}` should match `{}`", re.as_str())));
+            let mut f = finding(n.start, n.name.1, format!("`{name}` should match `{}`", re.as_str()));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::ScssVariable, &name[1..], &re, crate::multi_file::kebab);
+            out.push(f);
         }
     }
 });
@@ -394,7 +396,9 @@ scss_rule!(AtMixinPattern, "scss/at-mixin-pattern", |sheet, src, ctx, out| {
         let end = params.find(|c: char| c == '(' || c.is_whitespace()).unwrap_or(params.len());
         let name = &params[..end];
         if !name.is_empty() && !name.contains("#{") && !re.is_match(name) {
-            out.push(finding(n.params.0, n.params.0 + end, format!("The mixin `{name}` should match `{}`", re.as_str())));
+            let mut f = finding(n.params.0, n.params.0 + end, format!("The mixin `{name}` should match `{}`", re.as_str()));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::ScssMixin, name, &re, crate::multi_file::kebab);
+            out.push(f);
         }
     }
 });
@@ -413,7 +417,9 @@ scss_rule!(PercentPlaceholderPattern, "scss/percent-placeholder-pattern", |sheet
             let end = at + 1 + sel[at + 1..].find(|c: char| !(c.is_ascii_alphanumeric() || c == '-' || c == '_')).unwrap_or(sel.len() - at - 1);
             let name = &sel[at + 1..end];
             if !name.is_empty() && !sel[..at].ends_with("#{") && !re.is_match(name) {
-                out.push(finding(n.name.0 + at, n.name.0 + end, format!("The placeholder `%{name}` should match `{}`", re.as_str())));
+                let mut f = finding(n.name.0 + at, n.name.0 + end, format!("The placeholder `%{name}` should match `{}`", re.as_str()));
+                f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::ScssPlaceholder, name, &re, crate::multi_file::kebab);
+                out.push(f);
             }
             from = end.max(at + 1);
         }

@@ -4,7 +4,7 @@ title: "A multi-line docstring's summary starts on the first line"
 languages: [python]
 fix: auto
 stability: preview
-ported_from: [ruff/D212]
+ported_from: [ruff/D212, pylint/docstring-first-line-empty]
 since: 0.5.0
 ---
 

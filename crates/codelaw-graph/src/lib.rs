@@ -8,6 +8,7 @@
 //! counters of `Graph::build_timed`, which never change the graph.
 
 pub mod config;
+pub mod dangling;
 pub mod deprecated;
 pub mod facts;
 pub mod flags;
@@ -17,6 +18,7 @@ pub mod query;
 pub mod resolve;
 
 pub use config::GraphConfig;
+pub use dangling::{dangling, defined_classes, introduced};
 pub use deprecated::{DeprecatedUse, Marked};
 pub use facts::{Decl, DeclKind, FactLang, FileFacts, Span, SpecForm, Specifier, extract};
 pub use link::{BuildTimes, Graph, GraphInput, Manifest, Module, Use, is_manifest, is_test_file};

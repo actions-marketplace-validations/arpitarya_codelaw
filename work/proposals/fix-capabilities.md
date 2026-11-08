@@ -358,7 +358,7 @@ makes.
 ## Reference
 
 [W-161](../../archive/open/W-161-fix-capabilities-research.md) ·
-[W-162](../open/W-162-fix-capabilities-build.md) ·
+[W-162](../../archive/open/W-162-fix-capabilities-build.md) ·
 [W-156](../../archive/open/W-156-fix-ladder.md) B4 ·
 [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) ·
 [SR-RULE-FORMAT](../../records/0112_rule-format.md) 3a–3c ·

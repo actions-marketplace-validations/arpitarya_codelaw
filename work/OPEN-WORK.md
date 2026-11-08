@@ -22,30 +22,32 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-07 — next gate: 2026-11-10, the TypeScript 7.1 RC re-pin (W-105).*
+| 🔴 **Push `main` to GitHub** — local `main` is 123 commits ahead of `origin/main` (last push `7cdb480b`, 11-07); Claude Code's push is refused by the permission classifier, so only Arpit can run `git push origin main`. W-126's three `perf` runs, W-169's five green build runs, W-172's CI proof and the zip alerts' closing (W-173's Ruff bump) wait on it. | 2026-11-08 |
+| ↳ **blocks:** W-126, W-169 | |
 
 ---
 
-## Open items (11)
+## Open items (12)
 
-### build (5)
+### build (6)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. 11-07: DoD 1 — js 18–23 (224, 17 linked; 164 left), py 19–23 (235; 237 left), each labelled in item. Next: js natives (37), py add-import rows. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 81 rows left, py 194 (11-08), labelled in item; inference → W-174, js graph → W-175. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets (11-07). `mcp_rules_for_path` 112 → 11 ms; peak 159 → 107 MiB, then shared regexes and on-demand examples landed 11-08 (not re-measured). Next: re-measure on release, push main for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
+🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 36 wait (cross-file), 6 on W-105. Next: cross-file read, then write. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
+🟢 **W-175** `agent` Graph queries for 10 W-139 js rows that read other modules (`import/named`, `default`, `namespace`, `no-cycle`, `no-deprecated`, `no-unused-modules`, …) and unicorn's polyfill table. Next: amend SR-PROJECT-GRAPH decision 6 with the queries. Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
+
+🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 ### ci/cd (4)
 
-🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🔴🧨 **W-169** `arpit` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🔴 **W-126** `arpit` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 

@@ -287,6 +287,7 @@ Each agent reads a different set of files from a different place. Maintaining th
 - **Copilot ignores a `postToolUse` hook's output,** so on Copilot the hook applies `auto` fixes but cannot hand findings back; the always-on block's "run `codelaw check`" carries that.
 - **Evals cost CI time for each agent.**
 - **A consumer that runs `sync-agents` or `init --agents` installs one more package** (decision 8), and upgrades it with codelaw; a mismatch is refused, never silently served.
+- **2026-11-08 (W-162):** the per-edit hook never applies a multi-file fix; its line lists the other files' edits a suggested one would make ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

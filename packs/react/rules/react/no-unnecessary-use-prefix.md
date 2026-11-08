@@ -2,9 +2,8 @@
 id: react/no-unnecessary-use-prefix
 title: "A use… function calls a hook"
 languages: [javascript, jsx, typescript, tsx]
-fix: manual
-fix_reason: "renaming the function means renaming every caller, in other files too"
-fix_pending: "auto-subset; needs cross-file (W-162)"
+fix: auto
+fix_reason: "auto when nothing imports the function: it is renamed without its `use` with every call in its module; an exported one is renamed in every project module that imports it too, as one fix, a diff to accept (SR-MULTI-FILE-FIXES)"
 stability: preview
 ported_from: ["@eslint-react/no-unnecessary-use-prefix"]
 since: 0.3.0
@@ -22,8 +21,8 @@ native: react/no-unnecessary-use-prefix
 
 ## How to fix
 
-1. Rename the function without the `use` prefix (`useFormat` → `format`), and rename its callers.
-2. If it is meant to become a hook, leave a comment naming the hook it will call.
+1. `codelaw fix` drops the `use` prefix and renames every call; for an exported one, check the diff and accept it with `codelaw fix --unsafe`.
+2. If the function should be a hook, make it call one instead (keep its name).
 
 ## Examples
 
@@ -65,6 +64,14 @@ const greeting = (name) => <p>Hello, {name}</p>;
 
 ```ts
 function useTotal(items: number[]): number {
+  return items.reduce((a, b) => a + b, 0);
+}
+```
+
+#### Fixed
+
+```ts
+function total(items: number[]): number {
   return items.reduce((a, b) => a + b, 0);
 }
 ```

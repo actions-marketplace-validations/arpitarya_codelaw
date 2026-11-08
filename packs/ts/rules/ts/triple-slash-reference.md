@@ -3,8 +3,8 @@ id: ts/triple-slash-reference
 title: "No /// <reference path> directives"
 languages: [typescript, tsx]
 fix: manual
-fix_reason: "the matching import needs the module path and what it provides"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "restructure: a `/// <reference path>` brings a script's globals into scope, which an `import` does not; the replacement is turning that file into a module and importing what it exports (W-162)"
+fix_exception: restructure
 stability: preview
 ported_from: [typescript-eslint/triple-slash-reference]
 since: 0.1.0

@@ -76,7 +76,7 @@ The decider made performance a law (L8) and asked for a caching record. Caches w
    - **So do the loaded packs.** A process keeps each pack it has loaded (its rules, presets and data tables), keyed by its folder and the size and modification time of every file its load reads, and loads it again only when one of those changes; the 64 most recent are kept. A warm process loads the project per request, and before this re-read and re-parsed every rule file each time (`mcp_rules_for_path`, W-172, 2026-11-07).
 9. **Off switch:** `--no-cache` and `[cache] enabled = false`. Correct either way, slower without.
 
-10. **A cached diagnostic carries its whole fix** (W-156, 2026-10-31). `Diagnostic` gained `choices` and `fix_exception`; JSON omits them when empty, but the positional codec always writes both, after `data`, as it does `data` (LESSONS 2026-10-26). The key's domain tag moved from `codelaw-cache-v1` to `v2`, so no entry written before them is read.
+10. **A cached diagnostic carries its whole fix** (W-156, 2026-10-31). `Diagnostic` gained `choices` and `fix_exception`; JSON omits them when empty, but the positional codec always writes both, after `data`, as it does `data` (LESSONS 2026-10-26). The key's domain tag moved from `codelaw-cache-v1` to `v2`, so no entry written before them is read. **A multi-file fix too** (W-162, 2026-11-08, [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) decision 4): `Diagnostic.files` and `FixChoice.files`, always written by the positional codec; the tag moved to `v3`. Such a finding is keyed on every file its rule read, as any native rule's answers are (SR-ARCHITECTURE decision 15b): a file the rename reads that changes makes the cached result stale.
 
 ### Consequences
 
