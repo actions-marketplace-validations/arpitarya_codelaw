@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — Disk full: everything stopped, build output cleaned, MACHINE.md's disk facts  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"stop everything merge everything the cleanup everything i do not have any memory left. put the details of memory in machine.md."*
+- **Done:** the four running agents stopped (W-139 js, W-139 py, W-162 cross-file, W-172 memory). Disk 99 % full (2.8 GB free) → 43 GB free: `cargo clean` of `target/` (23.7 GB), three scratch cargo targets in the session scratchpads (17.2 GB, outside what `disk-budget.py` counts), scratch binaries and bench workloads. W-139-py's worktree (landed) removed and `lm/W-139-py` deleted. MACHINE.md § *Where the disk goes* and a surface row.
+- **Decided / left open:** not merged, on purpose — the three half-built changes would land code nothing compiled: **W-139-js** (4 commits ahead, 9 files uncommitted), **W-162** (3 ahead, 82 uncommitted — cross-file), **W-172** (1 ahead, 10 uncommitted — on-demand examples). Each worktree is kept as it is (~110 MB each); each lands when its item resumes. `main` still unpushed (123 ahead).
+- **Mistakes:** the coordinator let five-plus agents build in parallel with scratch target dirs the budget hook cannot see.
+- **Next:** resume one or two agents at a time, not five.
+
 ## 2026-11-07 – 11-08 — Coordinating the parallel build run (W-139, W-141, W-156, W-162, W-166, W-168–W-173)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** *"continue"*, *"continue with green items and implement till closure"*, *"continue implementing till everything is implemented and closed keeping going in parallel"*.
