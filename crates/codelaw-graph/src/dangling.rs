@@ -9,7 +9,8 @@
 //!   name (a module with re-exports, or none at all, is not judged);
 //! - `styles.x` where the CSS Module defines no `.x`;
 //! - a class token of markup or a script that no stylesheet defines,
-//!   counted only while some stylesheet defines classes.
+//!   counted only while some stylesheet defines classes, and by
+//!   [`introduced`] only when it named a class before the change.
 
 use crate::facts::{FactLang, ImportKind, SpecForm};
 use crate::link::Graph;
@@ -36,6 +37,30 @@ pub fn dangling(graph: &Graph) -> BTreeSet<String> {
     imported_names(graph, &mut out);
     class_tokens(graph, &mut out);
     out
+}
+
+/// The classes the project's (global) stylesheets define.
+pub fn defined_classes(graph: &Graph) -> BTreeSet<String> {
+    graph
+        .modules
+        .values()
+        .filter(|m| m.facts.lang == Some(FactLang::Css) && !graph.config.is_css_module(&m.path))
+        .flat_map(|m| m.facts.css_classes.iter().map(|c| c.name.clone()))
+        .collect()
+}
+
+/// The references a change left dangling: the keys of `after` not in
+/// `before`, a class token counted only when it named a class `before`
+/// (a token the change wrote that never named one resolved nothing).
+pub fn introduced(before: &BTreeSet<String>, after: &BTreeSet<String>, classes_before: &BTreeSet<String>) -> Vec<String> {
+    after
+        .difference(before)
+        .filter(|k| match k.strip_prefix("class\0") {
+            Some(rest) => rest.rsplit('\0').next().is_some_and(|t| classes_before.contains(t)),
+            None => true,
+        })
+        .cloned()
+        .collect()
 }
 
 /// A named or default import of a project module that exports no such name.

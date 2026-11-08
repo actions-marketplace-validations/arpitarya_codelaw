@@ -2,9 +2,8 @@
 id: html/no-utf8-bom
 title: "No UTF-8 byte-order mark"
 languages: [html]
-fix: manual
-fix_reason: "the mark is in the file's bytes, outside the text a fix can edit; the editor's encoding setting removes it"
-fix_pending: "auto-subset; needs cross-file (W-162)"
+fix: auto
+fix_reason: "the mark is in the file's bytes, outside its text: the fix is the file-level operation `strip_bom`, applied by `codelaw fix`, never on save or by the agent hook (SR-MULTI-FILE-FIXES)"
 stability: preview
 ported_from: [html-validate/no-utf8-bom]
 since: 0.1.0
@@ -20,8 +19,8 @@ native: html/no-utf8-bom
 
 ## How to fix
 
-1. Save the file as UTF-8 without a byte-order mark. In VS Code, click the encoding in the status bar, choose *Save with Encoding*, then *UTF-8*.
-2. Or strip it from the command line: `sed -i '1s/^\xEF\xBB\xBF//' <file>` (GNU sed).
+1. `codelaw fix` saves the file without its byte-order mark.
+2. In an editor, save it as UTF-8 without a mark: in VS Code, click the encoding in the status bar, choose *Save with Encoding*, then *UTF-8*.
 
 ## Examples
 

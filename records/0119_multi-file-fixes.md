@@ -84,8 +84,8 @@ could not climb the fix ladder without editing other files
 1. **A fix may edit several files.** A fix is a list of edit sets, each
    naming its file by its project-relative path, plus file-level operations
    (`strip-bom`). Every output carries the path:
-   - JSON and MCP keep the finding's own file's edits in `fix.edits` and
-     group the others by `path` in `fix.files` (each with its `edits`, and
+   - JSON and MCP keep the finding's own file's edits in the finding's `fix` object, under `edits`, and
+     group the others by `path` under that object's `files` (each with its `edits`, and
      `strip_bom` when the fix removes the file's byte-order mark); a choice
      carries its own `files`;
    - SARIF uses `artifactChanges`;
@@ -161,20 +161,52 @@ could not climb the fix ladder without editing other files
     never offers such a fix;
   - a refused fix leaves every file as it was and its finding is `manual`,
     its note `fix-refused: <why>`;
-  - outputs: JSON and MCP `fix.files`, SARIF one `artifactChanges` entry per
+  - outputs: JSON and MCP list the other files under the `fix` object's `files`, SARIF one `artifactChanges` entry per
     file, the text and agent lines `edits N files`, the hook's line names the
     other files' edits and says it never applies them, the editor's quick fix
     one `WorkspaceEdit` over every file (offered only while each other file's
     open text is its disk text); "fix all" on save never carries one;
+  - the cost (L8): a rule reads other files only for a finding that offers
+    a fix, each file once per checked file, through a read cache checked by
+    size and modification time (8 MB, `crates/codelaw-engine/src/files.rs`);
+    past 4,000 candidate files no rename is offered; the pass runs, and
+    builds the graph, only when a finding offers a multi-file fix; a class
+    token counts as dangling only when it named a class before the fix
+    (`codelaw_graph::introduced`);
   - the rule tester applies them in its virtual repo, so a rule's
     multi-file `files` examples prove them;
   - `crates/codelaw-cli/tests/multi_file.rs`, `crates/codelaw-lsp/tests/server.rs`
     (`a_multi_file_fix_is_one_workspace_edit_over_every_file`) and the writer's
     tests in `crates/codelaw-fix/src/tests.rs`.
 - L4 decisions 9, 10 and 12 point here; single-file fixes are unchanged.
-- As this is built, the 22 rules move from
-  `fix_pending: "…; needs cross-file"` to `suggest`, and some to `auto`. In a
-  project with `multi_file = "off"`, they are `manual`.
+- **The rules moved** (W-162, 2026-11-08; each proven by `codelaw test`,
+  multi-file examples included):
+  - renames in several files, `suggest`: `css/selector-class-pattern`,
+    `-id-pattern`, `custom-property-pattern`, `keyframes-name-pattern`,
+    `layer-name-pattern`, `container-name-pattern`, `custom-media-pattern`,
+    `scss/percent-placeholder-pattern`, `css-modules/class-naming`,
+    `js/new-cap`, `react/jsx-pascal-case`, `js/no-default-export`;
+  - `auto` where every use is resolved, else `suggest`:
+    `scss/dollar-variable-pattern` and `at-mixin-pattern` (users through
+    `@use`), `react/hook-prefix` and `no-unnecessary-use-prefix` (nothing
+    imports it);
+  - read other files, edit this one: `js/no-default-import`, `js/no-undef`
+    and `react/jsx-no-undef` (`suggest`, choices), `node/no-missing-import`
+    and `-require` (`suggest`), `css-modules/no-undefined-class`
+    (`suggest`), `py/no-star-import`, `nested-star-import` and
+    `star-import-usage` (`auto` with one star import);
+  - another file only: `node/no-extraneous-import` and `-require`
+    (`suggest`, choices `dependencies` / `devDependencies`, at the version
+    installed);
+  - a file-level operation: `html/no-utf8-bom` (`auto`, `strip_bom`);
+  - a move in one file, no longer waiting: `py/module-import-not-at-top`
+    (`suggest`);
+  - re-judged `manual`: `html/valid-id`, `stencil/tag-prefix`,
+    `stencil/ban-prefix`, `data/codeowners-coverage` (`value`);
+    `scss/at-extend-no-missing-placeholder`, `spell/known-typo-key`,
+    `ts/triple-slash-reference` (`restructure`).
+- In a project with `multi_file = "off"`, a fix that edits another file is
+  `manual`, `restructure`.
 
 ### Alternatives considered
 
@@ -210,4 +242,4 @@ not others, or leaves a reference unresolved that resolved before it.
 
 **Code** — `crates/codelaw-core/src/diagnostic.rs` · `crates/codelaw-engine/src/multi_file.rs` · `crates/codelaw-fix/src/transaction.rs` · `crates/codelaw-graph/src/dangling.rs` · `crates/codelaw-native/src/multi_file.rs`
 
-**Project docs** — [`work/proposals/fix-capabilities.md`](../work/proposals/fix-capabilities.md) · [W-162](../work/open/W-162-fix-capabilities-build.md)
+**Project docs** — [`work/proposals/fix-capabilities.md`](../work/proposals/fix-capabilities.md)

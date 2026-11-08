@@ -4,8 +4,8 @@ title: "Every file has a code owner, and every CODEOWNERS pattern is live"
 languages: [json, toml]
 files: ["package.json", "pyproject.toml", "codelaw.toml"]
 fix: manual
-fix_reason: "who owns a path is a decision about people; the finding names the paths and the lines, and the owner is the team's to choose"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "value: who owns a path is a decision about people; the finding names the paths and the lines, and the owner is the team's to choose. A stale pattern's line is in `CODEOWNERS`, a plain-text config file `codelaw fix` never writes (SR-LAW-3 decision 10) (W-162)"
+fix_exception: value
 stability: preview
 options:
   path: { type: "string", description: "the CODEOWNERS file, from the project root; by default the first that exists of .github/CODEOWNERS, CODEOWNERS, docs/CODEOWNERS and .gitlab/CODEOWNERS" }

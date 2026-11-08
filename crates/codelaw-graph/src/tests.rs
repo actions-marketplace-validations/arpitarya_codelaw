@@ -507,9 +507,10 @@ fn the_flags_query_compiles() {
 /// The keys a fix adds to `dangling`: the references it leaves resolving
 /// to nothing (SR-MULTI-FILE-FIXES safeguard 2).
 fn new_dangling(before: &[(&str, &str)], after: &[(&str, &str)]) -> Vec<String> {
-    let b = dangling(&graph(before, GraphConfig::default()));
+    let bg = graph(before, GraphConfig::default());
+    let b = dangling(&bg);
     let a = dangling(&graph(after, GraphConfig::default()));
-    a.difference(&b).map(|k| k.replace('\0', " ")).collect()
+    introduced(&b, &a, &defined_classes(&bg)).into_iter().map(|k| k.replace('\0', " ")).collect()
 }
 
 #[test]
@@ -535,4 +536,11 @@ fn an_import_of_a_moved_file_dangles() {
     let before = [("src/a.js", "export const x = 1;\n"), ("src/b.js", "import { x } from './a';\n")];
     let after = [("src/a.js", "export const x = 1;\n"), ("src/b.js", "import { x } from './c';\n")];
     assert_eq!(new_dangling(&before, &after), vec!["import src/b.js ./c"]);
+}
+
+#[test]
+fn a_word_a_change_writes_that_never_named_a_class_is_not_dangling() {
+    let before = [("a.css", ".a { color: var(--mainColor); }\n"), ("a.js", "x.setProperty(\"--mainColor\", 1);\n")];
+    let after = [("a.css", ".a { color: var(--main-color); }\n"), ("a.js", "x.setProperty(\"--main-color\", 1);\n")];
+    assert!(new_dangling(&before, &after).is_empty());
 }

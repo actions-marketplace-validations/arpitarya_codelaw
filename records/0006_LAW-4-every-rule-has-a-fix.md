@@ -242,6 +242,14 @@ a diff.
   or `manual` with its exception, except 43 that wait on a capability
   (`fix_pending:`, 42 naming W-162, `ts/type-error` W-105). Whole tree at
   close: `auto` 608, `suggest` 872, `manual` 963.
+- **W-162 closed 2026-11-08:** the 36 rules waiting on cross-file read and
+  write moved — 29 up (8 to `auto`, 21 to `suggest`), 7 re-judged `manual`
+  with their exception (`html/valid-id`, `stencil/tag-prefix`,
+  `stencil/ban-prefix`, `data/codeowners-coverage`: `value`;
+  `scss/at-extend-no-missing-placeholder`, `spell/known-typo-key`,
+  `ts/triple-slash-reference`: `restructure`); the 6 type-information rules
+  wait on W-105 with `ts/type-error`. Whole tree at close: `auto` 657,
+  `suggest` 947, `manual` 1012, 7 waiting (all W-105).
 - **Rule authors carry more cost:** a subset condition, choices with their own
   `Fixed` examples, an exception. That is the point: the cost moves from every
   reader of a finding to the one author of the rule.

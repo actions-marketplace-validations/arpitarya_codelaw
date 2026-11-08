@@ -491,7 +491,14 @@ fn pattern_rule(sheet: &Sheet, src: &str, ctx: &crate::NativeContext<'_>, kind: 
         for x in simples.iter().filter(|x| x.kind == kind) {
             let name = text(src, x.name);
             if !name.is_empty() && !re.is_match(name) {
-                out.push(finding(x.start, x.end, format!("{what} selector `{sigil}{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+                let mut f = finding(x.start, x.end, format!("{what} selector `{sigil}{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+                // Renamed here and in every file that uses it (SR-MULTI-FILE-FIXES).
+                let named = if kind == SKind::Class { crate::multi_file::NameKind::Class } else { crate::multi_file::NameKind::Id };
+                f.edits = crate::multi_file::conventional(name, &re, crate::multi_file::kebab)
+                    .and_then(|new| crate::multi_file::rename(ctx, named, name, &new))
+                    .map(crate::multi_file::Plan::edits)
+                    .unwrap_or_default();
+                out.push(f);
             }
         }
     }

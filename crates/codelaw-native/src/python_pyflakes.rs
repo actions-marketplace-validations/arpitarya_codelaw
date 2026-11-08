@@ -435,7 +435,9 @@ fn star_import(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding
     if module.starts_with('.') {
         return;
     }
-    out.push(hit(stmt, format!("`from {module} import *` hides which names the module uses")));
+    // The names it binds that the file uses, read from the module (SR-MULTI-FILE-FIXES).
+    let edits = crate::multi_file::py_star_fix(ctx, stmt, None);
+    out.push(hit_fix(stmt, format!("`from {module} import *` hides which names the module uses"), edits));
 }
 py_rule!(UndefinedLocalWithImportStar, "py/no-star-import", ["wildcard_import"], false, star_import);
 
@@ -464,22 +466,21 @@ fn star_import_usage(_root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<Nat
     }
     for r in &model.references {
         if r.symbol.is_none() && !codelaw_semantic::PYTHON_BUILTINS.contains(&r.name.as_str()) && !extra.contains(&r.name) && !implicit_name(model, r.scope, &r.name) {
-            out.push(NativeFinding {
-                start: r.start,
-                end: r.end,
-                message: format!("`{}` may be undefined, or come from a star import", r.name),
-                edits: Vec::new(),
-            });
+            // The one star import that binds it, made explicit (SR-MULTI-FILE-FIXES).
+            let edits = crate::multi_file::py_star_providing(ctx, _root, &r.name).map(|stmt| crate::multi_file::py_star_fix(ctx, stmt, None)).unwrap_or_default();
+            out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` may be undefined, or come from a star import", r.name), edits });
         }
     }
 }
 py_rule!(StarImportUsage, "py/star-import-usage", ["module"], true, star_import_usage);
 
-fn nested_star_import(n: Node<'_>, _ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-    if crate::python_util::enclosing_def(n).is_some()
+fn nested_star_import(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    if let Some(def) = crate::python_util::enclosing_def(n)
         && let Some(stmt) = n.parent()
     {
-        out.push(hit(stmt, "`import *` is only allowed at module level"));
+        // The names it binds that the function uses (SR-MULTI-FILE-FIXES).
+        let edits = crate::multi_file::py_star_fix(ctx, stmt, Some((def.start_byte(), def.end_byte())));
+        out.push(hit_fix(stmt, "`import *` is only allowed at module level", edits));
     }
 }
 py_rule!(NestedStarImport, "py/nested-star-import", ["wildcard_import"], false, nested_star_import);

@@ -21,8 +21,6 @@
 use crate::NativeContext;
 use crate::css_syntax::{Kind as CssKind, SKind, all_simples, text};
 use codelaw_core::{FileEdit, Language, TextEdit};
-use std::cell::RefCell;
-use std::collections::BTreeMap;
 
 /// The kinds of name a rename follows.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -486,21 +484,6 @@ fn scss_reaches(path: &str, src: &str, target: &str) -> bool {
     })
 }
 
-/// One file's plans: its path, a hash of its text, and each rename asked.
-type Plans = (String, u64, BTreeMap<(NameKind, String, String), Option<Plan>>);
-
-thread_local! {
-    /// The last file's plans, so each finding of one name reads the project once.
-    static PLANS: RefCell<Option<Plans>> = const { RefCell::new(None) };
-}
-
-fn text_key(t: &str) -> u64 {
-    use std::hash::{Hash, Hasher};
-    let mut h = std::collections::hash_map::DefaultHasher::new();
-    t.hash(&mut h);
-    h.finish()
-}
-
 /// The rename of `old` to `new`, a name of `kind`, in this file and every
 /// file of the project that uses it; `None` when there is no safe one: the
 /// project is not known, a file already uses `new`, or there are too many
@@ -509,22 +492,7 @@ pub(crate) fn rename(ctx: &NativeContext<'_>, kind: NameKind, old: &str, new: &s
     let own_path = ctx.file.path().to_owned();
     let host_text = String::from_utf8_lossy(ctx.file.bytes());
     let host = host_text.strip_prefix('\u{feff}').unwrap_or(&host_text).to_owned();
-    let key = (kind, old.to_owned(), new.to_owned());
-    let stamp = text_key(&host) ^ text_key(ctx.source);
-    if let Some(p) = PLANS.with(|c| c.borrow().as_ref().filter(|(p, h, _)| *p == own_path && *h == stamp).and_then(|(_, _, m)| m.get(&key).cloned())) {
-        return p;
-    }
-    let plan = plan(ctx, kind, old, new, &own_path, &host);
-    PLANS.with(|c| {
-        let mut c = c.borrow_mut();
-        match c.as_mut() {
-            Some((p, h, m)) if *p == own_path && *h == stamp => {
-                m.insert(key, plan.clone());
-            }
-            _ => *c = Some((own_path, stamp, BTreeMap::from([(key, plan.clone())]))),
-        }
-    });
-    plan
+    plan(ctx, kind, old, new, &own_path, &host)
 }
 
 fn plan(ctx: &NativeContext<'_>, kind: NameKind, old: &str, new: &str, own_path: &str, host: &str) -> Option<Plan> {
@@ -623,4 +591,423 @@ mod tests {
         assert_eq!(html_uses(html, NameKind::Class, "navBar").len(), 2);
         assert_eq!(html_uses(html, NameKind::Id, "navBar").len(), 3);
     }
+}
+
+#[cfg(test)]
+mod module_tests {
+    use super::*;
+
+    #[test]
+    fn module_reads_are_found() {
+        let src = "import styles from \"./button.module.css\";\nexport const B = () => <b className={styles[\"btn-primary\"]} a={styles.btn} />;\n";
+        assert_eq!(module_imports("src/button.jsx", src, "src/button.module.css"), vec!["styles".to_owned()]);
+        assert_eq!(script_uses(src, Language::Jsx, NameKind::ModuleClass, "btn-primary", &["styles".to_owned()]).len(), 1);
+        assert_eq!(script_uses(src, Language::Jsx, NameKind::ModuleClass, "btn", &["styles".to_owned()]).len(), 1);
+    }
+}
+
+// ---------------------------------------------------------------------
+// A JavaScript or TypeScript binding, renamed in its module and in every
+// project module that imports it.
+
+/// The project file a relative specifier of `from` names, among the files
+/// that exist: `./a` is `a.js`, `a.ts`, … or `a/index.…`; a `.js` path may
+/// name its `.ts` source.
+pub(crate) fn resolve_js(ctx: &NativeContext<'_>, from: &str, spec: &str) -> Option<String> {
+    if !spec.starts_with('.') {
+        return None;
+    }
+    let base = crate::resolve_path(from, spec)?;
+    const EXTS: &[&str] = &["js", "jsx", "ts", "tsx", "mjs", "cjs", "mts", "cts"];
+    let mut candidates = vec![base.clone()];
+    candidates.extend(EXTS.iter().map(|e| format!("{base}.{e}")));
+    if let Some(stem) = base.strip_suffix(".js") {
+        candidates.extend(["ts", "tsx"].iter().map(|e| format!("{stem}.{e}")));
+    }
+    candidates.extend(EXTS.iter().map(|e| format!("{base}/index.{e}")));
+    candidates.into_iter().find(|c| ctx.file.exists(c) && !ctx.file.is_dir(c))
+}
+
+/// `Name`: the first letter upper-cased.
+pub(crate) fn upper_first(name: &str) -> String {
+    let mut c = name.chars();
+    c.next().map(|f| f.to_uppercase().chain(c).collect()).unwrap_or_default()
+}
+
+/// `name`: the first letter lower-cased.
+pub(crate) fn lower_first(name: &str) -> String {
+    let mut c = name.chars();
+    c.next().map(|f| f.to_lowercase().chain(c).collect()).unwrap_or_default()
+}
+
+/// PascalCase: `My_component` is `MyComponent`, `NAVBAR` is `Navbar`.
+pub(crate) fn pascal(name: &str) -> String {
+    name.split('_')
+        .filter(|p| !p.is_empty())
+        .map(|p| if p.chars().all(|c| !c.is_ascii_lowercase()) { upper_first(&p.to_ascii_lowercase()) } else { upper_first(p) })
+        .collect()
+}
+
+/// The edits renaming symbol `sym` of a module's `model` to `new`: its
+/// declarations and references, a shorthand property keeping its key, and
+/// the closing JSX tags that name it. `None` when `new` is taken in the file.
+fn binding_edits(src: &str, language: Language, model: &codelaw_semantic::SemanticModel, sym: usize, new: &str) -> Option<Vec<TextEdit>> {
+    let s = model.symbol(sym);
+    let old = s.name.clone();
+    if model.symbols.iter().any(|x| x.name == new) || model.references.iter().any(|r| r.name == new) {
+        return None;
+    }
+    let root = codelaw_lang::parse(language, src);
+    let mut kind_at: std::collections::HashMap<usize, String> = std::collections::HashMap::new();
+    let mut closing: Vec<(usize, usize)> = Vec::new();
+    for n in root.root().dfs() {
+        let r = n.range();
+        if n.kind().starts_with("shorthand_property_identifier") {
+            kind_at.insert(r.start, n.kind().to_string());
+        }
+        if n.kind() == "jsx_closing_element"
+            && let Some(name) = n.field("name")
+            && name.text() == old
+        {
+            let nr = name.range();
+            closing.push((nr.start, nr.end));
+        }
+    }
+    let mut spans: Vec<(usize, usize)> = s.decls.clone();
+    spans.extend(s.refs.iter().map(|&r| (model.references[r].start, model.references[r].end)));
+    if !closing.is_empty() && s.refs.iter().any(|&r| src[..model.references[r].start].ends_with('<')) {
+        spans.extend(closing);
+    }
+    spans.sort_unstable();
+    spans.dedup();
+    Some(
+        spans
+            .into_iter()
+            .map(|(a, b)| match kind_at.get(&a) {
+                Some(_) => TextEdit::new(a, b, format!("{old}: {new}")),
+                None => TextEdit::new(a, b, new),
+            })
+            .collect(),
+    )
+}
+
+/// The first whole-name occurrence of `name` in `src[from..to]`.
+pub(crate) fn first_name(src: &str, from: usize, to: usize, name: &str) -> Option<(usize, usize)> {
+    occurrences(src, from, to.min(src.len()), name).first().map(|&s| (s, s + name.len()))
+}
+
+/// Whether a script names `target` in a `require(…)` or an `import(…)`,
+/// which a rename can't follow.
+pub(crate) fn loads_dynamically(ctx: &NativeContext<'_>, path: &str, src: &str, target: &str) -> bool {
+    let re = regex::Regex::new(r#"(?:require|import)\s*\(\s*['"]([^'"]+)['"]"#).expect("a valid pattern");
+    re.captures_iter(src).any(|c| resolve_js(ctx, path, &c[1]).as_deref() == Some(target))
+}
+
+/// Rename the top-level binding `old` of the module at `decl_path` (whose
+/// text is `decl_src`) to `new`, there and in every project module that
+/// imports it: the edits by file. `None` when there is no safe rename: `new`
+/// is taken in a file, or a module reaches the binding through a namespace,
+/// a re-export, `require` or `import()`. Certain when nothing imports it.
+pub(crate) fn rename_export(ctx: &NativeContext<'_>, decl_path: &str, decl_src: &str, old: &str, new: &str) -> Option<(BTreeMapEdits, bool)> {
+    let language = Language::from_path(std::path::Path::new(decl_path)).filter(|l| l.is_js_family())?;
+    let root = codelaw_lang::parse(language, decl_src);
+    let model = codelaw_semantic::build(language, &root, decl_src)?;
+    let sym = model.symbols.iter().position(|s| s.name == old && s.scope == 0 && s.kind != codelaw_semantic::SymbolKind::Import)?;
+    let mut out: BTreeMapEdits = std::collections::BTreeMap::new();
+    out.insert(decl_path.to_owned(), binding_edits(decl_src, language, &model, sym, new)?);
+    // The names importers see change only where the binding is exported as itself.
+    let exported = model.exports.iter().any(|e| e.local == Some(sym) && e.name == old && e.source.is_none());
+    if !exported {
+        return Some((out, true));
+    }
+    let files: Vec<String> = ctx
+        .file
+        .project_files()?
+        .into_iter()
+        .filter(|p| p != decl_path && Language::from_path(std::path::Path::new(p)).is_some_and(|l| l.is_js_family()))
+        .collect();
+    if files.len() > MAX_FILES {
+        return None;
+    }
+    for path in files {
+        let Some(src) = (if path == ctx.file.path() { Some(String::from_utf8_lossy(ctx.file.bytes()).trim_start_matches('\u{feff}').to_owned()) } else { ctx.file.read(&path) }) else { continue };
+        if !src.contains(old) {
+            continue;
+        }
+        let l = Language::from_path(std::path::Path::new(&path)).expect("filtered");
+        if loads_dynamically(ctx, &path, &src, decl_path) {
+            return None;
+        }
+        let r = codelaw_lang::parse(l, &src);
+        let Some(m) = codelaw_semantic::build(l, &r, &src) else { continue };
+        if m.exports.iter().any(|e| e.source.as_deref().is_some_and(|s| resolve_js(ctx, &path, s).as_deref() == Some(decl_path))) {
+            return None;
+        }
+        let mut edits = Vec::new();
+        for imp in m.imports.iter().filter(|i| resolve_js(ctx, &path, &i.source).as_deref() == Some(decl_path)) {
+            match &imp.imported {
+                codelaw_semantic::Imported::Named(n) if n == old => {
+                    let local = imp.local.filter(|&id| m.symbol(id).name == old);
+                    match local {
+                        Some(id) => edits.extend(binding_edits(&src, l, &m, id, new)?),
+                        None => edits.push(first_name(&src, imp.start, imp.end, old).map(|(a, b)| TextEdit::new(a, b, new))?),
+                    }
+                }
+                codelaw_semantic::Imported::Namespace => return None,
+                _ => {}
+            }
+        }
+        if !edits.is_empty() {
+            edits.sort_by_key(|e| (e.start, e.end));
+            edits.dedup();
+            out.insert(path, edits);
+        }
+    }
+    Some((out, false))
+}
+
+/// Edits by project-relative path.
+pub(crate) type BTreeMapEdits = std::collections::BTreeMap<String, Vec<TextEdit>>;
+
+/// The finding's edits for a rename by file: this file's own, the others in
+/// [`crate::in_files`]; a suggestion unless `certain`.
+pub(crate) fn plan_edits(ctx: &NativeContext<'_>, mut by_file: BTreeMapEdits, certain: bool) -> Vec<TextEdit> {
+    let own_path = ctx.file.path().to_owned();
+    let host = String::from_utf8_lossy(ctx.file.bytes());
+    let in_host = host.trim_start_matches('\u{feff}') == ctx.source;
+    let own = if in_host { by_file.remove(&own_path).unwrap_or_default() } else { Vec::new() };
+    let files = by_file.into_iter().map(|(p, e)| FileEdit::new(p, e)).collect();
+    Plan { own, files, certain }.edits()
+}
+
+/// The rename of a binding a rule found at `at` (a declaration or a
+/// reference in this file) to `new`: where it is declared here, or the
+/// project module it is imported from by name.
+pub(crate) fn rename_binding_at(ctx: &NativeContext<'_>, at: usize, new: &str) -> Vec<TextEdit> {
+    let Some(model) = ctx.semantic else { return Vec::new() };
+    let Some(sym) = model.symbol_at(at) else { return Vec::new() };
+    let s = model.symbol(sym);
+    let own_path = ctx.file.path().to_owned();
+    let host = String::from_utf8_lossy(ctx.file.bytes()).trim_start_matches('\u{feff}').to_owned();
+    if host != ctx.source {
+        return Vec::new();
+    }
+    if s.kind != codelaw_semantic::SymbolKind::Import {
+        if s.scope != 0 {
+            // A local binding: this file only.
+            let Some(e) = binding_edits(ctx.source, ctx.language, model, sym, new) else { return Vec::new() };
+            return e;
+        }
+        return rename_export(ctx, &own_path, &host, &s.name, new).map(|(by, certain)| plan_edits(ctx, by, certain)).unwrap_or_default();
+    }
+    let Some(imp) = model.import_of(sym) else { return Vec::new() };
+    let codelaw_semantic::Imported::Named(name) = &imp.imported else { return Vec::new() };
+    if *name != s.name {
+        return Vec::new();
+    }
+    let Some(target) = resolve_js(ctx, &own_path, &imp.source) else { return Vec::new() };
+    let Some(text) = ctx.file.read(&target) else { return Vec::new() };
+    rename_export(ctx, &target, &text, name, new).map(|(by, _)| plan_edits(ctx, by, false)).unwrap_or_default()
+}
+
+// ---------------------------------------------------------------------
+// An undefined name imported from the project module that exports it
+// (SR-MULTI-FILE-FIXES: the fix reads other files, and edits this one).
+
+/// The specifier from `from` to the project module `to`: relative, without
+/// its extension or a trailing `/index`.
+pub(crate) fn module_spec(from: &str, to: &str) -> String {
+    let from_dir: Vec<&str> = from.split('/').collect::<Vec<_>>().split_last().map(|(_, d)| d.to_vec()).unwrap_or_default();
+    let to_parts: Vec<&str> = to.split('/').collect();
+    let common = from_dir.iter().zip(&to_parts).take_while(|(a, b)| a == b).count();
+    let mut parts: Vec<String> = (common..from_dir.len()).map(|_| "..".to_owned()).collect();
+    parts.extend(to_parts[common..].iter().map(|s| (*s).to_owned()));
+    let mut s = parts.join("/");
+    for ext in [".tsx", ".ts", ".jsx", ".mjs", ".cjs", ".js"] {
+        if let Some(stem) = s.strip_suffix(ext) {
+            s = stem.to_owned();
+            break;
+        }
+    }
+    if let Some(dir) = s.strip_suffix("/index") {
+        s = dir.to_owned();
+    }
+    if s == "index" {
+        s = ".".to_owned();
+    }
+    if s.starts_with("..") || s == "." { s } else { format!("./{s}") }
+}
+
+/// Where a new import goes: after the last import, else after the leading
+/// directives (`"use client"`) and a hashbang, else at the top.
+fn import_point(src: &str, language: Language) -> (usize, bool) {
+    let root = codelaw_lang::parse(language, src);
+    let top: Vec<_> = root.root().children().collect();
+    if let Some(last) = top.iter().filter(|n| n.kind() == "import_statement").last() {
+        return (last.range().end, true);
+    }
+    let mut at = 0;
+    for n in &top {
+        let k = n.kind();
+        let directive = k == "expression_statement" && n.children().next().is_some_and(|c| c.kind() == "string");
+        if k == "hash_bang_line" || directive {
+            at = n.range().end;
+        } else if k != "comment" {
+            break;
+        }
+    }
+    (at, at > 0)
+}
+
+/// The fix of an undefined `name`: import it by name from each project
+/// module that exports it (closest path first, three at most), as choices
+/// labelled by the path; one module is one edit. Nothing when none does.
+pub(crate) fn import_choices(ctx: &NativeContext<'_>, name: &str) -> Vec<TextEdit> {
+    let own = ctx.file.path().to_owned();
+    let host = String::from_utf8_lossy(ctx.file.bytes()).trim_start_matches('\u{feff}').to_owned();
+    if host != ctx.source || !name.chars().next().is_some_and(|c| c.is_alphabetic() || c == '_' || c == '$') {
+        return Vec::new();
+    }
+    // A global of a known environment (`describe`, `window`) is the rule's
+    // `env` to set, not an import to find.
+    let global = ctx.data.iter().filter(|(k, _)| k.starts_with("globals/")).any(|(_, v)| match v.as_ref() {
+        serde_json::Value::Object(o) => o.contains_key(name),
+        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(name)),
+        _ => false,
+    });
+    if global {
+        return Vec::new();
+    }
+    let Some(files) = ctx.file.project_files() else { return Vec::new() };
+    let files: Vec<String> = files.into_iter().filter(|p| *p != own && Language::from_path(std::path::Path::new(p)).is_some_and(|l| l.is_js_family())).collect();
+    if files.len() > MAX_FILES {
+        return Vec::new();
+    }
+    let mut found: Vec<String> = Vec::new();
+    for path in files {
+        let Some(src) = ctx.file.read(&path) else { continue };
+        if !src.contains(name) || !src.contains("export") {
+            continue;
+        }
+        let l = Language::from_path(std::path::Path::new(&path)).expect("filtered");
+        let root = codelaw_lang::parse(l, &src);
+        let Some(m) = codelaw_semantic::build(l, &root, &src) else { continue };
+        if m.exports.iter().any(|e| e.name == name && e.source.is_none() && !e.type_only) {
+            found.push(module_spec(&own, &path));
+        }
+    }
+    found.sort_by_key(|s| (s.matches("..").count(), s.len(), s.clone()));
+    found.truncate(3);
+    let (at, after) = import_point(ctx.source, ctx.language);
+    let edit = |spec: &str| {
+        let stmt = format!("import {{ {name} }} from \"{spec}\";");
+        vec![if after { TextEdit::insert(at, format!("\n{stmt}")) } else { TextEdit::insert(at, format!("{stmt}\n")) }]
+    };
+    let choices: Vec<codelaw_core::FixChoice> = found.iter().enumerate().map(|(i, s)| crate::choice(s.as_str(), i == 0, edit(s))).collect();
+    crate::choice_edits(choices)
+}
+
+// ---------------------------------------------------------------------
+// A Python star import made explicit: the names the module exports that
+// this file (or this function) uses, read from the module itself.
+
+/// The project file a Python module names from `from` (`a.b`, `.sub`).
+fn py_module_file(ctx: &NativeContext<'_>, from: &str, module: &str) -> Option<String> {
+    let level = module.chars().take_while(|c| *c == '.').count();
+    let rest = module[level..].replace('.', "/");
+    let bases: Vec<String> = if level > 0 {
+        let mut dir: Vec<&str> = from.split('/').collect();
+        dir.pop();
+        for _ in 1..level {
+            dir.pop()?;
+        }
+        vec![dir.join("/")]
+    } else {
+        vec![String::new(), "src".to_owned()]
+    };
+    for base in bases {
+        let join = |p: &str| if base.is_empty() { p.to_owned() } else if p.is_empty() { base.clone() } else { format!("{base}/{p}") };
+        for cand in [join(&format!("{rest}.py")), join(&if rest.is_empty() { "__init__.py".to_owned() } else { format!("{rest}/__init__.py") })] {
+            if ctx.file.exists(&cand) && !ctx.file.is_dir(&cand) {
+                return Some(cand);
+            }
+        }
+    }
+    None
+}
+
+/// The names `from <module> import *` binds: `__all__` when the module
+/// writes it as a literal list, else every top-level name without a
+/// leading underscore.
+fn py_star_exports(src: &str) -> Option<std::collections::BTreeSet<String>> {
+    let re = regex::Regex::new(r#"(?m)^__all__\s*=\s*[\[(]([^\])]*)[\])]"#).expect("a valid pattern");
+    if let Some(c) = re.captures(src) {
+        let names = regex::Regex::new(r#"['"]([A-Za-z_][A-Za-z0-9_]*)['"]"#).expect("a valid pattern");
+        return Some(names.captures_iter(&c[1]).map(|m| m[1].to_owned()).collect());
+    }
+    if src.contains("__all__") {
+        // Built some other way: not known without running the module.
+        return None;
+    }
+    let root = codelaw_lang::parse(Language::Python, src);
+    let m = codelaw_semantic::build(Language::Python, &root, src)?;
+    Some(m.symbols.iter().filter(|s| s.scope == 0 && !s.name.starts_with('_')).map(|s| s.name.clone()).collect())
+}
+
+/// The fix of a star import `stmt` (an `import_from_statement`): the star
+/// replaced with the names it binds that the file uses — inside `within`
+/// (a function's bytes) when given. `auto` when it is the file's one star
+/// import, else a suggestion; nothing when the module isn't the project's.
+pub(crate) fn py_star_fix(ctx: &NativeContext<'_>, stmt: tree_sitter::Node<'_>, within: Option<(usize, usize)>) -> Vec<TextEdit> {
+    let src = ctx.source;
+    let host = String::from_utf8_lossy(ctx.file.bytes()).trim_start_matches('\u{feff}').to_owned();
+    if host != src {
+        return Vec::new();
+    }
+    let (Some(module), Some(star)) = (stmt.child_by_field_name("module_name"), (0..stmt.child_count()).filter_map(|i| stmt.child(i)).find(|c| c.kind() == "wildcard_import")) else { return Vec::new() };
+    let Some(path) = py_module_file(ctx, ctx.file.path(), &src[module.byte_range()]) else { return Vec::new() };
+    let Some(exports) = ctx.file.read(&path).and_then(|t| py_star_exports(&t)) else { return Vec::new() };
+    let root = codelaw_lang::parse(Language::Python, src);
+    let Some(model) = codelaw_semantic::build(Language::Python, &root, src) else { return Vec::new() };
+    let mut used: Vec<String> = model
+        .references
+        .iter()
+        .filter(|r| r.symbol.is_none() && exports.contains(&r.name) && within.is_none_or(|(a, b)| a <= r.start && r.end <= b))
+        .map(|r| r.name.clone())
+        .collect();
+    used.sort();
+    used.dedup();
+    if used.is_empty() {
+        return Vec::new();
+    }
+    let line = src[..stmt.start_byte()].rfind('\n').map_or(0, |i| i + 1);
+    let indent = &src[line..stmt.start_byte()];
+    let one = used.join(", ");
+    let names = if stmt.end_byte() - stmt.start_byte() + one.len() + indent.len() > 88 {
+        format!("(\n{}\n{indent})", used.iter().map(|n| format!("{indent}    {n},")).collect::<Vec<_>>().join("\n"))
+    } else {
+        one
+    };
+    let edits = vec![TextEdit::new(star.start_byte(), star.end_byte(), names)];
+    let stars = model.imports.iter().filter(|i| i.imported == codelaw_semantic::Imported::Star).count();
+    if stars == 1 { edits } else { crate::as_suggestion(edits) }
+}
+
+/// The star import of this file that binds `name`, when exactly one does.
+pub(crate) fn py_star_providing<'t>(ctx: &NativeContext<'_>, root: tree_sitter::Node<'t>, name: &str) -> Option<tree_sitter::Node<'t>> {
+    let mut stack = vec![root];
+    let mut found = Vec::new();
+    while let Some(n) = stack.pop() {
+        if n.kind() == "wildcard_import"
+            && let Some(stmt) = n.parent()
+            && let Some(module) = stmt.child_by_field_name("module_name")
+            && let Some(path) = py_module_file(ctx, ctx.file.path(), &ctx.source[module.byte_range()])
+            && ctx.file.read(&path).and_then(|t| py_star_exports(&t)).is_some_and(|e| e.contains(name))
+        {
+            found.push(stmt);
+        }
+        let mut c = n.walk();
+        stack.extend(n.children(&mut c));
+    }
+    (found.len() == 1).then(|| found[0])
 }

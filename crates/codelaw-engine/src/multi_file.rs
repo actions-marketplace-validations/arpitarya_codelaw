@@ -53,8 +53,9 @@ pub(crate) struct MultiFix<'a> {
     pub refused: BTreeMap<(String, String, String), String>,
     /// The graph's sources, as the pass started.
     sources: Vec<Source>,
-    /// The dangling references of the current texts.
-    dangling: Option<BTreeSet<String>>,
+    /// The dangling references of the current texts, and the classes
+    /// their stylesheets define.
+    dangling: Option<(BTreeSet<String>, BTreeSet<String>)>,
 }
 
 /// Whether `d` offers a multi-file fix this run applies.
@@ -141,13 +142,36 @@ impl<'a> MultiFix<'a> {
         }
     }
 
+    /// The project rules' diagnostics over the files as `texts` has them.
+    fn graph_diags(&self, texts: &BTreeMap<String, String>) -> Vec<Diagnostic> {
+        if self.project.graph_rules().is_empty() {
+            return Vec::new();
+        }
+        let mut sources = self.sources.clone();
+        for s in &mut sources {
+            if let Some(t) = texts.get(&s.rel) {
+                s.text = t.clone();
+            }
+        }
+        self.project.run_graph_rules(&sources, self.project.graph_config().unwrap_or_default())
+    }
+
+    /// Every diagnostic of `rel` with the files as `texts` has them: its
+    /// file rules', and the project rules' in it out of `graph`.
+    fn all(&self, rel: &str, text: &str, texts: &BTreeMap<String, String>, graph: &[Diagnostic]) -> Vec<Diagnostic> {
+        let mut d = self.lint(rel, text, texts);
+        d.extend(graph.iter().filter(|g| g.file == rel).cloned());
+        d
+    }
+
     /// The current diagnostics of `rel`.
     pub fn diagnostics(&mut self, rel: &str) -> Vec<Diagnostic> {
         let Some(text) = self.text(rel) else { return Vec::new() };
-        self.lint(rel, &text, &self.texts)
+        let graph = self.graph_diags(&self.texts);
+        self.all(rel, &text, &self.texts, &graph)
     }
 
-    fn dangling_of(&self, texts: &BTreeMap<String, String>) -> BTreeSet<String> {
+    fn dangling_of(&self, texts: &BTreeMap<String, String>) -> (BTreeSet<String>, BTreeSet<String>) {
         let mut sources = self.sources.clone();
         for s in &mut sources {
             if let Some(t) = texts.get(&s.rel) {
@@ -155,7 +179,7 @@ impl<'a> MultiFix<'a> {
             }
         }
         let graph = self.project.build_graph(&sources, self.project.graph_config().unwrap_or_default());
-        codelaw_graph::dangling(&graph)
+        (codelaw_graph::dangling(&graph), codelaw_graph::defined_classes(&graph))
     }
 
     /// Apply every multi-file fix on offer in `files`, one at a time, until
@@ -221,12 +245,13 @@ impl<'a> MultiFix<'a> {
         }
         // The finding is gone, and no rule fires in an edited file that did
         // not fire there before (L4 decisions 9 and 10).
+        let (graph_before, graph_after) = (self.graph_diags(&self.texts), self.graph_diags(&next));
         for path in &changed {
             if self.language(path).is_none() {
                 continue;
             }
-            let before = firing(&self.lint(path, &self.texts[*path], &self.texts));
-            let after_diags = self.lint(path, &next[*path], &next);
+            let before = firing(&self.all(path, &self.texts[*path], &self.texts, &graph_before));
+            let after_diags = self.all(path, &next[*path], &next, &graph_after);
             if let Some(r) = firing(&after_diags).difference(&before).next() {
                 return Err(format!("it makes `{r}` fire in `{path}`"));
             }
@@ -239,8 +264,8 @@ impl<'a> MultiFix<'a> {
             self.dangling = Some(self.dangling_of(&self.texts));
         }
         let after = self.dangling_of(&next);
-        let before = self.dangling.as_ref().expect("just set");
-        let left: Vec<String> = after.difference(before).map(|k| k.split('\0').skip(1).collect::<Vec<_>>().join(" ")).collect();
+        let (before, classes) = self.dangling.as_ref().expect("just set");
+        let left: Vec<String> = codelaw_graph::introduced(before, &after.0, classes).iter().map(|k| k.split('\0').skip(1).collect::<Vec<_>>().join(" ")).collect();
         if !left.is_empty() {
             return Err(format!("it leaves {} dangling: {}", if left.len() == 1 { "a reference" } else { "references" }, left.join("; ")));
         }

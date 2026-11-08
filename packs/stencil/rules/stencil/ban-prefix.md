@@ -3,8 +3,8 @@ id: stencil/ban-prefix
 title: "A component tag doesn't use a reserved prefix"
 languages: [typescript, tsx]
 fix: manual
-fix_reason: "renaming a tag changes every page that uses it"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "value: the prefix to use instead is the project's own, which the code does not hold (W-162)"
+fix_exception: value
 stability: preview
 options:
   prefixes: { type: "string[]", default: ["stencil", "stnl", "st"] }

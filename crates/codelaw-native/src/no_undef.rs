@@ -54,7 +54,9 @@ impl NativeRule for NoUndef {
             {
                 continue;
             }
-            out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` is not defined", r.name), edits: Vec::new() });
+            // Imported from the project module that exports it, where one does.
+            let edits = crate::multi_file::import_choices(ctx, &r.name);
+            out.push(NativeFinding { start: r.start, end: r.end, message: format!("`{}` is not defined", r.name), edits });
         }
     }
 }

@@ -17,6 +17,7 @@ mod fix;
 mod flags;
 mod format;
 mod git;
+mod graph_fixes;
 pub mod hygiene;
 mod incremental;
 mod lcov;

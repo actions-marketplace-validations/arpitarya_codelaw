@@ -2,9 +2,8 @@
 id: scss/at-mixin-pattern
 title: "Mixin names are kebab-case"
 languages: [scss]
-fix: manual
-fix_reason: "renaming must update every `@include` of the mixin"
-fix_pending: "auto-subset; needs cross-file (W-162)"
+fix: auto
+fix_reason: "auto when every file that includes the mixin reaches it through `@use`, `@forward` or `@import`: the rename then changes every `@include`, as one fix; a user that reaches it another way makes it a diff to accept, and another file defining the same name offers none (SR-MULTI-FILE-FIXES)"
 stability: preview
 options:
   pattern: { type: "string", default: "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", description: "a regular expression a mixin name must match" }
@@ -22,8 +21,9 @@ native: scss/at-mixin-pattern
 
 ## How to fix
 
-1. Rename the mixin to match the pattern.
-2. Rename every `@include` of it.
+1. `codelaw fix` renames the mixin to kebab-case here and in every `@include` of it.
+2. Where the rename is a suggestion, check the diff and accept it with `codelaw fix --unsafe`.
+3. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -42,6 +42,34 @@ native: scss/at-mixin-pattern
 ```scss
 @mixin button-base {
   color: red;
+}
+```
+
+#### Don't
+
+```scss
+// src/_mixins.scss
+@mixin ButtonBase {
+  color: red;
+}
+// src/app.scss
+@use "mixins";
+.a {
+  @include mixins.ButtonBase;
+}
+```
+
+#### Do
+
+```scss
+// src/_mixins.scss
+@mixin button-base {
+  color: red;
+}
+// src/app.scss
+@use "mixins";
+.a {
+  @include mixins.button-base;
 }
 ```
 

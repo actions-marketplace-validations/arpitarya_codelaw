@@ -63,6 +63,7 @@ mod regexp;
 pub mod regex_ast;
 mod regexp_rules;
 mod react_ts_extra;
+mod renames;
 mod rewrites;
 mod css_lists;
 mod css_style;
@@ -485,6 +486,12 @@ static TODO_MD: markers::TodoMarker = markers::TodoMarker { id: "md/todo-marker"
 
 /// Every native rule; ids are unique, order doesn't matter.
 static REGISTRY: &[&dyn NativeRule] = &[
+    &renames::NewCap,
+    &renames::JsxPascalCase,
+    &renames::HookPrefix,
+    &renames::NoDefaultExport,
+    &renames::NoDefaultImport,
+    &renames::JsxNoUndef,
     &TODO_JS,
     &TODO_PY,
     &TODO_CSS,

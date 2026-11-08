@@ -23,6 +23,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ```
 
 ---
+## 2026-11-08 — W-162 closed: cross-file read and write, the 36 rules moved  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build W-162's last capability — a fix that edits several files, applied all or nothing after a graph check, `[fix] multi_file` honoured, every output showing it, save and the hook refusing it — move the 36 cross-file rules, hand the 6 type-information markers to W-105 and close W-162. Resumed once after a usage-limit stop: re-derived `git status`, main had not moved.
+- **Done:** the edit model (`FileEdit` on `Diagnostic.files` and `FixChoice.files`, cache tag `v3`); `codelaw_fix::write_all_or_nothing`; `codelaw_graph::dangling` / `introduced`; the engine's multi-file pass (`crates/codelaw-engine/src/multi_file.rs`) after the per-file and project-rule fixes, also in the rule tester's virtual repo; `multi_file` per rule (`RuleSetting::Full`, schema, `config --print`, `rules --why`); JSON/MCP `fix.files`, SARIF per-file `artifactChanges`, the editor's `WorkspaceEdit`, the agent and hook lines; `strip_bom`. Renames in `codelaw-native` `multi_file.rs` and `renames.rs`, graph fixes `add-dependency`, `nearest-path`, `nearest-class` (`graph_fixes.rs`). 29 rules up (8 `auto`, 21 `suggest`), 7 re-judged `manual`; the 6 type-information rules name W-105. Whole tree `auto` 657, `suggest` 947, `manual` 1012, 7 waiting (all W-105). W-162 archived. Evidence: TESTS.
+- **Decided / left open:** ids and custom properties are not graph facts, so their renames are always `suggest`; a class token counts as dangling only when it named a class before the fix (a word the rename writes resolved nothing). A rename reads the project's files only for a finding that offers one, through a size-and-time-checked read cache bounded at 8 MB; past 4,000 candidate files no rename is offered (L8). W-139's item still says 61 js rows wait on "W-162's scope work": that work is `rename-symbol`, built (change 6); W-139 owns the text.
+- **Mistakes:** the shared `target/` was rebuilt by parallel worktrees mid-build again and again (stale `codelaw-core` with no `FileEdit`); a wrapper touched this branch's changed sources before each cargo call, and every pack test ran on a private, re-signed copy of the binary. A per-thread plan cache keyed on the file's text reused one virtual repo's rename in another (caught by `css-modules/class-naming`'s examples) and was replaced by a per-file read memo. End-of-turn auto-lands landed the engine in two parts before the rules (85ddb9af, c90bb139).
+- **Next:** W-105 on the RC (11-10) for the 7 type-information rules.
+
 
 ## 2026-11-07 – 11-08 — Coordinating the parallel build run (W-139, W-141, W-156, W-162, W-166, W-168–W-173)  ·  Claude Code (Opus 5.5)
 

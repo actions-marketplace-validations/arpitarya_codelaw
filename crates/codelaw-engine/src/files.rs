@@ -64,6 +64,8 @@ pub(crate) struct ProjectFile<'a> {
     /// The project's file list, walked once per file however often a rule
     /// asks (a multi-file fix asks once per finding).
     files: std::sync::OnceLock<Vec<String>>,
+    /// The other files read, each once however often a rule asks.
+    texts: Mutex<std::collections::HashMap<String, Option<String>>>,
 }
 
 impl<'a> ProjectFile<'a> {
@@ -75,7 +77,7 @@ impl<'a> ProjectFile<'a> {
             bytes.extend_from_slice("\u{feff}".as_bytes());
         }
         bytes.extend_from_slice(text.as_bytes());
-        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, files: std::sync::OnceLock::new() }
+        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, files: std::sync::OnceLock::new(), texts: Mutex::new(std::collections::HashMap::new()) }
     }
 
     /// Where the as-of date comes from.
@@ -167,21 +169,44 @@ fn is_dir(root: &Path, tree: Tree<'_>, path: &str) -> bool {
     }
 }
 
+/// Other files' texts read by native rules, kept while their size and
+/// modification time hold: a multi-file fix reads every file that may use a
+/// name, from each file with a finding, and a cached result checks each
+/// answer again (SR-CACHE). Bounded: past [`READ_CACHE_BYTES`] it starts over.
+static READ_CACHE: std::sync::OnceLock<Mutex<(usize, std::collections::HashMap<std::path::PathBuf, (u64, std::time::SystemTime, Option<String>)>)>> = std::sync::OnceLock::new();
+const READ_CACHE_BYTES: usize = 8 << 20;
+
+fn read_disk(p: &Path) -> Option<String> {
+    let meta = std::fs::metadata(p).ok().filter(|m| m.is_file())?;
+    let stamp = (meta.len(), meta.modified().ok()?);
+    let cache = READ_CACHE.get_or_init(|| Mutex::new((0, std::collections::HashMap::new())));
+    if let Ok(c) = cache.lock()
+        && let Some((len, at, text)) = c.1.get(p)
+        && (*len, *at) == stamp
+    {
+        return text.clone();
+    }
+    let text = std::fs::read(p).ok().and_then(|b| String::from_utf8(b).ok()).map(|t| t.strip_prefix('\u{feff}').map(str::to_owned).unwrap_or(t));
+    if let Ok(mut c) = cache.lock() {
+        let size = text.as_ref().map_or(0, String::len);
+        if c.0 + size > READ_CACHE_BYTES {
+            *c = (0, std::collections::HashMap::new());
+        }
+        if size <= READ_CACHE_BYTES / 4 {
+            c.0 += size;
+            c.1.insert(p.to_path_buf(), (stamp.0, stamp.1, text.clone()));
+        }
+    }
+    text
+}
+
 fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
     if !safe(path) || path.is_empty() {
         return None;
     }
     match tree {
         Tree::Overlay(texts) if texts.contains_key(path) => texts.get(path).cloned(),
-        Tree::Disk | Tree::Overlay(_) => {
-            let p = root.join(path);
-            if !p.is_file() {
-                return None;
-            }
-            let bytes = std::fs::read(p).ok()?;
-            let text = String::from_utf8(bytes).ok()?;
-            Some(text.strip_prefix('\u{feff}').map(str::to_owned).unwrap_or(text))
-        }
+        Tree::Disk | Tree::Overlay(_) => read_disk(&root.join(path)),
         Tree::Memory(files) => files.iter().find(|(p, _, _)| p == path).map(|(_, _, t)| t.clone()),
     }
 }
@@ -231,7 +256,17 @@ impl FileContext for ProjectFile<'_> {
         a
     }
     fn read(&self, path: &str) -> Option<String> {
-        let a = read(self.root, self.tree, path);
+        let known = self.texts.lock().ok().and_then(|t| t.get(path).cloned());
+        let a = match known {
+            Some(a) => a,
+            None => {
+                let a = read(self.root, self.tree, path);
+                if let Ok(mut t) = self.texts.lock() {
+                    t.insert(path.to_owned(), a.clone());
+                }
+                a
+            }
+        };
         self.record(Question::Read(path.to_owned()), hash_text(&a));
         a
     }
