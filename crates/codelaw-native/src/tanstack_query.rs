@@ -956,7 +956,7 @@ fn keep_previous_edits(model: &SemanticModel, object: Node<'_>, m: Node<'_>, src
         if !name_is_free(root, "keepPreviousData", src) {
             return None;
         }
-        let spec = model.imports.iter().filter(|i| is_tanstack(&i.source) && !i.type_only && matches!(i.imported, Imported::Named(_))).last()?;
+        let spec = model.imports.iter().rfind(|i| is_tanstack(&i.source) && !i.type_only && matches!(i.imported, Imported::Named(_)))?;
         edits.push(TextEdit::insert(spec.end, ", keepPreviousData"));
     }
     Some(edits)

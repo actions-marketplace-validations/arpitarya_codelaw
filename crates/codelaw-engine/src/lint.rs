@@ -998,10 +998,9 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
     let parents = gates.iter().any(Option::is_some).then(|| codelaw_lang::preorder_parents(&unit.root.root()));
     // The walks agree node for node; if one ever did not, no gate is applied.
     let mut aligned = parents.is_some();
-    let mut visited = 0usize;
     // The rules to ask about one node, in rule order; one buffer for the unit.
     let mut slots: Vec<usize> = Vec::new();
-    for node in unit.root.root().dfs() {
+    for (visited, node) in unit.root.root().dfs().enumerate() {
         let k = node.kind_id() as usize;
         let parent_kind = match &parents {
             Some(p) if aligned => match p.get(visited) {
@@ -1013,7 +1012,6 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
             },
             _ => None,
         };
-        visited += 1;
         slots.clear();
         if let Some(own) = by_kind.get(k) {
             slots.extend_from_slice(own);

@@ -181,7 +181,8 @@ fn is_dir(root: &Path, tree: Tree<'_>, path: &str) -> bool {
 /// modification time hold: a multi-file fix reads every file that may use a
 /// name, from each file with a finding, and a cached result checks each
 /// answer again (SR-CACHE). Bounded: past [`READ_CACHE_BYTES`] it starts over.
-static READ_CACHE: std::sync::OnceLock<Mutex<(usize, std::collections::HashMap<std::path::PathBuf, (u64, std::time::SystemTime, Option<String>)>)>> = std::sync::OnceLock::new();
+type ReadEntries = std::collections::HashMap<std::path::PathBuf, (u64, std::time::SystemTime, Option<String>)>;
+static READ_CACHE: std::sync::OnceLock<Mutex<(usize, ReadEntries)>> = std::sync::OnceLock::new();
 const READ_CACHE_BYTES: usize = 8 << 20;
 
 fn read_disk(p: &Path) -> Option<String> {

@@ -115,4 +115,11 @@
 #   (W-172 step 3) is the first commit on main's first-parent line that holds
 #   all forty-four, and every commit after it passes (checked locally with the
 #   replay over b90259d..HEAD).
-b90259d03c6c41c10dd3176751410837edeaf35e
+# - 2026-11-08, the same session, after W-169 landed: b90259d -> 99cec79. Six commits
+#   since b90259d fail the replay, because lockmaster keeps a change's branch commits
+#   when it merges them: c337e5f and a1f868b (W-169, refused by the guard for records
+#   its final landing carries), 4b5b153, 82eea1a, 1acf141 and 81507c1 (W-172, "landed
+#   at the end of a turn"). Every owning record is current on main. 99cec79 (W-169,
+#   merged) is the first commit on main's first-parent line that holds all six; every
+#   commit after it passed the replay when this was written.
+99cec7983254893ad72c21a4dc3968ceeaccc590

@@ -6,7 +6,7 @@ item: W-174
 filed: 2026-11-08
 filed_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
 updated: 2026-11-08
-updated_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
+updated_by: "Claude Code (Sonnet 5.5), W-174 agent"
 ball: agent
 ---
 
@@ -31,13 +31,37 @@ codelaw has a type program for TypeScript only ([SR-TYPES](../../records/0117_ty
 
 | step | what we do | state |
 |---|---|---|
-| 1 | Propose the Python counterpart of SR-TYPES: what answers each question above (the semantic model extended, a flow pass in `codelaw-semantic`, or an existing type checker run like TypeScript's — the last needs L2 and L11 rulings), and its cost against L8 | ⏳ |
-| 2 | Build the cheapest layer that answers a group (scope facts first: they need no new dependency) | ⏳ |
-| 3 | Write each row fresh (Ruff 0.16.9 source and tests; Pylint 4.1.3 behaviour only, never code, L2), its cases and fix class; `codelaw test packs/python` 0 failed | ⏳ |
+| 1 | Propose the Python counterpart of SR-TYPES: what answers each question above, and its cost against L8 | ✅ [SR-PY-INFERENCE](../../records/0120_python-inference.md) (0120): four lazy layers — scope facts on the per-file model, a flow pass (`codelaw_semantic::python_flow`), an in-file class table, literal typing; no type checker; the one question for the decider is its decision 8 |
+| 2 | Build the cheapest layer that answers a group (scope facts first) | ✅ scope facts (`py_scope.rs`), flow (`semantic/py_flow.rs` + `native/py_flow.rs`), class hierarchy in-file (`py_classes.rs`), value types in one file (`py_values.rs`) |
+| 3 | Write each row fresh (Ruff 0.16.9 source and tests; Pylint 4.1.3 behaviour from its functional tests only, never code, L2), its cases and fix class; `codelaw test packs/python` 0 failed | ✅ 30 of 38 rows (below); the other 8 are in *Left* with their exact question |
+
+## Built (2026-11-08) — 30 `preview` rules, in no preset
+
+| layer | rules (upstream) | fix |
+|---|---|---|
+| scope facts (5) | `nonlocal-without-binding` (PLE0117), `builtin-attribute-shadowing` (A003), `missing-f-string-syntax` (RUF027), `used-dummy-variable` (RUF052), `unused-private-member` (Pylint) | RUF027 and RUF052 `suggest` (Ruff's own fixes are unsafe: they change behaviour, L4 decision 3), the rest `manual` (`value` ×2, `restructure`) |
+| flow (6) | `used-before-assignment`, `possibly-used-before-assignment`, `undefined-loop-variable`, `possibly-unused-variable`, `looping-through-iterator`, `contextmanager-generator-missing-cleanup` | all `manual` (`value` ×4, `restructure` ×2) |
+| class hierarchy, in one file (13) | `inconsistent-mro`, `bad-super-call`, `non-parent-init-called`, `super-init-not-called`, `subclassed-final-class`, `overridden-final-method`, `invalid-enum-extension`, `abstract-class-instantiated`, `abstract-method`, `method-hidden`, `invalid-overridden-method`, `arguments-differ`, `arguments-renamed` | `bad-super-call` `suggest` (names the enclosing class); the rest `manual` |
+| value types from literals and annotations (6) | `dict-iter-missing-items` (PLE1141), `modified-iterating-set` (PLE4703), `bad-string-format-type` (PLE1307), `comparison-with-callable`, `positional-only-arguments-expected`, `blocking-http-call-httpx-in-async-function` (ASYNC212) | PLE1141 and PLE4703 `suggest` (`.items()`, `.copy()`), the rest `manual` |
+
+Each rule page says what it does not read. Behaviour pinned from the upstream tests: the flow rules were checked against Pylint's `used_before_assignment`, `undefined_loop_variable`, `looping_iterator`, `unused_variable` and `contextmanager_generator_missing_cleanup` functional cases, and run over 150 files of the CPython 3.14 standard library (hits read: the `try`-body-only reads in `except` handlers, `if` without `else`, loop variables read after the loop — as Pylint reports them; three false positives found and fixed on the way: chained assignments `a = b = 0`, a builtin read at module level before the module binds it, and `a and (b := f())` binding `b` where it held). No corpus is on this machine; the pack's corpus snapshots are the next refresh's (another agent's).
+
+## Left — 8 rows, each with the question it needs
+
+| row | question | layer |
+|---|---|---|
+| `signature-differs` (W0222) | *do this override's and its base's signatures differ in the way Pylint calls "signature"* (defaults, keyword-only, variadics) | the class table, once `arguments-differ`'s edge cases are pinned against the functional tests; and the base's methods from another file |
+| `access-member-before-definition` (E0203) | *is this `self.x` read before any method assigns it* — the order of attribute definitions across a class's methods and its bases | an attribute table in `py_classes.rs` (in-file, buildable next) |
+| `not-async-context-manager` (E1701), `non-iterator-returned` (E0301) | *what does this class's `__aenter__`/`__aexit__`, `__iter__`'s return value evaluate to* — a method's returned value | in-file for a class defined here; a type for anything else |
+| `redefined-variable-type` (R0204, an opt-in extension) | *is the type of a name's value the same at each assignment in a scope* — branch-aware literal typing | literal typing + flow join (buildable next) |
+| `invalid-format-index`, `missing-format-attribute` | *what is the argument a `str.format` field indexes or reads an attribute of* — a literal's type and its attribute table | literal typing (buildable next, small tables) |
+| `boolean-datetime` (W1502) | *is this a `datetime.time`* — and Pylint reports it only below Python 3.5, under codelaw's 3.9+ floor it can never fire | **a decision**: re-rule the row `not-applicable` (recommended) |
+
+Across files: every override, abstract and `__init__` row stops at a base class this file imports; the project graph carrying class facts (bases, methods, decorators) would let `py_classes.rs` follow them. That is the next record step, not built.
 
 ## Blockers
 
-None to start step 1. A type checker as a dependency would need the decider (L11).
+None for the in-file rows. **For the decider (not blocking):** [SR-PY-INFERENCE](../../records/0120_python-inference.md) decision 8 — should the rows that need a call's return or an imported class's shape be answered by *the project's own Python type checker, found and asked like the project's TypeScript* (`ty`, pyright or mypy; codelaw installs nothing, L11 decision 2)? And whether `boolean-datetime` is re-ruled `not-applicable`.
 
 ## Reference
 

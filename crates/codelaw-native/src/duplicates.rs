@@ -39,6 +39,7 @@ fn accessor(n: tree_sitter::Node<'_>) -> Accessor {
 
 /// Report the second and later declaration of a name, unless the two are a
 /// getter and a setter.
+#[allow(clippy::too_many_arguments)]
 fn report<'t>(seen: &mut BTreeMap<String, Vec<(Accessor, tree_sitter::Node<'t>)>>, name: String, acc: Accessor, at: tree_sitter::Node<'_>, member: tree_sitter::Node<'t>, what: &str, src: &str, out: &mut Vec<NativeFinding>) {
     let prev = seen.entry(name.clone()).or_default();
     let clash = prev.iter().find(|(p, _)| !matches!((p, acc), (Accessor::Get, Accessor::Set) | (Accessor::Set, Accessor::Get)));
@@ -174,7 +175,7 @@ impl NativeRule for NoDupeArgs {
 /// label, so what falls through still runs.
 fn drop_case(case: tree_sitter::Node<'_>, src: &str) -> Option<Vec<TextEdit>> {
     let prev = case.prev_named_sibling().filter(|p| matches!(p.kind(), "switch_case" | "switch_default"))?;
-    let last = named_children(prev).into_iter().filter(|c| c.kind() != "comment").last()?;
+    let last = named_children(prev).into_iter().rfind(|c| c.kind() != "comment")?;
     if crate::util::exits(&last) {
         let (s, e) = crate::util::whole_lines(src, case.start_byte(), case.end_byte());
         return Some(vec![TextEdit::delete(s, e)]);

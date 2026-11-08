@@ -33,20 +33,20 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 194 (11-08), labelled in item; inference → W-174. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 164 (11-08, after W-174's 30), labelled in item; inference → W-174. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` L8 budgets: 11-08 time side built (allocator leftover removed, key order, parent gate); `peak_memory_10k` still ~14 MiB over. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 30 of 38 rows built (`preview`), 8 left with their question. Decider (not blocking): a project type checker for the rest, decision 8. Next: the 8 in-file rows. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 ### ci/cd (4)
 
-🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then; cause found and fixed 11-07. Pushed 11-08: all eight build legs green in `ci` 42454141410 — 1 of 5 runs on the fix; four more needed. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🟢 **W-126** `agent` `perf` is split and off the critical path (11-08: done 3m27 after the builds). But a Rust/pack-change run took 24m56: Windows builds 9m25, the corpus legs are the tail; goal not met, 1 of 3 runs. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 

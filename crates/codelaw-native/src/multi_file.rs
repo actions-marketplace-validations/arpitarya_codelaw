@@ -843,7 +843,7 @@ pub(crate) fn module_spec(from: &str, to: &str) -> String {
 fn import_point(src: &str, language: Language) -> (usize, bool) {
     let root = codelaw_lang::parse(language, src);
     let top: Vec<_> = root.root().children().collect();
-    if let Some(last) = top.iter().filter(|n| n.kind() == "import_statement").last() {
+    if let Some(last) = top.iter().rfind(|n| n.kind() == "import_statement") {
         return (last.range().end, true);
     }
     let mut at = 0;
