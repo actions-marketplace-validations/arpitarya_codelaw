@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **Push `main` to GitHub** — local `main` is 123 commits ahead of `origin/main` (last push `7cdb480b`, 11-07); Claude Code's push is refused by the permission classifier, so only Arpit can run `git push origin main`. W-126's three `perf` runs, W-169's five green build runs, W-172's CI proof and the zip alerts' closing (W-173's Ruff bump) wait on it. | 2026-11-08 |
-| ↳ **blocks:** W-126, W-169 | |
+
+*Empty since 2026-11-08 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
 
 ---
 
@@ -45,9 +45,9 @@ here. Read that record before changing anything below it.
 
 ### ci/cd (4)
 
-🔴🧨 **W-169** `arpit` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
+🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then. Cause found 11-07 from CI's core: tree-sitter's name lookup + an over-reading `strncmp`; fixed, with tests. Next: five green build runs, once Arpit pushes. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
 
-🔴 **W-126** `arpit` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
+🟢 **W-126** `agent` Ruled 10-30: `perf` split, nothing waits on it (until a budget is set, L8); release 3m50 accepted. Cached CI 4m11–4m25 ✅. `perf` matrix built; `graph` group added 11-07 (`perf-plan` was red). Next: three runs once pushed. Filed by Arpit (Cowork). [detail](open/W-126-fast-pipeline.md)
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
