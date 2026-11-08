@@ -23,6 +23,24 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 ```
 
 ---
+
+## 2026-11-08 — W-139 strand W-139-js, round 3: slices 24–26 (79 rules, 4 links; W-175 filed)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) the js strand's round 3 — build the 61 scope rows on W-162's capabilities and the scope model, the 37 natives in Rust, the 29 graph rows where the project graph can express them (one new item for the rest); leave the 16 type rows to W-105.
+- **Done:** upstream behaviour read from source and tests at the pinned versions by four research sub-agents (unicorn `v79.0.0`, SonarJS 4.2.2's `gitHead` — behaviour only —, eslint-plugin-import 2.32.0, import-x 4.17.1, n 18.5.0). Slice 24: 52 scope rules on the semantic model (`js_parity/{scope,scope_fix,sonar_scope}.rs`; 12 `auto`, 6 `suggest`, 34 `manual`), SonarJS `no-dead-store` linked. Slice 25: 15 file-system rules on `NativeContext::file` (`files.rs`), 3 rows linked to the graph's `node/` rules, **W-175** filed for the 10 that read other modules. Slice 26: 12 natives (`shape.rs`). Every row left is re-labelled in the item (js 164 → 81). `codelaw test packs/js` 881 rules, 0 failed; `packs/node` 0 failed; `cargo test -p codelaw-native` 279 passed; clippy clean for the modules; `rules lint` 0; `--fix-stats --check`; corpus counts written.
+- **Decided / left open:** the "graph" rows that need only the file's path, other files' existence or `package.json` are native rules (SR-ARCHITECTURE 15b), not `graph:` rules; `js/isolated-functions` lets an undeclared name be read (codelaw doesn't know where the function runs; upstream reports it unless ESLint's globals declare it), after the corpus showed `document` reported in every Playwright `page.evaluate`. The 19 jsdoc rows need a JSDoc parser — the next js slice.
+- **Mistakes:** a Python edit opened `js_parity.rs` for writing before computing its text, and emptied it; restored from git. The shared cargo target served W-162's `codelaw-core` as fresh to this tree (`Diagnostic` with a field this tree lacks); every build here touches the crates' `lib.rs` first, which in turn can do the same to other lanes — a LESSONS candidate if it recurs. `ctx.options` holds every declared option at its default, so an empty default (`""`, `{}`) has to be treated as unset.
+- **Next:** the js JSDoc rows (a JSDoc parser in `codelaw-native`) and the six other natives listed in the item.
+
+---
+
+## 2026-11-08 — Disk full: everything stopped, build output cleaned, MACHINE.md's disk facts  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"stop everything merge everything the cleanup everything i do not have any memory left. put the details of memory in machine.md."*
+- **Done:** the four running agents stopped (W-139 js, W-139 py, W-162 cross-file, W-172 memory). Disk 99 % full (2.8 GB free) → 43 GB free: `cargo clean` of `target/` (23.7 GB), three scratch cargo targets in the session scratchpads (17.2 GB, outside what `disk-budget.py` counts), scratch binaries and bench workloads. W-139-py's worktree (landed) removed and `lm/W-139-py` deleted. MACHINE.md § *Where the disk goes* and a surface row.
+- **Decided / left open:** not merged, on purpose — the three half-built changes would land code nothing compiled: **W-139-js** (4 commits ahead, 9 files uncommitted), **W-162** (3 ahead, 82 uncommitted — cross-file), **W-172** (1 ahead, 10 uncommitted — on-demand examples). Each worktree is kept as it is (~110 MB each); each lands when its item resumes. `main` still unpushed (123 ahead).
+- **Mistakes:** the coordinator let five-plus agents build in parallel with scratch target dirs the budget hook cannot see.
+- **Next:** resume one or two agents at a time, not five.
 ## 2026-11-08 — W-162 closed: cross-file read and write, the 36 rules moved  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build W-162's last capability — a fix that edits several files, applied all or nothing after a graph check, `[fix] multi_file` honoured, every output showing it, save and the hook refusing it — move the 36 cross-file rules, hand the 6 type-information markers to W-105 and close W-162. Resumed once after a usage-limit stop: re-derived `git status`, main had not moved.

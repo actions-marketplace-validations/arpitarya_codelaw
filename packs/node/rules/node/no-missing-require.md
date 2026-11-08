@@ -6,7 +6,7 @@ scope: project
 fix: suggest
 fix_reason: "the specifier is pointed at the project file nearest in spelling that exists, or one of the nearest when several tie (choices); a diff to accept, as the module may have moved elsewhere or need restoring. No file near in spelling offers no fix (SR-MULTI-FILE-FIXES)"
 stability: preview
-ported_from: [eslint-plugin-n/no-missing-require]
+ported_from: [eslint-plugin-n/no-missing-require, eslint-plugin-import/no-unresolved]
 since: 0.1.0
 ---
 

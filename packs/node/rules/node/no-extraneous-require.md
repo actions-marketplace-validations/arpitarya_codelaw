@@ -6,7 +6,7 @@ scope: project
 fix: suggest
 fix_reason: "the package is added to the nearest `package.json` at the version installed (`^<version>` from `node_modules`), as a choice of `dependencies` (the default) or `devDependencies` (the default for a test file); a diff to accept. A package not installed offers no fix: its version is the owner's choice (SR-MULTI-FILE-FIXES)"
 stability: preview
-ported_from: [eslint-plugin-n/no-extraneous-require]
+ported_from: [eslint-plugin-n/no-extraneous-require, eslint-plugin-import/no-extraneous-dependencies, eslint-plugin-sonarjs/no-implicit-dependencies]
 since: 0.1.0
 ---
 
