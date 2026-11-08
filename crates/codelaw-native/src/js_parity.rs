@@ -11,6 +11,9 @@ use serde_json::Value;
 use std::collections::{BTreeMap, HashMap};
 use tree_sitter::Node;
 
+mod scope;
+mod scope_fix;
+
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
 
@@ -704,4 +707,41 @@ pub static RULES: &[&dyn NativeRule] = &[
     &PreferLiteralAscii,
     &NoUnenclosedMultilineBlock,
     &UseTypeAlias,
+    &scope::NoThisOutsideOfClass,
+    &scope::NoTopLevelAssignmentInFunction,
+    &scope::NoUselessRecursion,
+    &scope::NoUselessReExport,
+    &scope::NoUndeclaredClassMembers,
+    &scope::NoIncompleteAccessorOverride,
+    &scope::NoLateCurrentTargetAccess,
+    &scope::NoLateEventControl,
+    &scope::NoLoopIterableMutation,
+    &scope::NoMismatchedMapKey,
+    &scope::NoCanvasToImage,
+    &scope::ConsistentFunctionScoping,
+    &scope::IsolatedFunctions,
+    &scope::NoUncalledMethod,
+    &scope::NoUnusedProperties,
+    &scope::PreferGetOrInsertComputed,
+    &scope::NoTopLevelSideEffects,
+    &scope::BlockScopedVar,
+    &scope::NoInvalidThis,
+    &scope::NoLoopFunc,
+    &scope::NoUnmodifiedLoopCondition,
+    &scope::NoUseBeforeDefine,
+    &scope::NoRepeatedCallWrappers,
+    &scope_fix::PreferClassFields,
+    &scope_fix::PreferObjectDefineProperties,
+    &scope_fix::PreferSetHas,
+    &scope_fix::PreferExportFrom,
+    &scope_fix::NoDeclarationsBeforeEarlyExit,
+    &scope_fix::NoImmediateMutation,
+    &scope_fix::ConsistentDestructuring,
+    &scope_fix::NoBlobToFile,
+    &scope_fix::PreferPromiseWithResolvers,
+    &scope_fix::PreferAbortSignalTimeout,
+    &scope_fix::NoForLoop,
+    &scope_fix::PreferSmallerScope,
+    &scope_fix::NoUnnecessaryDefaultArguments,
+    &scope_fix::NoUnsafePromiseAllSettledValues,
 ];
