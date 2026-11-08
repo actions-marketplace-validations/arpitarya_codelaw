@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the new name for the value is the author's"
 fix_exception: value
 stability: preview
-ported_from: [ruff/PLW0642]
+ported_from: [ruff/PLW0642, pylint/self-cls-assignment]
 since: 0.5.0
 ---
 

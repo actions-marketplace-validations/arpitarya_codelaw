@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (removing or renaming a parameter changes every caller) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/ARG001` |
+| **Ported from** | `ruff/ARG001`, `pylint/unused-argument` |
 
 ## What it checks
 

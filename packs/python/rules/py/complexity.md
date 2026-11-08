@@ -9,7 +9,7 @@ stability: preview
 options:
   max: { type: "integer", default: 20, description: "the highest cyclomatic complexity a function may have" }
   ignore_names: { type: "string", description: "a regular expression; functions named like this are exempt" }
-ported_from: [mccabe/C901, ruff/C901, pylint/too-many-branches]
+ported_from: [mccabe/C901, ruff/C901, pylint/too-many-branches, pylint/too-complex]
 since: 0.5.0
 ---
 
