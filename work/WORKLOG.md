@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-07 – 11-08 — Coordinating the parallel build run (W-139, W-141, W-156, W-162, W-166, W-168–W-173)  ·  Claude Code (Opus 5.5)
+
+- **Asked:** *"continue"*, *"continue with green items and implement till closure"*, *"continue implementing till everything is implemented and closed keeping going in parallel"*.
+- **Done:** coordinated agents per 🟢 item; closed this run: W-141, W-156, W-158, W-166, W-168, W-170, W-171, W-173; W-169's cause found and fixed (tree-sitter `strncmp` past a NUL-less name on musl); W-171 ruled keep and its six worktrees landed; RULE-SINCE moved twice past guard-refused auto-lands; inbox rows filed and cleared for the push, W-168, W-173, W-105; `.fux` re-index leftovers cleaned from landed worktrees; the agents' own entries are below.
+- **Decided / left open:** Arpit ruled W-168 *"No budget yet"*, W-173 *"Bump Ruff to 0.0.21"*, W-105's budgets unset (Cowork). Open: `main` not pushed since `7cdb480b` (Claude Code's push is refused by the permission classifier), so W-126's runs, W-169's five green runs and W-172's CI proof wait on Arpit; W-95 waits on a release; W-162 cross-file, W-172 memory (107 > 72 MiB), W-139's ~400 rows still building.
+- **Mistakes:** an agent's bare `git stash pop` took W-162's stash (restored); end-of-turn auto-lands landed half-built code more than once (RULE-SINCE moves, LESSONS).
+- **Next:** land W-162 cross-file and W-172; W-139's remaining rows; Arpit pushes `main`.
+
 ## 2026-11-08 — W-139 strand W-139-py, round 3: slice 24 (add-import, the target, natives), W-174 filed  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) build the add-import rows on `ensure-import`, the target rows with `fix_target:`, the native rows in Rust, the small data-table rows; file one item for the rows needing Python type inference; close W-139 if DoD 1 is met. Resumed after a usage-limit stop: re-derived `git status`, the WIP commit `35ade220` kept.

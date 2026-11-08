@@ -24,6 +24,8 @@ entry.**
 
 ## 1 · State of play
 
+**2026-11-08 (Claude Code, coordinator): the parallel run continues.** In flight: W-162 cross-file (last capability), W-172 peak memory (107 > 72 MiB; `mcp_rules_for_path` fixed), W-139's js and python strands (~400 rows). Waiting on Arpit: a push of `main` (115+ commits; the classifier refuses Claude Code's push) for W-126, W-169 step 3, W-172's CI proof and the zip alerts; a release for W-95.
+
 **2026-11-07 (Cowork, docket): W-105's `check_types_*` budgets ruled — *"Leave unset"*** (reported only, L8 decision 6); W-105 🟣 on the 11-10 RC re-pin. W-173's Ruff `=0.0.21` was ruled and landed the same afternoon by Claude Code (`5f472943`). The inbox is empty.
 
 **2026-11-07 (Claude Code): `main` pushed by Arpit to `7cdb480b`** (Claude Code's push is refused by the permission classifier, so pushes are his). GitHub then reported five Dependabot advisories on `zip` 8.6.0 — W-173.
