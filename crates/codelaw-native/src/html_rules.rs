@@ -184,9 +184,12 @@ struct Entities {
     legacy: Vec<String>,
 }
 
+/// The table a thread built last: its address and length, whether case is ignored, the set.
+type KeptEntities = Option<(usize, usize, bool, std::rc::Rc<Entities>)>;
+
 fn entities_of(list: &[Value], ignore_case: bool) -> std::rc::Rc<Entities> {
     thread_local! {
-        static KEPT: std::cell::RefCell<Option<(usize, usize, bool, std::rc::Rc<Entities>)>> = const { std::cell::RefCell::new(None) };
+        static KEPT: std::cell::RefCell<KeptEntities> = const { std::cell::RefCell::new(None) };
     }
     let key = (list.as_ptr() as usize, list.len(), ignore_case);
     if let Some(kept) = KEPT.with(|k| k.borrow().as_ref().filter(|(p, n, c, _)| (*p, *n, *c) == key).map(|(_, _, _, e)| e.clone())) {
