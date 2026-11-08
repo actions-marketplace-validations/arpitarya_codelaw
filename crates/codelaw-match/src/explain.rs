@@ -70,6 +70,7 @@ impl Explainer {
         let BlockKind::Match { rule: matcher, constraints, utils, predicates, .. } = &rule.block.kind else {
             return Err("not a `match:` rule".into());
         };
+        let (matcher, constraints, utils) = (&matcher.value(), constraints.as_ref().map(codelaw_rules::Json::value), utils.as_ref().map(codelaw_rules::Json::value));
         let mut parts: Vec<(String, Value)> = Vec::new();
         if let Value::Object(o) = matcher {
             for (k, v) in o {

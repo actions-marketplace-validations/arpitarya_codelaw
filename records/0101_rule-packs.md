@@ -349,6 +349,7 @@ That's 34 rules: 9 auto, 11 suggest and 14 manual. **33 ship today** (all but `m
 - **Rules still update with engine releases** (one version). Engine and rules can't drift, which was the reason for embedding them in the first version: `min_codelaw` and the native-id check keep that guarantee.
 - **The engine work this needs:** the semantic model, `native:` rules and pack loading, in [W-02](../archive/open/W-02-engine-p0.md) ([SR-ARCHITECTURE](0108_architecture.md) decisions 15a–15c).
 - **The packs' content** is [W-03](../archive/open/W-03-rule-packs.md).
+- **2026-11-08 (W-172):** a pack is kept in memory from its second load in a process (a one-shot run keeps none); a pack's identity is a hash of its file stamps, not the ~2,000-path list.
 - **2026-11-08 (W-162, cross-file):** 36 first-party rules now carry a multi-file fix (`fix.files`), applied only on [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)'s terms; 7 re-judged `manual`; the 6 type-info rules' `fix_pending:` now name W-105.
 
 ### Alternatives considered

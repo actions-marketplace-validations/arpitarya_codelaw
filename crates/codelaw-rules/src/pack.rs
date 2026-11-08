@@ -2,7 +2,7 @@
 //! and 11). Where they are found is `search.rs` (SR-PACK-LOOKUP).
 
 use crate::LoadError;
-use crate::rule::{RESERVED_NAMESPACES, RuleFile, parse_cases, parse_rule};
+use crate::rule::{OnDemand, RESERVED_NAMESPACES, RuleFile, cases_of, examples_of, parse_cases, parse_rule};
 use codelaw_cache::{Key, KeyBuilder};
 use codelaw_config::{RawScope, RuleSetting, ScopeMap};
 use codelaw_core::Language;
@@ -307,13 +307,15 @@ fn read_rules(dir: &Path, errors: &mut Vec<LoadError>) -> Vec<RuleFile> {
                     let cases_path = file.with_file_name(format!("{}.cases.md", name.trim_end_matches(".md")));
                     if let Ok(cases_text) = fs::read_to_string(&cases_path) {
                         match parse_cases(&cases_path, &cases_text) {
-                            Ok(cases) => {
-                                rule.cases = cases;
+                            Ok(_) => {
+                                // Checked now, read again when asked for (W-172).
+                                rule.cases = OnDemand::later(cases_path.clone(), cases_of);
                                 rule.hash = KeyBuilder::new("rule").part(rule.hash.0).part(&cases_text).key();
                             }
                             Err(e) => errors.extend(e),
                         }
                     }
+                    rule.examples = OnDemand::later(file.clone(), examples_of);
                     rules.push(rule);
                 }
                 Err(e) => errors.extend(e),
@@ -380,8 +382,9 @@ pub fn load_pack(dir: &Path) -> Result<RulePack, Vec<LoadError>> {
 
 /// What a pack's load reads, as each file's and folder's path, size and
 /// modification time: the manifest, `rules/`, `presets/` and `data/`. Two
-/// equal stamps mean the same pack, without reading a file.
-type Stamp = Vec<(PathBuf, u64, Option<std::time::SystemTime>)>;
+/// equal stamps mean the same pack, without reading a file. Kept as a
+/// hash: the list itself is ~2,000 paths a pack (W-172).
+type Stamp = u64;
 
 fn stamp(dir: &Path) -> Stamp {
     let mut out = Vec::new();
@@ -410,7 +413,9 @@ fn stamp(dir: &Path) -> Stamp {
         }
     }
     out.sort();
-    out
+    let mut h = std::collections::hash_map::DefaultHasher::new();
+    std::hash::Hash::hash(&out, &mut h);
+    std::hash::Hasher::finish(&h)
 }
 
 /// The packs this process has loaded, most recently used first: a warm
@@ -423,10 +428,22 @@ static PACKS: std::sync::Mutex<Vec<((PathBuf, bool), Stamp, Arc<RulePack>)>> = s
 /// How many loaded packs a process keeps.
 const PACKS_KEPT: usize = 64;
 
+/// The packs this process has loaded once. A pack is kept from its second
+/// load on: a one-shot run loads each pack once and keeps none, so it holds
+/// no copy of a rule its rule set has dropped (W-172).
+static SEEN: std::sync::Mutex<Vec<(PathBuf, bool)>> = std::sync::Mutex::new(Vec::new());
+
 /// [`load_pack_from`], from this process's memory when the pack's files
 /// have not changed since it was last loaded. A refused pack is never kept.
 pub fn load_pack_cached(dir: &Path, first_party_origin: bool) -> Result<Arc<RulePack>, Vec<LoadError>> {
     let key = (dir.to_path_buf(), first_party_origin);
+    {
+        let mut seen = SEEN.lock().unwrap_or_else(|e| e.into_inner());
+        if !seen.contains(&key) {
+            seen.push(key);
+            return Ok(Arc::new(load_pack_from(dir, first_party_origin)?));
+        }
+    }
     let now = stamp(dir);
     {
         let mut kept = PACKS.lock().unwrap_or_else(|e| e.into_inner());

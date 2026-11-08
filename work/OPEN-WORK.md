@@ -35,7 +35,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 81 rows left, py 194 (11-08), labelled in item; inference → W-174, js graph → W-175. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-172** `agent` main over three L8 budgets (11-07). Steps 1–2 done: a per-rule cost on every loaded rule; `mcp_rules_for_path` 112 → 11 ms, peak 159 → 107 MiB locally (over 72). Next: push main for CI; re-anchor hot `js/*` rules. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+🟢 **W-172** `agent` main over three L8 budgets (11-07). `mcp_rules_for_path` 112 → 11 ms; peak 159 → 107 MiB, then shared regexes and on-demand examples landed 11-08 (not re-measured). Next: re-measure on release, push main for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 

@@ -245,6 +245,7 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
 
 - **Two front doors to keep in sync,** made cheap by keeping both thin and testing parity.
 - **Stdio-only MCP** means remote agents need a local process. Deliberate ([L5](0007_LAW-5-no-model-in-the-engine.md)).
+- **2026-11-08 (W-172):** the CLI wires the on-demand rule examples and the per-process pack cache; output is unchanged.
 - **2026-11-08 (W-162):** `fix` applies a multi-file fix all-or-nothing after the graph check, per `[fix] multi_file`; JSON, MCP, SARIF (`artifactChanges` per file) and text output show its other files ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered

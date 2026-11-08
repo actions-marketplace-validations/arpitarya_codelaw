@@ -128,6 +128,7 @@ The decider asked that rules can be written manually or by an AI agent with a sk
 - **Choices in `codelaw test` (W-156, 2026-11-05; [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 11).** A rule with labelled choices is proved per choice: each `Don't` is fixed with that choice (`fix --unsafe` with `FixOptions::choice`) and compared with its `#### Fixed (<label>)` block, then checked as a fixpoint that parses; a choice with no such block fails. The port-rule fixture's `manual` rules name their exception.
 
 - **The tester runs each rule at its own rung (W-156, 2026-11-05).** `codelaw test` builds the rule's config with no lowered `fix` ([SR-CONFIG](0110_config.md) decision 11d), so an example proves the rule's own class.
+- **2026-11-08 (W-172):** `codelaw test` reads a rule's cases on demand; results are unchanged.
 
 ### Alternatives considered
 
