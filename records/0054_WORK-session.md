@@ -12,6 +12,7 @@ owns:
   - .claude/hooks/block-main.py
   - .claude/hooks/claim-guard.py
   - .claude/hooks/auto-land.py
+  - .claude/hooks/work-files.py
   - lockmaster.toml
 laws: [L0]
 timestamp: 2026-10-18T12:52:51Z
