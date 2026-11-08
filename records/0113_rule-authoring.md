@@ -87,7 +87,7 @@ The decider asked that rules can be written manually or by an AI agent with a sk
    | Which rule is slow? | `codelaw check --timings` |
    | Engine internals | `CODELAW_LOG=debug` |
 
-4. **Testable at four levels.** `codelaw test [id] [--case <title>] [--watch]` runs them. The rule set it builds holds the one rule under test and no preset, so no preset's `git/*` settings ([SR-CONFIG](0110_config.md) decision 11b) reach it (`RuleSet::engine_settings` is empty):
+4. **Testable at four levels.** `codelaw test [id] [--case <title>] [--watch]` runs them. The rule set it builds holds the one rule under test and no preset, so no preset's `git/*` settings ([SR-CONFIG](0110_config.md) decision 11b) reach it (`RuleSet::engine_settings` is empty): A rule that reads a data package is tested against the checkout's `data-packages/` table (`EngineOptions::data_packages`, set by `codelaw-test`; W-175).
 
    | Level | Source | Checks |
    |---|---|---|
