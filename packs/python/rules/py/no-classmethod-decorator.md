@@ -25,7 +25,7 @@ message: "Decorate `$N` with `@classmethod`"
 fix:
   - insert-before: { target: $DEF, text: "@classmethod", line: true }
   - insert-before: { target: $DEC, text: "@classmethod", line: true }
-  - remove: { target: $ASSIGN }
+  - remove: $ASSIGN
 ```
 
 ## How to fix
@@ -42,7 +42,6 @@ fix:
 class Number:
     def from_text(cls, text):
         return cls(text)
-
     from_text = classmethod(from_text)
 ```
 

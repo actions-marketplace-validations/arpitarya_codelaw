@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "turning `{}` fields into `%s` with arguments rewrites the format string"
 fix_exception: restructure
 stability: preview
-ported_from: [ruff/G001]
+ported_from: [ruff/G001, pylint/logging-format-interpolation]
 since: 0.5.0
 ---
 

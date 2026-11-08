@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-08 — W-139 strand W-139-py, round 3: slice 24 (add-import, the target, natives), W-174 filed  ·  Claude Code (Opus 5.5)
+
+- **Asked:** (coordinator) build the add-import rows on `ensure-import`, the target rows with `fix_target:`, the native rows in Rust, the small data-table rows; file one item for the rows needing Python type inference; close W-139 if DoD 1 is met. Resumed after a usage-limit stop: re-derived `git status`, the WIP commit `35ade220` kept.
+- **Done:** slice 24 — 35 `py/*` rules (10 on W-162's primitives, 25 native in the new `crates/codelaw-native/src/py_parity.rs`), 8 Pylint twins linked; 13 `auto`, 3 `suggest`, 19 `manual`. `codelaw test packs/python` 776 rules, 0 failed; `rules lint` 0; `--fix-stats --check` exit 0; `cargo test -p codelaw-native` 279 passed; corpus counts written. Filed **W-174** (Python inference, 38 rows). SR-RULE-PACKS decision 18 and SR-ARCHITECTURE 15b name the slice and the module.
+- **Decided / left open:** a finding upstream reports only on some targets (FA100, FA102, PERF203, UP036, the `using-*-in-unsupported-version` set) is not written: `fix_target:` gates the fix, not the finding, so a finding gate is an engine question, recorded in the item, not decided here. EXE004 was written and refused as layout; PLE2514's NUL cannot live in a rule file's example. python 194 rows left; DoD 1 not met (js 164 left), so W-139 stays open and W-142, W-143, W-102 stay waiting.
+- **Mistakes:** the shared `target/` was rebuilt by W-162's worktree mid-run, so one test run used its binary (natives "not an engine rule"); rebuilt in a private `CARGO_TARGET_DIR` (2 GB, scratchpad) and re-ran everything on it.
+- **Next:** the python natives the item lists for the next slice — RET503, UP031/UP032/FLY002, UP046/UP047.
+
 ## 2026-11-07 — W-139 strand W-139-py, third pass: slice 23 (35 rows upstream had to confirm)  ·  Claude Code (Opus 5.5)
 
 - **Asked:** (coordinator) confirm the "not confirmable offline" rows from upstream's source and tests, write them; natives in Rust; the add-import rows if W-162 has it; re-label the rest; close W-139 if DoD 1 is met.

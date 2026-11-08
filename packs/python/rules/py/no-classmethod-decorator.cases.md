@@ -5,14 +5,13 @@
 ```py
 class Number:
     from_text = classmethod(from_text)
-
     @cache
     def from_text(cls, text):
         return cls(text)
 ```
 
 ```expect
-5:5 py/no-classmethod-decorator
+4:5 py/no-classmethod-decorator
 ```
 
 ```fixed

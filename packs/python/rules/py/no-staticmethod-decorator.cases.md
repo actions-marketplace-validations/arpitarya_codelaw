@@ -5,14 +5,13 @@
 ```py
 class Number:
     parse = staticmethod(parse)
-
     @cache
     def parse(text):
         return int(text)
 ```
 
 ```expect
-5:5 py/no-staticmethod-decorator
+4:5 py/no-staticmethod-decorator
 ```
 
 ```fixed

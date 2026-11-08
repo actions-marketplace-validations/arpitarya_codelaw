@@ -25,7 +25,7 @@ message: "Decorate `$N` with `@staticmethod`"
 fix:
   - insert-before: { target: $DEF, text: "@staticmethod", line: true }
   - insert-before: { target: $DEC, text: "@staticmethod", line: true }
-  - remove: { target: $ASSIGN }
+  - remove: $ASSIGN
 ```
 
 ## How to fix
@@ -42,7 +42,6 @@ fix:
 class Number:
     def parse(text):
         return int(text)
-
     parse = staticmethod(parse)
 ```
 
