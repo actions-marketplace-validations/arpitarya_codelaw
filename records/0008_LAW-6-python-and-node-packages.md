@@ -11,6 +11,9 @@ owns:
   - data-packages/browsers
   - scripts/data-browsers-check.py
   - .github/workflows/data-browsers.yml
+  - scripts/data-polyfills-check.py
+  - .github/workflows/data-polyfills.yml
+  - data-packages/polyfills
 laws: [L0, L2, L3, L6]
 timestamp: 2026-11-05T12:00:00Z
 content_sha: ""

@@ -15,6 +15,7 @@ mod scope;
 mod scope_fix;
 mod sonar_scope;
 mod files;
+mod polyfills;
 mod shape;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
@@ -777,6 +778,7 @@ pub static RULES: &[&dyn NativeRule] = &[
     &files::NodePreferProcessGetBuiltinModule,
     &files::ImportExport,
     &files::NoMissingLocalResource,
+    &polyfills::NoUnnecessaryPolyfills,
     &shape::ConsistentArrowReturnStyle,
     &shape::NoDuplicateLoops,
     &shape::NoRedundantComparison,

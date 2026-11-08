@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2704 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2705 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 891 | 29 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 892 | 30 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
@@ -580,6 +580,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unnecessary-fetch-options`](js/no-unnecessary-fetch-options.md) | No method: "GET" in fetch options | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-global-this`](js/no-unnecessary-global-this.md) | A known global read directly, not off globalThis | `suggest` | — | `js/strict` |
 | [`js/no-unnecessary-nested-ternary`](js/no-unnecessary-nested-ternary.md) | No nested ternary that repeats a branch | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-polyfills`](js/no-unnecessary-polyfills.md) | No polyfill for a feature every target already has | `suggest` | `targets` | `js/strict` |
 | [`js/no-unnecessary-slice-end`](js/no-unnecessary-slice-end.md) | No slice(a, x.length) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-splice`](js/no-unnecessary-splice.md) | push, pop, shift or unshift rather than splice() at an end | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-string-trim`](js/no-unnecessary-string-trim.md) | trimStart() before startsWith(), trimEnd() before endsWith() | `auto` | — | `js/strict` |
