@@ -830,7 +830,7 @@ fn shallow_equal(call: Node<'_>, ctx: &NativeContext<'_>, src: &str) -> Option<V
     let mut edits = vec![TextEdit::insert(close, ", shallowEqual")];
     let has = model.imports.iter().any(|i| i.source == "react-redux" && matches!(&i.imported, codelaw_semantic::Imported::Named(n) if n == "shallowEqual"));
     if !has {
-        let spec = model.imports.iter().filter(|i| i.source == "react-redux" && matches!(i.imported, codelaw_semantic::Imported::Named(_))).last()?;
+        let spec = model.imports.iter().rfind(|i| i.source == "react-redux" && matches!(i.imported, codelaw_semantic::Imported::Named(_)))?;
         edits.push(TextEdit::insert(spec.end, ", shallowEqual"));
     }
     let _ = src;

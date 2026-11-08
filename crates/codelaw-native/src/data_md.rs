@@ -689,7 +689,7 @@ impl NativeRule for NoEmphasisAsHeading {
         // The heading it stands for: one level under the heading above it,
         // or that heading's level.
         let doc = std::iter::successors(Some(p), |x| x.parent()).last().unwrap_or(p);
-        let above = headings(doc).into_iter().filter(|h| h.node.start_byte() < p.start_byte()).last().map(|h| h.level).unwrap_or(1);
+        let above = headings(doc).into_iter().rfind(|h| h.node.start_byte() < p.start_byte()).map(|h| h.level).unwrap_or(1);
         let marks = if only.kind() == "strong_emphasis" { 2 } else { 1 };
         let inner = raw.trim_end();
         let words = &inner[marks..inner.len().saturating_sub(marks)];

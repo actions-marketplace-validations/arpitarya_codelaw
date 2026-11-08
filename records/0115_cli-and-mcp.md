@@ -72,7 +72,7 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
    | Group | Commands |
    |---|---|
    | everyday | `check [--watch]` · `fix [--watch]` · `format` · `explain` |
-   | rules | `rules [--for <path>] [--why <id>] [--tag <tag>…] [--security-coverage]` · `brief --for <path>…` (decision 14) · `new-rule` · `rules eject` · `rules lint` · `test [--case <title>] [--corpus <dir> [--snapshot <file> [--update-snapshot]]]` (SR-RULE-AUTHORING decision 4) |
+   | rules | `rules [--for <path>] [--why <id>] [--tag <tag>…] [--security-coverage]` · `brief --for <path>…` (decision 14) · `new-rule` · `rules eject` · `rules lint` · `test [--case <title>] [--corpus <dir> [--snapshot <file> [--update-snapshot]]]` (SR-RULE-AUTHORING decision 4; the corpus level runs the rules on as many threads as the machine has and reports them in the rules' order, W-126) |
    | debug | `tree` · `match <id> <file> [--explain] [--line N]` · `fix --trace` · `graph refs` · `graph why-unused` · `flags accessors [--format text\|json]` (below) |
    | project | `init [--agents …] [--git-hooks [pre-commit,post-commit,commit-msg]] [--ci github] [--ci github\|gitlab --autofix daily\|weekly [--unsafe]] [--no-install] [--registry npm|pypi]` · `sync-agents [--check]` · `config --print [--for <file>]` · `config --schema` |
    | project | `init [--agents …] [--git-hooks [pre-commit,post-commit,commit-msg]] [--ci github\|gitlab --autofix daily\|weekly [--unsafe]] [--no-install] [--no-spell] [--registry npm|pypi]` · `sync-agents [--check]` · `config --print [--for <file>]` · `config --schema` · `spell learn` (below) · `migrate eslint\|prettier\|biome\|ruff\|stylelint [--write] [--format text\|json] [--dir <dir>]` (decision 15) |

@@ -81,7 +81,7 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
                     let head = src[..fclose].trim_end().len();
                     // The second rule goes with the blank line before it.
                     let a = src[..n.start].trim_end().len();
-                    let b = if src[n.end..].starts_with('\n') { n.end } else { n.end };
+                    let b = n.end;
                     let joined = match inner.strip_prefix('\n') {
                         Some(lines) => format!("\n{lines}"),
                         None => format!(" {}", inner.trim()),

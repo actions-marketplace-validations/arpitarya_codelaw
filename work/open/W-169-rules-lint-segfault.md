@@ -5,8 +5,8 @@ description: "`codelaw rules lint packs/<pack>/` segfaults in CI now and then, w
 item: W-169
 filed: 2026-11-05
 filed_by: "Claude Code (session 0a172e1f)"
-updated: 2026-11-07
-updated_by: "Claude Code (session 0a172e1f)"
+updated: 2026-11-08
+updated_by: "Claude Code (CI-green agent, session d73e9989)"
 ball: agent
 ---
 
@@ -18,7 +18,20 @@ ball: agent
 |---|---|---|---|
 | 1 | Capture it: run the build legs' `rules lint` under `ulimit -c unlimited` and upload the core and a backtrace (or `RUST_BACKTRACE=full` plus a SIGSEGV handler) as an artifact on failure | the crashing frame, not a guess | ✅ live since the push of 11-07 (`7cdb480b`); caught the crash on its third run (42348986474) |
 | 2 | Fix the cause the backtrace shows; a regression test where it can be reproduced | release builds that do not crash | 🔨 fixed 11-07: name lookups read a NUL-terminated copy; regression tests in `codelaw-lang` |
-| 3 | Five green runs of every build leg in a row | proof it is gone, not hidden | ⏳ needs the fix on GitHub — the decider's push |
+| 3 | Five green runs of every build leg in a row | proof it is gone, not hidden | 🔄 **1 of 5** (2026-11-08): `ci` 42454141410 (push of `b20e1a1f`, which holds the fix) — all eight build legs green; the run itself is red for other jobs (§Green runs) |
+
+## Green runs of every build leg, counted on the fixed code (2026-11-08)
+
+The fix (`c466c98a`) is in `b20e1a1f`, the commit the decider pushed on 11-08. Every `ci` run on GitHub since the crash capture went live, newest first (`gh run list --workflow ci`; legs read with `gh run view <id> --json jobs`):
+
+| run | sha | event | the eight build legs | on the fix? |
+|---|---|---|---|---|
+| 42454141410 | `b20e1a1f` | push | **all eight green** (linux-arm64-musl 258 s) | yes — **green run 1** |
+| 42427010052 | `7cdb480b` | schedule | `linux-arm64-musl` **failed** (310 s) in "the binary runs, says its version, and passes every pack's tests"; `crash-linux-arm64-musl` was uploaded | no (before `c466c98a`) — the crash recurred, as the diagnosis predicts (its core was not read) |
+| 42348986474 | `7cdb480b` | dispatch | `linux-arm64-musl` **failed** (311 s): the core that named the cause | no |
+| 42348089566, 42347941992 | `7cdb480b` | dispatch, push | all eight green | no — green by luck of the allocator, not evidence |
+
+So **one consecutive green run on the fixed code; four more are needed** (they come from scheduled runs, pushes and dispatches; an agent cannot trigger one). The item stays open until five exist. Run 42454141410 is red as a whole for reasons that are not this one (the SR guard replay, three `corpus` legs, the L8 perf gate); W-169's definition counts the build legs only.
 
 ## What is known
 

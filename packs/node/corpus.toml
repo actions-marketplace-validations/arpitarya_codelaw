@@ -4,6 +4,7 @@
 [findings]
 "node/callback-return" = 4
 "node/exports-style" = 2
+"node/file-extension-in-import" = 0
 "node/global-require" = 0
 "node/handle-callback-err" = 0
 "node/hashbang" = 0
@@ -22,6 +23,7 @@
 "node/no-process-exit" = 1
 "node/no-sync" = 0
 "node/no-top-level-await" = 0
+"node/no-unpublished-bin" = 0
 "node/no-unpublished-import" = 0
 "node/no-unpublished-require" = 0
 "node/prefer-global-buffer" = 0
@@ -35,5 +37,6 @@
 "node/prefer-global-url-search-params" = 0
 "node/prefer-import-assert-strict" = 0
 "node/prefer-node-protocol" = 2
+"node/prefer-process-get-builtin-module" = 0
 "node/prefer-promises-dns" = 0
 "node/prefer-promises-fs" = 0

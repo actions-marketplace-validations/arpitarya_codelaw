@@ -181,7 +181,7 @@ fn react_hook(model: &SemanticModel, name: &str) -> Option<(String, Option<TextE
     if from_react.iter().any(|i| matches!(&i.imported, codelaw_semantic::Imported::Named(n) if n == name)) {
         return Some((name.to_owned(), None));
     }
-    if let Some(last) = from_react.iter().filter(|i| matches!(i.imported, codelaw_semantic::Imported::Named(_))).last() {
+    if let Some(last) = from_react.iter().rfind(|i| matches!(i.imported, codelaw_semantic::Imported::Named(_))) {
         if model.symbols.iter().any(|s| s.name == name) {
             return None;
         }

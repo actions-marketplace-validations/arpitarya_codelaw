@@ -559,7 +559,7 @@ fn test(args: TestArgs) -> ExitCode {
             Ok(f) => f,
             Err(e) => return fail(format!("{}: {e}", dir.display())),
         };
-        let mut corpus: Vec<codelaw_test::CorpusReport> = rules.iter().map(|r| codelaw_test::corpus_rule(r, &files)).collect();
+        let mut corpus = corpus_all(&rules, &files);
         corpus.sort_by(|a, b| a.report.id.cmp(&b.report.id));
         match (&args.snapshot, args.update_snapshot) {
             (Some(path), true) => {
@@ -582,6 +582,41 @@ fn test(args: TestArgs) -> ExitCode {
     }
     print!("{}", codelaw_test::render(&reports, color()));
     if reports.iter().all(|r| r.passed()) { ExitCode::SUCCESS } else { ExitCode::from(1) }
+}
+
+/// Level 4 over every rule: the rules are independent (each builds its own
+/// project and reads the same files), so they run on as many threads as the
+/// machine has, each on the 64 MB stack the engine's workers use. The reports
+/// come back in the rules' order, so the output is the same as one thread's
+/// (W-126: `corpus python` ran past CI's 15 minutes on one).
+fn corpus_all(rules: &[codelaw_rules::LoadedRule], files: &[(String, Language, String)]) -> Vec<codelaw_test::CorpusReport> {
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    let threads = std::thread::available_parallelism().map_or(1, |n| n.get()).min(rules.len()).max(1);
+    let next = AtomicUsize::new(0);
+    let done = std::sync::Mutex::new(Vec::with_capacity(rules.len()));
+    std::thread::scope(|scope| {
+        let mut spawned = 0;
+        for _ in 0..threads {
+            let worker = || {
+                loop {
+                    let i = next.fetch_add(1, Ordering::Relaxed);
+                    let Some(rule) = rules.get(i) else { break };
+                    let report = codelaw_test::corpus_rule(rule, files);
+                    done.lock().unwrap_or_else(|e| e.into_inner()).push((i, report));
+                }
+            };
+            spawned += usize::from(std::thread::Builder::new().stack_size(64 << 20).spawn_scoped(scope, worker).is_ok());
+        }
+        if spawned == 0 {
+            // no thread could be made: run the rules here
+            for (i, rule) in rules.iter().enumerate() {
+                done.lock().unwrap_or_else(|e| e.into_inner()).push((i, codelaw_test::corpus_rule(rule, files)));
+            }
+        }
+    });
+    let mut done = done.into_inner().unwrap_or_else(|e| e.into_inner());
+    done.sort_by_key(|(i, _)| *i);
+    done.into_iter().map(|(_, r)| r).collect()
 }
 
 fn cache(action: CacheAction) -> ExitCode {

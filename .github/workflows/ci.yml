@@ -448,7 +448,7 @@ jobs:
     needs: [corpus-packs, build]
     name: corpus ${{ matrix.pack }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25 # 15 until 11-08: `corpus python` (776 rules, one thread) ran past it; the rules now run in parallel (W-126), this is the margin
     strategy:
       fail-fast: false
       matrix:
