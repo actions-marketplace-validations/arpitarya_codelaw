@@ -51,6 +51,8 @@ Changed in `crates/codelaw-types/src/helper.mjs` (protocol unchanged, SR-TYPES d
 
 Built against 7.1 Beta (2026-10-20) until the RC lands. First landing 2026-10-28 (Claude Code): steps 1–4 and five first rules. Second landing 2026-10-28 (Claude Code): `--version --json`, the `check_types_*` bench and its CI wiring, the long-`--watch` memory test; the corpus counts tried and found not real. The item stays open on *Left* above, its next step the decider's.
 
+**Fix markers handed over by W-162 (2026-11-08):** six rules wait on type information for their fix and now name this item — `js/no-plusplus`, `js/no-void-type-return`, `ts/ban-ts-comment`, `ts/no-implicit-any-let`, `ts/explicit-module-boundary-types`, `ts/explicit-function-return-type` (`fix_pending: "…; needs type-info (W-105)"`, [the design](../proposals/fix-capabilities.md) §2.6). With `ts/type-error` that is 7 waiting rules, all here.
+
 ## Definition of done
 
 - Steps 1–6 done, with a fixture repo checked under 7.1 with each first rule firing and deduping against `adapter/oxlint/typescript/*`; step 7 may close as its own item.

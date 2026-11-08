@@ -2,9 +2,8 @@
 id: py/nested-star-import
 title: "`import *` only at module level"
 languages: [python]
-fix: manual
-fix_reason: "the names to import must be chosen by reading the function"
-fix_pending: "auto-subset; needs cross-file (W-162)"
+fix: auto
+fix_reason: "auto when the module is the project's and the file has one star import: the star becomes the names the module binds that the function uses, read from the module; a suggestion with two. A module outside the project offers no fix (SR-MULTI-FILE-FIXES)"
 stability: preview
 ported_from: [ruff/F406]
 since: 0.1.0
@@ -20,7 +19,8 @@ native: py/nested-star-import
 
 ## How to fix
 
-1. Replace the star with the names the function uses.
+1. `codelaw fix` replaces the star with the names the function uses, where the module is the project's.
+2. For another module, replace the star with the names the function uses.
 
 ## Examples
 
@@ -29,15 +29,31 @@ native: py/nested-star-import
 #### Don't
 
 ```py
-def paths():
-    from os.path import *
-    return join("a", "b")
+# shapes.py
+def area(r):
+    return 3.14 * r * r
+
+
+def perimeter(r):
+    return 6.28 * r
+# app.py
+def measure():
+    from shapes import *
+    return area(2)
 ```
 
 #### Do
 
 ```py
-def paths():
-    from os.path import join
-    return join("a", "b")
+# shapes.py
+def area(r):
+    return 3.14 * r * r
+
+
+def perimeter(r):
+    return 6.28 * r
+# app.py
+def measure():
+    from shapes import area
+    return area(2)
 ```

@@ -128,6 +128,7 @@ The decider asked for a VS Code extension as well as an LSP. Earlier records nam
 
 - **A bundled binary makes the extension larger** (one platform per package). The project's own binary is still preferred.
 - **Project rules update on save, not per keystroke;** that's the price of keeping `lsp_after_edit` small.
+- **2026-11-08 (W-162):** a multi-file fix is offered as one quick fix carrying a `WorkspaceEdit` over every file it touches; save never applies one ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

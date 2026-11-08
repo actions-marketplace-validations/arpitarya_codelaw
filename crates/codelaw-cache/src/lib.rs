@@ -31,7 +31,7 @@ pub struct KeyBuilder(blake3::Hasher);
 impl KeyBuilder {
     pub fn new(domain: &str) -> Self {
         let mut h = blake3::Hasher::new();
-        h.update(b"codelaw-cache-v2\0");
+        h.update(b"codelaw-cache-v3\0");
         h.update(codelaw_core::VERSION.as_bytes());
         h.update(b"\0");
         h.update(domain.as_bytes());
@@ -228,10 +228,11 @@ mod tests {
             steps: vec!["s".into()],
             source: "engine".into(),
             note: None,
-            // Choices and the exception ride with `data`: absent in one, there
+            // Choices, the exception and the other files' edits ride with `data`: absent in one, there
             // in the other, so both shapes go through the positional codec.
-            choices: if data.is_some() { vec![FixChoice { label: "keep first".into(), default: true, edits: vec![TextEdit::delete(1, 2)] }] } else { vec![] },
+            choices: if data.is_some() { vec![FixChoice { label: "keep first".into(), default: true, edits: vec![TextEdit::delete(1, 2)], files: vec![codelaw_core::FileEdit::new("b.js", vec![TextEdit::insert(0, "x")])] }] } else { vec![] },
             fix_exception: data.as_ref().map(|_| FixException::Value),
+            files: if data.is_some() { vec![codelaw_core::FileEdit { path: "c.css".into(), edits: vec![], strip_bom: true }] } else { vec![] },
             data,
         };
         let cache = DiskCache::new(Some(temp_dir("diag")));

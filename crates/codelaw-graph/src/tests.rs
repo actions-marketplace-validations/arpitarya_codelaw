@@ -503,3 +503,44 @@ fn the_flags_query_compiles() {
     assert!(compile(&serde_json::json!({"flags": "registry"}), Some(&serde_json::json!({"do": ["keep-branch"]}))).unwrap_err().contains("remove-entry"));
     assert!(compile(&serde_json::json!({"symbol": {"exported": true}, "when": {"external_references": 0}}), Some(&serde_json::json!({"do": ["fix-marker"]}))).is_err());
 }
+
+/// The keys a fix adds to `dangling`: the references it leaves resolving
+/// to nothing (SR-MULTI-FILE-FIXES safeguard 2).
+fn new_dangling(before: &[(&str, &str)], after: &[(&str, &str)]) -> Vec<String> {
+    let bg = graph(before, GraphConfig::default());
+    let b = dangling(&bg);
+    let a = dangling(&graph(after, GraphConfig::default()));
+    introduced(&b, &a, &defined_classes(&bg)).into_iter().map(|k| k.replace('\0', " ")).collect()
+}
+
+#[test]
+fn a_rename_that_misses_a_user_leaves_it_dangling() {
+    let before = [("a.css", ".navBar { color: red; }\n"), ("b.html", "<p class=\"navBar\">x</p>\n")];
+    let whole = [("a.css", ".nav-bar { color: red; }\n"), ("b.html", "<p class=\"nav-bar\">x</p>\n")];
+    let half = [("a.css", ".nav-bar { color: red; }\n"), ("b.html", "<p class=\"navBar\">x</p>\n")];
+    assert!(new_dangling(&before, &whole).is_empty());
+    assert_eq!(new_dangling(&before, &half), vec!["class b.html navBar"]);
+}
+
+#[test]
+fn a_default_export_made_named_needs_every_importer_changed() {
+    let before = [("src/a.js", "export default function load() {}\n"), ("src/b.js", "import load from './a';\nload();\n")];
+    let whole = [("src/a.js", "export function load() {}\n"), ("src/b.js", "import { load } from './a';\nload();\n")];
+    let half = [("src/a.js", "export function load() {}\n"), ("src/b.js", "import load from './a';\nload();\n")];
+    assert!(new_dangling(&before, &whole).is_empty());
+    assert_eq!(new_dangling(&before, &half), vec!["name src/b.js ./a default"]);
+}
+
+#[test]
+fn an_import_of_a_moved_file_dangles() {
+    let before = [("src/a.js", "export const x = 1;\n"), ("src/b.js", "import { x } from './a';\n")];
+    let after = [("src/a.js", "export const x = 1;\n"), ("src/b.js", "import { x } from './c';\n")];
+    assert_eq!(new_dangling(&before, &after), vec!["import src/b.js ./c"]);
+}
+
+#[test]
+fn a_word_a_change_writes_that_never_named_a_class_is_not_dangling() {
+    let before = [("a.css", ".a { color: var(--mainColor); }\n"), ("a.js", "x.setProperty(\"--mainColor\", 1);\n")];
+    let after = [("a.css", ".a { color: var(--main-color); }\n"), ("a.js", "x.setProperty(\"--main-color\", 1);\n")];
+    assert!(new_dangling(&before, &after).is_empty());
+}

@@ -2,9 +2,8 @@
 id: css/layer-name-pattern
 title: "Layer names are kebab-case"
 languages: [css, scss]
-fix: manual
-fix_reason: "renaming must update every use of the layer"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "renamed to kebab-case in every `@layer` and `@import … layer()` of the project, as one fix; a diff to accept, as the layer order is the author's (SR-MULTI-FILE-FIXES)"
 stability: stable
 options:
   pattern: { type: "string", default: "^([a-z][a-z0-9]*)([.-][a-z0-9]+)*$", description: "a regular expression names must match" }
@@ -22,8 +21,8 @@ native: css/layer-name-pattern
 
 ## How to fix
 
-1. Rename the layer to match the pattern.
-2. Update every `@layer` and `@import` that names it.
+1. Accept the rename: `codelaw fix --unsafe` renames the layer in every `@layer` and `@import … layer()` (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -40,6 +39,33 @@ native: css/layer-name-pattern
 ```css
 @layer base-styles;
 ```
+
+#### Don't
+
+```css
+/* src/order.css */
+@layer baseStyles, theme;
+/* src/base.css */
+@layer baseStyles {
+  p {
+    margin: 0;
+  }
+}
+```
+
+#### Do
+
+```css
+/* src/order.css */
+@layer base-styles, theme;
+/* src/base.css */
+@layer base-styles {
+  p {
+    margin: 0;
+  }
+}
+```
+
 ### SCSS
 
 #### Don't

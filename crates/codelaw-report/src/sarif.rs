@@ -74,10 +74,27 @@ fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
             .map(|e| json!({ "deletedRegion": { "byteOffset": e.start, "byteLength": e.end - e.start }, "insertedContent": { "text": e.text } }))
             .collect()
     };
-    if d.fix != FixClass::Manual && !d.edits.is_empty() {
+    // One artifact change per file: a multi-file fix names each file it
+    // edits (SR-MULTI-FILE-FIXES decision 1).
+    let changes = |own: &[codelaw_core::TextEdit], files: &[codelaw_core::FileEdit]| -> Vec<Value> {
+        let mut out = Vec::new();
+        if !own.is_empty() {
+            out.push(json!({ "artifactLocation": artifact(&d.file), "replacements": replacements(own) }));
+        }
+        for f in files {
+            let mut reps = Vec::new();
+            if f.strip_bom {
+                reps.push(json!({ "deletedRegion": { "byteOffset": 0, "byteLength": 3 } }));
+            }
+            reps.extend(replacements(&f.edits));
+            out.push(json!({ "artifactLocation": artifact(&f.path), "replacements": reps }));
+        }
+        out
+    };
+    if d.fix != FixClass::Manual && (!d.edits.is_empty() || !d.files.is_empty()) {
         r["fixes"] = json!([{
             "description": { "text": format!("{} fix for {}", d.fix.name(), d.rule) },
-            "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&d.edits) }],
+            "artifactChanges": changes(&d.edits, &d.files),
         }]);
     } else if d.fix != FixClass::Manual && !d.choices.is_empty() {
         // One SARIF fix per labelled choice (L4 decision 4).
@@ -87,7 +104,7 @@ fn result(d: &Diagnostic, rule_index: Option<usize>) -> Value {
             .map(|c| {
                 json!({
                     "description": { "text": format!("{}{} — suggest fix for {}", c.label, if c.default { " (default)" } else { "" }, d.rule) },
-                    "artifactChanges": [{ "artifactLocation": artifact(&d.file), "replacements": replacements(&c.edits) }],
+                    "artifactChanges": changes(&c.edits, &c.files),
                 })
             })
             .collect::<Vec<_>>()

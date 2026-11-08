@@ -170,6 +170,7 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
 - **CSS and HTML rules are tree-sitter only**, with no browser-compatibility data. "Does this property work in Safari 15" needs an adapter or a later data table.
 - **Adapters run only from the CLI and CI, never in hook or LSP mode,** and each has a manifest with its tested version range ([SR-ARCHITECTURE](0108_architecture.md) decision 19).
 - **Adapters remain optional,** so a repo without them gets only codelaw-native rules. That's the price of [L6](0008_LAW-6-python-and-node-packages.md) completeness.
+- **2026-11-08 (W-162):** an adapter's findings carry no other-file edits (`files` empty); only codelaw's own rules make multi-file fixes ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

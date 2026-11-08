@@ -2,9 +2,8 @@
 id: py/module-import-not-at-top
 title: "Module-level imports come first"
 languages: [python]
-fix: manual
-fix_reason: "moving an import above other code changes the order the module runs in"
-fix_pending: "auto-subset; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "the import moves above the first statement imports must come before; a diff to accept, as the code above may be what the import needs to run (a path set, an environment variable) (W-162)"
 stability: preview
 ported_from: [ruff/E402, pylint/wrong-import-position]
 since: 0.1.0
@@ -20,7 +19,7 @@ native: py/module-import-not-at-top
 
 ## How to fix
 
-1. Move the import up to the module's import section.
+1. Accept the move where it is offered: `codelaw fix --unsafe` moves the import above the first statement that isn't one.
 2. If it must run after the code above it, keep it and suppress the finding with a comment saying why.
 
 ## Examples

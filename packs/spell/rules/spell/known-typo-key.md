@@ -3,8 +3,8 @@ id: spell/known-typo-key
 title: "No known typos in keys, classes and ids"
 languages: [json, yaml, toml, css, scss, html]
 fix: manual
-fix_reason: "other files read the name — the code that reads a key, the markup that uses a class, the link to an id — so renaming it here alone breaks them"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "restructure: the readers of a key are code that names it, often built from parts or in another repo, which no graph resolves; the rename spans every reader and, for a published key, a release that accepts both (W-162)"
+fix_exception: restructure
 stability: preview
 since: 0.3.0
 ---

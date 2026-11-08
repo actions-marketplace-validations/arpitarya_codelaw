@@ -17,10 +17,12 @@ mod fix;
 mod flags;
 mod format;
 mod git;
+mod graph_fixes;
 pub mod hygiene;
 mod incremental;
 mod lcov;
 mod lint;
+mod multi_file;
 mod new_code;
 mod off_reason;
 mod query;
@@ -52,7 +54,7 @@ pub use watch::{COALESCE, Changes, Rerun, Snapshot, Watch};
 
 use codelaw_cache::DiskCache;
 use codelaw_config::{Config, ConfigError};
-use codelaw_core::{Diagnostic, Language, Skipped};
+use codelaw_core::{Diagnostic, FixClass, Language, Skipped};
 use codelaw_rules::{LoadError, LoadOptions, PackEnv, PackSearch, RuleSet};
 use std::collections::BTreeSet;
 use std::fmt;
@@ -524,6 +526,24 @@ impl Project {
             None => (source, false),
         };
         let mut f = fix::fix_text(self, &entry, text, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned), on_edit }, false, bom, tree);
+        // A fix whose only edit is removing this file's byte-order mark
+        // (SR-MULTI-FILE-FIXES decision 1's `strip_bom`): the text is kept
+        // and the mark dropped. Never on save, as every file-level fix.
+        let strip = |d: &Diagnostic| {
+            (d.fix == FixClass::Auto || (unsafe_fixes && d.fix == FixClass::Suggest)) && d.edits.is_empty() && !d.files.is_empty() && d.files.iter().all(|x| x.path == rel_path && x.strip_bom && x.edits.is_empty())
+        };
+        let strips: Vec<String> = f.remaining.iter().filter(|d| strip(d)).map(|d| d.rule.clone()).collect();
+        let bom = if bom && !on_edit && !strips.is_empty() {
+            let original = format!("\u{feff}{text}");
+            f = fix::fix_text(self, &entry, &f.fixed, &FixOptions { unsafe_fixes, dry_run: true, trace: false, choice: choice.map(str::to_owned), on_edit }, false, false, tree);
+            f.original = original;
+            for r in strips {
+                *f.applied.entry(r).or_default() += 1;
+            }
+            false
+        } else {
+            bom
+        };
         if bom {
             f.original.insert(0, '\u{feff}');
             f.fixed.insert(0, '\u{feff}');

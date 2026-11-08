@@ -2,9 +2,8 @@
 id: scss/percent-placeholder-pattern
 title: "`%placeholder` names are kebab-case"
 languages: [scss]
-fix: manual
-fix_reason: "renaming must update every `@extend` of the placeholder"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "renamed to kebab-case here and in every `@extend` of the project, as one fix; a placeholder is global, so an `@extend` elsewhere may mean another one, and the rename is a diff to accept (SR-MULTI-FILE-FIXES)"
 stability: preview
 options:
   pattern: { type: "string", default: "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", description: "a regular expression a placeholder name, without its `%`, must match" }
@@ -22,8 +21,8 @@ native: scss/percent-placeholder-pattern
 
 ## How to fix
 
-1. Rename the placeholder to match the pattern.
-2. Rename every `@extend` of it.
+1. Accept the rename: `codelaw fix --unsafe` renames the placeholder and every `@extend` of it (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -42,6 +41,34 @@ native: scss/percent-placeholder-pattern
 ```scss
 %button-base {
   color: red;
+}
+```
+
+#### Don't
+
+```scss
+// src/_base.scss
+%ButtonBase {
+  color: red;
+}
+// src/button.scss
+@use "base";
+.button {
+  @extend %ButtonBase;
+}
+```
+
+#### Do
+
+```scss
+// src/_base.scss
+%button-base {
+  color: red;
+}
+// src/button.scss
+@use "base";
+.button {
+  @extend %button-base;
 }
 ```
 

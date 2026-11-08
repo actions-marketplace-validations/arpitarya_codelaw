@@ -182,7 +182,7 @@ a diff.
       ([SR-RULE-FORMAT](0112_rule-format.md) decision 2b), and a project may
       turn it either way ([SR-CONFIG](0110_config.md) decision 11e); its fix
       is still `auto` for `codelaw fix`, pre-commit and CI's `fix --check`,
-      and the hook returns it as what is left. Built: `on_edit` yes (W-166, 2026-11-05: `FixOptions.on_edit`, set by `codelaw hook` and the editor's `source.fixAll.codelaw`); the multi-file half no (W-162).
+      and the hook returns it as what is left. Built: `on_edit` yes (W-166, 2026-11-05: `FixOptions.on_edit`, set by `codelaw hook` and the editor's `source.fixAll.codelaw`); the multi-file half yes (W-162, 2026-11-08: the multi-file pass runs only in `codelaw fix`, never with `on_edit`).
 13. **A skill serves every `manual` fix.** `codelaw-fix`
     ([SR-AGENT-SURFACES](0102_agent-surfaces.md)) reads the rule's
     `## How to fix` steps and walks the person or agent through them; a rule
@@ -232,7 +232,8 @@ a diff.
   (7) and the engine rules' exceptions (15). The project's lowering (16)
   was built 2026-11-05 ([SR-CONFIG](0110_config.md) decision 11d).
   Decisions 10 and 12 were amended 2026-11-05 (multi-file fixes; `on_edit`):
-  ruled, not built (W-162, W-166).
+  built (W-166 for `on_edit`; W-162, 2026-11-08, for multi-file fixes —
+  [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) Consequences).
 - **The review of 2026-10-30** proposed a rung for each of the 717 non-`auto`
   rules ([`work/proposals/fix-ladder.md`](../work/proposals/fix-ladder.md)):
   `manual` would fall from 577 to 147, and `auto` (always or for a stated
@@ -241,6 +242,14 @@ a diff.
   or `manual` with its exception, except 43 that wait on a capability
   (`fix_pending:`, 42 naming W-162, `ts/type-error` W-105). Whole tree at
   close: `auto` 608, `suggest` 872, `manual` 963.
+- **W-162 closed 2026-11-08:** the 36 rules waiting on cross-file read and
+  write moved — 29 up (8 to `auto`, 21 to `suggest`), 7 re-judged `manual`
+  with their exception (`html/valid-id`, `stencil/tag-prefix`,
+  `stencil/ban-prefix`, `data/codeowners-coverage`: `value`;
+  `scss/at-extend-no-missing-placeholder`, `spell/known-typo-key`,
+  `ts/triple-slash-reference`: `restructure`); the 6 type-information rules
+  wait on W-105 with `ts/type-error`. Whole tree at close: `auto` 657,
+  `suggest` 947, `manual` 1012, 7 waiting (all W-105).
 - **Rule authors carry more cost:** a subset condition, choices with their own
   `Fixed` examples, an exception. That is the point: the cost moves from every
   reader of a finding to the one author of the rule.

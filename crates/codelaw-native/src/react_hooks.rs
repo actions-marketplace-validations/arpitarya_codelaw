@@ -755,6 +755,9 @@ impl NativeRule for NoUnnecessaryUsePrefix {
     fn kinds(&self) -> &'static [&'static str] {
         FUNCTION_NODES
     }
+    fn needs_semantic(&self) -> bool {
+        true
+    }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
         let f = node.get_inner_node();
         let src = ctx.source;
@@ -778,7 +781,11 @@ impl NativeRule for NoUnnecessaryUsePrefix {
             return;
         }
         let at = f.child_by_field_name("name").or_else(|| f.parent().filter(|p| p.kind() == "variable_declarator").and_then(|p| p.child_by_field_name("name"))).unwrap_or(f);
-        out.push(finding(at, format!("`{name}` calls no hook, so it is a plain function; drop the `use` prefix"), Vec::new()));
+        // Renamed without its `use` where it is declared and everywhere it is
+        // called (SR-MULTI-FILE-FIXES).
+        let plain = crate::multi_file::lower_first(name.trim_start_matches("use"));
+        let edits = if at.kind() == "identifier" && !plain.is_empty() { crate::multi_file::rename_binding_at(ctx, at.start_byte(), &plain) } else { Vec::new() };
+        out.push(finding(at, format!("`{name}` calls no hook, so it is a plain function; drop the `use` prefix"), edits));
     }
 }
 

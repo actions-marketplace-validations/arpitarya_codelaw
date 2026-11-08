@@ -73,19 +73,41 @@ fn modifies(target: Option<Node<'_>>, ctx: &NativeContext<'_>) -> bool {
 }
 
 fn module_import_not_at_top(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
-    let mut boundary = false;
+    // The first statement imports must come before: the import moves above it.
+    // It goes on the line after the statement before that one.
+    let src = ctx.source;
+    let mut boundary: Option<usize> = None;
+    let mut prev_end: Option<usize> = None;
     for (i, s) in statements(n).into_iter().enumerate() {
         let is_import = matches!(s.kind(), "import_statement" | "import_from_statement");
-        if is_import && boundary {
-            out.push(hit(s, "Module-level imports belong at the top of the file"));
+        if is_import && let Some(at) = boundary {
+            let edits = match crate::python_util::remove_stmt(s, src) {
+                Some(mut del) if !text(s, src).contains('\n') && del.len() == 1 => {
+                    // A blank line left between the code above and the end
+                    // of the file, or another blank line, goes with it.
+                    let d = &mut del[0];
+                    if d.start >= 2 && src[..d.start].ends_with("\n\n") && (d.end >= src.len() || src[d.end..].starts_with('\n')) {
+                        d.start -= 1;
+                    }
+                    del.push(TextEdit::insert(at, format!("{}\n", text(s, src))));
+                    del
+                }
+                _ => Vec::new(),
+            };
+            out.push(crate::python_util::hit_fix(s, "Module-level imports belong at the top of the file", edits));
             continue;
         }
         if i == 0 && is_docstring_stmt(s) {
             continue;
         }
-        if !allowed_before_imports(s, ctx) {
-            boundary = true;
+        if boundary.is_none() && !allowed_before_imports(s, ctx) {
+            let line = |at: usize| src[..at].rfind('\n').map_or(0, |i| i + 1);
+            boundary = Some(match prev_end {
+                Some(e) => src[e..].find('\n').map_or(src.len(), |o| e + o + 1),
+                None => line(s.start_byte()),
+            });
         }
+        prev_end = Some(s.end_byte());
     }
 }
 py_rule!(ModuleImportNotAtTopOfFile, "py/module-import-not-at-top", ["module"], true, module_import_not_at_top);

@@ -27,9 +27,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (13)
+## Open items (12)
 
-### build (7)
+### build (6)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -42,8 +42,6 @@ here. Read that record before changing anything below it.
 🟢 **W-175** `agent` Graph queries for 10 W-139 js rows that read other modules (`import/named`, `default`, `namespace`, `no-cycle`, `no-deprecated`, `no-unused-modules`, …) and unicorn's polyfill table. Next: amend SR-PROJECT-GRAPH decision 6 with the queries. Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
-
-🟢 **W-162** `agent` Build the fix capabilities W-161 designed ([proposal](proposals/fix-capabilities.md)). Computed edits, scope rename, add-import, purity built. 36 wait (cross-file), 6 on W-105. Next: cross-file read, then write. Filed by Arpit (Cowork). [detail](open/W-162-fix-capabilities-build.md)
 
 ### ci/cd (4)
 

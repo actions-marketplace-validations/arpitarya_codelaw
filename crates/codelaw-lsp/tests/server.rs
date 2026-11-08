@@ -392,3 +392,52 @@ fn findings_carry_data_and_manifests_get_hints_and_lenses() {
     c.shutdown();
     let _ = fs::remove_dir_all(&root);
 }
+
+/// A multi-file fix is one quick fix whose `WorkspaceEdit` names every file
+/// it edits; "fix all" (save) never carries it, and nothing is written
+/// (SR-MULTI-FILE-FIXES decisions 1 and 2.5).
+#[test]
+fn a_multi_file_fix_is_one_workspace_edit_over_every_file() {
+    let root = std::env::temp_dir().join(format!("codelaw-lsp-multi-{}", std::process::id()));
+    let _ = fs::remove_dir_all(&root);
+    let write = |rel: &str, text: &str| {
+        let p = root.join(rel);
+        fs::create_dir_all(p.parent().unwrap()).unwrap();
+        fs::write(p, text).unwrap();
+    };
+    let pack = "node_modules/@codelaw/rules-css";
+    write(&format!("{pack}/codelaw-pack.toml"), "name = \"@codelaw/rules-css\"\nversion = \"0.1.0\"\nmin_codelaw = \"0.1.0\"\nlanguages = [\"css\"]\npresets = [\"css/test\"]\n");
+    write(
+        &format!("{pack}/rules/css/test-class-name.md"),
+        "---\nid: css/test-class-name\ntitle: classes are kebab-case\nlanguages: [css]\nfix: suggest\nfix_reason: test\nstability: stable\n---\n\nKebab-case.\n\n**Why:** test.\n\n```codelaw\nnative: css/selector-class-pattern\n```\n\n## How to fix\n\n1. Rename it.\n\n## Examples\n\n### CSS\n\n#### Don't\n\n```css\n.aB {}\n```\n\n#### Do\n\n```css\n.a-b {}\n```\n",
+    );
+    write(&format!("{pack}/presets/css/test.toml"), "[rules]\n\"css/test-class-name\" = \"warn\"\n");
+    write("codelaw.toml", "extends = [\"codelaw:css/test\"]\n");
+    const CSS: &str = ".navBar {\n  color: red;\n}\n";
+    const HTML: &str = "<nav class=\"navBar\"></nav>\n";
+    write("a.css", CSS);
+    write("index.html", HTML);
+    let root = fs::canonicalize(&root).unwrap();
+    let before = snapshot(&root);
+    let (css, html) = (uri(&root.join("a.css")), uri(&root.join("index.html")));
+    let mut c = Client::start(&root);
+    let published = c.open(&css, "css", CSS);
+    let diag = published["diagnostics"].as_array().unwrap().iter().find(|d| d["code"] == "css/test-class-name").cloned().unwrap_or_else(|| panic!("{published}"));
+    let actions = c.request("textDocument/codeAction", json!({ "textDocument": { "uri": css }, "range": diag["range"], "context": { "diagnostics": [diag] } }));
+    let quick: Vec<&Value> = actions.as_array().unwrap().iter().filter(|a| a["kind"] == "quickfix").collect();
+    assert_eq!(quick.len(), 1, "{actions}");
+    assert!(quick[0]["title"].as_str().unwrap().contains("in 2 files"), "{}", quick[0]);
+    let changes = &quick[0]["edit"]["changes"];
+    assert_eq!(apply(CSS, changes[&css].as_array().unwrap()), CSS.replace("navBar", "nav-bar"));
+    assert_eq!(apply(HTML, changes[&html].as_array().unwrap()), HTML.replace("navBar", "nav-bar"));
+    // Save's "fix all" leaves it: it is not `auto`, and never runs on save.
+    let all = c.request(
+        "textDocument/codeAction",
+        json!({ "textDocument": { "uri": css }, "range": { "start": { "line": 0, "character": 0 }, "end": { "line": 0, "character": 0 } },
+                "context": { "diagnostics": [], "only": ["source.fixAll"] } }),
+    );
+    assert!(all.as_array().unwrap().iter().all(|a| a["edit"]["changes"].get(&html).is_none()), "{all}");
+    assert_eq!(snapshot(&root), before, "the language server wrote to disk");
+    c.shutdown();
+    let _ = fs::remove_dir_all(&root);
+}
