@@ -52,6 +52,9 @@ pub enum Predicate {
     /// the rule's `string[]` option `option` (W-139); `default` is the
     /// rule's built-in list.
     In { option: String, default: Vec<String> },
+    /// The node shares its line with code before it: something other than
+    /// whitespace sits between the start of the line and the node (W-169).
+    Trailing,
     Not(Box<Predicate>),
     All(Vec<Predicate>),
     Any(Vec<Predicate>),
@@ -59,7 +62,7 @@ pub enum Predicate {
 
 const NAMES: &[&str] = &[
     "unused", "undeclared", "shadowed", "reassigned", "imported-from", "write", "declaration", "redeclared", "binding", "builtin", "from_source",
-    "calls", "function_calls", "in", "not", "all", "any",
+    "calls", "function_calls", "in", "trailing", "not", "all", "any",
 ];
 
 impl Predicate {
@@ -136,6 +139,7 @@ fn parse(v: &Value, data: &BTreeMap<String, Arc<Value>>, opts: &BTreeMap<String,
             "declaration" => Ok(Predicate::Declaration),
             "redeclared" => Ok(Predicate::Redeclared),
             "builtin" => Ok(Predicate::Builtin),
+            "trailing" => Ok(Predicate::Trailing),
             "imported-from" => Err("`imported-from` names a module: `{ imported-from: react }`".into()),
             "binding" => Err("`binding` names declaration kinds: `{ binding: [const, let] }`".into()),
             "calls" => Err("`calls` names a `call[]` option of the rule: `{ calls: sanitizers }`".into()),
@@ -311,6 +315,10 @@ impl Predicate {
                     None => default.iter().any(|d| d == text),
                 }
             }),
+            Predicate::Trailing => {
+                let before = &subject.source[..start.min(subject.source.len())];
+                !before.rsplit('\n').next().unwrap_or("").trim().is_empty()
+            }
             Predicate::Not(p) => !p.holds(model, subject),
             Predicate::All(ps) => ps.iter().all(|p| p.holds(model, subject)),
             Predicate::Any(ps) => ps.iter().any(|p| p.holds(model, subject)),
