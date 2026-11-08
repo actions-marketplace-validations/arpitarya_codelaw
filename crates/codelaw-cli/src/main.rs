@@ -686,7 +686,9 @@ mod xx_alloc { // XX-EXPERIMENT
     unsafe impl GlobalAlloc for C {
         unsafe fn alloc(&self, l: Layout) -> *mut u8 { let n = NOW.fetch_add(l.size(), Relaxed) + l.size(); PEAK.fetch_max(n, Relaxed); unsafe { System.alloc(l) } }
         unsafe fn dealloc(&self, p: *mut u8, l: Layout) { NOW.fetch_sub(l.size(), Relaxed); unsafe { System.dealloc(p, l) } }
-        unsafe fn realloc(&self, p: *mut u8, l: Layout, s: usize) -> *mut u8 { if s > l.size() { let n = NOW.fetch_add(s - l.size(), Relaxed) + s - l.size(); PEAK.fetch_max(n, Relaxed); } else { NOW.fetch_sub(l.size() - s, Relaxed); } unsafe { System.realloc(p, l, s) } }
+        unsafe fn realloc(&self, p: *mut u8, l: Layout, s: usize) -> *mut u8 { if s > l.size() { let n = NOW.fetch_add(s - l.size(), Relaxed) + s - l.size(); PEAK.fetch_max(n, Relaxed); } else { NOW.fetch_sub(l.size() - s, Relaxed); }
+            unsafe { System.realloc(p, l, s) }
+        }
     }
     #[global_allocator] static A: C = C;
 }

@@ -136,7 +136,7 @@ impl NativeRule for RequireRenderReturn {
                 let name = m.child_by_field_name("name").expect("checked");
                 // The last statement drawing JSX as a bare expression is
                 // what was meant to be returned.
-                let last = named_children(b).into_iter().filter(|s| s.kind() != "comment").last();
+                let last = named_children(b).into_iter().rfind(|s| s.kind() != "comment");
                 let edits = last
                     .filter(|s| s.kind() == "expression_statement")
                     .and_then(|s| s.named_child(0).map(|e| (s, e)))

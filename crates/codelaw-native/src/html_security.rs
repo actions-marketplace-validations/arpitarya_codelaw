@@ -250,7 +250,7 @@ fn csp_hashes(dom: &crate::html_dom::Dom, c: &Attr, src: &str) -> Option<Vec<Tex
             continue;
         }
         let (ts, _) = e.end_tag?;
-        let hex = crate::deps::sha256::hex(src[e.open_end..ts].as_bytes());
+        let hex = crate::deps::sha256::hex(&src.as_bytes()[e.open_end..ts]);
         let bytes: Vec<u8> = (0..hex.len()).step_by(2).map(|k| u8::from_str_radix(&hex[k..k + 2], 16)).collect::<Result<_, _>>().ok()?;
         let h = format!("'sha256-{}'", base64(&bytes));
         if !hashes.contains(&h) {

@@ -62,8 +62,7 @@ fn hook(d: &Path) -> (bool, String) {
 fn config_print(d: &Path) -> Vec<Value> {
     let out = run(d, &["config", "--print", "--format", "json"]);
     let v: Value = serde_json::from_slice(&out.stdout).unwrap_or_else(|e| panic!("{e}: {}", String::from_utf8_lossy(&out.stderr)));
-    let list = v.as_array().or(v["values"].as_array()).or(v["config"].as_array()).cloned().unwrap_or_else(|| panic!("{v:#}"));
-    list
+    v.as_array().or(v["values"].as_array()).or(v["config"].as_array()).cloned().unwrap_or_else(|| panic!("{v:#}"))
 }
 
 fn entry<'a>(list: &'a [Value], key: &str) -> Option<&'a Value> {
