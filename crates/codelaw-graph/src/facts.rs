@@ -207,6 +207,11 @@ pub struct FileFacts {
     pub links: Vec<String>,
     /// JS/TS: every module specifier, in source order.
     pub specifiers: Vec<Specifier>,
+    /// JS/TS: the name the default export goes by in its own file — the
+    /// declaration's name, the identifier it exports, the first argument of
+    /// the call it wraps (`export default connect(Foo)` is `Foo`).
+    #[serde(default)]
+    pub default_name: Option<String>,
 }
 
 /// The facts of one file, or `None` for a language the graph doesn't read.
@@ -516,6 +521,48 @@ impl<'a> Extractor<'a> {
                 }
             }
             self.f.exports.push(fact);
+        }
+        // Only a module with a default export has a name to read.
+        if !self.python && self.f.exports.iter().any(|e| e.name == "default") {
+            self.f.default_name = self.default_name_of(&tops);
+        }
+    }
+
+    /// The name of the default export in its own file (`FileFacts::default_name`).
+    fn default_name_of(&self, tops: &[Node<'_>]) -> Option<String> {
+        for top in tops.iter().filter(|n| n.kind() == "export_statement") {
+            let kids = children(*top);
+            if kids.iter().any(|c| c.kind() == "default") {
+                let value = top.child_by_field_name("value").or_else(|| top.child_by_field_name("declaration"))?;
+                return self.value_name(value, 0);
+            }
+            // `export { x as default }`
+            for clause in kids.iter().filter(|c| c.kind() == "export_clause") {
+                for spec in named_children(*clause) {
+                    let (Some(name), Some(alias)) = (spec.child_by_field_name("name"), spec.child_by_field_name("alias")) else { continue };
+                    if self.t(alias) == "default" && top.child_by_field_name("source").is_none() {
+                        return Some(self.t(name).to_owned());
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// What an exported value is called: its own name, or the thing it wraps.
+    fn value_name(&self, n: Node<'_>, depth: usize) -> Option<String> {
+        if depth > 8 {
+            return None;
+        }
+        match n.kind() {
+            "identifier" => Some(self.t(n).to_owned()),
+            "function_declaration" | "generator_function_declaration" | "class_declaration" | "abstract_class_declaration" => n.child_by_field_name("name").map(|x| self.t(x).to_owned()),
+            "call_expression" => {
+                let first = n.child_by_field_name("arguments")?.named_child(0)?;
+                self.value_name(first, depth + 1)
+            }
+            "assignment_expression" => n.child_by_field_name("left").filter(|l| l.kind() == "identifier").map(|l| self.t(l).to_owned()),
+            _ => None,
         }
     }
 

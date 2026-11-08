@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the module's named export for this value is not written in this file) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (where the imported project module's default export is a binding it also exports by name, the import names it: `import { name as x }`; a diff to accept. A package, or a module whose default has no named twin, offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `tslint/no-default-import` |
@@ -124,8 +124,8 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 
 ## How to fix
 
-1. Find the named export the module offers for this value (export it by name if it has none).
-2. Import it by that name: `import { name } from "module"`.
+1. Accept the fix where it is offered: `codelaw fix --unsafe` imports the module's named export for this value.
+2. Otherwise find the named export the module offers (export it by name if it has none), and import it by that name: `import { name } from "module"`.
 
 ## Examples
 
@@ -134,13 +134,23 @@ codelaw config --print --for <file>        # the resolved setting, and where it 
 #### Don't
 
 ```js
+// src/parse.js
+export function parse() {}
+export default parse;
+// src/app.js
 import parse from "./parse";
+parse();
 ```
 
 #### Do
 
 ```js
+// src/parse.js
+export function parse() {}
+export default parse;
+// src/app.js
 import { parse } from "./parse";
+parse();
 ```
 
 ### JSX
@@ -148,13 +158,23 @@ import { parse } from "./parse";
 #### Don't
 
 ```jsx
+// src/parse.jsx
+export function parse() {}
+export default parse;
+// src/app.jsx
 import parse from "./parse";
+parse();
 ```
 
 #### Do
 
 ```jsx
+// src/parse.jsx
+export function parse() {}
+export default parse;
+// src/app.jsx
 import { parse } from "./parse";
+parse();
 ```
 
 ### TypeScript
@@ -162,13 +182,23 @@ import { parse } from "./parse";
 #### Don't
 
 ```ts
+// src/parse.ts
+export function parse() {}
+export default parse;
+// src/app.ts
 import parse from "./parse";
+parse();
 ```
 
 #### Do
 
 ```ts
+// src/parse.ts
+export function parse() {}
+export default parse;
+// src/app.ts
 import { parse } from "./parse";
+parse();
 ```
 
 ### TSX
@@ -176,13 +206,23 @@ import { parse } from "./parse";
 #### Don't
 
 ```tsx
+// src/parse.tsx
+export function parse() {}
+export default parse;
+// src/app.tsx
 import parse from "./parse";
+parse();
 ```
 
 #### Do
 
 ```tsx
+// src/parse.tsx
+export function parse() {}
+export default parse;
+// src/app.tsx
 import { parse } from "./parse";
+parse();
 ```
 
 ---

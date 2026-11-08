@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `env`, `globals`, `typeof` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right declaration — an import, a local, or an environment — is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (where a project module exports the name, the fix imports it from there (the nearest first; choices when several do); a diff to accept, as the right declaration may be a local or an environment instead. A name no project module exports offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint/no-undef`, `eslint-plugin-sonarjs/no-implicit-global`, `eslint-plugin-sonarjs/no-reference-error` |
@@ -196,8 +196,8 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ## How to fix
 
-1. If it's a typo, correct the name.
-2. If it comes from another module, import it.
+1. Where an import is offered, check it and accept it: `codelaw fix --unsafe` (with choices, pick the module).
+2. If it's a typo, correct the name.
 3. If it's a global of the runtime (browser, Node), add that environment to the rule's `env` option.
 
 ## Examples
@@ -207,20 +207,24 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 #### Don't
 
 ```js
-const total = prices.reduce(add, 0);
-function add(a, b) {
+// src/math.js
+export function add(a, b) {
   return a + b;
 }
+// src/app.js
+export const total = [1, 2].reduce(add, 0);
 ```
 
 #### Do
 
 ```js
-const prices = [1, 2];
-const total = prices.reduce(add, 0);
-function add(a, b) {
+// src/math.js
+export function add(a, b) {
   return a + b;
 }
+// src/app.js
+import { add } from "./math";
+export const total = [1, 2].reduce(add, 0);
 ```
 
 ### JSX
@@ -228,20 +232,24 @@ function add(a, b) {
 #### Don't
 
 ```jsx
-const total = prices.reduce(add, 0);
-function add(a, b) {
+// src/math.jsx
+export function add(a, b) {
   return a + b;
 }
+// src/app.jsx
+export const total = [1, 2].reduce(add, 0);
 ```
 
 #### Do
 
 ```jsx
-const prices = [1, 2];
-const total = prices.reduce(add, 0);
-function add(a, b) {
+// src/math.jsx
+export function add(a, b) {
   return a + b;
 }
+// src/app.jsx
+import { add } from "./math";
+export const total = [1, 2].reduce(add, 0);
 ```
 
 ---

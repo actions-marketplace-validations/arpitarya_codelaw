@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:spell/recommended` at `warn` · `codelaw:spell/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (other files read the name — the code that reads a key, the markup that uses a class, the link to an id — so renaming it here alone breaks them) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (restructure: the readers of a key are code that names it, often built from parts or in another repo, which no graph resolves; the rename spans every reader and, for a published key, a release that accepts both (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 

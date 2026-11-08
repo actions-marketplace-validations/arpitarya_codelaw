@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css-modules/recommended` at `error` · `codelaw:css-modules/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (whether to add the class or fix the name is the author's call) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`styles.x` is corrected to the module's class nearest in spelling, or one of the nearest when several tie (choices); a diff to accept, as adding the class may be what was meant. No near class offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 | **Scope** | project — reads the whole repository through the project graph, not one file at a time |
@@ -139,8 +139,9 @@ codelaw config --print --for <file>                  # the resolved setting, and
 
 ## How to fix
 
-1. Correct the name in the JavaScript or TypeScript file, or add the class to the module.
-2. If the bundler maps names (`localsConvention`), set `[css] modules_convention` so the mapped names count.
+1. Accept the fix where it is offered: `codelaw fix --unsafe` corrects the name to the module's nearest class.
+2. Otherwise correct the name, or add the class to the module.
+3. If the bundler maps names (`localsConvention`), set `[css] modules_convention` so the mapped names count.
 
 ## Examples
 

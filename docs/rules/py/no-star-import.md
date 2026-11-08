@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which names the module needs can only be found by reading its uses) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the module is the project's and the file has one star import: the star becomes the names the module binds (its `__all__`, else its public top-level names) that the file uses, read from the module; with two star imports a name may come from either, so the fix is a suggestion. A module outside the project offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F403`, `pylint/wildcard-import` |
@@ -120,8 +120,8 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 
 ## How to fix
 
-1. List the names the module uses from the star-imported module.
-2. Replace the star with those names.
+1. `codelaw fix` replaces the star with the names the file uses, where the module is the project's.
+2. For another module, list the names the file uses from it and replace the star with those names.
 
 ## Examples
 
@@ -130,17 +130,31 @@ codelaw config --print --for <file>     # the resolved setting, and where it cam
 #### Don't
 
 ```py
-from os.path import *
+# shapes.py
+def area(r):
+    return 3.14 * r * r
 
-print(join("a", "b"))
+def perimeter(r):
+    return 6.28 * r
+# app.py
+from shapes import *
+
+print(area(2))
 ```
 
 #### Do
 
 ```py
-from os.path import join
+# shapes.py
+def area(r):
+    return 3.14 * r * r
 
-print(join("a", "b"))
+def perimeter(r):
+    return 6.28 * r
+# app.py
+from shapes import area
+
+print(area(2))
 ```
 
 ## Differences from the source

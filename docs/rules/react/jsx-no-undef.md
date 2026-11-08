@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the right import is the author's to choose) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (where a project module exports the component, the fix imports it from there (the nearest first; choices when several do); a diff to accept, as the right one may be declared here or named otherwise. A component no project module exports offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `eslint-plugin-react/jsx-no-undef` |
@@ -121,7 +121,8 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 
 ## How to fix
 
-1. Import the component, or declare it, or correct the name.
+1. Where an import is offered, check it and accept it: `codelaw fix --unsafe` (with choices, pick the module).
+2. Otherwise import the component, or declare it, or correct the name.
 
 ## Examples
 
@@ -130,12 +131,18 @@ codelaw config --print --for <file>      # the resolved setting, and where it ca
 #### Don't
 
 ```js
+// src/header.jsx
+export const Header = () => <h1 />;
+// src/app.jsx
 export const App = () => <Header />;
 ```
 
 #### Do
 
 ```js
+// src/header.jsx
+export const Header = () => <h1 />;
+// src/app.jsx
 import { Header } from "./header";
 export const App = () => <Header />;
 ```
@@ -145,12 +152,18 @@ export const App = () => <Header />;
 #### Don't
 
 ```jsx
+// src/header.jsx
+export const Header = () => <h1 />;
+// src/app.jsx
 export const App = () => <Header />;
 ```
 
 #### Do
 
 ```jsx
+// src/header.jsx
+export const Header = () => <h1 />;
+// src/app.jsx
 import { Header } from "./header";
 export const App = () => <Header />;
 ```
@@ -160,12 +173,18 @@ export const App = () => <Header />;
 #### Don't
 
 ```tsx
+// src/header.tsx
+export const Header = () => <h1 />;
+// src/app.tsx
 export const App = () => <Header />;
 ```
 
 #### Do
 
 ```tsx
+// src/header.tsx
+export const Header = () => <h1 />;
+// src/app.tsx
 import { Header } from "./header";
 export const App = () => <Header />;
 ```

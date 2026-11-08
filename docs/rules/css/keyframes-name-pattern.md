@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every `animation` that uses the name) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case in its `@keyframes` and in every `animation` and `animation-name` of the project, as one fix; a diff to accept, as a stylesheet may build the name another way (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/keyframes-name-pattern` |
@@ -167,8 +167,8 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ## How to fix
 
-1. Rename the keyframes to match the pattern.
-2. Update every `animation` and `animation-name` that uses it.
+1. Accept the rename: `codelaw fix --unsafe` renames the keyframes and every `animation` and `animation-name` that uses them (the diff names each file).
+2. A quoted name, a pattern that isn't kebab-case, or a new name already taken offers no rename: rename it by hand.
 
 ## Examples
 
@@ -193,6 +193,37 @@ codelaw config --print --for <file>              # the resolved setting, and whe
   }
 }
 ```
+
+#### Don't
+
+```css
+/* src/fade.css */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+/* src/card.css */
+.card {
+  animation: fadeIn 1s;
+}
+```
+
+#### Do
+
+```css
+/* src/fade.css */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+/* src/card.css */
+.card {
+  animation: fade-in 1s;
+}
+```
+
 ### SCSS
 
 #### Don't

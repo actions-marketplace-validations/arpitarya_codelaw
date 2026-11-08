@@ -3,6 +3,7 @@
 
 use crate::facts::{Decl, DeclKind, FactLang, ImportKind, Span, SpecForm};
 use crate::link::{Graph, Module, Use};
+pub use crate::names::ImportTarget;
 use crate::resolve::{Target, is_node_builtin, package_name};
 use codelaw_core::{Language, TextEdit};
 use serde_json::Value;
@@ -32,6 +33,15 @@ pub enum Query {
     /// (SR-PROJECT-GRAPH decision 11). Its registry, markers and as-of date
     /// are inputs the engine holds, so the engine runs it (`crate::flags`).
     Flags(crate::flags::FlagCheck),
+    /// `import: { names: unexported | default: missing | … }`: an import
+    /// against what the module it names exports (W-175, `names.rs`).
+    Names(ImportTarget),
+    /// `cycle: { form: [...] }`: an import whose target imports its way back.
+    Cycle { forms: Vec<SpecForm> },
+    /// `export: { star: conflicts }`: a name two `export *` bring in.
+    ExportStar,
+    /// `module: { exports: [missing, unused] }`.
+    ModuleExports { missing: bool, unused: bool },
 }
 
 /// What a `graph: import:` query reports.
@@ -69,6 +79,8 @@ pub enum Primitive {
     /// `graph: { module: { classes: undefined } }`: correct `styles.x` to
     /// the module's nearest class.
     NearestClass,
+    /// `graph: { import: { names: unexported } }`: the export nearest in spelling.
+    NearestExport,
 }
 
 /// A `fix:` of `when`/`else` branches over `local_references`.
@@ -110,7 +122,8 @@ fn primitives(v: Option<&Value>) -> Result<Vec<Primitive>, String> {
             "add-dependency" => Ok(Primitive::AddDependency),
             "nearest-path" => Ok(Primitive::NearestPath),
             "nearest-class" => Ok(Primitive::NearestClass),
-            other => Err(format!("unknown graph fix primitive `{other}` (strip-export-keyword, remove-declaration, remove-rule, respell, keep-branch, fix-marker, remove-entry, add-dependency, nearest-path, nearest-class)")),
+            "nearest-export" => Ok(Primitive::NearestExport),
+            other => Err(format!("unknown graph fix primitive `{other}` (strip-export-keyword, remove-declaration, remove-rule, respell, keep-branch, fix-marker, remove-entry, add-dependency, nearest-path, nearest-class, nearest-export)")),
         })
         .collect()
 }
@@ -124,7 +137,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         Some(other) => return Err(format!("`certainty_from: {other}` must be `module.dynamic`")),
     };
     for k in g.keys() {
-        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "certainty_from"].contains(&k.as_str()) {
+        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "cycle", "export", "certainty_from"].contains(&k.as_str()) {
             return Err(format!("unknown `graph:` key `{k}`"));
         }
     }
@@ -166,10 +179,18 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         }
         Query::UnusedCssClasses
     } else if let Some(module) = g.get("module") {
-        match module.get("classes").and_then(Value::as_str) {
-            Some("unused") => Query::UnusedModuleClasses,
-            Some("undefined") => Query::UndefinedModuleClasses,
-            _ => return Err("`graph: module:` takes `classes: unused` or `classes: undefined`".into()),
+        if module.get("exports").is_some() {
+            let kinds = strings(module.get("exports"));
+            if kinds.is_empty() || kinds.iter().any(|k| !matches!(k.as_str(), "missing" | "unused")) {
+                return Err("`graph: module: exports:` takes `missing`, `unused` or both".into());
+            }
+            Query::ModuleExports { missing: kinds.iter().any(|k| k == "missing"), unused: kinds.iter().any(|k| k == "unused") }
+        } else {
+            match module.get("classes").and_then(Value::as_str) {
+                Some("unused") => Query::UnusedModuleClasses,
+                Some("undefined") => Query::UndefinedModuleClasses,
+                _ => return Err("`graph: module:` takes `classes: unused`, `classes: undefined` or `exports: [missing, unused]`".into()),
+            }
         }
     } else if let Some(terms) = g.get("terms") {
         if terms.as_str() != Some("inconsistent") {
@@ -186,6 +207,20 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         }
     } else if g.get("deprecated").is_some() {
         Query::DeprecatedUsage
+    } else if let Some(cycle) = g.get("cycle") {
+        let mut forms = Vec::new();
+        for f in strings(cycle.get("form")) {
+            forms.push(SpecForm::parse(&f).ok_or_else(|| format!("unknown import form `{f}` (import, export, dynamic, require)"))?);
+        }
+        if forms.is_empty() {
+            forms = vec![SpecForm::Import, SpecForm::Export, SpecForm::Dynamic];
+        }
+        Query::Cycle { forms }
+    } else if let Some(export) = g.get("export") {
+        if export.get("star").and_then(Value::as_str) != Some("conflicts") {
+            return Err("`graph: export:` takes `star: conflicts`".into());
+        }
+        Query::ExportStar
     } else if let Some(imp) = g.get("import") {
         let Value::Object(o) = imp else { return Err("`graph: import:` must be a mapping".into()) };
         let mut forms = Vec::new();
@@ -196,7 +231,22 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             forms = vec![SpecForm::Import, SpecForm::Export, SpecForm::Dynamic, SpecForm::Require];
         }
         let mut checks = Vec::new();
+        let mut targets = Vec::new();
         for (k, v) in o {
+            let target = match (k.as_str(), v.as_str()) {
+                ("names", Some("unexported")) => Some(ImportTarget::NamedMissing),
+                ("default", Some("missing")) => Some(ImportTarget::DefaultMissing),
+                ("namespace", Some("unexported")) => Some(ImportTarget::NamespaceMember),
+                ("default_name", Some("named")) => Some(ImportTarget::NamedAsDefault),
+                ("default_name", Some("differs")) => Some(ImportTarget::RenameDefault),
+                ("default_member", Some("named")) => Some(ImportTarget::NamedAsDefaultMember),
+                ("deprecated", Some("jsdoc")) => Some(ImportTarget::Deprecated),
+                _ => None,
+            };
+            if let Some(t) = target {
+                targets.push(t);
+                continue;
+            }
             let check = match k.as_str() {
                 "form" => continue,
                 "resolves" => ImportCheck::Missing,
@@ -209,10 +259,11 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             }
             checks.push(check);
         }
-        let [check] = checks[..] else {
-            return Err("`graph: import:` takes exactly one of `resolves: false`, `declared: false`, `published: false`".into());
-        };
-        Query::Imports { forms, check }
+        match (&checks[..], &targets[..]) {
+            ([check], []) => Query::Imports { forms, check: *check },
+            ([], [target]) => Query::Names(*target),
+            _ => return Err("`graph: import:` takes exactly one of `resolves: false`, `declared: false`, `published: false`, `names: unexported`, `default: missing`, `namespace: unexported`, `default_name: named | differs`, `default_member: named`, `deprecated: jsdoc`".into()),
+        }
     } else {
         return Err("`graph:` names no query (`symbol:`, `class:`, `module:`, `import:`, `terms:`, `flags:` or `deprecated:`)".into());
     };
@@ -264,6 +315,21 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
     } else if used.clone().any(|p| matches!(p, Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry)) {
         return Err("`respell` is the fix of a `graph: terms:` rule only; `keep-branch`, `fix-marker` and `remove-entry` of a `graph: flags:` rule".into());
     }
+    // The W-175 queries: their fix is the one primitive they have, or none.
+    let fixes: Vec<Primitive> = gf.when_local.iter().chain(&gf.otherwise).copied().collect();
+    let allowed: &[Primitive] = match &query {
+        Query::Names(ImportTarget::NamedMissing | ImportTarget::NamespaceMember) => &[Primitive::NearestExport],
+        Query::ModuleExports { .. } => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration],
+        Query::Names(_) | Query::Cycle { .. } | Query::ExportStar => &[],
+        _ => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration, Primitive::RemoveRule, Primitive::Respell, Primitive::KeepBranch, Primitive::FixMarker, Primitive::RemoveEntry, Primitive::AddDependency, Primitive::NearestPath, Primitive::NearestClass],
+    };
+    if let Some(p) = fixes.iter().find(|p| !allowed.contains(p)) {
+        return Err(format!(
+            "`{}` is not a fix of this `graph:` query (it takes {})",
+            primitive_name(*p),
+            if allowed.is_empty() { "none".to_owned() } else { allowed.iter().map(|a| format!("`{}`", primitive_name(*a))).collect::<Vec<_>>().join(", ") }
+        ));
+    }
     // Each fix read from other files has its one query.
     for (p, ok, name) in [
         (Primitive::AddDependency, matches!(query, Query::Imports { check: ImportCheck::Undeclared, .. }), "`add-dependency` is the fix of a `graph: import: { declared: false }` rule"),
@@ -275,6 +341,22 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         }
     }
     Ok(GraphRule { query, fix: gf, certainty_from_dynamic })
+}
+
+fn primitive_name(p: Primitive) -> &'static str {
+    match p {
+        Primitive::StripExportKeyword => "strip-export-keyword",
+        Primitive::RemoveDeclaration => "remove-declaration",
+        Primitive::RemoveRule => "remove-rule",
+        Primitive::Respell => "respell",
+        Primitive::KeepBranch => "keep-branch",
+        Primitive::FixMarker => "fix-marker",
+        Primitive::RemoveEntry => "remove-entry",
+        Primitive::AddDependency => "add-dependency",
+        Primitive::NearestPath => "nearest-path",
+        Primitive::NearestClass => "nearest-class",
+        Primitive::NearestExport => "nearest-export",
+    }
 }
 
 /// A project-rule finding, before it becomes a diagnostic.
@@ -307,7 +389,7 @@ impl GraphFinding {
     }
 }
 
-fn file_name(path: &str) -> &str {
+pub(crate) fn file_name(path: &str) -> &str {
     path.rsplit('/').next().unwrap_or(path)
 }
 
@@ -392,13 +474,13 @@ pub fn evaluate(graph: &Graph, m: &Module, d: &Decl, kinds: &[DeclKind], tags: &
     Verdict { clauses, reported }
 }
 
-fn languages_match(path: &str, languages: &[Language]) -> bool {
+pub(crate) fn languages_match(path: &str, languages: &[Language]) -> bool {
     Language::from_path(std::path::Path::new(path)).is_some_and(|l| languages.contains(&l))
 }
 
 /// Declarations another module re-exports by name (`export { x } from`):
 /// deleting one would break that re-export.
-fn reexported(graph: &Graph) -> BTreeSet<(String, String)> {
+pub(crate) fn reexported(graph: &Graph) -> BTreeSet<(String, String)> {
     let mut out = BTreeSet::new();
     for m in graph.modules.values() {
         for e in &m.facts.exports {
@@ -414,7 +496,7 @@ fn reexported(graph: &Graph) -> BTreeSet<(String, String)> {
     out
 }
 
-fn fix_edits(fix: &GraphFix, d: &Decl, python_all: bool) -> Vec<TextEdit> {
+pub(crate) fn fix_edits(fix: &GraphFix, d: &Decl, python_all: bool) -> Vec<TextEdit> {
     let branch = if d.local_uses.is_empty() { &fix.otherwise } else { &fix.when_local };
     for p in branch {
         match p {
@@ -432,7 +514,7 @@ fn fix_edits(fix: &GraphFix, d: &Decl, python_all: bool) -> Vec<TextEdit> {
                     return vec![TextEdit::delete(a, b)];
                 }
             }
-            Primitive::RemoveRule | Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry | Primitive::AddDependency | Primitive::NearestPath | Primitive::NearestClass => {}
+            Primitive::RemoveRule | Primitive::Respell | Primitive::KeepBranch | Primitive::FixMarker | Primitive::RemoveEntry | Primitive::AddDependency | Primitive::NearestPath | Primitive::NearestClass | Primitive::NearestExport => {}
         }
     }
     Vec::new()
@@ -455,6 +537,10 @@ pub fn run(rule: &GraphRule, graph: &Graph, languages: &[Language]) -> Vec<Graph
         Query::Imports { forms, check } => imports(graph, languages, forms, *check),
         Query::UnusedModuleClasses => unused_module_classes(rule, graph, languages),
         Query::UndefinedModuleClasses => undefined_module_classes(graph, languages),
+        Query::Names(check) => crate::names::names(rule, graph, languages, *check),
+        Query::Cycle { forms } => crate::names::cycles(graph, languages, forms),
+        Query::ExportStar => crate::names::export_star(graph, languages),
+        Query::ModuleExports { missing, unused } => crate::names::modules(rule, graph, languages, *missing, *unused),
     }
 }
 
@@ -818,7 +904,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
     None
 }
 
-fn resolve_from(graph: &Graph, from: &str, spec: &str) -> Vec<Target> {
+pub(crate) fn resolve_from(graph: &Graph, from: &str, spec: &str) -> Vec<Target> {
     match graph.modules.get(from).and_then(|m| m.facts.lang) {
         Some(FactLang::Python) => graph.resolver.resolve_py(from, spec).into_iter().collect(),
         _ => graph.resolver.resolve_js(from, spec),

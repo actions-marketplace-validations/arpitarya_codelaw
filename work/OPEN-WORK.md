@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-08 — next gate: the TypeScript 7.1 RC, 2026-11-10 (W-105).*
+| **W-175** may codelaw add the data package `data-polyfills` (npm and PyPI, data only, built in CI from core-js-compat's MIT data) so unicorn's `no-unnecessary-polyfills` can be ported? [proposal](open/W-175-js-module-graph-rules.md) | 2026-11-08 |
+↳ **blocks:** W-175 (its step 4, the last js row W-139 sent it)
 
 ---
 
@@ -33,13 +33,13 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 81 rows left, py 194 (11-08), labelled in item; inference → W-174, js graph → W-175. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 72 rows left, py 194 (11-08), labelled in item; inference → W-174, js graph → W-175 (1 left). Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` main over three L8 budgets (11-07). `mcp_rules_for_path` 112 → 11 ms; peak 159 → 107 MiB, then shared regexes and on-demand examples landed 11-08 (not re-measured). Next: re-measure on release, push main for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟢 **W-174** `agent` Python type, flow and class-hierarchy inference for 38 W-139 rows (`used-before-assignment`, `arguments-differ`, ASYNC212, …), each with its question. Next: propose the Python counterpart of SR-TYPES. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
-🟢 **W-175** `agent` Graph queries for 10 W-139 js rows that read other modules (`import/named`, `default`, `namespace`, `no-cycle`, `no-deprecated`, `no-unused-modules`, …) and unicorn's polyfill table. Next: amend SR-PROJECT-GRAPH decision 6 with the queries. Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
+🔴 **W-175** `agent` Graph queries for W-139's js rows that read other modules: 9 rules + `import-export-star` built, tested. Left: `no-unnecessary-polyfills`, on a data-package ruling (inbox). Filed by Claude Code (W-139). [detail](open/W-175-js-module-graph-rules.md)
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 

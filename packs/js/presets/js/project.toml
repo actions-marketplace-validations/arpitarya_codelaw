@@ -1,4 +1,9 @@
-description = "The rule that reads the whole repo: exports nothing imports (knip's exports and types); opt in"
+description = "The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175); opt in"
 
 [rules]
 "graph/no-unused-exports" = "error"
+"js/import-named" = "error"
+"js/import-default" = "error"
+"js/import-namespace" = "error"
+"js/import-no-named-as-default" = "warn"
+"js/import-no-named-as-default-member" = "warn"

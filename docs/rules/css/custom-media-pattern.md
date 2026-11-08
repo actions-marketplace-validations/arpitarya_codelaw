@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every use of the name) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case in its `@custom-media` and in every `@media` of the project that uses it, as one fix; a diff to accept (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/custom-media-pattern` |
@@ -167,8 +167,8 @@ codelaw config --print --for <file>            # the resolved setting, and where
 
 ## How to fix
 
-1. Rename the custom media to match the pattern.
-2. Update every query that uses it.
+1. Accept the rename: `codelaw fix --unsafe` renames the custom media and every query that uses it (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -185,6 +185,33 @@ codelaw config --print --for <file>            # the resolved setting, and where
 ```css
 @custom-media --small-viewport (width <= 30em);
 ```
+
+#### Don't
+
+```css
+/* src/media.css */
+@custom-media --smallViewport (width <= 30em);
+/* src/nav.css */
+@media (--smallViewport) {
+  nav {
+    display: none;
+  }
+}
+```
+
+#### Do
+
+```css
+/* src/media.css */
+@custom-media --small-viewport (width <= 30em);
+/* src/nav.css */
+@media (--small-viewport) {
+  nav {
+    display: none;
+  }
+}
+```
+
 ### SCSS
 
 #### Don't

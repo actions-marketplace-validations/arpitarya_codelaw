@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:py/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the names to import must be chosen by reading the function) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the module is the project's and the file has one star import: the star becomes the names the module binds that the function uses, read from the module; a suggestion with two. A module outside the project offers no fix (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `ruff/F406` |
@@ -120,7 +120,8 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 
 ## How to fix
 
-1. Replace the star with the names the function uses.
+1. `codelaw fix` replaces the star with the names the function uses, where the module is the project's.
+2. For another module, replace the star with the names the function uses.
 
 ## Examples
 
@@ -129,17 +130,31 @@ codelaw config --print --for <file>         # the resolved setting, and where it
 #### Don't
 
 ```py
-def paths():
-    from os.path import *
-    return join("a", "b")
+# shapes.py
+def area(r):
+    return 3.14 * r * r
+
+def perimeter(r):
+    return 6.28 * r
+# app.py
+def measure():
+    from shapes import *
+    return area(2)
 ```
 
 #### Do
 
 ```py
-def paths():
-    from os.path import join
-    return join("a", "b")
+# shapes.py
+def area(r):
+    return 3.14 * r * r
+
+def perimeter(r):
+    return 6.28 * r
+# app.py
+def measure():
+    from shapes import area
+    return area(2)
 ```
 
 ---
