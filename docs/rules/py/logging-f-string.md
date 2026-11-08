@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (turning `{}` fields into `%s` with arguments rewrites the string) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/G004` |
+| **Ported from** | `ruff/G004`, `pylint/logging-fstring-interpolation` |
 
 ## What it checks
 

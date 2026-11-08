@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "the intended name is the author's"
 fix_exception: value
 stability: preview
-ported_from: [ruff/PLW3201]
+ported_from: [ruff/PLW3201, pylint/bad-dunder-name]
 since: 0.5.0
 ---
 
