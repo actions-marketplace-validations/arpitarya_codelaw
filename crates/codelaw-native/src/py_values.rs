@@ -442,6 +442,9 @@ fn positional_only_arguments_expected(n: Node<'_>, ctx: &NativeContext<'_>, out:
             "positional_separator" => posonly = names.clone(),
             "dictionary_splat_pattern" => kwarg = true,
             "identifier" => names.push(text(p, src)),
+            // `**kwargs: T` is a `typed_parameter` wrapping the splat; `*args: T` is not a named parameter either.
+            "typed_parameter" if p.named_child(0).is_some_and(|c| c.kind() == "dictionary_splat_pattern") => kwarg = true,
+            "typed_parameter" if p.named_child(0).is_some_and(|c| c.kind() == "list_splat_pattern") => {}
             "typed_parameter" | "default_parameter" | "typed_default_parameter" => {
                 if let Some(nm) = p.child_by_field_name("name").or_else(|| p.named_child(0)) {
                     names.push(text(nm, src));
