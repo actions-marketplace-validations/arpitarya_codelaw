@@ -32,7 +32,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 222 | 322 | 328 | 151 | 141 | 33 | 3 | 0 |
+| 224 | 326 | 339 | 153 | 141 | 42 | 3 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 
@@ -42,7 +42,7 @@ The starter catalogue's other Python rules match a Ruff rule, so they sit in
 
 Every rule is **reimplemented**, not vendored: the matchers, messages and docs
 are written fresh from Ruff's documented behaviour, and each rule's
-`ported_from:` names the source rule. 226 rules are `native:` (Rust, in
+`ported_from:` names the source rule. 243 rules are `native:` (Rust, in
 `crates/codelaw-native/src/python_*.rs`); `py/no-tunable-literals` is a
 `match:` rule.
 

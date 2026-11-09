@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139 slice 36: Pylint's docparams set, Ruff TC008 and SIM905  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) build the 15 Pylint docparams rows on the docstring parser (Sphinx added), as opt-in preview rules with Pylint's defaults, and Ruff TC008 and SIM905; list what cannot be built.
+- **Done:** 17 `preview` native rules (list: IMPLEMENTATION, 2026-11-09). `py_pylint_doc.rs` reads the three docstring styles itself (Pylint's reading differs from Ruff's: Sphinx fields, a type beside a name, the "see" sentence, a NumPy name with neither type nor description is a mention, an unescaped `*args` in Sphinx documents nothing) and mirrors `check_arguments_in_docstring`'s set logic. Downloaded Pylint 4.1.3's `tests/functional/ext/docparams` (41 inputs, 118 files) and ran every rule over them in an ignored cargo test: all expected messages, no extras, but two rows that need a call's return value inferred and the option files. TC008 and SIM905 follow Ruff 0.16.9's source and fixtures (unit tests reproduce the fixture rows). Records: SR-ARCHITECTURE 15b, SR-RULE-PACKS d18.
+- **Decided / left open:** options `accept_no_*_doc` keep Pylint's `true`, so the return, yield and `missing-any-param-doc` rows are inert until set (their examples set the option); `docstring-min-length` and a custom `no-docstring-rgx` are not options. TC008 is reported on every target with `fix_target` 3.10 (as UP046/UP047). No rows were unbuildable.
+- **Mistakes:** a `pgrep -f` watcher matched its own command line and would never end; stopped and replaced by waiting for the task notification.
+- **Next:** the decider's rulings on the left rows; Ruff 39 and Pylint 37 rows are all classed in the item.
+
 ## 2026-11-09 — W-174b and W-139 slice 35: the in-file Pylint rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) finish W-174's 8 left rows and the Pylint half of W-139's python strand: build every buildable row on the existing layers, list the rest with reason and a proposed class.

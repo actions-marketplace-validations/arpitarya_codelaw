@@ -1443,4 +1443,29 @@ mod tests {
         }
         println!("files differing: {total_bad}");
     }
+
+    /// Prints every finding of the rules over the `.py` files under `CORPUS_DIR`
+    /// (a manual check, not part of the suite).
+    #[test]
+    #[ignore]
+    fn corpus_sample() {
+        let Ok(root) = std::env::var("CORPUS_DIR") else { return };
+        let mut stack = vec![std::path::PathBuf::from(&root)];
+        while let Some(d) = stack.pop() {
+            for e in std::fs::read_dir(d).unwrap().flatten() {
+                let p = e.path();
+                if p.is_dir() {
+                    stack.push(p);
+                } else if p.extension().is_some_and(|x| x == "py") {
+                    let Ok(src) = std::fs::read_to_string(&p) else { continue };
+                    for r in RULES {
+                        for f in crate::run(*r, Language::Python, &src) {
+                            let line = src[..f.start].matches('\n').count() + 1;
+                            println!("{} {}:{} {}", r.id(), p.display(), line, f.message);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -786,6 +786,285 @@ fn fly002(call: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>)
     out.push(span(call, message, edits));
 }
 
+// ------------------------------------------------------------------ SIM905
+
+/// Python's white space for `str.split()`: `str.isspace`'s characters.
+fn py_space(c: char) -> bool {
+    matches!(c, '\u{9}'..='\u{d}' | '\u{1c}'..='\u{20}' | '\u{85}' | '\u{a0}' | '\u{1680}' | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}' | '\u{205f}' | '\u{3000}')
+}
+
+/// The value of one string literal's content, escapes decoded; `None` for an
+/// escape this does not read (`\N{…}`).
+fn cook(content: &str, raw: bool) -> Option<String> {
+    if raw {
+        return Some(content.to_owned());
+    }
+    let mut out = String::new();
+    let mut it = content.chars().peekable();
+    while let Some(c) = it.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        let n = it.next()?;
+        match n {
+            '\n' => {}
+            '\r' => {
+                if it.peek() == Some(&'\n') {
+                    it.next();
+                }
+            }
+            '\\' | '\'' | '"' => out.push(n),
+            'n' => out.push('\n'),
+            't' => out.push('\t'),
+            'r' => out.push('\r'),
+            'a' => out.push('\u{7}'),
+            'b' => out.push('\u{8}'),
+            'f' => out.push('\u{c}'),
+            'v' => out.push('\u{b}'),
+            'x' | 'u' | 'U' => {
+                let len = match n {
+                    'x' => 2,
+                    'u' => 4,
+                    _ => 8,
+                };
+                let hex: String = (0..len).filter_map(|_| it.next_if(char::is_ascii_hexdigit)).collect();
+                if hex.len() != len {
+                    return None;
+                }
+                out.push(char::from_u32(u32::from_str_radix(&hex, 16).ok()?)?);
+            }
+            '0'..='7' => {
+                let mut v = n.to_digit(8)?;
+                for _ in 0..2 {
+                    if let Some(d) = it.next_if(|d| ('0'..='7').contains(d)) {
+                        v = v * 8 + d.to_digit(8)?;
+                    }
+                }
+                out.push(char::from_u32(v)?);
+            }
+            'N' => return None,
+            other => {
+                out.push('\\');
+                out.push(other);
+            }
+        }
+    }
+    Some(out)
+}
+
+/// How the first part of a literal is written.
+struct Style {
+    raw: bool,
+    u: bool,
+    quote: char,
+}
+
+/// A string literal (or implicit concatenation) read as the value it has and
+/// how its first part is written.
+fn literal(n: Node<'_>, src: &str) -> Option<(String, Style)> {
+    let parts: Vec<Node<'_>> = if n.kind() == "concatenated_string" { kids(n) } else { vec![n] };
+    let mut value = String::new();
+    let mut first = None;
+    for p in parts {
+        if p.kind() != "string" {
+            return None;
+        }
+        let (prefix, content) = string_parts(p, src)?;
+        if prefix.contains(['f', 'b', 't']) {
+            return None;
+        }
+        value.push_str(&cook(&content, prefix.contains('r'))?);
+        if first.is_none() {
+            let start = children(p).into_iter().find(|c| c.kind() == "string_start").map(|c| text(c, src).to_owned())?;
+            first = Some(Style { raw: prefix.contains('r'), u: prefix.contains('u'), quote: start.chars().last()? });
+        }
+    }
+    Some((value, first?))
+}
+
+/// One list element, written in the first part's quote style: a raw string
+/// keeps its quote unless the element holds it, then the other quote, and
+/// triple quotes when it holds both.
+fn element(elt: &str, st: &Style) -> String {
+    let prefix = format!("{}{}", if st.u { "u" } else { "" }, if st.raw { "r" } else { "" });
+    let quote = st.quote;
+    let opposite = if quote == '"' { '\'' } else { '"' };
+    if st.raw {
+        let (q, n) = if !elt.contains(quote) {
+            (quote, 1)
+        } else if !elt.contains(opposite) {
+            (opposite, 1)
+        } else {
+            (quote, 3)
+        };
+        let qs = q.to_string().repeat(n);
+        return format!("{prefix}{qs}{elt}{qs}");
+    }
+    let mut body = String::new();
+    for c in elt.chars() {
+        match c {
+            '\\' => body.push_str("\\\\"),
+            '\n' => body.push_str("\\n"),
+            '\r' => body.push_str("\\r"),
+            '\t' => body.push_str("\\t"),
+            c if c == quote => {
+                body.push('\\');
+                body.push(c);
+            }
+            c if (c as u32) < 0x20 || c as u32 == 0x7f => body.push_str(&format!("\\x{:02x}", c as u32)),
+            c => body.push(c),
+        }
+    }
+    format!("{prefix}{quote}{body}{quote}")
+}
+
+fn split_on_space(s: &str, max: i64, rsplit: bool) -> Vec<String> {
+    if max < 0 {
+        return s.split(py_space).filter(|p| !p.is_empty()).map(str::to_owned).collect();
+    }
+    let mut rest = if rsplit { s.trim_end_matches(py_space) } else { s.trim_start_matches(py_space) };
+    let mut out: Vec<String> = Vec::new();
+    let mut splits = 0i64;
+    while !rest.is_empty() {
+        if splits >= max {
+            out.push(rest.to_owned());
+            break;
+        }
+        splits += 1;
+        if rsplit {
+            match rest.rsplit_once(py_space) {
+                Some((head, tail)) => {
+                    out.push(tail.to_owned());
+                    rest = head.trim_end_matches(py_space);
+                }
+                None => {
+                    out.push(rest.to_owned());
+                    break;
+                }
+            }
+        } else {
+            match rest.split_once(py_space) {
+                Some((head, tail)) => {
+                    out.push(head.to_owned());
+                    rest = tail.trim_start_matches(py_space);
+                }
+                None => {
+                    out.push(rest.to_owned());
+                    break;
+                }
+            }
+        }
+    }
+    if rsplit {
+        out.reverse();
+    }
+    out
+}
+
+fn split_on(s: &str, sep: &str, max: i64, rsplit: bool) -> Vec<String> {
+    let n = usize::try_from(max).ok().map(|m| m.saturating_add(1));
+    let mut v: Vec<String> = match (n, rsplit) {
+        (Some(n), false) => s.splitn(n, sep).map(str::to_owned).collect(),
+        (Some(n), true) => s.rsplitn(n, sep).map(str::to_owned).collect(),
+        (None, false) => s.split(sep).map(str::to_owned).collect(),
+        (None, true) => s.rsplit(sep).map(str::to_owned).collect(),
+    };
+    if rsplit {
+        v.reverse();
+    }
+    v
+}
+
+/// An integer literal, `-` allowed: `maxsplit`'s value.
+fn int_literal(n: Node<'_>, src: &str) -> Option<i64> {
+    match n.kind() {
+        "integer" => {
+            let t = text(n, src).replace('_', "").to_ascii_lowercase();
+            let v = if let Some(h) = t.strip_prefix("0x") {
+                i64::from_str_radix(h, 16).ok()?
+            } else if let Some(o) = t.strip_prefix("0o") {
+                i64::from_str_radix(o, 8).ok()?
+            } else if let Some(b) = t.strip_prefix("0b") {
+                i64::from_str_radix(b, 2).ok()?
+            } else {
+                t.parse().ok()?
+            };
+            i32::try_from(v).ok().map(i64::from)
+        }
+        "unary_operator" => {
+            let op = field(n, "operator").map(|o| text(o, src))?;
+            if op != "-" {
+                return None;
+            }
+            int_literal(field(n, "argument")?, src).map(|v| -v)
+        }
+        _ => None,
+    }
+}
+
+fn sim905(call: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
+    let Some(func) = field(call, "function").filter(|f| f.kind() == "attribute") else { return };
+    let Some(method) = field(func, "attribute").map(|a| text(a, src)) else { return };
+    if method != "split" && method != "rsplit" {
+        return;
+    }
+    let Some(mut recv) = field(func, "object") else { return };
+    while recv.kind() == "parenthesized_expression" {
+        let inner: Vec<Node<'_>> = named_children(recv).into_iter().filter(|c| c.kind() != "comment").collect();
+        if inner.len() != 1 {
+            return;
+        }
+        recv = inner[0];
+    }
+    if !matches!(recv.kind(), "string" | "concatenated_string") {
+        return;
+    }
+    let Some((value, style)) = literal(recv, src) else { return };
+    let args = call_args(call, src);
+    if args.starred || args.positional.len() > 2 || args.keywords.iter().any(|k| k.0 != "sep" && k.0 != "maxsplit") {
+        return;
+    }
+    let (pos_sep, kw_sep) = (args.positional.first().copied(), args.keyword("sep"));
+    let (pos_max, kw_max) = (args.positional.get(1).copied(), args.keyword("maxsplit"));
+    if (pos_sep.is_some() && kw_sep.is_some()) || (pos_max.is_some() && kw_max.is_some()) {
+        return;
+    }
+    let sep_node = pos_sep.or(kw_sep);
+    let max = match pos_max.or(kw_max) {
+        None => -1,
+        Some(m) => match int_literal(m, src) {
+            Some(v) => v,
+            None => return,
+        },
+    };
+    let rsplit = method == "rsplit";
+    let items = match sep_node {
+        None => split_on_space(&value, max, rsplit),
+        Some(sn) if sn.kind() == "none" => split_on_space(&value, max, rsplit),
+        Some(sn) if matches!(sn.kind(), "string" | "concatenated_string") => {
+            let Some((sep, _)) = literal(sn, src) else { return };
+            if sep.is_empty() {
+                return;
+            }
+            split_on(&value, &sep, max, rsplit)
+        }
+        Some(_) => return,
+    };
+    let list = format!("[{}]", items.iter().map(|i| element(i, &style)).collect::<Vec<_>>().join(", "));
+    let mut has_comment = false;
+    let mut stack = vec![call];
+    while let Some(n) = stack.pop() {
+        if n.kind() == "comment" {
+            has_comment = true;
+        }
+        stack.extend(children(n));
+    }
+    let edit = vec![TextEdit::new(call.start_byte(), call.end_byte(), list)];
+    out.push(span(call, format!("Consider using a list literal instead of `str.{method}`"), if has_comment { as_suggestion(edit) } else { edit }));
+}
+
 macro_rules! fmt_rule {
     ($name:ident, $id:literal, $kind:literal, $sem:literal, $f:path) => {
         pub struct $name;
@@ -813,8 +1092,9 @@ fmt_rule!(FormatLiterals, "py/format-literals", "call", false, up030);
 fmt_rule!(PrintfStringFormatting, "py/printf-string-formatting", "binary_operator", false, up031);
 fmt_rule!(FString, "py/f-string", "call", true, up032);
 fmt_rule!(StaticJoinToFString, "py/static-join-to-f-string", "call", false, fly002);
+fmt_rule!(SplitStaticString, "py/split-static-string", "call", false, sim905);
 
-pub static RULES: &[&dyn NativeRule] = &[&FormatLiterals, &PrintfStringFormatting, &FString, &StaticJoinToFString];
+pub static RULES: &[&dyn NativeRule] = &[&FormatLiterals, &PrintfStringFormatting, &FString, &StaticJoinToFString, &SplitStaticString];
 
 #[cfg(test)]
 mod tests {
@@ -850,5 +1130,69 @@ mod tests {
         let r = run(&StaticJoinToFString, "x = \"-\".join([a, b])\n");
         assert_eq!(r.len(), 1);
         assert_eq!(r[0].edits[0].text, "f\"{a}-{b}\"");
+    }
+
+    /// The text `py/split-static-string` rewrites one expression to, if it does.
+    fn split(src: &str) -> Option<String> {
+        let code = format!("{src}\n");
+        let r = run(&SplitStaticString, &code);
+        assert!(r.len() <= 1, "{src}");
+        let f = r.first()?;
+        let e = f.edits.iter().find(|e| e.start != e.end || !e.text.is_empty())?;
+        Some(e.text.clone())
+    }
+
+    #[test]
+    fn split_static_string_rows() {
+        let rows: &[(&str, Option<&str>)] = &[
+            ("\"a,b,c,d\".split(\",\")", Some("[\"a\", \"b\", \"c\", \"d\"]")),
+            ("\"a,b,c,d\".split(None)", Some("[\"a,b,c,d\"]")),
+            ("\"a,b,c,d\".split(\",\", 1)", Some("[\"a\", \"b,c,d\"]")),
+            ("\"a,b,c,d\".split(sep=None, maxsplit=1)", Some("[\"a,b,c,d\"]")),
+            ("\"a,b,c,d\".split(maxsplit=1, sep=\",\")", Some("[\"a\", \"b,c,d\"]")),
+            ("\"a,b,c,d\".split(maxsplit=1.0)", None),
+            ("\"VERB AUX PRON ADP DET\".split(\" \")", Some("[\"VERB\", \"AUX\", \"PRON\", \"ADP\", \"DET\"]")),
+            ("'   1   2   3   '.split()", Some("['1', '2', '3']")),
+            ("'1<>2<>3<4'.split('<>')", Some("['1', '2', '3<4']")),
+            ("\" a*a a*a a \".split(\"*\", -1)", Some("[\" a\", \"a a\", \"a a \"]")),
+            ("\"\".split()", Some("[]")),
+            ("\"/abc/\".split()", Some("[\"/abc/\"]")),
+            ("u\"a b\".split()", Some("[u\"a\", u\"b\"]")),
+            ("r\"a \\n b\".split()", Some("[r\"a\", r\"\\n\", r\"b\"]")),
+            ("(\"a \" \"b\").split()", Some("[\"a\", \"b\"]")),
+            ("\"a \" r\"\\n\".split()", Some("[\"a\", \"\\\\n\"]")),
+            ("\"a,b,c\".split(',', maxsplit=0)", Some("[\"a,b,c\"]")),
+            ("\"a,b,c\".split(',', maxsplit=-0)", Some("[\"a,b,c\"]")),
+            ("\"a,b,c\".split(',', maxsplit=-2)", Some("[\"a\", \"b\", \"c\"]")),
+            ("\"a,b,c,d\".split(maxsplit=\"hello\")", None),
+            ("\"a,b,c,d\".split(maxsplit=-\"hello\")", None),
+            ("\"a,b,c,d\".split(sep)", None),
+            ("f\"{x}_a\".split(\"_\")", None),
+            ("b\"a.b\".split(b\".\")", None),
+            ("\"a,b\".rsplit(\",\")", Some("[\"a\", \"b\"]")),
+            ("\"a,b,c\".rsplit(\",\", 1)", Some("[\"a,b\", \"c\"]")),
+            ("\" x \".split(maxsplit=0)", Some("[\"x \"]")),
+            ("\" x \".rsplit(maxsplit=0)", Some("[\" x\"]")),
+            ("\" a b c d \".split(maxsplit=2)", Some("[\"a\", \"b\", \"c d \"]")),
+            ("\" a b c d \".rsplit(maxsplit=2)", Some("[\" a b\", \"c\", \"d\"]")),
+            ("\"a  b\".split(maxsplit=1)", Some("[\"a\", \"b\"]")),
+            ("\"S\\x1cP\\x1dL\\x1eI\\x1fT\".split()", Some("[\"S\", \"P\", \"L\", \"I\", \"T\"]")),
+            ("\"a,b\".split(\"\")", None),
+            ("\"hello\\nworld\".splitlines()", None),
+        ];
+        for (src, want) in rows {
+            assert_eq!(split(src).as_deref(), *want, "{src}");
+        }
+    }
+
+    #[test]
+    fn split_static_string_quotes_and_comments() {
+        // Raw strings keep their quote unless the element holds it.
+        let src = "r\"\"\"first\n'no need' to escape\n\"swap\" quote style\n\"use' ugly triple quotes\"\"\".split(\"\\n\")";
+        assert_eq!(split(src).as_deref(), Some("[r\"first\", r\"'no need' to escape\", r'\"swap\" quote style', r\"\"\"\"use' ugly triple quotes\"\"\"]"));
+        // A comment inside the call makes the rewrite a suggestion.
+        let r = run(&SplitStaticString, "(\"a,b,c\"\n# comment\n.split(\",\")\n)\n");
+        assert_eq!(r.len(), 1);
+        assert!(r[0].edits.iter().any(|e| e.start == usize::MAX - 1));
     }
 }
