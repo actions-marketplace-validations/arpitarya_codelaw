@@ -121,6 +121,8 @@ const DEFAULT_ALLOW: &[&str] = &["defaultProps", "devDependencies", "EmberENV", 
 
 const DEFAULT_IGNORE: &[&str] = &["i18n", "l10n", "a11y", "e2e", "jQuery", "vite-env"];
 
+static DEFAULT_IGNORE_RE: std::sync::LazyLock<Vec<Regex>> = std::sync::LazyLock::new(|| DEFAULT_IGNORE.iter().filter_map(|p| Regex::new(p).ok()).collect());
+
 #[derive(Clone, Copy, PartialEq)]
 enum Imports {
     Internal,
@@ -190,7 +192,7 @@ fn opts(o: &BTreeMap<String, serde_json::Value>) -> Opts {
             }
         }
     }
-    let mut ignore: Vec<Regex> = DEFAULT_IGNORE.iter().filter_map(|p| Regex::new(p).ok()).collect();
+    let mut ignore: Vec<Regex> = DEFAULT_IGNORE_RE.clone();
     if let Some(list) = o.get("ignore").and_then(serde_json::Value::as_array) {
         ignore.extend(list.iter().filter_map(|v| v.as_str()).filter_map(|p| Regex::new(p).ok()));
     }
@@ -345,12 +347,23 @@ fn visible(m: &SemanticModel, scope: ScopeId, name: &str) -> bool {
     false
 }
 
-fn unresolved_in(m: &SemanticModel, scope: ScopeId, name: &str) -> bool {
-    let s = &m.scopes[scope];
-    m.references.iter().any(|r| r.symbol.is_none() && r.name == name && r.start >= s.start && r.end <= s.end)
+/// The offsets of the references to nothing in the file, by name.
+type Unresolved<'m> = HashMap<&'m str, Vec<usize>>;
+
+fn unresolved_of(m: &SemanticModel) -> Unresolved<'_> {
+    let mut out: Unresolved<'_> = HashMap::new();
+    for r in m.references.iter().filter(|r| r.symbol.is_none()) {
+        out.entry(r.name.as_str()).or_default().push(r.start);
+    }
+    out
 }
 
-fn available(name: &str, scopes: &[ScopeId], m: &SemanticModel, tracker: &BTreeMap<ScopeId, BTreeSet<String>>) -> Option<String> {
+fn unresolved_in(m: &SemanticModel, un: &Unresolved<'_>, scope: ScopeId, name: &str) -> bool {
+    let s = &m.scopes[scope];
+    un.get(name).is_some_and(|v| v.iter().any(|&at| at >= s.start && at < s.end))
+}
+
+fn available(name: &str, scopes: &[ScopeId], m: &SemanticModel, un: &Unresolved<'_>, tracker: &BTreeMap<ScopeId, BTreeSet<String>>) -> Option<String> {
     let mut name = name.to_owned();
     if !valid_identifier(&name) {
         name.push('_');
@@ -358,7 +371,7 @@ fn available(name: &str, scopes: &[ScopeId], m: &SemanticModel, tracker: &BTreeM
             return None;
         }
     }
-    while scopes.iter().any(|s| visible(m, *s, &name) || unresolved_in(m, *s, &name) || tracker.get(s).is_some_and(|t| t.contains(&name))) {
+    while scopes.iter().any(|s| visible(m, *s, &name) || unresolved_in(m, un, *s, &name) || tracker.get(s).is_some_and(|t| t.contains(&name))) {
         name.push('_');
     }
     Some(name)
@@ -517,6 +530,7 @@ srule!(NameReplacements, "js/name-replacements", JS, &["program"], |n, ctx, m, o
     }
     if o.check_variables {
         let mut tracker: BTreeMap<ScopeId, BTreeSet<String>> = BTreeMap::new();
+        let unresolved = unresolved_of(m);
         for (sym_id, s) in m.symbols.iter().enumerate() {
             let Some(&(ds, de)) = s.decls.first() else { continue };
             let Some(id) = root.descendant_for_byte_range(ds, de) else { continue };
@@ -536,7 +550,7 @@ srule!(NameReplacements, "js/name-replacements", JS, &["program"], |n, ctx, m, o
             scopes.push(s.scope);
             scopes.sort_unstable();
             scopes.dedup();
-            found.samples = found.samples.iter().filter_map(|nm| available(nm, &scopes, m, &tracker)).collect();
+            found.samples = found.samples.iter().filter_map(|nm| available(nm, &scopes, m, &unresolved, &tracker)).collect();
             if found.samples.is_empty() {
                 continue;
             }

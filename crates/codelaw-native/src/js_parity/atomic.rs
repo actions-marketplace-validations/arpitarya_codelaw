@@ -507,10 +507,7 @@ impl<'a, 't> Walk<'a, 't> {
             }
             "for_statement" => {
                 if let Some(i) = n.child_by_field_name("initializer") {
-                    match self.stmt(i, st) {
-                        Some(s) => st = s,
-                        None => return None,
-                    }
+                    st = self.stmt(i, st)?;
                 }
                 let cond = n.child_by_field_name("condition").filter(|c| !matches!(c.kind(), "empty_statement" | ";"));
                 if let Some(c) = cond {
@@ -520,10 +517,10 @@ impl<'a, 't> Walk<'a, 't> {
                 self.targets.push(Target { label, is_loop: true, is_switch: false, breaks: Vec::new(), continues: Vec::new() });
                 let end = n.child_by_field_name("body").and_then(|b| self.stmt(b, st.clone()));
                 let t = self.targets.pop()?;
-                if let Some(mut upd) = join_all(end.into_iter().chain(t.continues)) {
-                    if let Some(u) = n.child_by_field_name("increment") {
-                        self.expr(u, &mut upd);
-                    }
+                if let Some(mut upd) = join_all(end.into_iter().chain(t.continues))
+                    && let Some(u) = n.child_by_field_name("increment")
+                {
+                    self.expr(u, &mut upd);
                 }
                 if cond.is_some() { join_all(std::iter::once(st).chain(t.breaks)) } else { join_all(t.breaks) }
             }

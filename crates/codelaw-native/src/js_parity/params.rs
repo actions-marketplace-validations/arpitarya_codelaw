@@ -73,9 +73,9 @@ enum Prim {
 enum Value<'t> {
     Prim(Prim, Option<Node<'t>>),
     /// A binding of the file.
-    Binding(SymbolId, Option<Node<'t>>),
+    Binding(SymbolId),
     /// A global of the language (`Math`, `Infinity`).
-    Global(String, Option<Node<'t>>),
+    Global(String),
 }
 
 impl Value<'_> {
@@ -85,14 +85,9 @@ impl Value<'_> {
     fn same(&self, other: &Value<'_>) -> bool {
         match (self, other) {
             (Value::Prim(a, _), Value::Prim(b, _)) => a == b,
-            (Value::Binding(a, _), Value::Binding(b, _)) => a == b,
-            (Value::Global(a, _), Value::Global(b, _)) => a == b,
+            (Value::Binding(a), Value::Binding(b)) => a == b,
+            (Value::Global(a), Value::Global(b)) => a == b,
             _ => false,
-        }
-    }
-    fn node(&self) -> Option<Node<'_>> {
-        match self {
-            Value::Prim(_, n) | Value::Binding(_, n) | Value::Global(_, n) => *n,
         }
     }
 }
@@ -185,7 +180,7 @@ impl<'a, 't> Ctx<'a, 't> {
                 if r.name == "undefined" {
                     Some(Value::Prim(Prim::Undefined, Some(n)))
                 } else if self.m.is_builtin_reference(r) {
-                    Some(Value::Global(r.name.clone(), Some(n)))
+                    Some(Value::Global(r.name.clone()))
                 } else {
                     None
                 }
@@ -195,7 +190,7 @@ impl<'a, 't> Ctx<'a, 't> {
                 if reassigned(self.m, sym) || s.decls.len() != 1 || s.kind == SymbolKind::Var || matches!(s.kind, SymbolKind::Import | SymbolKind::Interface | SymbolKind::TypeAlias | SymbolKind::Enum | SymbolKind::Namespace | SymbolKind::TypeParam | SymbolKind::Variable) {
                     return None;
                 }
-                Some(Value::Binding(sym, Some(n)))
+                Some(Value::Binding(sym))
             }
         }
     }
@@ -328,7 +323,6 @@ struct Param<'t> {
     property: Option<String>,
     /// The destructured parameter's own default (an empty object).
     outer_default: bool,
-    list_node: Node<'t>,
 }
 
 /// The parameter a `x is T` or `asserts x` return type names.
@@ -479,8 +473,10 @@ fn static_key(k: Node<'_>, src: &str) -> Option<String> {
     }
 }
 
-fn object_pattern_properties<'t>(pat: Node<'t>, src: &str) -> Option<Vec<(String, Node<'t>, Node<'t>, Option<Node<'t>>)>> {
-    let mut out: Vec<(String, Node<'t>, Node<'t>, Option<Node<'t>>)> = Vec::new();
+type PatternProperty<'t> = (String, Node<'t>, Node<'t>, Option<Node<'t>>);
+
+fn object_pattern_properties<'t>(pat: Node<'t>, src: &str) -> Option<Vec<PatternProperty<'t>>> {
+    let mut out: Vec<PatternProperty<'t>> = Vec::new();
     for p in named_children(pat).into_iter().filter(|c| c.kind() != "comment") {
         let (name, ident, default, prop) = match p.kind() {
             "rest_pattern" => continue,
@@ -537,7 +533,7 @@ fn parameters<'t>(func: Node<'t>, src: &str, m: &SemanticModel, root: Node<'t>) 
                 if predicates.iter().any(|n| n == text(pattern, src)) {
                     continue;
                 }
-                out.push(Param { node: p, ident: pattern, index: position, default, property: None, outer_default: false, list_node: p });
+                out.push(Param { node: p, ident: pattern, index: position, default, property: None, outer_default: false });
             }
             "object_pattern" => {
                 if default.is_some_and(|d| d.kind() != "object" || !named_children(d).is_empty()) {
@@ -546,7 +542,7 @@ fn parameters<'t>(func: Node<'t>, src: &str, m: &SemanticModel, root: Node<'t>) 
                 let Some(props) = object_pattern_properties(pattern, src) else { continue };
                 for (name, ident, prop, pd) in props {
                     if ident.kind() == "identifier" || ident.kind() == "shorthand_property_identifier_pattern" {
-                        out.push(Param { node: prop, ident, index: position, default: pd, property: Some(name), outer_default: default.is_some(), list_node: p });
+                        out.push(Param { node: prop, ident, index: position, default: pd, property: Some(name), outer_default: default.is_some() });
                     }
                 }
             }
@@ -642,13 +638,13 @@ impl<'a, 't> Ctx<'a, 't> {
     fn value_of_reference(&self, node: Node<'t>, symbol: Option<SymbolId>, name: &str) -> Option<Value<'t>> {
         match symbol {
             None if name == "undefined" => Some(Value::Prim(Prim::Undefined, Some(node))),
-            None => self.m.reference_at(node.start_byte()).filter(|r| self.m.is_builtin_reference(r)).map(|_| Value::Global(name.to_owned(), Some(node))),
+            None => self.m.reference_at(node.start_byte()).filter(|r| self.m.is_builtin_reference(r)).map(|_| Value::Global(name.to_owned())),
             Some(sym) => {
                 let s = self.m.symbol(sym);
                 if reassigned(self.m, sym) || s.decls.len() != 1 || s.kind == SymbolKind::Var || matches!(s.kind, SymbolKind::Import | SymbolKind::Interface | SymbolKind::TypeAlias | SymbolKind::Enum | SymbolKind::Namespace | SymbolKind::TypeParam | SymbolKind::Variable) {
                     None
                 } else {
-                    Some(Value::Binding(sym, Some(node)))
+                    Some(Value::Binding(sym))
                 }
             }
         }
@@ -690,8 +686,8 @@ fn outer_symbol(m: &SemanticModel, func: Node<'_>, name: &str) -> Option<SymbolI
 
 fn is_outer_binding(m: &SemanticModel, value: &Value<'_>, func: Node<'_>) -> bool {
     match value {
-        Value::Binding(sym, _) => outer_symbol(m, func, &m.symbol(*sym).name) == Some(*sym),
-        Value::Global(name, _) => outer_symbol(m, func, name).is_none(),
+        Value::Binding(sym) => outer_symbol(m, func, &m.symbol(*sym).name) == Some(*sym),
+        Value::Global(name) => outer_symbol(m, func, name).is_none(),
         Value::Prim(..) => true,
     }
 }
@@ -710,7 +706,7 @@ fn verdict<'t>(cx: &Ctx<'_, 't>, p: &Param<'t>, incoming: &[Incoming<'t>], func:
         if forwarding {
             match &default_value {
                 None => return None,
-                Some(v) if matches!(v, Value::Binding(..)) && !is_outer_binding(cx.m, v, func) => return None,
+                Some(v) if matches!(v, Value::Binding(_)) && !is_outer_binding(cx.m, v, func) => return None,
                 _ => {}
             }
         }
@@ -727,7 +723,7 @@ fn verdict<'t>(cx: &Ctx<'_, 't>, p: &Param<'t>, incoming: &[Incoming<'t>], func:
     if values.iter().any(|v| v.as_ref().is_none_or(|v| !first.same(v))) {
         return None;
     }
-    if matches!(first, Value::Binding(..) | Value::Global(..)) && !is_outer_binding(cx.m, &first, func) {
+    if matches!(first, Value::Binding(_) | Value::Global(_)) && !is_outer_binding(cx.m, &first, func) {
         return None;
     }
     let same_as_default = p.default.is_some() && default_value.as_ref().is_some_and(|d| first.same(d));
@@ -795,8 +791,8 @@ fn can_inline(cx: &Ctx<'_, '_>, psym: SymbolId, v: &Verdict<'_>, args: &[Incomin
     let Some(value) = &v.value else { return false };
     match value {
         Value::Prim(..) => true,
-        Value::Global(..) => false,
-        Value::Binding(sym, _) => {
+        Value::Global(_) => false,
+        Value::Binding(sym) => {
             if v.why == Why::Default {
                 return false;
             }
@@ -861,8 +857,8 @@ fn replacement_text(cx: &Ctx<'_, '_>, ident: Node<'_>, value: &Value<'_>, v: &Ve
         Value::Prim(Prim::Undefined, _) => "(void 0)".to_owned(),
         Value::Prim(_, Some(n)) => text(*n, cx.src).to_owned(),
         Value::Prim(_, None) => "undefined".to_owned(),
-        Value::Binding(sym, _) => cx.m.symbol(*sym).name.clone(),
-        Value::Global(name, _) => name.clone(),
+        Value::Binding(sym) => cx.m.symbol(*sym).name.clone(),
+        Value::Global(name) => name.clone(),
     };
     let prim_node = match value {
         Value::Prim(p, Some(n)) if *p != Prim::Undefined => Some((*n, p.clone())),

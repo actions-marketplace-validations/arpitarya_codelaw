@@ -15,7 +15,7 @@ use codelaw_semantic::SemanticModel;
 use std::collections::BTreeSet;
 use tree_sitter::Node;
 
-fn is_ident<'s>(n: Node<'_>, name: &str, src: &'s str) -> bool {
+fn is_ident(n: Node<'_>, name: &str, src: &str) -> bool {
     n.kind() == "identifier" && text(n, src) == name
 }
 
@@ -88,12 +88,13 @@ fn math_min_inputs<'t>(n: Node<'t>, src: &str) -> Option<Vec<Node<'t>>> {
 
 fn and_operands<'t>(n: Node<'t>, src: &str, out: &mut Vec<Node<'t>>) {
     let n = strip_parens(n);
-    if n.kind() == "binary_expression" && operator(n, src) == Some("&&") {
-        if let (Some(l), Some(r)) = (n.child_by_field_name("left"), n.child_by_field_name("right")) {
-            and_operands(l, src, out);
-            and_operands(r, src, out);
-            return;
-        }
+    if n.kind() == "binary_expression"
+        && operator(n, src) == Some("&&")
+        && let (Some(l), Some(r)) = (n.child_by_field_name("left"), n.child_by_field_name("right"))
+    {
+        and_operands(l, src, out);
+        and_operands(r, src, out);
+        return;
     }
     out.push(n);
 }
