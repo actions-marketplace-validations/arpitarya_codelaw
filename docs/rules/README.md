@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2826 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2840 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -55,7 +55,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 844 | 34 |
+| [python](#python) | — | `codelaw-rules-python` | 858 | 34 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2224,6 +2224,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/convert-named-tuple-functional-to-class`](py/convert-named-tuple-functional-to-class.md) | NamedTuple as a class | `manual` | — | *[rules] only* |
 | [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | *[rules] only* |
 | [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | *[rules] only* |
+| [`py/custom-type-var-for-self`](py/custom-type-var-for-self.md) | A method is annotated with `Self`, not a custom `TypeVar` | `auto` | — | *[rules] only* |
 | [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | *[rules] only* |
 | [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | *[rules] only* |
 | [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | *[rules] only* |
@@ -2295,6 +2296,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/expr-or-not-expr`](py/expr-or-not-expr.md) | No x or not x | `auto` | — | *[rules] only* |
 | [`py/expr-or-true`](py/expr-or-true.md) | No `or True` in a condition | `auto` | — | *[rules] only* |
 | [`py/extraneous-parentheses`](py/extraneous-parentheses.md) | No double parentheses in a call | `auto` | — | *[rules] only* |
+| [`py/f-string`](py/f-string.md) | A `.format` call on a string literal is an f-string | `auto` | — | *[rules] only* |
 | [`py/f-string-docstring`](py/f-string-docstring.md) | Docstrings aren't f-strings | `suggest` | — | `py/recommended` |
 | [`py/f-string-in-exception`](py/f-string-in-exception.md) | An exception f-string is assigned before the raise | `suggest` | — | *[rules] only* |
 | [`py/f-string-in-get-text-func-call`](py/f-string-in-get-text-func-call.md) | No f-string passed to gettext | `manual` | — | *[rules] only* |
@@ -2311,6 +2313,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/for-loop-writes`](py/for-loop-writes.md) | A loop that only writes to a file is writelines | `suggest` | — | *[rules] only* |
 | [`py/format-in-get-text-func-call`](py/format-in-get-text-func-call.md) | No .format() inside a gettext call | `suggest` | — | *[rules] only* |
 | [`py/format-invalid`](py/format-invalid.md) | A `.format` string is well formed | `suggest` | — | `py/recommended` |
+| [`py/format-literals`](py/format-literals.md) | `.format` fields use implicit positions | `auto` | — | *[rules] only* |
 | [`py/format-missing-argument`](py/format-missing-argument.md) | Every `.format` field has an argument | `manual` | — | `py/recommended` |
 | [`py/format-mixed-numbering`](py/format-mixed-numbering.md) | A `.format` string doesn't mix `{}` and `{0}` | `suggest` | — | `py/recommended` |
 | [`py/format-string-without-interpolation`](py/format-string-without-interpolation.md) | No .format() on a string with no fields | `auto` | — | *[rules] only* |
@@ -2541,6 +2544,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/non-pep604-annotation-optional`](py/non-pep604-annotation-optional.md) | X \| None, not Optional\[X\] | `suggest` | — | *[rules] only* |
 | [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | *[rules] only* |
 | [`py/non-pep646-unpack`](py/non-pep646-unpack.md) | *Ts, not Unpack\[Ts\] | `auto` | — | *[rules] only* |
+| [`py/non-pep695-generic-class`](py/non-pep695-generic-class.md) | A generic class uses type parameters, not `Generic` | `auto` | — | *[rules] only* |
+| [`py/non-pep695-generic-function`](py/non-pep695-generic-function.md) | A generic function uses type parameters | `auto` | — | *[rules] only* |
 | [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | *[rules] only* |
 | [`py/non-self-return-type`](py/non-self-return-type.md) | A method that returns self is annotated Self | `suggest` | — | *[rules] only* |
 | [`py/non-slot-assignment`](py/non-slot-assignment.md) | `__init__` assigns only attributes the class's `__slots__` lists | `manual` | — | *[rules] only* |
@@ -2617,6 +2622,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/prefer-typing-namedtuple`](py/prefer-typing-namedtuple.md) | A named tuple is a `typing.NamedTuple` class | `manual` | — | *[rules] only* |
 | [`py/print-empty-string`](py/print-empty-string.md) | print(), not print('') | `auto` | — | *[rules] only* |
 | [`py/printf-in-get-text-func-call`](py/printf-in-get-text-func-call.md) | No % formatting inside a gettext call | `suggest` | — | *[rules] only* |
+| [`py/printf-string-formatting`](py/printf-string-formatting.md) | `%` formatting becomes `.format` | `suggest` | — | *[rules] only* |
 | [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | *[rules] only* |
 | [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | *[rules] only* |
 | [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | *[rules] only* |
@@ -2706,6 +2712,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/root-logger-call`](py/root-logger-call.md) | No logging through the root logger | `manual` | — | *[rules] only* |
 | [`py/run-process-in-async-function`](py/run-process-in-async-function.md) | No blocking process run in an async function | `manual` | — | *[rules] only* |
 | [`py/runtime-cast-value`](py/runtime-cast-value.md) | Quote the type in typing.cast | `auto` | — | *[rules] only* |
+| [`py/runtime-import-in-type-checking-block`](py/runtime-import-in-type-checking-block.md) | A name used at run time is not imported only under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
+| [`py/runtime-string-union`](py/runtime-string-union.md) | A string is not a member of an `X \| Y` union that runs | `manual` | — | *[rules] only* |
 | [`py/self-assigning-variable`](py/self-assigning-variable.md) | No x = x | `suggest` | — | *[rules] only* |
 | [`py/self-or-cls-assignment`](py/self-or-cls-assignment.md) | No assignment to self or cls | `manual` | — | *[rules] only* |
 | [`py/setattr-with-constant`](py/setattr-with-constant.md) | No `setattr` with a constant name | `auto` | — | `py/recommended` |
@@ -2728,6 +2736,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/star-arg-unpacking-after-keyword-arg`](py/star-arg-unpacking-after-keyword-arg.md) | No `*args` after a keyword argument | `auto` | — | `py/recommended` |
 | [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `auto` | — | `py/recommended` |
 | [`py/starmap-zip`](py/starmap-zip.md) | map(f, a, b), not starmap(f, zip(a, b)) | `suggest` | — | *[rules] only* |
+| [`py/static-join-to-f-string`](py/static-join-to-f-string.md) | A `join` of a fixed list is an f-string | `suggest` | — | *[rules] only* |
 | [`py/static-key-dict-comprehension`](py/static-key-dict-comprehension.md) | A dict comprehension's key varies | `suggest` | — | `py/recommended` |
 | [`py/stdlib-module-shadowing`](py/stdlib-module-shadowing.md) | A module does not take a standard-library module's name | `manual` | `strict_checking`, `allowed_modules` | *[rules] only* |
 | [`py/stop-iteration-return`](py/stop-iteration-return.md) | A generator returns instead of raising StopIteration | `suggest` | — | *[rules] only* |
@@ -2784,7 +2793,11 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/type-of-primitive`](py/type-of-primitive.md) | str, not type('') | `suggest` | — | *[rules] only* |
 | [`py/typed-argument-default-in-stub`](py/typed-argument-default-in-stub.md) | Simple defaults only in stubs | `auto` | — | *[rules] only* |
 | [`py/typevar-name-mismatch`](py/typevar-name-mismatch.md) | A TypeVar's name matches its variable | `suggest` | — | *[rules] only* |
+| [`py/typing-only-first-party-import`](py/typing-only-first-party-import.md) | An import of the project's own module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
+| [`py/typing-only-standard-library-import`](py/typing-only-standard-library-import.md) | An import from the standard library used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
+| [`py/typing-only-third-party-import`](py/typing-only-third-party-import.md) | An import of a third-party module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
 | [`py/typing-text-str-alias`](py/typing-text-str-alias.md) | str, not typing.Text | `suggest` | — | *[rules] only* |
+| [`py/unaliased-collections-abc-set-import`](py/unaliased-collections-abc-set-import.md) | `collections.abc.Set` is imported as `AbstractSet` | `suggest` | — | *[rules] only* |
 | [`py/unannotated-assignment-in-stub`](py/unannotated-assignment-in-stub.md) | A stub annotates its variables | `manual` | — | *[rules] only* |
 | [`py/unary-prefix-increment`](py/unary-prefix-increment.md) | No `++x` or `--x` | `suggest` | — | `py/recommended` |
 | [`py/unassigned-special-variable-in-stub`](py/unassigned-special-variable-in-stub.md) | A stub gives __all__ its value | `manual` | — | *[rules] only* |
@@ -2865,6 +2878,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unnecessary-type-union`](py/unnecessary-type-union.md) | type\[A \| B\], not type\[A\] \| type\[B\] | `suggest` | — | *[rules] only* |
 | [`py/unpacking-non-sequence`](py/unpacking-non-sequence.md) | Only a sequence is unpacked | `manual` | — | *[rules] only* |
 | [`py/unprefixed-type-param`](py/unprefixed-type-param.md) | A stub's TypeVar is private | `manual` | — | *[rules] only* |
+| [`py/unquoted-type-alias`](py/unquoted-type-alias.md) | A type alias that names a `TYPE_CHECKING`-only import is quoted | `suggest` | — | *[rules] only* |
 | [`py/unraw-re-pattern`](py/unraw-re-pattern.md) | Regex patterns are raw strings | `suggest` | — | *[rules] only* |
 | [`py/unreachable`](py/unreachable.md) | No code after return or raise | `suggest` | — | *[rules] only* |
 | [`py/unrecognized-platform-check`](py/unrecognized-platform-check.md) | A platform check in a stub is == or != | `manual` | — | *[rules] only* |

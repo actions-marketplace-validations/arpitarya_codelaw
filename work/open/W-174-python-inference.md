@@ -7,7 +7,7 @@ filed: 2026-11-08
 filed_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
 updated: 2026-11-09
 updated_by: "Claude Code (Sonnet 5.5), W-174b agent (the last in-file rows)"
-ball: agent
+ball: arpit
 ---
 
 # W-174 — Python inference for the W-139 rows that need it
