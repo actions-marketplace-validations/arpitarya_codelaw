@@ -24,6 +24,24 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — the docket by voice, part 2: W-139 closed into 19 items and 4 backlog rows  ·  Cowork (Opus 5.5)
+
+- **Asked:** by voice, *"what is pending from W139 and what all frameworks are in there"*; then *"Whatever is pending, we are going to have separate work items for those. And we close W139."*, each blocked group ruled in turn (*"Only the ones that are blocked."*); then *"file it"*.
+- **Done:** W-139 archived with a *Closed* table (each leftover → its home); W-178–W-196 filed; B-081–B-084; SR-CODE-PATH-GRAPH (0121, `proposed`) and its register row; IMPLEMENTATION and the archive map row; the proposal's §14 (the classes); W-102, W-142, W-143 re-pointed to W-139's successors; the four W-139 inbox rows removed, the inbox empty. Both checks pass. Counted, not copied: 2,319 of 2,590 port rows carried; 271 left.
+- **Decided / left open:** as in W-139's *Closed* table. Ground truth differed from the call twice: the "16 value-type rows" were built 11-09 (slice 29) on one file's facts, so W-188 makes them type-aware (and `prefer-iterator-zip` is unbuilt, W-195); the pinned JS grammar 0.25.0 already parses `using` — only TS 0.23.2 lacks it (W-190). Not discussed on the call, filed so nothing is orphaned: Biome's 98 unbuilt rows (W-196) and DoD 2's missing presets and 2d's promotions (W-192).
+- **Mistakes:** none landed; deleting W-139's old file needed Arpit's folder permission, given.
+- **Next:** Arpit runs `lockmaster save` for the change; then an agent picks from the 🟢 rows.
+
+## 2026-11-09 — the docket by voice: W-172, W-174 and W-139's js rows ruled; W-176 and W-177 filed  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"fetch all latest open work items and there status and how much time it is going to take for voice mode"*; then by voice, *"Explain me one by one"*, the rulings one at a time; then *"file it"*.
+- **Done:** OPEN-WORK: four inbox rows removed with their `↳ blocks:` rows (W-172's value, W-174's `boolean-datetime` and decision 8, W-139's js re-rule); W-172 and W-174 re-balled 🟢; W-139's Airflow row gains the out-of-scope option Arpit raised; W-176 (build) and W-177 (research) filed, counts 11 → 13. The rulings written in W-172, W-174 (an *At a glance* added) and W-139, with Arpit's words. Both checks pass.
+- **Decided / left open:** W-172 `peak_memory_10k` 90 MiB (*"Let's go with 90."*); `boolean-datetime` not-applicable (*"Not applicable."*); decision 8 to research (*"Open a separate research item for this."*); formatter-owned (*"Yes, I agree."*); react-hooks four out (*"Leave them out."*); options-only as configure-to-use rules (*"Yes."*), in their own item. Parked by Arpit: Airflow, data/Markdown/`check-examples`, Ruff and Pylint classes, until he has seen W-139's framework rows.
+- **Mistakes:** the first answer's time estimates were guesses (the queue carries none) and were labelled as such.
+- **Next:** Arpit reads W-139's framework rows, then rules the four parked rows.
+
+---
+
 ## 2026-11-09 — W-174b and W-139 slice 35: the in-file Pylint rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) finish W-174's 8 left rows and the Pylint half of W-139's python strand: build every buildable row on the existing layers, list the rest with reason and a proposed class.

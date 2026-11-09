@@ -6,8 +6,8 @@ item: W-172
 filed: 2026-11-07
 filed_by: "Claude Code (session 0a172e1f), W-139 step 3"
 updated: 2026-11-09
-updated_by: "Cowork (Opus 5.5): Arpit's ruling to amend L8 for peak_memory_10k filed; its value in the inbox"
-ball: arpit
+updated_by: "Arpit (Cowork, Opus 5.5): the value ruled — peak_memory_10k to 90 MiB"
+ball: agent
 ---
 
 # W-172 — main is over three L8 budgets
@@ -20,14 +20,14 @@ ball: arpit
 | 2 | Make a rule nobody turns on cheap: packs kept in memory, dormant matchers dropped, the settings lookup skipped, `where:` before captures | `mcp_rules_for_path` back under; peak memory down by about half its rise | ✅ 11-07 — built, tests green; numbers below |
 | 3 | Bring `peak_memory_10k`, `check_cold_10k` and `lsp_after_edit` under: what is left is the rules that are **on** — W-139 turned about 130 more on in the recommended presets | all three green | 🔶 11-08 second pass: time side built (below); `peak_memory_10k` still over on the Mac — *What is left* |
 | 4 | CI's proof: the `perf cold` / `perf warm` jobs on a pushed `main` | the reference runner's numbers | ⏳ waits on the decider pushing `main` |
-| 5 | Amend L8 so `peak_memory_10k` is raised to a value the decider names, instead of optimising the last ~14 MiB | the memory budget met by ruling, not by trade-offs against time | 🔴 decider decides the value (ruled 11-09 to amend) |
+| 5 | Amend L8 so `peak_memory_10k` is raised to a value the decider names, instead of optimising the last ~14 MiB | the memory budget met by ruling, not by trade-offs against time | ⏳ ruled 11-09: **90 MiB** — the agent amends L8 and sets it |
 
 ## Ruling, 2026-11-09 — amend L8 for `peak_memory_10k`
 
 **Arpit (voice, Cowork docket walk-through), 2026-11-09**, after the memory levers in *What it would take to reach 72* were read to him: *"Update the budget. This looks good."* Told that L8 says a budget is never loosened, so raising it means amending L8 itself: *"Amend the [L8]."* (the transcript reads *"alert"*; it answered the question whether to amend L8).
 
-- **Open — the value** (inbox, 2026-11-09): the runner measures 86.1 MiB p95 against 72; put to him as 86 (as measured) or 90 (headroom). Not chosen yet.
-- **Next (agent), once the value is given:** amend [SR-LAW-8](../../records/0010_LAW-8-performance-budgets.md) with this ruling named in it (how a budget may be raised: by the decider's ruling, by name, per budget), set `perf/budgets.toml`, and update CLAUDE.md's L8 line (SR-WORK-DOCS decisions 6–8). The time budgets (`check_cold_10k`, `lsp_after_edit`) are not covered by this ruling: they still wait on step 4's CI run.
+- **The value — 90 MiB.** Arpit (voice, Cowork docket, 2026-11-09), offered 86 (as measured, 86.1 p95) or 90 (headroom against run-to-run noise, recommended): *"Let's go with 90."* Filed on *"file it."*
+- **Next (agent):** amend [SR-LAW-8](../../records/0010_LAW-8-performance-budgets.md) with this ruling named in it (how a budget may be raised: by the decider's ruling, by name, per budget), set `perf/budgets.toml`, and update CLAUDE.md's L8 line (SR-WORK-DOCS decisions 6–8). The time budgets (`check_cold_10k`, `lsp_after_edit`) are not covered by this ruling: they still wait on step 4's CI run.
 - The memory levers below stay recorded as options; none is required once the budget is raised.
 
 ## What is known
@@ -85,13 +85,13 @@ The `ubuntu-24.04` reference runner ([SR-LAW-8](../../records/0010_LAW-8-perform
 
 ## Hazards
 
-- L8 decision 5: a budget is never raised. The fix is in the engine or the packs, never in `perf/budgets.toml`.
+- L8 decision 5: a budget is never raised. The fix is in the engine or the packs, never in `perf/budgets.toml` — the one exception, once SR-LAW-8 is amended, is `peak_memory_10k` to 90 MiB (the ruling above); every other budget is unchanged.
 - A loaded developer Mac is not the reference machine; take the numbers from `perf` runs, or from a quiet machine with both arms on one binary.
 - `git stash` is one stack for every worktree (LESSONS 2026-11-07).
 
 ## Reference
 
-[W-139](W-139-rule-parity-build.md) step 3 · [SR-LAW-8](../../records/0010_LAW-8-performance-budgets.md) · [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 15 · [SR-CACHE](../../records/0109_cache.md) decision 8 · W-126 (the `perf` split) · W-168
+[W-139](../../archive/open/W-139-rule-parity-build.md) step 3 · [SR-LAW-8](../../records/0010_LAW-8-performance-budgets.md) · [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 15 · [SR-CACHE](../../records/0109_cache.md) decision 8 · W-126 (the `perf` split) · W-168
 
 ## 2026-11-08 — step 3 landed by the coordinator (agent stopped: disk full)
 
