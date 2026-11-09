@@ -31,6 +31,13 @@ mod tests_rules;
 mod maps;
 mod objects;
 mod style;
+mod kit;
+mod zip;
+mod abort_any;
+mod params;
+mod names;
+mod parameterized;
+mod atomic;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
@@ -711,6 +718,12 @@ rule!(UseTypeAlias, "js/use-type-alias", TS, &["program"], |n, ctx, out| {
 });
 
 pub static RULES: &[&dyn NativeRule] = &[
+    &zip::PreferIteratorZip,
+    &abort_any::PreferAbortSignalAny,
+    &params::NoUnnecessaryParameters,
+    &names::NameReplacements,
+    &parameterized::ParameterizedTests,
+    &atomic::RequireAtomicUpdates,
     &MaxNestedCalls,
     &TryComplexity,
     &TooManyBreakOrContinueInLoop,
