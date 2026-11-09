@@ -238,7 +238,9 @@ fn alone_on_lines(stmt: Node<'_>, src: &str) -> bool {
 
 /// The text moving `moving` between runtime and a `TYPE_CHECKING` block
 /// asks for: removals from each statement, and the lines to write.
-fn removal_edits(moving: &[&Binding<'_>], src: &str) -> Option<(Vec<TextEdit>, Vec<(usize, usize)>, Vec<String>)> {
+type Removal = (Vec<TextEdit>, Vec<(usize, usize)>, Vec<String>);
+
+fn removal_edits(moving: &[&Binding<'_>], src: &str) -> Option<Removal> {
     // Group by statement.
     let mut groups: BTreeMap<usize, Vec<&Binding<'_>>> = BTreeMap::new();
     for b in moving {
@@ -328,7 +330,7 @@ fn move_under_type_checking(root: Node<'_>, all: &[Binding<'_>], ctx: &NativeCon
     }
     // A new block goes below the last import that stays.
     let stays = |s: &Node<'_>| matches!(s.kind(), "import_statement" | "import_from_statement" | "future_import_statement") && !deleted.iter().any(|(a, b)| line_range(*s, src).0 >= *a && line_range(*s, src).1 <= *b);
-    let anchor = kids(root).into_iter().filter(stays).last();
+    let anchor = kids(root).into_iter().rfind(stays);
     // `TYPE_CHECKING` is imported from `typing`, joining an import that is already there.
     let mut tc_import: Option<TextEdit> = None;
     let mut already = false;
@@ -426,7 +428,7 @@ fn tc004(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) 
                 }
             }
             // The import goes below the last top-level import that is not in a block.
-            let anchor = kids(root).into_iter().filter(|s| matches!(s.kind(), "import_statement" | "import_from_statement" | "future_import_statement")).last();
+            let anchor = kids(root).into_iter().rfind(|s| matches!(s.kind(), "import_statement" | "import_from_statement" | "future_import_statement"));
             let at = anchor.map_or(0, |a| last_stmt_end_line(a, src));
             let text_: String = lines.iter().map(|l| format!("\n{l}")).collect();
             if anchor.is_some() {
@@ -435,6 +437,139 @@ fn tc004(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) 
             }
         }
         out.push(NativeFinding { start: b.item.start_byte(), end: b.item.end_byte(), message: format!("Move the import `{}` out of the type-checking block: it is used at run time", b.local), edits: as_suggestion(edits) });
+    }
+}
+
+
+// ------------------------------------------------------------------ TC007
+
+/// The names of a type alias's value that need quotes: the imports under
+/// `TYPE_CHECKING` it names outside a `Literal[...]`.
+fn alias_names<'t>(n: Node<'t>, out: &mut Vec<Node<'t>>, src: &str) {
+    match n.kind() {
+        "identifier" => out.push(n),
+        "binary_operator" => {
+            for c in [field(n, "left"), field(n, "right")].into_iter().flatten() {
+                alias_names(c, out, src);
+            }
+        }
+        "attribute" => {
+            if let Some(o) = field(n, "object") {
+                alias_names(o, out, src);
+            }
+        }
+        "subscript" => {
+            let Some(v) = field(n, "value") else { return };
+            alias_names(v, out, src);
+            if text(v, src).rsplit('.').next() == Some("Literal") {
+                return;
+            }
+            let mut c = n.walk();
+            let args: Vec<Node<'t>> = n.children_by_field_name("subscript", &mut c).collect();
+            let annotated = text(v, src).rsplit('.').next() == Some("Annotated");
+            for (i, a) in args.into_iter().enumerate() {
+                if annotated && i > 0 {
+                    break;
+                }
+                alias_names(a, out, src);
+            }
+        }
+        "list" | "tuple" | "expression_list" => {
+            for c in kids(n) {
+                alias_names(c, out, src);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn tc007(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
+    let Some(model) = ctx.semantic else { return };
+    let root = {
+        let mut c = n;
+        while let Some(p) = c.parent() {
+            c = p;
+        }
+        c
+    };
+    let (Some(ann), Some(value)) = (field(n, "type"), field(n, "right")) else { return };
+    if !text(ann, src).trim().ends_with("TypeAlias") || value.kind() == "string" {
+        return;
+    }
+    let future = has_future_annotations(root, src);
+    let mut names = Vec::new();
+    alias_names(value, &mut names, src);
+    let mut needing: Vec<Node<'_>> = Vec::new();
+    for id in names {
+        let Some(sym_id) = model.symbol_at(id.start_byte()) else { continue };
+        let sym = model.symbol(sym_id);
+        if sym.kind != codelaw_semantic::SymbolKind::Import || sym.decls.len() != 1 {
+            continue;
+        }
+        let (s, e) = sym.decls[0];
+        let Some(decl) = root.descendant_for_byte_range(s, e) else { continue };
+        if !in_type_checking_block(decl, src) {
+            continue;
+        }
+        // Another use that runs is the other rule's: the two would chase each other.
+        let runtime_elsewhere = sym.refs.iter().any(|r| {
+            let r = &model.references[*r];
+            let inside = r.start >= n.start_byte() && r.end <= n.end_byte();
+            !inside && root.descendant_for_byte_range(r.start, r.end).is_some_and(|x| !typing_only_use(x, src, future))
+        });
+        if !runtime_elsewhere {
+            needing.push(id);
+        }
+    }
+    if needing.is_empty() {
+        return;
+    }
+    let vt = text(value, src);
+    let edit = if vt.contains(['\'', '"', '\n', '\\']) || value.kind() == "parenthesized_expression" { Vec::new() } else { vec![TextEdit::new(value.start_byte(), value.end_byte(), format!("\"{vt}\""))] };
+    // Every name needing quotes is reported; the edit quotes the whole value, and one finding carries it.
+    for (i, id) in needing.iter().enumerate() {
+        let e = if i == 0 { edit.clone() } else { Vec::new() };
+        out.push(NativeFinding { start: id.start_byte(), end: id.end_byte(), message: format!("Add quotes to the type alias: `{}` is only imported under `TYPE_CHECKING`", text(*id, src)), edits: as_suggestion(e) });
+    }
+}
+
+// ------------------------------------------------------------------ TC010
+
+fn tc010(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
+    let future = has_future_annotations(root, src);
+    let mut stack = vec![root];
+    while let Some(n) = stack.pop() {
+        if n.kind() == "union_type" || (n.kind() == "binary_operator" && field(n, "operator").is_some_and(|o| text(o, src) == "|") && n.parent().is_some_and(|p| p.kind() != "binary_operator")) {
+            // The strings directly joined by `|`.
+            let mut strings: Vec<Node<'_>> = Vec::new();
+            let mut walk = vec![n];
+            while let Some(x) = walk.pop() {
+                match x.kind() {
+                    "string" | "concatenated_string" => strings.push(x),
+                    "type" | "union_type" | "binary_operator" => walk.extend(named_children(x)),
+                    _ => {}
+                }
+            }
+            let in_annotation = {
+                let mut c = n.parent();
+                let mut found = n.kind() == "union_type";
+                while let Some(p) = c {
+                    if p.kind() == "type" {
+                        found = true;
+                    }
+                    c = p.parent();
+                }
+                found
+            };
+            if in_annotation && !strings.is_empty() && !typing_only_use(n, src, future) {
+                for s in strings {
+                    out.push(NativeFinding { start: s.start_byte(), end: s.end_byte(), message: "Invalid string member in `X | Y`-style union type".into(), edits: Vec::new() });
+                }
+            }
+        }
+        stack.extend(named_children(n));
     }
 }
 
@@ -467,8 +602,28 @@ tc_rule!(TypingOnlyFirstPartyImport, "py/typing-only-first-party-import", |n, ct
 tc_rule!(TypingOnlyThirdPartyImport, "py/typing-only-third-party-import", |n, ctx, out| tc001_3(n, ctx, Origin::ThirdParty, out));
 tc_rule!(TypingOnlyStandardLibraryImport, "py/typing-only-standard-library-import", |n, ctx, out| tc001_3(n, ctx, Origin::Stdlib, out));
 tc_rule!(RuntimeImportInTypeCheckingBlock, "py/runtime-import-in-type-checking-block", tc004);
+tc_rule!(RuntimeStringUnion, "py/runtime-string-union", tc010);
 
-pub static RULES: &[&dyn NativeRule] = &[&TypingOnlyFirstPartyImport, &TypingOnlyThirdPartyImport, &TypingOnlyStandardLibraryImport, &RuntimeImportInTypeCheckingBlock];
+pub struct UnquotedTypeAlias;
+impl NativeRule for UnquotedTypeAlias {
+    fn id(&self) -> &'static str {
+        "py/unquoted-type-alias"
+    }
+    fn languages(&self) -> &'static [Language] {
+        PY
+    }
+    fn kinds(&self) -> &'static [&'static str] {
+        &["assignment"]
+    }
+    fn needs_semantic(&self) -> bool {
+        true
+    }
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+        tc007(node.get_inner_node(), ctx, out)
+    }
+}
+
+pub static RULES: &[&dyn NativeRule] = &[&TypingOnlyFirstPartyImport, &TypingOnlyThirdPartyImport, &TypingOnlyStandardLibraryImport, &RuntimeImportInTypeCheckingBlock, &RuntimeStringUnion, &UnquotedTypeAlias];
 
 #[cfg(test)]
 mod tests {

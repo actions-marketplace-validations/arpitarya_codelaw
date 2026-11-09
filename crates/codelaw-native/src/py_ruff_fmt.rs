@@ -84,7 +84,8 @@ fn parse_field_name(name: &str) -> Option<(Ref, Vec<Access>)> {
             }
             accesses.push(Access::Attr(attr.to_owned()));
             rest = &r[end..];
-        } else if let Some(r) = rest.strip_prefix('[') {
+        } else {
+            let r = rest.strip_prefix('[')?;
             let end = r.find(']')?;
             let idx = &r[..end];
             if idx.is_empty() {
@@ -96,8 +97,6 @@ fn parse_field_name(name: &str) -> Option<(Ref, Vec<Access>)> {
                 accesses.push(Access::Key(idx.to_owned()));
             }
             rest = &r[end + 1..];
-        } else {
-            return None;
         }
     }
     Some((reference, accesses))
