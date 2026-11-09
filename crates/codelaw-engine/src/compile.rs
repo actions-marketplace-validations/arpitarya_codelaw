@@ -287,7 +287,7 @@ fn compile_one(loaded: &LoadedRule, shared: &SharedRegexes) -> Compiled1 {
                 return (None, errors, warnings);
             }
         },
-        BlockKind::Graph(g) => match codelaw_graph::compile(g, rule.block.fix.as_ref()) {
+        BlockKind::Graph(g) => match codelaw_graph::compile(&g.value(), rule.block.fix.as_ref()) {
             Ok(c) => Matcher::Graph(c),
             Err(e) => {
                 fail(e);

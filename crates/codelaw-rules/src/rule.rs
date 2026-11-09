@@ -300,8 +300,9 @@ pub enum BlockKind {
         /// (SR-RULE-FORMAT decision 3b; W-162).
         transform: Option<Box<serde_json::Value>>,
     },
-    Graph(serde_json::Value),
-    Target { target: serde_json::Value, assert: serde_json::Value },
+    /// Kept as text, like `match:`: read back when the rule is compiled.
+    Graph(Json),
+    Target { target: Json, assert: Json },
     Native(String),
 }
 
@@ -611,10 +612,10 @@ fn parse_block(code: &str) -> Result<Block, String> {
             auto_when: map.remove("auto_when").map(Box::new),
             transform: map.remove("transform").map(Box::new),
         },
-        "graph" => BlockKind::Graph(map.remove("graph").unwrap()),
+        "graph" => BlockKind::Graph(Json::new(&map.remove("graph").unwrap())),
         "target" => BlockKind::Target {
-            target: map.remove("target").unwrap(),
-            assert: map.remove("assert").ok_or("`target:` needs `assert:`")?,
+            target: Json::new(&map.remove("target").unwrap()),
+            assert: Json::new(&map.remove("assert").ok_or("`target:` needs `assert:`")?),
         },
         _ => BlockKind::Native(
             map.remove("native").and_then(|v| v.as_str().map(str::to_owned)).ok_or("`native:` takes the id of an engine rule")?,
