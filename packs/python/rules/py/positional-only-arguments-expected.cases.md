@@ -70,3 +70,17 @@ f(a=1, b=2)
 ```expect
 (none)
 ```
+
+### case: an annotated **kwargs takes the keyword
+
+```py
+def f(a, /, **kw: int):
+    pass
+
+
+f(1, a=2)
+```
+
+```expect
+(none)
+```

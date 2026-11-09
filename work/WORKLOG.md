@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-174: the python corpus counts and a clean workspace test run  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *the 30 py/* rules W-174 landed have no counts in packs/python/corpus.toml (`corpus python` red in CI); run `cargo test --workspace` alone and find the `codelaw-lsp` doctest failure's cause.*
+- **Done:** fetched the python corpus (6 repos, 70 MB), built one release binary, `corpus.py run --pack python --update`: +30 counts (22 are 0). Sampled the non-zero ones; `py/arguments-differ` fired on Flask's `dispatch_request(self, **kwargs: t.Any)` — tree-sitter wraps an annotated splat in a `typed_parameter`, which `py_classes.rs` counted as a positional parameter (same read in `py_values.rs`); fixed, a case each, count 0. Second `run` without `--update`: 806 rules, 0 failed. Static check of every other pack's snapshot against its rule ids: none stale (`js` left alone). `cargo test --workspace`: first run stopped at `codelaw-config`'s `every_record_defined_key_is_in_the_schema` (SR-RULE-PACKS line 353 wrote `fix.files`, a rule key, in the shape the test reads as a config key): reworded; then `--no-fail-fast` 1117 passed, 0 failed, doctests included. The `codelaw-lsp` doctest failure did not reproduce with no other cargo running — a race on the shared `target/` between concurrent runs, not a code bug. Clippy `--workspace --all-targets -D warnings` clean. Corpus checkout, scratch project and build output removed.
+- **Decided / left open:** none.
+- **Mistakes:** none; two false starts running the preview rules over the corpus by hand (`py` namespace is reserved for packs, `native:` only loads from a pack) before loading the pack through `[packs] venv`.
+- **Next:** W-174's 8 left rows; the js corpus snapshot is another agent's.
+
 ## 2026-11-08 — Coordinator: the green queue handed to four agents  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement open work green items"*.
