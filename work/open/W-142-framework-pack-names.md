@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-08
-updated_by: "Arpit (Claude Code, Sonnet 5.5)"
+updated: 2026-11-09
+updated_by: "Arpit (Cowork, Opus 5.5): W-139 closed 2026-11-09 — its blocker moved to the items that took W-139's rows"
 ball: arpit
 ---
 
@@ -16,7 +16,7 @@ ball: arpit
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Wait until W-139 has the five packs ready to release | names bound when they are needed | 🟡 waits on W-139 |
+| 1 | Wait until the packs and the two new data packages (W-182, W-187) are ready to release | names bound when they are needed, all at once | 🟡 waits on W-182, W-187 — the five packs are built (W-139 closed 2026-11-09) |
 | 2 | Claude, in Chrome: pypi.org → *Publishing → Add a pending publisher*, once per name; Arpit checks and submits | `publish.yml` can create each project | 🔴 Arpit submits |
 | W-147 | npm: first publish of the `testing` and `nextjs` packs' names — merged in; its steps under [§ W-147](#merged-in-w-147) | one item, not two | ⏳ — see § |
 
@@ -74,7 +74,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ## Blockers
 
-🟡 W-139.
+🟡 waits on **W-182**, **W-187** (the two data packages whose names are bound in the same pass). W-139 closed 2026-11-09 with the packs built.
 
 ## Record affected
 
@@ -87,7 +87,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ## Reference
 
-[W-139](W-139-rule-parity-build.md) · [W-134](W-151-release-0-4-1.md) (the same steps for `deps`)
+[W-139](../../archive/open/W-139-rule-parity-build.md) · [W-134](W-151-release-0-4-1.md) (the same steps for `deps`)
 
 ## Merged in: W-147
 
@@ -99,7 +99,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Wait until W-139 has the two packs ready to release | the names are bound when they are needed | 🟡 waits on W-139 |
+| 1 | Wait until the release that carries the two packs | the names are bound when they are needed | ✅ the packs are built (W-139 closed 2026-11-09); bound with the rest, step 1 above |
 | 2 | Arpit publishes the four names below once by hand, as RELEASING.md does for a new pack | the names exist on npm | 🔴 Arpit |
 | 3 | Add `arpitarya/codelaw` · `publish.yml` · `npm` as each package's trusted publisher | every later release publishes them from CI | 🔴 Arpit |
 
@@ -125,7 +125,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ### Blockers
 
-🟡 W-139.
+🟡 waits on **W-182**, **W-187** (the two data packages whose names are bound in the same pass). W-139 closed 2026-11-09 with the packs built.
 
 ### Record affected
 
@@ -138,4 +138,4 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ### Reference
 
-[W-139](W-139-rule-parity-build.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-135](W-151-release-0-4-1.md) (the same steps for `deps`) · [W-142](W-142-framework-pack-names.md) (PyPI's five)
+[W-139](../../archive/open/W-139-rule-parity-build.md) · [W-144](../../archive/open/W-144-rule-parity-round-2.md) · [W-135](W-151-release-0-4-1.md) (the same steps for `deps`) · [W-142](W-142-framework-pack-names.md) (PyPI's five)

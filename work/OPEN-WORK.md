@@ -22,39 +22,58 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-139** re-rule the rows no rule can carry? Formatter-owned (the 8 Jest `padding-around-*`, the 13 React JSX layout rows, `number-literal-case`, `import-newline-after-import`, `lines-before-block`, stylelint's 6 empty-line rows), out of scope (react-hooks `fbt`, `invariant`, `syntax`, `todo`), and options-only — do nothing until configured (about 20: `id-match`, `id-denylist`, `no-restricted-syntax`, `string-content`, `require-tags`, `text-escaping`, …). Recommended: yes, each in its own class, not counted against DoD 1. [list](open/W-139-rule-parity-build.md) | 2026-11-09 |
-| ↳ **blocks:** W-139 (DoD 1 cannot close without it) | |
-| 🔴 **W-139** the Airflow tables: ratify one data package `data-airflow` (npm and PyPI, L11 by name, generated in CI) for `AIR301`, `AIR302`, `AIR311`, `AIR312`, `AIR321` (about 500 names), or only in-rule tables for the three small ones and leave the other two out? Recommended: the package. [detail](open/W-139-rule-parity-build.md) | 2026-11-09 |
-| ↳ **blocks:** W-139 (the last Airflow rows) | |
-| 🔴 **W-139** two rows that are not JavaScript rules — `key-name-casing` (JSON/YAML/TOML keys) and `require-frontmatter-fields` (Markdown) — and `check-examples` (lint the code in `@example` tags, an embedded-region engine feature): build in the `data`/`md` packs and the engine, or leave out? Recommended: leave `check-examples` out; put the other two in their packs, `key-name-casing` off by default. [detail](open/W-139-rule-parity-build.md) | 2026-11-09 |
-| ↳ **blocks:** W-139 | |
-| 🔴 **W-139** re-rule Ruff's 41 left rows by class? Formatter-owned (`D201`–`D204`, `D210`, `D211`, `EXE004`); data tables ratified by name, L11 (`D401`, `D421`, `UP035`, `RUF001`–`RUF003`); engine work (target-gated `FA100`, `FA102`, `PERF203`, `UP036`; file mode `EXE001`, `EXE002`; `PLE2514`); out of scope (`RUF028`, `RUF054`, `RUF100`–`RUF106`, `RUF200`, `RUF201`, `TID254`, `TID255`, `PLC2701`). Recommended: formatter-owned and out of scope yes; the rest each its own ruling. [table](open/W-139-rule-parity-build.md) | 2026-11-09 |
-| ↳ **blocks:** W-139 |  |
-| 🔴 **W-139** re-rule Pylint's 52 left rows by class? Not applicable (15: the six `pylintrc`/plugin/`# pylint:` option rows, the seven `using-*-in-unsupported-version` and two `broken-*` rows below the 3.9 floor, `duplicate-argument-name`, `return-arg-in-generator`); target-gated (2: exception groups 3.11, generic syntax 3.12); a data package for the five `deprecated-*` tables; the python project graph for six (`cyclic-import`, `import-error`, `no-name-in-module`, `relative-beyond-top-level`, `unused-wildcard-import`, `too-many-ancestors`); formatter-owned (`inconsistent-quotes`, `implicit-str-concat`); out of scope (`duplicate-code`, `invalid-characters-in-docstring`); not writable (`invalid-character-carriage-return`, `invalid-unicode-codec`); links to Ruff twins (`preferred-module`, `consider-using-f-string`). The 15 docparams rows are not a ruling: the next slice. Recommended: yes, each in its own class. [table](open/W-139-rule-parity-build.md) | 2026-11-09 |
-| ↳ **blocks:** W-139 (DoD 1 cannot close without it) | |
-| 🔴 **W-174** re-rule Pylint `boolean-datetime` `not-applicable`? It reports only below Python 3.5; codelaw's floor is 3.9, so it can never fire. Recommended: yes. [detail](open/W-174-python-inference.md) | 2026-11-09 |
-| ↳ **blocks:** W-174 (its last row; the 7 buildable ones are built, 11-09) | |
-| 🔴 **W-174** [SR-PY-INFERENCE](../records/0120_python-inference.md) decision 8: answer the rows that need a call's return or an imported class's shape with the project's own Python type checker (`ty`, pyright or mypy), found and asked like its TypeScript — or leave them open? Not blocking yet: it blocks once the in-file rows are built. [detail](open/W-174-python-inference.md) | 2026-11-09 |
-| ↳ **blocks:** W-174 (the cross-file rows, once the in-file ones land) | |
-| 🔴 **W-172** `peak_memory_10k`: ruled 11-09 (voice) — amend L8 and raise this budget rather than optimise further. To what value? The runner measures 86.1 MiB against 72: 86 as measured, or 90 for headroom. [detail](open/W-172-l8-budgets-over-on-main.md) | 2026-11-09 |
-| ↳ **blocks:** W-172 | |
+
+*Empty since 2026-11-09 — the next gate: W-105's RC re-pin, 2026-11-10.*
 
 ---
 
-## Open items (11)
+## Open items (31)
 
-### build (5)
+### build (21)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🔴 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 35 rows left, Ruff 42 of 97 (11-09: +52 docstring, format-string, PEP 695, TC rows), Pylint 52 of 67 (+14, slice 35); reasons and classes in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🔴 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` ~14 MiB over 72 — ruled 11-09: amend L8 and raise it, the value in the inbox. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+🟢 **W-172** `agent` L8: time side built (11-08). `peak_memory_10k` ruled 11-09: amend L8 and raise it 72 → 90 MiB. Next: amend SR-LAW-8, set `perf/budgets.toml`; CI's next run proves the time side. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🔴 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 built (`preview`), 1 left: `boolean-datetime` (inbox). Decision 8 (a project type checker) in the inbox. Next: close on the rulings. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 built (`preview`); `boolean-datetime` ruled not-applicable 11-09; decision 8 moved to research, W-177. Next: re-class that row, then close. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+
+🟢 **W-176** `agent` Options-only rules: the 19 js/node rows that check nothing until configured (`id-match`, `id-denylist`, `no-restricted-syntax`, …), built as their own class, silent by default, out of W-139's count. Filed by Arpit (Cowork). [detail](open/W-176-options-only-rules.md)
+
+🟢 **W-178** `agent` Build `key-name-casing` (data, off by default), `require-frontmatter-fields` (md) and `check-examples` — with the engine work to lint `@example` code. Filed by Arpit (Cowork). [detail](open/W-178-config-keys-frontmatter-examples.md)
+
+🟢 **W-179** `agent` Formatter: check and add Ruff's docstring and shebang layout rows (D201, D202, D203/D211, D204, EXE004) and two Pylint ones; D210 already done. Filed by Arpit (Cowork). [detail](open/W-179-formatter-docstring-shebang-rows.md)
+
+🟢 **W-180** `agent` pydocstyle's imperative-mood verb list (ratified 11-09) and Ruff D401, D421 on it. Filed by Arpit (Cowork). [detail](open/W-180-imperative-mood-verbs.md)
+
+🟢 **W-182** `agent` A Unicode confusables data package (ratified 11-09) and Ruff RUF001–RUF003 on it. Filed by Arpit (Cowork). [detail](open/W-182-unicode-confusables.md)
+
+🟢 **W-183** `agent` Findings gated on the project's Python version; Ruff FA100, FA102, PERF203, UP036 and two Pylint rows on it. Filed by Arpit (Cowork). [detail](open/W-183-target-gated-findings.md)
+
+🟢 **W-184** `agent` A file's executable bit for rules; Ruff EXE001, EXE002 on it. Filed by Arpit (Cowork). [detail](open/W-184-file-mode-bits.md)
+
+🟢 **W-185** `agent` The Python side of the project graph (imports, class bases) and six Pylint rows on it (`cyclic-import`, `import-error`, …). Filed by Arpit (Cowork). [detail](open/W-185-python-project-graph.md)
+
+🟢 **W-187** `agent` A data package of deprecated standard-library names from CPython's docs (approved 11-09); Pylint's five `deprecated-*` rows. Filed by Arpit (Cowork). [detail](open/W-187-stdlib-deprecations.md)
+
+🟢 **W-190** `agent` `no-using-resource-escape`, `prefer-dispose`: the pinned JS grammar (0.25.0) parses `using`, TS 0.23.2 does not — build for JS, then move TS. Filed by Arpit (Cowork). [detail](open/W-190-using-declarations.md)
+
+🟢 **W-193** `agent` Ruff's last buildable rows: TC008, SIM905. Filed by Arpit (Cowork). [detail](open/W-193-ruff-tail.md)
+
+🟢 **W-194** `agent` Pylint's 15 docparams rows and two `ported_from:` links. Filed by Arpit (Cowork). [detail](open/W-194-pylint-tail.md)
+
+🟢 **W-195** `agent` JS rows with no blocker: four unicorn/SonarJS rows, `comment-type`, `process-exit-as-throw`, six second fixes. Filed by Arpit (Cowork). [detail](open/W-195-js-tail.md)
+
+🟢 **W-196** `agent` Biome's 98 unbuilt rows (Qwik, Solid, React Native, Vue and nursery ones classed first). Filed by Arpit (Cowork). [detail](open/W-196-biome-tail.md)
+
+🟡 **W-181** waits on **W-183** `agent` Ruff's moved typing names table (ratified 11-09) and UP035 on it. Filed by Arpit (Cowork). [detail](open/W-181-moved-typing-names.md)
+
+🟡 **W-186** waits on **W-185** `agent` Ruff PLC2701, importing another package's private names. Filed by Arpit (Cowork). [detail](open/W-186-import-private-name.md)
+
+🟣 **W-188** waits on **W-105** `agent` The JS value-type rows (built 11-09 on one file's facts) ask the type helper; `jsdoc-no-unnecessary-type-assertion`. Filed by Arpit (Cowork). [detail](open/W-188-js-value-rows-type-aware.md)
 
 
-🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
+🟡 **W-143** waits on **W-195**, **W-196** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 ### ci/cd (4)
 
@@ -64,20 +83,28 @@ here. Read that record before changing anything below it.
 
 🟢 **W-95** `agent` VS Code extension: Marketplace live (0.4.0); Open VSX by trusted publishing in `publish.yml` since 11-05, proven by the next release. Left: a VSCodium install after it (Open VSX's darwin-arm64 is 0.3.0). Filed by Arpit (Cowork). [detail](open/W-95-publish-vscode-extension.md)
 
-🟡 **W-142** waits on **W-139** `arpit` New packs' registry names: five PyPI framework packs (pending publishers), npm `testing`/`nextjs` (was W-147), Tailwind's, `data-browsers` (W-166) and `data-polyfills` (W-175), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
+🟡 **W-142** waits on **W-182**, **W-187** `arpit` Registry names for the new packs (five PyPI framework packs, npm `testing`/`nextjs`, Tailwind's) and data packages (browsers, polyfills, the two new ones), with Fux indexes; before their release. Filed by Arpit (Cowork). [detail](open/W-142-framework-pack-names.md)
 
 ### cleanup (0)
 
 ### testing (0)
 
-### reporting and benchmarks (1)
+### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-139** `agent` Ruled 11-05: the 7 tempting tasks at 9 runs per arm (~$65), `PREREG.md` amended first — and run only once every rule is built (voice). Rework, turns and tokens: B-072. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-193**, **W-194**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
-### record update (0)
+🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
-### research (1)
+### record update (1)
+
+🟢 **W-191** `agent` SR-PROJECT-GRAPH as the overview of every graph; the module graph, semantic model and Python flow pass each in a record. SR-CODE-PATH-GRAPH filed 11-09. Filed by Arpit (Cowork). [detail](open/W-191-graph-records.md)
+
+### research (3)
 
 🟢 **W-167** `cowork` Architecture design for graph generation at 100k–1M files: today's pipeline, prior art (Glean, Kythe, SCIP, salsa, Knip, Nx), 2–3 options as a proposal; step 3 reads W-168's numbers. Filed by Arpit (Cowork). [detail](open/W-167-graph-architecture-design.md)
+
+🟢 **W-177** `cowork` Should the Python rows that need a call's return or an imported class ask the project's own type checker (`ty`, pyright, mypy), as TypeScript is asked? SR-PY-INFERENCE decision 8, as a proposal. Filed by Arpit (Cowork). [detail](open/W-177-python-type-checker-research.md)
+
+🟢 **W-189** `cowork` A code-path graph for JS (routes through `await`, loops, `try`) for `require-atomic-updates` and `no-multiple-promise-resolver-calls`. Filed by Arpit (Cowork). [detail](open/W-189-js-code-path-graph-research.md)
 
 ---

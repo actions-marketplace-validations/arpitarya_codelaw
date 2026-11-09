@@ -9,7 +9,7 @@ timestamp: 2026-10-30T02:45:00+05:30
 # Rule parity — every rule, counted
 
 **Ruled 2026-10-30 (Arpit, voice):** build all — 1,690 + 16 taste (opt-in) + 39 framework rules in five new PyPI packs = **1,745** (W-139); tranche A on by default, the rest preview/opt-in; four Prettier keys (W-141); Vue/Svelte/Astro/GraphQL as languages (W-143); round 2 (W-144); Tailwind (W-145). W-138 closed. **Round 2 ruled 2026-10-30 (voice):** a `testing` and a `nextjs` npm pack; SonarJS, Pylint and jsdoc opt-in; regexp and promise on by default; TSLint's 6 built — W-139 (§11); W-144 closed. Researched 2026-10-30 (Cowork, Opus 5.5) for
-[W-138](../open/W-138-rule-parity-research.md); [W-139](../open/W-139-rule-parity-build.md)
+[W-138](../open/W-138-rule-parity-research.md); [W-139](../../archive/open/W-139-rule-parity-build.md)
 builds what is ruled. Every number here is computed by the scripts in
 [`rule-parity/method/`](rule-parity/method/) from each tool's own published
 package — nothing is counted from a blog or a docs page.
@@ -326,3 +326,18 @@ Pack by pack: codelaw's rules when this proposal was written, the count it propo
 
 - **The gap:** 920 rows not answered yet (after the js strand's slice 20, 2026-11-07), nearly all in `js` (329) and `python` (481) — unicorn's and Ruff's long tails, the jsdoc type-expression rows and the natives W-139's *Remaining* tables name. Many `python` and `js` rows were met by linking an existing rule (`ported_from:`), so *rules today* rises less than *built*.
 - **Corpus (step 3):** every pack's `corpus.toml` holds the 233 rules of 2026-11-05. Two rules narrowed on what the corpus showed — `md/no-empty-links` (on in `md/recommended`: 254 findings on `[x](#anchor)` and `[x](<a b.md>)` links, now 0) and `js/no-undefined` (TypeScript's `undefined` type rewritten to `void 0`, not a fixpoint). Every other new count belongs to a `preview` rule in no on-by-default preset; the loud ones (`css/no-unknown-custom-properties` 782, `scss/no-dollar-variables` 1,864, `ts/member-ordering` 1,683, `py/unused-function-argument` 541) are for review before any promotion.
+
+## 14 · Ruled 2026-11-09: the rows W-139 left, and where each went
+
+W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 271 on the voice docket of 2026-11-09 (*"Whatever is pending, we are going to have separate work items for those. And we close W139."*). The classes below are not ports and leave the count; `method/classify.py` does not know them yet, so a regenerated CSV shows them as `port` until it does (W-192's ledger step).
+
+| class | rows |
+|---|---|
+| formatter-owned | Jest `padding-around-*` ×8; eslint-plugin-react's 13 JSX layout rows; unicorn `number-literal-case`; import `newline-after-import`; jsdoc `lines-before-block`; stylelint's 6 empty-line and one-line-block rows; Ruff `D201`, `D202`, `D203`, `D204`, `D210`, `D211`, `EXE004`; Pylint `inconsistent-quotes`, `implicit-str-concat` (the formatter's side: W-179) |
+| out of scope | react-hooks `fbt`, `invariant`, `syntax`, `todo`; Ruff `RUF028`, `RUF054`, `RUF100`–`RUF106`, `RUF200`, `RUF201`; Pylint `duplicate-code`, `invalid-characters-in-docstring` |
+| not applicable | Pylint `bad-configuration-section`, `bad-plugin-value`, `unknown-option-value`, `unrecognized-inline-option`, `unrecognized-option`, `useless-option-value`, `boolean-datetime`, `broken-noreturn`, `broken-collections-callable`, the five `using-*-in-unsupported-version` at or below the 3.9 floor, `duplicate-argument-name`, `return-arg-in-generator` |
+| options-only (built, silent until configured) | W-176's 19 rows |
+| link (an existing rule does the job) | Pylint `preferred-module`, `consider-using-f-string` (W-194) |
+| still to build | W-178, W-180–W-190, W-193–W-196 |
+| backlog | B-081 (Airflow ×5), B-082 (`PLE2514`), B-083 (`TID254`, `TID255`), B-084 (two Pylint rows) |
+

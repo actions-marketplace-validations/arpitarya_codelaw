@@ -6,8 +6,8 @@ item: W-139
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-09
-updated_by: "Claude Code (Sonnet 5.5), W-139-ruff (slices 31–34)"
-ball: arpit
+updated_by: "Arpit (Cowork, Opus 5.5): closed — every row left re-ruled, moved to its own item or to the backlog"
+ball: agent
 ---
 
 # W-139 — Build: port the rules W-138 and W-144 pick
@@ -44,11 +44,39 @@ ball: arpit
 - **R8 — TSLint's 6** (*"Let's file all this."*): `js/file-header`, `js/no-default-import`, `js/no-unnecessary-callback-wrapper` (suggest) in `js`; `ts/no-mergeable-namespace` in `ts`; `js/comment-type`, `js/switch-final-break` in the taste preset.
 - **The count:** every `port` row in the CSVs (2,574) less the `tailwind` pack's 8 (W-145 builds those with the pack), plus TSLint's 6 = **2,572**; plus Oxlint's 18 (W-148, 2026-10-30) = **2,590**. Codelaw goes from 689 to about 3,280.
 
+**Ruled 2026-11-09 — the js rows that no rule can carry (Arpit, voice docket; filed on *"file it."*), each group put to him in turn:**
+
+- **Formatter-owned — not rules, not counted against DoD 1** (*"Yes, I agree."*): the 8 Jest `padding-around-*`, eslint-plugin-react's 13 JSX layout rows, `js/number-literal-case`, `js/import-newline-after-import`, `js/jsdoc-lines-before-block`, stylelint's 6 empty-line and one-line-block rows (SR-FORMATTER decision 3).
+- **Out of scope** (*"Leave them out."*): react-hooks `fbt`, `invariant`, `syntax`, `todo` — the React Compiler's own diagnostics.
+- **Options-only — shipped as configure-to-use rules, silent until a project sets their option** (*"Yes."*), then *"For the previous item, create a separate work item."* (confirmed: *"Yes."*): the 19 rows are [W-176](W-176-options-only-rules.md), out of this item's DoD 1. `js/key-name-casing` and `js/require-frontmatter-fields` stay here, in their own inbox row.
+- **Parked:** the Airflow, data/Markdown/`check-examples`, Ruff and Pylint rulings. Arpit asked first *"Why are we writing rules for Apache Airflow?"* (answer: only for Ruff parity — so marking all five out of scope is now an option in its row), then to see the framework-specific rows before ruling: *"once we file it, fetch these details for me … for 139."* · *"And then only we make the decision."*
+
+**Closed 2026-11-09 (Arpit, voice docket; filed on *"file it."*):** *"Whatever is pending, we are going to have separate work items for those. And we close W139."* Built rules stay. Each of the 271 port rows no rule carried, and every other leftover, went here:
+
+| what | where |
+|---|---|
+| Airflow AIR301, AIR302, AIR311, AIR312, AIR321 (*"Whatever isn't done for airflow, put it in backlog."*) | B-081 |
+| `key-name-casing`, `require-frontmatter-fields`, `check-examples` (*"I want these built."*) | W-178 |
+| Ruff D201, D202, D203/D211, D204, EXE004 and Pylint `inconsistent-quotes`, `implicit-str-concat` — formatter-owned (D210 the formatter already does) | W-179 |
+| D401, D421 · UP035 · RUF001–003 — tables ratified by name (*"Approve all three. but have separate work items for these."*) | W-180 · W-181 · W-182 |
+| FA100, FA102, PERF203, UP036 and Pylint's two `using-*` target rows (*"Then we build it."*) | W-183 |
+| EXE001, EXE002 · PLE2514 (*"Let's go with what you recommend."*) | W-184 · B-082 |
+| Ruff RUF028, RUF054, RUF100–RUF106, RUF200, RUF201; Pylint `duplicate-code`, `invalid-characters-in-docstring` — out of scope, on the recommendation (*"Only the ones that are blocked."*) | not ported |
+| Pylint's 16 not-applicable rows (the six option rows, `boolean-datetime`, the two `broken-*`, the five `using-*` below the floor, `duplicate-argument-name`, `return-arg-in-generator`) | not ported |
+| Python project graph and its six Pylint rows · PLC2701 (*"PLC 2701 have a separate work item for it."*) · TID254, TID255 (*"Okay with both."*) | W-185 · W-186 · B-083 |
+| Pylint `deprecated-*` ×5 · `invalid-character-carriage-return`, `invalid-unicode-codec` | W-187 · B-084 |
+| the JS value-type rows (*"the 16 rows which wait on value type."*) | W-188 |
+| `require-atomic-updates`, `no-multiple-promise-resolver-calls` (*"a separate research work item for code path graph"*) · `no-using-resource-escape`, `prefer-dispose` (*"Keep it in the list."*) | W-189 · W-190 |
+| the options-only js/node rows (ruled earlier the same day) | W-176 |
+| the layout rows (Jest `padding-around-*`, React JSX, stylelint empty-line, `number-literal-case`, `import-newline-after-import`, `jsdoc-lines-before-block`) and react-hooks `fbt`, `invariant`, `syntax`, `todo` | formatter-owned · out of scope (ruled earlier the same day) |
+| the graphs' records (*"create SR for individual graphs"*) · the defaults page, DoD 2's presets and 2d's promotions | W-191 · W-192 |
+| Ruff TC008, SIM905 · Pylint docparams ×15 and two links · js tail (four rows, `comment-type`, `process-exit-as-throw`, six second fixes) · Biome's 98 rows | W-193 · W-194 · W-195 · W-196 |
+
 ## Definition of done
 
 | DoD | what | state |
 |---|---|---|
-| 1 · rules | every rule on the ruled port list (the CSVs in `work/proposals/rule-parity/` on `class = port`, `proposed_pack` not `tailwind`; plus `tslint-recheck.csv`'s 6 and `oxlint.csv`'s 18 `port` rows, W-148), in its pack, with valid and invalid cases and its fix class | ⏳ |
+| 1 · rules | every rule on the ruled port list (the CSVs in `work/proposals/rule-parity/` on `class = port`, `proposed_pack` not `tailwind`; plus `tslint-recheck.csv`'s 6 and `oxlint.csv`'s 18 `port` rows, W-148), in its pack, with valid and invalid cases and its fix class — less the rows ruled formatter-owned, out of scope or options-only (W-176) on 2026-11-09 | ⏳ |
 | 1b · links | the 29 equivalents marked `*` in the CSVs' `codelaw` column get their `ported_from:` line; the 3 id collisions the proposal names are checked first | ✅ slice 3: every `UNLINKED` pair of `method/classify.py` (22 rule files) |
 | 2 · presets | tranche A in `recommended`; the rest `preview`, in `strict` or opt-in presets; `js/unicorn` and a taste preset opt-in; B-048's `js/strict`, `react/a11y`, `py/strict`, pydocstyle preset; round 2: `js/sonarjs`, `js/jsdoc`, `py/pylint` opt-in, regexp's and promise's tranche A in `js/recommended`, a `testing/*` preset per framework | ⏳ |
 | 2b · packs | five new PyPI packs `django`, `fastapi`, `airflow`, `numpy`, `pandas` for Ruff's 39 framework rules (`ruff.csv`, class `out-of-scope`); L6 amended; names W-142 | 🔄 packs and L6 ✅ slice 7; 34 of 39 rules (`AIR001` slice 17; `FAST003`, `AIR004`, `AIR202`, `AIR303` slice 28) — left: `AIR301`, `AIR302`, `AIR311`, `AIR312`, `AIR321` (name tables; to the decider, *Slice 28* below) |
