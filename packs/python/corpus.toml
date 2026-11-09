@@ -155,6 +155,8 @@
 "py/dict-index-missing-items" = 0
 "py/dict-init-mutate" = 1
 "py/dict-iter-missing-items" = 0
+"py/differing-param-doc" = 12
+"py/differing-type-doc" = 10
 "py/direct-logger-instantiation" = 0
 "py/disallowed-name" = 70
 "py/doc-line-too-long" = 0
@@ -379,6 +381,7 @@
 "py/mismatched-section-underline-length" = 0
 "py/misplaced-bare-raise" = 0
 "py/misplaced-format-function" = 0
+"py/missing-any-param-doc" = 0
 "py/missing-blank-line-after-last-section" = 344
 "py/missing-blank-line-after-summary" = 251
 "py/missing-copyright-notice" = 677
@@ -386,9 +389,13 @@
 "py/missing-f-string-syntax" = 5
 "py/missing-format-attribute" = 0
 "py/missing-new-line-after-section-name" = 49
+"py/missing-param-doc" = 31
 "py/missing-parentheses-for-call-in-test" = 0
+"py/missing-raises-doc" = 0
 "py/missing-required-import" = 0
+"py/missing-return-doc" = 0
 "py/missing-return-type-class-method" = 39
+"py/missing-return-type-doc" = 0
 "py/missing-return-type-private-function" = 45
 "py/missing-return-type-special-method" = 174
 "py/missing-return-type-static-method" = 8
@@ -399,8 +406,11 @@
 "py/missing-timeout" = 5
 "py/missing-trailing-period" = 542
 "py/missing-type-args" = 46
+"py/missing-type-doc" = 1
 "py/missing-type-function-argument" = 1841
 "py/missing-type-kwargs" = 79
+"py/missing-yield-doc" = 0
+"py/missing-yield-type-doc" = 0
 "py/mixed-case-variable-in-class-scope" = 3
 "py/mixed-case-variable-in-global-scope" = 0
 "py/modified-iterating-dict" = 0
@@ -410,6 +420,7 @@
 "py/multi-line-summary-first-line" = 591
 "py/multi-line-summary-second-line" = 676
 "py/multiple-class-sub-patterns" = 0
+"py/multiple-constructor-doc" = 0
 "py/multiple-imports-on-one-line" = 0
 "py/multiple-starred-expressions" = 0
 "py/multiple-starts-ends-with" = 0
@@ -580,6 +591,7 @@
 "py/quadratic-list-summation" = 0
 "py/quoted-annotation" = 72
 "py/quoted-annotation-in-stub" = 0
+"py/quoted-type-alias" = 0
 "py/raise-literal" = 0
 "py/raise-not-implemented" = 0
 "py/raise-vanilla-args" = 295
@@ -606,9 +618,11 @@
 "py/redundant-none-literal" = 0
 "py/redundant-numeric-union" = 7
 "py/redundant-open-modes" = 3
+"py/redundant-returns-doc" = 6
 "py/redundant-tuple-in-exception-handler" = 0
 "py/redundant-typehint-argument" = 0
 "py/redundant-unittest-assert" = 0
+"py/redundant-yields-doc" = 0
 "py/regex-flag-alias" = 0
 "py/reimplemented-builtin" = 2
 "py/reimplemented-container-builtin" = 0
@@ -654,6 +668,7 @@
 "py/slice-to-remove-prefix-or-suffix" = 0
 "py/snake-case-type-alias" = 0
 "py/sorted-min-max" = 0
+"py/split-static-string" = 2
 "py/star-arg-unpacking-after-keyword-arg" = 0
 "py/star-import-usage" = 109
 "py/starmap-zip" = 0
@@ -849,9 +864,11 @@
 "py/useless-import-alias" = 3
 "py/useless-metaclass-type" = 0
 "py/useless-object-inheritance" = 0
+"py/useless-param-doc" = 6
 "py/useless-parent-delegation" = 0
 "py/useless-return" = 22
 "py/useless-try-except" = 6
+"py/useless-type-doc" = 4
 "py/useless-with-lock" = 0
 "py/using-constant-test" = 0
 "py/utf8-encoding-declaration" = 8

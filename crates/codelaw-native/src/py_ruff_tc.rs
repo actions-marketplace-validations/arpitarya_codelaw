@@ -573,6 +573,302 @@ fn tc010(root: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) 
     }
 }
 
+// ------------------------------------------------------------------ TC008
+
+/// Every string a type alias's value reads as a forward reference: the
+/// strings joined by `|`, in a subscript's arguments, in a list or tuple of
+/// them — not inside `Literal[...]`, not after the first argument of
+/// `Annotated[...]`.
+fn alias_strings<'t>(n: Node<'t>, out: &mut Vec<Node<'t>>, src: &str) {
+    match n.kind() {
+        "string" | "concatenated_string" => out.push(n),
+        "type" | "union_type" | "parenthesized_expression" | "list" | "tuple" | "expression_list" | "type_parameter" => {
+            for c in named_children(n) {
+                alias_strings(c, out, src);
+            }
+        }
+        "binary_operator" => {
+            if field(n, "operator").is_some_and(|o| text(o, src) == "|") {
+                for c in [field(n, "left"), field(n, "right")].into_iter().flatten() {
+                    alias_strings(c, out, src);
+                }
+            }
+        }
+        "generic_type" | "subscript" => {
+            let kids_: Vec<Node<'t>> = named_children(n);
+            let Some(head) = kids_.first().copied() else { return };
+            let head_text = text(head, src);
+            let last = head_text.rsplit('.').next().unwrap_or("");
+            if last == "Literal" {
+                return;
+            }
+            let args: Vec<Node<'t>> = kids_.into_iter().skip(1).collect();
+            for (i, a) in args.into_iter().enumerate() {
+                if last == "Annotated" && i > 0 && n.kind() == "subscript" {
+                    break;
+                }
+                alias_strings(a, out, src);
+            }
+            if last == "Annotated" && n.kind() == "generic_type" {
+                // `Annotated[X, "meta"]` in a `type` statement: the first type argument only.
+                let mut first_only: Vec<Node<'t>> = Vec::new();
+                if let Some(tp) = named_children(n).into_iter().find(|c| c.kind() == "type_parameter")
+                    && let Some(f) = named_children(tp).first().copied()
+                {
+                    alias_strings(f, &mut first_only, src);
+                }
+                out.retain(|o| !(o.start_byte() >= n.start_byte() && o.end_byte() <= n.end_byte()));
+                out.extend(first_only);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// The names a statement binds at run time in its own scope.
+fn binds<'t>(stmt: Node<'t>, name: &str, src: &str, out: &mut Vec<Node<'t>>) {
+    let mut names: Vec<String> = Vec::new();
+    fn targets(n: Node<'_>, src: &str, names: &mut Vec<String>) {
+        match n.kind() {
+            "identifier" => names.push(text(n, src).to_owned()),
+            "pattern_list" | "tuple_pattern" | "list_pattern" | "tuple" | "list" | "expression_list" | "list_splat_pattern" | "parenthesized_expression" => {
+                for c in named_children(n) {
+                    targets(c, src, names);
+                }
+            }
+            _ => {}
+        }
+    }
+    match stmt.kind() {
+        "import_statement" | "import_from_statement" => {
+            let mut c = stmt.walk();
+            let items: Vec<Node<'t>> = if stmt.kind() == "import_from_statement" { stmt.children_by_field_name("name", &mut c).collect() } else { children(stmt).into_iter().filter(|x| matches!(x.kind(), "dotted_name" | "aliased_import")).collect() };
+            for it in items {
+                if it.kind() == "aliased_import" {
+                    if let Some(a) = field(it, "alias") {
+                        names.push(text(a, src).to_owned());
+                    }
+                } else {
+                    let t: String = text(it, src).split_whitespace().collect();
+                    names.push(if stmt.kind() == "import_statement" { t.split('.').next().unwrap_or("").to_owned() } else { t });
+                }
+            }
+        }
+        "expression_statement" => {
+            for c in named_children(stmt) {
+                if c.kind() == "assignment" && field(c, "right").is_some() {
+                    if let Some(l) = field(c, "left") {
+                        targets(l, src, &mut names);
+                    }
+                } else if c.kind() == "assignment" {
+                    // `x: int` binds nothing at run time.
+                }
+            }
+        }
+        "function_definition" | "class_definition" => {
+            if let Some(n) = field(stmt, "name") {
+                names.push(text(n, src).to_owned());
+            }
+        }
+        "for_statement" => {
+            if let Some(l) = field(stmt, "left") {
+                targets(l, src, &mut names);
+            }
+        }
+        _ => {}
+    }
+    if names.iter().any(|n| n == name) {
+        out.push(stmt);
+    }
+}
+
+/// Every statement of the block, and of the compound statements in it, that
+/// binds `name` in the block's own scope (not in a nested function or class).
+fn scope_bindings<'t>(block: Node<'t>, name: &str, src: &str, out: &mut Vec<Node<'t>>) {
+    for s in named_children(block) {
+        match s.kind() {
+            "decorated_definition" => {
+                if let Some(d) = field(s, "definition") {
+                    binds(d, name, src, out);
+                }
+            }
+            "if_statement" | "try_statement" | "with_statement" | "for_statement" | "while_statement" | "elif_clause" | "else_clause" | "except_clause" | "finally_clause" | "block" | "match_statement" | "case_clause" => {
+                binds(s, name, src, out);
+                scope_bindings(s, name, src, out);
+            }
+            _ => binds(s, name, src, out),
+        }
+    }
+}
+
+/// Whether `stmt` sits in the `if TYPE_CHECKING:` branch of an `if`.
+fn under_type_checking(stmt: Node<'_>, src: &str) -> bool {
+    let mut cur = stmt;
+    while let Some(p) = cur.parent() {
+        if p.kind() == "if_statement"
+            && field(p, "condition").is_some_and(|c| matches!(text(c, src), "TYPE_CHECKING" | "typing.TYPE_CHECKING"))
+            && field(p, "consequence").is_some_and(|c| c.start_byte() <= stmt.start_byte() && stmt.end_byte() <= c.end_byte())
+        {
+            return true;
+        }
+        cur = p;
+    }
+    false
+}
+
+/// What an alias statement needs to know to judge a name in its value.
+struct AliasSite<'t> {
+    stmt: Node<'t>,
+    src: &'t str,
+    in_tc: bool,
+}
+
+impl AliasSite<'_> {
+    /// A name the file binds, but not yet — or never — at run time, where
+    /// the alias's value runs.
+    fn name_is_unavailable(&self, name: &str) -> bool {
+        let mut scopes: Vec<Node<'_>> = Vec::new();
+        let mut in_function = false;
+        let mut cur = self.stmt.parent();
+        while let Some(p) = cur {
+            match p.kind() {
+                "function_definition" => in_function = true,
+                "class_definition" | "module" => {
+                    if let Some(b) = field(p, "body").filter(|_| p.kind() == "class_definition") {
+                        scopes.push(b);
+                    } else if p.kind() == "module" {
+                        scopes.push(p);
+                    }
+                }
+                _ => {}
+            }
+            cur = p.parent();
+        }
+        let mut any = false;
+        for sc in scopes {
+            let mut found = Vec::new();
+            scope_bindings(sc, name, self.src, &mut found);
+            for b in found {
+                any = true;
+                let before = in_function || b.end_byte() <= self.stmt.start_byte();
+                if before && (self.in_tc || !under_type_checking(b, self.src)) {
+                    return false;
+                }
+            }
+        }
+        any
+    }
+
+    /// Ruff's reading of whether quoting a value is required: a subscript or
+    /// attribute outside a `TYPE_CHECKING` block may not exist at run time,
+    /// and a name may not yet be bound.
+    fn unremovable(&self, e: Node<'_>, src2: &str) -> bool {
+        match e.kind() {
+            "binary_operator" => {
+                if field(e, "operator").is_some_and(|o| text(o, src2) == "|") {
+                    [field(e, "left"), field(e, "right")].into_iter().flatten().any(|c| self.unremovable(c, src2))
+                } else {
+                    true
+                }
+            }
+            "list_splat" | "parenthesized_expression" => named_children(e).into_iter().any(|c| self.unremovable(c, src2)),
+            "subscript" => {
+                if !self.in_tc {
+                    return true;
+                }
+                let Some(value) = field(e, "value") else { return true };
+                if self.unremovable(value, src2) {
+                    return true;
+                }
+                let mut c = e.walk();
+                let args: Vec<Node<'_>> = e.children_by_field_name("subscript", &mut c).collect();
+                if text(value, src2).rsplit('.').next() == Some("Annotated") {
+                    return args.first().is_some_and(|a| args.len() > 1 && self.unremovable(*a, src2));
+                }
+                args.into_iter().any(|a| self.unremovable(a, src2))
+            }
+            "attribute" => {
+                if !self.in_tc {
+                    return true;
+                }
+                field(e, "object").is_some_and(|o| self.unremovable(o, src2))
+            }
+            "list" | "tuple" | "expression_list" => named_children(e).into_iter().any(|c| self.unremovable(c, src2)),
+            "identifier" => self.name_is_unavailable(text(e, src2)),
+            _ => false,
+        }
+    }
+}
+
+fn tc008(n: Node<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+    let src = ctx.source;
+    let explicit = n.kind() == "assignment";
+    let value = if explicit {
+        let (Some(ann), Some(v)) = (field(n, "type"), field(n, "right")) else { return };
+        if !text(ann, src).trim().ends_with("TypeAlias") {
+            return;
+        }
+        v
+    } else {
+        let Some(v) = field(n, "right") else { return };
+        v
+    };
+    let stmt = if explicit { n.parent().filter(|p| p.kind() == "expression_statement").unwrap_or(n) } else { n };
+    let site = AliasSite { stmt, src, in_tc: under_type_checking(stmt, src) };
+    let mut strings = Vec::new();
+    alias_strings(value, &mut strings, src);
+    for s in strings {
+        let Some(content) = crate::python_util::string_value(s, src) else { continue };
+        if content.trim().is_empty() {
+            continue;
+        }
+        if explicit {
+            let wrapped = format!("({content}\n)");
+            let tree = codelaw_lang::parse(Language::Python, &wrapped);
+            let root = tree.root();
+            let r = root.get_inner_node();
+            if r.has_error() {
+                continue;
+            }
+            let Some(expr) = r.named_child(0).and_then(|st| st.named_child(0)).filter(|p| p.kind() == "parenthesized_expression").and_then(|p| p.named_child(0)) else { continue };
+            if site.unremovable(expr, &wrapped) {
+                continue;
+            }
+        }
+        let multiline = content.contains(['\n', '\r']);
+        let parenthesized_outside = s.parent().is_some_and(|p| p.kind() == "parenthesized_expression");
+        let parenthesized_inside = {
+            let t = content.trim();
+            t.starts_with('(') && t.ends_with(')') && {
+                let wrapped = format!("({content}\n)");
+                let tree = codelaw_lang::parse(Language::Python, &wrapped);
+                let r = tree.root().get_inner_node();
+                r.named_child(0).and_then(|st| st.named_child(0)).and_then(|p| p.named_child(0)).is_some_and(|e| e.kind() == "parenthesized_expression")
+            }
+        };
+        let fixed = if multiline && !parenthesized_outside && !parenthesized_inside { format!("({content})") } else { content.clone() };
+        let edit = vec![TextEdit::new(s.start_byte(), s.end_byte(), fixed)];
+        let has_comment = children(s).iter().any(|c| c.kind() == "comment");
+        out.push(NativeFinding { start: s.start_byte(), end: s.end_byte(), message: "Remove quotes from type alias".into(), edits: if has_comment { as_suggestion(edit) } else { edit } });
+    }
+}
+
+pub struct QuotedTypeAlias;
+impl NativeRule for QuotedTypeAlias {
+    fn id(&self) -> &'static str {
+        "py/quoted-type-alias"
+    }
+    fn languages(&self) -> &'static [Language] {
+        PY
+    }
+    fn kinds(&self) -> &'static [&'static str] {
+        &["assignment", "type_alias_statement"]
+    }
+    fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+        tc008(node.get_inner_node(), ctx, out)
+    }
+}
+
 macro_rules! tc_rule {
     ($name:ident, $id:literal, $f:expr) => {
         pub struct $name;
@@ -623,7 +919,7 @@ impl NativeRule for UnquotedTypeAlias {
     }
 }
 
-pub static RULES: &[&dyn NativeRule] = &[&TypingOnlyFirstPartyImport, &TypingOnlyThirdPartyImport, &TypingOnlyStandardLibraryImport, &RuntimeImportInTypeCheckingBlock, &RuntimeStringUnion, &UnquotedTypeAlias];
+pub static RULES: &[&dyn NativeRule] = &[&TypingOnlyFirstPartyImport, &TypingOnlyThirdPartyImport, &TypingOnlyStandardLibraryImport, &RuntimeImportInTypeCheckingBlock, &RuntimeStringUnion, &UnquotedTypeAlias, &QuotedTypeAlias];
 
 #[cfg(test)]
 mod tests {
@@ -664,5 +960,27 @@ mod tests {
     fn runtime_in_block() {
         let src = "from typing import TYPE_CHECKING\n\nif TYPE_CHECKING:\n    from pathlib import Path\n\nx = Path()\n";
         assert_eq!(run(&RuntimeImportInTypeCheckingBlock, src).len(), 1);
+    }
+
+    /// The lines of a file that `py/quoted-type-alias` reports, one-based.
+    fn lines_of_findings(src: &str) -> Vec<usize> {
+        run(&QuotedTypeAlias, src).iter().map(|f| src[..f.start].matches('\n').count() + 1).collect()
+    }
+
+    #[test]
+    fn quoted_type_alias_rows() {
+        let src = "from __future__ import annotations\n\nfrom typing import TypeAlias, TYPE_CHECKING\n\nfrom foo import Foo\n\nif TYPE_CHECKING:\n    from typing import Dict\n\n    OptStr: TypeAlias = str | None\n    Bar: TypeAlias = Foo[int]\nelse:\n    Bar = Foo\n\na: TypeAlias = 'int'\nb: TypeAlias = 'Dict'\nc: TypeAlias = 'Foo'\nd: TypeAlias = 'Foo[str]'\ne: TypeAlias = 'Foo.bar'\nf: TypeAlias = 'Foo | None'\ng: TypeAlias = 'OptStr'\nh: TypeAlias = 'Bar'\ni: TypeAlias = Foo['str']\nj: TypeAlias = 'Baz'\nk: TypeAlias = 'k | None'\n\n\nclass Baz:\n    a: TypeAlias = 'Baz'\n    type A = 'Baz'\n";
+        assert_eq!(lines_of_findings(src), vec![15, 17, 20, 22, 23, 30]);
+    }
+
+    #[test]
+    fn quoted_type_alias_statement_and_multiline() {
+        let src = "type B = 'Dict'\ntype I = Foo['str']\ntype K = 'K | None'\ntype L = Literal['x']\n";
+        assert_eq!(lines_of_findings(src), vec![1, 2, 3]);
+        let o = "from typing import TypeAlias\no: TypeAlias = \"\"\"int\n| None\"\"\"\np: TypeAlias = (\"\"\"int\n| None\"\"\")\n";
+        let r = run(&QuotedTypeAlias, o);
+        assert_eq!(r.len(), 2);
+        assert_eq!(r[0].edits[0].text, "(int\n| None)");
+        assert_eq!(r[1].edits[0].text, "int\n| None");
     }
 }

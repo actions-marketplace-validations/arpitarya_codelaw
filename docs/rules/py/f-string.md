@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when each argument is evaluated once and in the order it was written; when a call is evaluated in another order, the finding is a suggestion; a call with a comment inside it is reported without an edit) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/UP032` |
+| **Ported from** | `ruff/UP032`, `pylint/consider-using-f-string` |
 
 ## What it checks
 

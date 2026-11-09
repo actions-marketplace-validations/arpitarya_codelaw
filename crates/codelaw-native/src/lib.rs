@@ -80,6 +80,7 @@ mod py_ruff_fmt;
 mod py_ruff_generic;
 mod py_ruff_tc;
 mod py_classes;
+mod py_pylint_doc;
 mod py_pylint_imports;
 mod py_flow;
 mod py_scope;
@@ -974,7 +975,7 @@ pub fn registry() -> &'static [&'static dyn NativeRule] {
 }
 
 /// `REGISTRY` and the rule families kept in their own lists.
-static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(jsdoc::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_tc::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).copied().collect());
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(jsdoc::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_tc::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(py_pylint_doc::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]
@@ -1025,9 +1026,13 @@ impl FileContext for MemoryFiles {
 
 #[cfg(test)]
 pub(crate) fn run(rule: &dyn NativeRule, language: Language, src: &str) -> Vec<NativeFinding> {
+    run_with(rule, language, src, BTreeMap::new())
+}
+
+#[cfg(test)]
+pub(crate) fn run_with(rule: &dyn NativeRule, language: Language, src: &str, options: BTreeMap<String, serde_json::Value>) -> Vec<NativeFinding> {
     let root = codelaw_lang::parse(language, src);
     let model = codelaw_semantic::build(language, &root, src);
-    let options = BTreeMap::new();
     let data = BTreeMap::new();
     let file = DetachedFile::new(format!("example.{}", language.extension()), src);
     let ctx = NativeContext { source: src, language, semantic: model.as_ref(), options: &options, data: &data, file: &file };

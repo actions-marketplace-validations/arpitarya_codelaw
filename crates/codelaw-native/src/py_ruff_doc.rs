@@ -85,14 +85,14 @@ fn find_underline(line: &str, base: usize, ch: char) -> Option<(usize, usize)> {
 
 // -------------------------------------------------------------- docstring
 
-struct Ds<'a> {
-    src: &'a str,
-    def: Node<'a>,
-    start: usize,
-    end: usize,
-    body_start: usize,
-    body_end: usize,
-    triple: bool,
+pub(crate) struct Ds<'a> {
+    pub(crate) src: &'a str,
+    pub(crate) def: Node<'a>,
+    pub(crate) start: usize,
+    pub(crate) end: usize,
+    pub(crate) body_start: usize,
+    pub(crate) body_end: usize,
+    pub(crate) triple: bool,
 }
 
 impl<'a> Ds<'a> {
@@ -108,7 +108,7 @@ impl<'a> Ds<'a> {
 
 /// The docstring of a module, class or function: its first statement, when
 /// that is one plain string.
-fn docstring_of<'a>(def: Node<'a>, src: &'a str) -> Option<Ds<'a>> {
+pub(crate) fn docstring_of<'a>(def: Node<'a>, src: &'a str) -> Option<Ds<'a>> {
     let first = match def.kind() {
         "module" => statements(def).into_iter().next()?,
         _ => statements(def.child_by_field_name("body")?).into_iter().next()?,
@@ -299,14 +299,14 @@ fn sections_of(ds: &Ds<'_>) -> (Vec<Sect>, Style) {
 
 // ------------------------------------------------------------- parameters
 
-struct Param {
-    name: String,
+pub(crate) struct Param {
+    pub(crate) name: String,
     /// `*`, `**` or nothing.
-    stars: usize,
-    annotation: Option<String>,
+    pub(crate) stars: usize,
+    pub(crate) annotation: Option<String>,
 }
 
-fn params_of(def: Node<'_>, src: &str) -> Vec<Param> {
+pub(crate) fn params_of(def: Node<'_>, src: &str) -> Vec<Param> {
     let mut out = Vec::new();
     let Some(ps) = def.child_by_field_name("parameters") else { return out };
     for c in kids(ps) {
@@ -334,7 +334,7 @@ fn params_of(def: Node<'_>, src: &str) -> Vec<Param> {
     out
 }
 
-fn decorator_names(def: Node<'_>, src: &str) -> Vec<String> {
+pub(crate) fn decorator_names(def: Node<'_>, src: &str) -> Vec<String> {
     decorators(def)
         .into_iter()
         .map(|d| {
@@ -344,7 +344,7 @@ fn decorator_names(def: Node<'_>, src: &str) -> Vec<String> {
         .collect()
 }
 
-fn is_method(def: Node<'_>) -> bool {
+pub(crate) fn is_method(def: Node<'_>) -> bool {
     let mut p = def.parent();
     if p.is_some_and(|x| x.kind() == "decorated_definition") {
         p = p.and_then(|x| x.parent());
@@ -797,7 +797,7 @@ struct Body {
 
 /// The qualified name an exception expression resolves to: through the
 /// file's imports, a builtin, or a class defined in the file.
-fn exc_name(n: Node<'_>, ctx: &NativeContext<'_>) -> Option<String> {
+pub(crate) fn exc_name(n: Node<'_>, ctx: &NativeContext<'_>) -> Option<String> {
     let model = ctx.semantic?;
     if let Some(q) = qualified_name(n, model, ctx.source) {
         return Some(q);
@@ -912,7 +912,7 @@ fn body_of<'a>(def: Node<'a>, ctx: &NativeContext<'a>) -> Body {
     body
 }
 
-fn is_stub_fn(def: Node<'_>, src: &str) -> bool {
+pub(crate) fn is_stub_fn(def: Node<'_>, src: &str) -> bool {
     if decorator_names(def, src).iter().any(|d| d == "overload" || d.ends_with(".overload")) {
         return true;
     }
@@ -928,14 +928,14 @@ fn is_stub_fn(def: Node<'_>, src: &str) -> bool {
     })
 }
 
-fn is_abstract(def: Node<'_>, src: &str) -> bool {
+pub(crate) fn is_abstract(def: Node<'_>, src: &str) -> bool {
     decorator_names(def, src).iter().any(|d| {
         let last = d.rsplit('.').next().unwrap_or(d);
         matches!(last, "abstractmethod" | "abstractproperty" | "abstractclassmethod" | "abstractstaticmethod")
     })
 }
 
-fn is_property(def: Node<'_>, src: &str) -> bool {
+pub(crate) fn is_property(def: Node<'_>, src: &str) -> bool {
     decorator_names(def, src).iter().any(|d| {
         let last = d.rsplit('.').next().unwrap_or(d);
         matches!(last, "property" | "cached_property" | "setter" | "getter" | "deleter")

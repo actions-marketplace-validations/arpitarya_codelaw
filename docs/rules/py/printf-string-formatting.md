@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`"%s" % x` formats a tuple `x` as several values while `.format(x)` formats it as one, and `%` calls `str` where `.format` calls `format`; the rewrite is offered, not applied) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `ruff/UP031` |
+| **Ported from** | `ruff/UP031`, `pylint/consider-using-f-string` |
 
 ## What it checks
 

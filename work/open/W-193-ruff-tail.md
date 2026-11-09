@@ -16,7 +16,7 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Build TC008 and SIM905 | Ruff's buildable rows done | ⏳ |
+| 1 | Build TC008 and SIM905 | Ruff's buildable rows done | ✅ 2026-11-09 — `py/quoted-type-alias` (`py_ruff_tc.rs`) and `py/split-static-string` (`py_ruff_fmt.rs`), `preview`, W-139-pydoc, slice 37 |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* Unblocked rows go to build items; only blocked ones were discussed: *"Only the ones that are blocked."* Filed on *"file it."*
 
@@ -30,7 +30,7 @@ ball: agent
 
 | DoD | what | state |
 |---|---|---|
-| 1 · rules | both, with cases and fix classes | ⏳ |
+| 1 · rules | both, with cases and fix classes | ✅ both `auto` (TC008 `fix_target` 3.10); `codelaw test packs/python` 0 failed |
 
 ## Blockers
 

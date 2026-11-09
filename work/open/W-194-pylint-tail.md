@@ -16,8 +16,8 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Build the 15 docparams rows on the docstring parser | Pylint's docstring-parameter checks | ⏳ |
-| 2 | Link `preferred-module` and `consider-using-f-string` to the rules that do their job | no duplicate rules | ⏳ |
+| 1 | Build the 15 docparams rows on the docstring parser | Pylint's docstring-parameter checks | ✅ 2026-11-09 — `py_pylint_doc.rs` (its own Sphinx/Google/NumPy reading), `preview`, W-139-pydoc, slice 37 |
+| 2 | Link `preferred-module` and `consider-using-f-string` to the rules that do their job | no duplicate rules | ✅ 2026-11-09 |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* Unblocked rows go to build items: *"Only the ones that are blocked."* Filed on *"file it."*
 
@@ -31,8 +31,8 @@ Pylint docparams: `differing-param-doc`, `differing-type-doc`, `missing-any-para
 
 | DoD | what | state |
 |---|---|---|
-| 1 · rules | the 15 with cases | ⏳ |
-| 2 · links | the two `ported_from:` lines | ⏳ |
+| 1 · rules | the 15 with cases | ✅ options `accept_no_*_doc` keep Pylint's `true`; `docstring-min-length` and a custom `no-docstring-rgx` are not options; `missing-raises-doc` does not infer a raised class from a call's return value |
+| 2 · links | the two `ported_from:` lines | ✅ `use-instead`, `printf-string-formatting`, `f-string` |
 
 ## Blockers
 
