@@ -323,3 +323,7 @@ description = "eslint-plugin-unicorn 79.0.0 recommended, reimplemented: the stri
 "js/no-conflicting-constraints" = "error"
 "js/no-invalid-integrity" = "error"
 "js/consistent-class-member-order" = "error"
+"js/prefer-abort-signal-any" = "error"
+"js/prefer-iterator-zip" = "error"
+"js/no-unnecessary-parameters" = "error"
+"js/name-replacements" = "error"

@@ -135,7 +135,7 @@ fn dir_of(p: &str) -> &str {
 
 /// The nearest `package.json` above `path` that has a `name` (or any, when
 /// `named` is false): its folder and its parsed value.
-fn package_json(ctx: &NativeContext<'_>, path: &str, named: bool) -> Option<(String, Value)> {
+pub(super) fn package_json(ctx: &NativeContext<'_>, path: &str, named: bool) -> Option<(String, Value)> {
     let mut dir = dir_of(path).to_owned();
     loop {
         let p = if dir.is_empty() { "package.json".to_owned() } else { format!("{dir}/package.json") };

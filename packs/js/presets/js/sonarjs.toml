@@ -162,3 +162,4 @@ description = "eslint-plugin-sonarjs 4.2.2 recommended, reimplemented from its d
 "js/stateful-regex" = "error"
 "js/no-internal-api-use" = "error"
 "js/no-same-line-conditional" = "error"
+"js/parameterized-tests" = "error"

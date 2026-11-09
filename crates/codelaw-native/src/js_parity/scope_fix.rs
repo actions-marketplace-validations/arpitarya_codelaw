@@ -1120,7 +1120,7 @@ srule!(PreferAbortSignalTimeout, "js/prefer-abort-signal-timeout", &["lexical_de
 
 // ---- unicorn: no-for-loop ------------------------------------------------------------
 
-fn singular(name: &str) -> String {
+pub(super) fn singular(name: &str) -> String {
     let s = if let Some(b) = name.strip_suffix("ies") {
         format!("{b}y")
     } else if let Some(b) = name.strip_suffix("es").filter(|b| b.ends_with(['x', 's', 'z']) || b.ends_with("ch") || b.ends_with("sh")) {
