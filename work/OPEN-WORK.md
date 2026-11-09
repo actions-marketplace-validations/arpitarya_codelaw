@@ -33,7 +33,7 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 164. 11-09: tail built (15 rules); 25 layout rows and the Airflow tables → re-rule list (item, *Slice 28*). Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 50 rows left, py 164. 11-09: tail built (15); value rows built (23, slice 29); layout rows → re-rule list (item). Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` L8 budgets: 11-08 time side built (allocator leftover removed, key order, parent gate); `peak_memory_10k` still ~14 MiB over. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 

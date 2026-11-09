@@ -58,6 +58,7 @@ description = "eslint-plugin-sonarjs 4.2.2 recommended, reimplemented from its d
 "js/no-debug-commands-in-ui-tests" = "error"
 "js/no-default-utility-imports" = "error"
 "js/no-duplicate-in-composite" = "error"
+"js/no-duplicate-parameterized-test-case" = "error"
 "js/no-duplicate-test-title" = "error"
 "js/no-element-overwrite" = "error"
 "js/no-empty-parameterized-test-dataset" = "error"

@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2769 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2773 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 909 | 32 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 913 | 32 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
@@ -377,6 +377,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-in-composite`](js/no-duplicate-in-composite.md) | No type written twice in a union or intersection | `auto` | — | `js/sonarjs` |
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-loops`](js/no-duplicate-loops.md) | No `for…of` over a `.map()` or `.filter()` | `manual` | — | `js/strict` |
+| [`js/no-duplicate-parameterized-test-case`](js/no-duplicate-parameterized-test-case.md) | No repeated row in an `each()` table | `auto` | — | `js/sonarjs` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-duplicate-string`](js/no-duplicate-string.md) | No string literal written three or more times | `manual` | `threshold` | *[rules] only* |
 | [`js/no-duplicate-test-title`](js/no-duplicate-test-title.md) | No two tests with the same title in a block | `manual` | — | `js/sonarjs` |
@@ -541,6 +542,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-setter-return`](js/no-setter-return.md) | A setter does not return a value | `auto` | — | `js/recommended` |
 | [`js/no-shadow`](js/no-shadow.md) | No declaration that shadows an outer one | `manual` | — | *[rules] only* |
 | [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `auto` | — | `js/recommended`, `js/sonarjs` |
+| [`js/no-shorthand-property-overrides`](js/no-shorthand-property-overrides.md) | No CSS shorthand after a longhand it resets in a `style` object | `manual` | — | `js/strict` |
 | [`js/no-single-promise-in-promise-methods`](js/no-single-promise-in-promise-methods.md) | No Promise.all(\[single\]) | `manual` | — | `js/strict` |
 | [`js/no-sonar-comments`](js/no-sonar-comments.md) | No NOSONAR comment | `manual` | — | *[rules] only* |
 | [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `suggest` | — | `js/recommended` |
@@ -736,6 +738,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-literal-ascii`](js/prefer-literal-ascii.md) | Printable ASCII written as itself, not as an escape | `auto` | — | `js/strict` |
 | [`js/prefer-location-assign`](js/prefer-location-assign.md) | location.assign rather than location = url | `auto` | — | `js/strict` |
 | [`js/prefer-logical-operator-over-ternary`](js/prefer-logical-operator-over-ternary.md) | a \|\| b rather than a ? a : b | `suggest` | — | `js/strict` |
+| [`js/prefer-map-from-entries`](js/prefer-map-from-entries.md) | A `Map` for an object built from entries and used as a map | `auto` | — | `js/strict` |
 | [`js/prefer-math-abs`](js/prefer-math-abs.md) | Math.abs rather than a ternary | `suggest` | — | `js/strict` |
 | [`js/prefer-math-constants`](js/prefer-math-constants.md) | Math.SQRT2 rather than Math.sqrt(2) | `auto` | — | `js/strict` |
 | [`js/prefer-math-min-max`](js/prefer-math-min-max.md) | Math.min rather than a ternary | `suggest` | — | `js/strict` |
@@ -758,6 +761,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-object-destructuring-defaults`](js/prefer-object-destructuring-defaults.md) | Destructuring defaults rather than a defaults object spread under the options | `suggest` | — | `js/strict` |
 | [`js/prefer-object-from-entries`](js/prefer-object-from-entries.md) | Object.fromEntries() rather than reducing pairs | `auto` | — | `js/strict` |
 | [`js/prefer-object-has-own`](js/prefer-object-has-own.md) | Object.hasOwn rather than hasOwnProperty.call | `auto` | — | *[rules] only* |
+| [`js/prefer-object-iterable-methods`](js/prefer-object-iterable-methods.md) | The `Object` iterable method that matches what is used | `auto` | — | `js/strict` |
 | [`js/prefer-object-literal`](js/prefer-object-literal.md) | Properties in the object literal, not assigned after | `manual` | — | *[rules] only* |
 | [`js/prefer-object-spread`](js/prefer-object-spread.md) | { ...a } rather than Object.assign({}, a) | `suggest` | — | *[rules] only* |
 | [`js/prefer-observer-apis`](js/prefer-observer-apis.md) | ResizeObserver or IntersectionObserver rather than reading layout in resize or scroll listeners | `manual` | — | `js/strict` |

@@ -27,6 +27,10 @@ mod builtin_props;
 mod commented;
 mod guards;
 mod tables;
+mod tests_rules;
+mod maps;
+mod objects;
+mod style;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
@@ -818,4 +822,8 @@ pub static RULES: &[&dyn NativeRule] = &[
     &commented::NoCommentedCode,
     &guards::PreferTypeGuard,
     &tables::TableHeaderReference,
+    &tests_rules::NoDuplicateParameterizedTestCase,
+    &maps::PreferMapFromEntries,
+    &objects::PreferObjectIterableMethods,
+    &style::NoShorthandPropertyOverrides,
 ];
