@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139 strand W-139-js, slice 29: the value rows (collections, iterators, `Temporal`, argument counts)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) build the unbuilt unicorn, ESLint-core, SonarJS, import, n and security rows of `packs/js`, `packs/node`, `packs/security-js`: fresh, behaviour read from the pinned upstream; list what is not built and why.
+- **Done:** 19 rules (the list: IMPLEMENTATION, 2026-11-09). Read upstream (unicorn `v79.0.0`, eslint-plugin-sonarjs 4.2.2 `gitHead`, eslint-plugin-security `main`) as research only; found that the 16 rows labelled "needs the value's type" read a value's kind from its constructor, annotation or `const` alias when no TypeScript program is loaded, so they are syntax rules (`values.rs`) and built (13 of the 16); the rest (`no-multiple-promise-resolver-calls`, `require-atomic-updates`: code paths; `using` rules: the grammar) and the rows that do nothing by default are listed in W-139. Presets: unicorn's and SonarJS's recommended into `js/strict`/`js/sonarjs`; security's two into `sec-js/recommended`. SR-RULE-PACKS decision 18 and SR-ARCHITECTURE 15b updated; README/docs counts from `docs-sync.py --write`.
+- **Decided / left open:** each rule is the narrowest form whose behaviour is certain, its page says what upstream covers beyond it (type-informed detection; the web and Node tables of `no-invalid-argument-count`; the typed arrays, `Intl`, `Temporal` and `URL` surfaces of `no-nonstandard-builtin-properties`). Left to the decider: `js/key-name-casing` and `js/require-frontmatter-fields` read JSON, YAML, TOML and Markdown front matter, not JavaScript — they belong in the `data` or `md` pack, outside this slice, and `key-name-casing` with its default (camelCase) would flag every snake_case key.
+- **Mistakes:** two agents shared one scratchpad directory and overwrote each other's `gen/genlib.py`; mine moved to its own folder (`jsnat/`), the rules were unaffected.
+- **Next:** the rows still not built (W-139's list), then a corpus refresh for the new rules when a corpus is on the machine.
+
+---
+
 ## 2026-11-08 — Coordinator: the green queue handed to four agents  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement open work green items"*.
