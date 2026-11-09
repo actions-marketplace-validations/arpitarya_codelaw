@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139-ruff: Ruff's docstring set and natives (slices 31–32)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) build the Ruff half of W-139's Python strand that is buildable: the pydocstyle D2xx–D4xx and DOC sets on a docstring-section parser, RET503, FURB113, W505, PYI018/046/047/049/036, PLE0237/PLW0244, I002, ICN002, then the format-string, PEP 695 and type-checking rows; list each row not built with its reason and a proposed class.
+- **Done:** 38 rules in two new modules, `py_ruff_doc.rs` and `py_ruff.rs` (the list: IMPLEMENTATION, 2026-11-09). Read Ruff 0.16.9's sources over the network as research only (L5) and wrote each rule fresh; a private cargo target (the scratchpad) and a worktree, `lockmaster start W-139-ruff`. Ruff rows left 94 → 56; the table of what each left row waits on, with the class proposed for the decider's one pass, is in W-139's *Strand W-139-ruff, round 4*.
+- **Decided / left open:** the layout rows (D201–D204, D211, EXE004) and D210 are the formatter's; D401/D421, AIR301–321 and RUF001–003 want a data table or package the decider ratifies by name (L11); FA100/FA102/PERF203/UP036 want a finding gated on the target. Unused-private-name rules offer a deletion as `suggest`, not `auto`: another file may import the private name.
+- **Mistakes:** a first test string put the section after a line that does not end a paragraph, so Ruff's own rule (a header needs a paragraph end above it) rightly refused to read it as a section; the rule was right, the example wrong.
+- **Next:** the format-string rewrites (UP030–UP032, FLY002), PEP 695 (UP046/UP047), the type-checking-block imports (TC001–TC010), PYI019, PYI025.
+
 ## 2026-11-09 — W-139 strand W-139-js, slice 29: the value rows (collections, iterators, `Temporal`, argument counts, tests, tables)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build the unbuilt unicorn, ESLint-core, SonarJS, import, n and security rows of `packs/js`, `packs/node`, `packs/security-js`: written fresh, behaviour read from the pinned upstream, each with cases, a fix class, presets; list every row not built with its reason.
