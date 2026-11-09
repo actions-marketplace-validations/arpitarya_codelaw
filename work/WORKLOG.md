@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — the queue walked through; three rulings filed to the inbox  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Look at all open work items and tell me what is pending, how much time it is going to take."* Then, by voice, one by one: *"if there is a ruling pending on me, why isn't it in block status?"*; on W-172 *"Update the budget"*, *"Amend the [L8]"*; then *"file this much"*.
+- **Done:** OPEN-WORK inbox: W-174's decision 8 (blocking later, on Arpit's word) and W-172's `peak_memory_10k` value; W-172 re-balled 🔴, W-174's row shortened to 280; the ruling written in W-172 (step 5, *Ruling, 2026-11-09*) and in W-174's *Blockers*. Not landed from here: `lockmaster` is not on the bridge's PATH and installing it was refused, so Arpit runs `lockmaster save` on the Mac.
+- **Decided / left open:** Arpit ruled to amend L8 so `peak_memory_10k` is raised; the value (86 or 90 MiB) is open in the inbox. W-139's Ruff and Airflow rulings were filed by a concurrent session at 13:28 (`4407cd3a`, `87247294`), not here. The gap itself — rulings left in item files — is lockmaster W-20.
+- **Mistakes:** the first answer called the inbox empty; it was read at 13:20, eight minutes before the other session filed W-139's rows.
+- **Next:** Arpit names the `peak_memory_10k` value; an agent then amends SR-LAW-8, `perf/budgets.toml` and CLAUDE.md's L8 line.
+
 ## 2026-11-09 — W-139-ruff: format strings, PEP 695, `Self` and type-checking imports (slices 33–34)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) the rest of the Ruff half of W-139's Python strand: UP030–UP032, FLY002, UP046/UP047, PYI019, PYI025, the TC set, I002, ICN002; list every row not built with its reason and a proposed class.
