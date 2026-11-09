@@ -147,7 +147,8 @@ fn guarded(n: Node<'_>, src: &str) -> bool {
     false
 }
 
-fn collect_imports<'t>(n: Node<'t>, src: &'t str, stdlib: &BTreeSet<&str>, out: &mut Vec<Imp<'t>>) {
+fn collect_imports<'t>(n: Node<'t>, ctx: &NativeContext<'t>, stdlib: &BTreeSet<&str>, out: &mut Vec<Imp<'t>>) {
+    let src = ctx.source;
     for k in named_children(n) {
         match k.kind() {
             "function_definition" | "class_definition" | "lambda" => continue,
@@ -161,7 +162,11 @@ fn collect_imports<'t>(n: Node<'t>, src: &'t str, stdlib: &BTreeSet<&str>, out: 
                 let name = dotted(module, src);
                 let relative = name.starts_with('.');
                 let package = if relative { String::new() } else { name.split('.').next().unwrap_or("").to_owned() };
-                let group = if relative {
+                let first_party = !relative
+                    && [format!("{package}.py"), format!("{package}/__init__.py"), format!("src/{package}.py"), format!("src/{package}/__init__.py")]
+                        .iter()
+                        .any(|f| ctx.file.exists(f));
+                let group = if relative || (first_party && !stdlib.contains(package.as_str())) {
                     Group::Local
                 } else if stdlib.contains(package.as_str()) {
                     Group::Std
@@ -170,17 +175,16 @@ fn collect_imports<'t>(n: Node<'t>, src: &'t str, stdlib: &BTreeSet<&str>, out: 
                 };
                 out.push(Imp { node: k, package, from, group, guarded: guarded(k, src) });
             }
-            _ => collect_imports(k, src, stdlib, out),
+            _ => collect_imports(k, ctx, stdlib, out),
         }
     }
 }
 
 fn ungrouped_imports<'t>(n: Node<'t>, ctx: &NativeContext<'t>, out: &mut Vec<NativeFinding>) {
-    let src = ctx.source;
     let Some(table) = ctx.data.get("python/stdlib").and_then(|v| v.as_array()) else { return };
     let stdlib: BTreeSet<&str> = table.iter().filter_map(|v| v.as_str()).collect();
     let mut imports = Vec::new();
-    collect_imports(n, src, &stdlib, &mut imports);
+    collect_imports(n, ctx, &stdlib, &mut imports);
     // Standard library first, then the rest, then relative imports, each in source order.
     imports.sort_by_key(|i| i.group);
     let mut met_import: BTreeSet<String> = BTreeSet::new();

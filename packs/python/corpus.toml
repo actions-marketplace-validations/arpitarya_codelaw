@@ -7,6 +7,7 @@
 "py/abstract-class-instantiated" = 0
 "py/abstract-method" = 0
 "py/access-annotations-from-class-dict" = 0
+"py/access-member-before-definition" = 0
 "py/all-sorted" = 3
 "py/ambiguous-class-name" = 0
 "py/ambiguous-function-name" = 0
@@ -38,6 +39,7 @@
 "py/bad-dunder-method-name" = 0
 "py/bad-except-order" = 1
 "py/bad-exception-cause" = 0
+"py/bad-exit-annotation" = 7
 "py/bad-file-encoding" = 0
 "py/bad-format-string-key" = 0
 "py/bad-mcs-classmethod-argument" = 0
@@ -52,6 +54,7 @@
 "py/bad-thread-instantiation" = 0
 "py/bad-version-info-comparison" = 0
 "py/bad-version-info-order" = 0
+"py/banned-import-alias" = 0
 "py/banned-import-from" = 0
 "py/banned-module-level-imports" = 0
 "py/bare-name-capture-pattern" = 0
@@ -59,6 +62,7 @@
 "py/bidirectional-unicode" = 0
 "py/binary-op-exception" = 0
 "py/bit-count" = 0
+"py/blank-lines-between-header-and-content" = 4
 "py/blanket-noqa" = 11
 "py/blanket-type-ignore" = 83
 "py/blind-except" = 54
@@ -120,6 +124,7 @@
 "py/consider-using-enumerate" = 0
 "py/consider-using-join" = 3
 "py/consider-using-min-builtin" = 0
+"py/consider-using-namedtuple-or-dataclass" = 9
 "py/consider-using-ternary" = 14
 "py/consider-using-tuple" = 42
 "py/consider-using-with" = 3
@@ -135,6 +140,7 @@
 "py/datetime-timezone-utc" = 0
 "py/debugger" = 0
 "py/decimal-from-float-literal" = 0
+"py/declare-non-slot" = 0
 "py/default-except-not-last" = 0
 "py/default-factory-kwarg" = 0
 "py/del-attr-with-constant" = 0
@@ -150,7 +156,15 @@
 "py/dict-iter-missing-items" = 0
 "py/direct-logger-instantiation" = 0
 "py/disallowed-name" = 70
+"py/doc-line-too-long" = 0
+"py/docstring-extraneous-exception" = 2
+"py/docstring-extraneous-parameter" = 11
+"py/docstring-extraneous-returns" = 8
+"py/docstring-extraneous-yields" = 0
 "py/docstring-in-stub" = 0
+"py/docstring-missing-exception" = 114
+"py/docstring-missing-returns" = 522
+"py/docstring-missing-yields" = 46
 "py/docstring-starts-with-this" = 21
 "py/docstring-tab-indentation" = 0
 "py/dot-format-in-exception" = 0
@@ -171,6 +185,7 @@
 "py/ellipsis-in-non-empty-class-body" = 0
 "py/empty-comment" = 53
 "py/empty-docstring" = 0
+"py/empty-docstring-section" = 0
 "py/empty-method-without-abstract-decorator" = 0
 "py/empty-type-checking-block" = 0
 "py/enumerate-for-loop" = 0
@@ -243,8 +258,10 @@
 "py/if-with-same-arms" = 3
 "py/implicit-class-var-in-dataclass" = 0
 "py/implicit-cwd" = 0
+"py/implicit-flag-alias" = 0
 "py/implicit-namespace-package" = 659
 "py/implicit-optional" = 1
+"py/implicit-return" = 3
 "py/implicit-return-value" = 0
 "py/implicit-string-concatenation-in-collection-literal" = 29
 "py/import-outside-top-level" = 147
@@ -257,6 +274,7 @@
 "py/inconsistent-return-statements" = 0
 "py/incorrect-decorator-order" = 0
 "py/incorrect-dict-iterator" = 0
+"py/incorrect-section-order" = 7
 "py/incorrectly-parenthesized-tuple-in-subscript" = 2
 "py/inherit-non-class" = 0
 "py/init-is-generator" = 0
@@ -280,6 +298,7 @@
 "py/invalid-envvar-value" = 0
 "py/invalid-escape-sequence" = 30
 "py/invalid-field-call" = 0
+"py/invalid-format-index" = 0
 "py/invalid-format-returned" = 0
 "py/invalid-function-name" = 30
 "py/invalid-get-logger-argument" = 0
@@ -345,6 +364,7 @@
 "py/map-int-version-parsing" = 4
 "py/map-without-explicit-strict" = 0
 "py/match-class-bind-self" = 0
+"py/match-class-positional-attributes" = 0
 "py/math-constant" = 7
 "py/max-depth" = 58
 "py/max-lines" = 13
@@ -353,17 +373,25 @@
 "py/meta-class-abc-meta" = 0
 "py/method-hidden" = 0
 "py/method-receiver-default" = 0
+"py/mismatched-section-underline-length" = 0
 "py/misplaced-bare-raise" = 0
 "py/misplaced-format-function" = 0
+"py/missing-blank-line-after-last-section" = 344
 "py/missing-blank-line-after-summary" = 251
 "py/missing-copyright-notice" = 677
+"py/missing-dashed-underline-after-section" = 49
 "py/missing-f-string-syntax" = 5
+"py/missing-format-attribute" = 0
+"py/missing-new-line-after-section-name" = 49
 "py/missing-parentheses-for-call-in-test" = 0
+"py/missing-required-import" = 0
 "py/missing-return-type-class-method" = 39
 "py/missing-return-type-private-function" = 45
 "py/missing-return-type-special-method" = 174
 "py/missing-return-type-static-method" = 8
 "py/missing-return-type-undocumented-public-function" = 3219
+"py/missing-section-name-colon" = 0
+"py/missing-section-underline-after-name" = 0
 "py/missing-terminal-punctuation" = 542
 "py/missing-timeout" = 5
 "py/missing-trailing-period" = 542
@@ -397,7 +425,10 @@
 "py/nested-min-max" = 1
 "py/nested-star-import" = 0
 "py/never-union" = 0
+"py/new-line-after-last-paragraph" = 13
 "py/no-bare-except" = 6
+"py/no-blank-line-after-section" = 6
+"py/no-blank-line-before-section" = 14
 "py/no-classmethod-decorator" = 0
 "py/no-explicit-stacklevel" = 9
 "py/no-method-argument" = 0
@@ -416,8 +447,10 @@
 "py/non-ascii-import-name" = 0
 "py/non-ascii-name" = 0
 "py/non-augmented-assignment" = 9
+"py/non-capitalized-section-name" = 7
 "py/non-empty-init-module" = 21
 "py/non-empty-stub-body" = 0
+"py/non-iterator-returned" = 0
 "py/non-lowercase-variable-in-function" = 92
 "py/non-octal-permissions" = 0
 "py/non-parent-init-called" = 0
@@ -427,11 +460,13 @@
 "py/non-pep646-unpack" = 0
 "py/non-pep695-type-alias" = 0
 "py/non-self-return-type" = 5
+"py/non-slot-assignment" = 0
 "py/non-unique-enums" = 0
 "py/none-comparison" = 10
 "py/none-not-at-end-of-union" = 16
 "py/nonlocal-and-global" = 0
 "py/nonlocal-without-binding" = 0
+"py/not-async-context-manager" = 0
 "py/not-in-test" = 0
 "py/not-is-test" = 0
 "py/numeric-literal-too-long" = 0
@@ -469,6 +504,9 @@
 "py/os-stat" = 1
 "py/os-symlink" = 3
 "py/os-unlink" = 1
+"py/over-indentation" = 0
+"py/overindented-section" = 10
+"py/overindented-section-underline" = 0
 "py/overlapping-except" = 0
 "py/overload-with-docstring" = 0
 "py/overridden-final-method" = 0
@@ -551,6 +589,8 @@
 "py/redefined-argument-from-local" = 0
 "py/redefined-loop-name" = 9
 "py/redefined-outer-name" = 925
+"py/redefined-slots-in-subclass" = 0
+"py/redefined-variable-type" = 1
 "py/redefined-while-unused" = 3
 "py/redundant-backslash" = 0
 "py/redundant-bool-literal" = 0
@@ -570,6 +610,7 @@
 "py/reimplemented-starmap" = 0
 "py/reimported" = 0
 "py/relative-imports" = 72
+"py/repeated-append" = 5
 "py/repeated-equality-comparison" = 0
 "py/repeated-global" = 0
 "py/repeated-keyword-argument" = 0
@@ -587,9 +628,12 @@
 "py/self-assigning-variable" = 0
 "py/self-or-cls-assignment" = 2
 "py/setattr-with-constant" = 1
+"py/shadowed-import" = 0
 "py/shallow-copy-environ" = 0
 "py/shebang-missing-python" = 0
 "py/shebang-not-first-line" = 0
+"py/signature-differs" = 0
+"py/signature-in-docstring" = 1
 "py/simplifiable-condition" = 0
 "py/simplify-boolean-expression" = 0
 "py/single-item-membership-test" = 0
@@ -643,6 +687,7 @@
 "py/too-many-expressions-in-star-assignment" = 0
 "py/too-many-instance-attributes" = 34
 "py/too-many-locals" = 18
+"py/too-many-positional-sub-patterns" = 0
 "py/too-many-public-methods" = 14
 "py/too-many-return-statements" = 4
 "py/too-many-statements" = 27
@@ -674,7 +719,9 @@
 "py/undefined-local" = 0
 "py/undefined-loop-variable" = 4
 "py/undefined-name" = 5
+"py/under-indentation" = 0
 "py/undocumented-magic-method" = 355
+"py/undocumented-param" = 33
 "py/undocumented-public-class" = 608
 "py/undocumented-public-function" = 2609
 "py/undocumented-public-init" = 269
@@ -684,6 +731,7 @@
 "py/undocumented-public-package" = 16
 "py/undocumented-warn" = 0
 "py/unexpected-special-method-signature" = 3
+"py/ungrouped-imports" = 10
 "py/unicode-kind-prefix" = 0
 "py/unintentional-type-annotation" = 0
 "py/unnecessary-assign" = 75
@@ -759,6 +807,10 @@
 "py/unused-loop-control-variable" = 21
 "py/unused-method-argument" = 91
 "py/unused-private-member" = 0
+"py/unused-private-protocol" = 0
+"py/unused-private-type-alias" = 0
+"py/unused-private-type-var" = 0
+"py/unused-private-typed-dict" = 0
 "py/unused-static-method-argument" = 4
 "py/unused-unpacked-variable" = 7
 "py/unused-variable" = 9

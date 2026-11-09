@@ -10,7 +10,7 @@ ported_from: [pylint/ungrouped-imports]
 since: 0.5.0
 ---
 
-Taking the standard-library imports first, then the others, then relative ones, each in source order, an import of package `p` comes after the imports of another package since the last `p` import, with `import p` and `from p import x` counted separately. The package is the first part of the module name. Imports under `if TYPE_CHECKING:` and under an `os.name` or `sys.platform` test are not reported, and imports in a function or class are not read. A module is standard-library when the pack's table of standard-library names lists it; the project's own packages are not told from third-party ones.
+Taking the standard-library imports first, then the others, then relative ones, each in source order, an import of package `p` comes after the imports of another package since the last `p` import, with `import p` and `from p import x` counted separately. The package is the first part of the module name. Imports under `if TYPE_CHECKING:` and under an `os.name` or `sys.platform` test are not reported, and imports in a function or class are not read. A module is standard-library when the pack's table of standard-library names lists it, and the project's own when a module or package of that name sits at the project root or in `src/` (those come after third-party ones, with relative imports); a project's own package that lives elsewhere is read as third-party.
 
 **Why:** Imports of one package split by another's hide that two lines import from the same place, and make the block harder to sort.
 
