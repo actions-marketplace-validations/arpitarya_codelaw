@@ -32,6 +32,15 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** none; two false starts running the preview rules over the corpus by hand (`py` namespace is reserved for packs, `native:` only loads from a pack) before loading the pack through `[packs] venv`.
 - **Next:** W-174's 8 left rows; the js corpus snapshot is another agent's.
 
+## 2026-11-09 — W-139 tail: testing, TanStack Query, Python framework and security natives  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *Build W-139's testing rows (`prefer-importing-jest-globals`, `valid-mock-module-path`, the 8 `padding-around-*`, `prefer-importing-vitest-globals`, Playwright `no-unsafe-references` and `prefer-native-locators`), check the react layout rows, build `tanstack-query/prefer-query-options`, the Ruff data-table rows (AIR004, AIR202, AIR301–AIR321, FAST003, S404, S412, S415, S601, S606) and list what cannot be built for the decider.*
+- **Done:** 15 native rules from upstream's code at the pinned versions (eslint-plugin-jest 29.17.0, @vitest/eslint-plugin 1.6.28, eslint-plugin-playwright 2.12.1, @tanstack/eslint-plugin-query 5.105.0, Ruff 0.16.9), written fresh: `testing_parity.rs`, `query_parity.rs`, `py_framework.rs`; each with Don't/Do in the languages it supports and a `.cases.md`; the five packs at 0 failed, `cargo test -p codelaw-native` 309 passed, clippy clean, `rules lint` 0, fix-stats check exit 0, docs regenerated. Checked the layout claim by running it: all 8 `padding-around-*` and 11 of 13 react layout rows are refused by `codelaw test` (SR-FORMATTER decision 3); the other two (`jsx-closing-tag-location`, `jsx-wrap-multilines`) are already produced by the formatter.
+- **Decided / left open:** nothing ruled. A re-rule list for the decider is in the item (*Slice 28*): 8 + 13 layout rows → formatter-owned, react-hooks `fbt`/`invariant`/`syntax`/`todo` → out-of-scope, Airflow AIR301/302/311/312/321 → ratify one data package by name (or in-rule tables for AIR311/312/321 only).
+- **Mistakes:** one `cargo build` ran against the shared `target/` instead of the private one (the env var did not carry between shell calls) — about a minute of incremental build, no growth of consequence; every later cargo call went through a wrapper that sets the private target. Sibling agents share the session scratchpad, so one agent's `target/debug/codelaw` was overwritten by another's build and the tester then reported its own rules as unknown: the binary is copied out right after each build.
+- **Next:** the decider's re-rule; then the jsdoc and js strands' rows.
+
+
 ## 2026-11-08 — Coordinator: the green queue handed to four agents  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement open work green items"*.
