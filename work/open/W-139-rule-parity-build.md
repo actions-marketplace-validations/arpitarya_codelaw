@@ -7,7 +7,7 @@ filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-09
 updated_by: "Claude Code (Sonnet 5.5), W-139-ruff (slices 31–32)"
-ball: agent
+ball: arpit
 ---
 
 # W-139 — Build: port the rules W-138 and W-144 pick
