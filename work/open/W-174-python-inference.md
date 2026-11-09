@@ -6,7 +6,7 @@ item: W-174
 filed: 2026-11-08
 filed_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
 updated: 2026-11-09
-updated_by: "Claude Code (Sonnet 5.5), W-174b agent (the last in-file rows)"
+updated_by: "Cowork (Opus 5.5): decision 8 filed in the inbox as blocking-later, on Arpit's word"
 ball: arpit
 ---
 
@@ -71,7 +71,7 @@ Across files: every override, abstract and `__init__` row stops at a base class 
 
 ## Blockers
 
-None for the in-file rows. **For the decider (not blocking):** [SR-PY-INFERENCE](../../records/0120_python-inference.md) decision 8 — should the rows that need a call's return or an imported class's shape be answered by *the project's own Python type checker, found and asked like the project's TypeScript* (`ty`, pyright or mypy; codelaw installs nothing, L11 decision 2)? And whether `boolean-datetime` is re-ruled `not-applicable`.
+None for the in-file rows. **For the decider — in the inbox since 2026-11-09, not blocking yet; it blocks once the in-file rows are built and only the cross-file ones are left.** Arpit (voice, 2026-11-09), told it was filed as not blocking: *"It isn't non-blocking, but it'll become non-blocking at some point of time."* — read with him as *not blocking today, blocking later*, so it goes in the inbox now. The question: [SR-PY-INFERENCE](../../records/0120_python-inference.md) decision 8 — should the rows that need a call's return or an imported class's shape be answered by *the project's own Python type checker, found and asked like the project's TypeScript* (`ty`, pyright or mypy; codelaw installs nothing, L11 decision 2)? And whether `boolean-datetime` is re-ruled `not-applicable`.
 
 ## Reference
 

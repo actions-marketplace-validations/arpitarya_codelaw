@@ -34,6 +34,10 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-139 (DoD 1 cannot close without it) | |
 | 🔴 **W-174** re-rule Pylint `boolean-datetime` `not-applicable`? It reports only below Python 3.5; codelaw's floor is 3.9, so it can never fire. Recommended: yes. [detail](open/W-174-python-inference.md) | 2026-11-09 |
 | ↳ **blocks:** W-174 (its last row; the 7 buildable ones are built, 11-09) | |
+| 🔴 **W-174** [SR-PY-INFERENCE](../records/0120_python-inference.md) decision 8: answer the rows that need a call's return or an imported class's shape with the project's own Python type checker (`ty`, pyright or mypy), found and asked like its TypeScript — or leave them open? Not blocking yet: it blocks once the in-file rows are built. [detail](open/W-174-python-inference.md) | 2026-11-09 |
+| ↳ **blocks:** W-174 (the cross-file rows, once the in-file ones land) | |
+| 🔴 **W-172** `peak_memory_10k`: ruled 11-09 (voice) — amend L8 and raise this budget rather than optimise further. To what value? The runner measures 86.1 MiB against 72: 86 as measured, or 90 for headroom. [detail](open/W-172-l8-budgets-over-on-main.md) | 2026-11-09 |
+| ↳ **blocks:** W-172 | |
 
 ---
 
@@ -45,9 +49,9 @@ here. Read that record before changing anything below it.
 
 🔴 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 35 rows left, Ruff 42 of 97 (11-09: +52 docstring, format-string, PEP 695, TC rows), Pylint 52 of 67 (+14, slice 35); reasons and classes in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
-🟢 **W-172** `agent` L8: time side built (11-08); memory round 2 (11-09) −1.8 MiB live heap, still ~14 MiB over 72 (code 23 MiB + malloc 38). Next: push `main` for CI; larger levers in the item. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
+🔴 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` ~14 MiB over 72 — ruled 11-09: amend L8 and raise it, the value in the inbox. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🔴 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 rows built (`preview`, counted 11-09), 1 left: `boolean-datetime`, the inbox row above. Decider (not blocking): a project type checker, decision 8. Next: close on the ruling. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🔴 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 built (`preview`), 1 left: `boolean-datetime` (inbox). Decision 8 (a project type checker) in the inbox. Next: close on the rulings. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
