@@ -33,11 +33,11 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 164 (11-08, after W-174's 30), labelled in item; inference → W-174. Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🟢 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 71 rows left, py 164. 11-09: tail built (15 rules); 25 layout rows and the Airflow tables → re-rule list (item, *Slice 28*). Next: js JSDoc rows, py natives. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` L8 budgets: 11-08 time side built (allocator leftover removed, key order, parent gate); `peak_memory_10k` still ~14 MiB over. Next: push `main` for CI. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 30 of 38 rows built (`preview`), 8 left with their question. Decider (not blocking): a project type checker for the rest, decision 8. Next: the 8 in-file rows. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 30 of 38 rows built (`preview`, counted 11-09), 8 left with their question. Decider (not blocking): a project type checker for the rest, decision 8. Next: the 8 in-file rows. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)

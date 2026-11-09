@@ -123,3 +123,33 @@ class Child(Base):
 ```expect
 (none)
 ```
+
+### case: annotated *args and **kwargs
+
+A `**kwargs: T` or `*args: T` is a `typed_parameter` wrapping the splat in the grammar; it is not a positional parameter (found by the corpus run: Flask's `MethodView.dispatch_request(self, **kwargs: t.Any)`).
+
+```py
+class Base:
+    def run(self):
+        pass
+
+    def save(self, path, mode):
+        pass
+
+
+class A(Base):
+    def run(self, **kwargs: int):
+        pass
+
+    def save(self, *args: int):
+        pass
+
+
+class B(Base):
+    def save(self, path, mode, **kw: int):
+        pass
+```
+
+```expect
+(none)
+```
