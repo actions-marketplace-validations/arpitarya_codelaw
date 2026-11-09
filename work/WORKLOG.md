@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139 coordinated across three strands; W-174 left with its session  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement W-139, W-174 till closure"*
+- **Done:** W-174 was already held by the coordinating session d73e9989 (a live agent in its worktree running the python corpus snapshot), so it was left to it. For W-139, counted the port rows without a rule (about 130 non-Python, 164 Python) and split the non-Python ones across three agents in lockmaster worktrees with disjoint claims: js natives (`W-139-jsnat`), jsdoc (`W-139-jsdoc`), testing and tail (`W-139-tail`). The tail strand landed as `ea004211` (slice 28: 15 native rules, see the item's *Slice 28*); the other two were still running when this entry was written, each landing its own slice with its own work-file updates.
+- **Decided / left open:** nothing ruled. For the decider, one pass (item *Slice 28 — for the decider*): the 8 Jest `padding-around-*` and 13 React layout rows → formatter-owned; the 4 react-hooks compiler categories → out of scope; Airflow AIR301/302/311/312/321 → ratify a `data-airflow` package (L11) or in-rule tables for the three small ones. The Python rows (Ruff 97, Pylint 67) wait for W-174 to land on `packs/python`. DoD 1 is not met.
+- **Mistakes:** none of mine. Reported by the tail agent: sibling agents sharing one scratchpad overwrote `target/debug/codelaw` twice, so the tester briefly called new rules unknown — each agent now copies its binary out after a build.
+- **Next:** collect the js-natives and jsdoc reports, then the Python strand once W-174 lands.
+
 ## 2026-11-09 — W-174: the python corpus counts and a clean workspace test run  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *the 30 py/* rules W-174 landed have no counts in packs/python/corpus.toml (`corpus python` red in CI); run `cargo test --workspace` alone and find the `codelaw-lsp` doctest failure's cause.*
