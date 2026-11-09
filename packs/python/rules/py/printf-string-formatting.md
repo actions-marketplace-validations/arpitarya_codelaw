@@ -5,7 +5,7 @@ languages: [python]
 fix: suggest
 fix_reason: "`\"%s\" % x` formats a tuple `x` as several values while `.format(x)` formats it as one, and `%` calls `str` where `.format` calls `format`; the rewrite is offered, not applied"
 stability: preview
-ported_from: [ruff/UP031]
+ported_from: [ruff/UP031, pylint/consider-using-f-string]
 since: 0.5.0
 ---
 

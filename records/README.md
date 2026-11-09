@@ -148,6 +148,7 @@ Start from `TEMPLATE.md`.
 | [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | yes |
 | [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | yes |
 | [0120](0120_python-inference.md) | **SR-PY-INFERENCE** | Python rules that need more than syntax — four lazy layers over the per-file model (scope facts, a flow pass for definite assignment, an in-file class table, literal typing); no type checker; the rows that need one stay open with their question | accepted | partly |
+| [0121](0121_code-path-graph.md) | **SR-CODE-PATH-GRAPH** | A code-path graph for JavaScript — named for the two rows that need one; its shape open until W-189's research is ruled | proposed | no |
 
 ---
 

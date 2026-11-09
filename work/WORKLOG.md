@@ -24,7 +24,35 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
-## 2026-11-09 — W-139 slice 36: Pylint's docparams set, Ruff TC008 and SIM905  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+## 2026-11-09 — W-139 slice 36: the last JavaScript rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) build what is left of W-139's JS strand that the scope model can carry — `prefer-abort-signal-any`, `prefer-iterator-zip`, `no-unnecessary-parameters`, `name-replacements`, `parameterized-tests` — decide whether `no-multiple-promise-resolver-calls` and `require-atomic-updates` fit a walk of the function, compute the CSV rows with no rule that are buildable, update the records and land.
+- **Done:** six `preview` native `js/*` rules (the list: IMPLEMENTATION, 2026-11-09) in `js_parity/`, landed as `7ff2fd09` (the work-file entries here and in IMPLEMENTATION landed apart, after the decider's docket in main's checkout: W-139's item and OPEN-WORK row were not touched, the docket closes W-139 and moves its leftovers); the upstream rule sources and tests read at the pinned tags (unicorn v79.0.0, ESLint 10.13.0, SonarJS 4.2.2's npm package for behaviour only) and the rules written fresh. Upstream's own cases, extracted as text and never run, went through the rules to find disagreements: `no-unnecessary-parameters` 214 cases (found the named function expression's own name as a call site, `typeof` queries, escaped and computed keys, a shadowed `undefined`, `eval` through a cast, `1n` and `0x1n`, a default that is not a value — each fixed), `name-replacements` 1,246 (a shorthand default `{ prop = 1 }` and type parameters are checked), `require-atomic-updates` 52 (51 agree; the 52nd configures `process` as a global). `require-atomic-updates` fits a walk — ESLint's rule only needs what flows forward through the graph, and its graph never carries a loop's back edge; `no-multiple-promise-resolver-calls` does not: it is stated on the graph (a fixpoint over segments and loop edges, exception edges into `catch`, duplicated `finally`) and a 53 KB `process.exit` analysis, 168 of its 3,123 test lines. The reason is in the IMPLEMENTATION row and SR-ARCHITECTURE decision 15b; the build it needs is a JavaScript code-path graph. Computed the CSV rows of unicorn, SonarJS and ESLint with no rule: 21, six built, fourteen already classed.
+- **Decided / left open:** `name-replacements` is in `js/strict` at `error` as upstream recommends it, and is loud (`i`, `j`, `e`, `tmp`, `utils.js`); the decider may want it `preview` only. `no-multiple-promise-resolver-calls` is the decider's: a JavaScript code-path graph in `codelaw-native`, or leave it.
+- **Mistakes:** a stray `cat >> /dev/null` in a compound command held a background build for ten minutes; the shared target directory's `codelaw` binary is overwritten by whichever worktree builds last, so tests ran against a sibling's build once (copy the binary out after every build). Running the upstream test files under Node to extract their cases was refused, rightly: they are third-party code; a text extractor did it.
+- **Next:** the decider's ruling on the promise-resolver rule; the corpus counts for the six rules at the next js refresh (W-169).
+
+---
+
+## 2026-11-09 — the docket by voice, part 2: W-139 closed into 19 items and 4 backlog rows  ·  Cowork (Opus 5.5)
+
+- **Asked:** by voice, *"what is pending from W139 and what all frameworks are in there"*; then *"Whatever is pending, we are going to have separate work items for those. And we close W139."*, each blocked group ruled in turn (*"Only the ones that are blocked."*); then *"file it"*.
+- **Done:** W-139 archived with a *Closed* table (each leftover → its home); W-178–W-196 filed; B-081–B-084; SR-CODE-PATH-GRAPH (0121, `proposed`) and its register row; IMPLEMENTATION and the archive map row; the proposal's §14 (the classes); W-102, W-142, W-143 re-pointed to W-139's successors; the four W-139 inbox rows removed, the inbox empty. Both checks pass. Counted, not copied: 2,319 of 2,590 port rows carried; 271 left.
+- **Decided / left open:** as in W-139's *Closed* table. Ground truth differed from the call twice: the "16 value-type rows" were built 11-09 (slice 29) on one file's facts, so W-188 makes them type-aware (and `prefer-iterator-zip` is unbuilt, W-195); the pinned JS grammar 0.25.0 already parses `using` — only TS 0.23.2 lacks it (W-190). Not discussed on the call, filed so nothing is orphaned: Biome's 98 unbuilt rows (W-196) and DoD 2's missing presets and 2d's promotions (W-192).
+- **Mistakes:** none landed; deleting W-139's old file needed Arpit's folder permission, given.
+- **Next:** Arpit runs `lockmaster save` for the change; then an agent picks from the 🟢 rows.
+
+## 2026-11-09 — the docket by voice: W-172, W-174 and W-139's js rows ruled; W-176 and W-177 filed  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"fetch all latest open work items and there status and how much time it is going to take for voice mode"*; then by voice, *"Explain me one by one"*, the rulings one at a time; then *"file it"*.
+- **Done:** OPEN-WORK: four inbox rows removed with their `↳ blocks:` rows (W-172's value, W-174's `boolean-datetime` and decision 8, W-139's js re-rule); W-172 and W-174 re-balled 🟢; W-139's Airflow row gains the out-of-scope option Arpit raised; W-176 (build) and W-177 (research) filed, counts 11 → 13. The rulings written in W-172, W-174 (an *At a glance* added) and W-139, with Arpit's words. Both checks pass.
+- **Decided / left open:** W-172 `peak_memory_10k` 90 MiB (*"Let's go with 90."*); `boolean-datetime` not-applicable (*"Not applicable."*); decision 8 to research (*"Open a separate research item for this."*); formatter-owned (*"Yes, I agree."*); react-hooks four out (*"Leave them out."*); options-only as configure-to-use rules (*"Yes."*), in their own item. Parked by Arpit: Airflow, data/Markdown/`check-examples`, Ruff and Pylint classes, until he has seen W-139's framework rows.
+- **Mistakes:** the first answer's time estimates were guesses (the queue carries none) and were labelled as such.
+- **Next:** Arpit reads W-139's framework rows, then rules the four parked rows.
+
+---
+
+## 2026-11-09 — W-139 slice 37: Pylint's docparams set, Ruff TC008 and SIM905  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build the 15 Pylint docparams rows on the docstring parser (Sphinx added), as opt-in preview rules with Pylint's defaults, and Ruff TC008 and SIM905; list what cannot be built.
 - **Done:** 17 `preview` native rules (list: IMPLEMENTATION, 2026-11-09). `py_pylint_doc.rs` reads the three docstring styles itself (Pylint's reading differs from Ruff's: Sphinx fields, a type beside a name, the "see" sentence, a NumPy name with neither type nor description is a mention, an unescaped `*args` in Sphinx documents nothing) and mirrors `check_arguments_in_docstring`'s set logic. Downloaded Pylint 4.1.3's `tests/functional/ext/docparams` (41 inputs, 118 files) and ran every rule over them in an ignored cargo test: all expected messages, no extras, but two rows that need a call's return value inferred and the option files. TC008 and SIM905 follow Ruff 0.16.9's source and fixtures (unit tests reproduce the fixture rows). Records: SR-ARCHITECTURE 15b, SR-RULE-PACKS d18.

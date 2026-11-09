@@ -5,7 +5,7 @@ languages: [python]
 fix: auto
 fix_reason: "auto when each argument is evaluated once and in the order it was written; when a call is evaluated in another order, the finding is a suggestion; a call with a comment inside it is reported without an edit"
 stability: preview
-ported_from: [ruff/UP032]
+ported_from: [ruff/UP032, pylint/consider-using-f-string]
 since: 0.5.0
 ---
 

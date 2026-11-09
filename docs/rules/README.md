@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2871 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2877 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 928 | 42 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 934 | 45 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
@@ -308,6 +308,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/max-union-size`](js/max-union-size.md) | No union of more than three types outside an alias | `manual` | — | *[rules] only* |
 | [`js/memoize-cache-key`](js/memoize-cache-key.md) | No `memoize()` of a function of several arguments without a resolver | `manual` | — | `js/sonarjs` |
 | [`js/misplaced-loop-counter`](js/misplaced-loop-counter.md) | No `for` loop whose update changes something its condition doesn't test | `manual` | — | `js/sonarjs` |
+| [`js/name-replacements`](js/name-replacements.md) | Descriptive names rather than abbreviations | `auto` | `checkProperties`, `checkVariables`, `checkDefaultAndNamespaceImports`, `checkShorthandImports`, `checkShorthandProperties`, `checkFilenames`, `extendDefaultReplacements`, `replacements`, `extendDefaultAllowList`, `allowList`, `ignore` | `js/strict` |
 | [`js/new-cap`](js/new-cap.md) | Constructors are capitalised | `suggest` | — | *[rules] only* |
 | [`js/new-for-builtins`](js/new-for-builtins.md) | new for constructors, no new for Symbol and BigInt | `suggest` | — | `js/strict` |
 | [`js/no-abusive-eslint-disable`](js/no-abusive-eslint-disable.md) | Name the rules a disable comment turns off | `manual` | — | `js/strict` |
@@ -602,6 +603,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unnecessary-fetch-options`](js/no-unnecessary-fetch-options.md) | No method: "GET" in fetch options | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-global-this`](js/no-unnecessary-global-this.md) | A known global read directly, not off globalThis | `suggest` | — | `js/strict` |
 | [`js/no-unnecessary-nested-ternary`](js/no-unnecessary-nested-ternary.md) | No nested ternary that repeats a branch | `auto` | — | `js/strict` |
+| [`js/no-unnecessary-parameters`](js/no-unnecessary-parameters.md) | No parameter that gets the same value at every call | `auto` | `minimumCallCount` | `js/strict` |
 | [`js/no-unnecessary-polyfills`](js/no-unnecessary-polyfills.md) | No polyfill for a feature every target already has | `suggest` | `targets` | `js/strict` |
 | [`js/no-unnecessary-slice-end`](js/no-unnecessary-slice-end.md) | No slice(a, x.length) | `auto` | — | `js/strict` |
 | [`js/no-unnecessary-splice`](js/no-unnecessary-splice.md) | push, pop, shift or unshift rather than splice() at an end | `auto` | — | `js/strict` |
@@ -688,6 +690,8 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/object-shorthand`](js/object-shorthand.md) | { x } rather than { x: x } | `auto` | — | *[rules] only* |
 | [`js/one-var`](js/one-var.md) | One declaration per scope for each of `var`, `let` and `const` | `auto` | — | `js/taste` |
 | [`js/operator-assignment`](js/operator-assignment.md) | x += 1 rather than x = x + 1 | `auto` | — | `js/strict` |
+| [`js/parameterized-tests`](js/parameterized-tests.md) | One parameterized test for tests that differ only in values | `manual` | — | `js/sonarjs` |
+| [`js/prefer-abort-signal-any`](js/prefer-abort-signal-any.md) | `AbortSignal.any()` for a controller that only forwards abort events | `suggest` | — | `js/strict` |
 | [`js/prefer-abort-signal-timeout`](js/prefer-abort-signal-timeout.md) | `AbortSignal.timeout()` for a controller aborted only by a timer | `suggest` | — | `js/strict` |
 | [`js/prefer-add-event-listener`](js/prefer-add-event-listener.md) | addEventListener rather than an on-property | `manual` | — | `js/strict` |
 | [`js/prefer-add-event-listener-options`](js/prefer-add-event-listener-options.md) | An options object rather than a capture boolean | `auto` | — | `js/strict` |
@@ -748,6 +752,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-iterator-helpers`](js/prefer-iterator-helpers.md) | Iterator helpers before an iterator is made into an array | `suggest` | — | `js/strict` |
 | [`js/prefer-iterator-to-array`](js/prefer-iterator-to-array.md) | `.toArray()` instead of a temporary array spread of one iterator | `auto` | — | `js/strict` |
 | [`js/prefer-iterator-to-array-at-end`](js/prefer-iterator-to-array-at-end.md) | `.toArray()` last in an iterator helper chain | `suggest` | — | `js/strict` |
+| [`js/prefer-iterator-zip`](js/prefer-iterator-zip.md) | `Iterator.zip()` for a loop that indexes parallel arrays | `suggest` | — | `js/strict` |
 | [`js/prefer-json-import`](js/prefer-json-import.md) | Import a JSON file rather than reading and parsing it at the top level | `suggest` | — | *[rules] only* |
 | [`js/prefer-keyboard-event-key`](js/prefer-keyboard-event-key.md) | event.key rather than keyCode | `suggest` | — | `js/strict` |
 | [`js/prefer-literal-ascii`](js/prefer-literal-ascii.md) | Printable ASCII written as itself, not as an escape | `auto` | — | `js/strict` |
@@ -950,6 +955,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
 | [`js/require-array-join-separator`](js/require-array-join-separator.md) | join() names its separator | `auto` | — | `js/strict` |
 | [`js/require-array-sort-compare`](js/require-array-sort-compare.md) | A compare function for sort() | `suggest` | — | `js/strict` |
+| [`js/require-atomic-updates`](js/require-atomic-updates.md) | No assignment from a value read before an `await` or `yield` | `manual` | `allowProperties` | *[rules] only* |
 | [`js/require-await`](js/require-await.md) | An async function awaits something | `suggest` | — | *[rules] only* |
 | [`js/require-css-escape`](js/require-css-escape.md) | Escape values in a selector | `manual` | — | `js/strict` |
 | [`js/require-module-attributes`](js/require-module-attributes.md) | JSON imports say with { type: "json" } | `suggest` | — | `js/strict` |

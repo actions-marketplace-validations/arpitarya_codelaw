@@ -24,6 +24,10 @@ entry.**
 
 ## 1 · State of play
 
+**Ruled 2026-11-09, later (Cowork, voice docket; filed on *"file it."*): W-139 closed.** Built rules stay (2,319 of 2,590 port rows). The 271 left: W-178–W-196 (19 items — tables ratified for D401/D421, UP035, RUF001–003 and the stdlib deprecations; target-gated findings; file mode bits; the Python project graph; the JS value-type rows on W-105; a code-path-graph research item; `using`; graph records; a defaults page; four tails), B-081–B-084 (Airflow ×5, PLE2514, TID254/255, two Pylint rows), and classes in the proposal §14. SR-CODE-PATH-GRAPH (0121) filed `proposed`. The inbox is empty.
+
+**Ruled 2026-11-09 (Cowork, voice docket; filed on *"file it."*):** W-172 — `peak_memory_10k` to **90 MiB** by amending L8 (🟢, agent amends SR-LAW-8 and `perf/budgets.toml`). W-174 — `boolean-datetime` not-applicable (🟢, re-class and close); decision 8 moved to research **W-177**. W-139 — the js rows no rule can carry: layout to the formatter, react-hooks `fbt`/`invariant`/`syntax`/`todo` out, the 19 options-only rows to **W-176**. Parked, still in the inbox: W-139's Airflow (now with an out-of-scope option), data/Markdown/`check-examples`, Ruff and Pylint rulings — Arpit wants W-139's framework rows first.
+
 **2026-11-08 (Claude Code, coordinator, later): the green queue is with four agents.** W-175 landed (`b78b45f8`; step 4 is the inbox's data-package question). The css `no-descending-specificity` fixpoint fix landed (`a5f3aa64`). Running: W-172 (pushed CI: check_cold_10k, peak_memory_10k, lsp_after_edit over), the corpus-snapshot and guard-replay fixes, W-174. Waiting on Arpit: the `data-polyfills` ruling, then a push of `main` for W-126, W-169 and W-172's CI proof. Disk 7.2 GB of the 5 GB budget (7 approved).
 
 **2026-11-08 (Claude Code, coordinator): the parallel run continues.** In flight: W-162 cross-file (last capability), W-172 peak memory (107 > 72 MiB; `mcp_rules_for_path` fixed), W-139's js and python strands (~400 rows). Waiting on Arpit: a push of `main` (115+ commits; the classifier refuses Claude Code's push) for W-126, W-169 step 3, W-172's CI proof and the zip alerts; a release for W-95.
@@ -153,6 +157,8 @@ for two days because another session's edits were uncommitted in the main
 checkout.
 
 ## 2 · In flight, and the immediate next step
+
+**2026-11-09 (Cowork, later):** the inbox is empty; W-139 is closed. **Next for an agent (🟢):** W-172's L8 amendment, W-174's close, W-176, and the 🟢 build items W-178–W-196 (W-196 Biome first needs its framework rows classed). **Cowork:** W-177, W-189.
 
 **Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. The `spell` budget is 2,500 ms. Multi-file fixes have their own record, **SR-MULTI-FILE-FIXES** (configurable, safeguards fixed). The browser table is a data package (**L6 decision 15**), checked weekly by CI (W-166 step 5).
 
