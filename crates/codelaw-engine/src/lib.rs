@@ -350,6 +350,7 @@ impl Project {
         let pool = pool(options.threads);
         let compile_started = std::time::Instant::now();
         let (compiled, mut warnings) = pool.install(|| compile::compile_cached(&rules, &config)).map_err(EngineError::Load)?;
+        codelaw_core::process::release_free_memory();
         let timings = options.timings.then(|| timings::Timings::new(compiled.len()));
         if let Some(t) = &timings {
             t.add(timings::Phase::Compile, compile_started);

@@ -5,8 +5,8 @@ description: "main is over three set L8 budgets on the reference runner: check_c
 item: W-172
 filed: 2026-11-07
 filed_by: "Claude Code (session 0a172e1f), W-139 step 3"
-updated: 2026-11-08
-updated_by: "Claude Code (W-172 agent), step 3 second pass"
+updated: 2026-11-09
+updated_by: "Claude Code (W-172 agent), round 2 (memory)"
 ball: agent
 ---
 
@@ -115,3 +115,13 @@ The agent's in-progress change — each distinct `regex:` compiled once and shar
 **`peak_memory_10k` is not fixed.** The Mac's 84–88 MiB is the runner's 86.1 (the two agree to 1 MiB), so it is still about 14 MiB over 72. Where it is (`MallocStackLogging` on a live `codelaw lsp`, `/usr/bin/time -l`): a one-file project with the nine recommended presets is 50 MiB of RSS (34 MiB footprint) — **the fixed cost of loading packs and compiling the rules that are on**, 21.7 MiB of live heap: pack load 10.3 (rule files 4.3, data tables 3.3 — `serde_json` trees of ~400 KB of JSON —, one `Arc<RuleFile>` box per rule 2.1), compile 10.3 (regexes 4.2, `match:` cores 1.8, `target:` rules 1.8). A 10,000-file run adds ~18 MiB on 4 threads (~2.3 MiB a thread, ~7 MiB for the file list and results). What is left, by size: data tables kept as `serde_json` trees (3.3 MiB; a compact or lazily parsed table), the regexes of the rules that are on (4.2 MiB; ast-grep builds each with `Regex::new`, no builder), `RuleFile`'s inline size (2.1 MiB), per-thread allocator arenas on glibc (not measurable on a Mac).
 
 **Left:** CI on the next push is the proof for all three numbers; do not call a budget met before a reference-runner run says so. If `lsp_after_edit` is still over, the next lever is the same one at the pack level — re-anchor `js/promise-param-names` and `js/no-unused-function-parameters` on `new_expression` / `function` kinds with `has:` (packs/js; W-139-js holds those files). Memory: the three items above.
+
+## 2026-11-09 — round 2: memory, honestly short of 72 MiB
+
+**Baseline** (one release build of `main` `7b4832de`, copied away before measuring; Mac, load 9–32): `peak_memory_10k` 84.6 MiB median (79.9–91.7), 88.6 / 85.8 in later runs; a one-file project 47 MiB RSS; `main` is still ~14 MiB over 72 and the Mac still matches the runner's 86.1.
+
+**Where the RSS is** (`vmmap`, `malloc_history`, `/usr/bin/time -l`, mid-run at 4 threads): resident 81 MiB = **malloc zone 38 MiB dirty (26 live + 12.6 fragmentation)** + **code 23 MiB** (`__TEXT`: 22 MiB of code in a 39 MB binary, paged in as languages are first used — the RSS grows through the run as html, css, md, py files bring in their grammars and rules; one thread: 56 MiB, four: ~67, eight: ~79) + ~3 MiB other. Live heap is only a third of RSS. Live heap of the fixed part (21.1 MiB, `codelaw lsp` on a one-file project): pack load 10.3 (rule files 4.2, data tables 3.3 — `serde_json` trees of ~400 KB of JSON —, one `Arc<RuleFile>` box per rule 2.1), compile 10.3 (shared regexes 4.2 — 1.6 of it the one-pass DFA each regex builds, `regex` has no switch for it through ast-grep —, `match:` cores 1.8, `target:` schemas 1.8 of which 0.8 regexes).
+
+**Built (small, measured by live heap, deterministic):** a `schema:` predicate compiles each pattern on first use (−1.8 MiB); `graph:`/`target:` blocks held as text (−0.9 MiB parsed trees); `malloc_trim` after compile (glibc only: the loading thread's arena holes are not reused by the workers — a hypothesis for the Linux runner, no effect measured on macOS). **Result: live heap 21.1 → 19.3 MiB; RSS unchanged within the Mac's ±5 MiB run-to-run noise.** `codelaw test` 0 failed on data, deps, css, html, js, python, react, security-js, ts, testing.
+
+**What it would take to reach 72** (each is a larger change than this item's brief; ordered by size): data tables parsed on first use or compacted (~2–3 MiB; every crate reads `Arc<serde_json::Value>`, the js_parity strand is editing them); rule docs (`summary`, `why`, `steps`) read on demand like examples, and cold `RuleFile` fields boxed (~2–3 MiB; lsp, cli and the docs commands read them); a smaller binary or fewer pages touched (code 23 MiB: `opt-level = "s"` for cold crates, `panic = "abort"` — each trades time budgets); glibc arena limits (`mallopt(M_ARENA_MAX)`; needs a Linux run to price the contention). None is likely to give 14 MiB alone. **The budget is not met and nothing here says it will be; the next push's CI run is the only proof of either number.**

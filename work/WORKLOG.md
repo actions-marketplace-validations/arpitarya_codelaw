@@ -60,6 +60,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-172 round 2: memory, short of the budget  ·  Claude Code (agent of the coordinator)
+
+- **Asked:** (coordinator) `peak_memory_10k` 84–88 → under 72 MiB.
+- **Done:** re-baselined on one release build of `main` (84.6 MiB median, load 9–32); found where the RSS is (malloc zone 38 MiB of which 12.6 fragmentation, code 23 MiB, live heap a third of RSS); lazy `schema:` patterns, `graph:`/`target:` blocks as text, `malloc_trim` after compile; SR-LINTER, SR-RULE-FORMAT, SR-ARCHITECTURE notes. Live heap 21.1 → 19.3 MiB; RSS unchanged within noise.
+- **Decided / left open:** the budget is not met; the remaining levers (data tables, rule docs, binary size, arena limits) are named with sizes in the item and each is larger than a few MiB of risk-free edits.
+- **Mistakes:** none new; the machine ran at load up to 32 and RSS varies ±5 MiB run to run, so only live-heap numbers are used for before/after.
+- **Next:** Arpit pushes `main`; read the runner's `peak_memory_10k`; then decide which larger lever to take.
+
 ## 2026-11-08 — W-172 second pass: the time side of L8's three budgets  ·  Claude Code (agent of the coordinator)
 
 - **Asked:** (coordinator) main is over `check_cold_10k`, `peak_memory_10k`, `lsp_after_edit` on CI run 42454141410 (`b20e1a1f`); optimise, never loosen.

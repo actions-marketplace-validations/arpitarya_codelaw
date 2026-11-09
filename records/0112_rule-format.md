@@ -202,6 +202,7 @@ The decider asked for a record of the rule-file template. The format so far exis
 - **Authors write more than a bare pattern;** the examples and steps are what make a rule readable by agents and testable.
 - **A strict schema means template changes need a migration** (`codelaw rules migrate`) when fields are renamed.
 - **2026-11-08 (W-172):** a rule's examples and cases are read from its file when first asked for, not held for every loaded rule.
+- **2026-11-09 (W-172, round 2):** a `graph:` or `target:` block (and its `assert:`) is held as compact text, like `match:`, and parsed when the rule is compiled; the format is unchanged.
 
 ### Alternatives considered
 
