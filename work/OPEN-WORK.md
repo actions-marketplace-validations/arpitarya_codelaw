@@ -28,6 +28,8 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-139 (the last Airflow rows) | |
 | 🔴 **W-139** two rows that are not JavaScript rules — `key-name-casing` (JSON/YAML/TOML keys) and `require-frontmatter-fields` (Markdown) — and `check-examples` (lint the code in `@example` tags, an embedded-region engine feature): build in the `data`/`md` packs and the engine, or leave out? Recommended: leave `check-examples` out; put the other two in their packs, `key-name-casing` off by default. [detail](open/W-139-rule-parity-build.md) | 2026-11-09 |
 | ↳ **blocks:** W-139 | |
+| 🔴 **W-139** re-rule Ruff's 41 left rows by class? Formatter-owned (`D201`–`D204`, `D210`, `D211`, `EXE004`); data tables ratified by name, L11 (`D401`, `D421`, `UP035`, `RUF001`–`RUF003`); engine work (target-gated `FA100`, `FA102`, `PERF203`, `UP036`; file mode `EXE001`, `EXE002`; `PLE2514`); out of scope (`RUF028`, `RUF054`, `RUF100`–`RUF106`, `RUF200`, `RUF201`, `TID254`, `TID255`, `PLC2701`). Recommended: formatter-owned and out of scope yes; the rest each its own ruling. [table](open/W-139-rule-parity-build.md) | 2026-11-09 |
+| ↳ **blocks:** W-139 |  |
 | 🔴 **W-174** re-rule Pylint `boolean-datetime` `not-applicable`? It reports only below Python 3.5; codelaw's floor is 3.9, so it can never fire. Recommended: yes. [detail](open/W-174-python-inference.md) | 2026-11-09 |
 | ↳ **blocks:** W-174 (its last row; the 7 buildable ones are in progress) | |
 
