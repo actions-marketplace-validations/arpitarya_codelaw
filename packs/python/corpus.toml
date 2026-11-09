@@ -4,6 +4,8 @@
 [findings]
 "graph/no-unused-exports" = 24
 "py/abstract-base-class-without-abstract-method" = 1
+"py/abstract-class-instantiated" = 0
+"py/abstract-method" = 0
 "py/access-annotations-from-class-dict" = 0
 "py/all-sorted" = 3
 "py/ambiguous-class-name" = 0
@@ -13,6 +15,8 @@
 "py/any-eq-ne-annotation" = 16
 "py/any-type" = 174
 "py/argument-default-in-stub" = 0
+"py/arguments-differ" = 0
+"py/arguments-renamed" = 0
 "py/assert-false" = 4
 "py/assert-on-string-literal" = 0
 "py/assert-raises-exception" = 8
@@ -43,6 +47,8 @@
 "py/bad-staticmethod-argument" = 0
 "py/bad-str-strip-call" = 0
 "py/bad-string-format-character" = 0
+"py/bad-string-format-type" = 0
+"py/bad-super-call" = 0
 "py/bad-thread-instantiation" = 0
 "py/bad-version-info-comparison" = 0
 "py/bad-version-info-order" = 0
@@ -56,6 +62,7 @@
 "py/blanket-noqa" = 11
 "py/blanket-type-ignore" = 83
 "py/blind-except" = 54
+"py/blocking-http-call-httpx-in-async-function" = 0
 "py/blocking-http-call-in-async-function" = 0
 "py/blocking-input-in-async-function" = 0
 "py/blocking-open-call-in-async-function" = 1
@@ -67,6 +74,7 @@
 "py/boolean-type-hint-positional-argument" = 213
 "py/break-outside-loop" = 0
 "py/builtin-argument-shadowing" = 22
+"py/builtin-attribute-shadowing" = 0
 "py/builtin-import-shadowing" = 16
 "py/builtin-lambda-argument-shadowing" = 0
 "py/builtin-open" = 1
@@ -99,6 +107,7 @@
 "py/compare-to-empty-string" = 116
 "py/compare-with-tuple" = 1
 "py/comparison-of-constant" = 0
+"py/comparison-with-callable" = 0
 "py/comparison-with-itself" = 1
 "py/complex-assignment-in-stub" = 0
 "py/complex-if-statement-in-stub" = 0
@@ -115,6 +124,7 @@
 "py/consider-using-tuple" = 42
 "py/consider-using-with" = 3
 "py/constant-imported-as-non-constant" = 0
+"py/contextmanager-generator-missing-cleanup" = 0
 "py/continue-in-finally" = 0
 "py/continue-outside-loop" = 0
 "py/convert-named-tuple-functional-to-class" = 0
@@ -137,6 +147,7 @@
 "py/dict-get-with-none-default" = 14
 "py/dict-index-missing-items" = 0
 "py/dict-init-mutate" = 1
+"py/dict-iter-missing-items" = 0
 "py/direct-logger-instantiation" = 0
 "py/disallowed-name" = 70
 "py/docstring-in-stub" = 0
@@ -242,6 +253,7 @@
 "py/impossible-comparison" = 0
 "py/in-dict-keys" = 38
 "py/in-empty-collection" = 0
+"py/inconsistent-mro" = 0
 "py/inconsistent-return-statements" = 0
 "py/incorrect-decorator-order" = 0
 "py/incorrect-dict-iterator" = 0
@@ -263,6 +275,7 @@
 "py/invalid-character-zero-width-space" = 0
 "py/invalid-class-name" = 9
 "py/invalid-class-object" = 0
+"py/invalid-enum-extension" = 0
 "py/invalid-envvar-default" = 0
 "py/invalid-envvar-value" = 0
 "py/invalid-escape-sequence" = 30
@@ -283,6 +296,7 @@
 "py/invalid-match-args-definition" = 0
 "py/invalid-mock-access" = 0
 "py/invalid-module-name" = 0
+"py/invalid-overridden-method" = 0
 "py/invalid-pathlib-with-suffix" = 0
 "py/invalid-print-syntax" = 0
 "py/invalid-repr-returned" = 0
@@ -319,6 +333,7 @@
 "py/long-sleep-not-forever" = 0
 "py/loop-iterator-mutation" = 0
 "py/loop-variable-overrides-iterator" = 0
+"py/looping-through-iterator" = 0
 "py/lowercase-imported-as-non-lowercase" = 0
 "py/lru-cache-with-maxsize-none" = 0
 "py/lru-cache-without-parameters" = 0
@@ -336,11 +351,13 @@
 "py/max-lines-per-function" = 91
 "py/max-params" = 134
 "py/meta-class-abc-meta" = 0
+"py/method-hidden" = 0
 "py/method-receiver-default" = 0
 "py/misplaced-bare-raise" = 0
 "py/misplaced-format-function" = 0
 "py/missing-blank-line-after-summary" = 251
 "py/missing-copyright-notice" = 677
+"py/missing-f-string-syntax" = 5
 "py/missing-parentheses-for-call-in-test" = 0
 "py/missing-return-type-class-method" = 39
 "py/missing-return-type-private-function" = 45
@@ -357,6 +374,7 @@
 "py/mixed-case-variable-in-global-scope" = 0
 "py/modified-iterating-dict" = 0
 "py/modified-iterating-list" = 0
+"py/modified-iterating-set" = 0
 "py/module-import-not-at-top" = 25
 "py/multi-line-summary-first-line" = 591
 "py/multi-line-summary-second-line" = 676
@@ -402,6 +420,7 @@
 "py/non-empty-stub-body" = 0
 "py/non-lowercase-variable-in-function" = 92
 "py/non-octal-permissions" = 0
+"py/non-parent-init-called" = 0
 "py/non-pep585-annotation" = 178
 "py/non-pep604-annotation-optional" = 559
 "py/non-pep604-annotation-union" = 87
@@ -412,6 +431,7 @@
 "py/none-comparison" = 10
 "py/none-not-at-end-of-union" = 16
 "py/nonlocal-and-global" = 0
+"py/nonlocal-without-binding" = 0
 "py/not-in-test" = 0
 "py/not-is-test" = 0
 "py/numeric-literal-too-long" = 0
@@ -451,6 +471,7 @@
 "py/os-unlink" = 1
 "py/overlapping-except" = 0
 "py/overload-with-docstring" = 0
+"py/overridden-final-method" = 0
 "py/p-print" = 7
 "py/parenthesize-chained-operators" = 15
 "py/pass-in-class-body" = 0
@@ -468,6 +489,9 @@
 "py/percent-format-unsupported-character" = 0
 "py/percent-format-unused-named-argument" = 0
 "py/pointless-string-statement" = 0
+"py/positional-only-arguments-expected" = 0
+"py/possibly-unused-variable" = 2
+"py/possibly-used-before-assignment" = 2
 "py/post-init-default" = 0
 "py/potential-index-error" = 0
 "py/prefer-typing-namedtuple" = 5
@@ -589,9 +613,11 @@
 "py/strip-with-multi-characters" = 0
 "py/stub-body-multiple-statements" = 0
 "py/subclass-builtin" = 1
+"py/subclassed-final-class" = 0
 "py/subprocess-popen-preexec-fn" = 0
 "py/subprocess-run-without-check" = 4
 "py/super-call-with-parameters" = 0
+"py/super-init-not-called" = 3
 "py/super-without-brackets" = 0
 "py/superfluous-else-break" = 2
 "py/superfluous-else-continue" = 2
@@ -646,6 +672,7 @@
 "py/undefined-export" = 0
 "py/undefined-future-feature" = 0
 "py/undefined-local" = 0
+"py/undefined-loop-variable" = 4
 "py/undefined-name" = 5
 "py/undocumented-magic-method" = 355
 "py/undocumented-public-class" = 608
@@ -731,6 +758,7 @@
 "py/unused-lambda-argument" = 3
 "py/unused-loop-control-variable" = 21
 "py/unused-method-argument" = 91
+"py/unused-private-member" = 0
 "py/unused-static-method-argument" = 4
 "py/unused-unpacked-variable" = 7
 "py/unused-variable" = 9
@@ -741,6 +769,8 @@
 "py/use-list-literal" = 0
 "py/use-maxsplit-arg" = 7
 "py/use-sequence-for-iteration" = 0
+"py/used-before-assignment" = 0
+"py/used-dummy-variable" = 132
 "py/used-prior-global-declaration" = 0
 "py/useless-class-metaclass-type" = 0
 "py/useless-comparison" = 2
