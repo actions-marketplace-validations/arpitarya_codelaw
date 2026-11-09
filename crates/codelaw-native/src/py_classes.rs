@@ -224,7 +224,15 @@ fn params<'t>(def: Node<'t>, src: &'t str) -> Params<'t> {
                 _ => n.child_by_field_name("name").or_else(|| n.named_child(0)).map_or("", |c| text(c, src)),
             }
         };
-        match x.kind() {
+        // `*args: T` and `**kwargs: T` are a `typed_parameter` wrapping the splat.
+        let kind = match x.kind() {
+            "typed_parameter" => x.named_child(0).map_or("typed_parameter", |c| match c.kind() {
+                k @ ("list_splat_pattern" | "dictionary_splat_pattern") => k,
+                _ => "typed_parameter",
+            }),
+            k => k,
+        };
+        match kind {
             "positional_separator" => p.posonly = p.positional.len(),
             "keyword_separator" => after_star = true,
             "list_splat_pattern" => {

@@ -25,7 +25,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `testing/jest` | 17 | eslint-plugin-jest 29.17.0 `recommended`, at its severities |
 | `testing/vitest` | 15 | @vitest/eslint-plugin 1.6.28 `recommended` |
 | `testing/testing-library` | 22 | eslint-plugin-testing-library 7.16.2's `react` config |
-| `testing/playwright` | 33 | eslint-plugin-playwright 2.12.1 `recommended` |
+| `testing/playwright` | 34 | eslint-plugin-playwright 2.12.1 `recommended` |
 
 <!-- /docs-sync:presets -->
 
@@ -37,7 +37,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 53 | 34 | 82 | 20 | 54 | 8 | 0 | 0 |
+| 56 | 35 | 83 | 21 | 54 | 8 | 0 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2754 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2769 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -45,7 +45,7 @@ remap = { error = "warn" }
 | [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
 | [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 48 | 17 |
-| [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 13 | 1 |
+| [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 14 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 68 | 4 |
 | [security-ts](#security-ts) | `@codelaw/rules-security-ts` | — | 16 | 3 |
@@ -53,13 +53,13 @@ remap = { error = "warn" }
 | [spell](#spell) | `@codelaw/rules-spell` | `codelaw-rules-spell` | 7 | 1 |
 | [deps](#deps) | `@codelaw/rules-deps` | `codelaw-rules-deps` | 8 | 0 |
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
-| [testing](#testing) | `@codelaw/rules-testing` | — | 169 | 7 |
+| [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
 | [python](#python) | — | `codelaw-rules-python` | 806 | 31 |
-| [security-python](#security-python) | — | `codelaw-rules-security-python` | 61 | 0 |
+| [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
-| [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 2 | 0 |
-| [airflow](#airflow) | — | `codelaw-rules-airflow` | 5 | 0 |
+| [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
+| [airflow](#airflow) | — | `codelaw-rules-airflow` | 8 | 0 |
 | [numpy](#numpy) | — | `codelaw-rules-numpy` | 4 | 0 |
 | [pandas](#pandas) | — | `codelaw-rules-pandas` | 12 | 0 |
 | [engine](engine.md) | in `codelaw` | in `codelaw` | 28 | 0 |
@@ -1668,6 +1668,7 @@ Presets: `codelaw:tanstack-query/recommended`.
 | [`tanstack-query/no-unsupported-suspense-options`](tanstack-query/no-unsupported-suspense-options.md) | A suspense query takes no `enabled`, `placeholderData` or `throwOnError` | `suggest` | — | `tanstack-query/recommended` |
 | [`tanstack-query/no-void-query-fn`](tanstack-query/no-void-query-fn.md) | A query function returns its data | `manual` | — | `tanstack-query/recommended` |
 | [`tanstack-query/object-syntax`](tanstack-query/object-syntax.md) | A TanStack Query call takes one options object | `suggest` | — | `tanstack-query/recommended` |
+| [`tanstack-query/prefer-query-options`](tanstack-query/prefer-query-options.md) | Query options and keys come from `queryOptions()` | `manual` | — | *[rules] only* |
 | [`tanstack-query/stable-query-client`](tanstack-query/stable-query-client.md) | The QueryClient is made once, not on every render | `suggest` | — | `tanstack-query/recommended` |
 
 ## redux-toolkit
@@ -1942,6 +1943,7 @@ Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/
 | [`testing/playwright-no-template-literal-title`](testing/playwright-no-template-literal-title.md) | No template literal as a test title | `auto` | — | *[rules] only* |
 | [`testing/playwright-no-test-return-statement`](testing/playwright-no-test-return-statement.md) | No `return` from a test | `manual` | — | *[rules] only* |
 | [`testing/playwright-no-unnecessary-assertions`](testing/playwright-no-unnecessary-assertions.md) | No assertion on a constant | `suggest` | — | `testing/playwright` |
+| [`testing/playwright-no-unsafe-references`](testing/playwright-no-unsafe-references.md) | No outer variables in `page.evaluate()` and `page.addInitScript()` | `auto` | — | `testing/playwright` |
 | [`testing/playwright-no-unused-locators`](testing/playwright-no-unused-locators.md) | No locator created and left unused | `manual` | — | `testing/playwright` |
 | [`testing/playwright-no-useless-await`](testing/playwright-no-useless-await.md) | No `await` on a locator | `auto` | — | `testing/playwright` |
 | [`testing/playwright-no-useless-not`](testing/playwright-no-useless-not.md) | No `.not` where a matcher says it | `auto` | — | `testing/playwright` |
@@ -1955,6 +1957,7 @@ Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/
 | [`testing/playwright-prefer-hooks-on-top`](testing/playwright-prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | `testing/playwright` |
 | [`testing/playwright-prefer-locator`](testing/playwright-prefer-locator.md) | Locator methods over `page` actions | `suggest` | — | `testing/playwright` |
 | [`testing/playwright-prefer-lowercase-title`](testing/playwright-prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
+| [`testing/playwright-prefer-native-locators`](testing/playwright-prefer-native-locators.md) | `getByRole`, `getByLabel` and friends over `locator('[attr=…]')` | `suggest` | `testIdAttribute` | *[rules] only* |
 | [`testing/playwright-prefer-strict-equal`](testing/playwright-prefer-strict-equal.md) | `toStrictEqual` over `toEqual` | `suggest` | — | *[rules] only* |
 | [`testing/playwright-prefer-to-be`](testing/playwright-prefer-to-be.md) | `toBe` for primitives, `toBeNull`, `toBeUndefined`, `toBeNaN` | `auto` | — | *[rules] only* |
 | [`testing/playwright-prefer-to-contain`](testing/playwright-prefer-to-contain.md) | `toContain` for an `includes` check | `auto` | — | *[rules] only* |
@@ -1988,6 +1991,8 @@ Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/
 | [`testing/prefer-hooks-in-order`](testing/prefer-hooks-in-order.md) | Hooks in the order they run | `manual` | — | *[rules] only* |
 | [`testing/prefer-hooks-on-top`](testing/prefer-hooks-on-top.md) | Hooks before the tests | `manual` | — | *[rules] only* |
 | [`testing/prefer-import-in-mock`](testing/prefer-import-in-mock.md) | `vi.mock(import("…"))` | `auto` | — | *[rules] only* |
+| [`testing/prefer-importing-jest-globals`](testing/prefer-importing-jest-globals.md) | Jest's globals are imported from `@jest/globals` | `auto` | `types` | *[rules] only* |
+| [`testing/prefer-importing-vitest-globals`](testing/prefer-importing-vitest-globals.md) | Vitest's globals are imported from `vitest` | `auto` | — | *[rules] only* |
 | [`testing/prefer-jest-mocked`](testing/prefer-jest-mocked.md) | `jest.mocked()` over a type assertion | `auto` | — | *[rules] only* |
 | [`testing/prefer-lowercase-title`](testing/prefer-lowercase-title.md) | Test titles start in lower case | `auto` | — | *[rules] only* |
 | [`testing/prefer-mock-promise-shorthand`](testing/prefer-mock-promise-shorthand.md) | `mockResolvedValue` and `mockRejectedValue` | `auto` | — | *[rules] only* |
@@ -2044,6 +2049,7 @@ Presets: `codelaw:testing/jest` · `codelaw:testing/vitest` · `codelaw:testing/
 | [`testing/valid-describe-callback`](testing/valid-describe-callback.md) | `describe` takes a plain synchronous callback | `manual` | — | `testing/jest`, `testing/vitest` |
 | [`testing/valid-expect`](testing/valid-expect.md) | `expect` is called right and awaited when async | `auto` | — | `testing/jest`, `testing/vitest` |
 | [`testing/valid-expect-in-promise`](testing/valid-expect-in-promise.md) | A promise with assertions is awaited | `manual` | — | `testing/jest`, `testing/vitest` |
+| [`testing/valid-mock-module-path`](testing/valid-mock-module-path.md) | `jest.mock` names a module that exists | `manual` | `moduleFileExtensions` | *[rules] only* |
 | [`testing/valid-title`](testing/valid-title.md) | Test titles are non-empty strings without stray spaces | `auto` | — | `testing/jest`, `testing/vitest` |
 | [`testing/warn-todo`](testing/warn-todo.md) | No `test.todo` left behind | `manual` | — | *[rules] only* |
 
@@ -2933,9 +2939,14 @@ Presets: `codelaw:sec-py/recommended` · `codelaw:sec-py/strict`.
 | [`sec-py/no-xml-unsafe-parser`](sec-py/no-xml-unsafe-parser.md) | XML is parsed with `defusedxml` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xmlrpc`](sec-py/no-xmlrpc.md) | No `xmlrpc` without `defusedxml` | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/no-xpath-injection`](sec-py/no-xpath-injection.md) | XPath expressions are not built from strings | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/paramiko-call`](sec-py/paramiko-call.md) | `paramiko.exec_command` | `manual` | — | *[rules] only* |
 | [`sec-py/paramiko-host-key`](sec-py/paramiko-host-key.md) | SSH host keys are checked | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/password-hash-effort`](sec-py/password-hash-effort.md) | Passwords are hashed with a slow function | `manual` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/requests-timeout`](sec-py/requests-timeout.md) | HTTP requests have a timeout | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
+| [`sec-py/start-process-with-no-shell`](sec-py/start-process-with-no-shell.md) | A process is started with `os.exec*`, `os.spawn*` or `os.startfile` | `manual` | — | *[rules] only* |
+| [`sec-py/suspicious-httpoxy-import`](sec-py/suspicious-httpoxy-import.md) | `CGIHandler` or `CGIScript` is imported | `manual` | — | *[rules] only* |
+| [`sec-py/suspicious-pyghmi-import`](sec-py/suspicious-pyghmi-import.md) | `pyghmi` is imported | `manual` | — | *[rules] only* |
+| [`sec-py/suspicious-subprocess-import`](sec-py/suspicious-subprocess-import.md) | `subprocess` is imported | `manual` | — | *[rules] only* |
 | [`sec-py/tarfile-filter`](sec-py/tarfile-filter.md) | Archive extraction uses `filter="data"` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/torch-load-weights-only`](sec-py/torch-load-weights-only.md) | `torch.load` with `weights_only=True` | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
 | [`sec-py/upload-secure-filename`](sec-py/upload-secure-filename.md) | Uploaded files are saved under a safe name | `suggest` | — | `sec-py/recommended`, `sec-py/strict` |
@@ -2965,6 +2976,7 @@ Presets: `codelaw:fastapi/recommended`.
 |---|---|---|---|---|
 | [`fastapi/fast-api-non-annotated-dependency`](fastapi/fast-api-non-annotated-dependency.md) | Dependencies through Annotated | `suggest` | — | `fastapi/recommended` |
 | [`fastapi/fast-api-redundant-response-model`](fastapi/fast-api-redundant-response-model.md) | No response_model that repeats the return annotation | `auto` | — | `fastapi/recommended` |
+| [`fastapi/fast-api-unused-path-parameter`](fastapi/fast-api-unused-path-parameter.md) | A route's path parameter is a parameter of the function | `suggest` | — | *[rules] only* |
 
 ## airflow
 
@@ -2973,10 +2985,13 @@ Presets: `codelaw:airflow/recommended`.
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`airflow/airflow-dag-no-schedule-argument`](airflow/airflow-dag-no-schedule-argument.md) | A DAG names its schedule | `manual` | — | `airflow/recommended` |
+| [`airflow/airflow-task-branch-as-short-circuit`](airflow/airflow-task-branch-as-short-circuit.md) | A branch that is a short-circuit | `manual` | — | *[rules] only* |
+| [`airflow/airflow-task-implicit-multiple-outputs`](airflow/airflow-task-implicit-multiple-outputs.md) | `multiple_outputs` is not left to inference | `suggest` | — | *[rules] only* |
 | [`airflow/airflow-variable-get-outside-task`](airflow/airflow-variable-get-outside-task.md) | Variable.get inside a task | `manual` | — | *[rules] only* |
 | [`airflow/airflow-variable-name-task-id-mismatch`](airflow/airflow-variable-name-task-id-mismatch.md) | A task's variable is named like its task_id | `suggest` | — | *[rules] only* |
 | [`airflow/airflow-xcom-pull-in-template-string`](airflow/airflow-xcom-pull-in-template-string.md) | task.output, not xcom_pull in a template | `manual` | — | *[rules] only* |
 | [`airflow/airflow3-dag-dynamic-value`](airflow/airflow3-dag-dynamic-value.md) | No changing values in a DAG's arguments | `manual` | — | *[rules] only* |
+| [`airflow/airflow3-incompatible-function-signature`](airflow/airflow3-incompatible-function-signature.md) | A call or a definition whose signature changed in Airflow 3 | `manual` | — | *[rules] only* |
 
 ## numpy
 
