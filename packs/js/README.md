@@ -22,7 +22,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `js/project` | 6 | `graph/no-unused-exports`, the rule that reads the whole repo, from knip's `exports` and `types` — opt in |
 | `js/size` | 5 | size limits at `warn`, with ESLint's defaults: `js/max-lines` (300 per file), `js/max-lines-per-function` (50) and `js/max-params` (3) — opt in |
 | `js/markers` | 3 | TODO comments with a ticket (and a date when asked), no focused tests, skipped tests with a reason and an expiry; opt in (SR-CONFIG decision 11a) |
-| `js/jsdoc` | 30 | eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc-* rules at the plugin's warn; opt in (W-139, ruled 2026-10-30 on W-144: R7) |
+| `js/jsdoc` | 36 | eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc-* rules at the plugin's warn; opt in (W-139, ruled 2026-10-30 on W-144: R7) |
 | `js/strict` | 322 | eslint-plugin-unicorn 79.0.0 recommended, reimplemented: the stricter, opinionated rules; opt in (W-139, ruled 2026-10-30 on W-138: R2) |
 | `js/taste` | 15 | ESLint's style-only rules and two TSLint ones, which no defect stands behind; opt in (W-139, ruled 2026-10-30 on W-138: R1) |
 | `js/sonarjs` | 161 | eslint-plugin-sonarjs 4.2.2 recommended, reimplemented from its documented behaviour (LGPL-3.0: no code, text or tests used); opt in (W-139, ruled 2026-10-30 on W-144: R7) |
@@ -38,7 +38,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 267 | 286 | 360 | 134 | 141 | 42 | 41 | 2 |
+| 274 | 289 | 365 | 138 | 141 | 43 | 41 | 2 |
 
 <!-- /rule-docs:fix-ladder -->
 
