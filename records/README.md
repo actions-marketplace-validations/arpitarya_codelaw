@@ -146,7 +146,9 @@ Start from `TEMPLATE.md`.
 | [0116](0116_spell.md) | **SR-SPELL** | Spelling as its own rule pack — a known-typo check on by default, a dictionary check opt-in, codelaw's own word data from SCOWL, VarCon and the MIT software terms | accepted | yes |
 | [0117](0117_types.md) | **SR-TYPES** | Type-aware TypeScript rules — the project's own TypeScript ≥ 7.1, asked through codelaw's Node helper a fixed vocabulary of type questions; `ts/type-error`; preview until 7.1 is GA | accepted | partly |
 | [0118](0118_pack-lookup.md) | **SR-PACK-LOOKUP** | Where the engine finds a rule pack — `node_modules`, then the Python environment (launcher paths, `$VIRTUAL_ENV`, then `./.venv`); each place settable in `[packs]` | accepted | yes |
-| [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | no |
+| [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | yes |
+| [0120](0120_python-inference.md) | **SR-PY-INFERENCE** | Python rules that need more than syntax — four lazy layers over the per-file model (scope facts, a flow pass for definite assignment, an in-file class table, literal typing); no type checker; the rows that need one stay open with their question | accepted | partly |
+| [0121](0121_code-path-graph.md) | **SR-CODE-PATH-GRAPH** | A code-path graph for JavaScript — named for the two rows that need one; its shape open until W-189's research is ruled | proposed | no |
 
 ---
 
@@ -172,6 +174,9 @@ yet is owned by an open `W-nn`.
 | `scripts/data-browsers-check.py` | SR-LAW-6 | decision 15: the browser-support table's checks — `--check` in CI's lint job, `--review` for the weekly job (W-166) |
 | `.github/workflows/data-browsers.yml` | SR-LAW-6 | decision 15: the weekly job that opens one PR naming the browser table's rows to review (W-166) |
 | `data-packages/browsers` | SR-LAW-6 | decision 15: the `data-browsers` package's source — the table, its NOTICE and README (W-166) |
+| `scripts/data-polyfills-check.py` | SR-LAW-6 | decision 15: the polyfill table's checks and its generator — `--check` in CI's lint job, `--refresh` for the weekly job (W-175) |
+| `.github/workflows/data-polyfills.yml` | SR-LAW-6 | decision 15: the weekly job that regenerates the polyfill table and opens one PR (W-175) |
+| `data-packages/polyfills` | SR-LAW-6 | decision 15: the `data-polyfills` package's source — the generated table, its NOTICE and README (W-175) |
 | `scripts/vsix.py` | SR-PACKAGES | decision 6: the editor extension's eight platform `.vsix` files, built and checked in CI (W-95) |
 | `.claude/hooks/guard-open-work-inbox.sh` | SR-WORK-OPEN-QUEUE | rule 45a, in-session |
 | `.claude/hooks/inject-inbox.sh` | SR-WORK-BLOCKERS | decision 7 |
@@ -268,6 +273,11 @@ yet is owned by an open `W-nn`.
 | `scripts/tailwind-parity.py` | SR-FORMATTER | decision 9: the class sorting measured against prettier-plugin-tailwindcss (W-145) |
 | `crates/codelaw-lang/src/class_lists.rs` | SR-FORMATTER | decision 9: where class lists are written — the one finder the sorter and the `tailwind` rules share (W-145) |
 | `crates/codelaw-native/src/tailwind.rs` | SR-RULE-PACKS | decision 19: the `tailwind` pack's eight native rules (W-145) |
+| `crates/codelaw-semantic/src/py_flow.rs` | SR-PY-INFERENCE | decision 3: the flow pass — is a name bound on every path to a read (W-174) |
+| `crates/codelaw-native/src/py_scope.rs` | SR-PY-INFERENCE | decision 2: the scope-facts rows — `nonlocal` binding, class-scope reads, f-string names, dummy variables, private members (W-174) |
+| `crates/codelaw-native/src/py_flow.rs` | SR-PY-INFERENCE | decisions 2–3: the rules that read the flow pass, and the loop and generator checks (W-174) |
+| `crates/codelaw-native/src/py_classes.rs` | SR-PY-INFERENCE | decisions 2 and 4: the in-file class table and the hierarchy rows (W-174) |
+| `crates/codelaw-native/src/py_values.rs` | SR-PY-INFERENCE | decision 2: the literal-typing rows (W-174) |
 | `fixtures/tailwind` | SR-RULE-PACKS | decision 19: the Tailwind CSS the provider and the `tailwind` rules are tested on (L11 §3 D-48) |
 | `scripts/format-corpus.py` | SR-FORMATTER | fetches W-141's pinned real-world corpus for the parity measurement |
 | `scripts/law-gate.py` | SR-PACKAGES | decision 11: refuses a release while the engine lacks `format`, `mcp` or `lsp` (L6 decision 3, L7) |

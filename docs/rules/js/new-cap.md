@@ -11,7 +11,7 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming the constructor changes its declaration and every use) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the constructor is renamed with a capital where it is declared and wherever it is used, its importers included, as one fix; a diff to accept, as code outside the project may import it too. A global, a member (`new a.b()`) or a name reached by `require` or a namespace offers no rename (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint/new-cap` |
@@ -124,7 +124,8 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 
 ## How to fix
 
-1. Rewrite the code as the message says.
+1. Accept the rename: `codelaw fix --unsafe` renames the constructor where it is declared and wherever it is used (the diff names each file).
+2. A constructor this project doesn't declare (a global, a member, a package's) offers no rename: rename it by hand, or keep it and suppress the line with a reason.
 
 ## Examples
 
@@ -133,13 +134,35 @@ codelaw config --print --for <file>  # the resolved setting, and where it came f
 #### Don't
 
 ```js
+class user {}
 const u = new user();
 ```
 
 #### Do
 
 ```js
+class User {}
 const u = new User();
+```
+
+#### Don't
+
+```js
+// src/user.js
+export class user {}
+// src/app.js
+import { user } from "./user";
+export const u = new user();
+```
+
+#### Do
+
+```js
+// src/user.js
+export class User {}
+// src/app.js
+import { User } from "./user";
+export const u = new User();
 ```
 
 ### JSX
@@ -147,13 +170,35 @@ const u = new User();
 #### Don't
 
 ```jsx
+class user {}
 const u = new user();
 ```
 
 #### Do
 
 ```jsx
+class User {}
 const u = new User();
+```
+
+#### Don't
+
+```jsx
+// src/user.jsx
+export class user {}
+// src/app.jsx
+import { user } from "./user";
+export const u = new user();
+```
+
+#### Do
+
+```jsx
+// src/user.jsx
+export class User {}
+// src/app.jsx
+import { User } from "./user";
+export const u = new User();
 ```
 
 ### TypeScript
@@ -161,13 +206,35 @@ const u = new User();
 #### Don't
 
 ```ts
+class user {}
 const u = new user();
 ```
 
 #### Do
 
 ```ts
+class User {}
 const u = new User();
+```
+
+#### Don't
+
+```ts
+// src/user.ts
+export class user {}
+// src/app.ts
+import { user } from "./user";
+export const u = new user();
+```
+
+#### Do
+
+```ts
+// src/user.ts
+export class User {}
+// src/app.ts
+import { User } from "./user";
+export const u = new User();
 ```
 
 ### TSX
@@ -175,13 +242,35 @@ const u = new User();
 #### Don't
 
 ```tsx
+class user {}
 const u = new user();
 ```
 
 #### Do
 
 ```tsx
+class User {}
 const u = new User();
+```
+
+#### Don't
+
+```tsx
+// src/user.tsx
+export class user {}
+// src/app.tsx
+import { user } from "./user";
+export const u = new user();
+```
+
+#### Do
+
+```tsx
+// src/user.tsx
+export class User {}
+// src/app.tsx
+import { User } from "./user";
+export const u = new User();
 ```
 
 ---

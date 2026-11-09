@@ -300,3 +300,27 @@ fn typescript_merged_export_and_enums() {
     assert!(t.m.reference_at(t.at("NS", 0)).is_some_and(|r| r.type_only));
     assert!(!t.unused("E"));
 }
+
+// ---- W-174: scope facts for the Python inference rules (SR-PY-INFERENCE)
+
+#[test]
+fn python_lookup_sees_the_own_scope_only_after_the_binding() {
+    let m = model(Language::Python, "def f():\n    a = 1\n    b = a\n    c = 2\n");
+    let scope = m.m.scope_at(m.at("b", 0));
+    assert!(m.m.lookup(scope, "a", m.at("b", 0)).is_some());
+    assert!(m.m.lookup(scope, "c", m.at("b", 0)).is_none(), "bound later in the same scope");
+    assert!(m.m.lookup(scope, "c", usize::MAX).is_some());
+}
+
+#[test]
+fn python_nonlocal_needs_an_enclosing_function_binding() {
+    let bound = model(Language::Python, "def f():\n    x = 1\n\n    def g():\n        nonlocal x\n");
+    let g = bound.m.scope_at(bound.at("nonlocal", 0));
+    assert!(bound.m.nonlocal_bound(g, "x"));
+    let unbound = model(Language::Python, "x = 1\n\n\ndef f():\n    def g():\n        nonlocal x\n");
+    let g = unbound.m.scope_at(unbound.at("nonlocal", 0));
+    assert!(!unbound.m.nonlocal_bound(g, "x"), "a module name is not a binding");
+    let through_class = model(Language::Python, "def f():\n    class C:\n        x = 1\n\n        def m(self):\n            nonlocal x\n");
+    let m = through_class.m.scope_at(through_class.at("nonlocal", 0));
+    assert!(!through_class.m.nonlocal_bound(m, "x"), "a class scope is skipped");
+}

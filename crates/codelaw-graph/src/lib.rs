@@ -8,27 +8,32 @@
 //! counters of `Graph::build_timed`, which never change the graph.
 
 pub mod config;
+pub mod dangling;
 pub mod deprecated;
 pub mod facts;
 pub mod flags;
 pub mod link;
 pub mod modules;
+pub mod names;
 pub mod query;
 pub mod resolve;
 
 pub use config::GraphConfig;
+pub use dangling::{dangling, defined_classes, introduced};
 pub use deprecated::{DeprecatedUse, Marked};
 pub use facts::{Decl, DeclKind, FactLang, FileFacts, Span, SpecForm, Specifier, extract};
 pub use link::{BuildTimes, Graph, GraphInput, Manifest, Module, Use, is_manifest, is_test_file};
 pub use query::{GraphFinding, GraphRule, Query, compile, refs, run, why_unused};
 
 /// Bumped whenever extraction changes: part of the facts cache key.
-pub const FACTS_VERSION: &str = "graph-facts-6";
+pub const FACTS_VERSION: &str = "graph-facts-7";
 
 /// Whether the graph reads facts from a language.
 pub fn reads(language: codelaw_core::Language) -> bool {
     language.is_js_family() || matches!(language, codelaw_core::Language::Python | codelaw_core::Language::Css | codelaw_core::Language::Scss | codelaw_core::Language::Html)
 }
 
+#[cfg(test)]
+mod names_tests;
 #[cfg(test)]
 mod tests;

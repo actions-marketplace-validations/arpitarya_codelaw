@@ -11,6 +11,34 @@ use serde_json::Value;
 use std::collections::{BTreeMap, HashMap};
 use tree_sitter::Node;
 
+mod scope;
+mod scope_fix;
+mod sonar_scope;
+mod files;
+mod polyfills;
+mod shape;
+mod values;
+mod coll_rules;
+mod iter_rules;
+mod text_rules;
+mod temporal;
+mod arity;
+mod builtin_props;
+mod commented;
+mod guards;
+mod tables;
+mod tests_rules;
+mod maps;
+mod objects;
+mod style;
+mod kit;
+mod zip;
+mod abort_any;
+mod params;
+mod names;
+mod parameterized;
+mod atomic;
+
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
 
@@ -690,6 +718,12 @@ rule!(UseTypeAlias, "js/use-type-alias", TS, &["program"], |n, ctx, out| {
 });
 
 pub static RULES: &[&dyn NativeRule] = &[
+    &zip::PreferIteratorZip,
+    &abort_any::PreferAbortSignalAny,
+    &params::NoUnnecessaryParameters,
+    &names::NameReplacements,
+    &parameterized::ParameterizedTests,
+    &atomic::RequireAtomicUpdates,
     &MaxNestedCalls,
     &TryComplexity,
     &TooManyBreakOrContinueInLoop,
@@ -704,4 +738,105 @@ pub static RULES: &[&dyn NativeRule] = &[
     &PreferLiteralAscii,
     &NoUnenclosedMultilineBlock,
     &UseTypeAlias,
+    &scope::NoThisOutsideOfClass,
+    &scope::NoTopLevelAssignmentInFunction,
+    &scope::NoUselessRecursion,
+    &scope::NoUselessReExport,
+    &scope::NoUndeclaredClassMembers,
+    &scope::NoIncompleteAccessorOverride,
+    &scope::NoLateCurrentTargetAccess,
+    &scope::NoLateEventControl,
+    &scope::NoLoopIterableMutation,
+    &scope::NoMismatchedMapKey,
+    &scope::NoCanvasToImage,
+    &scope::ConsistentFunctionScoping,
+    &scope::IsolatedFunctions,
+    &scope::NoUncalledMethod,
+    &scope::NoUnusedProperties,
+    &scope::PreferGetOrInsertComputed,
+    &scope::NoTopLevelSideEffects,
+    &scope::BlockScopedVar,
+    &scope::NoInvalidThis,
+    &scope::NoLoopFunc,
+    &scope::NoUnmodifiedLoopCondition,
+    &scope::NoUseBeforeDefine,
+    &scope::NoRepeatedCallWrappers,
+    &scope_fix::PreferClassFields,
+    &scope_fix::PreferObjectDefineProperties,
+    &scope_fix::PreferSetHas,
+    &scope_fix::PreferExportFrom,
+    &scope_fix::NoDeclarationsBeforeEarlyExit,
+    &scope_fix::NoImmediateMutation,
+    &scope_fix::ConsistentDestructuring,
+    &scope_fix::NoBlobToFile,
+    &scope_fix::PreferPromiseWithResolvers,
+    &scope_fix::PreferAbortSignalTimeout,
+    &scope_fix::NoForLoop,
+    &scope_fix::PreferSmallerScope,
+    &scope_fix::NoUnnecessaryDefaultArguments,
+    &scope_fix::NoUnsafePromiseAllSettledValues,
+    &sonar_scope::AvoidMutatingNestedPropertiesOfShallowClones,
+    &sonar_scope::FunctionInsideLoop,
+    &sonar_scope::InconsistentFunctionCall,
+    &sonar_scope::MemoizeCacheKey,
+    &sonar_scope::MisplacedLoopCounter,
+    &sonar_scope::NoDebounceThrottleInRender,
+    &sonar_scope::NoEmptyCollection,
+    &sonar_scope::NoUnusedCollection,
+    &sonar_scope::NoExtraArguments,
+    &sonar_scope::NoGratuitousExpressions,
+    &sonar_scope::NoInvariantReturns,
+    &sonar_scope::NoMutateReactiveStateInUpdatedHook,
+    &sonar_scope::NoUseOfEmptyReturnValue,
+    &sonar_scope::NoVariableUsageBeforeDeclaration,
+    &sonar_scope::StatefulRegex,
+    &files::FilenameCase,
+    &files::FileNameDifferFromClass,
+    &files::ImportUnambiguous,
+    &files::NoExportsInScripts,
+    &files::ImportStyle,
+    &files::NoInternalApiUse,
+    &files::ImportNoSelfImport,
+    &files::ImportExtensions,
+    &files::ImportNoUselessPathSegments,
+    &files::ImportNoRelativePackages,
+    &files::NodeFileExtensionInImport,
+    &files::NodeNoUnpublishedBin,
+    &files::NodePreferProcessGetBuiltinModule,
+    &files::ImportExport,
+    &files::NoMissingLocalResource,
+    &polyfills::NoUnnecessaryPolyfills,
+    &shape::ConsistentArrowReturnStyle,
+    &shape::NoDuplicateLoops,
+    &shape::NoRedundantComparison,
+    &shape::PreferContinue,
+    &shape::PreferEarlyReturn,
+    &shape::PreferSingleReplace,
+    &shape::PreferHoistingBranchCode,
+    &shape::OneVar,
+    &shape::NoSameLineConditional,
+    &shape::NoConflictingConstraints,
+    &shape::NoInvalidIntegrity,
+    &shape::ConsistentClassMemberOrder,
+    &coll_rules::NoCollectionBracketAccess,
+    &coll_rules::NoObjectMethodsWithCollections,
+    &coll_rules::NoUselessSetConstruction,
+    &coll_rules::PreferArrayIterableMethods,
+    &iter_rules::NoUnusedIteratorHelper,
+    &iter_rules::NoUselessIteratorToArray,
+    &iter_rules::PreferIteratorToArray,
+    &iter_rules::PreferIteratorToArrayAtEnd,
+    &iter_rules::PreferIteratorHelpers,
+    &iter_rules::PreferIteratorConcat,
+    &text_rules::TemplateIndent,
+    &temporal::PreferTemporalConversion,
+    &arity::NoInvalidArgumentCount,
+    &builtin_props::NoNonstandardBuiltinProperties,
+    &commented::NoCommentedCode,
+    &guards::PreferTypeGuard,
+    &tables::TableHeaderReference,
+    &tests_rules::NoDuplicateParameterizedTestCase,
+    &maps::PreferMapFromEntries,
+    &objects::PreferObjectIterableMethods,
+    &style::NoShorthandPropertyOverrides,
 ];

@@ -6,8 +6,10 @@
 mod globals;
 mod js;
 mod model;
+mod py_flow;
 mod python;
 
+pub use py_flow::{FlowConfig, FlowKind, FlowUse, analyze as python_flow};
 pub use globals::{ES_GLOBALS, PYTHON_BUILTINS, TS_GLOBAL_TYPES};
 pub use js::declared_names;
 pub use model::{

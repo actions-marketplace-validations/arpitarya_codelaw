@@ -122,12 +122,13 @@ The decider asked for a VS Code extension as well as an LSP. Earlier records nam
    - **Hover:** a rule id shows its title, fix rung, default severity, pack and version, summary and a link to its page; a preset its pack and description; a key its type, description and record. A finding under the cursor keeps its card (decision 8).
    - **Live errors:** on open and every edit, the text as typed goes through the run's own load — `find_config_with` ([SR-CONFIG](0110_config.md) decision 6), then `Project::from_config` — and each error is a diagnostic (`source: codelaw config`) at what it names: the parser's `line:column`, a rule loader's line, else the name in backticks the text holds (an unknown key, rule, option, preset or pack; a root-only key in a nested config names its keys). A warning that names something in the file is a warning there. An error of another file shows on the first line with that file's name. The loader's "did you mean `x`?" is a preferred quick fix, *Change to `x`*.
    - **No drift, no second list:** completions come from `codelaw_engine::pack_search` — the search the run loads packs through ([SR-ARCHITECTURE](0108_architecture.md) decision 2) — and from the loaded project's rule set when it loads; errors come from the loader. The list of installed packs is built once per project and `extends`, and dropped on every reload.
-   - **Tests:** `crates/codelaw-lsp/tests/unit/config.rs`.
+   - **Tests:** `crates/codelaw-lsp/tests/unit/config.rs`. (2026-11-08, W-169: two clippy findings in `config.rs` fixed — `append` for `extend(drain)` and a string compared without an owned copy; no behaviour changed.)
 
 ### Consequences
 
 - **A bundled binary makes the extension larger** (one platform per package). The project's own binary is still preferred.
 - **Project rules update on save, not per keystroke;** that's the price of keeping `lsp_after_edit` small.
+- **2026-11-08 (W-162):** a multi-file fix is offered as one quick fix carrying a `WorkspaceEdit` over every file it touches; save never applies one ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

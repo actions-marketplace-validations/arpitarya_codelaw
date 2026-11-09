@@ -15,7 +15,7 @@ owns:
   - fixtures/flags
   - crates/codelaw-cli/tests/flags.rs
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-10-30T12:00:00Z
+timestamp: 2026-11-08T12:00:00Z
 content_sha: ""
 ---
 
@@ -218,6 +218,25 @@ console.log(formatDate(new Date()));
 ````
 
 - **Import queries:** `graph: import: { form: [import, export, dynamic, require], resolves | declared | published: false }` reports import specifiers rather than symbols; it backs the six `node/no-{missing,extraneous,unpublished}-{import,require}` rules (W-11). The graph never reads `node_modules`: `resolves: false` judges only the project's own paths (relative, absolute, tsconfig `paths`) that are extensionless or JavaScript/TypeScript; `declared: false` reads the nearest `package.json`, and a type-only import is satisfied by its `@types/` package; `published: false` applies only to a package that is not `private` and lists `files`.
+- **Queries on what another module exports (W-175, 2026-11-08).** Seven `import:` checks read an import against the module it names, one `cycle:`, one `export:` and one `module:` check read the linked modules, so the eslint-plugin-import / import-x rows that ask about another file's contents are project rules, not natives (a native sees one file). Each is a `graph:` block of the same shape as above and none adds a fact the graph did not already hold but one: `FileFacts::default_name`, the name a module's default export goes by in its own file (a function or class declaration's name, the identifier exported, the first argument of the call it wraps, the local of `export { x as default }`; `FACTS_VERSION` 7).
+
+  | block | reports | fix |
+  |---|---|---|
+  | `import: { names: unexported }` | `import { x } from "./m"` and `export { x } from "./m"` where `./m` exports no `x` | `nearest-export` (`suggest`): the one export within two edits, the local name kept (`{ near as x }`); none near, no fix |
+  | `import: { default: missing }` | a default import of a module with no default export (`export *` does not pass `default` on) | none |
+  | `import: { namespace: unexported }` | `ns.x`, `ns["x"]` and `const { x } = ns` where the module exports no `x`; `import * as ns` of a module that exports nothing | `nearest-export` for a plain `ns.x` |
+  | `import: { default_name: named }` | `import x from "./m"` where `./m` also exports `x` by name — unless both exports are one binding (`export { x }` beside `export default x`) | none |
+  | `import: { default_member: named }` | `x.y` and `const { y } = x` off a default import `x`, where `./m` also exports `y` by name | none |
+  | `import: { default_name: differs }` | a default import (or `{ default as x }`) bound to another name than the default export's own (`default_name`) | none |
+  | `import: { deprecated: jsdoc }` | an import, and each use of it, of an export whose declaration carries a JSDoc `@deprecated` (through re-exports), and `ns.x` of a deprecated `x`; the note is the message | none |
+  | `cycle: { form: [import, export, dynamic] }` | each import whose target reaches the importing module again through imports (strongly connected components, the shortest way back named); `import type` and an import whose every specifier is a type close no cycle | none |
+  | `export: { star: conflicts }` | a name two `export *` of one module bring in, or an `export *` and a named export of that module both do (types and values of one name are two exports); an `export *` of a module with no named export | none |
+  | `module: { exports: [missing, unused] }` | a module with no export at all; a named or default export no other module imports, `export *` passing the names of a module that is itself read | `strip-export-keyword` / `remove-declaration`, as `graph/no-unused-exports` |
+
+  - **What stays silent, so a finding is never a guess:** a target that is not an ES module (CommonJS, a script — no `import`/`export` statement at all), is TypeScript `export =`, or has an `export *` the graph cannot read (an external package, an unresolved path) — `names`, `default`, `namespace` and `default_member` judge only a module whose export names are all known; a namespace that is passed around whole (`members` is `None`); a type-only import.
+  - **Not built, and said on each rule's page:** a computed namespace access (`ns[x]`) and an assignment to a member of a namespace (upstream's `allowComputed` and "Assignment to member"), a namespace reached two levels deep (`ns.a.b`), a module-level `@deprecated`, and `ignoreExports`/`src` of `import/no-unused-modules` (the entry points, `[graph] keep` and the package's public surface decide what is read from outside).
+  - **Cost ([L8](0010_LAW-8-performance-budgets.md)):** the graph is built when a project rule is on (decision 5); these checks run only for a rule that names them, once per run, over modules already linked (export names memoised per module, SCC one linear pass). The only fact added is read for a module that has a default export, from the statement already visited by `exports()`; `extract` of an 800-statement file does not move beyond the run-to-run noise (3.3–6.2 s for 50 runs with it, 3.3–3.9 s without, a debug build on a loaded Mac), and `FACTS_VERSION` 7 makes each cache entry be read once more. Because every one of these rules builds the graph, none is in `js/recommended`: `check_cold_10k` pays for the graph only for a repo that opts in (`js/project`).
+
 - **Files outside `[files]` or `languages`** are still read for their uses, so an export they import is not reported; findings are reported only in files the config lets be checked.
 - **Multi-file examples** use a `files` fence: one block holding several `// path` sections. `codelaw test` builds a small virtual repo from it.
 - **Debugging:**
@@ -296,6 +315,8 @@ packages/legacy/src/plugins.py:14:1  info  graph/no-unused-exports  `register` l
 - **A cache and incremental relinking are required** to keep hook latency down.
 - **Without types, method-level usage is out of scope.** The design prefers missing a finding to reporting a false one.
 - **Dynamic code yields `info`-level "uncertain" results**, never errors.
+- **The graph checks multi-file fixes** (W-162, 2026-11-08, [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) safeguard 2): `codelaw_graph::dangling` lists every reference that resolves to nothing — a relative import naming no file, a named or default import a project module does not export (a module with re-exports or none is not judged), an undefined CSS Module class, a markup or script class token no stylesheet defines — and a fix that adds one is refused (`crates/codelaw-graph/src/dangling.rs`); a class token counts only when it named a class before (`introduced`).
+- **Three graph fixes read other files** (W-162, 2026-11-08): `do: [add-dependency]` (`graph: import: { declared: false }`: the package added to the nearest `package.json` at the version `node_modules` holds, as choices `dependencies` and `devDependencies`), `do: [nearest-path]` (`resolves: false`: the specifier pointed at the project file nearest in spelling) and `do: [nearest-class]` (`module: { classes: undefined }`: `styles.x` corrected to the module's nearest class). The engine computes them (`crates/codelaw-engine/src/graph_fixes.rs`); `codelaw fix` applies them in its multi-file pass.
 - **The false-positive rate is measured** (W-11 corpus run, 2026-10-22): **14 of 145 findings are false (9.7%)** — `graph/no-unused-exports` 11 of 142 (7.7%), `graph/no-unused-css-classes` 3 of 3 — and **none is one that config cannot express**, so the veto condition does not hold.
   - **Method.** Seven repos cloned at pinned commits; a release build of the engine; `codelaw check --rule graph/no-unused-exports,graph/no-unused-css-classes` with only `preview = true` and the `js`, `py` and `css` presets (no `[graph]` section). Every finding was classified by hand, none sampled: the name was searched across the repo, then the use read. **False** means something does use the symbol (a framework, reflection, generated markup, a published surface); an export nothing uses is **true** even in generated or copied-in code. Each false one was then re-run with the config that expresses it.
 

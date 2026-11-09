@@ -116,12 +116,59 @@ impl fmt::Display for FixException {
 /// One labelled alternative of a `suggest` finding (SR-LAW-4 decision 4):
 /// the right edit is one of a few the code determines, and the agent or
 /// person picks. `fix --unsafe` applies only a `default` one.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct FixChoice {
     pub label: String,
     #[serde(default)]
     pub default: bool,
     pub edits: Vec<TextEdit>,
+    /// The choice's edits in other files (SR-MULTI-FILE-FIXES decision 1).
+    #[serde(default)]
+    pub files: Vec<FileEdit>,
+}
+
+impl FixChoice {
+    pub fn new(label: impl Into<String>, default: bool, edits: Vec<TextEdit>) -> Self {
+        FixChoice { label: label.into(), default, edits, files: Vec::new() }
+    }
+}
+
+/// `files` is omitted from JSON when empty, and always there for the
+/// cache's positional codec (as `Diagnostic`'s optional fields).
+impl Serialize for FixChoice {
+    fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        use serde::ser::SerializeStruct;
+        let readable = s.is_human_readable();
+        let with_files = !readable || !self.files.is_empty();
+        let mut st = s.serialize_struct("FixChoice", 3 + usize::from(with_files))?;
+        st.serialize_field("label", &self.label)?;
+        st.serialize_field("default", &self.default)?;
+        st.serialize_field("edits", &self.edits)?;
+        if with_files {
+            st.serialize_field("files", &self.files)?;
+        }
+        st.end()
+    }
+}
+
+/// A fix's edits in one file other than its finding's (SR-MULTI-FILE-FIXES
+/// decision 1): the file's project-relative path, its edits over the file's
+/// text (without a byte-order mark), and the file-level operation
+/// `strip_bom`.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct FileEdit {
+    pub path: String,
+    pub edits: Vec<TextEdit>,
+    /// Remove the file's UTF-8 byte-order mark: the mark sits in bytes the
+    /// text never sees.
+    #[serde(default)]
+    pub strip_bom: bool,
+}
+
+impl FileEdit {
+    pub fn new(path: impl Into<String>, edits: Vec<TextEdit>) -> Self {
+        FileEdit { path: path.into(), edits, strip_bom: false }
+    }
 }
 
 /// An LSP-style text edit over byte offsets.
@@ -180,6 +227,10 @@ pub struct Diagnostic {
     /// Why a `manual` finding has no edit (L4 decision 5).
     #[serde(default)]
     pub fix_exception: Option<FixException>,
+    /// A multi-file fix's edits in files other than `file`
+    /// (SR-MULTI-FILE-FIXES decision 1); `edits` holds this file's.
+    #[serde(default)]
+    pub files: Vec<FileEdit>,
 }
 
 /// `data` is omitted from JSON when absent, but the cache's codec is
@@ -193,7 +244,8 @@ impl Serialize for Diagnostic {
         let n = 13
             + usize::from(!readable || self.data.is_some())
             + usize::from(!readable || !self.choices.is_empty())
-            + usize::from(!readable || self.fix_exception.is_some());
+            + usize::from(!readable || self.fix_exception.is_some())
+            + usize::from(!readable || !self.files.is_empty());
         let mut st = s.serialize_struct("Diagnostic", n)?;
         st.serialize_field("rule", &self.rule)?;
         st.serialize_field("severity", &self.severity)?;
@@ -223,6 +275,9 @@ impl Serialize for Diagnostic {
         if !readable || self.fix_exception.is_some() {
             st.serialize_field("fix_exception", &self.fix_exception)?;
         }
+        if !readable || !self.files.is_empty() {
+            st.serialize_field("files", &self.files)?;
+        }
         st.end()
     }
 }
@@ -247,6 +302,40 @@ impl Diagnostic {
             None => self.choices.iter().find(|c| c.default),
         };
         pick.map(|c| c.edits.as_slice()).filter(|e| !e.is_empty())
+    }
+
+    /// The fix `codelaw fix` applies, as [`Diagnostic::applicable_edits`]
+    /// picks it, with its edits in other files: `(this file's edits, the
+    /// other files')`. `None` when there is nothing to apply.
+    pub fn applicable_fix(&self, choice: Option<&str>) -> Option<(&[TextEdit], &[FileEdit])> {
+        if !self.edits.is_empty() || !self.files.is_empty() {
+            return Some((&self.edits, &self.files));
+        }
+        let pick = match choice {
+            Some(l) => self.choices.iter().find(|c| c.label == l).or_else(|| self.choices.iter().find(|c| c.default)),
+            None => self.choices.iter().find(|c| c.default),
+        };
+        pick.filter(|c| !c.edits.is_empty() || !c.files.is_empty()).map(|c| (c.edits.as_slice(), c.files.as_slice()))
+    }
+
+    /// Whether this finding's fix edits a file other than its own, or does
+    /// a file-level operation: such a fix is applied only by `codelaw fix`,
+    /// never on save or by the agent hook (SR-MULTI-FILE-FIXES decision 2.5).
+    pub fn is_multi_file(&self) -> bool {
+        !self.files.is_empty() || self.choices.iter().any(|c| !c.files.is_empty())
+    }
+
+    /// The number of files this finding's fix edits (its default choice's,
+    /// when it has choices), its own file included.
+    pub fn files_edited(&self) -> usize {
+        let (own, other) = match self.applicable_fix(None) {
+            Some(f) => f,
+            None => return 0,
+        };
+        let mut paths: Vec<&str> = other.iter().map(|f| f.path.as_str()).filter(|p| *p != self.file).collect();
+        paths.sort_unstable();
+        paths.dedup();
+        paths.len() + usize::from(!own.is_empty() || other.iter().any(|f| f.path == self.file))
     }
 
     /// The L5 decision 2 order: path, line, column, rule.

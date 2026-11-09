@@ -5,9 +5,9 @@ description: "Arpit, 2026-10-29 (voice): the whole CI/CD pipeline, push to publi
 item: W-126
 filed: 2026-10-29
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-05
-updated_by: "Claude Code (Opus 5.5)"
-ball: arpit
+updated: 2026-11-08
+updated_by: "Claude Code (CI-green agent, session d73e9989)"
+ball: agent
 ---
 
 # W-126 — A five-minute pipeline
@@ -21,7 +21,7 @@ ball: arpit
 | 3 | Cut `publish.yml`: verify attestations, trust and uploads in parallel, keeping npm's order (binaries → packs → `codelaw` last) | a release in ~3 min (9 min today) | ✅ built; the next release measures it |
 | 4 | Measure again on three runs of each kind; record the times beside L8's (context, not budgets) | proof, not hope | 🔄 cached 2 of 3 (4m25, 4m11 ✅); Rust/pack change 1 of 3 (10m33 — `perf` the tail, 4m12 without it); release 1 of 3 (3m50) |
 | 5 | Ruled 2026-10-30 (below): `perf` split across parallel jobs, and nothing waits on its verdict | a Rust/pack-change run near the other jobs' ~4 min | ✅ ruled |
-| 6 | Agent: `perf` as a matrix, one job per L8 operation (or a few groups), each on the release binary `build linux-x64-gnu` made (not its own `cargo build --release`, 3m09); the run's verdict, `publish.yml`'s gate and branch protection do not wait on it | `perf` off the critical path | ✅ built 11-05 (below); measuring |
+| 6 | Agent: `perf` as a matrix, one job per L8 operation (or a few groups), each on the release binary `build linux-x64-gnu` made (not its own `cargo build --release`, 3m09); the run's verdict, `publish.yml`'s gate and branch protection do not wait on it | `perf` off the critical path | ✅ built 11-05; **first run 11-08: `perf` finished 3m27 after the last build leg, 2m44 for its slowest group** (§Measured, 2026-11-08) |
 
 **Arpit, 2026-10-29 (voice):** *"I want the most optimized CI/CD pipeline. Can it be done under five minutes?"* — told publishing likely can, the eight Rust builds are the hard part — *"Yes, I want the overall, the whole CI/CD pipeline from start to end to be faster."* — then, in text, *"Research and file it."* Earlier the same call: *"We'll stick with it"* on keeping eight platform `.vsix` builds.
 
@@ -103,6 +103,24 @@ Left: one more cached run; three clean Rust-change and pack-change runs once W-1
 - **The binary:** the wheel's (maturin, zig, manylinux2014, `strip`), from the same `[profile.release]` — the 10-30 ruling chose it over a `cargo build --release` of perf's own; the measurement runs below show whether the set budgets' p95s moved.
 
 **Measuring, 2026-11-05 (Claude Code) — no number yet.** The first runs of the matrix (`ci` 42053047689 on `d5006de0`, push; 42053750244 on `3b53d1a8`, push; 42053908300 on `d5006de0`, dispatch): `perf-plan` green, every `perf <group>` **skipped**. `build linux-arm64-musl` is red: `codelaw rules lint packs/js/` **segfaults** on that platform (a crash, not a failed check — not W-126's; for whoever owns the js pack), and `needs: build` skipped perf with it. **Fixed here:** `perf-op` runs on `!cancelled()`, so only the linux-x64-gnu binary it uses counts. Next: three runs once this commit is pushed.
+
+## Measured, 2026-11-08 — the first run of the `perf` matrix (`ci` 42454141410)
+
+The decider's push of `b20e1a1f` (event `push`, a Rust **and** pack change: W-139/W-162/W-172 landings) is the first `ci` run in which the `perf` matrix ran (the 11-05 and 11-07 runs left `perf-plan` red or `perf` skipped). Every number is from `gh run view 42454141410 --json jobs`; the run was red as a whole (lint's SR guard replay, three `corpus` legs, and the two L8-gated `perf` groups), so it is a measurement of the pipeline's shape, not a green run.
+
+| what | time | note |
+|---|---|---|
+| the whole run, created to last job | **24m56s** (06:17:39 → 06:42:35) | the last 8 minutes are `corpus python` running into its 15-minute `timeout-minutes` (cancelled, 915 s) |
+| the run without that timeout (last job: `corpus js`, 06:34:22) | **16m39s** | `corpus js` 7m09 of it, on 891 rules (11-05: 233) |
+| build legs | 3m48 (linux-arm64-gnu) … **9m25 (win32-x64)**, win32-arm64 8m39, darwin-arm64 8m12 | a Rust change; the slowest leg sets when everything after it can start (06:27:08) |
+| `test` | 8m42 | on the 11-05 baseline 2m49–3m46: the workspace has grown |
+| `perf` groups, each from the linux-x64-gnu binary | spell 24 s, hooks 35 s, warm 60 s, types-warm 61 s, graph 95 s, types-cold 109 s, cold 144 s, repos 164 s | eight parallel jobs (11-05 plan: one `perf` of ~10–11 min) |
+| `perf` (merge + summary) done | 06:30:35 — **3m27 after the last build leg**, 13m after the push | nothing waits on it; `perf cold` and `perf warm` failed their L8 budgets (W-172's) and, being gated, failed the run |
+| `package`, `smoke` legs, `action`, `vscode`, `dev-servers` | `package` 34 s; smoke 33 s … 3m27 (win32-arm64); done by 06:29 | not the tail |
+
+**What it says.** The `perf` split works as ruled (11 min → 2m44 for the slowest group, off the critical path). It does **not** yet meet the Rust/pack-change goal: with a Rust change the verdict is bounded by the win32 builds (9m25) and then the corpus (7m09 for `js`), well past ~5 min; and a pack-change run's `corpus python` exceeded 15 min. Neither is a `perf` problem; the next cuts are the Windows builds and the corpus legs' own time (`corpus js` and `corpus python` are the longest; the corpus tests rules, whose number tripled since 11-05).
+
+**Runs counted toward step 4** (definition of done: three of each kind): cached: 2 of 3 (11-05); Rust/pack change: **1 of 3** — this one, 24m56s (16m39s without the python timeout), *not* within the goal; release: 1 of 3 (3m50). Nothing else changed in the count: the 11-07 runs (`7cdb480b`) left `perf` skipped, and `schedule` runs are cached-sha reruns. Not closed.
 
 ## What cannot be bought
 

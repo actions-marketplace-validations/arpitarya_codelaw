@@ -3,8 +3,8 @@ id: html/valid-id
 title: "Ids are well-formed"
 languages: [html]
 fix: manual
-fix_reason: "renaming an id breaks the CSS, scripts and links that use it"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "value: an invalid id has no case convention to derive its new name from (what replaces a leading digit, a space or a dot is the author's), and CSS reaches such an id only escaped, so its users can't be found to rename (W-162)"
+fix_exception: value
 stability: preview
 options:
   relaxed: { type: "boolean", default: false, description: "only require a non-empty id without whitespace" }

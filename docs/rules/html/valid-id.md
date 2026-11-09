@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `relaxed` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming an id breaks the CSS, scripts and links that use it) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: an invalid id has no case convention to derive its new name from (what replaces a leading digit, a space or a dot is the author's), and CSS reaches such an id only escaped, so its users can't be found to rename (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/valid-id` |

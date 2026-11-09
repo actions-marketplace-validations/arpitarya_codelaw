@@ -1084,6 +1084,7 @@ macro_rules! html_rule {
 }
 
 #[cfg(test)]
+#[allow(clippy::items_after_test_module)]
 pub(crate) mod tests {
     use super::*;
     use std::collections::BTreeMap;

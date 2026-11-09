@@ -238,7 +238,7 @@ fn toml_place(text: &str, offset: usize) -> Option<Place> {
             b'{' => {
                 let mut p = container(&base, &stack);
                 if !matches!(stack.last(), Some(Frame::Array(_))) {
-                    p.extend(key.drain(..));
+                    p.append(&mut key);
                 }
                 stack.push(Frame::Inline(p));
                 after_eq = false;
@@ -247,7 +247,7 @@ fn toml_place(text: &str, offset: usize) -> Option<Place> {
             b'[' => {
                 let mut p = container(&base, &stack);
                 if !matches!(stack.last(), Some(Frame::Array(_))) {
-                    p.extend(key.drain(..));
+                    p.append(&mut key);
                 }
                 stack.push(Frame::Array(p));
                 i += 1;
@@ -763,7 +763,7 @@ pub fn complete(text: &str, offset: usize, home: Home, cat: &Catalogue) -> Optio
                             };
                             for v in values {
                                 let insert = if place.quoted { v.trim_matches('"').to_owned() } else { v.clone() };
-                                let default = spec.default.as_ref().is_some_and(|d| d.to_string() == v);
+                                let default = spec.default.as_ref().is_some_and(|d| *d == v);
                                 items.push(Item { label: v, insert, kind: Kind::Value, detail: Some(format!("{}{}", spec.kind, if default { " · default" } else { "" })), doc: spec.description.clone() });
                             }
                         }

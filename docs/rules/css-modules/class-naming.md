@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css-modules/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `style` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming a class must update every file that reads it) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to the convention (`camelCase`, or `kebab`) in the module and in every `styles.…` of the scripts that import it, as one fix; a diff to accept, as a name built at run time (`styles[name]`) is not found (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.3.0 |
 
@@ -184,7 +184,7 @@ codelaw config --print --for <file>            # the resolved setting, and where
 
 ## How to fix
 
-1. Rename the class (and every `styles.…` that reads it) to camelCase.
+1. Accept the rename: `codelaw fix --unsafe` renames the class in the module and every `styles.…` that reads it (the diff names each file).
 2. Or set `[css] modules_convention = "camelCase"` if the bundler already maps the names.
 
 ## Examples
@@ -203,6 +203,26 @@ codelaw config --print --for <file>            # the resolved setting, and where
 ```css files
 /* src/button.module.css */
 .btnPrimary { color: red; }
+```
+
+#### Don't
+
+```css files
+/* src/button.module.css */
+.btn-primary { color: red; }
+// src/button.jsx
+import styles from "./button.module.css";
+export const B = () => <b className={styles["btn-primary"]} />;
+```
+
+#### Do
+
+```css files
+/* src/button.module.css */
+.btnPrimary { color: red; }
+// src/button.jsx
+import styles from "./button.module.css";
+export const B = () => <b className={styles["btnPrimary"]} />;
 ```
 
 ### SCSS

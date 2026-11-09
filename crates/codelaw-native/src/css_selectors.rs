@@ -81,7 +81,7 @@ css_rule!(NoDuplicateSelector, "css/no-duplicate-selector", |sheet, src, ctx, ou
                     let head = src[..fclose].trim_end().len();
                     // The second rule goes with the blank line before it.
                     let a = src[..n.start].trim_end().len();
-                    let b = if src[n.end..].starts_with('\n') { n.end } else { n.end };
+                    let b = n.end;
                     let joined = match inner.strip_prefix('\n') {
                         Some(lines) => format!("\n{lines}"),
                         None => format!(" {}", inner.trim()),
@@ -134,7 +134,7 @@ fn reference(sel: &str, pseudo_elements: &BTreeSet<String>) -> Option<String> {
 /// order, so the swap changes nothing. Only when nothing but whitespace
 /// separates them, each has one selector and holds only declarations
 /// (nothing nested moves with it).
-fn swap_rules(sheet: &Sheet, src: &str, a: usize, b: usize) -> Option<Vec<TextEdit>> {
+fn swap_rules(sheet: &Sheet, src: &str, a: usize, b: usize, pseudo_elements: &BTreeSet<String>) -> Option<Vec<TextEdit>> {
     let (na, nb) = (&sheet.nodes[a], &sheet.nodes[b]);
     if na.parent != nb.parent || na.end > nb.start || !src[na.end..nb.start].trim().is_empty() {
         return None;
@@ -144,6 +144,24 @@ fn swap_rules(sheet: &Sheet, src: &str, a: usize, b: usize) -> Option<Vec<TextEd
         if sheet.selectors(r, src).len() != 1 || n.block.is_none_or(|(_, close)| close >= src.len()) || n.children.iter().any(|&c| !matches!(sheet.nodes[c].kind, Kind::Decl | Kind::Comment)) {
             return None;
         }
+    }
+    // A nested rule stands for one selector per parent selector: the swap
+    // moves all of them, so every pair that targets the same element must
+    // differ in specificity, or the swap changes which declaration wins (and
+    // the second pass swaps them back).
+    let keyed = |i: usize| -> Vec<(String, (u32, u32, u32))> {
+        resolved(sheet, i, src)
+            .into_iter()
+            .filter_map(|(res, _)| {
+                let r = reference(&res, pseudo_elements)?;
+                let list = selector_list(&res, 0, res.len());
+                Some((r, max_specificity(&res, &list, (0, 0, 0))))
+            })
+            .collect()
+    };
+    let (ka, kb) = (keyed(a), keyed(b));
+    if ka.iter().any(|(ra, sa)| kb.iter().any(|(rb, sb)| ra == rb && sa == sb)) {
+        return None;
     }
     let between = &src[na.end..nb.start];
     Some(vec![TextEdit::new(na.start, nb.end, format!("{}{between}{}", &src[nb.start..nb.end], &src[na.start..na.end]))])
@@ -172,7 +190,7 @@ css_rule!(NoDescendingSpecificity, "css/no-descending-specificity", |sheet, src,
             let shown = if own == res { format!("`{own}`") } else { format!("`{own}` (`{res}`)") };
             let prior = map.entry(r).or_default();
             if let Some((_, sel, at, earlier)) = prior.iter().find(|p| p.0 > spec) {
-                let edits = swap_rules(sheet, src, *earlier, i).unwrap_or_default();
+                let edits = swap_rules(sheet, src, *earlier, i, &pseudo_elements).unwrap_or_default();
                 out.push(crate::css_syntax::fixed(c.start, c.end, format!("{shown} comes after `{sel}` (line {}), which is more specific; put the less specific selector first", line(src, *at)), edits));
             }
             prior.push((spec, res, n.start, i));
@@ -491,7 +509,14 @@ fn pattern_rule(sheet: &Sheet, src: &str, ctx: &crate::NativeContext<'_>, kind: 
         for x in simples.iter().filter(|x| x.kind == kind) {
             let name = text(src, x.name);
             if !name.is_empty() && !re.is_match(name) {
-                out.push(finding(x.start, x.end, format!("{what} selector `{sigil}{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+                let mut f = finding(x.start, x.end, format!("{what} selector `{sigil}{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+                // Renamed here and in every file that uses it (SR-MULTI-FILE-FIXES).
+                let named = if kind == SKind::Class { crate::multi_file::NameKind::Class } else { crate::multi_file::NameKind::Id };
+                f.edits = crate::multi_file::conventional(name, &re, crate::multi_file::kebab)
+                    .and_then(|new| crate::multi_file::rename(ctx, named, name, &new))
+                    .map(crate::multi_file::Plan::edits)
+                    .unwrap_or_default();
+                out.push(f);
             }
         }
     }

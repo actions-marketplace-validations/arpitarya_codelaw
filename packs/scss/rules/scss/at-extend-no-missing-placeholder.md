@@ -3,8 +3,8 @@ id: scss/at-extend-no-missing-placeholder
 title: "`@extend` targets a placeholder"
 languages: [scss]
 fix: manual
-fix_reason: "turning a class into a placeholder changes the stylesheet's output"
-fix_pending: "suggest; needs cross-file (W-162)"
+fix_reason: "restructure: turning the class into a placeholder removes the class from the compiled CSS, which the markup that uses it needs; moving the shared declarations into a `%placeholder` is a change to the stylesheet's design (W-162)"
+fix_exception: restructure
 stability: preview
 ported_from: [stylelint-scss/at-extend-no-missing-placeholder]
 since: 0.3.0

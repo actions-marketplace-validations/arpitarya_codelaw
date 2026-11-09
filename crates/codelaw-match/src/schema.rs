@@ -37,22 +37,25 @@ pub struct SchemaError {
 #[derive(Debug)]
 pub struct Schema {
     root: Arc<J>,
-    patterns: HashMap<String, Option<Regex>>,
+    /// Each pattern the schema names, compiled the first time a value is
+    /// tested against it: most are never reached, and a schema is held by
+    /// every rule that names it (W-172).
+    patterns: HashMap<String, std::sync::OnceLock<Option<Regex>>>,
 }
 
 const MAX_DEPTH: usize = 64;
 
-fn collect_patterns(v: &J, out: &mut HashMap<String, Option<Regex>>) {
+fn collect_patterns(v: &J, out: &mut HashMap<String, std::sync::OnceLock<Option<Regex>>>) {
     match v {
         J::Object(o) => {
             for (k, x) in o {
                 match (k.as_str(), x) {
                     ("pattern", J::String(p)) => {
-                        out.entry(p.clone()).or_insert_with(|| Regex::new(p).ok());
+                        out.entry(p.clone()).or_default();
                     }
                     ("patternProperties", J::Object(pp)) => {
                         for (p, s) in pp {
-                            out.entry(p.clone()).or_insert_with(|| Regex::new(p).ok());
+                            out.entry(p.clone()).or_default();
                             collect_patterns(s, out);
                         }
                     }
@@ -99,10 +102,15 @@ impl Schema {
         self.root.pointer(&decoded)
     }
 
+    /// The compiled pattern, or `None` for one this engine can't read.
+    fn pattern(&self, p: &str) -> Option<&Regex> {
+        self.patterns.get(p)?.get_or_init(|| Regex::new(p).ok()).as_ref()
+    }
+
     fn matches_pattern(&self, p: &str, s: &str) -> bool {
-        match self.patterns.get(p) {
-            Some(Some(re)) => re.is_match(s),
-            _ => true,
+        match self.pattern(p) {
+            Some(re) => re.is_match(s),
+            None => true,
         }
     }
 
@@ -318,8 +326,8 @@ impl Schema {
             }
             if let Some(pp) = pattern_props {
                 for (p, s) in pp {
-                    match self.patterns.get(p) {
-                        Some(Some(re)) => {
+                    match self.pattern(p) {
+                        Some(re) => {
                             if re.is_match(&m.key) {
                                 matched = true;
                                 self.check(ctx, s, m.value, path, out, depth + 1);

@@ -23,6 +23,7 @@ fn diag(rule: &str, message: &str, severity: Severity, fix: FixClass, data: Opti
         data,
         choices: vec![],
         fix_exception: None,
+        files: Vec::new(),
     }
 }
 

@@ -21,6 +21,8 @@ match:
   not: { regex: '^//\s*(eslint|codelaw|@ts-|prettier)' }
   follows: { regex: ".", pattern: $P }
   inside: { kind: program, stopBy: end }
+where:
+  $$MATCH: trailing
 message: "Put the comment on its own line"
 fix:
   - move: { before: $P }

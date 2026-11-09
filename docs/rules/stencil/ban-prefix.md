@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:stencil/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `prefixes` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming a tag changes every page that uses it) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the prefix to use instead is the project's own, which the code does not hold (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stencil/ban-prefix` |

@@ -24,6 +24,12 @@ entry.**
 
 ## 1 · State of play
 
+**Ruled 2026-11-09, later (Cowork, voice docket; filed on *"file it."*): W-139 closed.** Built rules stay (2,319 of 2,590 port rows). The 271 left: W-178–W-196 (19 items — tables ratified for D401/D421, UP035, RUF001–003 and the stdlib deprecations; target-gated findings; file mode bits; the Python project graph; the JS value-type rows on W-105; a code-path-graph research item; `using`; graph records; a defaults page; four tails), B-081–B-084 (Airflow ×5, PLE2514, TID254/255, two Pylint rows), and classes in the proposal §14. SR-CODE-PATH-GRAPH (0121) filed `proposed`. The inbox is empty.
+
+**Ruled 2026-11-09 (Cowork, voice docket; filed on *"file it."*):** W-172 — `peak_memory_10k` to **90 MiB** by amending L8 (🟢, agent amends SR-LAW-8 and `perf/budgets.toml`). W-174 — `boolean-datetime` not-applicable (🟢, re-class and close); decision 8 moved to research **W-177**. W-139 — the js rows no rule can carry: layout to the formatter, react-hooks `fbt`/`invariant`/`syntax`/`todo` out, the 19 options-only rows to **W-176**. Parked, still in the inbox: W-139's Airflow (now with an out-of-scope option), data/Markdown/`check-examples`, Ruff and Pylint rulings — Arpit wants W-139's framework rows first.
+
+**2026-11-08 (Claude Code, coordinator, later): the green queue is with four agents.** W-175 landed (`b78b45f8`; step 4 is the inbox's data-package question). The css `no-descending-specificity` fixpoint fix landed (`a5f3aa64`). Running: W-172 (pushed CI: check_cold_10k, peak_memory_10k, lsp_after_edit over), the corpus-snapshot and guard-replay fixes, W-174. Waiting on Arpit: the `data-polyfills` ruling, then a push of `main` for W-126, W-169 and W-172's CI proof. Disk 7.2 GB of the 5 GB budget (7 approved).
+
 **2026-11-08 (Claude Code, coordinator): the parallel run continues.** In flight: W-162 cross-file (last capability), W-172 peak memory (107 > 72 MiB; `mcp_rules_for_path` fixed), W-139's js and python strands (~400 rows). Waiting on Arpit: a push of `main` (115+ commits; the classifier refuses Claude Code's push) for W-126, W-169 step 3, W-172's CI proof and the zip alerts; a release for W-95.
 
 **2026-11-07 (Cowork, docket): W-105's `check_types_*` budgets ruled — *"Leave unset"*** (reported only, L8 decision 6); W-105 🟣 on the 11-10 RC re-pin. W-173's Ruff `=0.0.21` was ruled and landed the same afternoon by Claude Code (`5f472943`). The inbox is empty.
@@ -34,7 +40,7 @@ entry.**
 
 **2026-11-05 (Claude Code): `main` pushed** — Arpit pushed to `d5006de0` (*"git push done"*), then the 19 commits after it were pushed to `3b53d1a8`. W-126's and W-105's runs are unblocked.
 
-**Ruled 2026-11-05 (Claude Code, multiple choice): W-162 and W-163.** W-162: *"Allow multi-file (Recommended)"* — a fix may edit several files, verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook; SR-LAW-4 decisions 10 and 12 amended (not built), W-162 🟢 `agent`. W-163: the proposal accepted as presented (`on_edit` per rule with its defaults; `[targets]`, Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule), call 1 *"Own table (Recommended)"* (codelaw's own ~250-row cited browser table; caniuse and MDN stay refused under L2), call 2 *"Target-gated (Recommended)"* (`py/lru-cache-with-maxsize-none` 3.9, `py/lru-cache-without-parameters` 3.8). Written into SR-LAW-4 decision 12, SR-CONFIG 11e–11f, SR-RULE-FORMAT 2b–2c (not built); W-163 closed, its build is W-166 (🟢 `agent`). [W-162](open/W-162-fix-capabilities-build.md) · [W-166](../archive/open/W-166-save-behaviour-and-targets-build.md)
+**Ruled 2026-11-05 (Claude Code, multiple choice): W-162 and W-163.** W-162: *"Allow multi-file (Recommended)"* — a fix may edit several files, verified per file plus a graph check for new unresolved references, written all-or-nothing, `auto` only when every reference resolves statically, never on save or from the per-edit hook; SR-LAW-4 decisions 10 and 12 amended (not built), W-162 🟢 `agent`. W-163: the proposal accepted as presented (`on_edit` per rule with its defaults; `[targets]`, Python from `requires-python`'s lower bound, explicit browser minimums, per scope and per rule), call 1 *"Own table (Recommended)"* (codelaw's own ~250-row cited browser table; caniuse and MDN stay refused under L2), call 2 *"Target-gated (Recommended)"* (`py/lru-cache-with-maxsize-none` 3.9, `py/lru-cache-without-parameters` 3.8). Written into SR-LAW-4 decision 12, SR-CONFIG 11e–11f, SR-RULE-FORMAT 2b–2c (not built); W-163 closed, its build is W-166 (🟢 `agent`). [W-162](../archive/open/W-162-fix-capabilities-build.md) · [W-166](../archive/open/W-166-save-behaviour-and-targets-build.md)
 
 **Ruled 2026-11-05 (Claude Code): W-165 — keep the twelve unmerged local branches** (a demo, three `keep/` Fux-index branches, eight stale `lm/` handoff and save branches; listed in the item). Their unique text is superseded; no `branch -D` without a new ruling; `lockmaster doctor` listing them is expected. [W-165](../archive/open/W-165-stale-branches.md)
 
@@ -151,6 +157,8 @@ for two days because another session's edits were uncommitted in the main
 checkout.
 
 ## 2 · In flight, and the immediate next step
+
+**2026-11-09 (Cowork, later):** the inbox is empty; W-139 is closed. **Next for an agent (🟢):** W-172's L8 amendment, W-174's close, W-176, and the 🟢 build items W-178–W-196 (W-196 Biome first needs its framework rows classed). **Cowork:** W-177, W-189.
 
 **Ruled 2026-11-05 (Cowork, voice; filed on *"file it."*):** the inbox is empty. The `spell` budget is 2,500 ms. Multi-file fixes have their own record, **SR-MULTI-FILE-FIXES** (configurable, safeguards fixed). The browser table is a data package (**L6 decision 15**), checked weekly by CI (W-166 step 5).
 

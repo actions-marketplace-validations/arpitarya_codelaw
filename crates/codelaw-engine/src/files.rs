@@ -23,6 +23,10 @@ pub(crate) enum Tree<'a> {
     /// An in-memory set: `check_files` and the rule tester. Nothing on disk
     /// is read.
     Memory(&'a [(String, Language, String)]),
+    /// The files on disk, with these texts in place of theirs: a
+    /// `fix --dry-run`'s multi-file fixes, which write nothing
+    /// (SR-MULTI-FILE-FIXES decision 2).
+    Overlay(&'a std::collections::BTreeMap<String, String>),
 }
 
 /// One question a rule asked.
@@ -57,6 +61,13 @@ pub(crate) struct ProjectFile<'a> {
     as_of: Option<AsOfFn<'a>>,
     asked: Mutex<Vec<Asked>>,
     providers: Option<&'a crate::providers::Providers>,
+    /// The project, for the data packages its rules may read.
+    project: Option<&'a crate::Project>,
+    /// The project's file list, walked once per file however often a rule
+    /// asks (a multi-file fix asks once per finding).
+    files: std::sync::OnceLock<Vec<String>>,
+    /// The other files read, each once however often a rule asks.
+    texts: Mutex<std::collections::HashMap<String, Option<String>>>,
 }
 
 impl<'a> ProjectFile<'a> {
@@ -68,7 +79,7 @@ impl<'a> ProjectFile<'a> {
             bytes.extend_from_slice("\u{feff}".as_bytes());
         }
         bytes.extend_from_slice(text.as_bytes());
-        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None }
+        ProjectFile { path, bytes, root, tree, as_of: None, asked: Mutex::new(Vec::new()), providers: None, project: None, files: std::sync::OnceLock::new(), texts: Mutex::new(std::collections::HashMap::new()) }
     }
 
     /// Where the as-of date comes from.
@@ -80,6 +91,12 @@ impl<'a> ProjectFile<'a> {
     /// The providers' tables its rules may read.
     pub fn with_providers(mut self, providers: &'a crate::providers::Providers) -> Self {
         self.providers = Some(providers);
+        self
+    }
+
+    /// The data packages its rules may read (`FileContext::data_table`).
+    pub fn with_project(mut self, project: &'a crate::Project) -> Self {
+        self.project = Some(project);
         self
     }
 
@@ -145,7 +162,7 @@ fn exists(root: &Path, tree: Tree<'_>, path: &str) -> bool {
         return false;
     }
     match tree {
-        Tree::Disk => root.join(path).exists(),
+        Tree::Disk | Tree::Overlay(_) => root.join(path).exists(),
         Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p == path || p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
 }
@@ -155,9 +172,41 @@ fn is_dir(root: &Path, tree: Tree<'_>, path: &str) -> bool {
         return false;
     }
     match tree {
-        Tree::Disk => root.join(path).is_dir(),
+        Tree::Disk | Tree::Overlay(_) => root.join(path).is_dir(),
         Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
+}
+
+/// Other files' texts read by native rules, kept while their size and
+/// modification time hold: a multi-file fix reads every file that may use a
+/// name, from each file with a finding, and a cached result checks each
+/// answer again (SR-CACHE). Bounded: past [`READ_CACHE_BYTES`] it starts over.
+type ReadEntries = std::collections::HashMap<std::path::PathBuf, (u64, std::time::SystemTime, Option<String>)>;
+static READ_CACHE: std::sync::OnceLock<Mutex<(usize, ReadEntries)>> = std::sync::OnceLock::new();
+const READ_CACHE_BYTES: usize = 8 << 20;
+
+fn read_disk(p: &Path) -> Option<String> {
+    let meta = std::fs::metadata(p).ok().filter(|m| m.is_file())?;
+    let stamp = (meta.len(), meta.modified().ok()?);
+    let cache = READ_CACHE.get_or_init(|| Mutex::new((0, std::collections::HashMap::new())));
+    if let Ok(c) = cache.lock()
+        && let Some((len, at, text)) = c.1.get(p)
+        && (*len, *at) == stamp
+    {
+        return text.clone();
+    }
+    let text = std::fs::read(p).ok().and_then(|b| String::from_utf8(b).ok()).map(|t| t.strip_prefix('\u{feff}').map(str::to_owned).unwrap_or(t));
+    if let Ok(mut c) = cache.lock() {
+        let size = text.as_ref().map_or(0, String::len);
+        if c.0 + size > READ_CACHE_BYTES {
+            *c = (0, std::collections::HashMap::new());
+        }
+        if size <= READ_CACHE_BYTES / 4 {
+            c.0 += size;
+            c.1.insert(p.to_path_buf(), (stamp.0, stamp.1, text.clone()));
+        }
+    }
+    text
 }
 
 fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
@@ -165,22 +214,15 @@ fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
         return None;
     }
     match tree {
-        Tree::Disk => {
-            let p = root.join(path);
-            if !p.is_file() {
-                return None;
-            }
-            let bytes = std::fs::read(p).ok()?;
-            let text = String::from_utf8(bytes).ok()?;
-            Some(text.strip_prefix('\u{feff}').map(str::to_owned).unwrap_or(text))
-        }
+        Tree::Overlay(texts) if texts.contains_key(path) => texts.get(path).cloned(),
+        Tree::Disk | Tree::Overlay(_) => read_disk(&root.join(path)),
         Tree::Memory(files) => files.iter().find(|(p, _, _)| p == path).map(|(_, _, t)| t.clone()),
     }
 }
 
 fn project_files(root: &Path, tree: Tree<'_>) -> Vec<String> {
     match tree {
-        Tree::Disk => crate::discover::walk_files(root),
+        Tree::Disk | Tree::Overlay(_) => crate::discover::walk_files(root),
         Tree::Memory(files) => {
             let mut v: Vec<String> = files.iter().map(|(p, _, _)| p.clone()).collect();
             v.sort();
@@ -194,7 +236,7 @@ fn list(root: &Path, tree: Tree<'_>, path: &str) -> Option<Vec<String>> {
         return None;
     }
     let mut names: Vec<String> = match tree {
-        Tree::Disk => std::fs::read_dir(root.join(path)).ok()?.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()).collect(),
+        Tree::Disk | Tree::Overlay(_) => std::fs::read_dir(root.join(path)).ok()?.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()).collect(),
         Tree::Memory(files) => {
             let prefix = if path.is_empty() { String::new() } else { format!("{path}/") };
             files.iter().filter_map(|(p, _, _)| p.strip_prefix(prefix.as_str())).map(|r| r.split('/').next().unwrap_or(r).to_owned()).collect()
@@ -223,7 +265,17 @@ impl FileContext for ProjectFile<'_> {
         a
     }
     fn read(&self, path: &str) -> Option<String> {
-        let a = read(self.root, self.tree, path);
+        let known = self.texts.lock().ok().and_then(|t| t.get(path).cloned());
+        let a = match known {
+            Some(a) => a,
+            None => {
+                let a = read(self.root, self.tree, path);
+                if let Ok(mut t) = self.texts.lock() {
+                    t.insert(path.to_owned(), a.clone());
+                }
+                a
+            }
+        };
         self.record(Question::Read(path.to_owned()), hash_text(&a));
         a
     }
@@ -233,7 +285,7 @@ impl FileContext for ProjectFile<'_> {
         a
     }
     fn project_files(&self) -> Option<Vec<String>> {
-        let files = project_files(self.root, self.tree);
+        let files = self.files.get_or_init(|| project_files(self.root, self.tree)).clone();
         self.record(Question::Files, hash_list(&Some(files.clone())));
         Some(files)
     }
@@ -241,6 +293,15 @@ impl FileContext for ProjectFile<'_> {
         let a = self.as_of.and_then(|f| f());
         self.record(Question::AsOf, hash_text(&a));
         a
+    }
+    fn data_table(&self, short: &str) -> Option<std::sync::Arc<serde_json::Value>> {
+        let table = match short {
+            "polyfills" => self.project?.polyfill_table(),
+            _ => None,
+        };
+        // The answer is the table's version: a refreshed table re-judges.
+        self.record(Question::Read(format!("data-table:{short}")), hash_text(&table.map(|t| t.version.clone())));
+        table.map(|t| t.value.clone())
     }
     fn class_table(&self, short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         self.providers?.table(short).map(|t| t as std::sync::Arc<dyn codelaw_core::class_table::ClassTable>)

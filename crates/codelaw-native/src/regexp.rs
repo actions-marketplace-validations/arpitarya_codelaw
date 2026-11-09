@@ -348,7 +348,7 @@ impl NativeRule for NoUselessBackreference {
                     let rest = &pattern[r.end..];
                     let q = quantifier_len(rest);
                     let after = &rest[q..];
-                    (!after.starts_with(|c: char| c.is_ascii_digit())).then(|| vec![codelaw_core::TextEdit::delete(base + r.start, base + r.end + q)]).unwrap_or_default()
+                    if after.starts_with(|c: char| c.is_ascii_digit()) { Vec::new() } else { vec![codelaw_core::TextEdit::delete(base + r.start, base + r.end + q)] }
                 } else {
                     Vec::new()
                 };

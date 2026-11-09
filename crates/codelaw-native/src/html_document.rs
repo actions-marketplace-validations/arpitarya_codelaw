@@ -208,7 +208,15 @@ impl crate::NativeRule for NoUtf8Bom {
     }
     fn check(&self, _node: codelaw_lang::SyntaxNode<'_>, ctx: &crate::NativeContext<'_>, out: &mut Vec<crate::NativeFinding>) {
         if ctx.file.bytes().strip_prefix("\u{feff}".as_bytes()) == Some(ctx.source.as_bytes()) {
-            out.push(crate::NativeFinding { start: 0, end: 0, message: "The file starts with a UTF-8 byte-order mark; save it as UTF-8 without one".into(), edits: Vec::new() });
+            // The mark is in the file's bytes: the fix is the file-level
+            // operation `strip_bom` (SR-MULTI-FILE-FIXES decision 1).
+            let strip = codelaw_core::FileEdit { path: ctx.file.path().to_owned(), edits: Vec::new(), strip_bom: true };
+            out.push(crate::NativeFinding {
+                start: 0,
+                end: 0,
+                message: "The file starts with a UTF-8 byte-order mark; save it as UTF-8 without one".into(),
+                edits: crate::in_files(Vec::new(), vec![strip]),
+            });
         }
     }
 }

@@ -12,7 +12,7 @@ use codelaw_config::Config;
 use codelaw_core::Language;
 use codelaw_fix::{DataStep, FixSpec, parse_data_fix, parse_fix};
 use codelaw_lang::{AgLanguage, Grammar};
-use codelaw_match::{CompiledMatch, CompiledTarget};
+use codelaw_match::{CompiledMatch, CompiledTarget, SharedRegexes};
 use codelaw_native::NativeRule;
 use codelaw_rules::{BlockKind, LoadError, LoadedRule, RuleSet};
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
@@ -104,7 +104,7 @@ impl CompiledRule {
     /// ([`MatchSet`]); none for any other rule.
     fn per_grammar(&self) -> &[(Grammar, CompiledMatch)] {
         match &self.matcher {
-            Matcher::Match(set) => set.0.get_or_init(|| compile_match(&self.loaded).0),
+            Matcher::Match(set) => set.0.get_or_init(|| compile_match(&self.loaded, &SharedRegexes::default()).0),
             _ => &[],
         }
     }
@@ -112,7 +112,7 @@ impl CompiledRule {
 
 /// A `match:` rule's matcher for each grammar its languages parse with, and
 /// the problems that refuse it.
-fn compile_match(loaded: &LoadedRule) -> (Vec<(Grammar, CompiledMatch)>, Vec<String>) {
+fn compile_match(loaded: &LoadedRule, shared: &SharedRegexes) -> (Vec<(Grammar, CompiledMatch)>, Vec<String>) {
     let rule = &loaded.rule;
     let mut problems = Vec::new();
     // A kind must exist in at least one of the rule's grammars; where it is
@@ -136,7 +136,7 @@ fn compile_match(loaded: &LoadedRule) -> (Vec<(Grammar, CompiledMatch)>, Vec<Str
                 any = true;
                 continue;
             }
-            match codelaw_match::compile(rule, *g, &loaded.data) {
+            match codelaw_match::compile_shared(rule, *g, &loaded.data, shared) {
                 Ok(m) => {
                     per.push((*g, m));
                     any = true;
@@ -224,7 +224,10 @@ pub(crate) fn compile_cached(rules: &RuleSet, config: &Config) -> Result<Compile
 /// thread: what compiling a rule leaves behind is reused by the next, where
 /// in parallel each thread kept its own (W-172 measured 10 MB more).
 pub fn compile_all(rules: &RuleSet, _config: &Config) -> Result<(Vec<CompiledRule>, Vec<String>), Vec<LoadError>> {
-    let each: Vec<Compiled1> = rules.rules.iter().map(compile_one).collect();
+    // The rules a preset turns on keep their matchers, so their regexes are
+    // compiled once between them (W-172); the rest are only checked.
+    let shared = SharedRegexes::of(rules.rules.iter().filter(|r| r.default.is_some()).map(|r| &*r.rule));
+    let each: Vec<Compiled1> = rules.rules.iter().map(|r| compile_one(r, &shared)).collect();
     let mut out = Vec::with_capacity(each.len());
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
@@ -242,7 +245,7 @@ pub fn compile_all(rules: &RuleSet, _config: &Config) -> Result<(Vec<CompiledRul
 /// its warnings.
 type Compiled1 = (Option<CompiledRule>, Vec<LoadError>, Vec<String>);
 
-fn compile_one(loaded: &LoadedRule) -> Compiled1 {
+fn compile_one(loaded: &LoadedRule, shared: &SharedRegexes) -> Compiled1 {
     let mut errors = Vec::new();
     let mut warnings = Vec::new();
     let rule = &loaded.rule;
@@ -251,14 +254,16 @@ fn compile_one(loaded: &LoadedRule) -> Compiled1 {
     let mut fail = |msg: String| errors.push(LoadError::new(path.clone(), format!("rule `{}`: {msg}", rule.id)));
     let matcher = match &rule.block.kind {
         BlockKind::Match { .. } => {
-            let (per, problems) = compile_match(loaded);
+            let kept = loaded.default.is_some();
+            let none = SharedRegexes::default();
+            let (per, problems) = compile_match(loaded, if kept { shared } else { &none });
             for e in problems {
                 fail(e);
             }
             match_flags = (per.iter().any(|(_, m)| m.needs_semantic()), per.iter().any(|(_, m)| m.has_types()));
             // Kept when a preset turns the rule on; any other is compiled
             // again the first time a file's settings turn it on.
-            Matcher::Match(MatchSet::new(loaded.default.is_some().then_some(per)))
+            Matcher::Match(MatchSet::new(kept.then_some(per)))
         }
         BlockKind::Native(id) if id == codelaw_types::TYPE_ERROR_NATIVE => {
             for l in &rule.languages {
@@ -282,7 +287,7 @@ fn compile_one(loaded: &LoadedRule) -> Compiled1 {
                 return (None, errors, warnings);
             }
         },
-        BlockKind::Graph(g) => match codelaw_graph::compile(g, rule.block.fix.as_ref()) {
+        BlockKind::Graph(g) => match codelaw_graph::compile(&g.value(), rule.block.fix.as_ref()) {
             Ok(c) => Matcher::Graph(c),
             Err(e) => {
                 fail(e);

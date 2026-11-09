@@ -12,7 +12,7 @@ use codelaw_baseline::exception::{Expiry, expiry};
 use codelaw_baseline::{AUTHOR_RULE, EXPIRED_RULE, EXPIRING_RULE, WITHOUT_EXPIRY_RULE};
 use codelaw_cache::KeyBuilder;
 use codelaw_config::{Layer, RuleConfig};
-use codelaw_core::{Diagnostic, FixChoice, FixClass, FixException, Language, LineIndex, Severity, Skipped, TextEdit};
+use codelaw_core::{Diagnostic, FileEdit, FixChoice, FixClass, FixException, Language, LineIndex, Severity, Skipped, TextEdit};
 use codelaw_fix::{Candidate, DataFixContext, ExternalCall, FixContext, FixSpec, choice_edits, data_edits, edits_for, group_edits, run_external};
 use codelaw_lang::{Grammar, Region, RegionOptions, Root};
 use codelaw_match::{Match, interpolate};
@@ -94,6 +94,9 @@ struct Finding {
     rung: Option<FixClass>,
     /// Labelled alternatives instead of one edit (SR-LAW-4 decision 4).
     choices: Vec<FixChoice>,
+    /// A multi-file fix's edits in other files (SR-MULTI-FILE-FIXES
+    /// decision 1), in their own offsets: a region's mapping leaves them.
+    files: Vec<FileEdit>,
 }
 
 /// The exception a `manual` finding reports (L4 decision 5): its rule's,
@@ -122,6 +125,33 @@ fn lowered_step(edits: &[TextEdit], choices: &[FixChoice], text: &str) -> String
         return "This project lowered the rule's fix to `manual`; `codelaw explain` shows what the rule requires.".into();
     }
     format!("This project lowered the rule's fix to `manual`; make this edit by hand: {}.", show(edits))
+}
+
+/// The step of a finding whose multi-file fix `multi_file = "off"` turned
+/// off (SR-MULTI-FILE-FIXES decision 3): the edits the fix would have made,
+/// file by file. Another file's edits name their bytes, as its text is not
+/// at hand.
+fn multi_file_off_step(edits: &[TextEdit], files: &[FileEdit], choices: &[FixChoice], rel: &str, text: &str) -> String {
+    let show = |own: &[TextEdit], other: &[FileEdit]| -> String {
+        let mut parts = Vec::new();
+        if !own.is_empty() {
+            parts.push(format!("in `{rel}`: {}", lowered_step(own, &[], text).trim_start_matches("This project lowered the rule's fix to `manual`; make this edit by hand: ").trim_end_matches('.')));
+        }
+        for f in other {
+            let mut each: Vec<String> = f.edits.iter().map(|e| format!("bytes {}..{} → `{}`", e.start, e.end, e.text)).collect();
+            if f.strip_bom {
+                each.push("remove the byte-order mark".into());
+            }
+            parts.push(format!("in `{}`: {}", f.path, each.join("; ")));
+        }
+        parts.join(" · ")
+    };
+    let lead = "`multi_file = \"off\"` turns off fixes that edit several files; make these edits by hand";
+    if !choices.is_empty() {
+        let each: Vec<String> = choices.iter().map(|c| format!("{}: {}", c.label, show(&c.edits, &c.files))).collect();
+        return format!("{lead}, one of — {}.", each.join(" | "));
+    }
+    format!("{lead}: {}.", show(edits, files))
 }
 
 const FALLBACK_STEP: &str = "Make the change by hand; `codelaw explain <rule>` shows what the rule requires.";
@@ -160,6 +190,7 @@ pub(crate) fn meta_diagnostic(entry_rel: &str, layers: &[Layer], id: &str, messa
         data: None,
         choices: Vec::new(),
         fix_exception: if rule.fix == FixClass::Manual { codelaw_rules::engine_fix_exception(id) } else { None },
+        files: Vec::new(),
     })
 }
 
@@ -490,7 +521,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
     let crlf = dominant_crlf(text);
     // Every unit, regions included, sees the host file (decision 15b).
     let as_of = || project.as_of_text();
-    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers);
+    let file = ProjectFile::new(&entry.rel, text, mode.bom, project.root(), mode.tree).with_as_of(&as_of).with_providers(&project.providers).with_project(project);
     let mut findings: Vec<Finding> = Vec::new();
     let mut comments: Vec<(usize, usize)> = Vec::new();
     // Type rules no program answered: they did not run (SR-TYPES decision 6).
@@ -591,8 +622,9 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         let mut note = f.note.or(gate);
         let mut edits = Vec::new();
         let mut choices = Vec::new();
+        let mut files = std::mem::take(&mut f.files);
         let refused = |e: &[TextEdit]| mode.refused.is_some_and(|r| r.contains(&Candidate { rule: rule.id().to_owned(), edits: e.to_vec() }.key(text)));
-        let class = match f.edits.filter(|e| !e.is_empty()) {
+        let class = match f.edits.filter(|e| !e.is_empty() || !files.is_empty()) {
             _ if declared == FixClass::Manual => FixClass::Manual,
             // Choices are `suggest` (L4 decision 4); a refused default
             // choice drops the finding to `manual` like a refused edit.
@@ -625,22 +657,41 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
                 FixClass::Manual
             }
         };
+        if class == FixClass::Manual {
+            files.clear();
+        }
+        // A fix that edits other files obeys `multi_file` (SR-MULTI-FILE-FIXES
+        // decision 3): `suggest` keeps it a diff, `off` makes the finding
+        // `manual` with its edits as the steps.
+        let elsewhere = |fs: &[FileEdit]| fs.iter().any(|x| x.path != entry.rel && (!x.edits.is_empty() || x.strip_bom));
+        let multi = class != FixClass::Manual && (elsewhere(&files) || choices.iter().any(|c: &FixChoice| elsewhere(&c.files)));
+        let multi_off = multi && project.multi_file_of(rule.id(), &layers).0 == codelaw_config::MultiFile::Off;
+        let class = if multi && project.multi_file_of(rule.id(), &layers).0 == codelaw_config::MultiFile::Suggest { class.max(FixClass::Suggest) } else { class };
         // A config entry may lower the rung, never raise it (L4 decision
         // 16). Lowered to `suggest`, the edit is offered, not applied;
         // lowered to `manual`, nothing applies it and it is the step to make.
         let own = class;
-        let class = cfg.fix.map_or(class, |f| class.max(f));
+        let class = if multi_off { FixClass::Manual } else { cfg.fix.map_or(class, |f| class.max(f)) };
         let mut steps = if class == FixClass::Manual && own == FixClass::Manual {
             if rule.loaded.rule.steps.is_empty() { vec![FALLBACK_STEP.replace("<rule>", rule.id())] } else { rule.loaded.rule.steps.clone() }
         } else {
             Vec::new()
         };
         if class == FixClass::Manual && own != FixClass::Manual {
-            steps.push(lowered_step(&edits, &choices, text));
+            if multi_off {
+                steps.push(multi_file_off_step(&edits, &files, &choices, &entry.rel, text));
+            } else {
+                steps.push(lowered_step(&edits, &choices, text));
+            }
             edits.clear();
             choices.clear();
+            files.clear();
         }
-        let fix_exception = (class == FixClass::Manual).then(|| manual_exception(&rule.loaded.rule));
+        let fix_exception = match class {
+            FixClass::Manual if multi_off => Some(FixException::Restructure),
+            FixClass::Manual => Some(manual_exception(&rule.loaded.rule)),
+            _ => None,
+        };
         diagnostics.push(Diagnostic {
             rule: rule.id().to_owned(),
             severity: f.severity.or(cfg.severity).expect("active"),
@@ -658,6 +709,7 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
             data: f.data,
             choices,
             fix_exception,
+            files,
         });
         let primary = diagnostics.last().expect("just pushed");
         let mut refused = None;
@@ -686,9 +738,11 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
     // A text config file is never written: its edits are for the editor.
     // A finding with choices offers its default one, or the one `fix`
     // was asked for (L4 decision 4).
+    // A multi-file fix is applied after every file's own fixes, never in
+    // the loop of one file (SR-MULTI-FILE-FIXES decision 2).
     let candidates = diagnostics
         .iter()
-        .filter(|d| d.file == entry.rel && d.fix != FixClass::Manual)
+        .filter(|d| d.file == entry.rel && d.fix != FixClass::Manual && !d.is_multi_file())
         .filter_map(|d| d.applicable_edits(mode.choice).map(|e| (Candidate { rule: d.rule.clone(), edits: e.to_vec() }, d.fix)))
         .collect();
     LintOutput { diagnostics, candidates, asked: file.asked() }
@@ -851,6 +905,7 @@ fn mirror(file: &dyn FileContext, primary: &Diagnostic, declared: FixClass, step
         data: Some(serde_json::Value::Object(data)),
         choices: Vec::new(),
         fix_exception: None,
+        files: Vec::new(),
     })
 }
 
@@ -858,7 +913,7 @@ fn mirror(file: &dyn FileContext, primary: &Diagnostic, declared: FixClass, step
 const INTERNAL_ERROR: &str = "internal-error";
 
 fn internal_error(rule: usize, start: usize, end: usize, id: &str, what: &str) -> Finding {
-    Finding { rule, start, end, message: format!("rule `{id}` failed on this file: {what}"), edits: None, note: Some(INTERNAL_ERROR.into()), data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new() }
+    Finding { rule, start, end, message: format!("rule `{id}` failed on this file: {what}"), edits: None, note: Some(INTERNAL_ERROR.into()), data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new(), files: Vec::new() }
 }
 
 fn panic_message(p: &(dyn std::any::Any + Send)) -> String {
@@ -929,15 +984,49 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
             _ => None,
         })
         .collect();
-    for node in unit.root.root().dfs() {
+    // A rule whose `match:` needs a certain kind of parent is not asked about
+    // a node whose parent has another; the walk that visits the nodes knows
+    // the parent, where asking a node for it walks down from the root.
+    let gates: Vec<Option<&codelaw_match::ParentGate>> = unit
+        .rules
+        .iter()
+        .map(|(_, rule, _)| match &rule.matcher {
+            Matcher::Match(_) => rule.compiled_match(grammar).map(codelaw_match::CompiledMatch::parent_gate).filter(|g| !g.is_empty()),
+            _ => None,
+        })
+        .collect();
+    let parents = gates.iter().any(Option::is_some).then(|| codelaw_lang::preorder_parents(&unit.root.root()));
+    // The walks agree node for node; if one ever did not, no gate is applied.
+    let mut aligned = parents.is_some();
+    // The rules to ask about one node, in rule order; one buffer for the unit.
+    let mut slots: Vec<usize> = Vec::new();
+    for (visited, node) in unit.root.root().dfs().enumerate() {
         let k = node.kind_id() as usize;
-        let mut slots: Vec<usize> = by_kind.get(k).cloned().unwrap_or_default();
+        let parent_kind = match &parents {
+            Some(p) if aligned => match p.get(visited) {
+                Some(&(id, kind)) if id == node.node_id() => Some(kind),
+                _ => {
+                    aligned = false;
+                    None
+                }
+            },
+            _ => None,
+        };
+        slots.clear();
+        if let Some(own) = by_kind.get(k) {
+            slots.extend_from_slice(own);
+        }
         if !any_kind.is_empty() {
             slots.extend(&any_kind);
             slots.sort_unstable();
         }
-        for slot in slots {
+        for &slot in &slots {
             if failed[slot].is_some() {
+                continue;
+            }
+            if let (Some(parent), Some(gate)) = (parent_kind, gates[slot])
+                && !gate.allows(k as u16, parent)
+            {
                 continue;
             }
             let (index, rule, cfg) = &unit.rules[slot];
@@ -1010,8 +1099,9 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         }
                     };
                     let choices = if wants_fix { choices } else { Vec::new() };
+                    let files = if wants_fix && choices.is_empty() { codelaw_native::files_in(&f.edits) } else { Vec::new() };
                     let edits = (wants_fix && !f.edits.is_empty() && choices.is_empty()).then(|| codelaw_native::plain_edits(f.edits));
-                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also, rung, choices });
+                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: f.message, edits, note: None, data, severity, also, rung, choices, files });
                 }
             }
             Matcher::Match(_) => {
@@ -1093,6 +1183,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         also: Vec::new(),
                         rung,
                         choices,
+                        files: Vec::new(),
                     });
                 }
             }
@@ -1131,7 +1222,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                         _ => (None, None),
                     };
                     let text = codelaw_match::target::interpolate(message, tree, &f.slot, &unit.text, f.error.as_deref());
-                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: text, edits, note, data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new() });
+                    out.push(Finding { rule: *index, start: f.start, end: f.end, message: text, edits, note, data: None, severity: None, also: Vec::new(), rung: None, choices: Vec::new(), files: Vec::new() });
                 }
             }
             Matcher::TypeErrors => {
@@ -1139,7 +1230,7 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
                     // TypeScript's warnings stay warnings; its errors take
                     // the rule's severity.
                     let severity = (d.category == "warning").then_some(Severity::Warn);
-                    out.push(Finding { rule: *index, start: d.start, end: d.end, message: format!("TS{}: {}", d.code, d.message), edits: None, note: None, data: None, severity, also: Vec::new(), rung: None, choices: Vec::new() });
+                    out.push(Finding { rule: *index, start: d.start, end: d.end, message: format!("TS{}: {}", d.code, d.message), edits: None, note: None, data: None, severity, also: Vec::new(), rung: None, choices: Vec::new(), files: Vec::new() });
                 }
             }
             Matcher::Unsupported(_) => {}

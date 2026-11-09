@@ -515,7 +515,9 @@ css_rule!(KeyframesNamePattern, "css/keyframes-name-pattern", |sheet, src, ctx, 
         let r = sheet.nodes[i].params;
         let name = text(src, r).trim_matches(['"', '\'']);
         if !name.is_empty() && !re.is_match(name) {
-            out.push(finding(r.0, r.1, format!("Keyframes name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+            let mut f = finding(r.0, r.1, format!("Keyframes name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::Keyframes, name, &re, crate::multi_file::kebab);
+            out.push(f);
         }
     }
 });
@@ -526,7 +528,9 @@ css_rule!(LayerNamePattern, "css/layer-name-pattern", |sheet, src, ctx, out| {
         for r in names {
             let name = text(src, r);
             if !name.is_empty() && !re.is_match(name) {
-                out.push(finding(r.0, r.1, format!("Layer name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+                let mut f = finding(r.0, r.1, format!("Layer name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+                f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::Layer, name, &re, crate::multi_file::kebab);
+                out.push(f);
             }
         }
     };
@@ -553,7 +557,9 @@ css_rule!(ContainerNamePattern, "css/container-name-pattern", |sheet, src, ctx, 
     let report = |s: usize, e: usize, out: &mut Vec<crate::NativeFinding>| {
         let name = &src[s..e];
         if !re.is_match(name) && !not_names.contains(&name.to_ascii_lowercase().as_str()) {
-            out.push(finding(s, e, format!("Container name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+            let mut f = finding(s, e, format!("Container name `{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::Container, name, &re, crate::multi_file::kebab_dashed);
+            out.push(f);
         }
     };
     for i in sheet.walk() {
@@ -599,7 +605,9 @@ css_rule!(CustomMediaPattern, "css/custom-media-pattern", |sheet, src, ctx, out|
         let e = first.end;
         let Some(name) = src[r.0..e].strip_prefix("--") else { continue };
         if !re.is_match(name) {
-            out.push(finding(r.0, e, format!("Custom media `--{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)")));
+            let mut f = finding(r.0, e, format!("Custom media `--{name}` doesn't match the naming pattern `{pattern}` (kebab-case by default)"));
+            f.edits = crate::multi_file::renamed(ctx, crate::multi_file::NameKind::CustomMedia, name, &re, crate::multi_file::kebab);
+            out.push(f);
         }
     }
 });

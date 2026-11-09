@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:html/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the mark is in the file's bytes, outside the text a fix can edit; the editor's encoding setting removes it) |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the mark is in the file's bytes, outside its text: the fix is the file-level operation `strip_bom`, applied by `codelaw fix`, never on save or by the agent hook (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `html-validate/no-utf8-bom` |
@@ -122,8 +122,8 @@ codelaw config --print --for <file>    # the resolved setting, and where it came
 
 ## How to fix
 
-1. Save the file as UTF-8 without a byte-order mark. In VS Code, click the encoding in the status bar, choose *Save with Encoding*, then *UTF-8*.
-2. Or strip it from the command line: `sed -i '1s/^\xEF\xBB\xBF//' <file>` (GNU sed).
+1. `codelaw fix` saves the file without its byte-order mark.
+2. In an editor, save it as UTF-8 without a mark: in VS Code, click the encoding in the status bar, choose *Save with Encoding*, then *UTF-8*.
 
 ## Examples
 

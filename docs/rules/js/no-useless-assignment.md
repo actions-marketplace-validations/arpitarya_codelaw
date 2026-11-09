@@ -14,7 +14,7 @@
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto for a literal initialiser overwritten before anything reads it: `let sum = 0;` becomes `let sum;`, and the overwrite still sets it; any other dead store is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `eslint/no-useless-assignment` |
+| **Ported from** | `eslint/no-useless-assignment`, `eslint-plugin-sonarjs/no-dead-store` |
 
 ## What it checks
 

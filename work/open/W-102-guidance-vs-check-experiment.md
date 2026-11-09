@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-27 (W-36 R4): measure whether an agent with Fux and
 item: W-102
 filed: 2026-10-27
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-05
-updated_by: "Arpit (Claude app, Opus 5.5)"
+updated: 2026-11-09
+updated_by: "Arpit (Cowork, Opus 5.5): W-139 closed 2026-11-09 — its blocker moved to the items that took W-139's rows"
 ball: agent
 ---
 
@@ -165,7 +165,7 @@ step 4's README line (W-35's rule); (4) on close, the Ownership row passes to a 
 
 ## Blockers
 
-- **W-139** — ruled 2026-11-05: the run waits until every rule is built.
+- **W-139** — ruled 2026-11-05: the run waits until every rule is built. W-139 closed 2026-11-09; the rules still to build are W-176, W-178, W-180–W-187, W-189, W-190 and W-193–W-196.
 
 ## Record affected
 

@@ -5,12 +5,24 @@ description: "Python type, flow and class-hierarchy inference for the W-139 pyth
 item: W-174
 filed: 2026-11-08
 filed_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
-updated: 2026-11-08
-updated_by: "Claude Code (session 0a172e1f), W-139 strand W-139-py"
+updated: 2026-11-09
+updated_by: "Arpit (Cowork, Opus 5.5): boolean-datetime ruled not-applicable; decision 8 moved to W-177"
 ball: agent
 ---
 
 # W-174 — Python inference for the W-139 rows that need it
+
+## At a glance
+
+| step | what we do | what it gives us | state |
+|---|---|---|---|
+| 1 | Say what answers each Python question without a type checker | a plan, in a record | ✅ SR-PY-INFERENCE |
+| 2 | Build the four layers and the rows they answer, one file at a time | 37 of the 38 rows as rules | ✅ 2026-11-09 |
+| 3 | The decider rules the last row, `boolean-datetime` | nothing left unruled | ✅ 2026-11-09 — not-applicable |
+| 4 | Mark that row not-applicable in the parity ledger, record the outcome, close | the item done | ⏳ |
+| — | Whether the project's own type checker answers the cross-file rows | moved out | → research W-177 |
+
+**Arpit (voice, Cowork docket), 2026-11-09:** on `boolean-datetime`, *"Not applicable."*; on decision 8, *"Open a separate research item for this."* — filed on *"file it."*
 
 ## Why this exists
 
@@ -31,14 +43,48 @@ codelaw has a type program for TypeScript only ([SR-TYPES](../../records/0117_ty
 
 | step | what we do | state |
 |---|---|---|
-| 1 | Propose the Python counterpart of SR-TYPES: what answers each question above (the semantic model extended, a flow pass in `codelaw-semantic`, or an existing type checker run like TypeScript's — the last needs L2 and L11 rulings), and its cost against L8 | ⏳ |
-| 2 | Build the cheapest layer that answers a group (scope facts first: they need no new dependency) | ⏳ |
-| 3 | Write each row fresh (Ruff 0.16.9 source and tests; Pylint 4.1.3 behaviour only, never code, L2), its cases and fix class; `codelaw test packs/python` 0 failed | ⏳ |
+| 1 | Propose the Python counterpart of SR-TYPES: what answers each question above, and its cost against L8 | ✅ [SR-PY-INFERENCE](../../records/0120_python-inference.md) (0120): four lazy layers — scope facts on the per-file model, a flow pass (`codelaw_semantic::python_flow`), an in-file class table, literal typing; no type checker; the one question for the decider is its decision 8 |
+| 2 | Build the cheapest layer that answers a group (scope facts first) | ✅ scope facts (`py_scope.rs`), flow (`semantic/py_flow.rs` + `native/py_flow.rs`), class hierarchy in-file (`py_classes.rs`), value types in one file (`py_values.rs`) |
+| 3 | Write each row fresh (Ruff 0.16.9 source and tests; Pylint 4.1.3 behaviour from its functional tests only, never code, L2), its cases and fix class; `codelaw test packs/python` 0 failed | ✅ 37 of 38 rows (below); the last, `boolean-datetime`, ruled not-applicable 2026-11-09 (*Left*) |
+
+## Built (2026-11-08) — 30 `preview` rules, in no preset
+
+| layer | rules (upstream) | fix |
+|---|---|---|
+| scope facts (5) | `nonlocal-without-binding` (PLE0117), `builtin-attribute-shadowing` (A003), `missing-f-string-syntax` (RUF027), `used-dummy-variable` (RUF052), `unused-private-member` (Pylint) | RUF027 and RUF052 `suggest` (Ruff's own fixes are unsafe: they change behaviour, L4 decision 3), the rest `manual` (`value` ×2, `restructure`) |
+| flow (6) | `used-before-assignment`, `possibly-used-before-assignment`, `undefined-loop-variable`, `possibly-unused-variable`, `looping-through-iterator`, `contextmanager-generator-missing-cleanup` | all `manual` (`value` ×4, `restructure` ×2) |
+| class hierarchy, in one file (13) | `inconsistent-mro`, `bad-super-call`, `non-parent-init-called`, `super-init-not-called`, `subclassed-final-class`, `overridden-final-method`, `invalid-enum-extension`, `abstract-class-instantiated`, `abstract-method`, `method-hidden`, `invalid-overridden-method`, `arguments-differ`, `arguments-renamed` | `bad-super-call` `suggest` (names the enclosing class); the rest `manual` |
+| value types from literals and annotations (6) | `dict-iter-missing-items` (PLE1141), `modified-iterating-set` (PLE4703), `bad-string-format-type` (PLE1307), `comparison-with-callable`, `positional-only-arguments-expected`, `blocking-http-call-httpx-in-async-function` (ASYNC212) | PLE1141 and PLE4703 `suggest` (`.items()`, `.copy()`), the rest `manual` |
+
+Each rule page says what it does not read. Behaviour pinned from the upstream tests: the flow rules were checked against Pylint's `used_before_assignment`, `undefined_loop_variable`, `looping_iterator`, `unused_variable` and `contextmanager_generator_missing_cleanup` functional cases, and run over 150 files of the CPython 3.14 standard library (hits read: the `try`-body-only reads in `except` handlers, `if` without `else`, loop variables read after the loop — as Pylint reports them; three false positives found and fixed on the way: chained assignments `a = b = 0`, a builtin read at module level before the module binds it, and `a and (b := f())` binding `b` where it held). **Corpus (2026-11-09):** the 30 rules' counts are in `packs/python/corpus.toml` (`corpus.py run --pack python --update`, then once more without it: 0 failed, a fixpoint; no existing count moved). 22 are 0; the rest were sampled: `used-dummy-variable` 132 (comprehension and local-alias names in `rich`, as Ruff reports them), `missing-f-string-syntax` 5 (Starlette path templates such as `"/{param:float}"` with `param` in scope, as Ruff reports them), `undefined-loop-variable` 4, `possibly-used-before-assignment` 2, `possibly-unused-variable` 2 (`locals()`), `super-init-not-called` 3 (Starlette's `BackgroundTasks` and two `Response` subclasses, whose `__init__` does not call the base's) — all true by Pylint's definitions. One was wrong: `arguments-differ` read Flask's `dispatch_request(self, **kwargs: t.Any)` as a positional parameter, because tree-sitter wraps an annotated `*args`/`**kwargs` in a `typed_parameter`; fixed in `py_classes.rs` (and the same read in `py_values.rs`'s `positional-only-arguments-expected`), pinned by a case each, count 0.
+
+## Built (2026-11-09, W-174b) — 7 more `preview` rules, in no preset
+
+Behaviour pinned from Pylint 4.1.3's functional tests (read for what they expect, never copied; L2), then each rule run over those same test inputs: every expected message came out at the expected line, and the extras were the lines the test files silence with `disable=` comments.
+
+| layer | rules (upstream) | fix | what it reads, and what it does not |
+|---|---|---|---|
+| class table (`py_classes.rs`) | `signature-differs` (W0222) | `manual`, `restructure` | the same parameters as the base, but one the base makes optional the override requires (`arguments-differ` keeps the counts and names) |
+| class table + an attribute table | `access-member-before-definition` (E0203) | `manual`, `restructure` | a `self.x` read on a line before the method's first assignment of it, when no other method of the class or of an in-file ancestor assigns it and nothing binds it at class level; in `__init__`, a `self.method()` call before the assignment of an attribute that method reads without assigning first. Not read: a `try` that catches `AttributeError`, nested functions and lambdas, a bare `self.x: int`, a `...Mixin` class, an imported base |
+| class table | `non-iterator-returned` (E0301) | `manual`, `restructure` | `__iter__` whose every `return` is a list, tuple, dict, set, number, string, comprehension, `self` with no `__next__` in the file's chain, an instance of a class of the file with none, or such a class itself; one unknown return silences it |
+| class table + builtins | `not-async-context-manager` (E1701) | `manual`, `restructure` | `async with` of a literal, a builtin such as `slice(None)`, a call of a function of the file decorated `contextlib.contextmanager`, or an instance of a class of the file without both `__aenter__` and `__aexit__` in its chain (not a `Mixin`, not with an imported base) |
+| literal typing + a flow join (`py_values.rs`) | `redefined-variable-type` (R0204, opt-in extension) | `manual`, `restructure` | a name or `obj.attr` assigned values of two types the file states (literal, comprehension, ternary with agreeing arms, builtin type call, call of a class of the file, call of a function of the file whose every `return` states one type); branches start from the state before them, and after them the last branch that assigned the name decides; `None`, `_`, tuple targets, annotated and augmented assignments are not read |
+| literal typing + attribute tables | `invalid-format-index` (W1307), `missing-format-attribute` (W1306) | `manual`, `value` | a `str.format` field that indexes (or reads an attribute of) an argument the file states: a literal, or a name bound once to one; the attribute tables are those of CPython 3.9–3.14's `int`, `float`, `bool`, `str`, `bytes`, `list`, `tuple`, `dict`, `set`; dunders and anything after the first attribute are not read |
+
+Not rebuilt: Pylint's `assigning-non-slot` is W-139-ruff's `py/non-slot-assignment` (PLE0237), which names it in `ported_from:`.
+
+## Left — 1 row, ruled
+
+| row | question | state |
+|---|---|---|
+| `boolean-datetime` (W1502) | *is this a `datetime.time`* — and Pylint reports it only below Python 3.5; under codelaw's 3.9+ floor it can never fire | **Ruled not-applicable** — Arpit, 2026-11-09 (voice): *"Not applicable."* Not built; next (agent): its class in `work/proposals/rule-parity/pylint.csv`, then close |
+
+Across files: every override, abstract and `__init__` row stops at a base class this file imports; the project graph carrying class facts (bases, methods, decorators) would let `py_classes.rs` follow them. That is the next record step, not built — the shape is W-177's question.
 
 ## Blockers
 
-None to start step 1. A type checker as a dependency would need the decider (L11).
+None. **Decision 8 left this item, 2026-11-09.** It had been in the inbox since that morning as *not blocking today, blocking later*. Read to Arpit by voice — should the rows that need a call's return or an imported class's shape be answered by the project's own Python type checker (`ty`, pyright or mypy), found and asked like its TypeScript? — he said: *"Open a separate research item for this."* It is [W-177](W-177-python-type-checker-research.md), a `research` item; this item closes without it. `boolean-datetime`: *"Not applicable."*
 
 ## Reference
 
-[W-139](W-139-rule-parity-build.md) (where the rows came from: its *Needs native — W-139-py* table and the strand's *not written* lists) · [W-105](W-105-type-aware-engine.md) (the TypeScript type program) · [SR-TYPES](../../records/0117_types.md)
+[W-139](../../archive/open/W-139-rule-parity-build.md) (where the rows came from: its *Needs native — W-139-py* table and the strand's *not written* lists) · [W-105](W-105-type-aware-engine.md) (the TypeScript type program) · [SR-TYPES](../../records/0117_types.md)

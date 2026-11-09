@@ -4,7 +4,7 @@ title: "Exported functions declare their types"
 languages: [typescript, tsx]
 fix: manual
 fix_reason: "the types are the author's to write"
-fix_pending: "suggest; needs type-info (W-162)"
+fix_pending: "suggest; needs type-info (W-105)"
 stability: preview
 ported_from: [typescript-eslint/explicit-module-boundary-types]
 since: 0.5.0

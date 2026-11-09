@@ -15,7 +15,40 @@ fn one_line(s: &str, max: usize) -> String {
     if flat.chars().count() <= max { flat } else { format!("{}…", flat.chars().take(max).collect::<String>()) }
 }
 
+/// A multi-file fix's edits in other files, for the hook's line.
+fn other_files(files: &[codelaw_core::FileEdit], max: usize) -> String {
+    files
+        .iter()
+        .map(|f| {
+            let mut edits: Vec<String> = f.edits.iter().map(|e| format!("bytes {}..{} → \"{}\"", e.start, e.end, one_line(&e.text, max))).collect();
+            if f.strip_bom {
+                edits.push("remove the byte-order mark".into());
+            }
+            format!(" · in {}: {}", f.path, edits.join("; "))
+        })
+        .collect()
+}
+
 fn next_step(d: &Diagnostic) -> String {
+    let n = d.files_edited();
+    // The hook never applies a multi-file fix (SR-MULTI-FILE-FIXES
+    // safeguard 5): it says how many files the fix edits and who applies it.
+    if d.is_multi_file() && matches!(d.fix, FixClass::Auto | FixClass::Suggest) {
+        let how = if d.fix == FixClass::Auto { "run `codelaw fix`" } else { "show the user the diff; once accepted, run `codelaw fix --unsafe`" };
+        if !d.choices.is_empty() {
+            let choices: Vec<String> = d
+                .choices
+                .iter()
+                .map(|c| {
+                    let edits: Vec<String> = c.edits.iter().map(|e| format!("bytes {}..{} → \"{}\"", e.start, e.end, one_line(&e.text, 40))).collect();
+                    format!("[{}{}] {}{}", c.label, if c.default { ", default" } else { "" }, edits.join("; "), other_files(&c.files, 40))
+                })
+                .collect();
+            return format!("fix: {} — edits {n} files, never applied by this hook; pick the choice that fits, {how}: {}", d.fix, choices.join(" · "));
+        }
+        let edits: Vec<String> = d.edits.iter().map(|e| format!("bytes {}..{} → \"{}\"", e.start, e.end, one_line(&e.text, 40))).collect();
+        return format!("fix: {} — edits {n} files, never applied by this hook; {how}: {}{}", d.fix, edits.join("; "), other_files(&d.files, 40));
+    }
     match d.fix {
         FixClass::Auto if !d.edits.is_empty() => "fix: auto — run `codelaw fix` on the file".into(),
         FixClass::Suggest if !d.edits.is_empty() => {

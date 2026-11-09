@@ -260,15 +260,33 @@ impl FixTarget {
     }
 }
 
+/// A JSON value kept as its compact text, read back on demand. A pack's
+/// `match:` trees are read when a rule is compiled or explained, and held
+/// for every rule a pack ships for the life of the process: as text they
+/// take a tenth of the memory a parsed tree does (W-172).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Json(Box<str>);
+
+impl Json {
+    pub fn new(value: &serde_json::Value) -> Json {
+        Json(value.to_string().into_boxed_str())
+    }
+
+    /// The value, parsed again from the text [`Json::new`] wrote.
+    pub fn value(&self) -> serde_json::Value {
+        serde_json::from_str(&self.0).expect("Json holds text serde_json wrote")
+    }
+}
+
 /// The four forms of a `codelaw` block (SR-RULE-FORMAT decision 3).
 #[derive(Clone, Debug, PartialEq)]
 pub enum BlockKind {
     /// An ast-grep rule, plus its optional `constraints`, `utils` and
     /// codelaw's semantic `where` predicates.
     Match {
-        rule: serde_json::Value,
-        constraints: Option<serde_json::Value>,
-        utils: Option<serde_json::Value>,
+        rule: Json,
+        constraints: Option<Json>,
+        utils: Option<Json>,
         predicates: Option<serde_json::Value>,
         /// `type:`, the type questions (decision 3f; SR-TYPES); boxed, as
         /// few rules have one.
@@ -282,8 +300,9 @@ pub enum BlockKind {
         /// (SR-RULE-FORMAT decision 3b; W-162).
         transform: Option<Box<serde_json::Value>>,
     },
-    Graph(serde_json::Value),
-    Target { target: serde_json::Value, assert: serde_json::Value },
+    /// Kept as text, like `match:`: read back when the rule is compiled.
+    Graph(Json),
+    Target { target: Json, assert: Json },
     Native(String),
 }
 
@@ -359,6 +378,72 @@ pub struct Case {
 }
 
 /// A parsed, checked rule file.
+/// A rule's examples or cases, read from its file when first asked for. A
+/// pack's rules are held for the life of a process and a `check` never
+/// reads these; parsed and kept, they were the largest part of a rule's
+/// memory (W-172). A list built in memory is held as it is.
+#[derive(Clone, Debug)]
+pub struct OnDemand<T> {
+    cell: std::sync::OnceLock<Vec<T>>,
+    from: Option<(PathBuf, Reader<T>)>,
+}
+
+/// How an [`OnDemand`] list is read from its file.
+type Reader<T> = fn(&Path) -> Vec<T>;
+
+impl<T> OnDemand<T> {
+    /// Read from `path` by `read` the first time the list is asked for; a
+    /// file that no longer reads gives an empty list.
+    pub fn later(path: PathBuf, read: fn(&Path) -> Vec<T>) -> OnDemand<T> {
+        OnDemand { cell: std::sync::OnceLock::new(), from: Some((path, read)) }
+    }
+}
+
+impl<T> From<Vec<T>> for OnDemand<T> {
+    fn from(v: Vec<T>) -> OnDemand<T> {
+        OnDemand { cell: std::sync::OnceLock::from(v), from: None }
+    }
+}
+
+impl<T> Default for OnDemand<T> {
+    fn default() -> OnDemand<T> {
+        Vec::new().into()
+    }
+}
+
+impl<T> std::ops::Deref for OnDemand<T> {
+    type Target = Vec<T>;
+    fn deref(&self) -> &Vec<T> {
+        self.cell.get_or_init(|| self.from.as_ref().map(|(p, read)| read(p)).unwrap_or_default())
+    }
+}
+
+impl<T> std::ops::DerefMut for OnDemand<T> {
+    fn deref_mut(&mut self) -> &mut Vec<T> {
+        let _ = std::ops::Deref::deref(self);
+        self.from = None;
+        self.cell.get_mut().expect("read just above")
+    }
+}
+
+impl<'a, T> IntoIterator for &'a OnDemand<T> {
+    type Item = &'a T;
+    type IntoIter = std::slice::Iter<'a, T>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+/// A rule file's examples, read again from the file.
+pub fn examples_of(path: &Path) -> Vec<LanguageExamples> {
+    std::fs::read_to_string(path).ok().and_then(|text| parse_rule(path, &text, None).ok()).map(|r| r.examples.to_vec()).unwrap_or_default()
+}
+
+/// A `.cases.md` file's cases, read again.
+pub fn cases_of(path: &Path) -> Vec<Case> {
+    std::fs::read_to_string(path).ok().and_then(|text| parse_cases(path, &text).ok()).unwrap_or_default()
+}
+
 #[derive(Clone, Debug)]
 pub struct RuleFile {
     pub path: PathBuf,
@@ -397,8 +482,8 @@ pub struct RuleFile {
     pub why: String,
     pub block: Block,
     pub steps: Vec<String>,
-    pub examples: Vec<LanguageExamples>,
-    pub cases: Vec<Case>,
+    pub examples: OnDemand<LanguageExamples>,
+    pub cases: OnDemand<Case>,
     /// Hash of the rule file and its sidecar: part of the rule-set key.
     pub hash: Key,
 }
@@ -519,18 +604,18 @@ fn parse_block(code: &str) -> Result<Block, String> {
     // taken is not looked at again below.
     let kind = match forms[0] {
         "match" => BlockKind::Match {
-            rule: map.remove("match").unwrap(),
-            constraints: map.remove("constraints"),
-            utils: map.remove("utils"),
+            rule: Json::new(&map.remove("match").unwrap()),
+            constraints: map.remove("constraints").as_ref().map(Json::new),
+            utils: map.remove("utils").as_ref().map(Json::new),
             predicates: map.remove("where"),
             types: map.remove("type").map(Box::new),
             auto_when: map.remove("auto_when").map(Box::new),
             transform: map.remove("transform").map(Box::new),
         },
-        "graph" => BlockKind::Graph(map.remove("graph").unwrap()),
+        "graph" => BlockKind::Graph(Json::new(&map.remove("graph").unwrap())),
         "target" => BlockKind::Target {
-            target: map.remove("target").unwrap(),
-            assert: map.remove("assert").ok_or("`target:` needs `assert:`")?,
+            target: Json::new(&map.remove("target").unwrap()),
+            assert: Json::new(&map.remove("assert").ok_or("`target:` needs `assert:`")?),
         },
         _ => BlockKind::Native(
             map.remove("native").and_then(|v| v.as_str().map(str::to_owned)).ok_or("`native:` takes the id of an engine rule")?,
@@ -1042,8 +1127,8 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         why: why.unwrap_or_default(),
         block,
         steps,
-        examples,
-        cases: Vec::new(),
+        examples: examples.into(),
+        cases: OnDemand::default(),
         hash: hash_bytes(text.as_bytes()),
     })
 }

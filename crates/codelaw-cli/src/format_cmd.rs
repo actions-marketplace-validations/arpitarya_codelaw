@@ -186,6 +186,7 @@ fn ci_report(report: &FormatReport, check: bool) -> codelaw_engine::CheckReport 
                 data: None,
                 choices: Vec::new(),
                 fix_exception: None,
+                files: Vec::new(),
             });
         }
         r.diagnostics.sort_by(|a, b| a.sort_key().cmp(&b.sort_key()));

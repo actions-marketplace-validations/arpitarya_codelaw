@@ -19,3 +19,19 @@ pub fn kill_group(child: &mut Child) {
     }
     let _ = child.kill();
 }
+
+/// Hand the allocator's free pages back to the system. Loading packs and
+/// compiling rules frees a great deal of scratch (rule files read and parsed,
+/// regexes built) between allocations that stay for the life of the process;
+/// with glibc, where each thread allocates from its own arena, the holes in
+/// the loading thread's arena are not reused by the worker threads, and a
+/// check's peak resident memory (L8's `peak_memory_10k`) carries them. One
+/// call after the load returns them (W-172). A no-op where the allocator has
+/// no such call (macOS's measured no difference: one zone serves every thread).
+pub fn release_free_memory() {
+    #[cfg(all(target_os = "linux", target_env = "gnu"))]
+    // SAFETY: `malloc_trim` takes a padding size and touches no live allocation.
+    unsafe {
+        libc::malloc_trim(0);
+    }
+}

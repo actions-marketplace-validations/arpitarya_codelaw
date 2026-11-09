@@ -4,7 +4,7 @@ title: "No ++ or --"
 languages: [javascript, jsx, typescript, tsx]
 fix: manual
 fix_reason: "prefix and postfix forms differ in value, so the rewrite needs the author's eye"
-fix_pending: "auto-subset; needs type-info (W-162)"
+fix_pending: "auto-subset; needs type-info (W-105)"
 stability: preview
 ported_from: [eslint/no-plusplus]
 since: 0.5.0

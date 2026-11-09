@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every use of the name) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case in every `container-name`, `container` and `@container` of the project, as one fix; a diff to accept (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/container-name-pattern` |
@@ -167,8 +167,8 @@ codelaw config --print --for <file>              # the resolved setting, and whe
 
 ## How to fix
 
-1. Rename the container to match the pattern.
-2. Update every `@container` query that uses it.
+1. Accept the rename: `codelaw fix --unsafe` renames the container and every `@container` query that uses it (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -189,6 +189,37 @@ codelaw config --print --for <file>              # the resolved setting, and whe
   container-name: card-grid;
 }
 ```
+
+#### Don't
+
+```css
+/* src/card.css */
+.card {
+  container-name: cardGrid;
+}
+/* src/title.css */
+@container cardGrid (width > 30em) {
+  h2 {
+    font-size: 2em;
+  }
+}
+```
+
+#### Do
+
+```css
+/* src/card.css */
+.card {
+  container-name: card-grid;
+}
+/* src/title.css */
+@container card-grid (width > 30em) {
+  h2 {
+    font-size: 2em;
+  }
+}
+```
+
 ### SCSS
 
 #### Don't

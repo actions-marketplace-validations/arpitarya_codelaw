@@ -521,6 +521,8 @@ pub struct TargetFinding {
 /// Compile a rule's `target:` and `assert:`.
 pub fn compile_target(rule: &RuleFile, tables: &Tables) -> Result<CompiledTarget, String> {
     let BlockKind::Target { target, assert } = &rule.block.kind else { return Err("not a `target:` rule".into()) };
+    let (target, assert) = (target.value(), assert.value());
+    let (target, assert) = (&target, &assert);
     let paths = match target {
         serde_json::Value::String(s) => vec![Path::parse(s)?],
         serde_json::Value::Array(a) if !a.is_empty() => {

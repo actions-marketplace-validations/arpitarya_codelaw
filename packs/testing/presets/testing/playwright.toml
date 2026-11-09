@@ -17,6 +17,7 @@ description = "eslint-plugin-playwright 2.12.1's `recommended`, reimplemented (W
 "testing/playwright-no-page-pause" = "warn"
 "testing/playwright-no-standalone-expect" = "error"
 "testing/playwright-no-unnecessary-assertions" = "error"
+"testing/playwright-no-unsafe-references" = "error"
 "testing/playwright-no-unused-locators" = "warn"
 "testing/playwright-no-useless-await" = "warn"
 "testing/playwright-no-useless-not" = "warn"

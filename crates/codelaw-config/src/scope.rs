@@ -123,9 +123,10 @@ fn merge_setting(base: &RuleSetting, over: &RuleSetting) -> RuleSetting {
     let reason = if over.severity().is_some() { over.reason() } else { over.reason().or(base.reason()) }.map(str::to_owned);
     let on_edit = over.on_edit().or(base.on_edit());
     let targets = over.targets().or(base.targets()).cloned();
+    let multi_file = over.multi_file().or(base.multi_file());
     match severity {
-        Some(s) if options.is_empty() && fix.is_none() && reason.is_none() && on_edit.is_none() && targets.is_none() => RuleSetting::Severity(s),
-        severity => RuleSetting::Full { severity, options, fix, reason, on_edit, targets },
+        Some(s) if options.is_empty() && fix.is_none() && reason.is_none() && on_edit.is_none() && targets.is_none() && multi_file.is_none() => RuleSetting::Severity(s),
+        severity => RuleSetting::Full { severity, options, fix, reason, on_edit, targets, multi_file },
     }
 }
 

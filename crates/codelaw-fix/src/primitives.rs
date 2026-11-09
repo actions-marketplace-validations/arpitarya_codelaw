@@ -1021,7 +1021,7 @@ pub fn choice_edits(spec: &FixSpec, m: &Match, ctx: &FixContext<'_>) -> Result<V
             Ok(()) if edits.is_empty() => {
                 first_error.get_or_insert_with(|| format!("the choice `{}` changes nothing for this match", c.label));
             }
-            Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits) }),
+            Ok(()) => out.push(FixChoice { label: c.label.clone(), default: c.default, edits: sort_edits(edits), files: Vec::new() }),
             Err(e) => {
                 first_error.get_or_insert(e);
             }

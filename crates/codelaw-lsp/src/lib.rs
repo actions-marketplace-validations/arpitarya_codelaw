@@ -710,7 +710,7 @@ impl<'c> Server<'c> {
         }
         if wanted(CodeActionKind::QUICKFIX.as_str()) {
             for d in doc.diagnostics.iter().filter(own) {
-                let fixable = matches!(d.fix, FixClass::Auto | FixClass::Suggest) && (!d.edits.is_empty() || !d.choices.is_empty());
+                let fixable = matches!(d.fix, FixClass::Auto | FixClass::Suggest) && (!d.edits.is_empty() || !d.files.is_empty() || !d.choices.is_empty());
                 if !fixable || d.start_byte > end || d.end_byte < start {
                     continue;
                 }
@@ -718,6 +718,33 @@ impl<'c> Server<'c> {
                     edits.iter().map(|e| TextEdit { range: idx.range(e.start + shift, e.end + shift), new_text: e.text.clone() }).collect()
                 };
                 let diagnostics = Some(vec![lsp_diagnostic(d, idx.range(d.start_byte + shift, d.end_byte + shift))]);
+                // A multi-file fix is one `WorkspaceEdit` over every file it
+                // edits, chosen as a quick fix, never applied on save
+                // (SR-MULTI-FILE-FIXES decisions 1 and 2.5).
+                if d.is_multi_file() {
+                    let Some((project, _)) = self.project_of(doc) else { continue };
+                    let sets: Vec<(String, &[codelaw_core::TextEdit], &[codelaw_core::FileEdit])> = if d.choices.is_empty() {
+                        vec![(String::new(), &d.edits[..], &d.files[..])]
+                    } else {
+                        d.choices.iter().map(|c| (format!(": {}", c.label), &c.edits[..], &c.files[..])).collect()
+                    };
+                    for (label, own_edits, files) in sets {
+                        let Some(mut edit) = self.multi_file_edit(project.root(), files) else { continue };
+                        if !own_edits.is_empty() {
+                            edit.entry(doc.uri.clone()).or_default().extend(lsp_edits(own_edits));
+                        }
+                        let n = edit.len();
+                        out.push(CodeActionOrCommand::CodeAction(CodeAction {
+                            title: format!("Fix {}{label} in {n} files (check the result)", d.rule),
+                            kind: Some(CodeActionKind::QUICKFIX),
+                            diagnostics: diagnostics.clone(),
+                            edit: Some(WorkspaceEdit { changes: Some(edit), ..Default::default() }),
+                            is_preferred: Some(false),
+                            ..Default::default()
+                        }));
+                    }
+                    continue;
+                }
                 if d.edits.is_empty() {
                     // One quick fix per labelled choice; the default one is
                     // preferred (SR-LAW-4 decision 4).
@@ -766,6 +793,33 @@ impl<'c> Server<'c> {
             }
         }
         out
+    }
+
+    /// A multi-file fix's edits in other files as LSP edits, by file. The
+    /// edits are over each file's text on disk: `None` when a file is open
+    /// with other text, or the fix removes a byte-order mark, which an
+    /// editor's text does not hold.
+    #[allow(clippy::mutable_key_type)]
+    fn multi_file_edit(&self, root: &std::path::Path, files: &[codelaw_core::FileEdit]) -> Option<HashMap<Uri, Vec<TextEdit>>> {
+        let mut out: HashMap<Uri, Vec<TextEdit>> = HashMap::new();
+        for f in files {
+            if f.strip_bom {
+                return None;
+            }
+            let abs = root.join(&f.path);
+            let disk = std::fs::read_to_string(&abs).ok()?;
+            let disk = disk.strip_prefix('\u{feff}').map(str::to_owned).unwrap_or(disk);
+            let uri_text = uri::from_path(&abs);
+            if let Some(open) = self.docs.get(uri_text.as_str())
+                && open.body().0 != disk
+            {
+                return None;
+            }
+            let idx = Utf16Index::new(&disk);
+            let uri: Uri = uri_text.parse().ok()?;
+            out.entry(uri).or_default().extend(f.edits.iter().map(|e| TextEdit { range: idx.range(e.start, e.end), new_text: e.text.clone() }));
+        }
+        Some(out)
     }
 
     /// What the rule of each diagnostic under the cursor requires.

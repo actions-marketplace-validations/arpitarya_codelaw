@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): build Biome's 89 rules for Vue, Svelte,
 item: W-143
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-10-30
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-09
+updated_by: "Arpit (Cowork, Opus 5.5): W-139 closed 2026-11-09 — its blocker moved to the items that took W-139's rows"
 ball: agent
 ---
 
@@ -41,7 +41,7 @@ The four become L3 languages with the same standing as the nine: embedded `<scri
 
 ## Blockers
 
-🟡 waits on **W-139**. 🔴 at start: the decider ratifies each grammar (L11).
+🟡 waits on **W-195**, **W-196** — ruled to follow W-139 (2026-10-30); W-139 closed 2026-11-09 and its JavaScript-side rows are those two items. 🔴 at start: the decider ratifies each grammar (L11).
 
 ## Record affected
 

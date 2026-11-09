@@ -428,6 +428,7 @@ impl Finding {
             data: None,
             choices: Vec::new(),
             fix_exception: None,
+            files: Vec::new(),
         }
     }
 }

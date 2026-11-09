@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (the matching import needs the module path and what it provides) |
+| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (restructure: a `/// <reference path>` brings a script's globals into scope, which an `import` does not; the replacement is turning that file into a module and importing what it exports (W-162)) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
 | **Ported from** | `typescript-eslint/triple-slash-reference` |

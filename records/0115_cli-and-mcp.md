@@ -72,7 +72,7 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
    | Group | Commands |
    |---|---|
    | everyday | `check [--watch]` · `fix [--watch]` · `format` · `explain` |
-   | rules | `rules [--for <path>] [--why <id>] [--tag <tag>…] [--security-coverage]` · `brief --for <path>…` (decision 14) · `new-rule` · `rules eject` · `rules lint` · `test [--case <title>] [--corpus <dir> [--snapshot <file> [--update-snapshot]]]` (SR-RULE-AUTHORING decision 4) |
+   | rules | `rules [--for <path>] [--why <id>] [--tag <tag>…] [--security-coverage]` · `brief --for <path>…` (decision 14) · `new-rule` · `rules eject` · `rules lint` · `test [--case <title>] [--corpus <dir> [--snapshot <file> [--update-snapshot]]]` (SR-RULE-AUTHORING decision 4; the corpus level runs the rules on as many threads as the machine has and reports them in the rules' order, W-126) |
    | debug | `tree` · `match <id> <file> [--explain] [--line N]` · `fix --trace` · `graph refs` · `graph why-unused` · `flags accessors [--format text\|json]` (below) |
    | project | `init [--agents …] [--git-hooks [pre-commit,post-commit,commit-msg]] [--ci github] [--ci github\|gitlab --autofix daily\|weekly [--unsafe]] [--no-install] [--registry npm|pypi]` · `sync-agents [--check]` · `config --print [--for <file>]` · `config --schema` |
    | project | `init [--agents …] [--git-hooks [pre-commit,post-commit,commit-msg]] [--ci github\|gitlab --autofix daily\|weekly [--unsafe]] [--no-install] [--no-spell] [--registry npm|pypi]` · `sync-agents [--check]` · `config --print [--for <file>]` · `config --schema` · `spell learn` (below) · `migrate eslint\|prettier\|biome\|ruff\|stylelint [--write] [--format text\|json] [--dir <dir>]` (decision 15) |
@@ -245,6 +245,8 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
 
 - **Two front doors to keep in sync,** made cheap by keeping both thin and testing parity.
 - **Stdio-only MCP** means remote agents need a local process. Deliberate ([L5](0007_LAW-5-no-model-in-the-engine.md)).
+- **2026-11-08 (W-172):** the CLI wires the on-demand rule examples and the per-process pack cache; output is unchanged.
+- **2026-11-08 (W-162):** `fix` applies a multi-file fix all-or-nothing after the graph check, per `[fix] multi_file`; JSON, MCP, SARIF (`artifactChanges` per file) and text output show its other files ([SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)).
 
 ### Alternatives considered
 

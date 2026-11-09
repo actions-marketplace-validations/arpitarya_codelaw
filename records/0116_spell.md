@@ -406,7 +406,8 @@ question its maintainers left open. The forks and the rulings are in
 - Debt: `cspell.json` migration and non-English word lists are in
   [`BACKLOG.md`](../work/BACKLOG.md) (B-054, B-055).
 
-- **The fix ladder (W-156, 2026-11-05).** The spell pack's two `manual` rules name their exception or wait on their move (`fix_exception:` / `fix_pending:`, [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5), and its README carries the generated fix-ladder table.
+- **The fix ladder (W-156, 2026-11-05).** The spell pack's two `manual` rules name their exception or wait on their move (`fix_exception:` / `fix_pending:`, [L4](0006_LAW-4-every-rule-has-a-fix.md) decision 5), and its README carries the generated fix-ladder table. (Regenerated 2026-11-08, W-169: the table had not followed W-162's moves of other packs' rules; the spell pack's own rules did not change.)
+- **2026-11-08 (W-162):** `spell/known-typo-key` is re-judged `manual` (`restructure`): a key's readers are often code built from parts or in another repo, which no graph resolves — outside [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)'s reach.
 
 ### Alternatives considered
 

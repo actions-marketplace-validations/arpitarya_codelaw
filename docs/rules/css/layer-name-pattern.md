@@ -11,7 +11,7 @@
 | **Turned on by** | `codelaw:css/standard` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `pattern` |
-| **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (renaming must update every use of the layer) |
+| **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (renamed to kebab-case in every `@layer` and `@import … layer()` of the project, as one fix; a diff to accept, as the layer order is the author's (SR-MULTI-FILE-FIXES)) |
 | **Stability** | `stable` |
 | **Since** | 0.1.0 |
 | **Ported from** | `stylelint/layer-name-pattern` |
@@ -167,8 +167,8 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 
 ## How to fix
 
-1. Rename the layer to match the pattern.
-2. Update every `@layer` and `@import` that names it.
+1. Accept the rename: `codelaw fix --unsafe` renames the layer in every `@layer` and `@import … layer()` (the diff names each file).
+2. A pattern that isn't kebab-case, or a new name already taken, offers no rename: rename it by hand.
 
 ## Examples
 
@@ -185,6 +185,33 @@ codelaw config --print --for <file>          # the resolved setting, and where i
 ```css
 @layer base-styles;
 ```
+
+#### Don't
+
+```css
+/* src/order.css */
+@layer baseStyles, theme;
+/* src/base.css */
+@layer baseStyles {
+  p {
+    margin: 0;
+  }
+}
+```
+
+#### Do
+
+```css
+/* src/order.css */
+@layer base-styles, theme;
+/* src/base.css */
+@layer base-styles {
+  p {
+    margin: 0;
+  }
+}
+```
+
 ### SCSS
 
 #### Don't

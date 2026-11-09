@@ -3,11 +3,10 @@ id: node/no-missing-require
 title: "Required project paths must exist"
 languages: [javascript, jsx, typescript, tsx]
 scope: project
-fix: manual
-fix_reason: "the right path depends on where the module went"
-fix_pending: "suggest-choices; needs cross-file (W-162)"
+fix: suggest
+fix_reason: "the specifier is pointed at the project file nearest in spelling that exists, or one of the nearest when several tie (choices); a diff to accept, as the module may have moved elsewhere or need restoring. No file near in spelling offers no fix (SR-MULTI-FILE-FIXES)"
 stability: preview
-ported_from: [eslint-plugin-n/no-missing-require]
+ported_from: [eslint-plugin-n/no-missing-require, eslint-plugin-import/no-unresolved]
 since: 0.1.0
 ---
 
@@ -21,11 +20,15 @@ graph:
     form: [require]
     resolves: false
 message: "`$SOURCE` names no file of this project"
+fix:
+  do: [nearest-path]
 ```
 
 ## How to fix
 
-1. Point the specifier at the file that exists (check the extension and the folder), or restore the missing file.
+1. Accept the fix where it is offered: `codelaw fix --unsafe` points the specifier at the nearest file that exists (with choices, pick one).
+2. Otherwise point it at the file that exists (check the extension and the folder), or restore the missing file.
+3. A path to a generated file the repo doesn't hold is reported too: generate it before `codelaw check`, or suppress the line with a reason.
 
 ## Examples
 

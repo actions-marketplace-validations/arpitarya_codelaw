@@ -55,4 +55,4 @@ None.
 
 ## Reference
 
-[W-156](../../work/open/W-156-fix-ladder.md) B4 · [W-162](../../work/open/W-162-fix-capabilities-build.md) · [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 5, 9, 10 · [`work/proposals/fix-ladder.md`](../../work/proposals/fix-ladder.md)
+[W-156](../../work/open/W-156-fix-ladder.md) B4 · [W-162](W-162-fix-capabilities-build.md) · [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) decisions 5, 9, 10 · [`work/proposals/fix-ladder.md`](../../work/proposals/fix-ladder.md)

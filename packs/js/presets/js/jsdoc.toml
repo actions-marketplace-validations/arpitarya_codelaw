@@ -2,6 +2,9 @@ description = "eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc
 
 [rules]
 "js/jsdoc-check-access" = "warn"
+"js/jsdoc-check-param-names" = "warn"
+"js/jsdoc-check-property-names" = "warn"
+"js/jsdoc-check-tag-names" = "warn"
 "js/jsdoc-check-types" = "warn"
 "js/jsdoc-check-values" = "warn"
 "js/jsdoc-empty-tags" = "warn"
@@ -10,6 +13,7 @@ description = "eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc
 "js/jsdoc-multiline-blocks" = "warn"
 "js/jsdoc-no-defaults" = "warn"
 "js/jsdoc-no-multi-asterisks" = "warn"
+"js/jsdoc-no-undefined-types" = "warn"
 "js/jsdoc-reject-any-type" = "warn"
 "js/jsdoc-reject-function-type" = "warn"
 "js/jsdoc-require-jsdoc" = "warn"
@@ -30,4 +34,6 @@ description = "eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc
 "js/jsdoc-require-yields" = "warn"
 "js/jsdoc-require-yields-check" = "warn"
 "js/jsdoc-require-yields-type" = "warn"
+"js/jsdoc-tag-lines" = "warn"
 "js/jsdoc-ts-no-empty-object-type" = "warn"
+"js/jsdoc-valid-types" = "warn"
