@@ -21,8 +21,8 @@ files; the TypeScript-only rules (Angular, NestJS, Prisma, typed casts) are in
 
 | preset | rules | ported from |
 |---|---|---|
-| `sec-js/recommended` | 55 | high-confidence rules, at `error` |
-| `sec-js/strict` | 66 | `sec-js/recommended` and the heuristic rules, at `warn` |
+| `sec-js/recommended` | 57 | high-confidence rules, at `error` |
+| `sec-js/strict` | 68 | `sec-js/recommended` and the heuristic rules, at `warn` |
 
 <!-- /docs-sync:presets -->
 
@@ -34,7 +34,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 0 | 32 | 34 | 12 | 10 | 0 | 12 | 0 |
+| 0 | 33 | 35 | 12 | 10 | 0 | 13 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 
