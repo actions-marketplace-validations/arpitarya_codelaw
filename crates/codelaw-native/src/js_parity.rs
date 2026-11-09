@@ -17,6 +17,20 @@ mod sonar_scope;
 mod files;
 mod polyfills;
 mod shape;
+mod values;
+mod coll_rules;
+mod iter_rules;
+mod text_rules;
+mod temporal;
+mod arity;
+mod builtin_props;
+mod commented;
+mod guards;
+mod tables;
+mod tests_rules;
+mod maps;
+mod objects;
+mod style;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
@@ -791,4 +805,25 @@ pub static RULES: &[&dyn NativeRule] = &[
     &shape::NoConflictingConstraints,
     &shape::NoInvalidIntegrity,
     &shape::ConsistentClassMemberOrder,
+    &coll_rules::NoCollectionBracketAccess,
+    &coll_rules::NoObjectMethodsWithCollections,
+    &coll_rules::NoUselessSetConstruction,
+    &coll_rules::PreferArrayIterableMethods,
+    &iter_rules::NoUnusedIteratorHelper,
+    &iter_rules::NoUselessIteratorToArray,
+    &iter_rules::PreferIteratorToArray,
+    &iter_rules::PreferIteratorToArrayAtEnd,
+    &iter_rules::PreferIteratorHelpers,
+    &iter_rules::PreferIteratorConcat,
+    &text_rules::TemplateIndent,
+    &temporal::PreferTemporalConversion,
+    &arity::NoInvalidArgumentCount,
+    &builtin_props::NoNonstandardBuiltinProperties,
+    &commented::NoCommentedCode,
+    &guards::PreferTypeGuard,
+    &tables::TableHeaderReference,
+    &tests_rules::NoDuplicateParameterizedTestCase,
+    &maps::PreferMapFromEntries,
+    &objects::PreferObjectIterableMethods,
+    &style::NoShorthandPropertyOverrides,
 ];
