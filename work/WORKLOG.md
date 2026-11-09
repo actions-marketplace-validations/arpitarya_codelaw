@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139-jsdoc: eslint-plugin-jsdoc's parser rows  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *build the 23 eslint-plugin-jsdoc rows that need a JSDoc comment and type-expression parser; write the parsers in the repo (L11: no dependency); rules whose default does nothing: build the default behaviour if one exists, otherwise list the reason.*
+- **Done:** the `jsdoc/` module of `codelaw-native` (a comment parser, a type parser and printer, the tag tables) and 15 rules on it, each read from the plugin's source at 65.4.2 (research only, outside the engine, L5) and written fresh: 7 `auto`, 3 `suggest`, 5 `manual`; six join the opt-in `js/jsdoc`. Checked over about 2,000 files of npm packages, findings sampled — each a true reading of the plugin's default. 8 rows not built, each with its reason in W-139: `lines-before-block` is layout (the rule tester refused it, as SR-FORMATTER decision 3 says), `no-unnecessary-type-assertion` needs the type checker, `check-examples` needs example code linted as an embedded region, and five do nothing until configured.
+- **Decided / left open:** `ts-method-signature-style` is `suggest`, not the plugin's `auto` (a method and a function property type-check differently); `sort-tags` leaves a block with several `@typedef`/`@callback`/`@overload` alone (moving tags would change which belongs to which). For the decider: the five "do nothing until configured" rows, and whether the formatter keeps a blank line before a JSDoc block.
+- **Mistakes:** a `cargo test` or `clippy` run left a stale `codelaw` binary in the target dir (the native registry without the new rules) that read as "not an engine rule"; I rebuilt with `cargo build -p codelaw-cli` before every run of the binary.
+- **Next:** the js corpus refresh writes the counts (W-169); the py natives.
+
 ## 2026-11-09 — W-174: the python corpus counts and a clean workspace test run  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *the 30 py/* rules W-174 landed have no counts in packs/python/corpus.toml (`corpus python` red in CI); run `cargo test --workspace` alone and find the `codelaw-lsp` doctest failure's cause.*

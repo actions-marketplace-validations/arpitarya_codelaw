@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2750 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2765 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,7 +35,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 892 | 30 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 907 | 40 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
@@ -230,19 +230,27 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/isolated-functions`](js/isolated-functions.md) | No outside variables in a function that runs somewhere else | `manual` | `functions`, `comments` | `js/strict` |
 | [`js/iteration-fallback-style`](js/iteration-fallback-style.md) | Guard an optional loop source instead of iterating an empty fallback | `auto` | — | *[rules] only* |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-check-param-names`](js/jsdoc-check-param-names.md) | JSDoc @param names match the function parameters | `suggest` | `allow_extra_trailing_param_docs` | `js/jsdoc` |
+| [`js/jsdoc-check-property-names`](js/jsdoc-check-property-names.md) | JSDoc @property names are not repeated and nested ones have a root | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
+| [`js/jsdoc-check-tag-names`](js/jsdoc-check-tag-names.md) | Known JSDoc tag names, written the preferred way | `auto` | `defined_tags`, `inline_tags`, `jsx_tags` | `js/jsdoc` |
+| [`js/jsdoc-check-template-names`](js/jsdoc-check-template-names.md) | Every @template is used | `manual` | — | *[rules] only* |
 | [`js/jsdoc-check-types`](js/jsdoc-check-types.md) | Primitive type names in JSDoc | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-values`](js/jsdoc-check-values.md) | @version, @since and @kind take valid values | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-convert-to-jsdoc-comments`](js/jsdoc-convert-to-jsdoc-comments.md) | Functions documented in JSDoc, not // comments | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-empty-tags`](js/jsdoc-empty-tags.md) | Flag tags like @private carry no text | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-escape-inline-tags`](js/jsdoc-escape-inline-tags.md) | A bare @word in a description is escaped | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-implements-on-classes`](js/jsdoc-implements-on-classes.md) | @implements only on classes | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-imports-as-dependencies`](js/jsdoc-imports-as-dependencies.md) | Packages named in JSDoc import() types are dependencies | `manual` | — | *[rules] only* |
+| [`js/jsdoc-informative-docs`](js/jsdoc-informative-docs.md) | JSDoc text that adds something to the name it documents | `manual` | `useless_words`, `excluded_tags` | *[rules] only* |
 | [`js/jsdoc-match-description`](js/jsdoc-match-description.md) | A function's description is a sentence | `manual` | — | *[rules] only* |
 | [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-no-blank-blocks`](js/jsdoc-no-blank-blocks.md) | No empty JSDoc blocks | `auto` | — | *[rules] only* |
 | [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `suggest` | — | *[rules] only* |
+| [`js/jsdoc-no-undefined-types`](js/jsdoc-no-undefined-types.md) | JSDoc types name something defined | `manual` | `defined_types`, `globals`, `env` | `js/jsdoc` |
+| [`js/jsdoc-normalize-see-links`](js/jsdoc-normalize-see-links.md) | One form for labelled links in @see tags | `auto` | `enable_fixer` | *[rules] only* |
 | [`js/jsdoc-prefer-import-tag`](js/jsdoc-prefer-import-tag.md) | @import a type instead of inline import() | `manual` | — | *[rules] only* |
 | [`js/jsdoc-reject-any-type`](js/jsdoc-reject-any-type.md) | No any or * types in JSDoc | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-reject-function-type`](js/jsdoc-reject-function-type.md) | No bare Function type in JSDoc | `manual` | — | `js/jsdoc` |
@@ -275,8 +283,15 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/jsdoc-require-yields-check`](js/jsdoc-require-yields-check.md) | @yields only where a value is yielded | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-require-yields-description`](js/jsdoc-require-yields-description.md) | @yields says what is yielded | `manual` | — | *[rules] only* |
 | [`js/jsdoc-require-yields-type`](js/jsdoc-require-yields-type.md) | @yields has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-sort-tags`](js/jsdoc-sort-tags.md) | JSDoc tags in the prescribed order | `auto` | — | *[rules] only* |
+| [`js/jsdoc-tag-lines`](js/jsdoc-tag-lines.md) | No blank lines between a JSDoc description and its tags, or between tags | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-ts-ban-ts-comment`](js/jsdoc-ts-ban-ts-comment.md) | No @ts-ignore or @ts-nocheck in JavaScript | `manual` | — | *[rules] only* |
+| [`js/jsdoc-ts-method-signature-style`](js/jsdoc-ts-method-signature-style.md) | Function properties, not method signatures, in JSDoc object types | `suggest` | `style`, `enable_fixer` | *[rules] only* |
 | [`js/jsdoc-ts-no-empty-object-type`](js/jsdoc-ts-no-empty-object-type.md) | No {} type in JSDoc | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-ts-no-unnecessary-template-expression`](js/jsdoc-ts-no-unnecessary-template-expression.md) | No unnecessary template expression in a JSDoc template-literal type | `auto` | `enable_fixer` | *[rules] only* |
+| [`js/jsdoc-ts-prefer-function-type`](js/jsdoc-ts-prefer-function-type.md) | A function type, not a lone call signature, in JSDoc | `auto` | `enable_fixer` | *[rules] only* |
+| [`js/jsdoc-type-formatting`](js/jsdoc-type-formatting.md) | One format for the types in JSDoc tags | `auto` | `enable_fixer` | *[rules] only* |
+| [`js/jsdoc-valid-types`](js/jsdoc-valid-types.md) | Valid types, names and namepaths in JSDoc tags | `manual` | `allow_empty_namepaths` | `js/jsdoc` |
 | [`js/label-position`](js/label-position.md) | Only loops and switches are labelled | `manual` | — | `js/sonarjs` |
 | [`js/link-with-target-blank`](js/link-with-target-blank.md) | target="_blank" with rel="noopener" | `suggest` | — | `js/sonarjs` |
 | [`js/logical-assignment-operators`](js/logical-assignment-operators.md) | a \|\|= b rather than a = a \|\| b | `suggest` | — | `js/strict` |
