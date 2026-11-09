@@ -122,4 +122,13 @@
 #   at the end of a turn"). Every owning record is current on main. 99cec79 (W-169,
 #   merged) is the first commit on main's first-parent line that holds all six; every
 #   commit after it passed the replay when this was written.
-99cec7983254893ad72c21a4dc3968ceeaccc590
+# - 2026-11-09, the W-139 close-out (Claude Code, the decider's standing approval to move
+#   it past guard-refused commits): 99cec79 -> c41fa8c. Fifteen commits since 99cec79
+#   fail the replay — agents' branch commits, each carrying native code, rules or
+#   work files before the change's records landed in its final commit (4bd142ea,
+#   d7e2faab, 61f1bc76, 9c6c518b, a6cd2b10, 3e29e631, e3f85be9, 24fb8481, 7708c559,
+#   c2445b59, 7231be6f, dca75c5a, 307795ea, 4acd84a5, 4bb8d521), because lockmaster
+#   keeps a change's branch commits when it merges them. SR-ARCHITECTURE 15b and
+#   SR-RULE-PACKS decision 18 are current on main. c41fa8c is the first commit on main's
+#   first-parent line that holds all fifteen; every commit after it passes the replay.
+c41fa8ca7418d99e36ed053be6c437e71b8c0099
