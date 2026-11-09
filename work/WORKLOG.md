@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-139-ruff: format strings, PEP 695, `Self` and type-checking imports (slices 33–34)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) the rest of the Ruff half of W-139's Python strand: UP030–UP032, FLY002, UP046/UP047, PYI019, PYI025, the TC set, I002, ICN002; list every row not built with its reason and a proposed class.
+- **Done:** 14 rules in `py_ruff_fmt.rs`, `py_ruff_generic.rs`, `py_ruff_tc.rs` (list: IMPLEMENTATION, 2026-11-09); Ruff 0.16.9's sources read over the network as research only (L5), each rule written fresh. Ruff rows left 94 → 42; the table of the left rows with a proposed class each is W-139's *Strand W-139-ruff, round 4*. The commit guard asked for SR-ARCHITECTURE 15b in the same commit as the native modules: done.
+- **Decided / left open:** UP046/UP047 report on every target (upstream is silent below 3.12; the fix is gated by `fix_target` instead) — the page says so; TC001–TC003's edit rides on the first finding of the file so the edits do not collide. UP035, TC008, SIM905, D401/D421 and the data-table rows are listed, not built.
+- **Mistakes:** `codelaw test` on one rule file loads no pack data, so the stdlib table was missing and TC003 "did not fire"; the pack-level run is the one that counts.
+- **Next:** the decider's re-rule pass over the left table; then TC008, SIM905 and UP035 if the tables are ratified.
+
 ## 2026-11-09 — W-139-ruff: Ruff's docstring set and natives (slices 31–32)  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build the Ruff half of W-139's Python strand that is buildable: the pydocstyle D2xx–D4xx and DOC sets on a docstring-section parser, RET503, FURB113, W505, PYI018/046/047/049/036, PLE0237/PLW0244, I002, ICN002, then the format-string, PEP 695 and type-checking rows; list each row not built with its reason and a proposed class.
