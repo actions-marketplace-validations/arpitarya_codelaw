@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-09 — W-174b and W-139 slice 35: the in-file Pylint rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) finish W-174's 8 left rows and the Pylint half of W-139's python strand: build every buildable row on the existing layers, list the rest with reason and a proposed class.
+- **Done:** 14 `preview` native rules (the list: IMPLEMENTATION, 2026-11-09) in `py_classes.rs`, `py_values.rs` and a new `py_pylint_imports.rs`. Read Pylint 4.1.3's functional tests (inputs and expected messages) for each row, wrote the rule fresh, and ran it over those inputs: every expected message appeared at its line (`implicit-flag-alias`'s rule — single-bit members are the base, a multi-bit member joins it only if it shares no bit — was derived from the expected output; `ungrouped-imports` follows Pylint's order: standard library, then the rest, `import` and `from` counted apart). Corpus on 6 repositories: three rules with counts, sampled. Wrote W-139's *Slice 35* table: the 52 Pylint rows left, each with why and a proposed class (15 not-applicable, 2 target-gated, 5 data-package, 6 project-graph, 2 formatter-owned, 2 out-of-scope, 2 not-writable, 2 links, 15 docparams for the next slice, on slice 31's parser), and one inbox row for the rulings.
+- **Decided / left open:** `assigning-non-slot` not rebuilt (W-139-ruff's `py/non-slot-assignment` links it); `implicit-str-concat` proposed formatter-owned (the ledger classes its Ruff twin ISC001 layout); `boolean-datetime` is the decider's (inbox row, recommend not-applicable). W-174 stays open for that one ruling.
+- **Mistakes:** `git stash` in a worktree whose changes auto-land had already committed stashed nothing, so the following `git stash pop` took another session's top stash (a fux re-index, junk) — the stash list is shared across worktrees; do not stash in a lockmaster worktree, merge main directly. The first corpus run used a debug binary and ran past 100 CPU-minutes; a release binary (LTO off) took 6.
+- **Next:** the docparams rows on `py_ruff_doc.rs`; the decider's rulings.
+
+---
+
 ## 2026-11-09 — the queue walked through; three rulings filed to the inbox  ·  Cowork (Opus 5.5)
 
 - **Asked:** *"Look at all open work items and tell me what is pending, how much time it is going to take."* Then, by voice, one by one: *"if there is a ruling pending on me, why isn't it in block status?"*; on W-172 *"Update the budget"*, *"Amend the [L8]"*; then *"file this much"*.
