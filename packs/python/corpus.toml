@@ -135,6 +135,7 @@
 "py/convert-named-tuple-functional-to-class" = 0
 "py/convert-typed-dict-functional-to-class" = 0
 "py/create-subprocess-in-async-function" = 0
+"py/custom-type-var-for-self" = 8
 "py/dataclass-enum" = 0
 "py/datetime-min-max" = 0
 "py/datetime-timezone-utc" = 0
@@ -207,6 +208,7 @@
 "py/expr-or-not-expr" = 0
 "py/expr-or-true" = 0
 "py/extraneous-parentheses" = 0
+"py/f-string" = 3
 "py/f-string-docstring" = 0
 "py/f-string-in-exception" = 93
 "py/f-string-in-get-text-func-call" = 0
@@ -223,6 +225,7 @@
 "py/for-loop-writes" = 0
 "py/format-in-get-text-func-call" = 0
 "py/format-invalid" = 0
+"py/format-literals" = 0
 "py/format-missing-argument" = 0
 "py/format-mixed-numbering" = 0
 "py/format-string-without-interpolation" = 0
@@ -458,6 +461,8 @@
 "py/non-pep604-annotation-optional" = 559
 "py/non-pep604-annotation-union" = 87
 "py/non-pep646-unpack" = 0
+"py/non-pep695-generic-class" = 5
+"py/non-pep695-generic-function" = 18
 "py/non-pep695-type-alias" = 0
 "py/non-self-return-type" = 5
 "py/non-slot-assignment" = 0
@@ -535,6 +540,7 @@
 "py/prefer-typing-namedtuple" = 5
 "py/print-empty-string" = 0
 "py/printf-in-get-text-func-call" = 0
+"py/printf-string-formatting" = 40
 "py/private-member-access" = 331
 "py/private-type-parameter" = 0
 "py/property-with-parameters" = 0
@@ -625,6 +631,8 @@
 "py/root-logger-call" = 0
 "py/run-process-in-async-function" = 0
 "py/runtime-cast-value" = 29
+"py/runtime-import-in-type-checking-block" = 0
+"py/runtime-string-union" = 0
 "py/self-assigning-variable" = 0
 "py/self-or-cls-assignment" = 2
 "py/setattr-with-constant" = 1
@@ -649,6 +657,7 @@
 "py/star-arg-unpacking-after-keyword-arg" = 0
 "py/star-import-usage" = 109
 "py/starmap-zip" = 0
+"py/static-join-to-f-string" = 4
 "py/static-key-dict-comprehension" = 0
 "py/stdlib-module-shadowing" = 0
 "py/stop-iteration-return" = 0
@@ -706,7 +715,11 @@
 "py/type-of-primitive" = 0
 "py/typed-argument-default-in-stub" = 0
 "py/typevar-name-mismatch" = 0
+"py/typing-only-first-party-import" = 29
+"py/typing-only-standard-library-import" = 90
+"py/typing-only-third-party-import" = 260
 "py/typing-text-str-alias" = 44
+"py/unaliased-collections-abc-set-import" = 0
 "py/unannotated-assignment-in-stub" = 0
 "py/unary-prefix-increment" = 0
 "py/unassigned-special-variable-in-stub" = 0
@@ -788,6 +801,7 @@
 "py/unnecessary-type-union" = 0
 "py/unpacking-non-sequence" = 0
 "py/unprefixed-type-param" = 0
+"py/unquoted-type-alias" = 0
 "py/unraw-re-pattern" = 2
 "py/unreachable" = 6
 "py/unrecognized-platform-check" = 0

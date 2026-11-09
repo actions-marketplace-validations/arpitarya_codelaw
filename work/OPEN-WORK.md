@@ -30,8 +30,10 @@ here. Read that record before changing anything below it.
 | ↳ **blocks:** W-139 | |
 | 🔴 **W-139** re-rule Ruff's 41 left rows by class? Formatter-owned (`D201`–`D204`, `D210`, `D211`, `EXE004`); data tables ratified by name, L11 (`D401`, `D421`, `UP035`, `RUF001`–`RUF003`); engine work (target-gated `FA100`, `FA102`, `PERF203`, `UP036`; file mode `EXE001`, `EXE002`; `PLE2514`); out of scope (`RUF028`, `RUF054`, `RUF100`–`RUF106`, `RUF200`, `RUF201`, `TID254`, `TID255`, `PLC2701`). Recommended: formatter-owned and out of scope yes; the rest each its own ruling. [table](open/W-139-rule-parity-build.md) | 2026-11-09 |
 | ↳ **blocks:** W-139 |  |
+| 🔴 **W-139** re-rule Pylint's 52 left rows by class? Not applicable (15: the six `pylintrc`/plugin/`# pylint:` option rows, the seven `using-*-in-unsupported-version` and two `broken-*` rows below the 3.9 floor, `duplicate-argument-name`, `return-arg-in-generator`); target-gated (2: exception groups 3.11, generic syntax 3.12); a data package for the five `deprecated-*` tables; the python project graph for six (`cyclic-import`, `import-error`, `no-name-in-module`, `relative-beyond-top-level`, `unused-wildcard-import`, `too-many-ancestors`); formatter-owned (`inconsistent-quotes`, `implicit-str-concat`); out of scope (`duplicate-code`, `invalid-characters-in-docstring`); not writable (`invalid-character-carriage-return`, `invalid-unicode-codec`); links to Ruff twins (`preferred-module`, `consider-using-f-string`). The 15 docparams rows are not a ruling: the next slice. Recommended: yes, each in its own class. [table](open/W-139-rule-parity-build.md) | 2026-11-09 |
+| ↳ **blocks:** W-139 (DoD 1 cannot close without it) | |
 | 🔴 **W-174** re-rule Pylint `boolean-datetime` `not-applicable`? It reports only below Python 3.5; codelaw's floor is 3.9, so it can never fire. Recommended: yes. [detail](open/W-174-python-inference.md) | 2026-11-09 |
-| ↳ **blocks:** W-174 (its last row; the 7 buildable ones are in progress) | |
+| ↳ **blocks:** W-174 (its last row; the 7 buildable ones are built, 11-09) | |
 
 ---
 
@@ -41,11 +43,11 @@ here. Read that record before changing anything below it.
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
-🔴 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 35 rows left, Ruff 42 of 97 (11-09: +52 docstring, format-string, PEP 695, TC rows; the rest with reason and class in the item). Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
+🔴 **W-139** `agent` Rule parity: js, Ruff, Pylint, testing, nextjs, 5 PyPI packs. DoD 1 — js 35 rows left, Ruff 42 of 97 (11-09: +52 docstring, format-string, PEP 695, TC rows), Pylint 52 of 67 (+14, slice 35); reasons and classes in the item. Filed by Arpit (Cowork). [detail](open/W-139-rule-parity-build.md)
 
 🟢 **W-172** `agent` L8: time side built (11-08); memory round 2 (11-09) −1.8 MiB live heap, still ~14 MiB over 72 (code 23 MiB + malloc 38). Next: push `main` for CI; larger levers in the item. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🔴 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 30 of 38 rows built (`preview`, counted 11-09), 8 left with their question. Decider (not blocking): a project type checker for the rest, decision 8. Next: the 8 in-file rows. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🔴 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 rows built (`preview`, counted 11-09), 1 left: `boolean-datetime`, the inbox row above. Decider (not blocking): a project type checker, decision 8. Next: close on the ruling. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
 
 
 🟡 **W-143** waits on **W-139** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
