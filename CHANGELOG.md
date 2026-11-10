@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Fixed
+
+- **The second request to `codelaw mcp`, `codelaw lsp` or the daemon is no longer a slow one:** each kept a loaded rule pack only from its second load, so the second request re-read and parsed every rule file (about 170 ms with the 2,900 rules) before every later request took 17 ms. They now keep a pack from its first load (CI-mcp-p95).
+
 ## 0.5.1 — 2026-11-10
 
 **Rule parity: 2,878 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.

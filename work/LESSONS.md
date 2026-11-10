@@ -3,6 +3,10 @@ type: Log
 description: "Dated lessons — what this project learned the hard way, newest first. A log, not a record: the date is part of the lesson."
 ---
 
+## 2026-11-10 — a p95 over ten samples is the max, and the max was the second call
+
+`mcp_rules_for_path` failed its 65 ms budget with a 17 ms median and one 170 ms sample. The bench discards the first call; the slow one was the *second*, every time (a 1 s pause between calls did not move it — not a background thread). A memory-saving rule (a pack is kept only from its second load, so one-shot runs keep nothing) made the second request in a warm process re-parse every pack, a cost that grows with the rule count and so only crossed the budget once ~360 rules landed. When one sample is slow, print them in order and sample the process (`/usr/bin/sample`, 1 ms, a debug build for symbols) during that call before reading code; and a "kept from the Nth use" cache rule is wrong for a process that is known to serve many requests.
+
 ## 2026-11-10 — a fail-open hook turns a slow debug build into a silent allow
 
 `codelaw hook --pre` allows the write when it takes over 5 s, printing the reason on stderr, which a test that reads only stdout never sees. In a debug build the per-process compile of every enabled rule's regexes (unoptimised `regex-automata`) grew with each rule slice until a loaded CI runner crossed 5 s, and `bench`'s hook_pre failed as "not refused" with no sign of a timeout. When a fail-open path's test goes red with an empty stdout, read the stderr first and time the command; the cheap cure for debug-only cost is an `opt-level` on the hot dependency in `[profile.dev.package.*]`, not a longer timeout.

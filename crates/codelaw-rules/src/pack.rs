@@ -433,11 +433,24 @@ const PACKS_KEPT: usize = 64;
 /// no copy of a rule its rule set has dropped (W-172).
 static SEEN: std::sync::Mutex<Vec<(PathBuf, bool)>> = std::sync::Mutex::new(Vec::new());
 
+/// Set by a process that loads a project per request (`mcp`, `lsp`, the
+/// daemon): it will load every pack again, so each is kept from its first
+/// load. Left to the second load, the second request pays the whole parse of
+/// every pack, a tail the first (and every later) request does not (CI-mcp-p95).
+static KEEP_FIRST: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+/// Keep every pack this process loads from its first load, not its second:
+/// for a long-lived process that serves many requests, the one-shot rule
+/// (nothing kept until a pack is loaded twice) is the wrong way round.
+pub fn keep_packs_from_first_load() {
+    KEEP_FIRST.store(true, std::sync::atomic::Ordering::Relaxed);
+}
+
 /// [`load_pack_from`], from this process's memory when the pack's files
 /// have not changed since it was last loaded. A refused pack is never kept.
 pub fn load_pack_cached(dir: &Path, first_party_origin: bool) -> Result<Arc<RulePack>, Vec<LoadError>> {
     let key = (dir.to_path_buf(), first_party_origin);
-    {
+    if !KEEP_FIRST.load(std::sync::atomic::Ordering::Relaxed) {
         let mut seen = SEEN.lock().unwrap_or_else(|e| e.into_inner());
         if !seen.contains(&key) {
             seen.push(key);
