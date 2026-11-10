@@ -24,7 +24,6 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
-
 ## 2026-11-10 — CI corpus jobs: the finding counts of W-139 slices 28–37 recorded  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) CI run 42595842518 on `517504f8` failed the `corpus` jobs of js (43 rules), security-python (5), security-js (2), fastapi (1) and tanstack-query (1): rules landed with no count in `packs/<p>/corpus.toml`.
