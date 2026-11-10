@@ -42,7 +42,7 @@ env:
   # npm names that do not exist yet (W-142: the decider first-publishes each by hand, then deletes it from
   # this list). A name here is skipped ONLY while npm answers 404 for it — one that exists is published
   # and trust-checked like every other, so this never hides a real failure. PyPI does the same with `PENDING`.
-  NPM_NOT_YET: ' @codelaw/rules-testing @codelaw/rules-nextjs @codelaw/rules-tailwind @codelaw/rules-testing-fux-index @codelaw/rules-nextjs-fux-index @codelaw/rules-tailwind-fux-index '
+  NPM_NOT_YET: ' @codelaw/provider-tailwind @codelaw/rules-testing @codelaw/rules-nextjs @codelaw/rules-tailwind @codelaw/rules-testing-fux-index @codelaw/rules-nextjs-fux-index @codelaw/rules-tailwind-fux-index '
 jobs:
   gate:
     name: the release commit is green on main
