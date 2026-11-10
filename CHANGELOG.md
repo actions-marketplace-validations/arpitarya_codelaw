@@ -4,6 +4,17 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+## 0.5.0 — 2026-11-10
+
+**Rule parity: over 3,000 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.
+
+```bash
+npx codelaw@0.5.0 init     # a Node repo: installs the @codelaw/rules-* it needs
+uvx codelaw@0.5.0 init     # a Python repo: installs the codelaw-rules-* it needs
+```
+
+**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`.
+
 ### Added
 
 - **14 more Python rules from Pylint (W-174, W-139):** the checks one file can answer — `py/signature-differs` and `py/access-member-before-definition` (a `self.x` read before the method assigns it, or before `__init__` assigns what a method it calls reads), `py/non-iterator-returned`, `py/not-async-context-manager`, `py/declare-non-slot`, `py/implicit-flag-alias` (`C = 3` beside `A = 1` and `B = 2`), `py/too-many-positional-sub-patterns`, `py/match-class-positional-attributes` (suggests the keyword form), `py/redefined-variable-type`, `py/invalid-format-index` and `py/missing-format-attribute` (a `str.format` field read against the literal it names), `py/consider-using-namedtuple-or-dataclass`, `py/shadowed-import` and `py/ungrouped-imports`; all `preview`, in no preset.
