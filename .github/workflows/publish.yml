@@ -39,6 +39,10 @@ defaults:
     shell: bash # an explicit `bash` is `bash --noprofile --norc -eo pipefail`; the implicit default has no pipefail
 env:
   NPM_VERSION: '11.21.0' # trusted publishing needs ≥ 11.5.1; Node 22 ships npm 10. Pinned: never `latest` in an id-token job
+  # npm names that do not exist yet (W-142: the decider first-publishes each by hand, then deletes it from
+  # this list). A name here is skipped ONLY while npm answers 404 for it — one that exists is published
+  # and trust-checked like every other, so this never hides a real failure. PyPI does the same with `PENDING`.
+  NPM_NOT_YET: ' @codelaw/provider-tailwind @codelaw/rules-testing @codelaw/rules-nextjs @codelaw/rules-tailwind @codelaw/rules-testing-fux-index @codelaw/rules-nextjs-fux-index @codelaw/rules-tailwind-fux-index '
 jobs:
   gate:
     name: the release commit is green on main
@@ -174,6 +178,8 @@ jobs:
             local name ver idt code
             read -r name ver < <(tar -xzOf "$1" package/package.json | node -e 'const p = JSON.parse(require("fs").readFileSync(0, "utf8")); console.log(p.name, p.version)')
             npm view "$name@$ver" version >/dev/null 2>&1 && { echo "✓ $name@$ver is already on npm"; return 0; }
+            if [[ "$NPM_NOT_YET" == *" $name "* ]] && ! npm view "$name" version >/dev/null 2>&1; then
+              echo "⏭ $name is not on npm yet (first publish by hand, W-142): skipped"; return 0; fi
             idt="$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).value')"
             code="$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H "Authorization: Bearer $idt" \
                     "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/${name/\//%2f}")"
@@ -259,6 +265,9 @@ jobs:
             id="$(tar -xzOf "$1" package/package.json | node -p 'const p = JSON.parse(require("fs").readFileSync(0, "utf8")); p.name + "@" + p.version')"
             [ "${id##*@}" = "$v" ] || { echo "::error::$id is not the release version $v"; return 1; }  # the version after the LAST @
             if npm view "$id" version >/dev/null 2>&1; then echo "✓ $id is already on npm"; return 0; fi
+            if [[ "$NPM_NOT_YET" == *" ${id%@*} "* ]] && ! npm view "${id%@*}" version >/dev/null 2>&1; then
+              echo "⏭ $id is not on npm yet (first publish by hand, W-142): skipped"
+              echo "- ⏭ skipped \`${id%@*}\` — not on npm yet; first publish by hand (W-142)" >> "$GITHUB_STEP_SUMMARY"; return 0; fi
             echo "→ $id ($tag)"
             # once more on a failure, unless it did land: parallel provenance
             # signing can trip on its first set-up, as the attestation checks did

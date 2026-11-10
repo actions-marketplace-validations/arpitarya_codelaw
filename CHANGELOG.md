@@ -4,6 +4,17 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+## 0.5.1 — 2026-11-10
+
+**Rule parity: 2,878 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.
+
+```bash
+npx codelaw@0.5.1 init     # a Node repo: installs the @codelaw/rules-* it needs
+uvx codelaw@0.5.1 init     # a Python repo: installs the codelaw-rules-* it needs
+```
+
+**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`. **0.5.0 was never published** (its release stopped at the registry's trust check on a package that does not exist yet; nothing reached npm or PyPI), so 0.5.1 is the first release of this work. **Not yet on the registries:** the npm packs `@codelaw/rules-testing`, `@codelaw/rules-nextjs` and `@codelaw/rules-tailwind` (and their Fux indexes, and `@codelaw/provider-tailwind`) and the PyPI packs `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy`, `-pandas` and `-tailwind` have their names reserved for a later publish; until then `codelaw init` on a project that uses them names a pack the registry does not have yet, and the rules are available from the repository's `packs/`.
+
 ### Added
 
 - **14 more Python rules from Pylint (W-174, W-139):** the checks one file can answer — `py/signature-differs` and `py/access-member-before-definition` (a `self.x` read before the method assigns it, or before `__init__` assigns what a method it calls reads), `py/non-iterator-returned`, `py/not-async-context-manager`, `py/declare-non-slot`, `py/implicit-flag-alias` (`C = 3` beside `A = 1` and `B = 2`), `py/too-many-positional-sub-patterns`, `py/match-class-positional-attributes` (suggests the keyword form), `py/redefined-variable-type`, `py/invalid-format-index` and `py/missing-format-attribute` (a `str.format` field read against the literal it names), `py/consider-using-namedtuple-or-dataclass`, `py/shadowed-import` and `py/ungrouped-imports`; all `preview`, in no preset.
@@ -133,6 +144,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 - **A rare crash on Linux musl (W-169):** `codelaw` could die with a segmentation fault, with nothing printed, while loading rules on the musl builds (`linux-x64-musl`, `linux-arm64-musl`). Looking up a node kind or field name could read one byte past the name, and that faulted when the name ended at the end of a memory page. Each name is now looked up from a copy that ends in a NUL byte.
 - **Two rules stop reporting what is not there (W-139):** `md/no-empty-links` (on in `md/recommended`) no longer reports links to an anchor (`[x](#install)`) or a bracketed path (`[x](<release notes.md>)`), which it had done since its fix was added on 11-05; `js/no-undefined` no longer reports, or rewrites to `void 0`, TypeScript's `undefined` type (`string | undefined`).
 - **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
+- **The second request to `codelaw mcp`, `codelaw lsp` or the daemon is no longer a slow one:** each kept a loaded rule pack only from its second load, so the second request re-read and parsed every rule file (about 170 ms with the 2,900 rules) before every later request took 17 ms. They now keep a pack from its first load (CI-mcp-p95).
 
 ### Security
 

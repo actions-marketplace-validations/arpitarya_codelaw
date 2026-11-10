@@ -6,7 +6,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.4.3"
+version = "0.5.1"
 edition = "2024"
 rust-version = "1.97"
 publish = false
@@ -89,3 +89,20 @@ oxc_allocator = { git = "https://github.com/oxc-project/oxc", rev = "7b933d595bf
 [profile.release]
 lto = "thin"
 codegen-units = 1
+
+# The dev and test profile builds the regex engine optimised: a hook or `check`
+# process compiles every enabled rule's regexes at start (some 2,300 rules), and
+# the unoptimised onepass-DFA builder alone took 2-4 s -- past `hook --pre`'s
+# 5 s fail-open timeout on a loaded CI runner, so `bench`'s hook_pre saw an
+# allow. Release builds are unchanged.
+[profile.dev.package.regex-automata]
+opt-level = 3
+
+[profile.dev.package.regex-syntax]
+opt-level = 3
+
+[profile.dev.package.regex]
+opt-level = 3
+
+[profile.dev.package.aho-corasick]
+opt-level = 3

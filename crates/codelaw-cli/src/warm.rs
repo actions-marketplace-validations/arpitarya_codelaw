@@ -467,6 +467,8 @@ mod unix {
     /// afresh for every request, so a change to any of them is served at
     /// once; the compiled rule set is reused while they are unchanged.
     fn run_daemon() -> ExitCode {
+        // It loads a project per request: keep each pack from its first load.
+        codelaw_rules::keep_packs_from_first_load();
         let reg = match register(Kind::Daemon) {
             Ok(r) => r,
             Err(e) => return crate::fail(e),

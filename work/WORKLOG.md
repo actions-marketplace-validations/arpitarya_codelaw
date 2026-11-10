@@ -24,6 +24,32 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-10 — CI: `mcp_rules_for_path` p95 over 65 ms on one sample  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) `perf warm` failed on b6a85792 three times: `mcp_rules_for_path` median ~17-20 ms, one sample 167-235 ms, p95 (the max of ten) over the 65 ms budget; optimise, never loosen (L8 decision 5).
+- **Done:** reproduced with the CI run's darwin-arm64 binary (`codelaw bench --only mcp_rules_for_path --runs 30`, three runs): the first measured sample (the second call; the first is discarded) was 180.7, 166.1 and 173.0 ms, every other 14.6-23 ms except one 39.7 (noise). Printing the calls in order through a stdio client: 355, 170, 16, 15, 15 ms; a 1 s pause between calls left the 170 ms in place (not a background thread). `sample` on a debug build put the second call in `RuleSet::load` → `load_pack_cached` → `load_pack_from` → `parse_rule` (the YAML of every rule file): `pack::SEEN` keeps a pack in memory only from its *second* load (W-172, so a one-shot run holds nothing), so a warm server re-parsed all packs on call 2 and hit the cache from call 3. Fix: `codelaw_rules::keep_packs_from_first_load()`, called by `mcp`, `lsp` and the daemon at start (`crates/codelaw-rules/src/pack.rs`, `main.rs`, `warm.rs`); a one-shot run is unchanged. Debug-build calls, before: 1876/831/48/48 ms (three runs alike); after: 1391/49/49/48 ms. New test `crates/codelaw-rules/tests/warm_pack_cache.rs`; SR-CACHE decision 8 and CHANGELOG (Unreleased, Fixed) updated; `perf/budgets.toml` untouched. cargo test -p codelaw-mcp -p codelaw-cli -p codelaw-engine -p codelaw-native -p codelaw-rules, clippy --workspace --all-targets -D warnings: clean.
+- **Decided / left open:** nothing; the budget stands at 65 ms.
+- **Mistakes:** none.
+- **Next:** the next CI run's `perf warm` shows `mcp_rules_for_path` p95 near its median.
+
+## 2026-11-10 — CI: `bench`'s hook_pre saw an allow on a debug build  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) CI run 42595842518, job `test`: `every_operation_is_measured_and_a_proposal_never_fails` failed with "hook_pre: the payload was not refused" after the W-139 rule slices; find the root cause, never loosen the test or L8.
+- **Done:** root cause — `hook --pre` fails open after 5,000 ms ([SR-AGENT-SURFACES](../records/0102_agent-surfaces.md) decision 9) and every process compiles all ~2,300 enabled rules' regexes before judging; the debug build's unoptimised `regex-automata` onepass-DFA builder made that 2.4-3.9 s here (about 2x slower on a CI runner), which the W-139 rules pushed past 5 s, so the hook printed nothing and exited 0. Fix: `[profile.dev.package.{regex-automata,regex-syntax,regex,aho-corasick}] opt-level = 3` in `Cargo.toml` — rule compile 2.4 s to 0.55 s, `hook --pre` 2.4-3.9 s to 1.4 s, the bench test 47 s to 33 s; release builds, the test and every budget unchanged. `cargo test -p codelaw-cli` and `-p codelaw-native` green, clippy clean.
+- **Decided / left open:** nothing; the 5 s fail-open timeout is untouched. The compile of every rule per process is the standing cost; a lazier compile (only rules a file's language can run) would cut it in release too, and is not done here.
+- **Mistakes:** none.
+- **Next:** CI's `test` job on the landed commit.
+
+---
+
+## 2026-11-10 — CI corpus jobs: the finding counts of W-139 slices 28–37 recorded  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) CI run 42595842518 on `517504f8` failed the `corpus` jobs of js (43 rules), security-python (5), security-js (2), fastapi (1) and tanstack-query (1): rules landed with no count in `packs/<p>/corpus.toml`.
+- **Done:** ran `scripts/corpus.py run --pack <p> --update` for the five packs with the `build-darwin-arm64` binary of that CI run (no cargo build), over fresh pinned clones in a scratch dir (106 MB, kept out of the repo). Only `packs/{js,fastapi,tanstack-query,security-python,security-js}/corpus.toml` change, 52 added lines, no existing count moved; every total equals the CI log's. Non-zero counts read against the corpus: js `jsdoc-check-tag-names` 1 (zustand's `@params`), `jsdoc-tag-lines` 12, `jsdoc-informative-docs` 92, `name-replacements` 801, `no-nonstandard-builtin-properties` 2 (jotai's `Symbol.observable`), `no-unnecessary-parameters` 3, `require-atomic-updates` 2; tanstack-query `prefer-query-options` 227 (mostly tests and codemod fixtures); sec-py `suspicious-subprocess-import` 3 (three `import subprocess` in djangoproject.com). All other new rows are 0.
+- **Decided / left open:** no rule looked wrong; all seven non-zero js rules, `prefer-query-options` and `suspicious-subprocess-import` are `preview`, none an invariant case.
+- **Mistakes:** the first shell loop clobbered `$2` in zsh and wrote empty-named logs; redone with explicit variables.
+- **Next:** none; CI's `corpus` jobs should go green on the next run.
+
 ## 2026-11-09 — W-139 slice 36: the last JavaScript rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build what is left of W-139's JS strand that the scope model can carry — `prefer-abort-signal-any`, `prefer-iterator-zip`, `no-unnecessary-parameters`, `name-replacements`, `parameterized-tests` — decide whether `no-multiple-promise-resolver-calls` and `require-atomic-updates` fit a walk of the function, compute the CSV rows with no rule that are buildable, update the records and land.

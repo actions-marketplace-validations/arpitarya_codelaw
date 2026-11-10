@@ -14,4 +14,5 @@
 "tanstack-query/no-unsupported-suspense-options" = 0
 "tanstack-query/no-void-query-fn" = 19
 "tanstack-query/object-syntax" = 193
+"tanstack-query/prefer-query-options" = 227
 "tanstack-query/stable-query-client" = 10
