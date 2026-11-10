@@ -139,9 +139,9 @@
 #   `no SR affected` line. 5a58e7f is the first commit on main's first-parent line that
 #   holds both; every commit after it passes the replay.
 # - 2026-11-10, the release (Claude Code, the decider's standing approval to move it past
-#   guard-refused commits): 5a58e7f -> . Two more agent branch commits of CI-mcp-p95 fail
+#   guard-refused commits): 5a58e7f -> 2fbece8. Two more agent branch commits of CI-mcp-p95 fail
 #   the replay (8810a7ee, cba4dd0e), for the same reason as the moves above (lockmaster keeps a
 #   change's branch commits when it merges them); the change's final landing carries SR-CACHE 8
-#   and the three records the guard named.  is the first commit on main's first-parent line
+#   and the three records the guard named. 2fbece8 is the first commit on main's first-parent line
 #   that holds both; every commit after it passes the replay.
-
+2fbece87f3fec407834293bc40bce768b2e90cde
