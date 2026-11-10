@@ -13,7 +13,7 @@ npx codelaw@0.5.0 init     # a Node repo: installs the @codelaw/rules-* it needs
 uvx codelaw@0.5.0 init     # a Python repo: installs the codelaw-rules-* it needs
 ```
 
-**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`.
+**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`. **Not yet on the registries:** the npm packs `@codelaw/rules-testing`, `@codelaw/rules-nextjs` and `@codelaw/rules-tailwind` (and their Fux indexes) and the PyPI packs `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy`, `-pandas` and `-tailwind` have their names reserved for a later publish; until then `codelaw init` on a project that uses them names a pack the registry does not have yet, and the rules are available from the repository's `packs/`.
 
 ### Added
 
