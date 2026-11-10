@@ -24,6 +24,16 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-10 — CI: `bench`'s hook_pre saw an allow on a debug build  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) CI run 42595842518, job `test`: `every_operation_is_measured_and_a_proposal_never_fails` failed with "hook_pre: the payload was not refused" after the W-139 rule slices; find the root cause, never loosen the test or L8.
+- **Done:** root cause — `hook --pre` fails open after 5,000 ms ([SR-AGENT-SURFACES](../records/0102_agent-surfaces.md) decision 9) and every process compiles all ~2,300 enabled rules' regexes before judging; the debug build's unoptimised `regex-automata` onepass-DFA builder made that 2.4-3.9 s here (about 2x slower on a CI runner), which the W-139 rules pushed past 5 s, so the hook printed nothing and exited 0. Fix: `[profile.dev.package.{regex-automata,regex-syntax,regex,aho-corasick}] opt-level = 3` in `Cargo.toml` — rule compile 2.4 s to 0.55 s, `hook --pre` 2.4-3.9 s to 1.4 s, the bench test 47 s to 33 s; release builds, the test and every budget unchanged. `cargo test -p codelaw-cli` and `-p codelaw-native` green, clippy clean.
+- **Decided / left open:** nothing; the 5 s fail-open timeout is untouched. The compile of every rule per process is the standing cost; a lazier compile (only rules a file's language can run) would cut it in release too, and is not done here.
+- **Mistakes:** none.
+- **Next:** CI's `test` job on the landed commit.
+
+---
+
 ## 2026-11-09 — W-139 slice 36: the last JavaScript rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build what is left of W-139's JS strand that the scope model can carry — `prefer-abort-signal-any`, `prefer-iterator-zip`, `no-unnecessary-parameters`, `name-replacements`, `parameterized-tests` — decide whether `no-multiple-promise-resolver-calls` and `require-atomic-updates` fit a walk of the function, compute the CSV rows with no rule that are buildable, update the records and land.
