@@ -350,6 +350,7 @@ That's 34 rules: 9 auto, 11 suggest and 14 manual. **33 ship today** (all but `m
 - **The engine work this needs:** the semantic model, `native:` rules and pack loading, in [W-02](../archive/open/W-02-engine-p0.md) ([SR-ARCHITECTURE](0108_architecture.md) decisions 15a–15c).
 - **The packs' content** is [W-03](../archive/open/W-03-rule-packs.md).
 - **2026-11-08 (W-172):** a pack is kept in memory from its second load in a process (a one-shot run keeps none); a pack's identity is a hash of its file stamps, not the ~2,000-path list.
+- **2026-11-10 (CI-mcp-p95):** `mcp`, `lsp` and the daemon keep a pack from its first load, since they will load it again ([SR-CACHE](0109_cache.md) decision 8); a one-shot run is unchanged.
 - **2026-11-08 (W-162, cross-file):** 36 first-party rules now carry a multi-file fix (a `files:` list in the rule's `fix:`), applied only on [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md)'s terms; 7 re-judged `manual`; the 6 type-info rules' `fix_pending:` now name W-105.
 
 ### Alternatives considered

@@ -707,6 +707,7 @@ fn main() -> ExitCode {
         Command::Lsp { .. } => {
             // A warm process for `--prefer-warm` runs for as long as the
             // editor's session (SR-ARCHITECTURE decision 21).
+            codelaw_rules::keep_packs_from_first_load();
             let _warm = warm::serve_in_background(warm::Kind::Lsp);
             codelaw_lsp::run_stdio().map_or_else(fail, |()| ExitCode::SUCCESS)
         }
@@ -716,6 +717,7 @@ fn main() -> ExitCode {
         Command::Config(a) => config_cmd::run(a),
         Command::Cache { action } => cache(action),
         Command::Mcp => {
+            codelaw_rules::keep_packs_from_first_load();
             let _warm = warm::serve_in_background(warm::Kind::Mcp);
             match codelaw_mcp::serve(std::io::stdin().lock(), std::io::stdout().lock()) {
                 Ok(()) => ExitCode::SUCCESS,
