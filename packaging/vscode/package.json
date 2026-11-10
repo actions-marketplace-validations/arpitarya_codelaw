@@ -3,7 +3,7 @@
   "publisher": "codelaw",
   "displayName": "codelaw - Rules for AI Agents: Lint, Format, Spell",
   "description": "codelaw in the editor: diagnostics, quick fixes, fix-on-save and formatting for JS, TS, Python, JSON, YAML, TOML, Markdown, CSS, SCSS and HTML, from the project's own codelaw.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "MIT",
   "icon": "icon.png",
   "preview": true,
@@ -35,7 +35,7 @@
   ],
   "contributes": {
     "tomlValidation": [
-      { "fileMatch": "codelaw.toml", "url": "https://raw.githubusercontent.com/arpitarya/codelaw/v0.5.0/crates/codelaw-config/codelaw.schema.json" }
+      { "fileMatch": "codelaw.toml", "url": "https://raw.githubusercontent.com/arpitarya/codelaw/v0.5.1/crates/codelaw-config/codelaw.schema.json" }
     ],
     "commands": [
       { "command": "codelaw.fixAll", "title": "Fix all auto-fixable problems", "category": "codelaw" },

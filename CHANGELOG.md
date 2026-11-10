@@ -4,16 +4,16 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
-## 0.5.0 — 2026-11-10
+## 0.5.1 — 2026-11-10
 
 **Rule parity: 2,878 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.
 
 ```bash
-npx codelaw@0.5.0 init     # a Node repo: installs the @codelaw/rules-* it needs
-uvx codelaw@0.5.0 init     # a Python repo: installs the codelaw-rules-* it needs
+npx codelaw@0.5.1 init     # a Node repo: installs the @codelaw/rules-* it needs
+uvx codelaw@0.5.1 init     # a Python repo: installs the codelaw-rules-* it needs
 ```
 
-**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`. **Not yet on the registries:** the npm packs `@codelaw/rules-testing`, `@codelaw/rules-nextjs` and `@codelaw/rules-tailwind` (and their Fux indexes) and the PyPI packs `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy`, `-pandas` and `-tailwind` have their names reserved for a later publish; until then `codelaw init` on a project that uses them names a pack the registry does not have yet, and the rules are available from the repository's `packs/`.
+**Before you upgrade:** nearly every new rule is `preview` and in no preset, so a project's findings do not change until it turns them on; the rules that join a `recommended` preset, and the budgets and behaviours that moved, are under *Changed*. `js/name-replacements` (in the opt-in `js/strict`) is as loud as unicorn's `prevent-abbreviations`. **0.5.0 was never published** (its release stopped at the registry's trust check on a package that does not exist yet; nothing reached npm or PyPI), so 0.5.1 is the first release of this work. **Not yet on the registries:** the npm packs `@codelaw/rules-testing`, `@codelaw/rules-nextjs` and `@codelaw/rules-tailwind` (and their Fux indexes, and `@codelaw/provider-tailwind`) and the PyPI packs `codelaw-rules-django`, `-fastapi`, `-airflow`, `-numpy`, `-pandas` and `-tailwind` have their names reserved for a later publish; until then `codelaw init` on a project that uses them names a pack the registry does not have yet, and the rules are available from the repository's `packs/`.
 
 ### Added
 
