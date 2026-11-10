@@ -131,4 +131,11 @@
 #   keeps a change's branch commits when it merges them. SR-ARCHITECTURE 15b and
 #   SR-RULE-PACKS decision 18 are current on main. c41fa8c is the first commit on main's
 #   first-parent line that holds all fifteen; every commit after it passes the replay.
-c41fa8ca7418d99e36ed053be6c437e71b8c0099
+# - 2026-11-10, the CI close-out (Claude Code, the decider's standing approval to move
+#   it past guard-refused commits): c41fa8c -> 5a58e7f. Two more agent branch commits fail
+#   the replay, for the same reason as the move above (lockmaster keeps a change's
+#   branch commits when it merges them): 195d295e (CI-corpus: corpus.toml counts) and
+#   132f1c3a (CI-hookpre: Cargo.toml dev profile). Their final landings carry the
+#   `no SR affected` line. 5a58e7f is the first commit on main's first-parent line that
+#   holds both; every commit after it passes the replay.
+5a58e7fec7833b8ed87b2fdbf5ba34c48cebecc7
