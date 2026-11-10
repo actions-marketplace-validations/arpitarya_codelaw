@@ -4,10 +4,6 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
-### Fixed
-
-- **The second request to `codelaw mcp`, `codelaw lsp` or the daemon is no longer a slow one:** each kept a loaded rule pack only from its second load, so the second request re-read and parsed every rule file (about 170 ms with the 2,900 rules) before every later request took 17 ms. They now keep a pack from its first load (CI-mcp-p95).
-
 ## 0.5.1 — 2026-11-10
 
 **Rule parity: 2,878 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.
@@ -148,6 +144,7 @@ uvx codelaw@0.5.1 init     # a Python repo: installs the codelaw-rules-* it need
 - **A rare crash on Linux musl (W-169):** `codelaw` could die with a segmentation fault, with nothing printed, while loading rules on the musl builds (`linux-x64-musl`, `linux-arm64-musl`). Looking up a node kind or field name could read one byte past the name, and that faulted when the name ended at the end of a memory page. Each name is now looked up from a copy that ends in a NUL byte.
 - **Two rules stop reporting what is not there (W-139):** `md/no-empty-links` (on in `md/recommended`) no longer reports links to an anchor (`[x](#install)`) or a bracketed path (`[x](<release notes.md>)`), which it had done since its fix was added on 11-05; `js/no-undefined` no longer reports, or rewrites to `void 0`, TypeScript's `undefined` type (`string | undefined`).
 - **Config completion in `[rules]` again (W-170):** in the editor, `codelaw.toml`'s top-level `[rules]` completes rule ids and a rule's `fix` rungs again, and offers `require_reason` (W-158) as a key with `true`/`false`; the split of that table for `require_reason` had left it completing schema keys only. Never released.
+- **The second request to `codelaw mcp`, `codelaw lsp` or the daemon is no longer a slow one:** each kept a loaded rule pack only from its second load, so the second request re-read and parsed every rule file (about 170 ms with the 2,900 rules) before every later request took 17 ms. They now keep a pack from its first load (CI-mcp-p95).
 
 ### Security
 
