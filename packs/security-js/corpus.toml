@@ -19,6 +19,7 @@
 "sec-js/no-cors-wildcard-credentials" = 0
 "sec-js/no-csrf-before-method-override" = 0
 "sec-js/no-dangerously-set-inner-html" = 0
+"sec-js/no-disabled-markup-escaping" = 0
 "sec-js/no-document-cookie-token" = 0
 "sec-js/no-dynamic-script-src" = 0
 "sec-js/no-electron-insecure" = 0
@@ -30,6 +31,7 @@
 "sec-js/no-incomplete-sanitization" = 0
 "sec-js/no-incomplete-url-check" = 0
 "sec-js/no-insecure-random" = 1
+"sec-js/no-invisible-characters" = 0
 "sec-js/no-javascript-url" = 0
 "sec-js/no-jquery-html-sink" = 0
 "sec-js/no-ldap-injection" = 0
