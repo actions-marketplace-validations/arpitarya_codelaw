@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-10 — CI: `mcp_rules_for_path` p95 over 65 ms on one sample  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) `perf warm` failed on b6a85792 three times: `mcp_rules_for_path` median ~17-20 ms, one sample 167-235 ms, p95 (the max of ten) over the 65 ms budget; optimise, never loosen (L8 decision 5).
+- **Done:** reproduced with the CI run's darwin-arm64 binary (`codelaw bench --only mcp_rules_for_path --runs 30`, three runs): the first measured sample (the second call; the first is discarded) was 180.7, 166.1 and 173.0 ms, every other 14.6-23 ms except one 39.7 (noise). Printing the calls in order through a stdio client: 355, 170, 16, 15, 15 ms; a 1 s pause between calls left the 170 ms in place (not a background thread). `sample` on a debug build put the second call in `RuleSet::load` → `load_pack_cached` → `load_pack_from` → `parse_rule` (the YAML of every rule file): `pack::SEEN` keeps a pack in memory only from its *second* load (W-172, so a one-shot run holds nothing), so a warm server re-parsed all packs on call 2 and hit the cache from call 3. Fix: `codelaw_rules::keep_packs_from_first_load()`, called by `mcp`, `lsp` and the daemon at start (`crates/codelaw-rules/src/pack.rs`, `main.rs`, `warm.rs`); a one-shot run is unchanged. Debug-build calls, before: 1876/831/48/48 ms (three runs alike); after: 1391/49/49/48 ms. New test `crates/codelaw-rules/tests/warm_pack_cache.rs`; SR-CACHE decision 8 and CHANGELOG (Unreleased, Fixed) updated; `perf/budgets.toml` untouched. cargo test -p codelaw-mcp -p codelaw-cli -p codelaw-engine -p codelaw-native -p codelaw-rules, clippy --workspace --all-targets -D warnings: clean.
+- **Decided / left open:** nothing; the budget stands at 65 ms.
+- **Mistakes:** none.
+- **Next:** the next CI run's `perf warm` shows `mcp_rules_for_path` p95 near its median.
+
 ## 2026-11-10 — CI: `bench`'s hook_pre saw an allow on a debug build  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) CI run 42595842518, job `test`: `every_operation_is_measured_and_a_proposal_never_fails` failed with "hook_pre: the payload was not refused" after the W-139 rule slices; find the root cause, never loosen the test or L8.
