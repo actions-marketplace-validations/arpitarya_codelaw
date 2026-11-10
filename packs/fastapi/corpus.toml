@@ -4,3 +4,4 @@
 [findings]
 "fastapi/fast-api-non-annotated-dependency" = 0
 "fastapi/fast-api-redundant-response-model" = 0
+"fastapi/fast-api-unused-path-parameter" = 0

@@ -54,9 +54,14 @@
 "sec-py/no-xml-unsafe-parser" = 0
 "sec-py/no-xmlrpc" = 0
 "sec-py/no-xpath-injection" = 0
+"sec-py/paramiko-call" = 0
 "sec-py/paramiko-host-key" = 0
 "sec-py/password-hash-effort" = 0
 "sec-py/requests-timeout" = 4
+"sec-py/start-process-with-no-shell" = 0
+"sec-py/suspicious-httpoxy-import" = 0
+"sec-py/suspicious-pyghmi-import" = 0
+"sec-py/suspicious-subprocess-import" = 3
 "sec-py/tarfile-filter" = 0
 "sec-py/torch-load-weights-only" = 0
 "sec-py/upload-secure-filename" = 0

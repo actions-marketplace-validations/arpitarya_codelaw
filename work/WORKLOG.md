@@ -24,6 +24,15 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+
+## 2026-11-10 — CI corpus jobs: the finding counts of W-139 slices 28–37 recorded  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
+
+- **Asked:** (coordinator) CI run 42595842518 on `517504f8` failed the `corpus` jobs of js (43 rules), security-python (5), security-js (2), fastapi (1) and tanstack-query (1): rules landed with no count in `packs/<p>/corpus.toml`.
+- **Done:** ran `scripts/corpus.py run --pack <p> --update` for the five packs with the `build-darwin-arm64` binary of that CI run (no cargo build), over fresh pinned clones in a scratch dir (106 MB, kept out of the repo). Only `packs/{js,fastapi,tanstack-query,security-python,security-js}/corpus.toml` change, 52 added lines, no existing count moved; every total equals the CI log's. Non-zero counts read against the corpus: js `jsdoc-check-tag-names` 1 (zustand's `@params`), `jsdoc-tag-lines` 12, `jsdoc-informative-docs` 92, `name-replacements` 801, `no-nonstandard-builtin-properties` 2 (jotai's `Symbol.observable`), `no-unnecessary-parameters` 3, `require-atomic-updates` 2; tanstack-query `prefer-query-options` 227 (mostly tests and codemod fixtures); sec-py `suspicious-subprocess-import` 3 (three `import subprocess` in djangoproject.com). All other new rows are 0.
+- **Decided / left open:** no rule looked wrong; all seven non-zero js rules, `prefer-query-options` and `suspicious-subprocess-import` are `preview`, none an invariant case.
+- **Mistakes:** the first shell loop clobbered `$2` in zsh and wrote empty-named logs; redone with explicit variables.
+- **Next:** none; CI's `corpus` jobs should go green on the next run.
+
 ## 2026-11-09 — W-139 slice 36: the last JavaScript rows  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) build what is left of W-139's JS strand that the scope model can carry — `prefer-abort-signal-any`, `prefer-iterator-zip`, `no-unnecessary-parameters`, `name-replacements`, `parameterized-tests` — decide whether `no-multiple-promise-resolver-calls` and `require-atomic-updates` fit a walk of the function, compute the CSV rows with no rule that are buildable, update the records and land.
