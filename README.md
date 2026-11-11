@@ -9,7 +9,7 @@
 JavaScript · TypeScript · React · Stencil · Python · JSON · YAML · TOML · Markdown · CSS · HTML
 
 ![status: preview](https://img.shields.io/badge/status-preview-orange)
-![version 0.4.3](https://img.shields.io/badge/version-0.4.3-blue)
+![version 0.5.1](https://img.shields.io/badge/version-0.5.1-blue)
 ![rules: 2878](https://img.shields.io/badge/rules-2878-informational)
 ![languages: 9](https://img.shields.io/badge/languages-9-informational)
 ![licence: MIT](https://img.shields.io/badge/licence-MIT-green)
@@ -74,7 +74,7 @@ Every door gets the same answer, because they all call the same engine.
 ---
 
 > [!IMPORTANT]
-> **codelaw is a preview.** 0.4.3 is on npm and PyPI — the engine, the eight platform binaries and every rule pack below except the seven added since (`nextjs`, `testing` and the five Python framework packs, which wait for the next release), seventeen on npm and twelve on PyPI. The linter, the fixer, the formatter, the MCP server, the language server and all twenty-seven rule packs work today. The VS Code extension is on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode) as `codelaw.codelaw-vscode`; Open VSX follows. [Roadmap](#roadmap) lists what is built and what is not.
+> **codelaw is a preview.** 0.5.1 is on npm and PyPI — the engine, the eight platform binaries and every rule pack below except those added since (`nextjs`, `testing` and `tailwind` on npm; `django`, `fastapi`, `airflow`, `numpy`, `pandas` and `tailwind` on PyPI, which wait for their first publish), seventeen on npm and twelve on PyPI. The linter, the fixer, the formatter, the MCP server, the language server and all twenty-seven rule packs work today. The VS Code extension is on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode) as `codelaw.codelaw-vscode`; Open VSX follows. [Roadmap](#roadmap) lists what is built and what is not.
 
 ---
 
@@ -247,7 +247,7 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 <!-- /docs-sync:packs -->
 
 - **Reimplemented, not wrapped.** Each rule is written fresh in codelaw's format, and its `ported_from:` field names the original. You don't need ESLint, Ruff or stylelint installed.
-- **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,395 today; 1,653 of the 2,590 rules on the ruled port list are answered so far. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13.
+- **Before and after the parity build (W-139):** 689 rules on 2026-10-30, 2,878 today; 2,319 of the 2,590 rules on the ruled port list are built or linked, and the other 271 are ruled — layout the formatter owns, rules that do nothing until configured, data tables that need a package, engine work — each filed as its own work item. Pack by pack, in [the rule-parity proposal](work/proposals/rule-parity.md) §13 and §14.
 - **Differences are written down.** Each pack's README lists where a port behaves differently from the original, and which rules weren't ported and why.
 - **Layout rules are left out on purpose.** Indentation, spacing and quotes are the formatter's job (`codelaw format`).
 - **47,628 example checks, all green.** `codelaw test packs/<pack>` runs them.
@@ -332,7 +332,7 @@ $ codelaw test acme/no-console-log
 
 **Three steps: install, `codelaw init`, `codelaw check`.**
 
-- **Install.** codelaw 0.4.3 and its packs are on npm and PyPI, the VS Code extension on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode); the [usage guide](USAGE.md#install) has the exact commands.
+- **Install.** codelaw 0.5.1 and its packs are on npm and PyPI, the VS Code extension on the [Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode); the [usage guide](USAGE.md#install) has the exact commands.
 - **`codelaw init`** detects your languages and writes `codelaw.toml` with the matching presets.
 - **`codelaw check`** reports every finding with its fix; **`codelaw fix`** applies the safe ones and formats.
 - **With an AI agent:** `codelaw init --agents claude,codex,copilot,kiro,cowork` installs the skills package — `@codelaw/skills` (npm) or `codelaw-skills` (PyPI), at codelaw's exact version — and writes the hooks and instruction files from it ([usage guide](USAGE.md#with-ai-agents)).
@@ -357,7 +357,7 @@ $ codelaw test acme/no-console-log
 
 - you need **type-aware** rules, such as floating promises or `no-unsafe-*`. tree-sitter has no type information, so these stay with typescript-eslint, pyright or mypy;
 - you need **byte-for-byte Prettier output** for HTML or Markdown. codelaw's formatter matches Prettier on every JS, TS and JSON file measured, but on only 62 % of HTML files and 42 % of Markdown files ([SR-FORMATTER](records/0105_formatter.md));
-- you need a **stable, published** tool in production CI. 0.4.3 is a preview.
+- you need a **stable, published** tool in production CI. 0.5.1 is a preview.
 
 ---
 
@@ -372,11 +372,11 @@ $ codelaw test acme/no-console-log
 | ✅ | Twenty-seven rule packs: 2878 rules | [SR-RULE-PACKS](records/0101_rule-packs.md) | built, `preview` |
 | ✅ | `--format agent`, `--format json` and `--format sarif`; `--timings` | [SR-CLI-MCP](records/0115_cli-and-mcp.md) | built |
 | ✅ | Watch mode: `check --watch` and `fix --watch` re-check on every save | [SR-CLI-MCP](records/0115_cli-and-mcp.md) | built |
-| ✅ | npm package (`npx codelaw`) | [SR-PACKAGES](records/0107_packages.md) | 0.4.3 published from CI with provenance, seventeen packs |
-| ✅ | PyPI package (`uvx codelaw`) | [SR-PACKAGES](records/0107_packages.md) | 0.4.3: `codelaw` and twelve packs live, trusted; checked from a fresh venv and `uvx` (W-38) |
+| ✅ | npm package (`npx codelaw`) | [SR-PACKAGES](records/0107_packages.md) | 0.5.1 published from CI with provenance, seventeen packs |
+| ✅ | PyPI package (`uvx codelaw`) | [SR-PACKAGES](records/0107_packages.md) | 0.5.1: `codelaw` and twelve packs live, trusted (checked from a fresh venv and `uvx` at 0.4.3, W-38) |
 | ✅ | Formatter (`codelaw format`, and the last step of `fix`): Prettier-style JS/TS/JSON, Black-style Python | [SR-FORMATTER](records/0105_formatter.md) | built |
 | ✅ | MCP server (`codelaw mcp`) | [SR-CLI-MCP](records/0115_cli-and-mcp.md) | built |
-| ✅ | Language server (`codelaw lsp`): diagnostics, quick fixes, formatting | [SR-EDITOR](records/0114_editor.md) | built; the VS Code extension is [on the Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode) for all eight platforms (0.4.3); Open VSX waits on W-117 |
+| ✅ | Language server (`codelaw lsp`): diagnostics, quick fixes, formatting | [SR-EDITOR](records/0114_editor.md) | built; the VS Code extension is [on the Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode) for all eight platforms (0.5.1); Open VSX waits on W-117 |
 | ✅ | Agent hooks (`codelaw hook`), `init --agents`, `sync-agents` | [SR-AGENT-SURFACES](records/0102_agent-surfaces.md) | built |
 | ✅ | Project-wide rules (`graph/no-unused-exports`, `graph/no-unused-css-classes`, the `node/no-*-import` rules) | [SR-PROJECT-GRAPH](records/0103_project-graph.md) | built, `preview` |
 | ✅ | Baselines and deprecations (`baseline`, `deprecate`) | [SR-BASELINE](records/0104_baseline-and-deprecations.md) | built |
