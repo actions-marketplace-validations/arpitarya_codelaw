@@ -28,6 +28,8 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-193-ruff-tail.md`](open/W-193-ruff-tail.md) | 2026-11-15 | done 2026-11-09 in W-139 slice 37 — `py/quoted-type-alias`, `py/split-static-string` in [`packs/python/rules/py/`](../packs/python/rules/py/) |
+| [`W-194-pylint-tail.md`](open/W-194-pylint-tail.md) | 2026-11-15 | done 2026-11-09 in W-139 slice 37 — Pylint's docparams rows in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_pylint_doc.rs`) |
 | [`W-174-python-inference.md`](open/W-174-python-inference.md) | 2026-11-15 | done — [SR-PY-INFERENCE](../records/0120_python-inference.md): 37 of 38 rows built as `preview` rules, `boolean-datetime` ruled not-applicable; the cross-file question is [W-177](../work/open/W-177-python-type-checker-research.md) and [W-185](../work/open/W-185-python-project-graph.md) |
 | [`W-197-session-cleanup.md`](open/W-197-session-cleanup.md) | 2026-11-15 | done — nothing live: the three worktrees and `lm/` branches are gone ([SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md) decision 11); the outcome is in [`work/IMPLEMENTATION.md`](../work/IMPLEMENTATION.md) |
 | [`W-139-rule-parity-build.md`](open/W-139-rule-parity-build.md) | 2026-11-09 | closed on the decider's ruling — built rules kept (2,319 of 2,590 port rows carried); every row left is in [W-176](../work/open/W-176-options-only-rules.md), W-178–W-196 in [`work/OPEN-WORK.md`](../work/OPEN-WORK.md), B-081–B-084 in [`work/BACKLOG.md`](../work/BACKLOG.md), or classed in [the proposal](../work/proposals/rule-parity.md) §14 |

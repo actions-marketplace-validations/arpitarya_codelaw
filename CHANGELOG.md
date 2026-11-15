@@ -8,6 +8,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 - **L8 now lets the decider raise one budget by name (W-172):** a budget stays never exceeded and never loosened, except by the decider's own ruling naming the budget and the value (SR-LAW-8 decision 5a). The first: `peak_memory_10k` goes from 72 to 90 MiB — the packs grew from 443 to 1,581 loaded rules and the reference runner measured 86.1 MiB.
 - **Python inference closed (W-174):** Pylint's `boolean-datetime` is ruled not-applicable (it reports only below Python 3.5; codelaw's floor is 3.9), so every row in SR-PY-INFERENCE is built or ruled; the rows that need another file's classes wait on W-185 and W-177.
+- **Queue clean-up (W-193, W-194):** `py/quoted-type-alias`, `py/split-static-string` and Pylint's 15 docparams rows were already in 0.5.1; their work items are closed.
 - **Housekeeping (W-197):** three stale worktrees from an earlier session were removed; nothing in them was unmerged.
 
 ## 0.5.1 — 2026-11-10
