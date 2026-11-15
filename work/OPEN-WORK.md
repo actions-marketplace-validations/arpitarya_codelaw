@@ -28,9 +28,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (30)
+## Open items (28)
 
-### build (20)
+### build (18)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -56,10 +56,6 @@ here. Read that record before changing anything below it.
 🟢 **W-187** `agent` A data package of deprecated standard-library names from CPython's docs (approved 11-09); Pylint's five `deprecated-*` rows. Filed by Arpit (Cowork). [detail](open/W-187-stdlib-deprecations.md)
 
 🟢 **W-190** `agent` `no-using-resource-escape`, `prefer-dispose`: the pinned JS grammar (0.25.0) parses `using`, TS 0.23.2 does not — build for JS, then move TS. Filed by Arpit (Cowork). [detail](open/W-190-using-declarations.md)
-
-🟢 **W-193** `agent` Ruff's last buildable rows: TC008, SIM905. Filed by Arpit (Cowork). [detail](open/W-193-ruff-tail.md)
-
-🟢 **W-194** `agent` Pylint's 15 docparams rows and two `ported_from:` links. Filed by Arpit (Cowork). [detail](open/W-194-pylint-tail.md)
 
 🟢 **W-195** `agent` JS rows with no blocker: four unicorn/SonarJS rows, `comment-type`, `process-exit-as-throw`, six second fixes. Filed by Arpit (Cowork). [detail](open/W-195-js-tail.md)
 
@@ -90,7 +86,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-193**, **W-194**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
