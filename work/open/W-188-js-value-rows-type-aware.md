@@ -36,7 +36,7 @@ Fifteen of the sixteen rows were built on 2026-11-09 (W-139 slice 29) from what 
 
 ## Blockers
 
-🟣 waits on **W-105** (its RC re-pin, 2026-11-10).
+🟣 waits on **W-105** (its RC re-pin, 2026-11-10). Checked 2026-11-15: the 7.1 RC is not on npm yet (newest is `7.1.0-beta`, the current pin), so W-105's re-pin has not happened and this still waits. The helper itself is built (W-105 steps 1–5), so the first slice is not technically blocked on the RC; start it as a preview on the beta when W-105 closes, or earlier if the decider says so.
 
 ## Record affected
 
