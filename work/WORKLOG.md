@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-14 — voice docket: W-197 ruled drop  ·  Cowork (Opus 5.5)
+
+- **Asked:** *fetch all the open work items, whatever are blocked, so that we can ratify in voice mode* — then, after the voice call, *"file it"*.
+- **Done:** read the queue: one inbox row, W-197. Checked its three worktrees: each `lm/` branch has 0 commits outside `main`, and all 513 changes are under `.fux/index/`. Ruling written to `work/open/W-197-session-cleanup.md` (the check, a DoD), `work/OPEN-WORK.md` (inbox emptied, W-197 re-balled 🟢 agent) and `work/INTERVIEW.md` §1–2. `check-open-work-inbox.py` and `check-work-system.py` are clean.
+- **Decided / left open:** Arpit, by voice: *"If we don't need it, let's remove them and drop all of those."* The removal is left to Claude Code (SR-WORK-CLEANUP decision 11). `lockmaster` is not on this surface's PATH, so nothing was saved through it.
+- **Mistakes:** the first `*Empty since*` line sat directly under the table with no blank line, and `check-open-work-inbox.py` failed rule 45a. Fixed.
+- **Next:** Claude Code removes the three worktrees with `--force` and deletes their branches.
+
 ## 2026-11-10 — CI: `mcp_rules_for_path` p95 over 65 ms on one sample  ·  Claude Code (Sonnet 5.5, agent of the coordinator)
 
 - **Asked:** (coordinator) `perf warm` failed on b6a85792 three times: `mcp_rules_for_path` median ~17-20 ms, one sample 167-235 ms, p95 (the max of ten) over the 65 ms budget; optimise, never loosen (L8 decision 5).

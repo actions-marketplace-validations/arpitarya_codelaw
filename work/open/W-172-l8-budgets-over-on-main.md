@@ -18,9 +18,9 @@ ball: agent
 |---|---|---|---|
 | 1 | Find what moved each number between `9ae07264` (last green `perf`) and `3b53d1a8` | the cause, not a guess | ✅ 11-07 — a per-rule cost, paid for every rule a project's packs ship (below) |
 | 2 | Make a rule nobody turns on cheap: packs kept in memory, dormant matchers dropped, the settings lookup skipped, `where:` before captures | `mcp_rules_for_path` back under; peak memory down by about half its rise | ✅ 11-07 — built, tests green; numbers below |
-| 3 | Bring `peak_memory_10k`, `check_cold_10k` and `lsp_after_edit` under: what is left is the rules that are **on** — W-139 turned about 130 more on in the recommended presets | all three green | 🔶 11-08 second pass: time side built (below); `peak_memory_10k` still over on the Mac — *What is left* |
+| 3 | Bring `check_cold_10k` and `lsp_after_edit` under (`peak_memory_10k` is by ruling, step 5): what is left is the rules that are **on** — W-139 turned about 130 more on in the recommended presets | all three green | 🔶 11-08 second pass: time side built (below); `peak_memory_10k` still over on the Mac — *What is left* |
 | 4 | CI's proof: the `perf cold` / `perf warm` jobs on a pushed `main` | the reference runner's numbers | ⏳ waits on the decider pushing `main` |
-| 5 | Amend L8 so `peak_memory_10k` is raised to a value the decider names, instead of optimising the last ~14 MiB | the memory budget met by ruling, not by trade-offs against time | ⏳ ruled 11-09: **90 MiB** — the agent amends L8 and sets it |
+| 5 | Amend L8 so `peak_memory_10k` is raised to a value the decider names, instead of optimising the last ~14 MiB | the memory budget met by ruling, not by trade-offs against time | ✅ 11-15 — SR-LAW-8 decision 5a written, `perf/budgets.toml` `peak_memory_10k` 72 → 90 MiB (`set_by` names the ruling), CLAUDE.md's and SR-LAWS's L8 line carry the exception |
 
 ## Ruling, 2026-11-09 — amend L8 for `peak_memory_10k`
 

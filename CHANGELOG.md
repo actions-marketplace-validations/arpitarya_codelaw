@@ -4,6 +4,12 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Changed
+
+- **L8 now lets the decider raise one budget by name (W-172):** a budget stays never exceeded and never loosened, except by the decider's own ruling naming the budget and the value (SR-LAW-8 decision 5a). The first: `peak_memory_10k` goes from 72 to 90 MiB — the packs grew from 443 to 1,581 loaded rules and the reference runner measured 86.1 MiB.
+- **Python inference closed (W-174):** Pylint's `boolean-datetime` is ruled not-applicable (it reports only below Python 3.5; codelaw's floor is 3.9), so every row in SR-PY-INFERENCE is built or ruled; the rows that need another file's classes wait on W-185 and W-177.
+- **Housekeeping (W-197):** three stale worktrees from an earlier session were removed; nothing in them was unmerged.
+
 ## 0.5.1 — 2026-11-10
 
 **Rule parity: 2,878 rules, fixes that edit several files, and five new packs.** codelaw now answers most of what ESLint and its plugins, typescript-eslint, Ruff, Pylint, Biome, stylelint, html-validate and markdownlint check, each rule written fresh with its examples and a fix; the `testing` and `nextjs` packs (npm) and the `django`, `fastapi`, `airflow`, `numpy` and `pandas` packs (PyPI) are new, and a fix can now rename a name across every file that uses it.

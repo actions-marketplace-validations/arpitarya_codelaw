@@ -23,20 +23,19 @@ here. Read that record before changing anything below it.
 | what the decider decides | filed |
 |---|---|
 
-*Empty since 2026-11-09 — the next gate: W-105's RC re-pin, 2026-11-10.*
+*Empty since 2026-11-14 — next gate: W-142's pending publishers, once W-182 and W-187 are ready.*
+
 
 ---
 
-## Open items (31)
+## Open items (30)
 
-### build (21)
+### build (20)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 
-🟢 **W-172** `agent` L8: time side built (11-08). `peak_memory_10k` ruled 11-09: amend L8 and raise it 72 → 90 MiB. Next: amend SR-LAW-8, set `perf/budgets.toml`; CI's next run proves the time side. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
-
-🟢 **W-174** `agent` Python inference: SR-PY-INFERENCE (0120); 37 of 38 built (`preview`); `boolean-datetime` ruled not-applicable 11-09; decision 8 moved to research, W-177. Next: re-class that row, then close. Filed by Claude Code (W-139). [detail](open/W-174-python-inference.md)
+🟢 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` raised 72 → 90 MiB by ruling, L8 decision 5a (11-15). Next: CI's next run on a pushed `main` proves `check_cold_10k` and `lsp_after_edit`; close then. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
 🟢 **W-176** `agent` Options-only rules: the 19 js/node rows that check nothing until configured (`id-match`, `id-denylist`, `no-restricted-syntax`, …), built as their own class, silent by default, out of W-139's count. Filed by Arpit (Cowork). [detail](open/W-176-options-only-rules.md)
 

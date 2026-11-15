@@ -25,7 +25,7 @@
 #                           set_by, set_on and measured_p95 (decision 4)
 #   proposed = <number>     a PROPOSAL awaiting the decider: printed, never
 #                           compared against
-# A set budget is never raised (decision 5): `git log -p perf/budgets.toml`.
+# A set budget is never raised (decision 5) but by the decider's ruling named in its set_by (decision 5a; today only peak_memory_10k, 72 -> 90 on 2026-11-09): `git log -p perf/budgets.toml`.
 #
 # The 2026-10-22 proposals came from a LOADED developer Mac (SR-LAW-8
 # §Measurements) and are superseded by the CI numbers above; the one still
@@ -90,10 +90,10 @@ proposed = 100 # the design target (SR-LAW-8 decision 1's hook_pre row, SR-AGENT
 
 [operation.peak_memory_10k]
 unit = "MiB"
-budget = 72 # p95 47.6 / 48.0 / 46.6; worst 48.0 x 1.5 = 72.0; target 1024
-set_by = "Arpit, method ruled 2026-10-25 (SR-LAW-8 decision 4, W-19)"
-set_on = 2026-10-25
-measured_p95 = 48.0
+budget = 90 # was 72 (p95 47.6 / 48.0 / 46.6; worst 48.0 x 1.5 = 72.0), set 2026-10-25. RAISED by the decider's ruling, 2026-11-09 (SR-LAW-8 decision 5a, W-172): the packs grew 443 -> 1,581 loaded rules and the runner measured 86.1 MiB p95; target 1024
+set_by = "Arpit, ruling of 2026-11-09 (voice, W-172): 72 -> 90 MiB, SR-LAW-8 decision 5a"
+set_on = 2026-11-15
+measured_p95 = 86.1
 
 # check_types_cold / check_types_warm (L8 decision 1, added 2026-10-27, W-104)
 # enter with the bench that times them (W-105, 2026-10-28): `codelaw bench

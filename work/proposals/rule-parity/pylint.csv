@@ -44,7 +44,7 @@ bare-except,covered,py/no-bare-except,,,,,,,,,W0702; through ruff/E722
 bare-name-capture-pattern,port,,python,py/bare-name-capture-pattern,manual,P1,A,none,yes,,"E1901, match_statements"
 bidirectional-unicode,same-as,,,,,,,,,,E2502; the same rule as ruff/PLE2502: counted there
 binary-op-exception,same-as,,,,,,,,,,W0711; the same rule as ruff/PLW0711: counted there
-boolean-datetime,port,,python,py/boolean-datetime,manual,P2,D,none,,,"W1502, stdlib"
+boolean-datetime,not-applicable,,python,,,,,none,,,"W1502, stdlib; ruled not-applicable 2026-11-09 (W-174): Pylint reports it only below Python 3.5, the floor is 3.9"
 break-in-finally,port,,python,py/break-in-finally,manual,P2,D,none,,,"W0137, basic"
 broad-exception-caught,port,,python,py/broad-exception-caught,manual,P2,D,none,,,"W0718, exceptions"
 broad-exception-raised,port,,python,py/broad-exception-raised,manual,P2,D,none,,,"W0719, exceptions"
