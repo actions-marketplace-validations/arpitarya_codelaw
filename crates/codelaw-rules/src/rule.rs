@@ -217,6 +217,7 @@ struct Frontmatter {
     fix_pending: Option<String>,
     on_edit: Option<bool>,
     fix_target: Option<FixTargetFm>,
+    finding_target: Option<FindingTargetFm>,
     stability: Option<String>,
     host: Option<String>,
     invariant: Option<OneOrMany>,
@@ -235,6 +236,51 @@ struct Frontmatter {
 struct FixTargetFm {
     python: Option<String>,
     browsers: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FindingTargetFm {
+    python: Option<PythonRangeFm>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PythonRangeFm {
+    from: Option<String>,
+    below: Option<String>,
+}
+
+/// The target versions a rule's finding applies to (SR-RULE-FORMAT decision
+/// 2d): Python `from` (inclusive) and/or `below` (exclusive).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct FindingTarget {
+    pub from: Option<Vec<u64>>,
+    pub below: Option<Vec<u64>>,
+}
+
+impl FindingTarget {
+    /// Whether `target` is inside the range.
+    pub fn admits(&self, target: &[u64]) -> bool {
+        let part = |v: &[u64], i: usize| v.get(i).copied().unwrap_or(0);
+        let cmp = |a: &[u64], b: &[u64]| {
+            (0..a.len().max(b.len())).map(|i| part(a, i).cmp(&part(b, i))).find(|o| o.is_ne()).unwrap_or(std::cmp::Ordering::Equal)
+        };
+        self.from.as_ref().is_none_or(|f| cmp(target, f).is_ge()) && self.below.as_ref().is_none_or(|b| cmp(target, b).is_lt())
+    }
+
+    /// `python >= 3.7, < 3.10`.
+    pub fn label(&self) -> String {
+        let dotted = |v: &[u64]| v.iter().map(u64::to_string).collect::<Vec<_>>().join(".");
+        let mut parts = Vec::new();
+        if let Some(f) = &self.from {
+            parts.push(format!(">= {}", dotted(f)));
+        }
+        if let Some(b) = &self.below {
+            parts.push(format!("< {}", dotted(b)));
+        }
+        format!("python {}", parts.join(", "))
+    }
 }
 
 /// The version a rule's fix is safe from (SR-RULE-FORMAT decision 2c):
@@ -469,6 +515,9 @@ pub struct RuleFile {
     pub on_edit: bool,
     /// `fix_target:` (SR-RULE-FORMAT decision 2c).
     pub fix_target: Option<FixTarget>,
+    /// `finding_target:` (SR-RULE-FORMAT decision 2d): the targets the
+    /// rule's finding applies to; the rule is quiet elsewhere.
+    pub finding_target: Option<FindingTarget>,
     pub stability: Stability,
     pub host: Option<Language>,
     pub invariants: Vec<String>,
@@ -658,7 +707,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
             let msg = if msg.contains("unknown field") {
                 let valid = [
                     "id", "title", "languages", "scope", "files", "exclude", "severity", "fix", "fix_reason", "fix_skill",
-                    "fix_exception", "fix_pending", "on_edit", "fix_target", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
+                    "fix_exception", "fix_pending", "on_edit", "fix_target", "finding_target", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
                 ];
                 let unknown = msg.split('`').nth(1).unwrap_or_default();
                 let near = codelaw_config::did_you_mean(unknown, valid).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -768,6 +817,32 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
     if fix_target.is_some() && fix == Some(FixClass::Manual) {
         err(&mut errors, 2, "`fix_target:` says from which version a fix is safe; this rule's fix is `manual` (SR-RULE-FORMAT decision 2c)".into());
     }
+    // SR-RULE-FORMAT decision 2d: a range of Python targets for the finding.
+    let finding_target = match &fm.finding_target {
+        None => None,
+        Some(FindingTargetFm { python: Some(PythonRangeFm { from, below }) }) if from.is_some() || below.is_some() => {
+            let mut parse = |key: &str, v: &Option<String>| -> Option<Vec<u64>> {
+                let v = v.as_deref()?;
+                let parsed = codelaw_config::parse_python_target(v);
+                if parsed.is_none() {
+                    err(&mut errors, 2, format!("`finding_target: {{ python: {{ {key}: \"{v}\" }} }}` is not a version; write it as `\"3.11\"` (SR-RULE-FORMAT decision 2d)"));
+                }
+                parsed
+            };
+            let (from, below) = (parse("from", from), parse("below", below));
+            let ft = FindingTarget { from, below };
+            if let (Some(f), Some(_)) = (&ft.from, &ft.below)
+                && !ft.admits(f)
+            {
+                err(&mut errors, 2, "`finding_target:` `from` is not below `below`: no target is in the range (SR-RULE-FORMAT decision 2d)".into());
+            }
+            Some(ft)
+        }
+        Some(_) => {
+            err(&mut errors, 2, "`finding_target:` is `{ python: { from: \"3.11\", below: \"3.13\" } }`, with `from` or `below` or both (SR-RULE-FORMAT decision 2d)".into());
+            None
+        }
+    };
     if let Some(skill) = &fm.fix_skill
         && !KNOWN_SKILLS.contains(&skill.as_str())
     {
@@ -1112,6 +1187,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         fix_reason: fm.fix_reason,
         on_edit: fm.on_edit.unwrap_or(true),
         fix_target,
+        finding_target,
         fix_skill: fm.fix_skill,
         fix_exception,
         fix_pending,
