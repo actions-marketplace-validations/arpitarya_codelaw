@@ -148,6 +148,14 @@ pub trait FileContext: Sync {
     fn project_files(&self) -> Option<Vec<String>> {
         None
     }
+    /// Whether the file itself has the executable bit, read only when a rule
+    /// asks (W-184). `None` where there is no bit to read: off Unix (nothing
+    /// is reported there, the same answer on every machine, L5), a file
+    /// checked alone, a path that is not a file. The engine records the
+    /// question, so a cached result is reused only while the bit is the same.
+    fn is_executable(&self) -> Option<bool> {
+        None
+    }
     /// The as-of date, `YYYY-MM-DD`, when there is one (L5 decision 2):
     /// the only date a rule may judge by. The engine records the question,
     /// so a cached result is reused only on the same date.
