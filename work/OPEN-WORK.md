@@ -32,7 +32,7 @@ here. Read that record before changing anything below it.
 
 ### build (18)
 
-🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 
 🟢 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` raised 72 → 90 MiB by ruling, L8 decision 5a (11-15). Next: CI's next run on a pushed `main` proves `check_cold_10k` and `lsp_after_edit`; close then. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
