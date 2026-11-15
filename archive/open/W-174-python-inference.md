@@ -19,7 +19,7 @@ ball: agent
 | 1 | Say what answers each Python question without a type checker | a plan, in a record | ✅ SR-PY-INFERENCE |
 | 2 | Build the four layers and the rows they answer, one file at a time | 37 of the 38 rows as rules | ✅ 2026-11-09 |
 | 3 | The decider rules the last row, `boolean-datetime` | nothing left unruled | ✅ 2026-11-09 — not-applicable |
-| 4 | Mark that row not-applicable in the parity ledger, record the outcome, close | the item done | ⏳ |
+| 4 | Mark that row not-applicable in the parity ledger, record the outcome, close | the item done | ✅ 2026-11-15 |
 | — | Whether the project's own type checker answers the cross-file rows | moved out | → research W-177 |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** on `boolean-datetime`, *"Not applicable."*; on decision 8, *"Open a separate research item for this."* — filed on *"file it."*
@@ -77,7 +77,7 @@ Not rebuilt: Pylint's `assigning-non-slot` is W-139-ruff's `py/non-slot-assignme
 
 | row | question | state |
 |---|---|---|
-| `boolean-datetime` (W1502) | *is this a `datetime.time`* — and Pylint reports it only below Python 3.5; under codelaw's 3.9+ floor it can never fire | **Ruled not-applicable** — Arpit, 2026-11-09 (voice): *"Not applicable."* Not built; next (agent): its class in `work/proposals/rule-parity/pylint.csv`, then close |
+| `boolean-datetime` (W1502) | *is this a `datetime.time`* — and Pylint reports it only below Python 3.5; under codelaw's 3.9+ floor it can never fire | **Ruled not-applicable** — Arpit, 2026-11-09 (voice): *"Not applicable."* Not built; class set to `not-applicable` in `work/proposals/rule-parity/pylint.csv` 2026-11-15; closed |
 
 Across files: every override, abstract and `__init__` row stops at a base class this file imports; the project graph carrying class facts (bases, methods, decorators) would let `py_classes.rs` follow them. That is the next record step, not built — the shape is W-177's question.
 

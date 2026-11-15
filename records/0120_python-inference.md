@@ -60,7 +60,7 @@ flowchart LR
 
 ### Context
 
-[SR-TYPES](0117_types.md) asks a TypeScript the project already has. Python offers no such thing: the per-file model of [SR-ARCHITECTURE](0108_architecture.md) decision 15a knows which binding a name resolves to, not what a value is, which class derives from which, what a call returns, or whether a name is bound on this path. Round one of the Ruff and Pylint port (W-139) therefore left 38 rows unwritten rather than fake them from syntax, and filed them as [W-174](../work/open/W-174-python-inference.md), each with its question. Upstream behaviour is Ruff 0.16.9 (source and fixtures, MIT) and Pylint 4.1.3 (behaviour from its functional tests only, never its code; [L2](0004_LAW-2-foss-dependencies.md)).
+[SR-TYPES](0117_types.md) asks a TypeScript the project already has. Python offers no such thing: the per-file model of [SR-ARCHITECTURE](0108_architecture.md) decision 15a knows which binding a name resolves to, not what a value is, which class derives from which, what a call returns, or whether a name is bound on this path. Round one of the Ruff and Pylint port (W-139) therefore left 38 rows unwritten rather than fake them from syntax, and filed them as [W-174](../archive/open/W-174-python-inference.md), each with its question. Upstream behaviour is Ruff 0.16.9 (source and fixtures, MIT) and Pylint 4.1.3 (behaviour from its functional tests only, never its code; [L2](0004_LAW-2-foss-dependencies.md)).
 
 ### Decision
 
@@ -97,7 +97,7 @@ flowchart LR
 ### Reference (required)
 
 - [`crates/codelaw-semantic/src/py_flow.rs`](../crates/codelaw-semantic/src/py_flow.rs) and [`crates/codelaw-native/src/py_flow.rs`](../crates/codelaw-native/src/py_flow.rs): the pass and the rules that read it; `cargo test -p codelaw-native` and `codelaw test packs/python` hold their cases.
-- [`work/open/W-174-python-inference.md`](../work/open/W-174-python-inference.md): the 38 rows, each with its question, and what each slice built.
+- [`archive/open/W-174-python-inference.md`](../archive/open/W-174-python-inference.md): the 38 rows, each with its question, and what each slice built.
 
 ### Veto condition
 
@@ -120,4 +120,4 @@ flowchart LR
 
 **Project docs**
 
-- [`work/open/W-174-python-inference.md`](../work/open/W-174-python-inference.md)
+- [`archive/open/W-174-python-inference.md`](../archive/open/W-174-python-inference.md)

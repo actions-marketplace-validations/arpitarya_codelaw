@@ -54,6 +54,7 @@ recommended set, markdownlint's default all-on). codelaw's side is every
 | **types** | needs type information — W-105's type questions |
 | **layout** | formatting; the formatter owns it (SR-FORMATTER decision 3) |
 | **planned** | already filed as another work item |
+| **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). `boolean-datetime` is the first row carried in the CSV with this class; the rest of §14's list still reads `port` there |
 | **needs-data** | needs runtime-support data codelaw does not ship (`n/no-unsupported-features/*`) |
 | **out-of-scope** | a language outside L3 (Vue, Svelte, Astro, GraphQL) or a framework with no codelaw pack (Ruff's Airflow, Django, FastAPI, NumPy, pandas rules) |
 | **same-as** | the same rule as one counted under another tool (Biome's sourced rules, import-x's fork, typescript-eslint's extension rules) — counted once |

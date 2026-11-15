@@ -21,9 +21,9 @@ content_sha: ""
 
 **The law (L8).**
 
-> **codelaw is a high-performance tool, and its speed is a law.** Every operation it offers has a **time budget**. A budget starts **unset**; the decider sets it from measurements. **Once set, a budget is never exceeded and never loosened.** A change that breaks a budget does not merge. Budgets only ever tighten.
+> **codelaw is a high-performance tool, and its speed is a law.** Every operation it offers has a **time budget**. A budget starts **unset**; the decider sets it from measurements. **Once set, a budget is never exceeded and never loosened — except by the decider's own ruling, naming the budget and the new value (decision 5a).** A change that breaks a budget does not merge. Budgets otherwise only ever tighten.
 
-**Ruled by Arpit, 2026-10-18.** Two operations added and decision 8 written on his ruling of 2026-10-27 (W-101, by voice, R1–R8 of [the proposal](../work/proposals/type-aware-rules.md) §3), which took type-aware TypeScript rules into the engine on the design that names their cost to this law — hook paths skip a cold type program, and `check_types_cold` / `check_types_warm` start `unset` (the proposal's §4 item 4 and §5) — and filed this amendment as W-104. It sets no budget. **Written by an agent on that ruling (W-104).**
+**Ruled by Arpit, 2026-10-18.** Two operations added and decision 8 written on his ruling of 2026-10-27 (W-101, by voice, R1–R8 of [the proposal](../work/proposals/type-aware-rules.md) §3), which took type-aware TypeScript rules into the engine on the design that names their cost to this law — hook paths skip a cold type program, and `check_types_cold` / `check_types_warm` start `unset` (the proposal's §4 item 4 and §5) — and filed this amendment as W-104. It sets no budget. **Written by an agent on that ruling (W-104).** Amended 2026-11-15 on the decider's ruling of 2026-11-09 (W-172, by voice): a budget may be raised, by his ruling, naming the budget and the value — `peak_memory_10k` 72 → 90 MiB (decision 5a). **Written by an agent on that ruling (W-172).**
 
 **Why it exists.** A linter and formatter run on every save, every commit and every agent edit. If it's slow, people switch it off and agents time out. Speed has to be a constraint that features fit inside, not a property hoped for afterwards.
 
@@ -80,8 +80,9 @@ The decider wants performance to be a key property and accepts that today's numb
 4. **Setting a budget** is the decider's ruling. The entry records the value, the measured p95 it came from, and the date. Anyone may propose a tighter value; only a ruling sets one. The decider may rule a method in advance; each entry then names that ruling. **Ruled 2026-10-25 (W-19):** min(design target, 1.5 × the worst p95 of the `perf` job's three `ubuntu-24.04` runs on `main`), rounded up; an operation whose design target is below 1.5 × that p95 is not set and goes back to the decider.
 5. **Never broken, never loosened.**
    - No flag, label or override lets a change over budget merge.
-   - A budget is never raised.
+   - A budget is never raised, except by decision 5a.
    - If the reference machine must change, the decider re-measures **every** budget on the new machine in one change, and no budget may get slower relative to the measured baseline.
+5a. **A budget may be raised only by the decider's ruling, naming the budget and the value (W-172, 2026-11-09).** No agent, flag or measurement raises one; the entry in `perf/budgets.toml` names the ruling in `set_by` and keeps the value it replaced in a comment, and the change that raises it names this decision. **Ruled so far:** `peak_memory_10k` **72 → 90 MiB** — the decider, by voice, 2026-11-09, after the levers for staying under 72 were read to him (*"Update the budget. This looks good."*, then *"Amend the [L8]."*; offered 86 (as measured, 86.1 MiB p95 on the reference runner) or 90 (headroom against run-to-run noise): *"Let's go with 90."*). The cause was not a defect: the packs grew from 443 to 1,581 loaded rules (W-139) and the engine reads them all; the time budgets (`check_cold_10k`, `lsp_after_edit`) are not covered by this ruling.
 6. **Until a budget is set,** the gate reports that operation's p95 on every change without blocking, and the design targets in [SR-ARCHITECTURE](0108_architecture.md) guide the work.
 7. **The gate runs on every change to the engine** once the engine exists. Its mechanism is `W-19`.
 8. **A hook never pays for a cold type program.** `codelaw hook` and `codelaw hook --pre` (`fix_one_file`, `hook_pre`) run the type-aware rules only through a warm process that already holds the project's TypeScript program ([SR-TYPES](0117_types.md)); with none, they skip them and say so in a note. So type rules never count against those two budgets, and their own cost is `check_types_cold` and `check_types_warm`.
@@ -209,7 +210,8 @@ The decider wants performance to be a key property and accepts that today's numb
 ### Alternatives considered
 
 - **Budgets as targets, not a law:** rejected by the decider. Targets erode one "small" regression at a time.
-- **Allow loosening with sign-off:** rejected. "Whatever happens, it never gets broken."
+- **Allow loosening with sign-off:** rejected on 2026-10-18 ("whatever happens, it never gets broken"); on 2026-11-09 the decider chose it for one budget by name, so it is allowed only as decision 5a says — his ruling, per budget, never a flag.
+- **Optimise `peak_memory_10k` back under 72 MiB:** offered 2026-11-09 and not taken — it needed larger changes (lazy data tables, on-demand rule docs, a smaller code footprint) traded against the time budgets, for the last ~14 MiB.
 - **Set numbers now, before any code:** rejected. Unmeasured numbers are guesses; the law fixes the mechanism now and the numbers later.
 
 ### Reference (required)
@@ -220,9 +222,9 @@ The decider wants performance to be a key property and accepts that today's numb
 
 ### Veto condition
 
-**Reopen this decision if:** a change merged while an operation's p95 exceeded its set budget, or a budget value in `perf/budgets.toml` increased.
+**Reopen this decision if:** a change merged while an operation's p95 exceeded its set budget, or a budget value in `perf/budgets.toml` increased without a ruling of the decider's named in its `set_by` (decision 5a).
 
-**How to check it:** `git log -p perf/budgets.toml` shows no budget value rising, and the perf gate's history (`ci.yml`, job `perf`) shows no merge over budget.
+**How to check it:** `git log -p perf/budgets.toml` shows no budget value rising but those decision 5a names (today: `peak_memory_10k`, 72 → 90), and the perf gate's history (`ci.yml`, job `perf`) shows no merge over budget.
 
 ---
 
