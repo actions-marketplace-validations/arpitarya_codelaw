@@ -491,7 +491,7 @@ fn header_path(line: &str) -> Option<String> {
     known.then(|| p.to_owned())
 }
 
-/// Split a `files` snippet into its `// path` sections (SR-PROJECT-GRAPH
+/// Split a `files` snippet into its `// path` sections (SR-MODULE-GRAPH
 /// decision 6); a snippet with no header is one file, `example.<ext>`.
 pub fn split_files(language: Language, code: &str) -> Vec<SnippetFile> {
     let mut out: Vec<SnippetFile> = Vec::new();

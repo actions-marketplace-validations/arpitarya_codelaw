@@ -1,4 +1,4 @@
-//! Per-file facts (SR-PROJECT-GRAPH decision 5): what one file declares,
+//! Per-file facts (SR-MODULE-GRAPH decision 5): what one file declares,
 //! exports, imports and references, read once from its syntax tree and
 //! semantic model. Facts depend on the file's text alone, so they are
 //! cached by content; linking them is the graph's job.
@@ -188,7 +188,7 @@ pub struct FileFacts {
     pub exports: Vec<ExportFact>,
     pub imports: Vec<ImportFact>,
     pub dynamic_imports: Vec<DynamicImport>,
-    /// Why the module is `dynamic` (SR-PROJECT-GRAPH decision 4).
+    /// Why the module is `dynamic` (SR-MODULE-GRAPH decision 4).
     pub dynamic: Option<String>,
     /// Python: the module sets `__all__`.
     pub python_all: bool,

@@ -97,12 +97,12 @@ The decider asked for a record of what goes into which package, under the naming
    | inputs | `codelaw-config` | [SR-CONFIG](0110_config.md) |
    | inputs | `codelaw-lang` | the [L3](0005_LAW-3-languages.md) grammars, language detection, embedded regions ([SR-LINTER](0106_linter.md) decision 3) |
    | inputs | `codelaw-rules` | the rule-file parser and loader ([SR-RULE-FORMAT](0112_rule-format.md)); pack resolution and manifests ([SR-RULE-PACKS](0101_rule-packs.md) decision 4); load-time checks for [L4](0006_LAW-4-every-rule-has-a-fix.md); the engine's own rules' entries, `graph/no-deprecated-usage` among them |
-   | engines | `codelaw-semantic` | the per-file semantic model: scopes, bindings, references, imports and exports for JS/TS and Python ([SR-ARCHITECTURE](0108_architecture.md) decision 15a) |
+   | engines | `codelaw-semantic` | the per-file semantic model: scopes, bindings, references, imports and exports for JS/TS and Python ([SR-SEMANTIC-MODEL](0123_semantic-model.md)) |
    | engines | `codelaw-match` | file-scope rules on `ast-grep-core`, with the semantic-model predicates |
    | engines | `codelaw-native` | the Rust implementations behind `native:` rules ([SR-ARCHITECTURE](0108_architecture.md) decision 15b) |
    | engines | `codelaw-fix` | edit primitives, the apply loop, the verifier |
    | engines | `codelaw-format` | the formatter engines ([SR-FORMATTER](0105_formatter.md)) |
-   | engines | `codelaw-graph` | [SR-PROJECT-GRAPH](0103_project-graph.md) |
+   | engines | `codelaw-graph` | [SR-MODULE-GRAPH](0122_module-graph.md) |
    | engines | `codelaw-baseline` | the baseline files, what each finding becomes under them, the ratchet and the deprecations registry ([SR-BASELINE](0104_baseline-and-deprecations.md)); it reads no clock and runs no `git`: `codelaw-engine` hands it the as-of date and the change set, and runs `graph/no-deprecated-usage` on the graph |
    | engines | `codelaw-adapters` | optional external linters run as programs: manifests, runner, output mapping ([SR-LINTER](0106_linter.md) decision 2); `codelaw-engine` runs them |
    | engines | `codelaw-types` | the `codelaw-types` Node helper, its protocol, and the project's TypeScript found ([SR-TYPES](0117_types.md)); `codelaw-engine` asks it |
@@ -260,7 +260,7 @@ The decider asked for a record of what goes into which package, under the naming
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-BASELINE](0104_baseline-and-deprecations.md) · [SR-FORMATTER](0105_formatter.md) · [SR-LINTER](0106_linter.md) · [SR-ARCHITECTURE](0108_architecture.md) · [SR-CACHE](0109_cache.md) · [SR-CONFIG](0110_config.md) · [SR-RULE-FORMAT](0112_rule-format.md) · [SR-RULE-AUTHORING](0113_rule-authoring.md) · [SR-EDITOR](0114_editor.md) · [SR-CLI-MCP](0115_cli-and-mcp.md)
+**Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-MODULE-GRAPH](0122_module-graph.md) · [SR-BASELINE](0104_baseline-and-deprecations.md) · [SR-FORMATTER](0105_formatter.md) · [SR-LINTER](0106_linter.md) · [SR-ARCHITECTURE](0108_architecture.md) · [SR-CACHE](0109_cache.md) · [SR-CONFIG](0110_config.md) · [SR-RULE-FORMAT](0112_rule-format.md) · [SR-RULE-AUTHORING](0113_rule-authoring.md) · [SR-EDITOR](0114_editor.md) · [SR-CLI-MCP](0115_cli-and-mcp.md)
 
 **Work items** — [W-77](../work/open/W-77-skills-package.md)
 

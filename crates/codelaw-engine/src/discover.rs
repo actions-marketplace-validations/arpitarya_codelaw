@@ -142,7 +142,7 @@ pub(crate) fn discover(project: &mut Project, paths: &[PathBuf]) -> Result<Disco
 
 /// `filtered: false` keeps the files `[files]` and `languages` leave out:
 /// the project graph reads them for their uses and resolves imports to
-/// them, and reports nothing in them (SR-PROJECT-GRAPH decision 1).
+/// them, and reports nothing in them (SR-MODULE-GRAPH decision 1).
 pub(crate) fn discover_with(project: &mut Project, paths: &[PathBuf], filtered: bool) -> Result<Discovered, EngineError> {
     let root = project.config.root_dir.clone();
     let roots: Vec<PathBuf> = if paths.is_empty() {

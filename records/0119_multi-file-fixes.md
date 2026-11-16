@@ -98,7 +98,7 @@ could not climb the fix ladder without editing other files
       decisions 9 and 10 hold in every file: a second run changes nothing,
       the rule no longer fires, and bytes outside the edits are identical.
    2. **Nothing is left dangling.** The project graph
-      ([SR-PROJECT-GRAPH](0103_project-graph.md)) is rebuilt over the edited
+      ([SR-MODULE-GRAPH](0122_module-graph.md)) is rebuilt over the edited
       files. If an import, class, id or other reference that resolved before
       now resolves to nothing, the fix is refused.
    3. **All or nothing.** Every file is written, or none is. Each goes to a
@@ -107,7 +107,7 @@ could not climb the fix ladder without editing other files
    4. **Automatic only when it is certain.** The fix is `auto` only when
       every use it edits is resolved statically: SCSS members through
       `@use`, or an export whose importers are all static (no module marked
-      `dynamic`, SR-PROJECT-GRAPH decision 4). One use the graph only
+      `dynamic`, SR-MODULE-GRAPH decision 4). One use the graph only
       guesses at, such as a class token inside a string, makes the whole fix
       `suggest`.
    5. **Never in the background.** A multi-file fix is never applied on save
@@ -238,7 +238,7 @@ not others, or leaves a reference unresolved that resolved before it.
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-CONFIG](0110_config.md) · [SR-CACHE](0109_cache.md)
+**Records** — [SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-MODULE-GRAPH](0122_module-graph.md) · [SR-CONFIG](0110_config.md) · [SR-CACHE](0109_cache.md)
 
 **Code** — `crates/codelaw-core/src/diagnostic.rs` · `crates/codelaw-engine/src/multi_file.rs` · `crates/codelaw-fix/src/transaction.rs` · `crates/codelaw-graph/src/dangling.rs` · `crates/codelaw-native/src/multi_file.rs`
 

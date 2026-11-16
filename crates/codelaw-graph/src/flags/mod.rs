@@ -1,4 +1,4 @@
-//! Feature-flag expiry (SR-PROJECT-GRAPH decision 11, W-130): which calls
+//! Feature-flag expiry (SR-MODULE-GRAPH decision 11, W-130): which calls
 //! read a flag — the accessors `[flags]` names, the presets for six SDKs
 //! and every wrapper whose parameter flows into one, found through the
 //! graph — the flag each read names, and what the registry

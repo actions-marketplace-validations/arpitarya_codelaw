@@ -1,6 +1,6 @@
 [package]
 name = "codelaw-graph"
-description = "The project graph: per-file facts, module resolution and cross-file queries for `scope: project` rules (SR-PROJECT-GRAPH)"
+description = "The project graph: per-file facts, module resolution and cross-file queries for `scope: project` rules (SR-MODULE-GRAPH)"
 version.workspace = true
 edition.workspace = true
 publish.workspace = true

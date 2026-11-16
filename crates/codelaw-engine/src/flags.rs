@@ -1,4 +1,4 @@
-//! Feature-flag expiry in the project stage (SR-PROJECT-GRAPH decision 11,
+//! Feature-flag expiry in the project stage (SR-MODULE-GRAPH decision 11,
 //! W-130): the `graph: { flags: … }` rules run here, because their inputs
 //! are the engine's — `[flags]`, the registry `.codelaw/flags.toml`, every
 //! JS, TS and Python file's flag facts (cached by content) and the as-of

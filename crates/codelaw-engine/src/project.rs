@@ -1,6 +1,6 @@
 //! The project stage of `check` (SR-ARCHITECTURE decision 4.4): read
 //! every file of the project root once for its graph facts (cached by
-//! content, SR-PROJECT-GRAPH decision 5), link the graph and run the
+//! content, SR-MODULE-GRAPH decision 5), link the graph and run the
 //! `scope: project` rules, then their suppressions. `spell/inconsistent-term`
 //! (`graph: { terms: inconsistent }`) runs here too, over every file's
 //! prose: its words are the spell pack's, read per file and cached by
@@ -41,7 +41,7 @@ impl Project {
             .filter(|(_, r)| {
                 self.rules.effective(&r.loaded, &[]).is_some()
                     || self.config.named_rule_ids().iter().any(|(id, _)| id == r.id())
-                    // A `[flags]` table turns the flag rules on (SR-PROJECT-GRAPH decision 11).
+                    // A `[flags]` table turns the flag rules on (SR-MODULE-GRAPH decision 11).
                     || (crate::flags::is_flag_rule(r) && self.flag_rule_config(r, &[]).is_some())
             })
             .collect()
@@ -418,7 +418,7 @@ impl Project {
 
     /// Check an in-memory set of files as one project: file rules on each,
     /// then project rules over all of them (the rule tester's virtual
-    /// repo, SR-PROJECT-GRAPH decision 6).
+    /// repo, SR-MODULE-GRAPH decision 6).
     pub fn check_files(&self, files: &[(String, Language, String)]) -> Vec<Diagnostic> {
         let mut out = Vec::new();
         for (rel, language, text) in files {

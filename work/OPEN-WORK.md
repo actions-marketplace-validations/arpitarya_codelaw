@@ -28,7 +28,7 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (28)
+## Open items (27)
 
 ### build (18)
 
@@ -90,9 +90,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
-### record update (1)
-
-🟢 **W-191** `agent` SR-PROJECT-GRAPH as the overview of every graph; the module graph, semantic model and Python flow pass each in a record. SR-CODE-PATH-GRAPH filed 11-09. Filed by Arpit (Cowork). [detail](open/W-191-graph-records.md)
+### record update (0)
 
 ### research (3)
 

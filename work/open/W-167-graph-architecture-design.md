@@ -59,7 +59,7 @@ A design for building the project graph that stays fast and bounded in memory fr
 
 ## Record affected
 
-**No SR affected by this item** — it produces a proposal. The build item that follows updates [SR-PROJECT-GRAPH](../../records/0103_project-graph.md) decisions 1 and 5 and [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 17.
+**No SR affected by this item** — it produces a proposal. The build item that follows updates [SR-MODULE-GRAPH](../../records/0122_module-graph.md) decisions 1 and 5 and [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 17.
 
 ## Hazards
 
@@ -69,5 +69,5 @@ A design for building the project graph that stays fast and bounded in memory fr
 
 ## Reference
 
-- [SR-PROJECT-GRAPH](../../records/0103_project-graph.md) · [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 17 · [SR-CACHE](../../records/0109_cache.md) · [L8](../../records/0010_LAW-8-performance-budgets.md) · [L9](../../records/0011_LAW-9-machine-budget.md)
+- [SR-MODULE-GRAPH](../../records/0122_module-graph.md) · [SR-ARCHITECTURE](../../records/0108_architecture.md) decision 17 · [SR-CACHE](../../records/0109_cache.md) · [L8](../../records/0010_LAW-8-performance-budgets.md) · [L9](../../records/0011_LAW-9-machine-budget.md)
 - [W-168](W-168-graph-scale-measurement.md) — the numbers this design reads

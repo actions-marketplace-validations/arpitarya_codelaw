@@ -97,7 +97,7 @@ shape **flatters resolve and link**; at 1M their generated 20 s could be
 
 ## What breaks first
 
-1. **The one-file hook, already at 10k.** SR-PROJECT-GRAPH decision 5's
+1. **The one-file hook, already at 10k.** SR-MODULE-GRAPH decision 5's
    target is under 300 ms on 10,000 files, warm; the measured median is
    **2.0 s** (p95 4.5 s), 7× over, and 12 s at 100k. The hook rebuilds the
    whole graph: it reads every file again (`graph-read`), asks the cache for

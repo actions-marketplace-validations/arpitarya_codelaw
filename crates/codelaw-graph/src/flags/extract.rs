@@ -1,4 +1,4 @@
-//! A file's flag facts (SR-PROJECT-GRAPH decision 11): its calls with
+//! A file's flag facts (SR-MODULE-GRAPH decision 11): its calls with
 //! their arguments, its named functions and their parameters, its string
 //! constants and its `codelaw-flag` markers. Read once per file and cached
 //! by content, like the graph's facts.

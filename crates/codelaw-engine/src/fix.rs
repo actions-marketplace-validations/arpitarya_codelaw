@@ -517,7 +517,7 @@ fn fix_multi_file(project: &mut Project, files: &[FileEntry], skipped: &[codelaw
     Ok(!pass.applied.is_empty())
 }
 
-/// Project-rule fixes, after every file's own (SR-PROJECT-GRAPH decision 6):
+/// Project-rule fixes, after every file's own (SR-MODULE-GRAPH decision 6):
 /// relink, apply, repeat, then report what the graph still finds.
 fn fix_project_rules(project: &mut Project, paths: &[PathBuf], options: &FixOptions, report: &mut FixReport) -> Result<Vec<crate::project::Source>, EngineError> {
     let config = project.graph_config()?;

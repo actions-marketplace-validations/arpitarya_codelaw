@@ -1,5 +1,5 @@
 //! The `graph:` queries that read what another module exports
-//! (SR-PROJECT-GRAPH decision 6, W-175): an import against its target's
+//! (SR-MODULE-GRAPH decision 6, W-175): an import against its target's
 //! export names, the target's default export's own name, a JSDoc
 //! `@deprecated` on an export, `export *` conflicts, import cycles, and
 //! modules with no exports or exports nothing imports.

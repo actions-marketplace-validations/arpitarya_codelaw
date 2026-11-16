@@ -10952,7 +10952,7 @@ keep    = "on"           # optional: the branch that stays — `js/flag-expiry` 
 reason  = "…"
 ```
 
-The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11), and judges the registry once `[flags]` names a preset or an accessor. It reports, in the registry:
+The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11), and judges the registry once `[flags]` names a preset or an accessor. It reports, in the registry:
 
 | an entry that | finding | fix |
 |---|---|---|
@@ -24243,7 +24243,7 @@ export const x = 1;
 
 ### What it checks
 
-Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor.
+Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor.
 
 ```toml
 [flags]
@@ -24441,7 +24441,7 @@ An inline marker registers a flag where it is read, when no `.codelaw/flags.toml
 // codelaw-flag new-checkout expires 2027-02-28 owner @payments ticket PAY-12 keep on reason <the rest of the line>
 ```
 
-`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11). It reports:
+`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11). It reports:
 
 | the marker | finding | fix |
 |---|---|---|
@@ -115660,7 +115660,7 @@ def get(user_id):
 
 ### What it checks
 
-Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor. It is `js/flag-expiry` for Python: the same `[flags]`, registry, markers and findings.
+Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor. It is `js/flag-expiry` for Python: the same `[flags]`, registry, markers and findings.
 
 ```toml
 [flags]
@@ -115752,7 +115752,7 @@ An inline marker registers a flag where it is read, when no `.codelaw/flags.toml
 # codelaw-flag new-checkout expires 2027-02-28 owner @payments ticket PAY-12 keep on reason <the rest of the line>
 ```
 
-`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11). It reports:
+`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11). It reports:
 
 | the marker | finding | fix |
 |---|---|---|
