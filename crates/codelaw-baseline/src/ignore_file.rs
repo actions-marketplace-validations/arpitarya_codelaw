@@ -28,7 +28,7 @@ pub const INCOMPLETE_RULE: &str = "codelaw/incomplete-ignore";
 /// A line matches no file or function.
 pub const STALE_IGNORE_RULE: &str = "codelaw/stale-ignore";
 /// What a line that names no rule exempts: the old spelling, kept for one
-/// minor release (the test rules of new code, SR-PROJECT-GRAPH decision 9).
+/// minor release (the test rules of new code, SR-MODULE-GRAPH decision 9).
 pub const LEGACY_RULES: &[&str] = &["graph/untested-function", "graph/function-coverage"];
 
 /// What an edit does to an exemption.

@@ -1,4 +1,4 @@
-//! CSS Modules facts (W-63, SR-PROJECT-GRAPH decision 8): what a stylesheet
+//! CSS Modules facts (W-63, SR-MODULE-GRAPH decision 8): what a stylesheet
 //! defines as a local class, what it composes, and what it exports to
 //! JavaScript (`:export`, `@value`).
 //!

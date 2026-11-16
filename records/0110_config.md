@@ -51,7 +51,7 @@ remap = { error = "warn" }
 "js/no-console" = "error"
 
 [format]   # SR-FORMATTER      [lint]     # SR-LINTER
-[graph]    # SR-PROJECT-GRAPH [baseline] # SR-BASELINE
+[graph]    # SR-MODULE-GRAPH [baseline] # SR-BASELINE
 [adapters] # SR-LINTER        [agents]   # SR-AGENT-SURFACES
 [cache]    # SR-CACHE        [files]    # SR-ARCHITECTURE (discovery, encoding, size)
 [daemon]   # SR-ARCHITECTURE  [lsp]      # SR-ARCHITECTURE
@@ -59,15 +59,15 @@ remap = { error = "warn" }
 [deprecation] # SR-BASELINE (the policy of a symbol marked deprecated in code)
 [exceptions]  # SR-BASELINE (dated exceptions: require_expiry, warn_days)
 [deps]        # SR-RULE-PACKS (the deps pack: its rules, snapshot, advisory sources and agent setting)
-[css]         # SR-PROJECT-GRAPH (CSS Modules: which stylesheets, and the bundler's class-name mapping)
-[coverage]    # SR-PROJECT-GRAPH (the test rules of new code; [coverage.ignore] is the old spelling of [codelawignore])
+[css]         # SR-MODULE-GRAPH (CSS Modules: which stylesheets, and the bundler's class-name mapping)
+[coverage]    # SR-MODULE-GRAPH (the test rules of new code; [coverage.ignore] is the old spelling of [codelawignore])
 [codelawignore] # SR-BASELINE (what every `.codelawignore` line must carry, and a line's defaults)
 [spell]       # SR-SPELL (the spell pack's locale, accepted words and words file)
 [todo]        # SR-CONFIG (what a TODO-style comment must carry: decision 11a)
 [tests]       # SR-CONFIG (`[tests.skip]`: what a skipped test must carry: decision 11a)
 [reviews]     # SR-AGENT-SURFACES (the codelaw-rules-from-reviews skill's platform and thresholds; validated, read by no engine code)
 [codeowners]  # SR-RULE-PACKS (CODEOWNERS coverage: the file's path, patterns that need no owner)
-[flags]       # SR-PROJECT-GRAPH (feature-flag expiry: accessors, SDK presets, inline markers, warn_days)
+[flags]       # SR-MODULE-GRAPH (feature-flag expiry: accessors, SDK presets, inline markers, warn_days)
 [packs]       # SR-PACK-LOOKUP (where rule packs are found: order, node_modules, venv)
 [providers]   # SR-RULE-PACKS (what a run does when a provider gives no table; each provider's settings: decision 19)
 [commits]     # SR-CONFIG (what a commit message must look like: decision 11b)
@@ -135,7 +135,7 @@ Configuration keys were scattered across six records. The decider asked for one 
 
    Sizes are bytes or a string such as `"1 MiB"` or `"512MB"`; durations are seconds or a string such as `"5s"` or `"500ms"`; a number of days (`[deps]`'s ages) is an integer or a string such as `"7d"` or `"2w"`.
 
-   `extends` takes first-party presets as `codelaw:<namespace>/<preset>`, resolved from the installed rule pack, and team packs as `npm:`, `pypi:` or `path:` ([SR-RULE-PACKS](0101_rule-packs.md) decisions 4 and 11). One preset has no namespace: `codelaw:tests` is the engine's own and turns on the test rules of new code ([SR-PROJECT-GRAPH](0103_project-graph.md) decision 9); no pack resolves it.
+   `extends` takes first-party presets as `codelaw:<namespace>/<preset>`, resolved from the installed rule pack, and team packs as `npm:`, `pypi:` or `path:` ([SR-RULE-PACKS](0101_rule-packs.md) decisions 4 and 11). One preset has no namespace: `codelaw:tests` is the engine's own and turns on the test rules of new code ([SR-MODULE-GRAPH](0122_module-graph.md) decision 9); no pack resolves it.
 
    Each `[section]` belongs to the record named beside it in §1, and that record states its keys. A record adding a key adds it to the schema in the same change. `[adapters]`, `[agents]`, `[daemon]`, `[lsp]`, `[deprecation]`, `[exceptions]`, `[deps]`, `[css]`, `[coverage]`, `[spell]`, `[todo]`, `[tests]`, `[reviews]`, `[codeowners]`, `[flags]`, `[packs]` and `[providers]` are validated by the loader like `[fix]` and `[lint]` — `[reviews]` only that: no engine code reads it, a skill does ([SR-AGENT-SURFACES](0102_agent-surfaces.md) decision 10; W-133, 2026-10-30); `[format]`, `[graph]` and `[baseline]` are still read as tables. **`[packs]` names folders** (W-155, 2026-10-30): `node_modules` and `venv`, relative to the root config's folder; a set folder that is missing is a load error naming it ([SR-PACK-LOOKUP](0118_pack-lookup.md) decisions 6–7); the loader parses and checks the section in `crates/codelaw-config/src/packs.rs`, and `config --print` traces its keys and the places they resolve to (SR-PACK-LOOKUP decision 8). **One key names a file the loader reads:** `[spell] words_file` (default `.codelaw/spell/words.txt`, relative to the root config's folder; W-112, 2026-10-28): its words join `[spell] words`, a set path that is missing is a load error naming it, and a missing default is none ([SR-SPELL](0116_spell.md) decision 7).
 4. **Precedence, last wins:**

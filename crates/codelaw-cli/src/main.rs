@@ -85,7 +85,7 @@ enum Command {
     Debug(debug_cmd::DebugArgs),
     /// Query the project graph: `refs`, `why-unused`.
     Graph(graph_cmd::GraphArgs),
-    /// Feature flags: `accessors` lists every call the flag rules read a flag through (SR-PROJECT-GRAPH decision 11).
+    /// Feature flags: `accessors` lists every call the flag rules read a flag through (SR-MODULE-GRAPH decision 11).
     Flags(flags_cmd::FlagsArgs),
     /// Print the resolved configuration with each value's source, or its JSON Schema.
     Config(config_cmd::ConfigArgs),

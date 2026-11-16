@@ -38,7 +38,7 @@ ball: agent
 
 ## Record affected
 
-SR-PROJECT-GRAPH (a query, if one is added).
+SR-MODULE-GRAPH (a query, if one is added).
 
 ## Hazards
 

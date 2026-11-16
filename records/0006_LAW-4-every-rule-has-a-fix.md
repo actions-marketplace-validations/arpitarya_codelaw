@@ -301,7 +301,7 @@ lists the `manual` rules still without one.
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-LAWS](0001_LAWS.md) · [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-RULE-FORMAT](0112_rule-format.md) · [SR-CONFIG](0110_config.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md)
+**Records** — [SR-LAWS](0001_LAWS.md) · [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) · [SR-AGENT-SURFACES](0102_agent-surfaces.md) · [SR-MODULE-GRAPH](0122_module-graph.md) · [SR-RULE-FORMAT](0112_rule-format.md) · [SR-CONFIG](0110_config.md) · [SR-LAW-3](0005_LAW-3-languages.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md)
 
 **Code** — `crates/codelaw-core/src/diagnostic.rs` · `crates/codelaw-rules/src/rule.rs` · `crates/codelaw-cli/tests/laws.rs`
 

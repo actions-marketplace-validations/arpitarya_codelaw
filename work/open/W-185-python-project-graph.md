@@ -22,7 +22,7 @@ ball: agent
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* On the recommendation (one item for the Python graph, the six rows on it): *"Yes."* Filed on *"file it."*
 
-**Model:** Opus (Claude Code): graph design on SR-PROJECT-GRAPH, as W-175 did for JavaScript.
+**Model:** Opus (Claude Code): graph design on SR-MODULE-GRAPH, as W-175 did for JavaScript.
 
 ## Goal
 
@@ -42,7 +42,7 @@ None.
 
 ## Record affected
 
-SR-PROJECT-GRAPH.
+SR-MODULE-GRAPH.
 
 ## Hazards
 

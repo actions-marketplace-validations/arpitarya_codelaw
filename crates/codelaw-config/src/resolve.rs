@@ -1121,7 +1121,7 @@ impl Config {
     }
 
     /// Whether the root config has a `[flags]` table: it turns the flag
-    /// rules on (SR-PROJECT-GRAPH decision 11).
+    /// rules on (SR-MODULE-GRAPH decision 11).
     pub fn flags_on(&self) -> bool {
         self.root_raw().is_some_and(|r| r.flags.is_some())
     }

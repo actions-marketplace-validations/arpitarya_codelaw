@@ -1,4 +1,4 @@
-//! `codelaw graph refs` and `codelaw graph why-unused` (SR-PROJECT-GRAPH
+//! `codelaw graph refs` and `codelaw graph why-unused` (SR-MODULE-GRAPH
 //! decision 6): the project-rule debug commands.
 
 use crate::{Common, engine_options, fail, load};

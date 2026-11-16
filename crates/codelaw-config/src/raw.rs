@@ -60,7 +60,7 @@ pub struct RawConfig {
     pub deprecation: Option<RawDeprecation>,
     /// SR-BASELINE decision 9: dated exceptions. Root config only.
     pub exceptions: Option<RawExceptions>,
-    /// SR-PROJECT-GRAPH decision 9 (W-71): the test rules of new code —
+    /// SR-MODULE-GRAPH decision 9 (W-71): the test rules of new code —
     /// the lcov report and the rules' options; `[coverage.ignore]` is the
     /// deprecated spelling of `[codelawignore]`. Root config only.
     pub coverage: Option<RawCoverage>,
@@ -70,7 +70,7 @@ pub struct RawConfig {
     /// SR-RULE-PACKS decision 15: the dependency rules. Root config only.
     #[serde(default)]
     pub deps: RawDeps,
-    /// SR-PROJECT-GRAPH decision 8 (W-63): CSS Modules. Root config only.
+    /// SR-MODULE-GRAPH decision 8 (W-63): CSS Modules. Root config only.
     #[serde(default)]
     pub css: RawCss,
     /// SR-RULE-PACKS decision 16 (W-132): `data/codeowners-coverage`. Root
@@ -98,7 +98,7 @@ pub struct RawConfig {
     /// `git/pr-description`. Root config only.
     #[serde(default)]
     pub pr: RawPr,
-    /// SR-PROJECT-GRAPH decision 11 (W-130): feature-flag expiry — the
+    /// SR-MODULE-GRAPH decision 11 (W-130): feature-flag expiry — the
     /// accessors, the SDK presets, the inline markers' policy and the
     /// warning window. Its presence turns the flag rules on. Root config only.
     pub flags: Option<RawFlags>,
@@ -405,7 +405,7 @@ pub struct RawExceptions {
     pub warn_days: Option<i64>,
 }
 
-/// `[coverage]`: SR-PROJECT-GRAPH decision 9. Values are checked when the
+/// `[coverage]`: SR-MODULE-GRAPH decision 9. Values are checked when the
 /// project loads.
 #[derive(Debug, Default, Clone, PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -689,7 +689,7 @@ pub const COMMIT_PRESETS: &[&str] = &["conventional", "angular", "gitmoji", "cus
 
 /// The ticket pattern when `ticket_pattern` is not set (`ABC-123`).
 pub const DEFAULT_TICKET_PATTERN: &str = "[A-Z][A-Z0-9]+-\\d+";
-/// `[flags]`: SR-PROJECT-GRAPH decision 11. The flag rules read it as their
+/// `[flags]`: SR-MODULE-GRAPH decision 11. The flag rules read it as their
 /// options, so it serialises to the JSON they read.
 #[derive(Debug, Default, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]

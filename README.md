@@ -378,7 +378,7 @@ $ codelaw test acme/no-console-log
 | ✅ | MCP server (`codelaw mcp`) | [SR-CLI-MCP](records/0115_cli-and-mcp.md) | built |
 | ✅ | Language server (`codelaw lsp`): diagnostics, quick fixes, formatting | [SR-EDITOR](records/0114_editor.md) | built; the VS Code extension is [on the Marketplace](https://marketplace.visualstudio.com/items?itemName=codelaw.codelaw-vscode) for all eight platforms (0.5.1); Open VSX waits on W-117 |
 | ✅ | Agent hooks (`codelaw hook`), `init --agents`, `sync-agents` | [SR-AGENT-SURFACES](records/0102_agent-surfaces.md) | built |
-| ✅ | Project-wide rules (`graph/no-unused-exports`, `graph/no-unused-css-classes`, the `node/no-*-import` rules) | [SR-PROJECT-GRAPH](records/0103_project-graph.md) | built, `preview` |
+| ✅ | Project-wide rules (`graph/no-unused-exports`, `graph/no-unused-css-classes`, the `node/no-*-import` rules) | [SR-MODULE-GRAPH](records/0122_module-graph.md) | built, `preview` |
 | ✅ | Baselines and deprecations (`baseline`, `deprecate`) | [SR-BASELINE](records/0104_baseline-and-deprecations.md) | built |
 | ✅ | External linters as adapters (oxlint, Ruff, stylelint, html-validate) and the warm `daemon` | [SR-ARCHITECTURE](records/0108_architecture.md) | built |
 | 🔜 | Promotion to `stable`: the pinned corpus, its CI job, the promotion report and the ratified criterion | [SR-RULE-AUTHORING](records/0113_rule-authoring.md) | built; 42 `css` rules promoted, the other packs next |
