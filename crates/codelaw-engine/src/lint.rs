@@ -459,6 +459,10 @@ pub(crate) fn lint_text_with(project: &Project, entry: &FileEntry, text: &str, m
         .filter(|(_, r)| r.loaded.default.is_some() || layers.iter().any(|l| l.rules.contains_key(r.id())))
         .filter(|(_, r)| r.applies_to_path(&entry.rel))
         .filter_map(|(i, r)| project.rules.effective(&r.loaded, &layers).filter(|c| c.severity.is_some()).map(|c| (i, r, c)))
+        // A finding gated on the target (SR-RULE-FORMAT decision 2d): the
+        // rule is quiet where the file's target is outside its range, or
+        // unknown.
+        .filter(|(_, r, _)| r.loaded.rule.finding_target.as_ref().is_none_or(|t| project.finding_admits(entry, r.id(), t)))
         .collect();
 
     let host_rules: Vec<_> = active.iter().filter(|(_, r, _)| r.applies_to_language(entry.language) && r.loaded.rule.host.is_none()).cloned().collect();

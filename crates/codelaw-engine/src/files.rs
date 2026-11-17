@@ -303,6 +303,9 @@ impl FileContext for ProjectFile<'_> {
         self.record(Question::Read(format!("data-table:{short}")), hash_text(&table.map(|t| t.version.clone())));
         table.map(|t| t.value.clone())
     }
+    fn python_target(&self, rule: &str) -> Option<Vec<u64>> {
+        self.project?.python_target(&self.root.join(self.path), Some(rule)).value
+    }
     fn class_table(&self, short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         self.providers?.table(short).map(|t| t as std::sync::Arc<dyn codelaw_core::class_table::ClassTable>)
     }
