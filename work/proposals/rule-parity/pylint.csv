@@ -19,7 +19,7 @@ await-outside-async,same-as,,,,,,,,,,E1142; the same rule as ruff/PLE1142: count
 bad-builtin,port,,python,py/bad-builtin,manual,P2,D,none,,,"W0141, deprecated_builtins, an optional Pylint extension"
 bad-chained-comparison,port,,python,py/bad-chained-comparison,manual,P2,D,none,,,"W3601, bad-chained-comparison"
 bad-classmethod-argument,port,,python,py/bad-classmethod-argument,manual,P2,D,none,,,"C0202, classes"
-bad-configuration-section,port,,python,py/bad-configuration-section,manual,P1,A,none,yes,,"E0014, main"
+bad-configuration-section,not-applicable,,,,,,,none,yes,,"E0014, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
 bad-docstring-quotes,port,,python,py/bad-docstring-quotes,manual,P2,D,none,,,"C0198, docstyle, an optional Pylint extension"
 bad-dunder-name,port,,python,py/bad-dunder-name,manual,P2,D,none,,,"W3201, dunder, an optional Pylint extension"
 bad-except-order,port,,python,py/bad-except-order,manual,P1,A,none,yes,,"E0701, exceptions"
@@ -33,7 +33,7 @@ bad-inline-option,skip,,,,,,,,,,"I0010; a Pylint run message, not a rule"
 bad-mcs-classmethod-argument,port,,python,py/bad-mcs-classmethod-argument,manual,P2,D,none,,,"C0204, classes"
 bad-mcs-method-argument,port,,python,py/bad-mcs-method-argument,manual,P2,D,none,,,"C0203, classes"
 bad-open-mode,same-as,,,,,,,,,,W1501; the same rule as ruff/PLW1501: counted there
-bad-plugin-value,port,,python,py/bad-plugin-value,manual,P1,A,none,yes,,"E0013, main"
+bad-plugin-value,not-applicable,,,,,,,none,yes,,"E0013, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
 bad-reversed-sequence,port,,python,py/bad-reversed-sequence,manual,P1,A,none,yes,,"E0111, basic"
 bad-staticmethod-argument,same-as,,,,,,,,,,W0211; the same rule as ruff/PLW0211: counted there
 bad-str-strip-call,same-as,,,,,,,,,,E1310; the same rule as ruff/PLE1310: counted there
@@ -48,8 +48,8 @@ boolean-datetime,not-applicable,,python,,,,,none,,,"W1502, stdlib; ruled not-app
 break-in-finally,port,,python,py/break-in-finally,manual,P2,D,none,,,"W0137, basic"
 broad-exception-caught,port,,python,py/broad-exception-caught,manual,P2,D,none,,,"W0718, exceptions"
 broad-exception-raised,port,,python,py/broad-exception-raised,manual,P2,D,none,,,"W0719, exceptions"
-broken-collections-callable,port,,python,py/broken-collections-callable,manual,P2,D,none,,,"E6005, typing, an optional Pylint extension"
-broken-noreturn,port,,python,py/broken-noreturn,manual,P2,D,none,,,"E6004, typing, an optional Pylint extension"
+broken-collections-callable,not-applicable,,,,,,,none,,,"E6005, typing, an optional Pylint extension; not-applicable, ruled 2026-11-09: reported only for interpreters below codelaw's Python 3.9 floor"
+broken-noreturn,not-applicable,,,,,,,none,,,"E6004, typing, an optional Pylint extension; not-applicable, ruled 2026-11-09: reported only for interpreters below codelaw's Python 3.9 floor"
 c-extension-no-member,skip,,,,,,,,,,"I1101; a Pylint run message, not a rule"
 catching-non-exception,port,,python,py/catching-non-exception,manual,P1,A,none,yes,,"E0712, exceptions"
 cell-var-from-loop,port,,python,py/cell-var-from-loop,manual,P2,D,none,,,"W0640, variables"
@@ -110,9 +110,9 @@ differing-param-doc,port,,python,py/differing-param-doc,manual,P2,D,none,,,"W901
 differing-type-doc,port,,python,py/differing-type-doc,manual,P2,D,none,,,"W9018, parameter_documentation, an optional Pylint extension"
 disallowed-name,port,,python,py/disallowed-name,manual,P2,D,none,,,"C0104, basic"
 docstring-first-line-empty,port,,python,py/docstring-first-line-empty,manual,P2,D,none,,,"C0199, docstyle, an optional Pylint extension"
-duplicate-argument-name,port,,python,py/duplicate-argument-name,manual,P1,A,none,yes,,"E0108, basic"
+duplicate-argument-name,not-applicable,,,,,,,none,yes,,"E0108, basic; not-applicable, ruled 2026-11-09: a syntax error in every Python codelaw supports, so the file does not parse and no rule runs"
 duplicate-bases,same-as,,,,,,,,,,E0241; the same rule as ruff/PLE0241: counted there
-duplicate-code,port,,python,py/duplicate-code,manual,P2,D,none,,,"R0801, similarities"
+duplicate-code,out-of-scope,,,,,,,none,,,"R0801, similarities; out of scope, ruled 2026-11-09"
 duplicate-except,port,,python,py/duplicate-except,manual,P2,D,none,,,"W0705, exceptions"
 duplicate-key,port,,python,py/duplicate-key,manual,P2,D,none,,,"W0109, basic"
 duplicate-string-formatting-argument,port,,python,py/duplicate-string-formatting-argument,manual,P2,D,none,,,"W1308, string"
@@ -159,7 +159,7 @@ invalid-character-esc,same-as,,,,,,,,,,E2513; the same rule as ruff/PLE2513: cou
 invalid-character-nul,same-as,,,,,,,,,,E2514; the same rule as ruff/PLE2514: counted there
 invalid-character-sub,same-as,,,,,,,,,,E2512; the same rule as ruff/PLE2512: counted there
 invalid-character-zero-width-space,same-as,,,,,,,,,,E2515; the same rule as ruff/PLE2515: counted there
-invalid-characters-in-docstring,port,,python,py/invalid-characters-in-docstring,manual,P2,D,none,,,"C0403, spelling"
+invalid-characters-in-docstring,out-of-scope,,,,,,,none,,,"C0403, spelling; out of scope, ruled 2026-11-09"
 invalid-class-object,port,,python,py/invalid-class-object,manual,P1,A,none,yes,,"E0243, classes"
 invalid-enum-extension,port,,python,py/invalid-enum-extension,manual,P1,A,none,yes,,"E0244, classes"
 invalid-envvar-default,same-as,,,,,,,,,,W1508; the same rule as ruff/PLW1508: counted there
@@ -305,7 +305,7 @@ redundant-yields-doc,port,,python,py/redundant-yields-doc,manual,P2,D,none,,,"W9
 reimported,port,,python,py/reimported,manual,P2,D,none,,,"W0404, imports"
 relative-beyond-top-level,port,,python,py/relative-beyond-top-level,manual,P1,A,none,yes,,"E0402, imports"
 repeated-keyword,types,,,,,,,,,,E1132; needs Python type inference — codelaw has no route for Python yet
-return-arg-in-generator,port,,python,py/return-arg-in-generator,manual,P1,A,none,yes,,"E0106, basic"
+return-arg-in-generator,not-applicable,,,,,,,none,yes,,"E0106, basic; not-applicable, ruled 2026-11-09: a syntax error in every Python codelaw supports, so the file does not parse and no rule runs"
 return-in-finally,port,,python,py/return-in-finally,manual,P2,D,none,,,"W0134, basic"
 return-in-init,same-as,,,,,,,,,,E0101; the same rule as ruff/PLE0101: counted there
 return-outside-function,covered,py/return-outside-function,,,,,,,,,E0104; through ruff/F706
@@ -372,7 +372,7 @@ unexpected-special-method-signature,same-as,,,,,,,,,,E0302; the same rule as ruf
 ungrouped-imports,port,,python,py/ungrouped-imports,manual,P2,D,none,,,"C0412, imports"
 unhashable-member,types,,,,,,,,,,E1143; needs Python type inference — codelaw has no route for Python yet
 unidiomatic-typecheck,port,,python,py/unidiomatic-typecheck,manual,P2,D,none,,,"C0123, basic"
-unknown-option-value,port,,python,py/unknown-option-value,manual,P2,D,none,,,"W0012, main"
+unknown-option-value,not-applicable,,,,,,,none,,,"W0012, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
 unnecessary-comprehension,same-as,,,,,,,,,,R1721; the same rule as ruff/C416: counted there
 unnecessary-default-type-args,same-as,,,,,,,,,,R6007; the same rule as ruff/UP043: counted there
 unnecessary-dict-index-lookup,same-as,,,,,,,,,,R1733; the same rule as ruff/PLR1733: counted there
@@ -387,8 +387,8 @@ unnecessary-pass,port,,python,py/unnecessary-pass,manual,P2,D,none,,,"W0107, bas
 unnecessary-semicolon,layout,,,,,,,,,,W0301; the formatter owns it
 unpacking-non-sequence,port,,python,py/unpacking-non-sequence,manual,P1,A,none,yes,,"E0633, variables"
 unreachable,port,,python,py/unreachable,manual,P2,D,none,,,"W0101, basic"
-unrecognized-inline-option,port,,python,py/unrecognized-inline-option,manual,P1,A,none,yes,,"E0011, main"
-unrecognized-option,port,,python,py/unrecognized-option,manual,P1,A,none,yes,,"E0015, main"
+unrecognized-inline-option,not-applicable,,,,,,,none,yes,,"E0011, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
+unrecognized-option,not-applicable,,,,,,,none,yes,,"E0015, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
 unspecified-encoding,same-as,,,,,,,,,,W1514; the same rule as ruff/PLW1514: counted there
 unsubscriptable-object,types,,,,,,,,,,E1136; needs Python type inference — codelaw has no route for Python yet
 unsupported-assignment-operation,types,,,,,,,,,,E1137; needs Python type inference — codelaw has no route for Python yet
@@ -419,21 +419,21 @@ used-prior-global-declaration,port,,python,py/used-prior-global-declaration,manu
 useless-else-on-loop,same-as,,,,,,,,,,W0120; the same rule as ruff/PLW0120: counted there
 useless-import-alias,same-as,,,,,,,,,,C0414; the same rule as ruff/PLC0414: counted there
 useless-object-inheritance,same-as,,,,,,,,,,R0205; the same rule as ruff/UP004: counted there
-useless-option-value,port,,python,py/useless-option-value,manual,P2,D,none,,,"R0022, main"
+useless-option-value,not-applicable,,,,,,,none,,,"R0022, main; not-applicable, ruled 2026-11-09: checks Pylint's own configuration or inline options, not code"
 useless-param-doc,port,,python,py/useless-param-doc,manual,P2,D,none,,,"W9019, parameter_documentation, an optional Pylint extension"
 useless-parent-delegation,port,,python,py/useless-parent-delegation,manual,P2,D,none,,,"W0246, classes"
 useless-return,same-as,,,,,,,,,,R1711; the same rule as ruff/PLR1711: counted there
 useless-suppression,skip,,,,,,,,,,"I0021; a Pylint run message, not a rule"
 useless-type-doc,port,,python,py/useless-type-doc,manual,P2,D,none,,,"W9020, parameter_documentation, an optional Pylint extension"
 useless-with-lock,same-as,,,,,,,,,,W2101; the same rule as ruff/PLW2101: counted there
-using-assignment-expression-in-unsupported-version,port,,python,py/using-assignment-expression-in-unsupported-version,manual,P2,D,none,,,"W2605, unsupported_version"
-using-comprehension-unpacking-in-unsupported-version,port,,python,py/using-comprehension-unpacking-in-unsupported-version,manual,P2,D,none,,,"W2607, unsupported_version"
+using-assignment-expression-in-unsupported-version,not-applicable,,,,,,,none,,,"W2605, unsupported_version; not-applicable, ruled 2026-11-09: flags syntax newer than the target version, and the 3.9 floor already has it"
+using-comprehension-unpacking-in-unsupported-version,not-applicable,,,,,,,none,,,"W2607, unsupported_version; not-applicable, ruled 2026-11-09: flags syntax newer than the target version, and the 3.9 floor already has it"
 using-constant-test,port,,python,py/using-constant-test,manual,P2,D,none,,,"W0125, basic"
 using-exception-groups-in-unsupported-version,port,,python,py/using-exception-groups-in-unsupported-version,manual,P2,D,none,,,"W2603, unsupported_version"
-using-f-string-in-unsupported-version,port,,python,py/using-f-string-in-unsupported-version,manual,P2,D,none,,,"W2601, unsupported_version"
-using-final-decorator-in-unsupported-version,port,,python,py/using-final-decorator-in-unsupported-version,manual,P2,D,none,,,"W2602, unsupported_version"
+using-f-string-in-unsupported-version,not-applicable,,,,,,,none,,,"W2601, unsupported_version; not-applicable, ruled 2026-11-09: flags syntax newer than the target version, and the 3.9 floor already has it"
+using-final-decorator-in-unsupported-version,not-applicable,,,,,,,none,,,"W2602, unsupported_version; not-applicable, ruled 2026-11-09: flags syntax newer than the target version, and the 3.9 floor already has it"
 using-generic-type-syntax-in-unsupported-version,port,,python,py/using-generic-type-syntax-in-unsupported-version,manual,P2,D,none,,,"W2604, unsupported_version"
-using-positional-only-args-in-unsupported-version,port,,python,py/using-positional-only-args-in-unsupported-version,manual,P2,D,none,,,"W2606, unsupported_version"
+using-positional-only-args-in-unsupported-version,not-applicable,,,,,,,none,,,"W2606, unsupported_version; not-applicable, ruled 2026-11-09: flags syntax newer than the target version, and the 3.9 floor already has it"
 while-used,port,,python,py/while-used,manual,P2,D,none,,,"W0149, while_used, an optional Pylint extension"
 wildcard-import,port,,python,py/wildcard-import,manual,P2,D,none,,,"W0401, imports"
 wrong-exception-operation,port,,python,py/wrong-exception-operation,manual,P2,D,none,,,"W0716, exceptions"

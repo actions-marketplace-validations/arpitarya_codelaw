@@ -17,7 +17,7 @@ escape-inline-tags,port,,js,js/jsdoc-escape-inline-tags,auto,P1,A,auto,yes,,
 implements-on-classes,port,,js,js/jsdoc-implements-on-classes,manual,P1,A,none,yes,,
 imports-as-dependencies,port,,js,js/jsdoc-imports-as-dependencies,manual,P2,C,none,,,
 informative-docs,port,,js,js/jsdoc-informative-docs,manual,P2,C,none,,,
-lines-before-block,port,,js,js/jsdoc-lines-before-block,auto,P2,C,auto,,,
+lines-before-block,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
 match-description,port,,js,js/jsdoc-match-description,manual,P2,C,none,,,
 match-name,port,,js,js/jsdoc-match-name,auto,P2,C,auto,,,
 multiline-blocks,port,,js,js/jsdoc-multiline-blocks,auto,P1,A,auto,yes,,
