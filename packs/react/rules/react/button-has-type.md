@@ -9,20 +9,32 @@ ported_from: [eslint-plugin-react/button-has-type]
 since: 0.5.0
 ---
 
-A `<button>` has an explicit `type`. A `type` with a value other than `button`, `submit` or `reset` is left to the DOM types for now.
+A `<button>` has an explicit `type` of `button`, `submit` or `reset`. A `type` written as a string with any other value (`type="buton"`) is reported too, and the suggestion replaces it with `"button"`; a `type` whose value is an expression is left to the DOM types.
 
-**Why:** A button's default type is `submit`, so a button meant only for a click handler submits the form around it.
+**Why:** A button's default type is `submit`, so a button meant only for a click handler submits the form around it, and a misspelt `type` is dropped by the browser and falls back to the same default.
 
 ```codelaw
 match:
   any: [{ kind: jsx_opening_element }, { kind: jsx_self_closing_element }]
   all:
-    - has: { field: name, regex: '^button$', pattern: $N }
-    - not: { has: { kind: jsx_attribute, regex: '^type\b' } }
+    - has: { field: name, regex: '^button$' }
     - not: { has: { kind: jsx_expression, has: { kind: spread_element } } }
-message: "Give this `<button>` a `type` (`button`, `submit` or `reset`)"
+    - any:
+        - has: { field: name, pattern: $N }
+          not: { has: { kind: jsx_attribute, regex: '^type\b' } }
+        - has:
+            kind: jsx_attribute
+            all:
+              - has: { nthChild: 1, regex: '^type$' }
+              - has:
+                  any:
+                    - { kind: string, pattern: $V }
+                    - { kind: jsx_expression, has: { kind: string, pattern: $V } }
+                  not: { regex: '^=?\{?\s*["''](button|submit|reset)["'']\s*\}?$' }
+message: "Give this `<button>` a valid `type` (`button`, `submit` or `reset`)"
 fix:
   - insert-after: { target: $N, text: ' type="button"' }
+  - replace: { target: $V, with: '"button"' }
 ```
 
 ## Examples
