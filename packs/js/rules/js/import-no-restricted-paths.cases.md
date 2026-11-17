@@ -19,7 +19,7 @@ import { secret } from "../server/secret";
 ```
 
 ```expect
-2:25 js/import-no-restricted-paths
+client/app.js:1:24 js/import-no-restricted-paths
 ```
 
 ### case: the other direction is fine
@@ -42,18 +42,18 @@ import { secret } from "../server/secret";
 ```
 
 ```expect
-3:25 js/import-no-restricted-paths
+client/app.js:2:24 js/import-no-restricted-paths
 ```
 
 ### case: a message
 
-```js options={"zones":{"client":{"target":"client","from":"server","message":"Use the API."}}}
+```js options={"zones":{"client":{"target":"client","from":"server","message":"Use\u0020the\u0020API."}}}
 // client/app.js
 const s = require("../server/secret");
 ```
 
 ```expect
-2:19 js/import-no-restricted-paths
+client/app.js:1:19 js/import-no-restricted-paths
 ```
 
 ### case: a glob target
@@ -64,7 +64,7 @@ import x from "../core/x";
 ```
 
 ```expect
-2:15 js/import-no-restricted-paths
+packages/ui/a.js:1:15 js/import-no-restricted-paths
 ```
 
 ### case: a package is not resolved

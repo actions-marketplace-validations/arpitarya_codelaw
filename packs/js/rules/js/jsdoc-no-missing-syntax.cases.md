@@ -58,7 +58,7 @@ function b() {}
 
 ### case: a text the block must match
 
-```js options={"entries":{"text":{"matches":"\\bjob\\b"}}}
+```js options={"entries":{"text":{"matches":"\\\\bjob\\\\b"}}}
 /** Runs the job. */
 function run() {}
 ```

@@ -12,7 +12,7 @@ const loading = "Loading...";
 
 ### case: a string
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading...";
 ```
 
@@ -26,12 +26,13 @@ const loading = "Loading…";
 
 ### case: a template's text
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const text = `Wait...${n}...`;
 ```
 
 ```expect
-1:14 js/string-content
+1:15 js/string-content
+1:26 js/string-content
 ```
 
 ```fixed
@@ -64,7 +65,7 @@ const a = "color";
 
 ### case: the replacement is escaped for its quote
 
-```js options={"patterns":{"\\.\\.\\.":"'"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"'"}}
 const a = 'it...';
 ```
 
@@ -78,7 +79,7 @@ const a = 'it\'';
 
 ### case: a tagged template of another language is not read
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const q = sql`select 1...`;
 ```
 
@@ -88,7 +89,7 @@ const q = sql`select 1...`;
 
 ### case: an escape is not read
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const a = "a\u002e\u002e\u002e";
 ```
 

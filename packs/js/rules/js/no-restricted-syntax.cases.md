@@ -25,11 +25,11 @@ const merged = Object.assign({}, base);
 
 ### case: a kind
 
-```js options={"kinds":["for_in_statement"]}
-for (const key in object) {
-  use(key);
+```js options={"kinds":["with_statement"]}
+with (scope) {
+  run();
 }
-for (const item of list) {}
+use(scope);
 ```
 
 ```expect
@@ -38,7 +38,7 @@ for (const item of list) {}
 
 ### case: a pattern with a statement
 
-```js options={"patterns":["with ($O) $B"]}
+```js options={"patterns":["with\u0020($O)\u0020$B"]}
 with (scope) {
   run();
 }
@@ -50,7 +50,7 @@ with (scope) {
 
 ### case: a pattern that does not parse is reported once
 
-```js options={"patterns":["const ("]}
+```js options={"patterns":["a;\u0020b"]}
 const a = 1;
 const b = 2;
 ```

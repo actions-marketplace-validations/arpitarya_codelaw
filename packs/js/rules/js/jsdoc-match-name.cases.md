@@ -38,7 +38,7 @@ function find(_id, _name) {}
 
 ```expect
 2:20 js/jsdoc-match-name
-3:21 js/jsdoc-match-name
+3:20 js/jsdoc-match-name
 ```
 
 ```fixed

@@ -358,6 +358,9 @@ fn escape_lines(b: &Block<'_>, lines: impl Iterator<Item = (usize, usize)>, html
 super::orule!(JsdocTextEscaping, "js/jsdoc-text-escaping", &["escapeHTML", "escapeMarkdown"], COMMENT, false, |n, ctx, out| {
     let Some(b) = Block::parse(ctx.source, n.start_byte(), n.end_byte()) else { return };
     let html = opt_bool(ctx, "escapeHTML", false);
+    if !html && !opt_bool(ctx, "escapeMarkdown", false) {
+        return;
+    }
     // The description first; the tags only when it is clean, as upstream.
     let desc: Vec<(usize, usize)> = b.description_lines().filter(|i| !b.lines[*i].fenced).map(|i| (b.lines[i].body_start, b.lines[i].body_end)).collect();
     let edits = escape_lines(&b, desc.into_iter(), html);

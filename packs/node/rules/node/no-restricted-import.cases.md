@@ -39,7 +39,7 @@ const m = import("lodash");
 ```
 
 ```expect
-1:22 node/no-restricted-import
+1:21 node/no-restricted-import
 2:18 node/no-restricted-import
 ```
 
@@ -56,7 +56,7 @@ import b from "lodash/get";
 
 ### case: a message
 
-```js options={"modules":["fs"],"messages":{"fs":"Use node:fs."}}
+```js options={"modules":["fs"],"messages":{"fs":"Use\u0020node:fs."}}
 import fs from "fs";
 ```
 

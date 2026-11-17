@@ -17,6 +17,8 @@ mod imports;
 mod jsdoc;
 mod strings;
 mod syntax;
+#[cfg(test)]
+mod tests;
 
 use crate::{NativeContext, NativeFinding, NativeRule};
 use codelaw_core::Language;

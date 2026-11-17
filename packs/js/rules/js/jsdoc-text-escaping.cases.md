@@ -14,16 +14,16 @@ function names() {}
 ### case: HTML in the description
 
 ```js options={"escapeHTML":true}
-/** Returns Array<string> & more. */
+/** Returns Array<string> &co. */
 function names() {}
 ```
 
 ```expect
-1:1 js/jsdoc-text-escaping
+1:5 js/jsdoc-text-escaping
 ```
 
 ```fixed
-/** Returns Array&lt;string> &amp; more. */
+/** Returns Array&lt;string> &amp;co. */
 function names() {}
 ```
 
@@ -49,7 +49,7 @@ function names() {}
 ```
 
 ```expect
-3:4 js/jsdoc-text-escaping
+3:21 js/jsdoc-text-escaping
 ```
 
 ```fixed
@@ -83,7 +83,7 @@ function names() {}
 ```
 
 ```expect
-1:1 js/jsdoc-text-escaping
+1:5 js/jsdoc-text-escaping
 ```
 
 ```fixed

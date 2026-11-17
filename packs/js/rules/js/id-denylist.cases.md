@@ -27,10 +27,10 @@ try {
 
 ```expect
 1:7 js/id-denylist
-3:8 js/id-denylist
-4:10 js/id-denylist
-8:10 js/id-denylist
-9:9 js/id-denylist
+2:14 js/id-denylist
+3:10 js/id-denylist
+7:10 js/id-denylist
+8:9 js/id-denylist
 ```
 
 ### case: a call's callee and arguments are not checked

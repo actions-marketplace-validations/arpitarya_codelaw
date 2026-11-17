@@ -82,7 +82,6 @@ handler = () => 2;
 
 ```expect
 1:15 js/consistent-function-style
-2:11 js/consistent-function-style
 ```
 
 ### case: a default export is read only when it is set

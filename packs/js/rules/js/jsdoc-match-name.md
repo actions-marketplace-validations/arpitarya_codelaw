@@ -26,114 +26,114 @@ native: js/jsdoc-match-name
 
 #### Don't
 
-```js options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```js options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} _id
+ * @typedef {object} User
+ * @property {string} _id
  */
-function find(_id) {}
 ```
 
 #### Do
 
-```js options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```js options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 #### Fixed
 
-```js options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```js options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 ### JSX
 
 #### Don't
 
-```jsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```jsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} _id
+ * @typedef {object} User
+ * @property {string} _id
  */
-function find(_id) {}
 ```
 
 #### Do
 
-```jsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```jsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 #### Fixed
 
-```jsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```jsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 ### TypeScript
 
 #### Don't
 
-```ts options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```ts options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} _id
+ * @typedef {object} User
+ * @property {string} _id
  */
-function find(_id) {}
 ```
 
 #### Do
 
-```ts options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```ts options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 #### Fixed
 
-```ts options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```ts options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 ### TSX
 
 #### Don't
 
-```tsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```tsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} _id
+ * @typedef {object} User
+ * @property {string} _id
  */
-function find(_id) {}
 ```
 
 #### Do
 
-```tsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```tsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```
 
 #### Fixed
 
-```tsx options={"match":{"param":{"disallowName":"^_","replacement":"","tags":["param"]}}}
+```tsx options={"match":{"prop":{"disallowName":"^_","replacement":"","tags":["property"]}}}
 /**
- * @param {string} id
+ * @typedef {object} User
+ * @property {string} id
  */
-function find(id) {}
 ```

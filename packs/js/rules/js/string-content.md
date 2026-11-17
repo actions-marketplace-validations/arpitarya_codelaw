@@ -26,19 +26,19 @@ native: js/string-content
 
 #### Don't
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading...";
 ```
 
 #### Do
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
 #### Fixed
 
-```js options={"patterns":{"\\.\\.\\.":"…"}}
+```js options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
@@ -46,19 +46,19 @@ const loading = "Loading…";
 
 #### Don't
 
-```jsx options={"patterns":{"\\.\\.\\.":"…"}}
+```jsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading...";
 ```
 
 #### Do
 
-```jsx options={"patterns":{"\\.\\.\\.":"…"}}
+```jsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
 #### Fixed
 
-```jsx options={"patterns":{"\\.\\.\\.":"…"}}
+```jsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
@@ -66,19 +66,19 @@ const loading = "Loading…";
 
 #### Don't
 
-```ts options={"patterns":{"\\.\\.\\.":"…"}}
+```ts options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading...";
 ```
 
 #### Do
 
-```ts options={"patterns":{"\\.\\.\\.":"…"}}
+```ts options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
 #### Fixed
 
-```ts options={"patterns":{"\\.\\.\\.":"…"}}
+```ts options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
@@ -86,18 +86,18 @@ const loading = "Loading…";
 
 #### Don't
 
-```tsx options={"patterns":{"\\.\\.\\.":"…"}}
+```tsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading...";
 ```
 
 #### Do
 
-```tsx options={"patterns":{"\\.\\.\\.":"…"}}
+```tsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```
 
 #### Fixed
 
-```tsx options={"patterns":{"\\.\\.\\.":"…"}}
+```tsx options={"patterns":{"\\\\.\\\\.\\\\.":"…"}}
 const loading = "Loading…";
 ```

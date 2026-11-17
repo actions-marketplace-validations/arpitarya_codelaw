@@ -34,62 +34,70 @@ native: js/consistent-function-style
 
 #### Don't
 
-```js options={"namedFunctions":"declaration"}
-const add = (a, b) => a + b;
+```js options={"callbacks":"arrow-function"}
+items.map(function (x) {
+  return x * 2;
+});
 ```
 
 #### Do
 
-```js options={"namedFunctions":"declaration"}
-function add(a, b) {
-  return a + b;
-}
+```js options={"callbacks":"arrow-function"}
+items.map((x) => {
+  return x * 2;
+});
 ```
 
 ### JSX
 
 #### Don't
 
-```jsx options={"namedFunctions":"declaration"}
-const add = (a, b) => a + b;
+```jsx options={"callbacks":"arrow-function"}
+items.map(function (x) {
+  return x * 2;
+});
 ```
 
 #### Do
 
-```jsx options={"namedFunctions":"declaration"}
-function add(a, b) {
-  return a + b;
-}
+```jsx options={"callbacks":"arrow-function"}
+items.map((x) => {
+  return x * 2;
+});
 ```
 
 ### TypeScript
 
 #### Don't
 
-```ts options={"namedFunctions":"declaration"}
-const add = (a, b) => a + b;
+```ts options={"callbacks":"arrow-function"}
+items.map(function (x) {
+  return x * 2;
+});
 ```
 
 #### Do
 
-```ts options={"namedFunctions":"declaration"}
-function add(a, b) {
-  return a + b;
-}
+```ts options={"callbacks":"arrow-function"}
+items.map((x) => {
+  return x * 2;
+});
 ```
 
 ### TSX
 
 #### Don't
 
-```tsx options={"namedFunctions":"declaration"}
-const add = (a, b) => a + b;
+```tsx options={"callbacks":"arrow-function"}
+items.map(function (x) {
+  return x * 2;
+});
 ```
 
 #### Do
 
-```tsx options={"namedFunctions":"declaration"}
-function add(a, b) {
-  return a + b;
-}
+```tsx options={"callbacks":"arrow-function"}
+items.map((x) => {
+  return x * 2;
+});
 ```

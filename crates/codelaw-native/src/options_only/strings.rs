@@ -176,12 +176,12 @@ super::orule!(StringContent, "js/string-content", &["patterns"], &["string", "te
     for c in children(n) {
         if c.kind() == "template_substitution" {
             if c.start_byte() > from {
-                check_text(&src[from..c.start_byte()], from, Host::Template, &rs, out, whole);
+                check_text(&src[from..c.start_byte()], from, Host::Template, &rs, out, (from, c.start_byte()));
             }
             from = c.end_byte();
         }
     }
     if end > from {
-        check_text(&src[from..end], from, Host::Template, &rs, out, whole);
+        check_text(&src[from..end], from, Host::Template, &rs, out, (from, end));
     }
 });

@@ -17,7 +17,7 @@ consistent-empty-array-spread,port,,js,js/consistent-empty-array-spread,auto,P1,
 consistent-existence-index-check,port,,js,js/consistent-existence-index-check,auto,P1,B,auto,yes,,
 consistent-export-decorator-position,port,,js,js/consistent-export-decorator-position,auto,P1,B,auto,yes,,
 consistent-function-scoping,port,,js,js/consistent-function-scoping,manual,P1,B,none,yes,,
-consistent-function-style,port,,js,js/consistent-function-style,suggest,P2,B,suggest,,,
+consistent-function-style,options-only,,js,js/consistent-function-style,suggest,P2,B,suggest,,,"options-only: silent until its option is set (W-176, SR-RULE-FORMAT decision 2d)"
 consistent-json-file-read,port,,js,js/consistent-json-file-read,auto,P1,B,auto,yes,,
 consistent-optional-chaining,port,,js,js/consistent-optional-chaining,suggest,P1,B,suggest,yes,,
 consistent-template-literal-escape,port,,js,js/consistent-template-literal-escape,auto,P1,B,auto,yes,,
@@ -32,7 +32,7 @@ expiring-todo-comments,covered,js/todo-marker*,,,,,,none,yes,,
 explicit-length-check,port,,js,js/explicit-length-check,auto,P1,B,auto,yes,,
 explicit-timer-delay,port,,js,js/explicit-timer-delay,auto,P1,B,auto,yes,,
 filename-case,port,,js,js/filename-case,manual,P1,B,none,yes,,
-id-match,port,,js,js/id-match-unicorn,manual,P2,B,none,,,
+id-match,options-only,,js,js/id-match-unicorn,manual,P2,B,none,,,"options-only: silent until its option is set (W-176, SR-RULE-FORMAT decision 2d)"
 import-style,port,,js,js/import-style,manual,P1,B,none,yes,,
 indent,layout,,,,,,,auto,,,the formatter owns it (SR-FORMATTER decision 3)
 isolated-functions,port,,js,js/isolated-functions,manual,P1,B,none,yes,,
@@ -388,7 +388,7 @@ require-post-message-target-origin,port,,js,js/require-post-message-target-origi
 require-proxy-trap-boolean-return,port,,js,js/require-proxy-trap-boolean-return,auto,P1,B,auto,yes,,
 require-text-decoder-streaming,port,,js,js/require-text-decoder-streaming,suggest,P1,B,suggest,yes,,
 single-line-block-comment-style,layout,,,,,,,auto,yes,,the formatter owns it (SR-FORMATTER decision 3)
-string-content,port,,js,js/string-content,auto,P2,B,auto,,,
+string-content,options-only,,js,js/string-content,auto,P2,B,auto,,,"options-only: silent until its option is set (W-176, SR-RULE-FORMAT decision 2d)"
 switch-case-braces,layout,,,,,,,auto,yes,,the formatter owns it (SR-FORMATTER decision 3)
 switch-case-break-position,layout,,,,,,,auto,yes,,the formatter owns it (SR-FORMATTER decision 3)
 template-indent,port,,js,js/template-indent,auto,P1,B,auto,yes,,

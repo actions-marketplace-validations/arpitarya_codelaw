@@ -84,7 +84,7 @@ const { id: user_id } = source;
 ### case: class fields
 
 ```js options={"pattern":"^[a-z][a-zA-Z0-9]*$","classFields":true}
-class Store {
+class store {
   my_field = 1;
   #my_private = 2;
 }
@@ -98,7 +98,7 @@ class Store {
 ### case: a private field is read only with classFields, a private method always
 
 ```js options={"pattern":"^[a-z][a-zA-Z0-9]*$"}
-class Store {
+class store {
   my_field = 1;
   #my_method() {}
 }

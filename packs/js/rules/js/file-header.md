@@ -28,13 +28,13 @@ native: js/file-header
 
 #### Don't
 
-```js options={"headerFormat":"// Copyright Acme\n"}
+```js options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 run();
 ```
 
 #### Do
 
-```js options={"headerFormat":"// Copyright Acme\n"}
+```js options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 // Copyright Acme
 run();
 ```
@@ -43,13 +43,13 @@ run();
 
 #### Don't
 
-```jsx options={"headerFormat":"// Copyright Acme\n"}
+```jsx options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 run();
 ```
 
 #### Do
 
-```jsx options={"headerFormat":"// Copyright Acme\n"}
+```jsx options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 // Copyright Acme
 run();
 ```
@@ -58,13 +58,13 @@ run();
 
 #### Don't
 
-```ts options={"headerFormat":"// Copyright Acme\n"}
+```ts options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 run();
 ```
 
 #### Do
 
-```ts options={"headerFormat":"// Copyright Acme\n"}
+```ts options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 // Copyright Acme
 run();
 ```
@@ -73,13 +73,13 @@ run();
 
 #### Don't
 
-```tsx options={"headerFormat":"// Copyright Acme\n"}
+```tsx options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 run();
 ```
 
 #### Do
 
-```tsx options={"headerFormat":"// Copyright Acme\n"}
+```tsx options={"headerFormat":"//\u0020Copyright\u0020Acme\n"}
 // Copyright Acme
 run();
 ```

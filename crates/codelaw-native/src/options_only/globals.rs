@@ -85,6 +85,9 @@ impl NativeRule for NoImplicitGlobals {
         &["script"]
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>) {
+        if !opt_bool(ctx, "script", false) {
+            return;
+        }
         let program = node.get_inner_node();
         let src = ctx.source;
         let top = children(program);
