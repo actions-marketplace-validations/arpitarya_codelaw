@@ -42,6 +42,11 @@ pub enum Query {
     ExportStar,
     /// `module: { exports: [missing, unused] }`.
     ModuleExports { missing: bool, unused: bool },
+    /// `python: { imports: unresolved | unexported | beyond_top | wildcard_unused }`:
+    /// a Python import read against the project's files (W-185, `pynames.rs`).
+    PyImports(crate::pynames::PyImportCheck),
+    /// `python: { classes: ancestors }`: a class with too many ancestors.
+    PyAncestors,
 }
 
 /// What a `graph: import:` query reports.
@@ -137,7 +142,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         Some(other) => return Err(format!("`certainty_from: {other}` must be `module.dynamic`")),
     };
     for k in g.keys() {
-        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "cycle", "export", "certainty_from"].contains(&k.as_str()) {
+        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "cycle", "export", "python", "certainty_from"].contains(&k.as_str()) {
             return Err(format!("unknown `graph:` key `{k}`"));
         }
     }
@@ -216,6 +221,16 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             forms = vec![SpecForm::Import, SpecForm::Export, SpecForm::Dynamic];
         }
         Query::Cycle { forms }
+    } else if let Some(python) = g.get("python") {
+        use crate::pynames::PyImportCheck;
+        match (python.get("imports").and_then(Value::as_str), python.get("classes").and_then(Value::as_str)) {
+            (Some("unresolved"), None) => Query::PyImports(PyImportCheck::Unresolved),
+            (Some("unexported"), None) => Query::PyImports(PyImportCheck::Unexported),
+            (Some("beyond_top"), None) => Query::PyImports(PyImportCheck::BeyondTop),
+            (Some("wildcard_unused"), None) => Query::PyImports(PyImportCheck::WildcardUnused),
+            (None, Some("ancestors")) => Query::PyAncestors,
+            _ => return Err("`graph: python:` takes `imports: unresolved | unexported | beyond_top | wildcard_unused` or `classes: ancestors`".into()),
+        }
     } else if let Some(export) = g.get("export") {
         if export.get("star").and_then(Value::as_str) != Some("conflicts") {
             return Err("`graph: export:` takes `star: conflicts`".into());
@@ -265,7 +280,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             _ => return Err("`graph: import:` takes exactly one of `resolves: false`, `declared: false`, `published: false`, `names: unexported`, `default: missing`, `namespace: unexported`, `default_name: named | differs`, `default_member: named`, `deprecated: jsdoc`".into()),
         }
     } else {
-        return Err("`graph:` names no query (`symbol:`, `class:`, `module:`, `import:`, `terms:`, `flags:` or `deprecated:`)".into());
+        return Err("`graph:` names no query (`symbol:`, `class:`, `module:`, `import:`, `cycle:`, `export:`, `python:`, `terms:`, `flags:` or `deprecated:`)".into());
     };
     let mut gf = GraphFix::default();
     match fix {
@@ -320,7 +335,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
     let allowed: &[Primitive] = match &query {
         Query::Names(ImportTarget::NamedMissing | ImportTarget::NamespaceMember) => &[Primitive::NearestExport],
         Query::ModuleExports { .. } => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration],
-        Query::Names(_) | Query::Cycle { .. } | Query::ExportStar => &[],
+        Query::Names(_) | Query::Cycle { .. } | Query::ExportStar | Query::PyImports(_) | Query::PyAncestors => &[],
         _ => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration, Primitive::RemoveRule, Primitive::Respell, Primitive::KeepBranch, Primitive::FixMarker, Primitive::RemoveEntry, Primitive::AddDependency, Primitive::NearestPath, Primitive::NearestClass],
     };
     if let Some(p) = fixes.iter().find(|p| !allowed.contains(p)) {
@@ -541,6 +556,8 @@ pub fn run(rule: &GraphRule, graph: &Graph, languages: &[Language]) -> Vec<Graph
         Query::Cycle { forms } => crate::names::cycles(graph, languages, forms),
         Query::ExportStar => crate::names::export_star(graph, languages),
         Query::ModuleExports { missing, unused } => crate::names::modules(rule, graph, languages, *missing, *unused),
+        Query::PyImports(check) => crate::pynames::imports(graph, languages, *check),
+        Query::PyAncestors => crate::pynames::too_many_ancestors(graph, languages),
     }
 }
 

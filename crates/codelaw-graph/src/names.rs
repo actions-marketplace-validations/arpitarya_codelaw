@@ -99,7 +99,7 @@ impl<'g> Cache<'g> {
     }
 }
 
-fn finding(file: &str, span: Span, captures: &[(&str, &str)], message: Option<String>, edits: Vec<TextEdit>) -> GraphFinding {
+pub(crate) fn finding(file: &str, span: Span, captures: &[(&str, &str)], message: Option<String>, edits: Vec<TextEdit>) -> GraphFinding {
     GraphFinding { file: file.to_owned(), span, captures: captures.iter().map(|(k, v)| ((*k).to_owned(), (*v).to_owned())).collect(), edits, uncertain: None, message }
 }
 
@@ -328,16 +328,28 @@ pub fn export_star(graph: &Graph, languages: &[Language]) -> Vec<GraphFinding> {
 
 /// `graph: { cycle: … }`: an import whose target imports its way back.
 pub fn cycles(graph: &Graph, languages: &[Language], forms: &[SpecForm]) -> Vec<GraphFinding> {
-    // Edges between modules of the project, from the specifiers written.
+    // Edges between modules of the project, from the specifiers written
+    // (JavaScript) or the imports (Python, `pynames::import_edges`).
     let mut index: BTreeMap<&str, usize> = BTreeMap::new();
     let mut paths: Vec<&str> = Vec::new();
-    for m in graph.modules.values().filter(|m| m.facts.lang == Some(FactLang::Js)) {
+    for m in graph.modules.values().filter(|m| matches!(m.facts.lang, Some(FactLang::Js | FactLang::Python))) {
         index.insert(&m.path, paths.len());
         paths.push(&m.path);
     }
+    let python = |p: &str| graph.modules[p].facts.lang == Some(FactLang::Python);
     let mut edges: Vec<Vec<(usize, usize, Span)>> = vec![Vec::new(); paths.len()];
     for (i, p) in paths.iter().enumerate() {
         let m = &graph.modules[*p];
+        if python(p) {
+            if forms.contains(&SpecForm::Import) {
+                for (t, span) in crate::pynames::import_edges(graph, m) {
+                    if let Some(&t) = index.get(t.as_str()) {
+                        edges[i].push((t, 0, span));
+                    }
+                }
+            }
+            continue;
+        }
         for s in m.facts.specifiers.iter().filter(|s| forms.contains(&s.form) && !s.type_only) {
             if s.form == SpecForm::Import {
                 let mut of = m.facts.imports.iter().filter(|x| x.source == s.spec).peekable();
@@ -364,6 +376,13 @@ pub fn cycles(graph: &Graph, languages: &[Language], forms: &[SpecForm]) -> Vec<
             }
             // The way back, shortest first.
             let route = way_back(&edges, &component, t, i);
+            if python(p) {
+                let mut names: Vec<String> = vec![crate::pynames::dotted(graph, p)];
+                names.extend(route.iter().map(|&x| crate::pynames::dotted(graph, paths[x])));
+                let way = names.join(" -> ");
+                out.push(finding(p, span, &[("ROUTE", &way)], Some(format!("Cyclic import ({way})")), Vec::new()));
+                continue;
+            }
             let names: Vec<&str> = route.iter().map(|&x| file_name(paths[x])).collect();
             let message = if names.len() > 1 { format!("Dependency cycle via {}", names.join(" -> ")) } else { "Dependency cycle detected".to_owned() };
             out.push(finding(p, span, &[("ROUTE", &names.join(" -> "))], Some(message), Vec::new()));

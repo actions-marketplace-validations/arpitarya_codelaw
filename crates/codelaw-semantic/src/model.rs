@@ -173,6 +173,12 @@ pub struct SemanticModel {
     pub exports: Vec<Export>,
     /// A Python `from m import *`: any name may be defined.
     pub has_star_import: bool,
+    /// Python: the names of a module-level `__all__` written as literals
+    /// (`None` without one).
+    pub py_all: Option<Vec<String>>,
+    /// Python: `__all__` has a part that is not a literal (`sub.__all__`, a
+    /// call), so the names it lists cannot be known statically.
+    pub py_all_dynamic: bool,
     pub(crate) python: bool,
     /// Built for TypeScript or TSX.
     pub typescript: bool,
