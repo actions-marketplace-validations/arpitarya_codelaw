@@ -210,8 +210,8 @@
  "pylint": {
   "covered": 14,
   "file": "pylint.csv",
-  "layout": 8,
-  "port": 298,
+  "layout": 10,
+  "port": 296,
   "same-as": 80,
   "skip": 14,
   "total": 444,
@@ -221,9 +221,9 @@
  "ruff": {
   "covered": 175,
   "file": "ruff.csv",
-  "layout": 59,
+  "layout": 66,
   "planned": 7,
-  "port": 713,
+  "port": 706,
   "retired": 15,
   "skip": 1,
   "total": 970,

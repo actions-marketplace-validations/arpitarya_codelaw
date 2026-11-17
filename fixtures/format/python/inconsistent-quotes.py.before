@@ -1,0 +1,6 @@
+a = 'one'
+b = "two"
+c = 'say "three"'
+d = 'it''s'
+e = f'{a}'
+f = b'bytes'

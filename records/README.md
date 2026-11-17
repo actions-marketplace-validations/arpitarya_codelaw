@@ -211,7 +211,7 @@ yet is owned by an open `W-nn`.
 | `crates/codelaw-baseline` | SR-BASELINE | decisions 1, 2, 5, 6 and 9: the baseline files, what a finding becomes under them, the ratchet, the deprecations registry and the dated-exception timeline |
 | `crates/codelaw-native` | SR-ARCHITECTURE | decision 15b |
 | `crates/codelaw-fix` | SR-ARCHITECTURE | decisions 5 and 18: the apply loop, verifier and external fixers |
-| `crates/codelaw-format` | SR-FORMATTER | decisions 2, 4, 5 and 7: the embedded engines, their options and the verifier; `shims/option-ext` is SR-PACKAGES decision 1's L2 patch |
+| `crates/codelaw-format` | SR-FORMATTER | decisions 2, 4, 5, 7 and 10: the embedded engines, their options and the verifier; `shims/option-ext` is SR-PACKAGES decision 1's L2 patch |
 | `crates/codelaw-engine` | SR-ARCHITECTURE | decisions 4–28: the pipelines |
 | `crates/codelaw-report` | SR-CLI-MCP | decisions 3 and 4 |
 | `crates/codelaw-test` | SR-RULE-AUTHORING | decision 4 |
@@ -241,6 +241,7 @@ yet is owned by an open `W-nn`.
 | `fixtures/port-rule` | SR-RULE-AUTHORING | decision 2: the three recorded ports — ESLint, Pylint, stylelint — as project rules (W-140) |
 | `crates/codelaw-cli/tests/port_rule.rs` | SR-RULE-AUTHORING | decision 2: runs those ports under `codelaw test` and finds a rule by `ported_from:` through the CLI and MCP (a different decision from the CLI's) |
 | `crates/codelaw-cli/tests/laws.rs` | SR-LAW-3 | the fixture matrix and isolation check; it also runs the L4 and L5 checks |
+| `fixtures/format` | SR-FORMATTER | decision 10: a before and an after for each Python layout row the formatter owns (W-179) |
 | `fixtures/l3` | SR-LAW-3 | the fixture matrix |
 | `fixtures/css-modules` | SR-MODULE-GRAPH | decision 8: the React app the `css-modules` rules run on |
 | `crates/codelaw-cli/tests/css_modules.rs` | SR-MODULE-GRAPH | decision 8: runs that app, `[css]` and `init` through the binary |

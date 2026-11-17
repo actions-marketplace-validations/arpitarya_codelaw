@@ -128,17 +128,17 @@ D105,port,,python,py/undocumented-magic-method,manual,P2,D,none,,,pydocstyle
 D106,port,,python,py/undocumented-public-nested-class,manual,P2,D,none,,,pydocstyle
 D107,port,,python,py/undocumented-public-init,manual,P2,D,none,,,pydocstyle
 D200,port,,python,py/unnecessary-multiline-docstring,suggest,P2,D,suggest,,,pydocstyle
-D201,port,,python,py/blank-line-before-function,suggest,P2,D,suggest,,,pydocstyle
-D202,port,,python,py/blank-line-after-function,suggest,P2,D,suggest,,,pydocstyle
-D203,port,,python,py/incorrect-blank-line-before-class,auto,P2,D,auto,,,pydocstyle
-D204,port,,python,py/incorrect-blank-line-after-class,auto,P2,D,auto,,,pydocstyle
+D201,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D202,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D203,layout,,,,,,,auto,,,"pydocstyle; the formatter owns it (SR-FORMATTER decision 10); the opposite of D211, never produced"
+D204,layout,,,,,,,auto,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
 D205,port,,python,py/missing-blank-line-after-summary,suggest,P2,D,suggest,,,pydocstyle
 D206,port,,python,py/docstring-tab-indentation,manual,P2,D,none,,,pydocstyle
 D207,port,,python,py/under-indentation,auto,P2,D,auto,,,pydocstyle
 D208,port,,python,py/over-indentation,auto,P2,D,auto,,,pydocstyle
 D209,port,,python,py/new-line-after-last-paragraph,auto,P2,D,auto,,,pydocstyle
-D210,port,,python,py/surrounding-whitespace,suggest,P2,D,suggest,,,pydocstyle
-D211,port,,python,py/blank-line-before-class,auto,P2,D,auto,,,pydocstyle
+D210,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D211,layout,,,,,,,auto,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
 D212,port,,python,py/multi-line-summary-first-line,auto,P2,D,auto,,,pydocstyle
 D213,port,,python,py/multi-line-summary-second-line,auto,P2,D,auto,,,pydocstyle
 D214,port,,python,py/overindented-section,auto,P2,D,auto,,,pydocstyle
@@ -258,7 +258,7 @@ ERA001,port,,python,py/commented-out-code,manual,P2,D,none,,,eradicate
 EXE001,port,,python,py/shebang-not-executable,manual,P2,D,none,,,flake8-executable
 EXE002,port,,python,py/shebang-missing-executable-file,manual,P2,D,none,,,flake8-executable
 EXE003,port,,python,py/shebang-missing-python,manual,P2,D,none,,,flake8-executable
-EXE004,port,,python,py/shebang-leading-whitespace,auto,P2,D,auto,,,flake8-executable
+EXE004,layout,,,,,,,auto,,,flake8-executable; the formatter owns it (SR-FORMATTER decision 10)
 EXE005,port,,python,py/shebang-not-first-line,manual,P2,D,none,,,flake8-executable
 F401,covered,py/unused-import,,,,,,suggest,yes,,
 F402,covered,py/import-shadowed-by-loop-var,,,,,,none,yes,,

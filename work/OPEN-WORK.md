@@ -28,9 +28,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (26)
+## Open items (25)
 
-### build (17)
+### build (16)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -41,7 +41,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-178** `agent` Build `key-name-casing` (data, off by default), `require-frontmatter-fields` (md) and `check-examples` — with the engine work to lint `@example` code. Filed by Arpit (Cowork). [detail](open/W-178-config-keys-frontmatter-examples.md)
 
-🟢 **W-179** `agent` Formatter: check and add Ruff's docstring and shebang layout rows (D201, D202, D203/D211, D204, EXE004) and two Pylint ones; D210 already done. Filed by Arpit (Cowork). [detail](open/W-179-formatter-docstring-shebang-rows.md)
 
 🟢 **W-180** `agent` pydocstyle's imperative-mood verb list (ratified 11-09) and Ruff D401, D421 on it. Filed by Arpit (Cowork). [detail](open/W-180-imperative-mood-verbs.md)
 
