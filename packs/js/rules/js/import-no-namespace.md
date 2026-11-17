@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "which names are used is read through the file; the author lists them"
 fix_exception: restructure
 stability: preview
-ported_from: [eslint-plugin-import/no-namespace, eslint-plugin-sonarjs/no-wildcard-import]
+ported_from: [eslint-plugin-import/no-namespace, eslint-plugin-sonarjs/no-wildcard-import, biome/performance/noNamespaceImport]
 since: 0.5.0
 ---
 

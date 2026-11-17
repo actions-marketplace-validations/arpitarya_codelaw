@@ -4,7 +4,7 @@ title: "Omit an unused catch binding"
 languages: [javascript, jsx, typescript, tsx]
 fix: auto
 stability: preview
-ported_from: [eslint-plugin-unicorn/prefer-optional-catch-binding]
+ported_from: [eslint-plugin-unicorn/prefer-optional-catch-binding, biome/complexity/noUselessCatchBinding]
 since: 0.5.0
 ---
 

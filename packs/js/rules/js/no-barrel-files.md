@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "every importer of the barrel must import from the real module"
 fix_exception: restructure
 stability: preview
-ported_from: [eslint-plugin-unicorn/no-barrel-files]
+ported_from: [eslint-plugin-unicorn/no-barrel-files, biome/performance/noBarrelFile]
 since: 0.5.0
 ---
 

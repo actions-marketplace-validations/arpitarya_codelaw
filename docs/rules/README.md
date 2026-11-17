@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2877 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2895 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,9 +35,9 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 934 | 45 |
-| [ts](#ts) | `@codelaw/rules-ts` | — | 65 | 2 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 151 | 10 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 941 | 45 |
+| [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 160 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
@@ -343,6 +343,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-boolean-sort-comparator`](js/no-boolean-sort-comparator.md) | A sort comparator returns a number | `suggest` | — | `js/strict` |
 | [`js/no-break-in-nested-loop`](js/no-break-in-nested-loop.md) | No unlabelled break out of a loop or switch nested in a loop | `manual` | — | `js/strict` |
 | [`js/no-built-in-override`](js/no-built-in-override.md) | No declaration named like a built-in object | `manual` | — | *[rules] only* |
+| [`js/no-bun-modules`](js/no-bun-modules.md) | No Bun-specific module | `manual` | — | *[rules] only* |
 | [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `suggest` | — | *[rules] only* |
 | [`js/no-canvas-to-image`](js/no-canvas-to-image.md) | No round trip of canvas pixels through an image | `manual` | — | `js/strict` |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `suggest` | — | `js/recommended` |
@@ -393,6 +394,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-duplicate-in-composite`](js/no-duplicate-in-composite.md) | No type written twice in a union or intersection | `auto` | — | `js/sonarjs` |
 | [`js/no-duplicate-logical-operands`](js/no-duplicate-logical-operands.md) | No a && a | `auto` | — | `js/strict` |
 | [`js/no-duplicate-loops`](js/no-duplicate-loops.md) | No `for…of` over a `.map()` or `.filter()` | `manual` | — | `js/strict` |
+| [`js/no-duplicate-map-keys`](js/no-duplicate-map-keys.md) | No key twice in a `new Map([...])` | `manual` | — | *[rules] only* |
 | [`js/no-duplicate-parameterized-test-case`](js/no-duplicate-parameterized-test-case.md) | No repeated row in an `each()` table | `auto` | — | `js/sonarjs` |
 | [`js/no-duplicate-set-values`](js/no-duplicate-set-values.md) | No repeated literal in new Set(\[...\]) | `manual` | — | `js/strict` |
 | [`js/no-duplicate-string`](js/no-duplicate-string.md) | No string literal written three or more times | `manual` | `threshold` | *[rules] only* |
@@ -538,6 +540,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-promise-executor-return`](js/no-promise-executor-return.md) | A promise executor returns nothing | `auto` | — | *[rules] only* |
 | [`js/no-proto`](js/no-proto.md) | No __proto__ | `suggest` | — | *[rules] only* |
 | [`js/no-prototype-builtins`](js/no-prototype-builtins.md) | No calling Object.prototype methods on the object itself | `suggest` | — | `js/recommended` |
+| [`js/no-re-export-all`](js/no-re-export-all.md) | No `export * from` | `manual` | — | *[rules] only* |
 | [`js/no-redeclare`](js/no-redeclare.md) | No variable is declared twice | `auto` | — | `js/recommended` |
 | [`js/no-redundant-boolean`](js/no-redundant-boolean.md) | No comparison with a boolean literal | `manual` | — | `js/sonarjs` |
 | [`js/no-redundant-comparison`](js/no-redundant-comparison.md) | No comparison an earlier one in the same `&&` chain already decides | `auto` | — | `js/strict` |
@@ -995,7 +998,11 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/updated-loop-counter`](js/updated-loop-counter.md) | No assignment to a for loop counter in its body | `manual` | — | `js/sonarjs` |
 | [`js/use-instead`](js/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `js/recommended` |
 | [`js/use-isnan`](js/use-isnan.md) | Test for NaN with Number.isNaN | `suggest` | — | `js/recommended` |
+| [`js/use-json-import-attributes`](js/use-json-import-attributes.md) | A JSON import carries `with { type: "json" }` | `suggest` | — | *[rules] only* |
+| [`js/use-node-assert-strict`](js/use-node-assert-strict.md) | Import `node:assert/strict` | `suggest` | — | *[rules] only* |
 | [`js/use-simple-number-keys`](js/use-simple-number-keys.md) | Plain decimal numbers as object keys | `auto` | — | `js/recommended` |
+| [`js/use-static-response-methods`](js/use-static-response-methods.md) | `Response.json()` instead of `new Response(JSON.stringify())` | `suggest` | — | *[rules] only* |
+| [`js/use-top-level-regex`](js/use-top-level-regex.md) | Declare a regular expression literal at the top level | `manual` | — | *[rules] only* |
 | [`js/use-type-alias`](js/use-type-alias.md) | A union written three times is a type alias | `manual` | — | `js/sonarjs` |
 | [`js/valid-typeof`](js/valid-typeof.md) | typeof is compared with a type it can return | `suggest` | — | `js/recommended` |
 | [`js/vars-on-top`](js/vars-on-top.md) | var declarations at the top of their scope | `manual` | — | `js/taste` |
@@ -1033,6 +1040,8 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-dynamic-delete`](ts/no-dynamic-delete.md) | No delete with a computed key | `manual` | — | *[rules] only* |
 | [`ts/no-empty-object-type`](ts/no-empty-object-type.md) | No empty interfaces or {} types | `suggest` | — | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](ts/no-empty-type-parameters.md) | No empty type parameter list | `auto` | — | `ts/recommended` |
+| [`ts/no-enum`](ts/no-enum.md) | No `enum` | `manual` | — | *[rules] only* |
+| [`ts/no-evolving-types`](ts/no-evolving-types.md) | No variable that evolves into another type | `manual` | — | *[rules] only* |
 | [`ts/no-explicit-any`](ts/no-explicit-any.md) | No explicit any | `suggest` | — | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](ts/no-extra-non-null-assertion.md) | No repeated non-null assertions | `auto` | — | `ts/recommended` |
 | [`ts/no-extraneous-class`](ts/no-extraneous-class.md) | No class used as a namespace | `manual` | — | *[rules] only* |
@@ -1183,13 +1192,20 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-did-update-set-state`](react/no-did-update-set-state.md) | No setState in componentDidUpdate | `manual` | — | *[rules] only* |
 | [`react/no-direct-mutation-state`](react/no-direct-mutation-state.md) | No assigning to this.state outside the constructor | `suggest` | — | `react/recommended` |
 | [`react/no-find-dom-node`](react/no-find-dom-node.md) | No findDOMNode | `manual` | — | `react/recommended` |
+| [`react/no-inline-styles`](react/no-inline-styles.md) | No object literal in a `style` prop | `manual` | — | *[rules] only* |
 | [`react/no-invalid-html-attribute`](react/no-invalid-html-attribute.md) | rel holds only valid link types | `manual` | — | *[rules] only* |
 | [`react/no-is-mounted`](react/no-is-mounted.md) | No this.isMounted() | `suggest` | — | `react/recommended` |
+| [`react/no-jsx-leaked-dollar`](react/no-jsx-leaked-dollar.md) | No `$` left in front of a JSX expression | `suggest` | — | *[rules] only* |
+| [`react/no-misplaced-list-elements`](react/no-misplaced-list-elements.md) | `<li>` sits in a list | `manual` | — | *[rules] only* |
 | [`react/no-multi-comp`](react/no-multi-comp.md) | One component per file | `manual` | — | *[rules] only* |
 | [`react/no-namespace`](react/no-namespace.md) | No namespaced element names | `manual` | — | *[rules] only* |
 | [`react/no-nested-components`](react/no-nested-components.md) | Components are not defined inside other components | `suggest` | — | `react/recommended` |
+| [`react/no-non-scalable-viewport`](react/no-non-scalable-viewport.md) | The viewport can be zoomed | `manual` | — | *[rules] only* |
 | [`react/no-object-type-as-default-prop`](react/no-object-type-as-default-prop.md) | No object or function literal as a prop default | `manual` | — | *[rules] only* |
+| [`react/no-obsolete-attributes`](react/no-obsolete-attributes.md) | No obsolete HTML attribute | `manual` | — | *[rules] only* |
+| [`react/no-obsolete-tags`](react/no-obsolete-tags.md) | No obsolete HTML element | `manual` | — | *[rules] only* |
 | [`react/no-react-children`](react/no-react-children.md) | No `React.Children` utilities | `manual` | — | *[rules] only* |
+| [`react/no-react-forward-ref`](react/no-react-forward-ref.md) | No `forwardRef` | `manual` | — | *[rules] only* |
 | [`react/no-redundant-should-component-update`](react/no-redundant-should-component-update.md) | No shouldComponentUpdate on a PureComponent | `suggest` | — | *[rules] only* |
 | [`react/no-ref-in-render`](react/no-ref-in-render.md) | A ref's current value is not read or written during render | `suggest` | — | `react/recommended` |
 | [`react/no-render-return-value`](react/no-render-return-value.md) | The return value of ReactDOM.render is not used | `suggest` | — | `react/recommended` |
@@ -1205,6 +1221,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-unknown-property`](react/no-unknown-property.md) | DOM elements use React's prop names, not HTML attribute names | `auto` | — | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `auto` | — | `react/recommended` |
 | [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | *[rules] only* |
+| [`react/no-unsafe-iframe-sandbox`](react/no-unsafe-iframe-sandbox.md) | An `<iframe>` sandbox does not combine `allow-scripts` and `allow-same-origin` | `manual` | — | *[rules] only* |
 | [`react/no-unused-class-component-methods`](react/no-unused-class-component-methods.md) | Every class component method is used | `suggest` | — | *[rules] only* |
 | [`react/no-unused-prop-types`](react/no-unused-prop-types.md) | No prop type a component never reads | `suggest` | — | *[rules] only* |
 | [`react/no-unused-state`](react/no-unused-state.md) | No state field a component never reads | `manual` | — | *[rules] only* |
@@ -1233,6 +1250,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `suggest` | — | *[rules] only* |
 | [`react/unsupported-syntax`](react/unsupported-syntax.md) | No eval or with in components and hooks | `manual` | — | `react/recommended` |
 | [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `suggest` | — | `react/recommended` |
+| [`react/use-unique-element-ids`](react/use-unique-element-ids.md) | No static `id` on an element | `manual` | — | *[rules] only* |
 | [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
 
 ## node

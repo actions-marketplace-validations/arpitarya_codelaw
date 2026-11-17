@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (changing the quotes may need re-escaping the text) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-unicorn/no-useless-template-literals` |
+| **Ported from** | `eslint-plugin-unicorn/no-useless-template-literals`, `biome/style/noUnusedTemplateLiteral` |
 
 ## What it checks
 

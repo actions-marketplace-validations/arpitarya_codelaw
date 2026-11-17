@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (every importer of the barrel must import from the real module) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-unicorn/no-barrel-files` |
+| **Ported from** | `eslint-plugin-unicorn/no-barrel-files`, `biome/performance/noBarrelFile` |
 
 ## What it checks
 

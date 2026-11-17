@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "value: the element needs a real component or tag name"
 fix_exception: value
 stability: preview
-ported_from: [eslint-plugin-react/no-namespace]
+ported_from: [eslint-plugin-react/no-namespace, biome/correctness/noJsxNamespace]
 since: 0.5.0
 ---
 

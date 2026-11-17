@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (value: the element needs a real component or tag name) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-react/no-namespace` |
+| **Ported from** | `eslint-plugin-react/no-namespace`, `biome/correctness/noJsxNamespace` |
 
 ## What it checks
 
