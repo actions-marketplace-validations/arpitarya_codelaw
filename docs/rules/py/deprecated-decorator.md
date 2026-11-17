@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:py/pylint` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (each replacement is a different construct — two decorators, an `async def`, or a rewritten loader — so the edit is a restructure) |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 pip install codelaw-rules-python
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:py/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:py/pylint` sets it to `warn`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:py/recommended"]
-
-[rules]
-"py/deprecated-decorator" = "error"
+extends = ["codelaw:py/pylint"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

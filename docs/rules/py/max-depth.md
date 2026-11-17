@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/size` at `warn` |
+| **Turned on by** | `codelaw:py/size` at `warn` · `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | `max` |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (flattening nested blocks changes the function's structure; which guard to invert or which block to extract is the author's call) |
