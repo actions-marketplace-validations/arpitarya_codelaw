@@ -145,6 +145,21 @@ for _i in ['using-assignment-expression-in-unsupported-version', 'using-comprehe
 for _i in ['duplicate-argument-name', 'return-arg-in-generator']:
     RULED[('pylint', _i)] = ('not-applicable', _NA + ': a syntax error in every Python codelaw supports, so the file does not parse and no rule runs')
 
+# Ruled 2026-11-09 (Arpit, voice docket; W-176): rows whose upstream rule does nothing in its default configuration are
+# built as rules that are silent until a project sets their option (SR-RULE-FORMAT decision 2d), a class of their own.
+# `unicorn/name-replacements` is not here: upstream runs it on a built-in table, and W-139 slice 36 built it that way.
+_OPT = "options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2d)"
+for _t, _ids in {
+    'eslint': ['no-implicit-globals', 'id-denylist', 'id-match', 'no-restricted-syntax'],
+    'eslint-plugin-import': ['no-restricted-paths'],
+    'eslint-plugin-import-x': ['prefer-namespace-import'],
+    'eslint-plugin-sonarjs': ['comment-regex', 'file-header'],
+    'eslint-plugin-unicorn': ['consistent-function-style', 'id-match', 'string-content'],
+    'eslint-plugin-jsdoc': ['match-name', 'no-missing-syntax', 'no-restricted-syntax', 'require-tags', 'text-escaping'],
+    'eslint-plugin-n': ['no-restricted-import', 'no-restricted-require'],
+}.items():
+    for _i in _ids: RULED[(_t, _i)] = ('options-only', _OPT)
+
 def kebab(s): return re.sub(r'(?<!^)(?=[A-Z])', '-', s).lower()
 taken = set(cl_ids)
 COLLIDE = {}
