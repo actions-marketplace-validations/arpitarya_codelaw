@@ -22,10 +22,6 @@ fn root_of(n: Node<'_>) -> Node<'_> {
     cur
 }
 
-fn dotted(v: &[u64]) -> String {
-    v.iter().map(u64::to_string).collect::<Vec<_>>().join(".")
-}
-
 fn has_future_annotations(root: Node<'_>, src: &str) -> bool {
     kids(root).into_iter().any(|s| s.kind() == "future_import_statement" && text(s, src).contains("annotations"))
 }

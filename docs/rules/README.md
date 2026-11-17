@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2877 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2883 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -55,7 +55,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 889 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 895 | 46 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2336,6 +2336,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/function-call-in-default-argument`](py/function-call-in-default-argument.md) | No function calls in default arguments | `suggest` | `extend_immutable_calls` | `py/recommended` |
 | [`py/function-uses-loop-variable`](py/function-uses-loop-variable.md) | Closures don't capture a loop variable by name | `suggest` | — | `py/recommended` |
 | [`py/future-annotations-in-stub`](py/future-annotations-in-stub.md) | No __future__ annotations in stubs | `auto` | — | *[rules] only* |
+| [`py/future-required-type-annotation`](py/future-required-type-annotation.md) | An annotation newer than the target needs the `__future__` import | `auto` | — | *[rules] only* |
+| [`py/future-rewritable-type-annotation`](py/future-rewritable-type-annotation.md) | The `__future__` import would let an annotation drop `typing` | `auto` | — | *[rules] only* |
 | [`py/generator-return-from-iter-method`](py/generator-return-from-iter-method.md) | A simple __iter__ returns Iterator, not Generator | `suggest` | — | *[rules] only* |
 | [`py/generic-not-last-base-class`](py/generic-not-last-base-class.md) | `Generic[...]` is the last base class | `suggest` | — | *[rules] only* |
 | [`py/getattr-with-constant`](py/getattr-with-constant.md) | No `getattr` with a constant name | `auto` | — | `py/recommended` |
@@ -2617,6 +2619,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/os-stat`](py/os-stat.md) | pathlib, not os.stat | `suggest` | — | *[rules] only* |
 | [`py/os-symlink`](py/os-symlink.md) | pathlib, not os.symlink | `suggest` | — | *[rules] only* |
 | [`py/os-unlink`](py/os-unlink.md) | pathlib, not os.unlink | `suggest` | — | *[rules] only* |
+| [`py/outdated-version-block`](py/outdated-version-block.md) | No `sys.version_info` check the target already decides | `suggest` | — | *[rules] only* |
 | [`py/over-indentation`](py/over-indentation.md) | A docstring's lines are not indented more than its quotes | `auto` | — | *[rules] only* |
 | [`py/overindented-section`](py/overindented-section.md) | A docstring section header is not over-indented | `auto` | — | *[rules] only* |
 | [`py/overindented-section-underline`](py/overindented-section-underline.md) | A section underline is not over-indented | `auto` | — | *[rules] only* |
@@ -2818,6 +2821,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/trio-sync-call`](py/trio-sync-call.md) | Await trio's async functions | `suggest` | — | *[rules] only* |
 | [`py/true-false-comparison`](py/true-false-comparison.md) | Don't compare with `True` or `False` | `suggest` | — | `py/recommended` |
 | [`py/try-consider-else`](py/try-consider-else.md) | A return after the guarded work goes in else | `manual` | — | *[rules] only* |
+| [`py/try-except-in-loop`](py/try-except-in-loop.md) | No `try`/`except` at the top of a loop body | `manual` | — | *[rules] only* |
 | [`py/type-alias-without-annotation`](py/type-alias-without-annotation.md) | A stub's type alias is annotated TypeAlias | `auto` | — | *[rules] only* |
 | [`py/type-bivariance`](py/type-bivariance.md) | A TypeVar is not both covariant and contravariant | `manual` | — | *[rules] only* |
 | [`py/type-check-without-type-error`](py/type-check-without-type-error.md) | A failed type check raises TypeError | `suggest` | — | *[rules] only* |
@@ -2968,6 +2972,8 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/useless-type-doc`](py/useless-type-doc.md) | A parameter that is ignored by name has no documented type | `suggest` | `check_private_functions` | *[rules] only* |
 | [`py/useless-with-lock`](py/useless-with-lock.md) | No with on a fresh lock | `manual` | — | *[rules] only* |
 | [`py/using-constant-test`](py/using-constant-test.md) | No if or while on a constant | `manual` | — | *[rules] only* |
+| [`py/using-exception-groups-in-unsupported-version`](py/using-exception-groups-in-unsupported-version.md) | No `except*` below Python 3.11 | `manual` | — | *[rules] only* |
+| [`py/using-generic-type-syntax-in-unsupported-version`](py/using-generic-type-syntax-in-unsupported-version.md) | No PEP 695 syntax below Python 3.12 | `manual` | — | *[rules] only* |
 | [`py/utf8-encoding-declaration`](py/utf8-encoding-declaration.md) | No coding: utf-8 comment | `auto` | — | *[rules] only* |
 | [`py/verbose-decimal-constructor`](py/verbose-decimal-constructor.md) | Decimal('1.5'), not Decimal('  1.5 ') | `auto` | — | *[rules] only* |
 | [`py/verbose-log-message`](py/verbose-log-message.md) | logger.exception does not repeat the exception | `manual` | — | *[rules] only* |

@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-183-target-gated-findings.md`](open/W-183-target-gated-findings.md) | 2026-11-15 | done — SR-RULE-FORMAT decision 2d (`finding_target:`); six rules in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_ruff_target.rs`) |
 | [`W-193-ruff-tail.md`](open/W-193-ruff-tail.md) | 2026-11-15 | done 2026-11-09 in W-139 slice 37 — `py/quoted-type-alias`, `py/split-static-string` in [`packs/python/rules/py/`](../packs/python/rules/py/) |
 | [`W-194-pylint-tail.md`](open/W-194-pylint-tail.md) | 2026-11-15 | done 2026-11-09 in W-139 slice 37 — Pylint's docparams rows in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_pylint_doc.rs`) |
 | [`W-174-python-inference.md`](open/W-174-python-inference.md) | 2026-11-15 | done — [SR-PY-INFERENCE](../records/0120_python-inference.md): 37 of 38 rows built as `preview` rules, `boolean-datetime` ruled not-applicable; the cross-file question is [W-177](../work/open/W-177-python-type-checker-research.md) and [W-185](../work/open/W-185-python-project-graph.md) |
