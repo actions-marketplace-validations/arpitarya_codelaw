@@ -79,6 +79,7 @@ mod py_ruff_doc;
 mod py_ruff_fmt;
 mod py_ruff_generic;
 mod py_ruff_tc;
+mod py_exec;
 mod py_classes;
 mod py_pylint_doc;
 mod py_pylint_imports;
@@ -146,6 +147,14 @@ pub trait FileContext: Sync {
     /// engine records the question, so a cached result is reused only
     /// while the list is the same.
     fn project_files(&self) -> Option<Vec<String>> {
+        None
+    }
+    /// Whether the file itself has the executable bit, read only when a rule
+    /// asks (W-184). `None` where there is no bit to read: off Unix (nothing
+    /// is reported there, the same answer on every machine, L5), a file
+    /// checked alone, a path that is not a file. The engine records the
+    /// question, so a cached result is reused only while the bit is the same.
+    fn is_executable(&self) -> Option<bool> {
         None
     }
     /// The as-of date, `YYYY-MM-DD`, when there is one (L5 decision 2):
@@ -975,7 +984,7 @@ pub fn registry() -> &'static [&'static dyn NativeRule] {
 }
 
 /// `REGISTRY` and the rule families kept in their own lists.
-static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(jsdoc::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_tc::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(py_pylint_doc::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).copied().collect());
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(jsdoc::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_tc::RULES).chain(py_exec::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(py_pylint_doc::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]

@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2895 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2897 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -55,7 +55,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 889 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 891 | 46 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2767,7 +2767,9 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/setattr-with-constant`](py/setattr-with-constant.md) | No `setattr` with a constant name | `auto` | — | `py/recommended` |
 | [`py/shadowed-import`](py/shadowed-import.md) | An import does not take the name of an earlier import | `manual` | — | *[rules] only* |
 | [`py/shallow-copy-environ`](py/shallow-copy-environ.md) | os.environ.copy(), not copy.copy(os.environ) | `suggest` | — | *[rules] only* |
+| [`py/shebang-missing-executable-file`](py/shebang-missing-executable-file.md) | An executable file has a shebang | `manual` | — | *[rules] only* |
 | [`py/shebang-missing-python`](py/shebang-missing-python.md) | A shebang names python | `manual` | — | *[rules] only* |
+| [`py/shebang-not-executable`](py/shebang-not-executable.md) | A file with a shebang is executable | `manual` | — | *[rules] only* |
 | [`py/shebang-not-first-line`](py/shebang-not-first-line.md) | The shebang is the first line | `auto` | — | *[rules] only* |
 | [`py/signature-differs`](py/signature-differs.md) | An override keeps the defaults of the method it overrides | `manual` | — | *[rules] only* |
 | [`py/signature-in-docstring`](py/signature-in-docstring.md) | A docstring's first line is not the function's signature | `manual` | — | *[rules] only* |

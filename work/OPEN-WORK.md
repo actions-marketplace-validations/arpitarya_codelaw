@@ -28,9 +28,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (27)
+## Open items (26)
 
-### build (18)
+### build (17)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -48,8 +48,6 @@ here. Read that record before changing anything below it.
 🟢 **W-182** `agent` A Unicode confusables data package (ratified 11-09) and Ruff RUF001–RUF003 on it. Filed by Arpit (Cowork). [detail](open/W-182-unicode-confusables.md)
 
 🟢 **W-183** `agent` Findings gated on the project's Python version; Ruff FA100, FA102, PERF203, UP036 and two Pylint rows on it. Filed by Arpit (Cowork). [detail](open/W-183-target-gated-findings.md)
-
-🟢 **W-184** `agent` A file's executable bit for rules; Ruff EXE001, EXE002 on it. Filed by Arpit (Cowork). [detail](open/W-184-file-mode-bits.md)
 
 🟢 **W-185** `agent` The Python side of the project graph (imports, class bases) and six Pylint rows on it (`cyclic-import`, `import-error`, …). Filed by Arpit (Cowork). [detail](open/W-185-python-project-graph.md)
 
@@ -86,7 +84,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

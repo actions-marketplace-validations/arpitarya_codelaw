@@ -652,7 +652,9 @@
 "py/setattr-with-constant" = 1
 "py/shadowed-import" = 0
 "py/shallow-copy-environ" = 0
+"py/shebang-missing-executable-file" = 0
 "py/shebang-missing-python" = 0
+"py/shebang-not-executable" = 0
 "py/shebang-not-first-line" = 0
 "py/signature-differs" = 0
 "py/signature-in-docstring" = 1

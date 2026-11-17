@@ -16,8 +16,8 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Add the file's executable bit to what a rule can read | rules can check scripts | ⏳ |
-| 2 | Build EXE001 and EXE002 | a shebang without the bit, the bit without a shebang | ⏳ |
+| 1 | Add the file's executable bit to what a rule can read | rules can check scripts | ✅ |
+| 2 | Build EXE001 and EXE002 | a shebang without the bit, the bit without a shebang | ✅ |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* On the recommendation (build EXE001 and EXE002, backlog PLE2514): *"Perfect. Let's go with what you recommend."* Filed on *"file it."*
 
@@ -31,9 +31,9 @@ ball: agent
 
 | DoD | what | state |
 |---|---|---|
-| 1 · engine | the bit on `FileContext`, read once per file | ⏳ |
-| 2 · rules | EXE001, EXE002 with cases | ⏳ |
-| 3 · docs | what the rules do where there is no such bit | ⏳ |
+| 1 · engine | the bit on `FileContext` (`is_executable`), read only when a rule asks, recorded as a cache question | ✅ |
+| 2 · rules | EXE001, EXE002 with cases | ✅ |
+| 3 · docs | what the rules do where there is no such bit | ✅ |
 
 ## Blockers
 
@@ -41,11 +41,15 @@ None.
 
 ## Record affected
 
-SR-ARCHITECTURE (the file context) — the builder names the decision.
+SR-ARCHITECTURE decision 15b (the file context): a new bullet, *the file's executable bit is a question too* (2026-11-15).
 
 ## Hazards
 
-- Windows has no executable bit: read git's recorded mode or report nothing, and say which (L5: the same answer everywhere).
+- Windows has no executable bit: read git's recorded mode or report nothing, and say which (L5: the same answer everywhere). **Built: report nothing** off Unix, and git's mode is not consulted; stated in both rule files and in 15b.
+
+## Built (2026-11-15)
+
+`FileContext::is_executable` (`crates/codelaw-native/src/lib.rs`; the engine's answer in `crates/codelaw-engine/src/files.rs`, `Question::Executable`), `py/shebang-not-executable` (EXE001) and `py/shebang-missing-executable-file` (EXE002) in `crates/codelaw-native/src/py_exec.rs`. Rule-tester snippets give a file the bit with `+x` at the end of its header (`# run.py +x`); a snippet with no header has no bit to read.
 
 ## Reference
 

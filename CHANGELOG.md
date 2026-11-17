@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **A file's executable bit for rules (W-184):** a native rule can ask whether the file it checks is executable (`FileContext::is_executable`; nothing is reported off Unix), and Ruff's `EXE001` (`py/shebang-not-executable`) and `EXE002` (`py/shebang-missing-executable-file`) read it; both are `manual`, `preview`. The rule tester gives a snippet file the bit with `+x` in its header.
+
 ### Changed
 
 - **One record per graph (W-191):** SR-PROJECT-GRAPH is now the overview of every graph codelaw builds; the module graph is SR-MODULE-GRAPH, the per-file semantic model SR-SEMANTIC-MODEL (was SR-ARCHITECTURE decision 15a) and the Python flow pass SR-PY-FLOW (was SR-PY-INFERENCE decision 3). Records only; no behaviour changed.
