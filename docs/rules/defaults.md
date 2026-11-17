@@ -15,9 +15,9 @@
 
 | Pack | Installed by `init` when | Rules | On | On with `preview = true` | Off, opt-in preset | Off, in no preset |
 |---|---|--:|--:|--:|--:|--:|
-| [js](defaults/js.md) | a JavaScript or TypeScript file | 934 | 0 | 155 | 542 | 237 |
-| [ts](defaults/ts.md) | a TypeScript file | 65 | 0 | 23 | 11 | 31 |
-| [react](defaults/react.md) | `package.json` depends on `react` | 151 | 0 | 66 | 5 | 80 |
+| [js](defaults/js.md) | a JavaScript or TypeScript file | 941 | 0 | 155 | 542 | 244 |
+| [ts](defaults/ts.md) | a TypeScript file | 67 | 0 | 23 | 11 | 33 |
+| [react](defaults/react.md) | `package.json` depends on `react` | 160 | 0 | 66 | 5 | 89 |
 | [node](defaults/node.md) | never — a project adds it | 38 | 0 | 0 | 10 | 28 |
 | [stencil](defaults/stencil.md) | `package.json` depends on `@stencil/core` | 18 | 0 | 17 | 1 | 0 |
 | [html](defaults/html.md) | an HTML file | 85 | 0 | 64 | 10 | 11 |
@@ -35,14 +35,14 @@
 | [nextjs](defaults/nextjs.md) | `package.json` depends on `next` | 22 | 0 | 22 | 0 | 0 |
 | [testing](defaults/testing.md) | `package.json` depends on `jest`, `vitest`, `@testing-library/*` or `@playwright/test` | 174 | 0 | 77 | 0 | 97 |
 | [tailwind](defaults/tailwind.md) | `tailwindcss` in `package.json`, a `tailwind.config.*`, or a stylesheet that imports it | 8 | 0 | 5 | 0 | 3 |
-| [python](defaults/python.md) | a Python file | 889 | 0 | 97 | 694 | 98 |
+| [python](defaults/python.md) | a Python file | 891 | 0 | 97 | 696 | 98 |
 | [security-python](defaults/security-python.md) | never — a security pack is chosen, not detected | 66 | 0 | 0 | 61 | 5 |
 | [django](defaults/django.md) | never — installing the pack is the opt-in | 7 | 0 | 0 | 7 | 0 |
 | [fastapi](defaults/fastapi.md) | never — installing the pack is the opt-in | 3 | 0 | 0 | 2 | 1 |
 | [airflow](defaults/airflow.md) | never — installing the pack is the opt-in | 8 | 0 | 0 | 1 | 7 |
 | [numpy](defaults/numpy.md) | never — installing the pack is the opt-in | 4 | 0 | 0 | 4 | 0 |
 | [pandas](defaults/pandas.md) | never — installing the pack is the opt-in | 12 | 0 | 0 | 12 | 0 |
-| **all** | | **2878** | **31** | **615** | **1527** | **705** |
+| **all** | | **2898** | **31** | **615** | **1529** | **723** |
 
 A graph rule that two packs ship counts once in each; the totals therefore may exceed the rule count.
 

@@ -33,7 +33,7 @@ A page, generated from the packs and checked in CI, that says what a fresh insta
 | DoD | what | state |
 |---|---|---|
 | 1 · page | generated, with `--check` in CI so it cannot drift | ✅ `docs/rules/defaults.md` and `docs/rules/defaults/<pack>.md`, written by `scripts/rule-docs.py`, held by its `--check` (CI's `lint` job) |
-| 2 · presets | `py/pylint` (W-144 R7), `py/strict` and a pydocstyle preset (B-048) — or each one's reason it is not built | ✅ `py/strict` (620 rules with `py/recommended`), `py/pylint` (245), `py/pydocstyle` (39), opt in; `codelaw test packs/python` 889 rules · 0 failed |
+| 2 · presets | `py/pylint` (W-144 R7), `py/strict` and a pydocstyle preset (B-048) — or each one's reason it is not built | ✅ `py/strict` (622 rules with `py/recommended`), `py/pylint` (245), `py/pydocstyle` (39), opt in; `codelaw test packs/python` 889 rules · 0 failed |
 | 3 · 2d | the 23 rules' corpus counts put to the decider | 🔴 filed to the inbox, below |
 | 4 · ledger | `work/proposals/rule-parity/method/classify.py` learns the classes ruled 2026-11-09 (the proposal's §14), so a regenerated CSV agrees | ✅ its `RULED` table; `classify.py` then `tables.py` regenerates exactly the committed CSVs |
 

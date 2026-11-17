@@ -221,7 +221,7 @@ Twenty-seven first-party packs: twenty on npm as `@codelaw/rules-<pack>`, eighte
 | [`react`](packs/react/README.md) | ✅ | ✅ | 160 | `react/recommended` · `react/a11y` · `react/conventions` · `react/size` | eslint-plugin-react, react-hooks, @eslint-react |
 | [`node`](packs/node/README.md) | ✅ | — | 38 | `node/recommended` | eslint-plugin-n |
 | [`stencil`](packs/stencil/README.md) | ✅ | — | 18 | `stencil/recommended` · `stencil/conventions` | @stencil/eslint-plugin |
-| [`python`](packs/python/README.md) | — | ✅ | 891 | `py/recommended` · `py/conventions` · `py/project` · `py/size` · `py/markers` | Ruff 0.17's default `E4`/`E7`/`E9`/`F`, every stable flake8-bugbear rule, isort `I001`, `RUF022` |
+| [`python`](packs/python/README.md) | — | ✅ | 891 | `py/recommended` · `py/conventions` · `py/project` · `py/size` · `py/markers` · `py/strict` · `py/pylint` · `py/pydocstyle` | Ruff 0.17's default `E4`/`E7`/`E9`/`F`, every stable flake8-bugbear rule, isort `I001`, `RUF022` |
 | [`html`](packs/html/README.md) | ✅ | ✅ | 85 | `html/recommended` · `html/a11y` · `html/document` · `html/conventions` · `html/security` · `html/size` · `html/markers` | html-validate 11 recommended, a11y and document |
 | [`css`](packs/css/README.md) | ✅ | ✅ | 146 | `css/recommended` · `css/standard` · `css/conventions` · `css/project` · `css/size` · `css/markers` | stylelint-config-recommended 18 (all 41), stylelint-config-standard 40 |
 | [`scss`](packs/scss/README.md) | ✅ | ✅ | 51 | `scss/recommended` · `scss/strict` · `scss/markers` | stylelint-scss, and Dart Sass's module-system migrations |

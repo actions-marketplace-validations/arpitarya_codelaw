@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#ts).
 
 - **Installed by `codelaw init` when:** a TypeScript file.
-- **Rules:** 65 — 0 on, 23 on with `preview = true`, 11 off in an opt-in preset, 31 in no preset.
+- **Rules:** 67 — 0 on, 23 on with `preview = true`, 11 off in an opt-in preset, 33 in no preset.
 
 ## Presets
 
@@ -43,6 +43,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`ts/no-dynamic-delete`](../ts/no-dynamic-delete.md) | off — in no preset | — | — |
 | [`ts/no-empty-object-type`](../ts/no-empty-object-type.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-empty-type-parameters`](../ts/no-empty-type-parameters.md) | on with `preview = true` | error | `ts/recommended` |
+| [`ts/no-enum`](../ts/no-enum.md) | off — in no preset | — | — |
+| [`ts/no-evolving-types`](../ts/no-evolving-types.md) | off — in no preset | — | — |
 | [`ts/no-explicit-any`](../ts/no-explicit-any.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-extra-non-null-assertion`](../ts/no-extra-non-null-assertion.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-extraneous-class`](../ts/no-extraneous-class.md) | off — in no preset | — | — |

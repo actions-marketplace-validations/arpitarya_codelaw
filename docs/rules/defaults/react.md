@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#react).
 
 - **Installed by `codelaw init` when:** `package.json` depends on `react`.
-- **Rules:** 151 — 0 on, 66 on with `preview = true`, 5 off in an opt-in preset, 80 in no preset.
+- **Rules:** 160 — 0 on, 66 on with `preview = true`, 5 off in an opt-in preset, 89 in no preset.
 
 ## Presets
 
@@ -122,13 +122,20 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/no-did-update-set-state`](../react/no-did-update-set-state.md) | off — in no preset | — | — |
 | [`react/no-direct-mutation-state`](../react/no-direct-mutation-state.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-find-dom-node`](../react/no-find-dom-node.md) | on with `preview = true` | error | `react/recommended` |
+| [`react/no-inline-styles`](../react/no-inline-styles.md) | off — in no preset | — | — |
 | [`react/no-invalid-html-attribute`](../react/no-invalid-html-attribute.md) | off — in no preset | — | — |
 | [`react/no-is-mounted`](../react/no-is-mounted.md) | on with `preview = true` | error | `react/recommended` |
+| [`react/no-jsx-leaked-dollar`](../react/no-jsx-leaked-dollar.md) | off — in no preset | — | — |
+| [`react/no-misplaced-list-elements`](../react/no-misplaced-list-elements.md) | off — in no preset | — | — |
 | [`react/no-multi-comp`](../react/no-multi-comp.md) | off — in no preset | — | — |
 | [`react/no-namespace`](../react/no-namespace.md) | off — in no preset | — | — |
 | [`react/no-nested-components`](../react/no-nested-components.md) | on with `preview = true` | error | `react/recommended` |
+| [`react/no-non-scalable-viewport`](../react/no-non-scalable-viewport.md) | off — in no preset | — | — |
 | [`react/no-object-type-as-default-prop`](../react/no-object-type-as-default-prop.md) | off — in no preset | — | — |
+| [`react/no-obsolete-attributes`](../react/no-obsolete-attributes.md) | off — in no preset | — | — |
+| [`react/no-obsolete-tags`](../react/no-obsolete-tags.md) | off — in no preset | — | — |
 | [`react/no-react-children`](../react/no-react-children.md) | off — in no preset | — | — |
+| [`react/no-react-forward-ref`](../react/no-react-forward-ref.md) | off — in no preset | — | — |
 | [`react/no-redundant-should-component-update`](../react/no-redundant-should-component-update.md) | off — in no preset | — | — |
 | [`react/no-ref-in-render`](../react/no-ref-in-render.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-render-return-value`](../react/no-render-return-value.md) | on with `preview = true` | error | `react/recommended` |
@@ -144,6 +151,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/no-unknown-property`](../react/no-unknown-property.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](../react/no-unnecessary-use-prefix.md) | on with `preview = true` | warn | `react/recommended` |
 | [`react/no-unsafe`](../react/no-unsafe.md) | off — in no preset | — | — |
+| [`react/no-unsafe-iframe-sandbox`](../react/no-unsafe-iframe-sandbox.md) | off — in no preset | — | — |
 | [`react/no-unused-class-component-methods`](../react/no-unused-class-component-methods.md) | off — in no preset | — | — |
 | [`react/no-unused-prop-types`](../react/no-unused-prop-types.md) | off — in no preset | — | — |
 | [`react/no-unused-state`](../react/no-unused-state.md) | off — in no preset | — | — |
@@ -172,4 +180,5 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/style-prop-object`](../react/style-prop-object.md) | off — in no preset | — | — |
 | [`react/unsupported-syntax`](../react/unsupported-syntax.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/use-memo`](../react/use-memo.md) | on with `preview = true` | error | `react/recommended` |
+| [`react/use-unique-element-ids`](../react/use-unique-element-ids.md) | off — in no preset | — | — |
 | [`react/void-dom-elements-no-children`](../react/void-dom-elements-no-children.md) | off — in no preset | — | — |

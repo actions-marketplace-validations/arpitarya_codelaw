@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 889 — 0 on, 97 on with `preview = true`, 694 off in an opt-in preset, 98 in no preset.
+- **Rules:** 891 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 98 in no preset.
 
 ## Presets
 
@@ -16,7 +16,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `py/project` | no — opt in | 1 | 1 error | The rule that reads the whole repo: module-level names nothing imports (vulture) |
 | `py/size` | no — opt in | 5 | 5 warn | Size limits: lines per module and function, parameters, complexity and nesting depth (Pylint's and Ruff's defaults) |
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
-| `py/strict` | no — opt in | 620 | 96 error, 524 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
+| `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
 | `py/pylint` | no — opt in | 245 | 69 error, 91 info, 85 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
 | `py/pydocstyle` | no — opt in | 39 | 39 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
 
@@ -676,7 +676,9 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/setattr-with-constant`](../py/setattr-with-constant.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/shadowed-import`](../py/shadowed-import.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/shallow-copy-environ`](../py/shallow-copy-environ.md) | off — opt-in preset | — | `py/strict` |
+| [`py/shebang-missing-executable-file`](../py/shebang-missing-executable-file.md) | off — opt-in preset | — | `py/strict` |
 | [`py/shebang-missing-python`](../py/shebang-missing-python.md) | off — opt-in preset | — | `py/strict` |
+| [`py/shebang-not-executable`](../py/shebang-not-executable.md) | off — opt-in preset | — | `py/strict` |
 | [`py/shebang-not-first-line`](../py/shebang-not-first-line.md) | off — opt-in preset | — | `py/strict` |
 | [`py/signature-differs`](../py/signature-differs.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/signature-in-docstring`](../py/signature-in-docstring.md) | off — opt-in preset | — | `py/pydocstyle` |

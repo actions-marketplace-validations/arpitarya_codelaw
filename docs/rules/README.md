@@ -31,6 +31,10 @@ remap = { error = "warn" }
 - **Traceable:** `codelaw config --print --for <file>` shows each value and where it came from.
 - **Full reference:** [SR-CONFIG](../../records/0110_config.md).
 
+## What a fresh install turns on
+
+**[On and off by default](defaults.md):** every pack, every preset and every rule, and what `codelaw init` writes.
+
 ## Packs
 
 | Pack | npm | PyPI | Rules | With options |
@@ -2113,901 +2117,901 @@ Presets: `codelaw:tailwind/recommended`.
 
 ## python
 
-Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/project` · `codelaw:py/size` · `codelaw:py/markers`.
+Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/project` · `codelaw:py/size` · `codelaw:py/markers` · `codelaw:py/strict` · `codelaw:py/pylint` · `codelaw:py/pydocstyle`.
 
 | Rule | What it checks | Fix | Options | Turned on by |
 |---|---|---|---|---|
 | [`graph/no-unused-exports`](graph/no-unused-exports.md) | Exported symbols must be used somewhere | `suggest` | — | `js/project`, `py/project` |
-| [`py/abstract-base-class-without-abstract-method`](py/abstract-base-class-without-abstract-method.md) | An abstract base class has an abstract method | `suggest` | — | `py/recommended` |
-| [`py/abstract-class-instantiated`](py/abstract-class-instantiated.md) | A class with abstract methods is not instantiated | `manual` | — | *[rules] only* |
-| [`py/abstract-method`](py/abstract-method.md) | A concrete class implements the abstract methods it inherits | `manual` | — | *[rules] only* |
-| [`py/access-annotations-from-class-dict`](py/access-annotations-from-class-dict.md) | annotationlib, not __dict__\['__annotations__'\] | `suggest` | — | *[rules] only* |
-| [`py/access-member-before-definition`](py/access-member-before-definition.md) | An attribute is assigned before `self` reads it | `manual` | — | *[rules] only* |
-| [`py/all-sorted`](py/all-sorted.md) | `__all__` is sorted | `auto` | — | `py/recommended` |
-| [`py/ambiguous-class-name`](py/ambiguous-class-name.md) | No classes named `l`, `O` or `I` | `manual` | — | `py/recommended` |
-| [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended` |
-| [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended` |
-| [`py/anomalous-unicode-escape-in-string`](py/anomalous-unicode-escape-in-string.md) | A bytes literal has no `\u`, `\U` or `\N` escape | `auto` | — | *[rules] only* |
-| [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | *[rules] only* |
-| [`py/any-type`](py/any-type.md) | No Any in a function signature | `manual` | — | *[rules] only* |
-| [`py/argument-default-in-stub`](py/argument-default-in-stub.md) | A stub's defaults are simple | `auto` | — | *[rules] only* |
-| [`py/arguments-differ`](py/arguments-differ.md) | An override takes the arguments of the method it overrides | `manual` | — | *[rules] only* |
-| [`py/arguments-renamed`](py/arguments-renamed.md) | An override names its parameters like the method it overrides | `manual` | — | *[rules] only* |
-| [`py/assert-false`](py/assert-false.md) | Don't `assert False` | `suggest` | — | `py/recommended` |
-| [`py/assert-on-string-literal`](py/assert-on-string-literal.md) | No assert on a string | `manual` | — | *[rules] only* |
-| [`py/assert-raises-exception`](py/assert-raises-exception.md) | Tests don't expect a bare `Exception` | `manual` | — | `py/recommended` |
-| [`py/assert-tuple`](py/assert-tuple.md) | `assert` doesn't test a tuple | `suggest` | — | `py/recommended` |
-| [`py/assert-with-print-message`](py/assert-with-print-message.md) | No print() as an assert message | `auto` | — | *[rules] only* |
-| [`py/assignment-default-in-stub`](py/assignment-default-in-stub.md) | Simple values only in stub assignments | `auto` | — | *[rules] only* |
-| [`py/assignment-in-assert`](py/assignment-in-assert.md) | No walrus inside assert | `suggest` | — | *[rules] only* |
-| [`py/assignment-to-os-environ`](py/assignment-to-os-environ.md) | Don't assign to `os.environ` | `suggest` | — | `py/recommended` |
-| [`py/async-busy-wait`](py/async-busy-wait.md) | No sleep loop waiting for a condition | `manual` | — | *[rules] only* |
-| [`py/async-function-with-timeout`](py/async-function-with-timeout.md) | An async function has no timeout parameter | `manual` | — | *[rules] only* |
-| [`py/async-zero-sleep`](py/async-zero-sleep.md) | lowlevel.checkpoint(), not sleep(0) | `auto` | — | *[rules] only* |
-| [`py/asyncio-dangling-task`](py/asyncio-dangling-task.md) | Keep a reference to every asyncio task | `manual` | — | *[rules] only* |
-| [`py/attribute-defined-outside-init`](py/attribute-defined-outside-init.md) | Instance attributes are first set in `__init__` | `manual` | — | *[rules] only* |
-| [`py/await-outside-async`](py/await-outside-async.md) | No await outside an async function | `manual` | — | *[rules] only* |
+| [`py/abstract-base-class-without-abstract-method`](py/abstract-base-class-without-abstract-method.md) | An abstract base class has an abstract method | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/abstract-class-instantiated`](py/abstract-class-instantiated.md) | A class with abstract methods is not instantiated | `manual` | — | `py/pylint` |
+| [`py/abstract-method`](py/abstract-method.md) | A concrete class implements the abstract methods it inherits | `manual` | — | `py/pylint` |
+| [`py/access-annotations-from-class-dict`](py/access-annotations-from-class-dict.md) | annotationlib, not __dict__\['__annotations__'\] | `suggest` | — | `py/strict` |
+| [`py/access-member-before-definition`](py/access-member-before-definition.md) | An attribute is assigned before `self` reads it | `manual` | — | `py/pylint` |
+| [`py/all-sorted`](py/all-sorted.md) | `__all__` is sorted | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/ambiguous-class-name`](py/ambiguous-class-name.md) | No classes named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/anomalous-unicode-escape-in-string`](py/anomalous-unicode-escape-in-string.md) | A bytes literal has no `\u`, `\U` or `\N` escape | `auto` | — | `py/pylint` |
+| [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | `py/strict` |
+| [`py/any-type`](py/any-type.md) | No Any in a function signature | `manual` | — | `py/strict` |
+| [`py/argument-default-in-stub`](py/argument-default-in-stub.md) | A stub's defaults are simple | `auto` | — | `py/strict` |
+| [`py/arguments-differ`](py/arguments-differ.md) | An override takes the arguments of the method it overrides | `manual` | — | `py/pylint` |
+| [`py/arguments-renamed`](py/arguments-renamed.md) | An override names its parameters like the method it overrides | `manual` | — | `py/pylint` |
+| [`py/assert-false`](py/assert-false.md) | Don't `assert False` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/assert-on-string-literal`](py/assert-on-string-literal.md) | No assert on a string | `manual` | — | `py/strict` |
+| [`py/assert-raises-exception`](py/assert-raises-exception.md) | Tests don't expect a bare `Exception` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/assert-tuple`](py/assert-tuple.md) | `assert` doesn't test a tuple | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/assert-with-print-message`](py/assert-with-print-message.md) | No print() as an assert message | `auto` | — | `py/strict` |
+| [`py/assignment-default-in-stub`](py/assignment-default-in-stub.md) | Simple values only in stub assignments | `auto` | — | `py/strict` |
+| [`py/assignment-in-assert`](py/assignment-in-assert.md) | No walrus inside assert | `suggest` | — | `py/strict` |
+| [`py/assignment-to-os-environ`](py/assignment-to-os-environ.md) | Don't assign to `os.environ` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/async-busy-wait`](py/async-busy-wait.md) | No sleep loop waiting for a condition | `manual` | — | `py/strict` |
+| [`py/async-function-with-timeout`](py/async-function-with-timeout.md) | An async function has no timeout parameter | `manual` | — | `py/strict` |
+| [`py/async-zero-sleep`](py/async-zero-sleep.md) | lowlevel.checkpoint(), not sleep(0) | `auto` | — | `py/strict` |
+| [`py/asyncio-dangling-task`](py/asyncio-dangling-task.md) | Keep a reference to every asyncio task | `manual` | — | `py/strict` |
+| [`py/attribute-defined-outside-init`](py/attribute-defined-outside-init.md) | Instance attributes are first set in `__init__` | `manual` | — | `py/pylint` |
+| [`py/await-outside-async`](py/await-outside-async.md) | No await outside an async function | `manual` | — | `py/strict` |
 | [`py/bad-builtin`](py/bad-builtin.md) | No map or filter | `manual` | — | *[rules] only* |
-| [`py/bad-chained-comparison`](py/bad-chained-comparison.md) | A chained comparison does not mix kinds of operator | `manual` | — | *[rules] only* |
-| [`py/bad-classmethod-argument`](py/bad-classmethod-argument.md) | A classmethod's first parameter is cls | `suggest` | — | *[rules] only* |
-| [`py/bad-docstring-quotes`](py/bad-docstring-quotes.md) | Docstrings use triple double quotes | `auto` | — | *[rules] only* |
+| [`py/bad-chained-comparison`](py/bad-chained-comparison.md) | A chained comparison does not mix kinds of operator | `manual` | — | `py/pylint` |
+| [`py/bad-classmethod-argument`](py/bad-classmethod-argument.md) | A classmethod's first parameter is cls | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/bad-docstring-quotes`](py/bad-docstring-quotes.md) | Docstrings use triple double quotes | `auto` | — | `py/pydocstyle` |
 | [`py/bad-dunder-method-name`](py/bad-dunder-method-name.md) | No made-up dunder method names | `manual` | — | *[rules] only* |
-| [`py/bad-except-order`](py/bad-except-order.md) | A broad handler comes last | `manual` | — | *[rules] only* |
-| [`py/bad-exception-cause`](py/bad-exception-cause.md) | An exception is chained from an exception or None | `manual` | — | *[rules] only* |
-| [`py/bad-exit-annotation`](py/bad-exit-annotation.md) | `__exit__` and `__aexit__` are annotated as typeshed expects | `suggest` | — | *[rules] only* |
-| [`py/bad-file-encoding`](py/bad-file-encoding.md) | A source file is UTF-8 | `manual` | — | *[rules] only* |
-| [`py/bad-format-string-key`](py/bad-format-string-key.md) | A `%` format's dict keys are strings | `manual` | — | *[rules] only* |
-| [`py/bad-mcs-classmethod-argument`](py/bad-mcs-classmethod-argument.md) | A metaclass classmethod's first parameter is mcs | `suggest` | — | *[rules] only* |
-| [`py/bad-mcs-method-argument`](py/bad-mcs-method-argument.md) | A metaclass method's first parameter is cls | `suggest` | — | *[rules] only* |
-| [`py/bad-open-mode`](py/bad-open-mode.md) | open() takes a valid mode | `manual` | — | *[rules] only* |
-| [`py/bad-reversed-sequence`](py/bad-reversed-sequence.md) | reversed() is given a sequence | `manual` | — | *[rules] only* |
-| [`py/bad-staticmethod-argument`](py/bad-staticmethod-argument.md) | A staticmethod takes no self | `manual` | — | *[rules] only* |
-| [`py/bad-str-strip-call`](py/bad-str-strip-call.md) | strip() takes a set of characters, not a word | `suggest` | — | *[rules] only* |
-| [`py/bad-string-format-character`](py/bad-string-format-character.md) | % formats use valid conversion characters | `manual` | — | *[rules] only* |
-| [`py/bad-string-format-type`](py/bad-string-format-type.md) | A `%` format's conversions match its literal arguments | `manual` | — | *[rules] only* |
-| [`py/bad-super-call`](py/bad-super-call.md) | `super()` names the class it is called in | `suggest` | — | *[rules] only* |
-| [`py/bad-thread-instantiation`](py/bad-thread-instantiation.md) | Thread(target=f), not Thread(f) | `suggest` | — | *[rules] only* |
-| [`py/bad-version-info-comparison`](py/bad-version-info-comparison.md) | A version check in a stub uses < or >= | `manual` | — | *[rules] only* |
-| [`py/bad-version-info-order`](py/bad-version-info-order.md) | A version branch in a stub puts the newer version first | `manual` | — | *[rules] only* |
-| [`py/banned-import-alias`](py/banned-import-alias.md) | A module is not imported under a banned alias | `manual` | `banned_aliases` | *[rules] only* |
-| [`py/banned-import-from`](py/banned-import-from.md) | No from-import of the modules the project lists | `manual` | `modules` | *[rules] only* |
-| [`py/banned-module-level-imports`](py/banned-module-level-imports.md) | No module-level import of the modules the project lists | `manual` | `modules` | *[rules] only* |
-| [`py/bare-name-capture-pattern`](py/bare-name-capture-pattern.md) | A bare name in case is the last case | `manual` | — | *[rules] only* |
-| [`py/batched-without-explicit-strict`](py/batched-without-explicit-strict.md) | `itertools.batched()` says `strict=` | `suggest` | `target_version` | `py/recommended` |
-| [`py/bidirectional-unicode`](py/bidirectional-unicode.md) | No bidirectional control characters | `manual` | — | *[rules] only* |
-| [`py/binary-op-exception`](py/binary-op-exception.md) | except (A, B), not except A or B | `suggest` | — | *[rules] only* |
-| [`py/bit-count`](py/bit-count.md) | int.bit_count(), not bin(x).count('1') | `suggest` | — | *[rules] only* |
-| [`py/blank-lines-between-header-and-content`](py/blank-lines-between-header-and-content.md) | No blank lines between a docstring section's header and its content | `auto` | — | *[rules] only* |
-| [`py/blanket-noqa`](py/blanket-noqa.md) | noqa names its rule codes | `manual` | — | *[rules] only* |
-| [`py/blanket-type-ignore`](py/blanket-type-ignore.md) | type: ignore names its error codes | `manual` | — | *[rules] only* |
-| [`py/blind-except`](py/blind-except.md) | No except Exception that swallows the error | `manual` | — | *[rules] only* |
-| [`py/blocking-http-call-httpx-in-async-function`](py/blocking-http-call-httpx-in-async-function.md) | An async function does not call a synchronous `httpx.Client` | `manual` | — | *[rules] only* |
-| [`py/blocking-http-call-in-async-function`](py/blocking-http-call-in-async-function.md) | No blocking HTTP call in an async function | `manual` | — | *[rules] only* |
-| [`py/blocking-input-in-async-function`](py/blocking-input-in-async-function.md) | No input() in an async function | `manual` | — | *[rules] only* |
-| [`py/blocking-open-call-in-async-function`](py/blocking-open-call-in-async-function.md) | No blocking file open in an async function | `manual` | — | *[rules] only* |
-| [`py/blocking-path-method-in-async-function`](py/blocking-path-method-in-async-function.md) | An async function does not call `os.path` or `pathlib` file-system methods | `manual` | — | *[rules] only* |
-| [`py/blocking-sleep-in-async-function`](py/blocking-sleep-in-async-function.md) | No time.sleep in an async function | `suggest` | — | *[rules] only* |
-| [`py/boolean-chained-comparison`](py/boolean-chained-comparison.md) | a < b < c, not a < b and b < c | `auto` | — | *[rules] only* |
-| [`py/boolean-default-value-positional-argument`](py/boolean-default-value-positional-argument.md) | A parameter defaulting to True or False is keyword-only | `manual` | — | *[rules] only* |
-| [`py/boolean-positional-value-in-call`](py/boolean-positional-value-in-call.md) | A call passes `True` or `False` by keyword | `manual` | — | *[rules] only* |
-| [`py/boolean-type-hint-positional-argument`](py/boolean-type-hint-positional-argument.md) | A bool parameter is keyword-only | `manual` | — | *[rules] only* |
-| [`py/break-outside-loop`](py/break-outside-loop.md) | `break` only inside a loop | `suggest` | — | `py/recommended` |
-| [`py/builtin-argument-shadowing`](py/builtin-argument-shadowing.md) | No parameter named after a builtin | `suggest` | `ignorelist` | *[rules] only* |
-| [`py/builtin-attribute-shadowing`](py/builtin-attribute-shadowing.md) | A class attribute that shadows a builtin is not read in the class body | `manual` | — | *[rules] only* |
-| [`py/builtin-import-shadowing`](py/builtin-import-shadowing.md) | No import named after a builtin | `manual` | `ignorelist` | *[rules] only* |
-| [`py/builtin-lambda-argument-shadowing`](py/builtin-lambda-argument-shadowing.md) | No lambda parameter named after a builtin | `suggest` | `ignorelist` | *[rules] only* |
-| [`py/builtin-open`](py/builtin-open.md) | Path.open, not open() | `suggest` | — | *[rules] only* |
-| [`py/builtin-variable-shadowing`](py/builtin-variable-shadowing.md) | No variable named after a builtin | `suggest` | `ignorelist` | *[rules] only* |
-| [`py/byte-string-usage`](py/byte-string-usage.md) | No typing.ByteString | `manual` | — | *[rules] only* |
-| [`py/cached-instance-method`](py/cached-instance-method.md) | No `lru_cache` on methods | `suggest` | — | `py/recommended` |
-| [`py/call-date-fromtimestamp`](py/call-date-fromtimestamp.md) | No date.fromtimestamp() | `suggest` | — | *[rules] only* |
-| [`py/call-date-today`](py/call-date-today.md) | No date.today() | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-fromtimestamp`](py/call-datetime-fromtimestamp.md) | fromtimestamp() with a time zone | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-now-without-tzinfo`](py/call-datetime-now-without-tzinfo.md) | datetime.now() with a time zone | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-strptime-without-zone`](py/call-datetime-strptime-without-zone.md) | strptime with %z, or a zone attached | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-today`](py/call-datetime-today.md) | No datetime.today() | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-utcfromtimestamp`](py/call-datetime-utcfromtimestamp.md) | fromtimestamp(ts, tz=utc), not utcfromtimestamp(ts) | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-utcnow`](py/call-datetime-utcnow.md) | datetime.now(timezone.utc), not utcnow() | `suggest` | — | *[rules] only* |
-| [`py/call-datetime-without-tzinfo`](py/call-datetime-without-tzinfo.md) | datetime() with a tzinfo | `suggest` | — | *[rules] only* |
-| [`py/camelcase-imported-as-acronym`](py/camelcase-imported-as-acronym.md) | A CamelCase name is not imported as its initials | `manual` | — | *[rules] only* |
-| [`py/camelcase-imported-as-constant`](py/camelcase-imported-as-constant.md) | A CamelCase name is not imported under a CONSTANT alias | `manual` | — | *[rules] only* |
-| [`py/camelcase-imported-as-lowercase`](py/camelcase-imported-as-lowercase.md) | A CamelCase name is not imported under a lowercase alias | `manual` | — | *[rules] only* |
-| [`py/cancel-scope-no-checkpoint`](py/cancel-scope-no-checkpoint.md) | A timeout scope contains an await | `manual` | — | *[rules] only* |
-| [`py/chained-comparison-all-equal`](py/chained-comparison-all-equal.md) | a == b == c, not a == b and b == c | `auto` | — | *[rules] only* |
-| [`py/check-and-remove-from-set`](py/check-and-remove-from-set.md) | s.discard(x), not if x in s: s.remove(x) | `suggest` | — | *[rules] only* |
+| [`py/bad-except-order`](py/bad-except-order.md) | A broad handler comes last | `manual` | — | `py/pylint` |
+| [`py/bad-exception-cause`](py/bad-exception-cause.md) | An exception is chained from an exception or None | `manual` | — | `py/pylint` |
+| [`py/bad-exit-annotation`](py/bad-exit-annotation.md) | `__exit__` and `__aexit__` are annotated as typeshed expects | `suggest` | — | `py/strict` |
+| [`py/bad-file-encoding`](py/bad-file-encoding.md) | A source file is UTF-8 | `manual` | — | `py/pylint` |
+| [`py/bad-format-string-key`](py/bad-format-string-key.md) | A `%` format's dict keys are strings | `manual` | — | `py/pylint` |
+| [`py/bad-mcs-classmethod-argument`](py/bad-mcs-classmethod-argument.md) | A metaclass classmethod's first parameter is mcs | `suggest` | — | `py/pylint` |
+| [`py/bad-mcs-method-argument`](py/bad-mcs-method-argument.md) | A metaclass method's first parameter is cls | `suggest` | — | `py/pylint` |
+| [`py/bad-open-mode`](py/bad-open-mode.md) | open() takes a valid mode | `manual` | — | `py/strict` |
+| [`py/bad-reversed-sequence`](py/bad-reversed-sequence.md) | reversed() is given a sequence | `manual` | — | `py/pylint` |
+| [`py/bad-staticmethod-argument`](py/bad-staticmethod-argument.md) | A staticmethod takes no self | `manual` | — | `py/strict` |
+| [`py/bad-str-strip-call`](py/bad-str-strip-call.md) | strip() takes a set of characters, not a word | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/bad-string-format-character`](py/bad-string-format-character.md) | % formats use valid conversion characters | `manual` | — | `py/strict` |
+| [`py/bad-string-format-type`](py/bad-string-format-type.md) | A `%` format's conversions match its literal arguments | `manual` | — | `py/strict` |
+| [`py/bad-super-call`](py/bad-super-call.md) | `super()` names the class it is called in | `suggest` | — | `py/pylint` |
+| [`py/bad-thread-instantiation`](py/bad-thread-instantiation.md) | Thread(target=f), not Thread(f) | `suggest` | — | `py/pylint` |
+| [`py/bad-version-info-comparison`](py/bad-version-info-comparison.md) | A version check in a stub uses < or >= | `manual` | — | `py/strict` |
+| [`py/bad-version-info-order`](py/bad-version-info-order.md) | A version branch in a stub puts the newer version first | `manual` | — | `py/strict` |
+| [`py/banned-import-alias`](py/banned-import-alias.md) | A module is not imported under a banned alias | `manual` | `banned_aliases` | `py/strict` |
+| [`py/banned-import-from`](py/banned-import-from.md) | No from-import of the modules the project lists | `manual` | `modules` | `py/strict` |
+| [`py/banned-module-level-imports`](py/banned-module-level-imports.md) | No module-level import of the modules the project lists | `manual` | `modules` | `py/strict` |
+| [`py/bare-name-capture-pattern`](py/bare-name-capture-pattern.md) | A bare name in case is the last case | `manual` | — | `py/pylint` |
+| [`py/batched-without-explicit-strict`](py/batched-without-explicit-strict.md) | `itertools.batched()` says `strict=` | `suggest` | `target_version` | `py/recommended`, `py/strict` |
+| [`py/bidirectional-unicode`](py/bidirectional-unicode.md) | No bidirectional control characters | `manual` | — | `py/strict` |
+| [`py/binary-op-exception`](py/binary-op-exception.md) | except (A, B), not except A or B | `suggest` | — | `py/strict` |
+| [`py/bit-count`](py/bit-count.md) | int.bit_count(), not bin(x).count('1') | `suggest` | — | `py/strict` |
+| [`py/blank-lines-between-header-and-content`](py/blank-lines-between-header-and-content.md) | No blank lines between a docstring section's header and its content | `auto` | — | `py/pydocstyle` |
+| [`py/blanket-noqa`](py/blanket-noqa.md) | noqa names its rule codes | `manual` | — | `py/strict` |
+| [`py/blanket-type-ignore`](py/blanket-type-ignore.md) | type: ignore names its error codes | `manual` | — | `py/strict` |
+| [`py/blind-except`](py/blind-except.md) | No except Exception that swallows the error | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/blocking-http-call-httpx-in-async-function`](py/blocking-http-call-httpx-in-async-function.md) | An async function does not call a synchronous `httpx.Client` | `manual` | — | `py/strict` |
+| [`py/blocking-http-call-in-async-function`](py/blocking-http-call-in-async-function.md) | No blocking HTTP call in an async function | `manual` | — | `py/strict` |
+| [`py/blocking-input-in-async-function`](py/blocking-input-in-async-function.md) | No input() in an async function | `manual` | — | `py/strict` |
+| [`py/blocking-open-call-in-async-function`](py/blocking-open-call-in-async-function.md) | No blocking file open in an async function | `manual` | — | `py/strict` |
+| [`py/blocking-path-method-in-async-function`](py/blocking-path-method-in-async-function.md) | An async function does not call `os.path` or `pathlib` file-system methods | `manual` | — | `py/strict` |
+| [`py/blocking-sleep-in-async-function`](py/blocking-sleep-in-async-function.md) | No time.sleep in an async function | `suggest` | — | `py/strict` |
+| [`py/boolean-chained-comparison`](py/boolean-chained-comparison.md) | a < b < c, not a < b and b < c | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/boolean-default-value-positional-argument`](py/boolean-default-value-positional-argument.md) | A parameter defaulting to True or False is keyword-only | `manual` | — | `py/strict` |
+| [`py/boolean-positional-value-in-call`](py/boolean-positional-value-in-call.md) | A call passes `True` or `False` by keyword | `manual` | — | `py/strict` |
+| [`py/boolean-type-hint-positional-argument`](py/boolean-type-hint-positional-argument.md) | A bool parameter is keyword-only | `manual` | — | `py/strict` |
+| [`py/break-outside-loop`](py/break-outside-loop.md) | `break` only inside a loop | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/builtin-argument-shadowing`](py/builtin-argument-shadowing.md) | No parameter named after a builtin | `suggest` | `ignorelist` | `py/strict`, `py/pylint` |
+| [`py/builtin-attribute-shadowing`](py/builtin-attribute-shadowing.md) | A class attribute that shadows a builtin is not read in the class body | `manual` | — | `py/strict` |
+| [`py/builtin-import-shadowing`](py/builtin-import-shadowing.md) | No import named after a builtin | `manual` | `ignorelist` | `py/strict` |
+| [`py/builtin-lambda-argument-shadowing`](py/builtin-lambda-argument-shadowing.md) | No lambda parameter named after a builtin | `suggest` | `ignorelist` | `py/strict` |
+| [`py/builtin-open`](py/builtin-open.md) | Path.open, not open() | `suggest` | — | `py/strict` |
+| [`py/builtin-variable-shadowing`](py/builtin-variable-shadowing.md) | No variable named after a builtin | `suggest` | `ignorelist` | `py/strict`, `py/pylint` |
+| [`py/byte-string-usage`](py/byte-string-usage.md) | No typing.ByteString | `manual` | — | `py/strict` |
+| [`py/cached-instance-method`](py/cached-instance-method.md) | No `lru_cache` on methods | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/call-date-fromtimestamp`](py/call-date-fromtimestamp.md) | No date.fromtimestamp() | `suggest` | — | `py/strict` |
+| [`py/call-date-today`](py/call-date-today.md) | No date.today() | `suggest` | — | `py/strict` |
+| [`py/call-datetime-fromtimestamp`](py/call-datetime-fromtimestamp.md) | fromtimestamp() with a time zone | `suggest` | — | `py/strict` |
+| [`py/call-datetime-now-without-tzinfo`](py/call-datetime-now-without-tzinfo.md) | datetime.now() with a time zone | `suggest` | — | `py/strict` |
+| [`py/call-datetime-strptime-without-zone`](py/call-datetime-strptime-without-zone.md) | strptime with %z, or a zone attached | `suggest` | — | `py/strict` |
+| [`py/call-datetime-today`](py/call-datetime-today.md) | No datetime.today() | `suggest` | — | `py/strict` |
+| [`py/call-datetime-utcfromtimestamp`](py/call-datetime-utcfromtimestamp.md) | fromtimestamp(ts, tz=utc), not utcfromtimestamp(ts) | `suggest` | — | `py/strict` |
+| [`py/call-datetime-utcnow`](py/call-datetime-utcnow.md) | datetime.now(timezone.utc), not utcnow() | `suggest` | — | `py/strict` |
+| [`py/call-datetime-without-tzinfo`](py/call-datetime-without-tzinfo.md) | datetime() with a tzinfo | `suggest` | — | `py/strict` |
+| [`py/camelcase-imported-as-acronym`](py/camelcase-imported-as-acronym.md) | A CamelCase name is not imported as its initials | `manual` | — | `py/strict` |
+| [`py/camelcase-imported-as-constant`](py/camelcase-imported-as-constant.md) | A CamelCase name is not imported under a CONSTANT alias | `manual` | — | `py/strict` |
+| [`py/camelcase-imported-as-lowercase`](py/camelcase-imported-as-lowercase.md) | A CamelCase name is not imported under a lowercase alias | `manual` | — | `py/strict` |
+| [`py/cancel-scope-no-checkpoint`](py/cancel-scope-no-checkpoint.md) | A timeout scope contains an await | `manual` | — | `py/strict` |
+| [`py/chained-comparison-all-equal`](py/chained-comparison-all-equal.md) | a == b == c, not a == b and b == c | `auto` | — | `py/pylint` |
+| [`py/check-and-remove-from-set`](py/check-and-remove-from-set.md) | s.discard(x), not if x in s: s.remove(x) | `suggest` | — | `py/strict` |
 | [`py/class-as-data-structure`](py/class-as-data-structure.md) | A dataclass, not a class that only stores its arguments | `manual` | — | *[rules] only* |
-| [`py/class-variable-slots-conflict`](py/class-variable-slots-conflict.md) | A __slots__ name is not also a class variable | `manual` | — | *[rules] only* |
-| [`py/class-with-mixed-type-vars`](py/class-with-mixed-type-vars.md) | No Generic\[...\] base beside type parameters | `suggest` | — | *[rules] only* |
-| [`py/collapsible-else-if`](py/collapsible-else-if.md) | elif, not else: if | `suggest` | — | *[rules] only* |
-| [`py/collapsible-if`](py/collapsible-if.md) | One if, not an if nested in an if | `manual` | — | *[rules] only* |
-| [`py/collection-literal-concatenation`](py/collection-literal-concatenation.md) | Unpack into a literal instead of concatenating | `suggest` | — | *[rules] only* |
-| [`py/collections-named-tuple`](py/collections-named-tuple.md) | A stub declares a NamedTuple class | `manual` | — | *[rules] only* |
-| [`py/commented-out-code`](py/commented-out-code.md) | No commented-out code | `suggest` | — | *[rules] only* |
+| [`py/class-variable-slots-conflict`](py/class-variable-slots-conflict.md) | A __slots__ name is not also a class variable | `manual` | — | `py/pylint` |
+| [`py/class-with-mixed-type-vars`](py/class-with-mixed-type-vars.md) | No Generic\[...\] base beside type parameters | `suggest` | — | `py/strict` |
+| [`py/collapsible-else-if`](py/collapsible-else-if.md) | elif, not else: if | `suggest` | — | `py/strict` |
+| [`py/collapsible-if`](py/collapsible-if.md) | One if, not an if nested in an if | `manual` | — | `py/strict` |
+| [`py/collection-literal-concatenation`](py/collection-literal-concatenation.md) | Unpack into a literal instead of concatenating | `suggest` | — | `py/strict` |
+| [`py/collections-named-tuple`](py/collections-named-tuple.md) | A stub declares a NamedTuple class | `manual` | — | `py/strict` |
+| [`py/commented-out-code`](py/commented-out-code.md) | No commented-out code | `suggest` | — | `py/strict` |
 | [`py/compare-to-empty-string`](py/compare-to-empty-string.md) | No comparison with an empty string | `manual` | — | *[rules] only* |
-| [`py/compare-with-tuple`](py/compare-with-tuple.md) | x in (a, b), not x == a or x == b | `auto` | — | *[rules] only* |
-| [`py/comparison-of-constant`](py/comparison-of-constant.md) | No comparison of two constants | `manual` | — | *[rules] only* |
-| [`py/comparison-with-callable`](py/comparison-with-callable.md) | A function is called before it is compared | `manual` | — | *[rules] only* |
-| [`py/comparison-with-itself`](py/comparison-with-itself.md) | No comparison of a name with itself | `manual` | — | *[rules] only* |
-| [`py/complex-assignment-in-stub`](py/complex-assignment-in-stub.md) | A stub assigns one plain name at a time | `manual` | — | *[rules] only* |
-| [`py/complex-if-statement-in-stub`](py/complex-if-statement-in-stub.md) | A stub's if tests only sys.version_info or sys.platform | `manual` | — | *[rules] only* |
-| [`py/complexity`](py/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `ignore_names` | `py/size` |
+| [`py/compare-with-tuple`](py/compare-with-tuple.md) | x in (a, b), not x == a or x == b | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/comparison-of-constant`](py/comparison-of-constant.md) | No comparison of two constants | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/comparison-with-callable`](py/comparison-with-callable.md) | A function is called before it is compared | `manual` | — | `py/pylint` |
+| [`py/comparison-with-itself`](py/comparison-with-itself.md) | No comparison of a name with itself | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/complex-assignment-in-stub`](py/complex-assignment-in-stub.md) | A stub assigns one plain name at a time | `manual` | — | `py/strict` |
+| [`py/complex-if-statement-in-stub`](py/complex-if-statement-in-stub.md) | A stub's if tests only sys.version_info or sys.platform | `manual` | — | `py/strict` |
+| [`py/complexity`](py/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `ignore_names` | `py/size`, `py/pylint` |
 | [`py/confusing-consecutive-elif`](py/confusing-consecutive-elif.md) | An `elif` does not follow a nested `if` that has no `else` | `manual` | — | *[rules] only* |
-| [`py/confusing-with-statement`](py/confusing-with-statement.md) | A `with` item after an `as` name is not mistaken for a tuple target | `manual` | — | *[rules] only* |
+| [`py/confusing-with-statement`](py/confusing-with-statement.md) | A `with` item after an `as` name is not mistaken for a tuple target | `manual` | — | `py/pylint` |
 | [`py/consider-math-not-float`](py/consider-math-not-float.md) | math.inf, not float('inf') | `suggest` | — | *[rules] only* |
 | [`py/consider-refactoring-into-while-condition`](py/consider-refactoring-into-while-condition.md) | A `while True` that starts by breaking puts the test in its condition | `manual` | — | *[rules] only* |
 | [`py/consider-using-assignment-expr`](py/consider-using-assignment-expr.md) | An assignment tested straight after is an assignment expression | `suggest` | — | *[rules] only* |
-| [`py/consider-using-enumerate`](py/consider-using-enumerate.md) | enumerate, not range(len(...)) | `manual` | — | *[rules] only* |
-| [`py/consider-using-join`](py/consider-using-join.md) | str.join, not += in a loop | `manual` | — | *[rules] only* |
-| [`py/consider-using-min-builtin`](py/consider-using-min-builtin.md) | x = min(x, y), not if x > y: x = y | `suggest` | — | *[rules] only* |
+| [`py/consider-using-enumerate`](py/consider-using-enumerate.md) | enumerate, not range(len(...)) | `manual` | — | `py/pylint` |
+| [`py/consider-using-join`](py/consider-using-join.md) | str.join, not += in a loop | `manual` | — | `py/pylint` |
+| [`py/consider-using-min-builtin`](py/consider-using-min-builtin.md) | x = min(x, y), not if x > y: x = y | `suggest` | — | `py/pylint` |
 | [`py/consider-using-namedtuple-or-dataclass`](py/consider-using-namedtuple-or-dataclass.md) | A table of same-shaped records is a namedtuple or dataclass | `manual` | — | *[rules] only* |
-| [`py/consider-using-ternary`](py/consider-using-ternary.md) | b if a else c, not a and b or c | `suggest` | — | *[rules] only* |
+| [`py/consider-using-ternary`](py/consider-using-ternary.md) | b if a else c, not a and b or c | `suggest` | — | `py/pylint` |
 | [`py/consider-using-tuple`](py/consider-using-tuple.md) | Iterate a tuple literal, not a list literal | `auto` | — | *[rules] only* |
-| [`py/consider-using-with`](py/consider-using-with.md) | A resource is opened with with | `manual` | — | *[rules] only* |
-| [`py/constant-imported-as-non-constant`](py/constant-imported-as-non-constant.md) | A CONSTANT is not imported under a lowercase alias | `manual` | — | *[rules] only* |
-| [`py/contextmanager-generator-missing-cleanup`](py/contextmanager-generator-missing-cleanup.md) | A generator that yields inside a context manager's `with` can be cleaned up | `manual` | — | *[rules] only* |
-| [`py/continue-in-finally`](py/continue-in-finally.md) | No continue in finally | `manual` | — | *[rules] only* |
-| [`py/continue-outside-loop`](py/continue-outside-loop.md) | `continue` only inside a loop | `suggest` | — | `py/recommended` |
-| [`py/convert-named-tuple-functional-to-class`](py/convert-named-tuple-functional-to-class.md) | NamedTuple as a class | `manual` | — | *[rules] only* |
-| [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | *[rules] only* |
-| [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | *[rules] only* |
-| [`py/custom-type-var-for-self`](py/custom-type-var-for-self.md) | A method is annotated with `Self`, not a custom `TypeVar` | `auto` | — | *[rules] only* |
-| [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | *[rules] only* |
-| [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | *[rules] only* |
-| [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | *[rules] only* |
-| [`py/debugger`](py/debugger.md) | No debugger calls | `suggest` | — | *[rules] only* |
-| [`py/decimal-from-float-literal`](py/decimal-from-float-literal.md) | Decimal from a string, not a float | `suggest` | — | *[rules] only* |
-| [`py/declare-non-slot`](py/declare-non-slot.md) | An annotation in a class with `__slots__` names a slot | `manual` | — | *[rules] only* |
-| [`py/default-except-not-last`](py/default-except-not-last.md) | A bare `except:` is the last handler | `auto` | — | `py/recommended` |
-| [`py/default-factory-kwarg`](py/default-factory-kwarg.md) | defaultdict's factory is positional | `suggest` | — | *[rules] only* |
+| [`py/consider-using-with`](py/consider-using-with.md) | A resource is opened with with | `manual` | — | `py/pylint` |
+| [`py/constant-imported-as-non-constant`](py/constant-imported-as-non-constant.md) | A CONSTANT is not imported under a lowercase alias | `manual` | — | `py/strict` |
+| [`py/contextmanager-generator-missing-cleanup`](py/contextmanager-generator-missing-cleanup.md) | A generator that yields inside a context manager's `with` can be cleaned up | `manual` | — | `py/pylint` |
+| [`py/continue-in-finally`](py/continue-in-finally.md) | No continue in finally | `manual` | — | `py/strict` |
+| [`py/continue-outside-loop`](py/continue-outside-loop.md) | `continue` only inside a loop | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/convert-named-tuple-functional-to-class`](py/convert-named-tuple-functional-to-class.md) | NamedTuple as a class | `manual` | — | `py/strict` |
+| [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | `py/strict` |
+| [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | `py/strict` |
+| [`py/custom-type-var-for-self`](py/custom-type-var-for-self.md) | A method is annotated with `Self`, not a custom `TypeVar` | `auto` | — | `py/strict` |
+| [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | `py/strict` |
+| [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | `py/strict` |
+| [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | `py/strict` |
+| [`py/debugger`](py/debugger.md) | No debugger calls | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/decimal-from-float-literal`](py/decimal-from-float-literal.md) | Decimal from a string, not a float | `suggest` | — | `py/strict` |
+| [`py/declare-non-slot`](py/declare-non-slot.md) | An annotation in a class with `__slots__` names a slot | `manual` | — | `py/pylint` |
+| [`py/default-except-not-last`](py/default-except-not-last.md) | A bare `except:` is the last handler | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/default-factory-kwarg`](py/default-factory-kwarg.md) | defaultdict's factory is positional | `suggest` | — | `py/strict` |
 | [`py/del-attr-with-constant`](py/del-attr-with-constant.md) | del obj.name, not delattr(obj, 'name') | `auto` | — | *[rules] only* |
 | [`py/delete-full-slice`](py/delete-full-slice.md) | x.clear(), not del x\[:\] | `suggest` | — | *[rules] only* |
 | [`py/deprecated-abc-decorator`](py/deprecated-abc-decorator.md) | @abstractmethod under the plain decorator, not abc.abstractproperty | `auto` | — | *[rules] only* |
-| [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | *[rules] only* |
-| [`py/deprecated-decorator`](py/deprecated-decorator.md) | No decorator the standard library has deprecated | `manual` | — | *[rules] only* |
-| [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | *[rules] only* |
-| [`py/deprecated-unittest-alias`](py/deprecated-unittest-alias.md) | No deprecated unittest assert aliases | `auto` | — | *[rules] only* |
-| [`py/dict-get-with-none-default`](py/dict-get-with-none-default.md) | d.get(k), not d.get(k, None) | `auto` | — | *[rules] only* |
-| [`py/dict-index-missing-items`](py/dict-index-missing-items.md) | A loop over a dict that reads each value iterates items() | `manual` | — | *[rules] only* |
+| [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | `py/strict` |
+| [`py/deprecated-decorator`](py/deprecated-decorator.md) | No decorator the standard library has deprecated | `manual` | — | `py/pylint` |
+| [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | `py/strict` |
+| [`py/deprecated-unittest-alias`](py/deprecated-unittest-alias.md) | No deprecated unittest assert aliases | `auto` | — | `py/strict` |
+| [`py/dict-get-with-none-default`](py/dict-get-with-none-default.md) | d.get(k), not d.get(k, None) | `auto` | — | `py/strict` |
+| [`py/dict-index-missing-items`](py/dict-index-missing-items.md) | A loop over a dict that reads each value iterates items() | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/dict-init-mutate`](py/dict-init-mutate.md) | A dict is written as a literal, not filled after | `manual` | — | *[rules] only* |
 | [`py/dict-iter-missing-items`](py/dict-iter-missing-items.md) | A dict iterated into two names is read through `.items()` | `suggest` | — | *[rules] only* |
 | [`py/differing-param-doc`](py/differing-param-doc.md) | A docstring documents only the parameters that exist | `manual` | `check_private_functions` | *[rules] only* |
 | [`py/differing-type-doc`](py/differing-type-doc.md) | A docstring types only the parameters that exist | `manual` | `check_private_functions` | *[rules] only* |
-| [`py/direct-logger-instantiation`](py/direct-logger-instantiation.md) | logging.getLogger, not logging.Logger() | `suggest` | — | *[rules] only* |
-| [`py/disallowed-name`](py/disallowed-name.md) | No placeholder names | `manual` | — | *[rules] only* |
-| [`py/doc-line-too-long`](py/doc-line-too-long.md) | Comment and docstring lines are not longer than the limit | `manual` | `max_doc_length` | *[rules] only* |
+| [`py/direct-logger-instantiation`](py/direct-logger-instantiation.md) | logging.getLogger, not logging.Logger() | `suggest` | — | `py/strict` |
+| [`py/disallowed-name`](py/disallowed-name.md) | No placeholder names | `manual` | — | `py/pylint` |
+| [`py/doc-line-too-long`](py/doc-line-too-long.md) | Comment and docstring lines are not longer than the limit | `manual` | `max_doc_length` | `py/strict` |
 | [`py/docstring-extraneous-exception`](py/docstring-extraneous-exception.md) | A documented exception is raised | `manual` | — | *[rules] only* |
 | [`py/docstring-extraneous-parameter`](py/docstring-extraneous-parameter.md) | A docstring documents only parameters the function has | `manual` | — | *[rules] only* |
 | [`py/docstring-extraneous-returns`](py/docstring-extraneous-returns.md) | A `Returns` section is for a function that returns | `manual` | — | *[rules] only* |
 | [`py/docstring-extraneous-yields`](py/docstring-extraneous-yields.md) | A `Yields` section is for a generator | `manual` | — | *[rules] only* |
-| [`py/docstring-in-stub`](py/docstring-in-stub.md) | No docstrings in stubs | `auto` | — | *[rules] only* |
+| [`py/docstring-in-stub`](py/docstring-in-stub.md) | No docstrings in stubs | `auto` | — | `py/strict` |
 | [`py/docstring-missing-exception`](py/docstring-missing-exception.md) | A raised exception is documented | `manual` | — | *[rules] only* |
 | [`py/docstring-missing-returns`](py/docstring-missing-returns.md) | A returned value is documented | `manual` | — | *[rules] only* |
 | [`py/docstring-missing-yields`](py/docstring-missing-yields.md) | A yielded value is documented | `manual` | — | *[rules] only* |
-| [`py/docstring-starts-with-this`](py/docstring-starts-with-this.md) | A docstring does not start with "This" | `manual` | — | *[rules] only* |
-| [`py/docstring-tab-indentation`](py/docstring-tab-indentation.md) | A docstring is indented with spaces | `manual` | — | *[rules] only* |
-| [`py/dot-format-in-exception`](py/dot-format-in-exception.md) | An exception .format() message is assigned before the raise | `suggest` | — | *[rules] only* |
-| [`py/double-negation`](py/double-negation.md) | No not not | `auto` | — | *[rules] only* |
-| [`py/dunder-function-name`](py/dunder-function-name.md) | No dunder names for plain functions | `manual` | — | *[rules] only* |
-| [`py/duplicate-bases`](py/duplicate-bases.md) | No base class listed twice | `suggest` | — | *[rules] only* |
-| [`py/duplicate-class-field-definition`](py/duplicate-class-field-definition.md) | No class attribute assigned twice | `suggest` | — | *[rules] only* |
-| [`py/duplicate-dict-key`](py/duplicate-dict-key.md) | A dict literal doesn't repeat a literal key | `auto` | — | `py/recommended` |
-| [`py/duplicate-dict-key-variable`](py/duplicate-dict-key-variable.md) | A dict literal doesn't repeat a variable key | `auto` | — | `py/recommended` |
-| [`py/duplicate-entry-in-dunder-all`](py/duplicate-entry-in-dunder-all.md) | No name twice in __all__ | `auto` | — | *[rules] only* |
-| [`py/duplicate-handler-exception`](py/duplicate-handler-exception.md) | No exception listed twice in one handler | `auto` | — | `py/recommended` |
-| [`py/duplicate-isinstance-call`](py/duplicate-isinstance-call.md) | One isinstance call with a tuple | `auto` | — | *[rules] only* |
-| [`py/duplicate-literal-member`](py/duplicate-literal-member.md) | No value twice in a Literal | `auto` | — | *[rules] only* |
-| [`py/duplicate-set-value`](py/duplicate-set-value.md) | No duplicate items in a set literal | `auto` | — | `py/recommended` |
-| [`py/duplicate-string-formatting-argument`](py/duplicate-string-formatting-argument.md) | `str.format` gets each name once | `manual` | — | *[rules] only* |
-| [`py/duplicate-try-block-exception`](py/duplicate-try-block-exception.md) | An exception is caught by one handler only | `auto` | — | `py/recommended` |
-| [`py/duplicate-union-member`](py/duplicate-union-member.md) | No type twice in a union | `suggest` | — | *[rules] only* |
-| [`py/ellipsis-in-non-empty-class-body`](py/ellipsis-in-non-empty-class-body.md) | No ... in a stub class with other members | `auto` | — | *[rules] only* |
-| [`py/empty-comment`](py/empty-comment.md) | No empty comments | `auto` | — | *[rules] only* |
-| [`py/empty-docstring`](py/empty-docstring.md) | No empty docstring | `manual` | — | *[rules] only* |
-| [`py/empty-docstring-section`](py/empty-docstring-section.md) | A docstring section has content | `manual` | — | *[rules] only* |
-| [`py/empty-method-without-abstract-decorator`](py/empty-method-without-abstract-decorator.md) | Empty methods in an abstract base class are abstract | `suggest` | — | `py/recommended` |
-| [`py/empty-type-checking-block`](py/empty-type-checking-block.md) | No empty TYPE_CHECKING block | `auto` | — | *[rules] only* |
-| [`py/enumerate-for-loop`](py/enumerate-for-loop.md) | enumerate(), not a hand-kept counter | `manual` | — | *[rules] only* |
-| [`py/eq-without-hash`](py/eq-without-hash.md) | A class with __eq__ defines __hash__ | `suggest` | — | *[rules] only* |
-| [`py/error-instead-of-exception`](py/error-instead-of-exception.md) | logger.exception in an except block | `suggest` | — | *[rules] only* |
-| [`py/error-suffix-on-exception-name`](py/error-suffix-on-exception-name.md) | Exception classes end in Error | `manual` | — | *[rules] only* |
-| [`py/escape-sequence-in-docstring`](py/escape-sequence-in-docstring.md) | A docstring with a backslash is raw | `suggest` | — | *[rules] only* |
-| [`py/eval-used`](py/eval-used.md) | No eval() | `manual` | — | *[rules] only* |
-| [`py/exc-info-outside-except-handler`](py/exc-info-outside-except-handler.md) | No exc_info=True outside an except block | `suggest` | — | *[rules] only* |
-| [`py/except-with-empty-tuple`](py/except-with-empty-tuple.md) | No `except ():` | `suggest` | — | `py/recommended` |
-| [`py/except-with-non-exception-classes`](py/except-with-non-exception-classes.md) | `except` names exception classes | `suggest` | — | `py/recommended` |
-| [`py/exception-without-exc-info`](py/exception-without-exc-info.md) | No logger.exception with exc_info=False | `suggest` | — | *[rules] only* |
-| [`py/exec-used`](py/exec-used.md) | No exec() | `manual` | — | *[rules] only* |
-| [`py/explicit-f-string-repr-conversion`](py/explicit-f-string-repr-conversion.md) | `!r`, not repr() inside an f-string | `auto` | — | *[rules] only* |
-| [`py/explicit-f-string-type-conversion`](py/explicit-f-string-type-conversion.md) | A conversion flag, not str() inside an f-string | `auto` | — | *[rules] only* |
-| [`py/explicit-string-concatenation`](py/explicit-string-concatenation.md) | No + between two string literals | `auto` | — | *[rules] only* |
-| [`py/expr-and-false`](py/expr-and-false.md) | No `and False` in a condition | `auto` | — | *[rules] only* |
-| [`py/expr-and-not-expr`](py/expr-and-not-expr.md) | No x and not x | `auto` | — | *[rules] only* |
-| [`py/expr-or-not-expr`](py/expr-or-not-expr.md) | No x or not x | `auto` | — | *[rules] only* |
-| [`py/expr-or-true`](py/expr-or-true.md) | No `or True` in a condition | `auto` | — | *[rules] only* |
-| [`py/extraneous-parentheses`](py/extraneous-parentheses.md) | No double parentheses in a call | `auto` | — | *[rules] only* |
-| [`py/f-string`](py/f-string.md) | A `.format` call on a string literal is an f-string | `auto` | — | *[rules] only* |
-| [`py/f-string-docstring`](py/f-string-docstring.md) | Docstrings aren't f-strings | `suggest` | — | `py/recommended` |
-| [`py/f-string-in-exception`](py/f-string-in-exception.md) | An exception f-string is assigned before the raise | `suggest` | — | *[rules] only* |
-| [`py/f-string-in-get-text-func-call`](py/f-string-in-get-text-func-call.md) | No f-string passed to gettext | `manual` | — | *[rules] only* |
-| [`py/f-string-missing-placeholders`](py/f-string-missing-placeholders.md) | An f-string has a placeholder | `auto` | — | `py/recommended` |
-| [`py/f-string-number-format`](py/f-string-number-format.md) | An f-string formats a number in binary, octal or hex | `suggest` | — | *[rules] only* |
+| [`py/docstring-starts-with-this`](py/docstring-starts-with-this.md) | A docstring does not start with "This" | `manual` | — | `py/pydocstyle` |
+| [`py/docstring-tab-indentation`](py/docstring-tab-indentation.md) | A docstring is indented with spaces | `manual` | — | `py/pydocstyle` |
+| [`py/dot-format-in-exception`](py/dot-format-in-exception.md) | An exception .format() message is assigned before the raise | `suggest` | — | `py/strict` |
+| [`py/double-negation`](py/double-negation.md) | No not not | `auto` | — | `py/strict` |
+| [`py/dunder-function-name`](py/dunder-function-name.md) | No dunder names for plain functions | `manual` | — | `py/strict` |
+| [`py/duplicate-bases`](py/duplicate-bases.md) | No base class listed twice | `suggest` | — | `py/strict` |
+| [`py/duplicate-class-field-definition`](py/duplicate-class-field-definition.md) | No class attribute assigned twice | `suggest` | — | `py/strict` |
+| [`py/duplicate-dict-key`](py/duplicate-dict-key.md) | A dict literal doesn't repeat a literal key | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/duplicate-dict-key-variable`](py/duplicate-dict-key-variable.md) | A dict literal doesn't repeat a variable key | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/duplicate-entry-in-dunder-all`](py/duplicate-entry-in-dunder-all.md) | No name twice in __all__ | `auto` | — | `py/strict` |
+| [`py/duplicate-handler-exception`](py/duplicate-handler-exception.md) | No exception listed twice in one handler | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/duplicate-isinstance-call`](py/duplicate-isinstance-call.md) | One isinstance call with a tuple | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/duplicate-literal-member`](py/duplicate-literal-member.md) | No value twice in a Literal | `auto` | — | `py/strict` |
+| [`py/duplicate-set-value`](py/duplicate-set-value.md) | No duplicate items in a set literal | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/duplicate-string-formatting-argument`](py/duplicate-string-formatting-argument.md) | `str.format` gets each name once | `manual` | — | `py/pylint` |
+| [`py/duplicate-try-block-exception`](py/duplicate-try-block-exception.md) | An exception is caught by one handler only | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/duplicate-union-member`](py/duplicate-union-member.md) | No type twice in a union | `suggest` | — | `py/strict` |
+| [`py/ellipsis-in-non-empty-class-body`](py/ellipsis-in-non-empty-class-body.md) | No ... in a stub class with other members | `auto` | — | `py/strict` |
+| [`py/empty-comment`](py/empty-comment.md) | No empty comments | `auto` | — | `py/strict` |
+| [`py/empty-docstring`](py/empty-docstring.md) | No empty docstring | `manual` | — | `py/pydocstyle` |
+| [`py/empty-docstring-section`](py/empty-docstring-section.md) | A docstring section has content | `manual` | — | `py/pydocstyle` |
+| [`py/empty-method-without-abstract-decorator`](py/empty-method-without-abstract-decorator.md) | Empty methods in an abstract base class are abstract | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/empty-type-checking-block`](py/empty-type-checking-block.md) | No empty TYPE_CHECKING block | `auto` | — | `py/strict` |
+| [`py/enumerate-for-loop`](py/enumerate-for-loop.md) | enumerate(), not a hand-kept counter | `manual` | — | `py/strict` |
+| [`py/eq-without-hash`](py/eq-without-hash.md) | A class with __eq__ defines __hash__ | `suggest` | — | `py/strict` |
+| [`py/error-instead-of-exception`](py/error-instead-of-exception.md) | logger.exception in an except block | `suggest` | — | `py/strict` |
+| [`py/error-suffix-on-exception-name`](py/error-suffix-on-exception-name.md) | Exception classes end in Error | `manual` | — | `py/strict` |
+| [`py/escape-sequence-in-docstring`](py/escape-sequence-in-docstring.md) | A docstring with a backslash is raw | `suggest` | — | `py/pydocstyle` |
+| [`py/eval-used`](py/eval-used.md) | No eval() | `manual` | — | `py/pylint` |
+| [`py/exc-info-outside-except-handler`](py/exc-info-outside-except-handler.md) | No exc_info=True outside an except block | `suggest` | — | `py/strict` |
+| [`py/except-with-empty-tuple`](py/except-with-empty-tuple.md) | No `except ():` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/except-with-non-exception-classes`](py/except-with-non-exception-classes.md) | `except` names exception classes | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/exception-without-exc-info`](py/exception-without-exc-info.md) | No logger.exception with exc_info=False | `suggest` | — | `py/strict` |
+| [`py/exec-used`](py/exec-used.md) | No exec() | `manual` | — | `py/pylint` |
+| [`py/explicit-f-string-repr-conversion`](py/explicit-f-string-repr-conversion.md) | `!r`, not repr() inside an f-string | `auto` | — | `py/strict` |
+| [`py/explicit-f-string-type-conversion`](py/explicit-f-string-type-conversion.md) | A conversion flag, not str() inside an f-string | `auto` | — | `py/strict` |
+| [`py/explicit-string-concatenation`](py/explicit-string-concatenation.md) | No + between two string literals | `auto` | — | `py/strict` |
+| [`py/expr-and-false`](py/expr-and-false.md) | No `and False` in a condition | `auto` | — | `py/strict` |
+| [`py/expr-and-not-expr`](py/expr-and-not-expr.md) | No x and not x | `auto` | — | `py/strict` |
+| [`py/expr-or-not-expr`](py/expr-or-not-expr.md) | No x or not x | `auto` | — | `py/strict` |
+| [`py/expr-or-true`](py/expr-or-true.md) | No `or True` in a condition | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/extraneous-parentheses`](py/extraneous-parentheses.md) | No double parentheses in a call | `auto` | — | `py/strict` |
+| [`py/f-string`](py/f-string.md) | A `.format` call on a string literal is an f-string | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/f-string-docstring`](py/f-string-docstring.md) | Docstrings aren't f-strings | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/f-string-in-exception`](py/f-string-in-exception.md) | An exception f-string is assigned before the raise | `suggest` | — | `py/strict` |
+| [`py/f-string-in-get-text-func-call`](py/f-string-in-get-text-func-call.md) | No f-string passed to gettext | `manual` | — | `py/strict` |
+| [`py/f-string-missing-placeholders`](py/f-string-missing-placeholders.md) | An f-string has a placeholder | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/f-string-number-format`](py/f-string-number-format.md) | An f-string formats a number in binary, octal or hex | `suggest` | — | `py/strict` |
 | [`py/f-string-percent-format`](py/f-string-percent-format.md) | No % formatting of an f-string | `manual` | — | *[rules] only* |
 | [`py/fallible-context-manager`](py/fallible-context-manager.md) | A `@contextmanager` runs its cleanup even when the body raises | `manual` | — | *[rules] only* |
 | [`py/falsy-dict-get-fallback`](py/falsy-dict-get-fallback.md) | No falsy fallback to dict.get in a test | `auto` | — | *[rules] only* |
-| [`py/first-word-uncapitalized`](py/first-word-uncapitalized.md) | A docstring's first word is capitalised | `auto` | — | *[rules] only* |
+| [`py/first-word-uncapitalized`](py/first-word-uncapitalized.md) | A docstring's first word is capitalised | `auto` | — | `py/pydocstyle` |
 | [`py/flag-expiry`](py/flag-expiry.md) | Every feature flag read is registered, with an owner and a date it goes | `suggest` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`py/flag-marker`](py/flag-marker.md) | An inline flag marker agrees with the registry | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
 | [`py/float-equality-comparison`](py/float-equality-comparison.md) | No == between floats | `suggest` | — | *[rules] only* |
 | [`py/for-loop-set-mutations`](py/for-loop-set-mutations.md) | A loop that only adds to a set is update | `suggest` | — | *[rules] only* |
-| [`py/for-loop-writes`](py/for-loop-writes.md) | A loop that only writes to a file is writelines | `suggest` | — | *[rules] only* |
-| [`py/format-in-get-text-func-call`](py/format-in-get-text-func-call.md) | No .format() inside a gettext call | `suggest` | — | *[rules] only* |
-| [`py/format-invalid`](py/format-invalid.md) | A `.format` string is well formed | `suggest` | — | `py/recommended` |
-| [`py/format-literals`](py/format-literals.md) | `.format` fields use implicit positions | `auto` | — | *[rules] only* |
-| [`py/format-missing-argument`](py/format-missing-argument.md) | Every `.format` field has an argument | `manual` | — | `py/recommended` |
-| [`py/format-mixed-numbering`](py/format-mixed-numbering.md) | A `.format` string doesn't mix `{}` and `{0}` | `suggest` | — | `py/recommended` |
-| [`py/format-string-without-interpolation`](py/format-string-without-interpolation.md) | No .format() on a string with no fields | `auto` | — | *[rules] only* |
-| [`py/format-unused-named-argument`](py/format-unused-named-argument.md) | Every keyword passed to `.format` is used | `auto` | — | `py/recommended` |
-| [`py/format-unused-positional-argument`](py/format-unused-positional-argument.md) | Every positional argument to `.format` is used | `auto` | — | `py/recommended` |
-| [`py/forward-annotation-syntax-error`](py/forward-annotation-syntax-error.md) | A string annotation is valid Python | `suggest` | — | `py/recommended` |
-| [`py/fromisoformat-replace-z`](py/fromisoformat-replace-z.md) | fromisoformat reads Z | `suggest` | — | *[rules] only* |
-| [`py/function-call-in-dataclass-default-argument`](py/function-call-in-dataclass-default-argument.md) | No call as a dataclass field default | `suggest` | — | *[rules] only* |
-| [`py/function-call-in-default-argument`](py/function-call-in-default-argument.md) | No function calls in default arguments | `suggest` | `extend_immutable_calls` | `py/recommended` |
-| [`py/function-uses-loop-variable`](py/function-uses-loop-variable.md) | Closures don't capture a loop variable by name | `suggest` | — | `py/recommended` |
-| [`py/future-annotations-in-stub`](py/future-annotations-in-stub.md) | No __future__ annotations in stubs | `auto` | — | *[rules] only* |
-| [`py/generator-return-from-iter-method`](py/generator-return-from-iter-method.md) | A simple __iter__ returns Iterator, not Generator | `suggest` | — | *[rules] only* |
-| [`py/generic-not-last-base-class`](py/generic-not-last-base-class.md) | `Generic[...]` is the last base class | `suggest` | — | *[rules] only* |
-| [`py/getattr-with-constant`](py/getattr-with-constant.md) | No `getattr` with a constant name | `auto` | — | `py/recommended` |
-| [`py/glob`](py/glob.md) | Path.glob, not glob.glob | `manual` | — | *[rules] only* |
-| [`py/global-at-module-level`](py/global-at-module-level.md) | No global at module level | `auto` | — | *[rules] only* |
-| [`py/global-statement`](py/global-statement.md) | No global statement | `manual` | — | *[rules] only* |
-| [`py/global-variable-not-assigned`](py/global-variable-not-assigned.md) | No global for a name never assigned | `suggest` | — | *[rules] only* |
-| [`py/global-variable-undefined`](py/global-variable-undefined.md) | A `global` name is defined at module level | `manual` | — | *[rules] only* |
+| [`py/for-loop-writes`](py/for-loop-writes.md) | A loop that only writes to a file is writelines | `suggest` | — | `py/strict` |
+| [`py/format-in-get-text-func-call`](py/format-in-get-text-func-call.md) | No .format() inside a gettext call | `suggest` | — | `py/strict` |
+| [`py/format-invalid`](py/format-invalid.md) | A `.format` string is well formed | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/format-literals`](py/format-literals.md) | `.format` fields use implicit positions | `auto` | — | `py/strict` |
+| [`py/format-missing-argument`](py/format-missing-argument.md) | Every `.format` field has an argument | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/format-mixed-numbering`](py/format-mixed-numbering.md) | A `.format` string doesn't mix `{}` and `{0}` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/format-string-without-interpolation`](py/format-string-without-interpolation.md) | No .format() on a string with no fields | `auto` | — | `py/pylint` |
+| [`py/format-unused-named-argument`](py/format-unused-named-argument.md) | Every keyword passed to `.format` is used | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/format-unused-positional-argument`](py/format-unused-positional-argument.md) | Every positional argument to `.format` is used | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/forward-annotation-syntax-error`](py/forward-annotation-syntax-error.md) | A string annotation is valid Python | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/fromisoformat-replace-z`](py/fromisoformat-replace-z.md) | fromisoformat reads Z | `suggest` | — | `py/strict` |
+| [`py/function-call-in-dataclass-default-argument`](py/function-call-in-dataclass-default-argument.md) | No call as a dataclass field default | `suggest` | — | `py/strict` |
+| [`py/function-call-in-default-argument`](py/function-call-in-default-argument.md) | No function calls in default arguments | `suggest` | `extend_immutable_calls` | `py/recommended`, `py/strict` |
+| [`py/function-uses-loop-variable`](py/function-uses-loop-variable.md) | Closures don't capture a loop variable by name | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/future-annotations-in-stub`](py/future-annotations-in-stub.md) | No __future__ annotations in stubs | `auto` | — | `py/strict` |
+| [`py/generator-return-from-iter-method`](py/generator-return-from-iter-method.md) | A simple __iter__ returns Iterator, not Generator | `suggest` | — | `py/strict` |
+| [`py/generic-not-last-base-class`](py/generic-not-last-base-class.md) | `Generic[...]` is the last base class | `suggest` | — | `py/strict` |
+| [`py/getattr-with-constant`](py/getattr-with-constant.md) | No `getattr` with a constant name | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/glob`](py/glob.md) | Path.glob, not glob.glob | `manual` | — | `py/strict` |
+| [`py/global-at-module-level`](py/global-at-module-level.md) | No global at module level | `auto` | — | `py/strict` |
+| [`py/global-statement`](py/global-statement.md) | No global statement | `manual` | — | `py/strict` |
+| [`py/global-variable-not-assigned`](py/global-variable-not-assigned.md) | No global for a name never assigned | `suggest` | — | `py/strict` |
+| [`py/global-variable-undefined`](py/global-variable-undefined.md) | A `global` name is defined at module level | `manual` | — | `py/pylint` |
 | [`py/hardcoded-string-charset`](py/hardcoded-string-charset.md) | A string module constant, not its characters spelled out | `auto` | — | *[rules] only* |
-| [`py/hashlib-digest-hex`](py/hashlib-digest-hex.md) | hexdigest(), not digest().hex() | `auto` | — | *[rules] only* |
-| [`py/if-else-block-instead-of-dict-get`](py/if-else-block-instead-of-dict-get.md) | d.get(k, default), not if k in d | `suggest` | — | *[rules] only* |
-| [`py/if-else-block-instead-of-dict-lookup`](py/if-else-block-instead-of-dict-lookup.md) | A lookup table, not an if chain of returns | `manual` | — | *[rules] only* |
-| [`py/if-else-block-instead-of-if-exp`](py/if-else-block-instead-of-if-exp.md) | A conditional expression for a two-way assignment | `suggest` | — | *[rules] only* |
-| [`py/if-exp-instead-of-or-operator`](py/if-exp-instead-of-or-operator.md) | a or b, not a if a else b | `auto` | — | *[rules] only* |
-| [`py/if-expr-min-max`](py/if-expr-min-max.md) | min()/max(), not a conditional | `suggest` | — | *[rules] only* |
-| [`py/if-expr-with-false-true`](py/if-expr-with-false-true.md) | not c, not False if c else True | `auto` | — | *[rules] only* |
-| [`py/if-expr-with-true-false`](py/if-expr-with-true-false.md) | bool(c), not True if c else False | `auto` | — | *[rules] only* |
-| [`py/if-expr-with-twisted-arms`](py/if-expr-with-twisted-arms.md) | a if a else b, not b if not a else a | `auto` | — | *[rules] only* |
-| [`py/if-key-in-dict-del`](py/if-key-in-dict-del.md) | d.pop(k, None), not if k in d: del d\[k\] | `auto` | — | *[rules] only* |
-| [`py/if-stmt-min-max`](py/if-stmt-min-max.md) | x = max(x, y), not if x < y: x = y | `suggest` | — | *[rules] only* |
-| [`py/if-tuple`](py/if-tuple.md) | `if` doesn't test a tuple | `suggest` | — | `py/recommended` |
-| [`py/if-with-same-arms`](py/if-with-same-arms.md) | Merge if branches with the same body | `manual` | — | *[rules] only* |
+| [`py/hashlib-digest-hex`](py/hashlib-digest-hex.md) | hexdigest(), not digest().hex() | `auto` | — | `py/strict` |
+| [`py/if-else-block-instead-of-dict-get`](py/if-else-block-instead-of-dict-get.md) | d.get(k, default), not if k in d | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/if-else-block-instead-of-dict-lookup`](py/if-else-block-instead-of-dict-lookup.md) | A lookup table, not an if chain of returns | `manual` | — | `py/strict` |
+| [`py/if-else-block-instead-of-if-exp`](py/if-else-block-instead-of-if-exp.md) | A conditional expression for a two-way assignment | `suggest` | — | `py/strict` |
+| [`py/if-exp-instead-of-or-operator`](py/if-exp-instead-of-or-operator.md) | a or b, not a if a else b | `auto` | — | `py/strict` |
+| [`py/if-expr-min-max`](py/if-expr-min-max.md) | min()/max(), not a conditional | `suggest` | — | `py/strict` |
+| [`py/if-expr-with-false-true`](py/if-expr-with-false-true.md) | not c, not False if c else True | `auto` | — | `py/strict` |
+| [`py/if-expr-with-true-false`](py/if-expr-with-true-false.md) | bool(c), not True if c else False | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/if-expr-with-twisted-arms`](py/if-expr-with-twisted-arms.md) | a if a else b, not b if not a else a | `auto` | — | `py/strict` |
+| [`py/if-key-in-dict-del`](py/if-key-in-dict-del.md) | d.pop(k, None), not if k in d: del d\[k\] | `auto` | — | `py/strict` |
+| [`py/if-stmt-min-max`](py/if-stmt-min-max.md) | x = max(x, y), not if x < y: x = y | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/if-tuple`](py/if-tuple.md) | `if` doesn't test a tuple | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/if-with-same-arms`](py/if-with-same-arms.md) | Merge if branches with the same body | `manual` | — | `py/strict` |
 | [`py/implicit-class-var-in-dataclass`](py/implicit-class-var-in-dataclass.md) | A dataclass's unannotated attribute is not a field | `manual` | — | *[rules] only* |
-| [`py/implicit-cwd`](py/implicit-cwd.md) | Path.cwd(), not Path().resolve() | `suggest` | — | *[rules] only* |
-| [`py/implicit-flag-alias`](py/implicit-flag-alias.md) | A multi-bit `Flag` member is written as a union | `manual` | — | *[rules] only* |
-| [`py/implicit-namespace-package`](py/implicit-namespace-package.md) | A package folder has an __init__.py | `manual` | — | *[rules] only* |
-| [`py/implicit-optional`](py/implicit-optional.md) | Optional parameters say Optional | `suggest` | — | *[rules] only* |
-| [`py/implicit-return`](py/implicit-return.md) | A function that returns a value ends with an explicit return | `auto` | — | *[rules] only* |
-| [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | *[rules] only* |
-| [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | *[rules] only* |
-| [`py/import-outside-top-level`](py/import-outside-top-level.md) | Imports are at the top of the module | `manual` | — | *[rules] only* |
-| [`py/import-self`](py/import-self.md) | A module does not import itself | `manual` | — | *[rules] only* |
-| [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `auto` | — | `py/recommended` |
-| [`py/impossible-comparison`](py/impossible-comparison.md) | An `and` of comparisons is not always false | `manual` | — | *[rules] only* |
-| [`py/in-dict-keys`](py/in-dict-keys.md) | k in d, not k in d.keys() | `suggest` | — | *[rules] only* |
-| [`py/in-empty-collection`](py/in-empty-collection.md) | No membership test on an empty literal | `manual` | — | *[rules] only* |
-| [`py/inconsistent-mro`](py/inconsistent-mro.md) | A class's bases have a consistent method resolution order | `manual` | — | *[rules] only* |
-| [`py/inconsistent-return-statements`](py/inconsistent-return-statements.md) | Either every return gives a value or none does | `manual` | — | *[rules] only* |
+| [`py/implicit-cwd`](py/implicit-cwd.md) | Path.cwd(), not Path().resolve() | `suggest` | — | `py/strict` |
+| [`py/implicit-flag-alias`](py/implicit-flag-alias.md) | A multi-bit `Flag` member is written as a union | `manual` | — | `py/pylint` |
+| [`py/implicit-namespace-package`](py/implicit-namespace-package.md) | A package folder has an __init__.py | `manual` | — | `py/strict` |
+| [`py/implicit-optional`](py/implicit-optional.md) | Optional parameters say Optional | `suggest` | — | `py/strict` |
+| [`py/implicit-return`](py/implicit-return.md) | A function that returns a value ends with an explicit return | `auto` | — | `py/strict` |
+| [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | `py/strict` |
+| [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | `py/strict` |
+| [`py/import-outside-top-level`](py/import-outside-top-level.md) | Imports are at the top of the module | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/import-self`](py/import-self.md) | A module does not import itself | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/impossible-comparison`](py/impossible-comparison.md) | An `and` of comparisons is not always false | `manual` | — | `py/pylint` |
+| [`py/in-dict-keys`](py/in-dict-keys.md) | k in d, not k in d.keys() | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/in-empty-collection`](py/in-empty-collection.md) | No membership test on an empty literal | `manual` | — | `py/strict` |
+| [`py/inconsistent-mro`](py/inconsistent-mro.md) | A class's bases have a consistent method resolution order | `manual` | — | `py/pylint` |
+| [`py/inconsistent-return-statements`](py/inconsistent-return-statements.md) | Either every return gives a value or none does | `manual` | — | `py/pylint` |
 | [`py/incorrect-decorator-order`](py/incorrect-decorator-order.md) | Decorators that only work in one order are written in it | `suggest` | — | *[rules] only* |
-| [`py/incorrect-dict-iterator`](py/incorrect-dict-iterator.md) | d.keys() or d.values(), not items() with a discarded half | `auto` | — | *[rules] only* |
-| [`py/incorrect-section-order`](py/incorrect-section-order.md) | Docstring sections come in the conventional order | `manual` | — | *[rules] only* |
+| [`py/incorrect-dict-iterator`](py/incorrect-dict-iterator.md) | d.keys() or d.values(), not items() with a discarded half | `auto` | — | `py/strict` |
+| [`py/incorrect-section-order`](py/incorrect-section-order.md) | Docstring sections come in the conventional order | `manual` | — | `py/pydocstyle` |
 | [`py/incorrectly-parenthesized-tuple-in-subscript`](py/incorrectly-parenthesized-tuple-in-subscript.md) | No parentheses around a subscript tuple | `auto` | — | *[rules] only* |
-| [`py/inherit-non-class`](py/inherit-non-class.md) | A class inherits only from classes | `manual` | — | *[rules] only* |
-| [`py/init-is-generator`](py/init-is-generator.md) | __init__ is not a generator | `manual` | — | *[rules] only* |
-| [`py/int-on-sliced-str`](py/int-on-sliced-str.md) | int(s, 0), not int(s\[2:\], 16) | `suggest` | — | *[rules] only* |
-| [`py/invalid-all-format`](py/invalid-all-format.md) | __all__ is a list or tuple | `manual` | — | *[rules] only* |
-| [`py/invalid-all-object`](py/invalid-all-object.md) | __all__ holds names as strings | `suggest` | — | *[rules] only* |
-| [`py/invalid-argument-name`](py/invalid-argument-name.md) | Parameter names are lowercase | `suggest` | — | *[rules] only* |
-| [`py/invalid-assert-message-literal-argument`](py/invalid-assert-message-literal-argument.md) | No empty-collection assert message | `manual` | — | *[rules] only* |
-| [`py/invalid-bool-return-type`](py/invalid-bool-return-type.md) | __bool__ returns a bool | `manual` | — | *[rules] only* |
-| [`py/invalid-bool-returned`](py/invalid-bool-returned.md) | __bool__ returns a bool | `manual` | — | *[rules] only* |
-| [`py/invalid-bytes-return-type`](py/invalid-bytes-return-type.md) | __bytes__ returns bytes | `manual` | — | *[rules] only* |
-| [`py/invalid-bytes-returned`](py/invalid-bytes-returned.md) | __bytes__ returns bytes | `manual` | — | *[rules] only* |
-| [`py/invalid-character-backspace`](py/invalid-character-backspace.md) | A backspace character in a string is written \b | `auto` | — | *[rules] only* |
-| [`py/invalid-character-esc`](py/invalid-character-esc.md) | A ESC character in a string is written \x1b | `auto` | — | *[rules] only* |
-| [`py/invalid-character-sub`](py/invalid-character-sub.md) | A SUB (control-Z) character in a string is written \x1a | `auto` | — | *[rules] only* |
-| [`py/invalid-character-zero-width-space`](py/invalid-character-zero-width-space.md) | A zero-width space character in a string is written \u200b | `auto` | — | *[rules] only* |
-| [`py/invalid-class-name`](py/invalid-class-name.md) | Class names are CapWords | `suggest` | — | *[rules] only* |
-| [`py/invalid-class-object`](py/invalid-class-object.md) | __class__ is assigned a class | `manual` | — | *[rules] only* |
-| [`py/invalid-enum-extension`](py/invalid-enum-extension.md) | An enum that defines members is not subclassed | `manual` | — | *[rules] only* |
-| [`py/invalid-envvar-default`](py/invalid-envvar-default.md) | os.getenv's default is a string | `suggest` | — | *[rules] only* |
-| [`py/invalid-envvar-value`](py/invalid-envvar-value.md) | os.getenv takes a string name | `manual` | — | *[rules] only* |
-| [`py/invalid-escape-sequence`](py/invalid-escape-sequence.md) | No invalid escapes in strings | `auto` | — | *[rules] only* |
-| [`py/invalid-field-call`](py/invalid-field-call.md) | dataclasses.field() only in a dataclass body | `manual` | — | *[rules] only* |
-| [`py/invalid-format-index`](py/invalid-format-index.md) | A `str.format` field indexes a value that has that index | `manual` | — | *[rules] only* |
-| [`py/invalid-format-returned`](py/invalid-format-returned.md) | __format__ returns a str | `manual` | — | *[rules] only* |
-| [`py/invalid-function-name`](py/invalid-function-name.md) | Function names are lowercase | `manual` | — | *[rules] only* |
-| [`py/invalid-get-logger-argument`](py/invalid-get-logger-argument.md) | getLogger(__name__), not getLogger(__file__) | `suggest` | — | *[rules] only* |
-| [`py/invalid-getnewargs-ex-returned`](py/invalid-getnewargs-ex-returned.md) | __getnewargs_ex__ returns a (tuple, dict) pair | `manual` | — | *[rules] only* |
-| [`py/invalid-getnewargs-returned`](py/invalid-getnewargs-returned.md) | __getnewargs__ returns a tuple | `manual` | — | *[rules] only* |
-| [`py/invalid-hash-return-type`](py/invalid-hash-return-type.md) | __hash__ returns an int | `manual` | — | *[rules] only* |
-| [`py/invalid-hash-returned`](py/invalid-hash-returned.md) | __hash__ returns an int | `manual` | — | *[rules] only* |
-| [`py/invalid-index-return-type`](py/invalid-index-return-type.md) | __index__ returns an int | `manual` | — | *[rules] only* |
-| [`py/invalid-index-returned`](py/invalid-index-returned.md) | __index__ returns an int | `manual` | — | *[rules] only* |
-| [`py/invalid-index-type`](py/invalid-index-type.md) | Index with an int, not another literal | `manual` | — | *[rules] only* |
-| [`py/invalid-length-hint-returned`](py/invalid-length-hint-returned.md) | __length_hint__ returns a non-negative int | `manual` | — | *[rules] only* |
-| [`py/invalid-length-return-type`](py/invalid-length-return-type.md) | __len__ returns a non-negative int | `manual` | — | *[rules] only* |
-| [`py/invalid-length-returned`](py/invalid-length-returned.md) | __len__ returns a non-negative int | `manual` | — | *[rules] only* |
-| [`py/invalid-match-args-definition`](py/invalid-match-args-definition.md) | __match_args__ is a tuple of strings | `manual` | — | *[rules] only* |
-| [`py/invalid-mock-access`](py/invalid-mock-access.md) | Mock assertions are called | `auto` | — | *[rules] only* |
-| [`py/invalid-module-name`](py/invalid-module-name.md) | A module's name is lowercase with underscores | `manual` | `ignore_names` | *[rules] only* |
-| [`py/invalid-overridden-method`](py/invalid-overridden-method.md) | An override keeps the kind of the method it overrides | `manual` | — | *[rules] only* |
-| [`py/invalid-pathlib-with-suffix`](py/invalid-pathlib-with-suffix.md) | with_suffix takes a leading dot | `suggest` | — | *[rules] only* |
-| [`py/invalid-print-syntax`](py/invalid-print-syntax.md) | No Python 2 `print >>` | `suggest` | — | `py/recommended` |
-| [`py/invalid-repr-returned`](py/invalid-repr-returned.md) | __repr__ returns a str | `manual` | — | *[rules] only* |
-| [`py/invalid-slots`](py/invalid-slots.md) | __slots__ is a sequence of names | `manual` | — | *[rules] only* |
-| [`py/invalid-slots-object`](py/invalid-slots-object.md) | __slots__ lists only strings | `manual` | — | *[rules] only* |
-| [`py/invalid-star-assignment-target`](py/invalid-star-assignment-target.md) | A starred name is not the whole assignment target | `suggest` | — | *[rules] only* |
-| [`py/invalid-str-return-type`](py/invalid-str-return-type.md) | __str__ returns a str | `manual` | — | *[rules] only* |
-| [`py/invalid-str-returned`](py/invalid-str-returned.md) | __str__ returns a str | `manual` | — | *[rules] only* |
-| [`py/is-literal`](py/is-literal.md) | Literals are compared with `==`, not `is` | `suggest` | — | `py/recommended` |
-| [`py/isinstance-type-none`](py/isinstance-type-none.md) | x is None, not isinstance(x, type(None)) | `auto` | — | *[rules] only* |
-| [`py/iter-method-return-iterable`](py/iter-method-return-iterable.md) | __iter__ returns an Iterator | `suggest` | — | *[rules] only* |
-| [`py/jump-statement-in-finally`](py/jump-statement-in-finally.md) | No `return`, `break` or `continue` in `finally` | `suggest` | — | `py/recommended` |
-| [`py/lambda-assignment`](py/lambda-assignment.md) | Define functions with `def`, not a lambda | `suggest` | — | `py/recommended` |
-| [`py/late-future-import`](py/late-future-import.md) | `from __future__` imports come first | `auto` | — | `py/recommended` |
-| [`py/legacy-form-pytest-raises`](py/legacy-form-pytest-raises.md) | pytest.raises as a context manager | `suggest` | — | *[rules] only* |
-| [`py/legacy-type-comment`](py/legacy-type-comment.md) | A stub annotates, not type-comments | `manual` | — | *[rules] only* |
-| [`py/list-reverse-copy`](py/list-reverse-copy.md) | x.reverse(), not x = x\[::-1\] | `suggest` | — | *[rules] only* |
+| [`py/inherit-non-class`](py/inherit-non-class.md) | A class inherits only from classes | `manual` | — | `py/pylint` |
+| [`py/init-is-generator`](py/init-is-generator.md) | __init__ is not a generator | `manual` | — | `py/pylint` |
+| [`py/int-on-sliced-str`](py/int-on-sliced-str.md) | int(s, 0), not int(s\[2:\], 16) | `suggest` | — | `py/strict` |
+| [`py/invalid-all-format`](py/invalid-all-format.md) | __all__ is a list or tuple | `manual` | — | `py/strict` |
+| [`py/invalid-all-object`](py/invalid-all-object.md) | __all__ holds names as strings | `suggest` | — | `py/strict` |
+| [`py/invalid-argument-name`](py/invalid-argument-name.md) | Parameter names are lowercase | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/invalid-assert-message-literal-argument`](py/invalid-assert-message-literal-argument.md) | No empty-collection assert message | `manual` | — | `py/strict` |
+| [`py/invalid-bool-return-type`](py/invalid-bool-return-type.md) | __bool__ returns a bool | `manual` | — | `py/strict` |
+| [`py/invalid-bool-returned`](py/invalid-bool-returned.md) | __bool__ returns a bool | `manual` | — | `py/pylint` |
+| [`py/invalid-bytes-return-type`](py/invalid-bytes-return-type.md) | __bytes__ returns bytes | `manual` | — | `py/strict` |
+| [`py/invalid-bytes-returned`](py/invalid-bytes-returned.md) | __bytes__ returns bytes | `manual` | — | `py/pylint` |
+| [`py/invalid-character-backspace`](py/invalid-character-backspace.md) | A backspace character in a string is written \b | `auto` | — | `py/strict` |
+| [`py/invalid-character-esc`](py/invalid-character-esc.md) | A ESC character in a string is written \x1b | `auto` | — | `py/strict` |
+| [`py/invalid-character-sub`](py/invalid-character-sub.md) | A SUB (control-Z) character in a string is written \x1a | `auto` | — | `py/strict` |
+| [`py/invalid-character-zero-width-space`](py/invalid-character-zero-width-space.md) | A zero-width space character in a string is written \u200b | `auto` | — | `py/strict` |
+| [`py/invalid-class-name`](py/invalid-class-name.md) | Class names are CapWords | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/invalid-class-object`](py/invalid-class-object.md) | __class__ is assigned a class | `manual` | — | `py/pylint` |
+| [`py/invalid-enum-extension`](py/invalid-enum-extension.md) | An enum that defines members is not subclassed | `manual` | — | `py/pylint` |
+| [`py/invalid-envvar-default`](py/invalid-envvar-default.md) | os.getenv's default is a string | `suggest` | — | `py/strict` |
+| [`py/invalid-envvar-value`](py/invalid-envvar-value.md) | os.getenv takes a string name | `manual` | — | `py/strict` |
+| [`py/invalid-escape-sequence`](py/invalid-escape-sequence.md) | No invalid escapes in strings | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/invalid-field-call`](py/invalid-field-call.md) | dataclasses.field() only in a dataclass body | `manual` | — | `py/pylint` |
+| [`py/invalid-format-index`](py/invalid-format-index.md) | A `str.format` field indexes a value that has that index | `manual` | — | `py/pylint` |
+| [`py/invalid-format-returned`](py/invalid-format-returned.md) | __format__ returns a str | `manual` | — | `py/pylint` |
+| [`py/invalid-function-name`](py/invalid-function-name.md) | Function names are lowercase | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/invalid-get-logger-argument`](py/invalid-get-logger-argument.md) | getLogger(__name__), not getLogger(__file__) | `suggest` | — | `py/strict` |
+| [`py/invalid-getnewargs-ex-returned`](py/invalid-getnewargs-ex-returned.md) | __getnewargs_ex__ returns a (tuple, dict) pair | `manual` | — | `py/pylint` |
+| [`py/invalid-getnewargs-returned`](py/invalid-getnewargs-returned.md) | __getnewargs__ returns a tuple | `manual` | — | `py/pylint` |
+| [`py/invalid-hash-return-type`](py/invalid-hash-return-type.md) | __hash__ returns an int | `manual` | — | `py/strict` |
+| [`py/invalid-hash-returned`](py/invalid-hash-returned.md) | __hash__ returns an int | `manual` | — | `py/pylint` |
+| [`py/invalid-index-return-type`](py/invalid-index-return-type.md) | __index__ returns an int | `manual` | — | `py/strict` |
+| [`py/invalid-index-returned`](py/invalid-index-returned.md) | __index__ returns an int | `manual` | — | `py/pylint` |
+| [`py/invalid-index-type`](py/invalid-index-type.md) | Index with an int, not another literal | `manual` | — | `py/strict` |
+| [`py/invalid-length-hint-returned`](py/invalid-length-hint-returned.md) | __length_hint__ returns a non-negative int | `manual` | — | `py/pylint` |
+| [`py/invalid-length-return-type`](py/invalid-length-return-type.md) | __len__ returns a non-negative int | `manual` | — | `py/strict` |
+| [`py/invalid-length-returned`](py/invalid-length-returned.md) | __len__ returns a non-negative int | `manual` | — | `py/pylint` |
+| [`py/invalid-match-args-definition`](py/invalid-match-args-definition.md) | __match_args__ is a tuple of strings | `manual` | — | `py/pylint` |
+| [`py/invalid-mock-access`](py/invalid-mock-access.md) | Mock assertions are called | `auto` | — | `py/strict` |
+| [`py/invalid-module-name`](py/invalid-module-name.md) | A module's name is lowercase with underscores | `manual` | `ignore_names` | `py/strict` |
+| [`py/invalid-overridden-method`](py/invalid-overridden-method.md) | An override keeps the kind of the method it overrides | `manual` | — | `py/pylint` |
+| [`py/invalid-pathlib-with-suffix`](py/invalid-pathlib-with-suffix.md) | with_suffix takes a leading dot | `suggest` | — | `py/strict` |
+| [`py/invalid-print-syntax`](py/invalid-print-syntax.md) | No Python 2 `print >>` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/invalid-repr-returned`](py/invalid-repr-returned.md) | __repr__ returns a str | `manual` | — | `py/pylint` |
+| [`py/invalid-slots`](py/invalid-slots.md) | __slots__ is a sequence of names | `manual` | — | `py/pylint` |
+| [`py/invalid-slots-object`](py/invalid-slots-object.md) | __slots__ lists only strings | `manual` | — | `py/pylint` |
+| [`py/invalid-star-assignment-target`](py/invalid-star-assignment-target.md) | A starred name is not the whole assignment target | `suggest` | — | `py/pylint` |
+| [`py/invalid-str-return-type`](py/invalid-str-return-type.md) | __str__ returns a str | `manual` | — | `py/strict` |
+| [`py/invalid-str-returned`](py/invalid-str-returned.md) | __str__ returns a str | `manual` | — | `py/pylint` |
+| [`py/is-literal`](py/is-literal.md) | Literals are compared with `==`, not `is` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/isinstance-type-none`](py/isinstance-type-none.md) | x is None, not isinstance(x, type(None)) | `auto` | — | `py/strict` |
+| [`py/iter-method-return-iterable`](py/iter-method-return-iterable.md) | __iter__ returns an Iterator | `suggest` | — | `py/strict` |
+| [`py/jump-statement-in-finally`](py/jump-statement-in-finally.md) | No `return`, `break` or `continue` in `finally` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/lambda-assignment`](py/lambda-assignment.md) | Define functions with `def`, not a lambda | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/late-future-import`](py/late-future-import.md) | `from __future__` imports come first | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/legacy-form-pytest-raises`](py/legacy-form-pytest-raises.md) | pytest.raises as a context manager | `suggest` | — | `py/strict` |
+| [`py/legacy-type-comment`](py/legacy-type-comment.md) | A stub annotates, not type-comments | `manual` | — | `py/strict` |
+| [`py/list-reverse-copy`](py/list-reverse-copy.md) | x.reverse(), not x = x\[::-1\] | `suggest` | — | `py/strict` |
 | [`py/literal-membership`](py/literal-membership.md) | Test membership in a set literal | `suggest` | — | *[rules] only* |
-| [`py/load-before-global-declaration`](py/load-before-global-declaration.md) | global comes before the name is used | `manual` | — | *[rules] only* |
-| [`py/log-exception-outside-except-handler`](py/log-exception-outside-except-handler.md) | logger.exception only in an except block | `suggest` | — | *[rules] only* |
+| [`py/load-before-global-declaration`](py/load-before-global-declaration.md) | global comes before the name is used | `manual` | — | `py/strict` |
+| [`py/log-exception-outside-except-handler`](py/log-exception-outside-except-handler.md) | logger.exception only in an except block | `suggest` | — | `py/strict` |
 | [`py/logging-eager-conversion`](py/logging-eager-conversion.md) | No str() on a logging argument | `suggest` | — | *[rules] only* |
-| [`py/logging-exc-info`](py/logging-exc-info.md) | logger.exception, not error(exc_info=True) | `suggest` | — | *[rules] only* |
-| [`py/logging-extra-attr-clash`](py/logging-extra-attr-clash.md) | A logging extra does not reuse a LogRecord attribute | `manual` | — | *[rules] only* |
-| [`py/logging-f-string`](py/logging-f-string.md) | No f-string in a logging call | `manual` | — | *[rules] only* |
-| [`py/logging-format-truncated`](py/logging-format-truncated.md) | A logging format does not end in a lone % | `manual` | — | *[rules] only* |
-| [`py/logging-percent-format`](py/logging-percent-format.md) | No % formatting in a logging call | `suggest` | — | *[rules] only* |
-| [`py/logging-redundant-exc-info`](py/logging-redundant-exc-info.md) | No exc_info=True on logger.exception | `auto` | — | *[rules] only* |
-| [`py/logging-string-concat`](py/logging-string-concat.md) | No + in a logging message | `manual` | — | *[rules] only* |
-| [`py/logging-string-format`](py/logging-string-format.md) | No str.format in a logging call | `manual` | — | *[rules] only* |
-| [`py/logging-too-few-args`](py/logging-too-few-args.md) | A logging call passes an argument for each placeholder | `manual` | — | *[rules] only* |
-| [`py/logging-too-many-args`](py/logging-too-many-args.md) | A logging call passes no more arguments than its message has placeholders | `manual` | — | *[rules] only* |
-| [`py/logging-unsupported-format`](py/logging-unsupported-format.md) | A logging format uses only known conversions | `manual` | — | *[rules] only* |
-| [`py/logging-warn`](py/logging-warn.md) | logging.warning, not warn | `auto` | — | *[rules] only* |
-| [`py/long-sleep-not-forever`](py/long-sleep-not-forever.md) | sleep_forever(), not a day-long sleep | `suggest` | — | *[rules] only* |
+| [`py/logging-exc-info`](py/logging-exc-info.md) | logger.exception, not error(exc_info=True) | `suggest` | — | `py/strict` |
+| [`py/logging-extra-attr-clash`](py/logging-extra-attr-clash.md) | A logging extra does not reuse a LogRecord attribute | `manual` | — | `py/strict` |
+| [`py/logging-f-string`](py/logging-f-string.md) | No f-string in a logging call | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/logging-format-truncated`](py/logging-format-truncated.md) | A logging format does not end in a lone % | `manual` | — | `py/pylint` |
+| [`py/logging-percent-format`](py/logging-percent-format.md) | No % formatting in a logging call | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/logging-redundant-exc-info`](py/logging-redundant-exc-info.md) | No exc_info=True on logger.exception | `auto` | — | `py/strict` |
+| [`py/logging-string-concat`](py/logging-string-concat.md) | No + in a logging message | `manual` | — | `py/strict` |
+| [`py/logging-string-format`](py/logging-string-format.md) | No str.format in a logging call | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/logging-too-few-args`](py/logging-too-few-args.md) | A logging call passes an argument for each placeholder | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/logging-too-many-args`](py/logging-too-many-args.md) | A logging call passes no more arguments than its message has placeholders | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/logging-unsupported-format`](py/logging-unsupported-format.md) | A logging format uses only known conversions | `manual` | — | `py/pylint` |
+| [`py/logging-warn`](py/logging-warn.md) | logging.warning, not warn | `auto` | — | `py/strict` |
+| [`py/long-sleep-not-forever`](py/long-sleep-not-forever.md) | sleep_forever(), not a day-long sleep | `suggest` | — | `py/strict` |
 | [`py/loop-iterator-mutation`](py/loop-iterator-mutation.md) | No changing a list while looping over it | `manual` | — | *[rules] only* |
-| [`py/loop-variable-overrides-iterator`](py/loop-variable-overrides-iterator.md) | A loop variable doesn't replace what it iterates | `auto` | — | `py/recommended` |
-| [`py/looping-through-iterator`](py/looping-through-iterator.md) | An iterator is not looped over again in a nested loop | `manual` | — | *[rules] only* |
-| [`py/lowercase-imported-as-non-lowercase`](py/lowercase-imported-as-non-lowercase.md) | A lowercase name is not imported under a capitalised alias | `manual` | — | *[rules] only* |
-| [`py/lru-cache-with-maxsize-none`](py/lru-cache-with-maxsize-none.md) | functools.cache, not lru_cache(maxsize=None) | `auto` | — | *[rules] only* |
-| [`py/lru-cache-without-parameters`](py/lru-cache-without-parameters.md) | @lru_cache, not @lru_cache() | `auto` | — | *[rules] only* |
-| [`py/magic-value-comparison`](py/magic-value-comparison.md) | A comparison names its number | `manual` | — | *[rules] only* |
-| [`py/manual-dict-comprehension`](py/manual-dict-comprehension.md) | A loop that only sets keys is a dict comprehension | `suggest` | — | *[rules] only* |
-| [`py/manual-from-import`](py/manual-from-import.md) | from os import path, not import os.path as path | `auto` | — | *[rules] only* |
-| [`py/manual-list-comprehension`](py/manual-list-comprehension.md) | A loop that only appends is a comprehension | `suggest` | — | *[rules] only* |
-| [`py/manual-list-copy`](py/manual-list-copy.md) | A loop that appends every item is extend | `suggest` | — | *[rules] only* |
-| [`py/map-int-version-parsing`](py/map-int-version-parsing.md) | No map(int, version.split('.')) | `manual` | — | *[rules] only* |
-| [`py/map-without-explicit-strict`](py/map-without-explicit-strict.md) | `map()` over several iterables says `strict=` | `suggest` | `target_version` | `py/recommended` |
-| [`py/match-class-bind-self`](py/match-class-bind-self.md) | A builtin class pattern binds its subject with `as` | `auto` | — | *[rules] only* |
-| [`py/match-class-positional-attributes`](py/match-class-positional-attributes.md) | A class pattern names attributes with keywords | `suggest` | — | *[rules] only* |
+| [`py/loop-variable-overrides-iterator`](py/loop-variable-overrides-iterator.md) | A loop variable doesn't replace what it iterates | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/looping-through-iterator`](py/looping-through-iterator.md) | An iterator is not looped over again in a nested loop | `manual` | — | `py/pylint` |
+| [`py/lowercase-imported-as-non-lowercase`](py/lowercase-imported-as-non-lowercase.md) | A lowercase name is not imported under a capitalised alias | `manual` | — | `py/strict` |
+| [`py/lru-cache-with-maxsize-none`](py/lru-cache-with-maxsize-none.md) | functools.cache, not lru_cache(maxsize=None) | `auto` | — | `py/strict` |
+| [`py/lru-cache-without-parameters`](py/lru-cache-without-parameters.md) | @lru_cache, not @lru_cache() | `auto` | — | `py/strict` |
+| [`py/magic-value-comparison`](py/magic-value-comparison.md) | A comparison names its number | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/manual-dict-comprehension`](py/manual-dict-comprehension.md) | A loop that only sets keys is a dict comprehension | `suggest` | — | `py/strict` |
+| [`py/manual-from-import`](py/manual-from-import.md) | from os import path, not import os.path as path | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/manual-list-comprehension`](py/manual-list-comprehension.md) | A loop that only appends is a comprehension | `suggest` | — | `py/strict` |
+| [`py/manual-list-copy`](py/manual-list-copy.md) | A loop that appends every item is extend | `suggest` | — | `py/strict` |
+| [`py/map-int-version-parsing`](py/map-int-version-parsing.md) | No map(int, version.split('.')) | `manual` | — | `py/strict` |
+| [`py/map-without-explicit-strict`](py/map-without-explicit-strict.md) | `map()` over several iterables says `strict=` | `suggest` | `target_version` | `py/recommended`, `py/strict` |
+| [`py/match-class-bind-self`](py/match-class-bind-self.md) | A builtin class pattern binds its subject with `as` | `auto` | — | `py/pylint` |
+| [`py/match-class-positional-attributes`](py/match-class-positional-attributes.md) | A class pattern names attributes with keywords | `suggest` | — | `py/pylint` |
 | [`py/math-constant`](py/math-constant.md) | math.pi, not 3.14159 | `suggest` | — | *[rules] only* |
-| [`py/max-depth`](py/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `py/size` |
-| [`py/max-lines`](py/max-lines.md) | A module stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `skip_imports` | `py/size` |
+| [`py/max-depth`](py/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `py/size`, `py/pylint` |
+| [`py/max-lines`](py/max-lines.md) | A module stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `skip_imports` | `py/size`, `py/pylint` |
 | [`py/max-lines-per-function`](py/max-lines-per-function.md) | A function stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `include_nested`, `ignore_names` | `py/size` |
-| [`py/max-params`](py/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `max_positional`, `count_varargs`, `ignore_self_cls`, `ignore_names`, `ignore_overrides`, `ignore_declarations` | `py/size` |
+| [`py/max-params`](py/max-params.md) | A function takes at most a maximum number of parameters | `manual` | `max`, `max_positional`, `count_varargs`, `ignore_self_cls`, `ignore_names`, `ignore_overrides`, `ignore_declarations` | `py/size`, `py/pylint` |
 | [`py/meta-class-abc-meta`](py/meta-class-abc-meta.md) | ABC, not metaclass=ABCMeta | `suggest` | — | *[rules] only* |
-| [`py/method-hidden`](py/method-hidden.md) | An attribute does not hide a method of its class | `manual` | — | *[rules] only* |
+| [`py/method-hidden`](py/method-hidden.md) | An attribute does not hide a method of its class | `manual` | — | `py/pylint` |
 | [`py/method-receiver-default`](py/method-receiver-default.md) | No default on self or cls | `auto` | — | *[rules] only* |
-| [`py/mismatched-section-underline-length`](py/mismatched-section-underline-length.md) | A section underline is as long as the section name | `auto` | — | *[rules] only* |
-| [`py/misplaced-bare-raise`](py/misplaced-bare-raise.md) | No bare raise outside an except block | `manual` | — | *[rules] only* |
-| [`py/misplaced-format-function`](py/misplaced-format-function.md) | format() on the string, not on print() | `suggest` | — | *[rules] only* |
+| [`py/mismatched-section-underline-length`](py/mismatched-section-underline-length.md) | A section underline is as long as the section name | `auto` | — | `py/pydocstyle` |
+| [`py/misplaced-bare-raise`](py/misplaced-bare-raise.md) | No bare raise outside an except block | `manual` | — | `py/strict` |
+| [`py/misplaced-format-function`](py/misplaced-format-function.md) | format() on the string, not on print() | `suggest` | — | `py/pylint` |
 | [`py/missing-any-param-doc`](py/missing-any-param-doc.md) | A function's docstring documents its parameters | `manual` | `accept_no_param_doc`, `check_private_functions` | *[rules] only* |
-| [`py/missing-blank-line-after-last-section`](py/missing-blank-line-after-last-section.md) | A blank line follows the last docstring section | `auto` | — | *[rules] only* |
-| [`py/missing-blank-line-after-summary`](py/missing-blank-line-after-summary.md) | A docstring's summary is followed by a blank line | `suggest` | — | *[rules] only* |
+| [`py/missing-blank-line-after-last-section`](py/missing-blank-line-after-last-section.md) | A blank line follows the last docstring section | `auto` | — | `py/pydocstyle` |
+| [`py/missing-blank-line-after-summary`](py/missing-blank-line-after-summary.md) | A docstring's summary is followed by a blank line | `suggest` | — | `py/pydocstyle` |
 | [`py/missing-copyright-notice`](py/missing-copyright-notice.md) | A file carries a copyright notice | `manual` | — | *[rules] only* |
-| [`py/missing-dashed-underline-after-section`](py/missing-dashed-underline-after-section.md) | A NumPy section name is underlined with dashes | `auto` | — | *[rules] only* |
+| [`py/missing-dashed-underline-after-section`](py/missing-dashed-underline-after-section.md) | A NumPy section name is underlined with dashes | `auto` | — | `py/pydocstyle` |
 | [`py/missing-f-string-syntax`](py/missing-f-string-syntax.md) | A string that names variables in scope is an f-string | `suggest` | — | *[rules] only* |
-| [`py/missing-format-attribute`](py/missing-format-attribute.md) | A `str.format` field names an attribute the value has | `manual` | — | *[rules] only* |
-| [`py/missing-new-line-after-section-name`](py/missing-new-line-after-section-name.md) | A NumPy section name ends its line | `auto` | — | *[rules] only* |
+| [`py/missing-format-attribute`](py/missing-format-attribute.md) | A `str.format` field names an attribute the value has | `manual` | — | `py/pylint` |
+| [`py/missing-new-line-after-section-name`](py/missing-new-line-after-section-name.md) | A NumPy section name ends its line | `auto` | — | `py/pydocstyle` |
 | [`py/missing-param-doc`](py/missing-param-doc.md) | Every parameter of a function is documented when some are | `manual` | `accept_no_param_doc`, `check_private_functions` | *[rules] only* |
-| [`py/missing-parentheses-for-call-in-test`](py/missing-parentheses-for-call-in-test.md) | A test calls the function it names | `manual` | — | *[rules] only* |
+| [`py/missing-parentheses-for-call-in-test`](py/missing-parentheses-for-call-in-test.md) | A test calls the function it names | `manual` | — | `py/pylint` |
 | [`py/missing-raises-doc`](py/missing-raises-doc.md) | A docstring that documents exceptions documents the ones the function raises | `manual` | `accept_no_raise_doc`, `check_private_functions` | *[rules] only* |
 | [`py/missing-required-import`](py/missing-required-import.md) | A file has the imports the project requires | `auto` | `required_imports` | *[rules] only* |
 | [`py/missing-return-doc`](py/missing-return-doc.md) | A function that returns a value documents it | `manual` | `accept_no_return_doc`, `check_private_functions` | *[rules] only* |
-| [`py/missing-return-type-class-method`](py/missing-return-type-class-method.md) | A class method annotates its return type | `suggest` | — | *[rules] only* |
+| [`py/missing-return-type-class-method`](py/missing-return-type-class-method.md) | A class method annotates its return type | `suggest` | — | `py/strict` |
 | [`py/missing-return-type-doc`](py/missing-return-type-doc.md) | A function that returns a value documents its type | `manual` | `accept_no_return_doc`, `check_private_functions` | *[rules] only* |
-| [`py/missing-return-type-private-function`](py/missing-return-type-private-function.md) | A private function annotates its return type | `suggest` | — | *[rules] only* |
-| [`py/missing-return-type-special-method`](py/missing-return-type-special-method.md) | A special method annotates its return type | `suggest` | — | *[rules] only* |
-| [`py/missing-return-type-static-method`](py/missing-return-type-static-method.md) | A static method annotates its return type | `suggest` | — | *[rules] only* |
-| [`py/missing-return-type-undocumented-public-function`](py/missing-return-type-undocumented-public-function.md) | A public function annotates its return type | `suggest` | — | *[rules] only* |
-| [`py/missing-section-name-colon`](py/missing-section-name-colon.md) | A Google section name ends with a colon | `auto` | — | *[rules] only* |
-| [`py/missing-section-underline-after-name`](py/missing-section-underline-after-name.md) | A section underline follows its name directly | `auto` | — | *[rules] only* |
-| [`py/missing-terminal-punctuation`](py/missing-terminal-punctuation.md) | A docstring's summary ends with punctuation | `suggest` | — | *[rules] only* |
-| [`py/missing-timeout`](py/missing-timeout.md) | An HTTP request has a timeout | `manual` | — | *[rules] only* |
-| [`py/missing-trailing-period`](py/missing-trailing-period.md) | A docstring's summary ends with a period | `suggest` | — | *[rules] only* |
-| [`py/missing-type-args`](py/missing-type-args.md) | *args is annotated | `manual` | — | *[rules] only* |
+| [`py/missing-return-type-private-function`](py/missing-return-type-private-function.md) | A private function annotates its return type | `suggest` | — | `py/strict` |
+| [`py/missing-return-type-special-method`](py/missing-return-type-special-method.md) | A special method annotates its return type | `suggest` | — | `py/strict` |
+| [`py/missing-return-type-static-method`](py/missing-return-type-static-method.md) | A static method annotates its return type | `suggest` | — | `py/strict` |
+| [`py/missing-return-type-undocumented-public-function`](py/missing-return-type-undocumented-public-function.md) | A public function annotates its return type | `suggest` | — | `py/strict` |
+| [`py/missing-section-name-colon`](py/missing-section-name-colon.md) | A Google section name ends with a colon | `auto` | — | `py/pydocstyle` |
+| [`py/missing-section-underline-after-name`](py/missing-section-underline-after-name.md) | A section underline follows its name directly | `auto` | — | `py/pydocstyle` |
+| [`py/missing-terminal-punctuation`](py/missing-terminal-punctuation.md) | A docstring's summary ends with punctuation | `suggest` | — | `py/pydocstyle` |
+| [`py/missing-timeout`](py/missing-timeout.md) | An HTTP request has a timeout | `manual` | — | `py/pylint` |
+| [`py/missing-trailing-period`](py/missing-trailing-period.md) | A docstring's summary ends with a period | `suggest` | — | `py/pydocstyle` |
+| [`py/missing-type-args`](py/missing-type-args.md) | *args is annotated | `manual` | — | `py/strict` |
 | [`py/missing-type-doc`](py/missing-type-doc.md) | Every documented parameter has a type | `manual` | `accept_no_param_doc`, `check_private_functions` | *[rules] only* |
-| [`py/missing-type-function-argument`](py/missing-type-function-argument.md) | A function's parameters are annotated | `manual` | — | *[rules] only* |
-| [`py/missing-type-kwargs`](py/missing-type-kwargs.md) | **kwargs is annotated | `manual` | — | *[rules] only* |
+| [`py/missing-type-function-argument`](py/missing-type-function-argument.md) | A function's parameters are annotated | `manual` | — | `py/strict` |
+| [`py/missing-type-kwargs`](py/missing-type-kwargs.md) | **kwargs is annotated | `manual` | — | `py/strict` |
 | [`py/missing-yield-doc`](py/missing-yield-doc.md) | A generator documents what it yields | `manual` | `accept_no_yields_doc`, `check_private_functions` | *[rules] only* |
 | [`py/missing-yield-type-doc`](py/missing-yield-type-doc.md) | A generator documents the type it yields | `manual` | `accept_no_yields_doc`, `check_private_functions` | *[rules] only* |
-| [`py/mixed-case-variable-in-class-scope`](py/mixed-case-variable-in-class-scope.md) | Class attributes are not mixedCase | `manual` | — | *[rules] only* |
-| [`py/mixed-case-variable-in-global-scope`](py/mixed-case-variable-in-global-scope.md) | Module variables are not mixedCase | `manual` | — | *[rules] only* |
-| [`py/modified-iterating-dict`](py/modified-iterating-dict.md) | A dict is not resized while it is iterated | `manual` | — | *[rules] only* |
-| [`py/modified-iterating-list`](py/modified-iterating-list.md) | A list is not changed while it is iterated | `manual` | — | *[rules] only* |
+| [`py/mixed-case-variable-in-class-scope`](py/mixed-case-variable-in-class-scope.md) | Class attributes are not mixedCase | `manual` | — | `py/strict` |
+| [`py/mixed-case-variable-in-global-scope`](py/mixed-case-variable-in-global-scope.md) | Module variables are not mixedCase | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/modified-iterating-dict`](py/modified-iterating-dict.md) | A dict is not resized while it is iterated | `manual` | — | `py/pylint` |
+| [`py/modified-iterating-list`](py/modified-iterating-list.md) | A list is not changed while it is iterated | `manual` | — | `py/pylint` |
 | [`py/modified-iterating-set`](py/modified-iterating-set.md) | A set is not changed while a loop iterates it | `suggest` | — | *[rules] only* |
-| [`py/module-import-not-at-top`](py/module-import-not-at-top.md) | Module-level imports come first | `suggest` | — | `py/recommended` |
-| [`py/multi-line-summary-first-line`](py/multi-line-summary-first-line.md) | A multi-line docstring's summary starts on the first line | `auto` | — | *[rules] only* |
+| [`py/module-import-not-at-top`](py/module-import-not-at-top.md) | Module-level imports come first | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/multi-line-summary-first-line`](py/multi-line-summary-first-line.md) | A multi-line docstring's summary starts on the first line | `auto` | — | `py/pydocstyle` |
 | [`py/multi-line-summary-second-line`](py/multi-line-summary-second-line.md) | A multi-line docstring's summary starts on the second line | `auto` | — | *[rules] only* |
-| [`py/multiple-class-sub-patterns`](py/multiple-class-sub-patterns.md) | A class pattern names each attribute once | `manual` | — | *[rules] only* |
+| [`py/multiple-class-sub-patterns`](py/multiple-class-sub-patterns.md) | A class pattern names each attribute once | `manual` | — | `py/pylint` |
 | [`py/multiple-constructor-doc`](py/multiple-constructor-doc.md) | A constructor's parameters are documented once | `manual` | — | *[rules] only* |
-| [`py/multiple-imports-on-one-line`](py/multiple-imports-on-one-line.md) | One module per `import` statement | `auto` | — | `py/recommended` |
-| [`py/multiple-starred-expressions`](py/multiple-starred-expressions.md) | One starred target per assignment | `suggest` | — | `py/recommended` |
-| [`py/multiple-starts-ends-with`](py/multiple-starts-ends-with.md) | One startswith with a tuple | `auto` | — | *[rules] only* |
-| [`py/multiple-with-statements`](py/multiple-with-statements.md) | One with statement, not nested ones | `manual` | — | *[rules] only* |
-| [`py/mutable-class-default`](py/mutable-class-default.md) | Mutable class attribute is ClassVar | `suggest` | — | *[rules] only* |
-| [`py/mutable-contextvar-default`](py/mutable-contextvar-default.md) | No mutable `ContextVar` defaults | `suggest` | — | `py/recommended` |
-| [`py/mutable-dataclass-default`](py/mutable-dataclass-default.md) | No mutable default in a dataclass field | `suggest` | — | *[rules] only* |
-| [`py/mutable-fromkeys-value`](py/mutable-fromkeys-value.md) | No mutable value in dict.fromkeys | `suggest` | — | *[rules] only* |
-| [`py/named-expr-without-context`](py/named-expr-without-context.md) | No walrus as a statement | `auto` | — | *[rules] only* |
-| [`py/nan-comparison`](py/nan-comparison.md) | math.isnan, not == nan | `suggest` | — | *[rules] only* |
-| [`py/native-literals`](py/native-literals.md) | Literals, not str() or int() of a literal | `auto` | — | *[rules] only* |
-| [`py/needless-bool`](py/needless-bool.md) | Return the condition, not True or False | `suggest` | — | *[rules] only* |
+| [`py/multiple-imports-on-one-line`](py/multiple-imports-on-one-line.md) | One module per `import` statement | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/multiple-starred-expressions`](py/multiple-starred-expressions.md) | One starred target per assignment | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/multiple-starts-ends-with`](py/multiple-starts-ends-with.md) | One startswith with a tuple | `auto` | — | `py/strict` |
+| [`py/multiple-with-statements`](py/multiple-with-statements.md) | One with statement, not nested ones | `manual` | — | `py/strict` |
+| [`py/mutable-class-default`](py/mutable-class-default.md) | Mutable class attribute is ClassVar | `suggest` | — | `py/strict` |
+| [`py/mutable-contextvar-default`](py/mutable-contextvar-default.md) | No mutable `ContextVar` defaults | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/mutable-dataclass-default`](py/mutable-dataclass-default.md) | No mutable default in a dataclass field | `suggest` | — | `py/strict` |
+| [`py/mutable-fromkeys-value`](py/mutable-fromkeys-value.md) | No mutable value in dict.fromkeys | `suggest` | — | `py/strict` |
+| [`py/named-expr-without-context`](py/named-expr-without-context.md) | No walrus as a statement | `auto` | — | `py/strict` |
+| [`py/nan-comparison`](py/nan-comparison.md) | math.isnan, not == nan | `suggest` | — | `py/strict` |
+| [`py/native-literals`](py/native-literals.md) | Literals, not str() or int() of a literal | `auto` | — | `py/strict` |
+| [`py/needless-bool`](py/needless-bool.md) | Return the condition, not True or False | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/needless-else`](py/needless-else.md) | No empty else | `auto` | — | *[rules] only* |
-| [`py/negate-equal-op`](py/negate-equal-op.md) | a != b, not not a == b | `suggest` | — | *[rules] only* |
-| [`py/negate-not-equal-op`](py/negate-not-equal-op.md) | a == b, not not a != b | `suggest` | — | *[rules] only* |
-| [`py/nested-min-max`](py/nested-min-max.md) | One min() or max(), not nested | `auto` | — | *[rules] only* |
-| [`py/nested-star-import`](py/nested-star-import.md) | `import *` only at module level | `auto` | — | `py/recommended` |
-| [`py/never-union`](py/never-union.md) | No Never or NoReturn in a union | `suggest` | — | *[rules] only* |
-| [`py/new-line-after-last-paragraph`](py/new-line-after-last-paragraph.md) | The closing quotes of a multi-line docstring are on their own line | `auto` | — | *[rules] only* |
-| [`py/no-bare-except`](py/no-bare-except.md) | No bare `except:` | `suggest` | — | `py/recommended` |
-| [`py/no-blank-line-after-section`](py/no-blank-line-after-section.md) | A blank line follows each docstring section | `auto` | — | *[rules] only* |
-| [`py/no-blank-line-before-section`](py/no-blank-line-before-section.md) | A blank line comes before each docstring section | `auto` | — | *[rules] only* |
+| [`py/negate-equal-op`](py/negate-equal-op.md) | a != b, not not a == b | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/negate-not-equal-op`](py/negate-not-equal-op.md) | a == b, not not a != b | `suggest` | — | `py/strict` |
+| [`py/nested-min-max`](py/nested-min-max.md) | One min() or max(), not nested | `auto` | — | `py/strict` |
+| [`py/nested-star-import`](py/nested-star-import.md) | `import *` only at module level | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/never-union`](py/never-union.md) | No Never or NoReturn in a union | `suggest` | — | `py/strict` |
+| [`py/new-line-after-last-paragraph`](py/new-line-after-last-paragraph.md) | The closing quotes of a multi-line docstring are on their own line | `auto` | — | `py/pydocstyle` |
+| [`py/no-bare-except`](py/no-bare-except.md) | No bare `except:` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/no-blank-line-after-section`](py/no-blank-line-after-section.md) | A blank line follows each docstring section | `auto` | — | `py/pydocstyle` |
+| [`py/no-blank-line-before-section`](py/no-blank-line-before-section.md) | A blank line comes before each docstring section | `auto` | — | `py/pydocstyle` |
 | [`py/no-classmethod-decorator`](py/no-classmethod-decorator.md) | @classmethod, not from_text = classmethod(from_text) | `auto` | — | *[rules] only* |
-| [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended` |
-| [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | *[rules] only* |
-| [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended` |
+| [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | `py/pylint` |
+| [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/no-print`](py/no-print.md) | No `print()` in library code | `suggest` | — | `py/conventions` |
-| [`py/no-return-argument-annotation-in-stub`](py/no-return-argument-annotation-in-stub.md) | A stub's parameter is annotated Never, not NoReturn | `auto` | — | *[rules] only* |
-| [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | *[rules] only* |
-| [`py/no-self-use`](py/no-self-use.md) | A method that never reads `self` is a function or a static method | `manual` | — | *[rules] only* |
-| [`py/no-slots-in-namedtuple-subclass`](py/no-slots-in-namedtuple-subclass.md) | namedtuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
-| [`py/no-slots-in-str-subclass`](py/no-slots-in-str-subclass.md) | str subclasses define __slots__ | `suggest` | — | *[rules] only* |
-| [`py/no-slots-in-tuple-subclass`](py/no-slots-in-tuple-subclass.md) | tuple subclasses define __slots__ | `suggest` | — | *[rules] only* |
-| [`py/no-star-import`](py/no-star-import.md) | No `from module import *` | `auto` | — | `py/recommended` |
+| [`py/no-return-argument-annotation-in-stub`](py/no-return-argument-annotation-in-stub.md) | A stub's parameter is annotated Never, not NoReturn | `auto` | — | `py/strict` |
+| [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/no-self-use`](py/no-self-use.md) | A method that never reads `self` is a function or a static method | `manual` | — | `py/pylint` |
+| [`py/no-slots-in-namedtuple-subclass`](py/no-slots-in-namedtuple-subclass.md) | namedtuple subclasses define __slots__ | `suggest` | — | `py/strict` |
+| [`py/no-slots-in-str-subclass`](py/no-slots-in-str-subclass.md) | str subclasses define __slots__ | `suggest` | — | `py/strict` |
+| [`py/no-slots-in-tuple-subclass`](py/no-slots-in-tuple-subclass.md) | tuple subclasses define __slots__ | `suggest` | — | `py/strict` |
+| [`py/no-star-import`](py/no-star-import.md) | No `from module import *` | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/no-staticmethod-decorator`](py/no-staticmethod-decorator.md) | @staticmethod, not parse = staticmethod(parse) | `auto` | — | *[rules] only* |
 | [`py/no-tunable-literals`](py/no-tunable-literals.md) | No hard-coded timeouts, limits or thresholds | `manual` | — | `py/conventions` |
-| [`py/non-ascii-file-name`](py/non-ascii-file-name.md) | A module's file name is ASCII | `manual` | — | *[rules] only* |
-| [`py/non-ascii-import-name`](py/non-ascii-import-name.md) | Imported names are ASCII | `manual` | — | *[rules] only* |
-| [`py/non-ascii-name`](py/non-ascii-name.md) | Names are ASCII | `manual` | — | *[rules] only* |
+| [`py/non-ascii-file-name`](py/non-ascii-file-name.md) | A module's file name is ASCII | `manual` | — | `py/pylint` |
+| [`py/non-ascii-import-name`](py/non-ascii-import-name.md) | Imported names are ASCII | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/non-ascii-name`](py/non-ascii-name.md) | Names are ASCII | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/non-augmented-assignment`](py/non-augmented-assignment.md) | x += 1, not x = x + 1 | `suggest` | — | *[rules] only* |
-| [`py/non-capitalized-section-name`](py/non-capitalized-section-name.md) | A docstring section name is capitalized | `auto` | — | *[rules] only* |
+| [`py/non-capitalized-section-name`](py/non-capitalized-section-name.md) | A docstring section name is capitalized | `auto` | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](py/non-empty-init-module.md) | __init__.py holds imports only | `manual` | — | *[rules] only* |
-| [`py/non-empty-stub-body`](py/non-empty-stub-body.md) | A stub function has no body | `auto` | — | *[rules] only* |
-| [`py/non-iterator-returned`](py/non-iterator-returned.md) | `__iter__` returns an iterator | `manual` | — | *[rules] only* |
-| [`py/non-lowercase-variable-in-function`](py/non-lowercase-variable-in-function.md) | Variables in a function are lowercase | `suggest` | — | *[rules] only* |
-| [`py/non-octal-permissions`](py/non-octal-permissions.md) | File modes are octal | `suggest` | — | *[rules] only* |
-| [`py/non-parent-init-called`](py/non-parent-init-called.md) | `__init__` is called only on a base class | `manual` | — | *[rules] only* |
-| [`py/non-pep585-annotation`](py/non-pep585-annotation.md) | list\[int\], not typing.List\[int\] | `suggest` | — | *[rules] only* |
-| [`py/non-pep604-annotation-optional`](py/non-pep604-annotation-optional.md) | X \| None, not Optional\[X\] | `suggest` | — | *[rules] only* |
-| [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | *[rules] only* |
-| [`py/non-pep646-unpack`](py/non-pep646-unpack.md) | *Ts, not Unpack\[Ts\] | `auto` | — | *[rules] only* |
-| [`py/non-pep695-generic-class`](py/non-pep695-generic-class.md) | A generic class uses type parameters, not `Generic` | `auto` | — | *[rules] only* |
-| [`py/non-pep695-generic-function`](py/non-pep695-generic-function.md) | A generic function uses type parameters | `auto` | — | *[rules] only* |
-| [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | *[rules] only* |
-| [`py/non-self-return-type`](py/non-self-return-type.md) | A method that returns self is annotated Self | `suggest` | — | *[rules] only* |
-| [`py/non-slot-assignment`](py/non-slot-assignment.md) | `__init__` assigns only attributes the class's `__slots__` lists | `manual` | — | *[rules] only* |
-| [`py/non-unique-enums`](py/non-unique-enums.md) | Each enum member has its own value | `manual` | — | *[rules] only* |
-| [`py/none-comparison`](py/none-comparison.md) | Compare with `None` using `is` | `suggest` | — | `py/recommended` |
-| [`py/none-not-at-end-of-union`](py/none-not-at-end-of-union.md) | None goes last in a union | `suggest` | — | *[rules] only* |
-| [`py/nonlocal-and-global`](py/nonlocal-and-global.md) | No name both nonlocal and global | `manual` | — | *[rules] only* |
-| [`py/nonlocal-without-binding`](py/nonlocal-without-binding.md) | A `nonlocal` name is bound in an enclosing function | `manual` | — | *[rules] only* |
-| [`py/not-async-context-manager`](py/not-async-context-manager.md) | `async with` takes an async context manager | `manual` | — | *[rules] only* |
-| [`py/not-in-test`](py/not-in-test.md) | Write `x not in y` | `auto` | — | `py/recommended` |
-| [`py/not-is-test`](py/not-is-test.md) | Write `x is not y` | `auto` | — | `py/recommended` |
-| [`py/numeric-literal-too-long`](py/numeric-literal-too-long.md) | No long numeric literals in stubs | `auto` | — | *[rules] only* |
-| [`py/open-alias`](py/open-alias.md) | open(), not io.open() | `auto` | — | *[rules] only* |
-| [`py/open-file-with-context-handler`](py/open-file-with-context-handler.md) | Open files in a with statement | `manual` | — | *[rules] only* |
-| [`py/os-chmod`](py/os-chmod.md) | pathlib, not os.chmod | `suggest` | — | *[rules] only* |
-| [`py/os-error-alias`](py/os-error-alias.md) | OSError, not its aliases | `auto` | — | *[rules] only* |
-| [`py/os-getcwd`](py/os-getcwd.md) | pathlib, not os.getcwd | `suggest` | — | *[rules] only* |
-| [`py/os-listdir`](py/os-listdir.md) | pathlib, not os.listdir | `suggest` | — | *[rules] only* |
-| [`py/os-makedirs`](py/os-makedirs.md) | pathlib, not os.makedirs | `suggest` | — | *[rules] only* |
-| [`py/os-mkdir`](py/os-mkdir.md) | pathlib, not os.mkdir | `suggest` | — | *[rules] only* |
-| [`py/os-path-abspath`](py/os-path-abspath.md) | pathlib, not os.path.abspath | `suggest` | — | *[rules] only* |
-| [`py/os-path-basename`](py/os-path-basename.md) | pathlib, not os.path.basename | `suggest` | — | *[rules] only* |
+| [`py/non-empty-stub-body`](py/non-empty-stub-body.md) | A stub function has no body | `auto` | — | `py/strict` |
+| [`py/non-iterator-returned`](py/non-iterator-returned.md) | `__iter__` returns an iterator | `manual` | — | `py/pylint` |
+| [`py/non-lowercase-variable-in-function`](py/non-lowercase-variable-in-function.md) | Variables in a function are lowercase | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/non-octal-permissions`](py/non-octal-permissions.md) | File modes are octal | `suggest` | — | `py/strict` |
+| [`py/non-parent-init-called`](py/non-parent-init-called.md) | `__init__` is called only on a base class | `manual` | — | `py/pylint` |
+| [`py/non-pep585-annotation`](py/non-pep585-annotation.md) | list\[int\], not typing.List\[int\] | `suggest` | — | `py/strict` |
+| [`py/non-pep604-annotation-optional`](py/non-pep604-annotation-optional.md) | X \| None, not Optional\[X\] | `suggest` | — | `py/strict` |
+| [`py/non-pep604-annotation-union`](py/non-pep604-annotation-union.md) | X \| Y, not Union\[X, Y\] | `suggest` | — | `py/strict` |
+| [`py/non-pep646-unpack`](py/non-pep646-unpack.md) | *Ts, not Unpack\[Ts\] | `auto` | — | `py/strict` |
+| [`py/non-pep695-generic-class`](py/non-pep695-generic-class.md) | A generic class uses type parameters, not `Generic` | `auto` | — | `py/strict` |
+| [`py/non-pep695-generic-function`](py/non-pep695-generic-function.md) | A generic function uses type parameters | `auto` | — | `py/strict` |
+| [`py/non-pep695-type-alias`](py/non-pep695-type-alias.md) | type X = ..., not X: TypeAlias = ... | `suggest` | — | `py/strict` |
+| [`py/non-self-return-type`](py/non-self-return-type.md) | A method that returns self is annotated Self | `suggest` | — | `py/strict` |
+| [`py/non-slot-assignment`](py/non-slot-assignment.md) | `__init__` assigns only attributes the class's `__slots__` lists | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/non-unique-enums`](py/non-unique-enums.md) | Each enum member has its own value | `manual` | — | `py/strict` |
+| [`py/none-comparison`](py/none-comparison.md) | Compare with `None` using `is` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/none-not-at-end-of-union`](py/none-not-at-end-of-union.md) | None goes last in a union | `suggest` | — | `py/strict` |
+| [`py/nonlocal-and-global`](py/nonlocal-and-global.md) | No name both nonlocal and global | `manual` | — | `py/strict` |
+| [`py/nonlocal-without-binding`](py/nonlocal-without-binding.md) | A `nonlocal` name is bound in an enclosing function | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/not-async-context-manager`](py/not-async-context-manager.md) | `async with` takes an async context manager | `manual` | — | `py/pylint` |
+| [`py/not-in-test`](py/not-in-test.md) | Write `x not in y` | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/not-is-test`](py/not-is-test.md) | Write `x is not y` | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/numeric-literal-too-long`](py/numeric-literal-too-long.md) | No long numeric literals in stubs | `auto` | — | `py/strict` |
+| [`py/open-alias`](py/open-alias.md) | open(), not io.open() | `auto` | — | `py/strict` |
+| [`py/open-file-with-context-handler`](py/open-file-with-context-handler.md) | Open files in a with statement | `manual` | — | `py/strict` |
+| [`py/os-chmod`](py/os-chmod.md) | pathlib, not os.chmod | `suggest` | — | `py/strict` |
+| [`py/os-error-alias`](py/os-error-alias.md) | OSError, not its aliases | `auto` | — | `py/strict` |
+| [`py/os-getcwd`](py/os-getcwd.md) | pathlib, not os.getcwd | `suggest` | — | `py/strict` |
+| [`py/os-listdir`](py/os-listdir.md) | pathlib, not os.listdir | `suggest` | — | `py/strict` |
+| [`py/os-makedirs`](py/os-makedirs.md) | pathlib, not os.makedirs | `suggest` | — | `py/strict` |
+| [`py/os-mkdir`](py/os-mkdir.md) | pathlib, not os.mkdir | `suggest` | — | `py/strict` |
+| [`py/os-path-abspath`](py/os-path-abspath.md) | pathlib, not os.path.abspath | `suggest` | — | `py/strict` |
+| [`py/os-path-basename`](py/os-path-basename.md) | pathlib, not os.path.basename | `suggest` | — | `py/strict` |
 | [`py/os-path-commonprefix`](py/os-path-commonprefix.md) | os.path.commonpath, not commonprefix | `suggest` | — | *[rules] only* |
-| [`py/os-path-dirname`](py/os-path-dirname.md) | pathlib, not os.path.dirname | `suggest` | — | *[rules] only* |
-| [`py/os-path-exists`](py/os-path-exists.md) | pathlib, not os.path.exists | `suggest` | — | *[rules] only* |
-| [`py/os-path-expanduser`](py/os-path-expanduser.md) | pathlib, not os.path.expanduser | `suggest` | — | *[rules] only* |
-| [`py/os-path-getatime`](py/os-path-getatime.md) | pathlib, not os.path.getatime | `suggest` | — | *[rules] only* |
-| [`py/os-path-getctime`](py/os-path-getctime.md) | pathlib, not os.path.getctime | `suggest` | — | *[rules] only* |
-| [`py/os-path-getmtime`](py/os-path-getmtime.md) | pathlib, not os.path.getmtime | `suggest` | — | *[rules] only* |
-| [`py/os-path-getsize`](py/os-path-getsize.md) | pathlib, not os.path.getsize | `suggest` | — | *[rules] only* |
-| [`py/os-path-isabs`](py/os-path-isabs.md) | pathlib, not os.path.isabs | `suggest` | — | *[rules] only* |
-| [`py/os-path-isdir`](py/os-path-isdir.md) | pathlib, not os.path.isdir | `suggest` | — | *[rules] only* |
-| [`py/os-path-isfile`](py/os-path-isfile.md) | pathlib, not os.path.isfile | `suggest` | — | *[rules] only* |
-| [`py/os-path-islink`](py/os-path-islink.md) | pathlib, not os.path.islink | `suggest` | — | *[rules] only* |
-| [`py/os-path-join`](py/os-path-join.md) | pathlib, not os.path.join | `suggest` | — | *[rules] only* |
-| [`py/os-path-samefile`](py/os-path-samefile.md) | pathlib, not os.path.samefile | `suggest` | — | *[rules] only* |
-| [`py/os-path-splitext`](py/os-path-splitext.md) | pathlib, not os.path.splitext | `manual` | — | *[rules] only* |
-| [`py/os-readlink`](py/os-readlink.md) | pathlib, not os.readlink | `suggest` | — | *[rules] only* |
-| [`py/os-remove`](py/os-remove.md) | pathlib, not os.remove | `suggest` | — | *[rules] only* |
-| [`py/os-rename`](py/os-rename.md) | pathlib, not os.rename | `suggest` | — | *[rules] only* |
-| [`py/os-replace`](py/os-replace.md) | pathlib, not os.replace | `suggest` | — | *[rules] only* |
-| [`py/os-rmdir`](py/os-rmdir.md) | pathlib, not os.rmdir | `suggest` | — | *[rules] only* |
-| [`py/os-sep-split`](py/os-sep-split.md) | Path.parts, not split(os.sep) | `manual` | — | *[rules] only* |
-| [`py/os-stat`](py/os-stat.md) | pathlib, not os.stat | `suggest` | — | *[rules] only* |
-| [`py/os-symlink`](py/os-symlink.md) | pathlib, not os.symlink | `suggest` | — | *[rules] only* |
-| [`py/os-unlink`](py/os-unlink.md) | pathlib, not os.unlink | `suggest` | — | *[rules] only* |
-| [`py/over-indentation`](py/over-indentation.md) | A docstring's lines are not indented more than its quotes | `auto` | — | *[rules] only* |
-| [`py/overindented-section`](py/overindented-section.md) | A docstring section header is not over-indented | `auto` | — | *[rules] only* |
-| [`py/overindented-section-underline`](py/overindented-section-underline.md) | A section underline is not over-indented | `auto` | — | *[rules] only* |
+| [`py/os-path-dirname`](py/os-path-dirname.md) | pathlib, not os.path.dirname | `suggest` | — | `py/strict` |
+| [`py/os-path-exists`](py/os-path-exists.md) | pathlib, not os.path.exists | `suggest` | — | `py/strict` |
+| [`py/os-path-expanduser`](py/os-path-expanduser.md) | pathlib, not os.path.expanduser | `suggest` | — | `py/strict` |
+| [`py/os-path-getatime`](py/os-path-getatime.md) | pathlib, not os.path.getatime | `suggest` | — | `py/strict` |
+| [`py/os-path-getctime`](py/os-path-getctime.md) | pathlib, not os.path.getctime | `suggest` | — | `py/strict` |
+| [`py/os-path-getmtime`](py/os-path-getmtime.md) | pathlib, not os.path.getmtime | `suggest` | — | `py/strict` |
+| [`py/os-path-getsize`](py/os-path-getsize.md) | pathlib, not os.path.getsize | `suggest` | — | `py/strict` |
+| [`py/os-path-isabs`](py/os-path-isabs.md) | pathlib, not os.path.isabs | `suggest` | — | `py/strict` |
+| [`py/os-path-isdir`](py/os-path-isdir.md) | pathlib, not os.path.isdir | `suggest` | — | `py/strict` |
+| [`py/os-path-isfile`](py/os-path-isfile.md) | pathlib, not os.path.isfile | `suggest` | — | `py/strict` |
+| [`py/os-path-islink`](py/os-path-islink.md) | pathlib, not os.path.islink | `suggest` | — | `py/strict` |
+| [`py/os-path-join`](py/os-path-join.md) | pathlib, not os.path.join | `suggest` | — | `py/strict` |
+| [`py/os-path-samefile`](py/os-path-samefile.md) | pathlib, not os.path.samefile | `suggest` | — | `py/strict` |
+| [`py/os-path-splitext`](py/os-path-splitext.md) | pathlib, not os.path.splitext | `manual` | — | `py/strict` |
+| [`py/os-readlink`](py/os-readlink.md) | pathlib, not os.readlink | `suggest` | — | `py/strict` |
+| [`py/os-remove`](py/os-remove.md) | pathlib, not os.remove | `suggest` | — | `py/strict` |
+| [`py/os-rename`](py/os-rename.md) | pathlib, not os.rename | `suggest` | — | `py/strict` |
+| [`py/os-replace`](py/os-replace.md) | pathlib, not os.replace | `suggest` | — | `py/strict` |
+| [`py/os-rmdir`](py/os-rmdir.md) | pathlib, not os.rmdir | `suggest` | — | `py/strict` |
+| [`py/os-sep-split`](py/os-sep-split.md) | Path.parts, not split(os.sep) | `manual` | — | `py/strict` |
+| [`py/os-stat`](py/os-stat.md) | pathlib, not os.stat | `suggest` | — | `py/strict` |
+| [`py/os-symlink`](py/os-symlink.md) | pathlib, not os.symlink | `suggest` | — | `py/strict` |
+| [`py/os-unlink`](py/os-unlink.md) | pathlib, not os.unlink | `suggest` | — | `py/strict` |
+| [`py/over-indentation`](py/over-indentation.md) | A docstring's lines are not indented more than its quotes | `auto` | — | `py/pydocstyle` |
+| [`py/overindented-section`](py/overindented-section.md) | A docstring section header is not over-indented | `auto` | — | `py/pydocstyle` |
+| [`py/overindented-section-underline`](py/overindented-section-underline.md) | A section underline is not over-indented | `auto` | — | `py/pydocstyle` |
 | [`py/overlapping-except`](py/overlapping-except.md) | An except tuple does not list an exception twice over | `manual` | — | *[rules] only* |
-| [`py/overload-with-docstring`](py/overload-with-docstring.md) | An @overload has no docstring | `suggest` | — | *[rules] only* |
-| [`py/overridden-final-method`](py/overridden-final-method.md) | A method decorated `@final` is not overridden | `manual` | — | *[rules] only* |
-| [`py/p-print`](py/p-print.md) | No pprint left in code | `suggest` | — | *[rules] only* |
-| [`py/parenthesize-chained-operators`](py/parenthesize-chained-operators.md) | Parenthesize `and` inside `or` | `auto` | — | *[rules] only* |
-| [`py/pass-in-class-body`](py/pass-in-class-body.md) | No pass in a stub class with other members | `auto` | — | *[rules] only* |
-| [`py/pass-statement-stub-body`](py/pass-statement-stub-body.md) | `...`, not pass, in a stub body | `auto` | — | *[rules] only* |
-| [`py/patch-version-comparison`](py/patch-version-comparison.md) | A version check in a stub compares major and minor only | `manual` | — | *[rules] only* |
-| [`py/path-constructor-current-directory`](py/path-constructor-current-directory.md) | Path(), not Path(".") | `auto` | — | *[rules] only* |
-| [`py/pep484-style-positional-only-parameter`](py/pep484-style-positional-only-parameter.md) | Positional-only parameters use / | `manual` | — | *[rules] only* |
-| [`py/percent-format-count-mismatch`](py/percent-format-count-mismatch.md) | A `%` format string gets one value per placeholder | `suggest` | — | `py/recommended` |
-| [`py/percent-format-expected-mapping`](py/percent-format-expected-mapping.md) | Named `%` placeholders get a mapping | `suggest` | — | `py/recommended` |
-| [`py/percent-format-expected-sequence`](py/percent-format-expected-sequence.md) | Positional `%` placeholders get a tuple | `suggest` | — | `py/recommended` |
-| [`py/percent-format-invalid`](py/percent-format-invalid.md) | A `%` format string is complete | `suggest` | — | `py/recommended` |
-| [`py/percent-format-missing-argument`](py/percent-format-missing-argument.md) | Every named `%` placeholder has a value | `manual` | — | `py/recommended` |
-| [`py/percent-format-mixed-placeholders`](py/percent-format-mixed-placeholders.md) | A `%` format string doesn't mix positional and named placeholders | `manual` | — | `py/recommended` |
-| [`py/percent-format-star-requires-sequence`](py/percent-format-star-requires-sequence.md) | A `*` width in a `%` format takes a tuple | `suggest` | — | `py/recommended` |
-| [`py/percent-format-unsupported-character`](py/percent-format-unsupported-character.md) | A `%` format uses known conversions | `suggest` | — | `py/recommended` |
-| [`py/percent-format-unused-named-argument`](py/percent-format-unused-named-argument.md) | Every key given to `%` is used | `auto` | — | `py/recommended` |
-| [`py/pointless-string-statement`](py/pointless-string-statement.md) | No string as a statement | `suggest` | — | *[rules] only* |
-| [`py/positional-only-arguments-expected`](py/positional-only-arguments-expected.md) | Positional-only parameters are passed by position | `manual` | — | *[rules] only* |
-| [`py/possibly-unused-variable`](py/possibly-unused-variable.md) | A variable the function may read through locals() is used | `manual` | — | *[rules] only* |
-| [`py/possibly-used-before-assignment`](py/possibly-used-before-assignment.md) | A name is bound on every branch before it is read | `manual` | — | *[rules] only* |
-| [`py/post-init-default`](py/post-init-default.md) | No defaults on __post_init__ parameters | `manual` | — | *[rules] only* |
-| [`py/potential-index-error`](py/potential-index-error.md) | An index is inside a literal's length | `manual` | — | *[rules] only* |
+| [`py/overload-with-docstring`](py/overload-with-docstring.md) | An @overload has no docstring | `suggest` | — | `py/pydocstyle` |
+| [`py/overridden-final-method`](py/overridden-final-method.md) | A method decorated `@final` is not overridden | `manual` | — | `py/pylint` |
+| [`py/p-print`](py/p-print.md) | No pprint left in code | `suggest` | — | `py/strict` |
+| [`py/parenthesize-chained-operators`](py/parenthesize-chained-operators.md) | Parenthesize `and` inside `or` | `auto` | — | `py/strict` |
+| [`py/pass-in-class-body`](py/pass-in-class-body.md) | No pass in a stub class with other members | `auto` | — | `py/strict` |
+| [`py/pass-statement-stub-body`](py/pass-statement-stub-body.md) | `...`, not pass, in a stub body | `auto` | — | `py/strict` |
+| [`py/patch-version-comparison`](py/patch-version-comparison.md) | A version check in a stub compares major and minor only | `manual` | — | `py/strict` |
+| [`py/path-constructor-current-directory`](py/path-constructor-current-directory.md) | Path(), not Path(".") | `auto` | — | `py/strict` |
+| [`py/pep484-style-positional-only-parameter`](py/pep484-style-positional-only-parameter.md) | Positional-only parameters use / | `manual` | — | `py/strict` |
+| [`py/percent-format-count-mismatch`](py/percent-format-count-mismatch.md) | A `%` format string gets one value per placeholder | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-expected-mapping`](py/percent-format-expected-mapping.md) | Named `%` placeholders get a mapping | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-expected-sequence`](py/percent-format-expected-sequence.md) | Positional `%` placeholders get a tuple | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/percent-format-invalid`](py/percent-format-invalid.md) | A `%` format string is complete | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-missing-argument`](py/percent-format-missing-argument.md) | Every named `%` placeholder has a value | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-mixed-placeholders`](py/percent-format-mixed-placeholders.md) | A `%` format string doesn't mix positional and named placeholders | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-star-requires-sequence`](py/percent-format-star-requires-sequence.md) | A `*` width in a `%` format takes a tuple | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/percent-format-unsupported-character`](py/percent-format-unsupported-character.md) | A `%` format uses known conversions | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/percent-format-unused-named-argument`](py/percent-format-unused-named-argument.md) | Every key given to `%` is used | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/pointless-string-statement`](py/pointless-string-statement.md) | No string as a statement | `suggest` | — | `py/pylint` |
+| [`py/positional-only-arguments-expected`](py/positional-only-arguments-expected.md) | Positional-only parameters are passed by position | `manual` | — | `py/pylint` |
+| [`py/possibly-unused-variable`](py/possibly-unused-variable.md) | A variable the function may read through locals() is used | `manual` | — | `py/pylint` |
+| [`py/possibly-used-before-assignment`](py/possibly-used-before-assignment.md) | A name is bound on every branch before it is read | `manual` | — | `py/pylint` |
+| [`py/post-init-default`](py/post-init-default.md) | No defaults on __post_init__ parameters | `manual` | — | `py/strict` |
+| [`py/potential-index-error`](py/potential-index-error.md) | An index is inside a literal's length | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/prefer-typing-namedtuple`](py/prefer-typing-namedtuple.md) | A named tuple is a `typing.NamedTuple` class | `manual` | — | *[rules] only* |
-| [`py/print-empty-string`](py/print-empty-string.md) | print(), not print('') | `auto` | — | *[rules] only* |
-| [`py/printf-in-get-text-func-call`](py/printf-in-get-text-func-call.md) | No % formatting inside a gettext call | `suggest` | — | *[rules] only* |
-| [`py/printf-string-formatting`](py/printf-string-formatting.md) | `%` formatting becomes `.format` | `suggest` | — | *[rules] only* |
-| [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | *[rules] only* |
-| [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | *[rules] only* |
-| [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | *[rules] only* |
+| [`py/print-empty-string`](py/print-empty-string.md) | print(), not print('') | `auto` | — | `py/strict` |
+| [`py/printf-in-get-text-func-call`](py/printf-in-get-text-func-call.md) | No % formatting inside a gettext call | `suggest` | — | `py/strict` |
+| [`py/printf-string-formatting`](py/printf-string-formatting.md) | `%` formatting becomes `.format` | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | `py/strict`, `py/pylint` |
+| [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | `py/strict` |
+| [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | `py/strict` |
 | [`py/property-without-return`](py/property-without-return.md) | A property returns a value | `manual` | — | *[rules] only* |
-| [`py/py-path`](py/py-path.md) | pathlib, not py.path | `manual` | — | *[rules] only* |
-| [`py/pytest-assert-always-false`](py/pytest-assert-always-false.md) | pytest.fail, not assert False | `manual` | — | *[rules] only* |
-| [`py/pytest-assert-in-except`](py/pytest-assert-in-except.md) | No assert on the exception inside except | `manual` | — | *[rules] only* |
-| [`py/pytest-composite-assertion`](py/pytest-composite-assertion.md) | One condition per assert | `suggest` | — | *[rules] only* |
-| [`py/pytest-deprecated-yield-fixture`](py/pytest-deprecated-yield-fixture.md) | @pytest.fixture, not yield_fixture | `auto` | — | *[rules] only* |
-| [`py/pytest-duplicate-parametrize-test-cases`](py/pytest-duplicate-parametrize-test-cases.md) | No duplicate parametrize cases | `suggest` | — | *[rules] only* |
-| [`py/pytest-erroneous-use-fixtures-on-fixture`](py/pytest-erroneous-use-fixtures-on-fixture.md) | No usefixtures mark on a fixture | `auto` | — | *[rules] only* |
-| [`py/pytest-extraneous-scope-function`](py/pytest-extraneous-scope-function.md) | No scope='function' on a fixture | `auto` | — | *[rules] only* |
-| [`py/pytest-fail-without-message`](py/pytest-fail-without-message.md) | pytest.fail has a message | `manual` | — | *[rules] only* |
+| [`py/py-path`](py/py-path.md) | pathlib, not py.path | `manual` | — | `py/strict` |
+| [`py/pytest-assert-always-false`](py/pytest-assert-always-false.md) | pytest.fail, not assert False | `manual` | — | `py/strict` |
+| [`py/pytest-assert-in-except`](py/pytest-assert-in-except.md) | No assert on the exception inside except | `manual` | — | `py/strict` |
+| [`py/pytest-composite-assertion`](py/pytest-composite-assertion.md) | One condition per assert | `suggest` | — | `py/strict` |
+| [`py/pytest-deprecated-yield-fixture`](py/pytest-deprecated-yield-fixture.md) | @pytest.fixture, not yield_fixture | `auto` | — | `py/strict` |
+| [`py/pytest-duplicate-parametrize-test-cases`](py/pytest-duplicate-parametrize-test-cases.md) | No duplicate parametrize cases | `suggest` | — | `py/strict` |
+| [`py/pytest-erroneous-use-fixtures-on-fixture`](py/pytest-erroneous-use-fixtures-on-fixture.md) | No usefixtures mark on a fixture | `auto` | — | `py/strict` |
+| [`py/pytest-extraneous-scope-function`](py/pytest-extraneous-scope-function.md) | No scope='function' on a fixture | `auto` | — | `py/strict` |
+| [`py/pytest-fail-without-message`](py/pytest-fail-without-message.md) | pytest.fail has a message | `manual` | — | `py/strict` |
 | [`py/pytest-fixture-autouse`](py/pytest-fixture-autouse.md) | A pytest fixture is requested, not `autouse=True` | `manual` | — | *[rules] only* |
-| [`py/pytest-fixture-finalizer-callback`](py/pytest-fixture-finalizer-callback.md) | A fixture tears down after yield, not with addfinalizer | `manual` | — | *[rules] only* |
-| [`py/pytest-fixture-incorrect-parentheses-style`](py/pytest-fixture-incorrect-parentheses-style.md) | @pytest.fixture, not @pytest.fixture() | `auto` | — | *[rules] only* |
-| [`py/pytest-fixture-param-without-value`](py/pytest-fixture-param-without-value.md) | A fixture used only for its effect is in usefixtures | `manual` | — | *[rules] only* |
-| [`py/pytest-fixture-positional-args`](py/pytest-fixture-positional-args.md) | pytest.fixture takes keyword arguments | `suggest` | — | *[rules] only* |
-| [`py/pytest-incorrect-mark-parentheses-style`](py/pytest-incorrect-mark-parentheses-style.md) | @pytest.mark.x, not @pytest.mark.x() | `auto` | — | *[rules] only* |
-| [`py/pytest-incorrect-pytest-import`](py/pytest-incorrect-pytest-import.md) | pytest is imported as pytest | `manual` | — | *[rules] only* |
-| [`py/pytest-parameter-with-default-argument`](py/pytest-parameter-with-default-argument.md) | No default values on a test function | `manual` | — | *[rules] only* |
-| [`py/pytest-parametrize-names-wrong-type`](py/pytest-parametrize-names-wrong-type.md) | Several parametrize names are a tuple | `suggest` | — | *[rules] only* |
-| [`py/pytest-parametrize-values-wrong-type`](py/pytest-parametrize-values-wrong-type.md) | parametrize values are a list | `auto` | — | *[rules] only* |
-| [`py/pytest-patch-with-lambda`](py/pytest-patch-with-lambda.md) | A patch returns a value with return_value, not a lambda | `suggest` | — | *[rules] only* |
-| [`py/pytest-raises-ambiguous-pattern`](py/pytest-raises-ambiguous-pattern.md) | pytest.raises(match=) escapes regex characters | `suggest` | — | *[rules] only* |
-| [`py/pytest-raises-too-broad`](py/pytest-raises-too-broad.md) | A broad exception in pytest.raises has a match | `manual` | — | *[rules] only* |
-| [`py/pytest-raises-with-multiple-statements`](py/pytest-raises-with-multiple-statements.md) | pytest.raises wraps one simple statement | `manual` | — | *[rules] only* |
-| [`py/pytest-raises-without-exception`](py/pytest-raises-without-exception.md) | pytest.raises names an exception | `manual` | — | *[rules] only* |
-| [`py/pytest-unittest-assertion`](py/pytest-unittest-assertion.md) | assert, not self.assertEqual | `suggest` | — | *[rules] only* |
-| [`py/pytest-unittest-raises-assertion`](py/pytest-unittest-raises-assertion.md) | pytest.raises, not self.assertRaises | `suggest` | — | *[rules] only* |
-| [`py/pytest-unnecessary-asyncio-mark-on-fixture`](py/pytest-unnecessary-asyncio-mark-on-fixture.md) | No asyncio mark on a fixture | `auto` | — | *[rules] only* |
-| [`py/pytest-use-fixtures-without-parameters`](py/pytest-use-fixtures-without-parameters.md) | No usefixtures() with nothing in it | `auto` | — | *[rules] only* |
-| [`py/pytest-useless-yield-fixture`](py/pytest-useless-yield-fixture.md) | return, not yield, in a fixture with no teardown | `auto` | — | *[rules] only* |
-| [`py/pytest-warns-too-broad`](py/pytest-warns-too-broad.md) | A broad warning in pytest.warns has a match | `manual` | — | *[rules] only* |
-| [`py/pytest-warns-with-multiple-statements`](py/pytest-warns-with-multiple-statements.md) | pytest.warns wraps one simple statement | `manual` | — | *[rules] only* |
+| [`py/pytest-fixture-finalizer-callback`](py/pytest-fixture-finalizer-callback.md) | A fixture tears down after yield, not with addfinalizer | `manual` | — | `py/strict` |
+| [`py/pytest-fixture-incorrect-parentheses-style`](py/pytest-fixture-incorrect-parentheses-style.md) | @pytest.fixture, not @pytest.fixture() | `auto` | — | `py/strict` |
+| [`py/pytest-fixture-param-without-value`](py/pytest-fixture-param-without-value.md) | A fixture used only for its effect is in usefixtures | `manual` | — | `py/strict` |
+| [`py/pytest-fixture-positional-args`](py/pytest-fixture-positional-args.md) | pytest.fixture takes keyword arguments | `suggest` | — | `py/strict` |
+| [`py/pytest-incorrect-mark-parentheses-style`](py/pytest-incorrect-mark-parentheses-style.md) | @pytest.mark.x, not @pytest.mark.x() | `auto` | — | `py/strict` |
+| [`py/pytest-incorrect-pytest-import`](py/pytest-incorrect-pytest-import.md) | pytest is imported as pytest | `manual` | — | `py/strict` |
+| [`py/pytest-parameter-with-default-argument`](py/pytest-parameter-with-default-argument.md) | No default values on a test function | `manual` | — | `py/strict` |
+| [`py/pytest-parametrize-names-wrong-type`](py/pytest-parametrize-names-wrong-type.md) | Several parametrize names are a tuple | `suggest` | — | `py/strict` |
+| [`py/pytest-parametrize-values-wrong-type`](py/pytest-parametrize-values-wrong-type.md) | parametrize values are a list | `auto` | — | `py/strict` |
+| [`py/pytest-patch-with-lambda`](py/pytest-patch-with-lambda.md) | A patch returns a value with return_value, not a lambda | `suggest` | — | `py/strict` |
+| [`py/pytest-raises-ambiguous-pattern`](py/pytest-raises-ambiguous-pattern.md) | pytest.raises(match=) escapes regex characters | `suggest` | — | `py/strict` |
+| [`py/pytest-raises-too-broad`](py/pytest-raises-too-broad.md) | A broad exception in pytest.raises has a match | `manual` | — | `py/strict` |
+| [`py/pytest-raises-with-multiple-statements`](py/pytest-raises-with-multiple-statements.md) | pytest.raises wraps one simple statement | `manual` | — | `py/strict` |
+| [`py/pytest-raises-without-exception`](py/pytest-raises-without-exception.md) | pytest.raises names an exception | `manual` | — | `py/strict` |
+| [`py/pytest-unittest-assertion`](py/pytest-unittest-assertion.md) | assert, not self.assertEqual | `suggest` | — | `py/strict` |
+| [`py/pytest-unittest-raises-assertion`](py/pytest-unittest-raises-assertion.md) | pytest.raises, not self.assertRaises | `suggest` | — | `py/strict` |
+| [`py/pytest-unnecessary-asyncio-mark-on-fixture`](py/pytest-unnecessary-asyncio-mark-on-fixture.md) | No asyncio mark on a fixture | `auto` | — | `py/strict` |
+| [`py/pytest-use-fixtures-without-parameters`](py/pytest-use-fixtures-without-parameters.md) | No usefixtures() with nothing in it | `auto` | — | `py/strict` |
+| [`py/pytest-useless-yield-fixture`](py/pytest-useless-yield-fixture.md) | return, not yield, in a fixture with no teardown | `auto` | — | `py/strict` |
+| [`py/pytest-warns-too-broad`](py/pytest-warns-too-broad.md) | A broad warning in pytest.warns has a match | `manual` | — | `py/strict` |
+| [`py/pytest-warns-with-multiple-statements`](py/pytest-warns-with-multiple-statements.md) | pytest.warns wraps one simple statement | `manual` | — | `py/strict` |
 | [`py/pytest-warns-without-warning`](py/pytest-warns-without-warning.md) | pytest.warns names a warning | `manual` | — | *[rules] only* |
-| [`py/quadratic-list-summation`](py/quadratic-list-summation.md) | No sum() over lists | `suggest` | — | *[rules] only* |
-| [`py/quoted-annotation`](py/quoted-annotation.md) | No quoted annotation under postponed evaluation | `auto` | — | *[rules] only* |
-| [`py/quoted-annotation-in-stub`](py/quoted-annotation-in-stub.md) | No quoted annotations in stubs | `auto` | — | *[rules] only* |
+| [`py/quadratic-list-summation`](py/quadratic-list-summation.md) | No sum() over lists | `suggest` | — | `py/strict` |
+| [`py/quoted-annotation`](py/quoted-annotation.md) | No quoted annotation under postponed evaluation | `auto` | — | `py/strict` |
+| [`py/quoted-annotation-in-stub`](py/quoted-annotation-in-stub.md) | No quoted annotations in stubs | `auto` | — | `py/strict` |
 | [`py/quoted-type-alias`](py/quoted-type-alias.md) | A type alias that can run without quotes is not quoted | `auto` | — | *[rules] only* |
-| [`py/raise-literal`](py/raise-literal.md) | Raise exceptions, not literals | `suggest` | — | `py/recommended` |
-| [`py/raise-not-implemented`](py/raise-not-implemented.md) | Raise `NotImplementedError`, not `NotImplemented` | `suggest` | — | `py/recommended` |
-| [`py/raise-vanilla-args`](py/raise-vanilla-args.md) | A long exception message lives in the exception class | `manual` | — | *[rules] only* |
-| [`py/raise-vanilla-class`](py/raise-vanilla-class.md) | No raise Exception | `manual` | — | *[rules] only* |
-| [`py/raise-within-try`](py/raise-within-try.md) | A `try` does not catch what its own body raises | `manual` | — | *[rules] only* |
-| [`py/raise-without-from-inside-except`](py/raise-without-from-inside-except.md) | Raising in `except` says `from` | `suggest` | — | `py/recommended` |
-| [`py/raising-format-tuple`](py/raising-format-tuple.md) | An exception message is formatted before raising | `manual` | — | *[rules] only* |
-| [`py/raw-string-in-exception`](py/raw-string-in-exception.md) | An exception message is assigned before the raise | `suggest` | — | *[rules] only* |
-| [`py/re-sub-positional-args`](py/re-sub-positional-args.md) | `re.sub` count and flags by keyword | `auto` | — | `py/recommended` |
+| [`py/raise-literal`](py/raise-literal.md) | Raise exceptions, not literals | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/raise-not-implemented`](py/raise-not-implemented.md) | Raise `NotImplementedError`, not `NotImplemented` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/raise-vanilla-args`](py/raise-vanilla-args.md) | A long exception message lives in the exception class | `manual` | — | `py/strict` |
+| [`py/raise-vanilla-class`](py/raise-vanilla-class.md) | No raise Exception | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/raise-within-try`](py/raise-within-try.md) | A `try` does not catch what its own body raises | `manual` | — | `py/strict` |
+| [`py/raise-without-from-inside-except`](py/raise-without-from-inside-except.md) | Raising in `except` says `from` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/raising-format-tuple`](py/raising-format-tuple.md) | An exception message is formatted before raising | `manual` | — | `py/pylint` |
+| [`py/raw-string-in-exception`](py/raw-string-in-exception.md) | An exception message is assigned before the raise | `suggest` | — | `py/strict` |
+| [`py/re-sub-positional-args`](py/re-sub-positional-args.md) | `re.sub` count and flags by keyword | `auto` | — | `py/recommended`, `py/strict` |
 | [`py/read-whole-file`](py/read-whole-file.md) | pathlib reads a whole file in one call | `suggest` | — | *[rules] only* |
-| [`py/readlines-in-for`](py/readlines-in-for.md) | Iterate the file, not readlines() | `auto` | — | *[rules] only* |
-| [`py/redeclared-assigned-name`](py/redeclared-assigned-name.md) | No name twice in one unpacking | `manual` | — | *[rules] only* |
-| [`py/redefined-argument-from-local`](py/redefined-argument-from-local.md) | A loop, with or except target does not reuse a parameter | `manual` | — | *[rules] only* |
-| [`py/redefined-loop-name`](py/redefined-loop-name.md) | No reassigning the loop variable | `manual` | — | *[rules] only* |
-| [`py/redefined-outer-name`](py/redefined-outer-name.md) | A function does not reuse a name from the scope around it | `manual` | — | *[rules] only* |
-| [`py/redefined-slots-in-subclass`](py/redefined-slots-in-subclass.md) | A subclass's `__slots__` does not repeat its base's | `manual` | — | *[rules] only* |
+| [`py/readlines-in-for`](py/readlines-in-for.md) | Iterate the file, not readlines() | `auto` | — | `py/strict` |
+| [`py/redeclared-assigned-name`](py/redeclared-assigned-name.md) | No name twice in one unpacking | `manual` | — | `py/strict` |
+| [`py/redefined-argument-from-local`](py/redefined-argument-from-local.md) | A loop, with or except target does not reuse a parameter | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/redefined-loop-name`](py/redefined-loop-name.md) | No reassigning the loop variable | `manual` | — | `py/strict` |
+| [`py/redefined-outer-name`](py/redefined-outer-name.md) | A function does not reuse a name from the scope around it | `manual` | — | `py/pylint` |
+| [`py/redefined-slots-in-subclass`](py/redefined-slots-in-subclass.md) | A subclass's `__slots__` does not repeat its base's | `manual` | — | `py/pylint` |
 | [`py/redefined-variable-type`](py/redefined-variable-type.md) | A name keeps one type in its scope | `manual` | — | *[rules] only* |
-| [`py/redefined-while-unused`](py/redefined-while-unused.md) | A definition isn't replaced before it is used | `auto` | — | `py/recommended` |
+| [`py/redefined-while-unused`](py/redefined-while-unused.md) | A definition isn't replaced before it is used | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/redundant-backslash`](py/redundant-backslash.md) | No backslash inside brackets | `auto` | — | *[rules] only* |
 | [`py/redundant-bool-literal`](py/redundant-bool-literal.md) | bool, not Literal\[True, False\] | `auto` | — | *[rules] only* |
-| [`py/redundant-final-literal`](py/redundant-final-literal.md) | No Final\[Literal\[...\]\] beside its own value | `auto` | — | *[rules] only* |
-| [`py/redundant-literal-union`](py/redundant-literal-union.md) | A union does not hold both a literal and its type | `manual` | — | *[rules] only* |
-| [`py/redundant-log-base`](py/redundant-log-base.md) | math.log2(x), not math.log(x, 2) | `suggest` | — | *[rules] only* |
-| [`py/redundant-none-literal`](py/redundant-none-literal.md) | None, not Literal\[None\] | `suggest` | — | *[rules] only* |
-| [`py/redundant-numeric-union`](py/redundant-numeric-union.md) | float, not int \| float | `suggest` | — | *[rules] only* |
-| [`py/redundant-open-modes`](py/redundant-open-modes.md) | No default mode in open() | `auto` | — | *[rules] only* |
+| [`py/redundant-final-literal`](py/redundant-final-literal.md) | No Final\[Literal\[...\]\] beside its own value | `auto` | — | `py/strict` |
+| [`py/redundant-literal-union`](py/redundant-literal-union.md) | A union does not hold both a literal and its type | `manual` | — | `py/strict` |
+| [`py/redundant-log-base`](py/redundant-log-base.md) | math.log2(x), not math.log(x, 2) | `suggest` | — | `py/strict` |
+| [`py/redundant-none-literal`](py/redundant-none-literal.md) | None, not Literal\[None\] | `suggest` | — | `py/strict` |
+| [`py/redundant-numeric-union`](py/redundant-numeric-union.md) | float, not int \| float | `suggest` | — | `py/strict` |
+| [`py/redundant-open-modes`](py/redundant-open-modes.md) | No default mode in open() | `auto` | — | `py/strict` |
 | [`py/redundant-returns-doc`](py/redundant-returns-doc.md) | A docstring documents a returned value only if there is one | `suggest` | — | *[rules] only* |
-| [`py/redundant-tuple-in-exception-handler`](py/redundant-tuple-in-exception-handler.md) | No one-element tuple in `except` | `auto` | — | `py/recommended` |
+| [`py/redundant-tuple-in-exception-handler`](py/redundant-tuple-in-exception-handler.md) | No one-element tuple in `except` | `auto` | — | `py/recommended`, `py/strict` |
 | [`py/redundant-typehint-argument`](py/redundant-typehint-argument.md) | A variable's union annotation names each type once | `auto` | — | *[rules] only* |
-| [`py/redundant-unittest-assert`](py/redundant-unittest-assert.md) | No unittest assert on a constant | `manual` | — | *[rules] only* |
+| [`py/redundant-unittest-assert`](py/redundant-unittest-assert.md) | No unittest assert on a constant | `manual` | — | `py/pylint` |
 | [`py/redundant-yields-doc`](py/redundant-yields-doc.md) | A docstring documents a yielded value only if there is one | `suggest` | — | *[rules] only* |
-| [`py/regex-flag-alias`](py/regex-flag-alias.md) | re.IGNORECASE, not re.I | `auto` | — | *[rules] only* |
-| [`py/reimplemented-builtin`](py/reimplemented-builtin.md) | any(), not a loop that returns True | `suggest` | — | *[rules] only* |
-| [`py/reimplemented-container-builtin`](py/reimplemented-container-builtin.md) | list, not lambda: \[\] | `auto` | — | *[rules] only* |
+| [`py/regex-flag-alias`](py/regex-flag-alias.md) | re.IGNORECASE, not re.I | `auto` | — | `py/strict` |
+| [`py/reimplemented-builtin`](py/reimplemented-builtin.md) | any(), not a loop that returns True | `suggest` | — | `py/strict` |
+| [`py/reimplemented-container-builtin`](py/reimplemented-container-builtin.md) | list, not lambda: \[\] | `auto` | — | `py/strict` |
 | [`py/reimplemented-operator`](py/reimplemented-operator.md) | operator.itemgetter, not a lambda | `suggest` | — | *[rules] only* |
 | [`py/reimplemented-starmap`](py/reimplemented-starmap.md) | itertools.starmap, not a comprehension that unpacks | `suggest` | — | *[rules] only* |
-| [`py/reimported`](py/reimported.md) | No module imported twice | `auto` | — | *[rules] only* |
-| [`py/relative-imports`](py/relative-imports.md) | No relative import from a parent package | `manual` | — | *[rules] only* |
+| [`py/reimported`](py/reimported.md) | No module imported twice | `auto` | — | `py/pylint` |
+| [`py/relative-imports`](py/relative-imports.md) | No relative import from a parent package | `manual` | — | `py/strict` |
 | [`py/repeated-append`](py/repeated-append.md) | Consecutive appends to a list are one `extend` | `suggest` | — | *[rules] only* |
-| [`py/repeated-equality-comparison`](py/repeated-equality-comparison.md) | x in (a, b), not x == a or x == b | `auto` | — | *[rules] only* |
+| [`py/repeated-equality-comparison`](py/repeated-equality-comparison.md) | x in (a, b), not x == a or x == b | `auto` | — | `py/strict` |
 | [`py/repeated-global`](py/repeated-global.md) | One global statement | `auto` | — | *[rules] only* |
-| [`py/repeated-keyword-argument`](py/repeated-keyword-argument.md) | No keyword passed twice | `manual` | — | *[rules] only* |
-| [`py/replace-stdout-stderr`](py/replace-stdout-stderr.md) | capture_output=True, not stdout=PIPE, stderr=PIPE | `suggest` | — | *[rules] only* |
-| [`py/replace-str-enum`](py/replace-str-enum.md) | A string enum inherits StrEnum | `auto` | — | *[rules] only* |
-| [`py/replace-universal-newlines`](py/replace-universal-newlines.md) | text=, not universal_newlines= | `auto` | — | *[rules] only* |
+| [`py/repeated-keyword-argument`](py/repeated-keyword-argument.md) | No keyword passed twice | `manual` | — | `py/strict` |
+| [`py/replace-stdout-stderr`](py/replace-stdout-stderr.md) | capture_output=True, not stdout=PIPE, stderr=PIPE | `suggest` | — | `py/strict` |
+| [`py/replace-str-enum`](py/replace-str-enum.md) | A string enum inherits StrEnum | `auto` | — | `py/strict` |
+| [`py/replace-universal-newlines`](py/replace-universal-newlines.md) | text=, not universal_newlines= | `auto` | — | `py/strict` |
 | [`py/return-in-generator`](py/return-in-generator.md) | No return value in a generator | `manual` | — | *[rules] only* |
-| [`py/return-in-init`](py/return-in-init.md) | No return value in __init__ | `suggest` | — | *[rules] only* |
-| [`py/return-in-try-except-finally`](py/return-in-try-except-finally.md) | No return in finally beside one in try | `manual` | — | *[rules] only* |
-| [`py/return-outside-function`](py/return-outside-function.md) | `return` only inside a function | `suggest` | — | `py/recommended` |
-| [`py/reuse-of-groupby-generator`](py/reuse-of-groupby-generator.md) | A `groupby` group is used once | `suggest` | — | `py/recommended` |
-| [`py/root-logger-call`](py/root-logger-call.md) | No logging through the root logger | `manual` | — | *[rules] only* |
-| [`py/run-process-in-async-function`](py/run-process-in-async-function.md) | No blocking process run in an async function | `manual` | — | *[rules] only* |
-| [`py/runtime-cast-value`](py/runtime-cast-value.md) | Quote the type in typing.cast | `auto` | — | *[rules] only* |
-| [`py/runtime-import-in-type-checking-block`](py/runtime-import-in-type-checking-block.md) | A name used at run time is not imported only under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
-| [`py/runtime-string-union`](py/runtime-string-union.md) | A string is not a member of an `X \| Y` union that runs | `manual` | — | *[rules] only* |
-| [`py/self-assigning-variable`](py/self-assigning-variable.md) | No x = x | `suggest` | — | *[rules] only* |
-| [`py/self-or-cls-assignment`](py/self-or-cls-assignment.md) | No assignment to self or cls | `manual` | — | *[rules] only* |
-| [`py/setattr-with-constant`](py/setattr-with-constant.md) | No `setattr` with a constant name | `auto` | — | `py/recommended` |
-| [`py/shadowed-import`](py/shadowed-import.md) | An import does not take the name of an earlier import | `manual` | — | *[rules] only* |
-| [`py/shallow-copy-environ`](py/shallow-copy-environ.md) | os.environ.copy(), not copy.copy(os.environ) | `suggest` | — | *[rules] only* |
-| [`py/shebang-missing-executable-file`](py/shebang-missing-executable-file.md) | An executable file has a shebang | `manual` | — | *[rules] only* |
-| [`py/shebang-missing-python`](py/shebang-missing-python.md) | A shebang names python | `manual` | — | *[rules] only* |
-| [`py/shebang-not-executable`](py/shebang-not-executable.md) | A file with a shebang is executable | `manual` | — | *[rules] only* |
-| [`py/shebang-not-first-line`](py/shebang-not-first-line.md) | The shebang is the first line | `auto` | — | *[rules] only* |
-| [`py/signature-differs`](py/signature-differs.md) | An override keeps the defaults of the method it overrides | `manual` | — | *[rules] only* |
-| [`py/signature-in-docstring`](py/signature-in-docstring.md) | A docstring's first line is not the function's signature | `manual` | — | *[rules] only* |
-| [`py/simplifiable-condition`](py/simplifiable-condition.md) | No `and True` in a condition | `auto` | — | *[rules] only* |
-| [`py/simplify-boolean-expression`](py/simplify-boolean-expression.md) | `c and <falsy> or v` is written `v` | `suggest` | — | *[rules] only* |
-| [`py/single-item-membership-test`](py/single-item-membership-test.md) | x == y, not x in (y,) | `suggest` | — | *[rules] only* |
-| [`py/single-string-used-for-slots`](py/single-string-used-for-slots.md) | __slots__ is a tuple, not a string | `suggest` | — | *[rules] only* |
-| [`py/singledispatch-method`](py/singledispatch-method.md) | singledispatchmethod on methods | `suggest` | — | *[rules] only* |
-| [`py/singledispatchmethod-function`](py/singledispatchmethod-function.md) | singledispatch on plain functions | `suggest` | — | *[rules] only* |
-| [`py/six-py3`](py/six-py3.md) | No six.PY3 | `manual` | — | *[rules] only* |
+| [`py/return-in-init`](py/return-in-init.md) | No return value in __init__ | `suggest` | — | `py/strict` |
+| [`py/return-in-try-except-finally`](py/return-in-try-except-finally.md) | No return in finally beside one in try | `manual` | — | `py/strict` |
+| [`py/return-outside-function`](py/return-outside-function.md) | `return` only inside a function | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/reuse-of-groupby-generator`](py/reuse-of-groupby-generator.md) | A `groupby` group is used once | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/root-logger-call`](py/root-logger-call.md) | No logging through the root logger | `manual` | — | `py/strict` |
+| [`py/run-process-in-async-function`](py/run-process-in-async-function.md) | No blocking process run in an async function | `manual` | — | `py/strict` |
+| [`py/runtime-cast-value`](py/runtime-cast-value.md) | Quote the type in typing.cast | `auto` | — | `py/strict` |
+| [`py/runtime-import-in-type-checking-block`](py/runtime-import-in-type-checking-block.md) | A name used at run time is not imported only under `TYPE_CHECKING` | `suggest` | — | `py/strict` |
+| [`py/runtime-string-union`](py/runtime-string-union.md) | A string is not a member of an `X \| Y` union that runs | `manual` | — | `py/strict` |
+| [`py/self-assigning-variable`](py/self-assigning-variable.md) | No x = x | `suggest` | — | `py/strict` |
+| [`py/self-or-cls-assignment`](py/self-or-cls-assignment.md) | No assignment to self or cls | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/setattr-with-constant`](py/setattr-with-constant.md) | No `setattr` with a constant name | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/shadowed-import`](py/shadowed-import.md) | An import does not take the name of an earlier import | `manual` | — | `py/pylint` |
+| [`py/shallow-copy-environ`](py/shallow-copy-environ.md) | os.environ.copy(), not copy.copy(os.environ) | `suggest` | — | `py/strict` |
+| [`py/shebang-missing-executable-file`](py/shebang-missing-executable-file.md) | An executable file has a shebang | `manual` | — | `py/strict` |
+| [`py/shebang-missing-python`](py/shebang-missing-python.md) | A shebang names python | `manual` | — | `py/strict` |
+| [`py/shebang-not-executable`](py/shebang-not-executable.md) | A file with a shebang is executable | `manual` | — | `py/strict` |
+| [`py/shebang-not-first-line`](py/shebang-not-first-line.md) | The shebang is the first line | `auto` | — | `py/strict` |
+| [`py/signature-differs`](py/signature-differs.md) | An override keeps the defaults of the method it overrides | `manual` | — | `py/pylint` |
+| [`py/signature-in-docstring`](py/signature-in-docstring.md) | A docstring's first line is not the function's signature | `manual` | — | `py/pydocstyle` |
+| [`py/simplifiable-condition`](py/simplifiable-condition.md) | No `and True` in a condition | `auto` | — | `py/pylint` |
+| [`py/simplify-boolean-expression`](py/simplify-boolean-expression.md) | `c and <falsy> or v` is written `v` | `suggest` | — | `py/pylint` |
+| [`py/single-item-membership-test`](py/single-item-membership-test.md) | x == y, not x in (y,) | `suggest` | — | `py/strict` |
+| [`py/single-string-used-for-slots`](py/single-string-used-for-slots.md) | __slots__ is a tuple, not a string | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/singledispatch-method`](py/singledispatch-method.md) | singledispatchmethod on methods | `suggest` | — | `py/strict` |
+| [`py/singledispatchmethod-function`](py/singledispatchmethod-function.md) | singledispatch on plain functions | `suggest` | — | `py/strict` |
+| [`py/six-py3`](py/six-py3.md) | No six.PY3 | `manual` | — | `py/strict` |
 | [`py/skipped-test`](py/skipped-test.md) | A skipped test has a reason and an expiry | `manual` | — | `py/markers` |
 | [`py/slice-copy`](py/slice-copy.md) | x.copy(), not x\[:\] | `suggest` | — | *[rules] only* |
-| [`py/slice-to-remove-prefix-or-suffix`](py/slice-to-remove-prefix-or-suffix.md) | str.removeprefix, not a startswith and a slice | `auto` | — | *[rules] only* |
-| [`py/snake-case-type-alias`](py/snake-case-type-alias.md) | A stub's type aliases are CamelCase | `manual` | — | *[rules] only* |
-| [`py/sorted-min-max`](py/sorted-min-max.md) | min(), not sorted()\[0\] | `suggest` | — | *[rules] only* |
-| [`py/split-static-string`](py/split-static-string.md) | A static `str.split` is a list literal | `auto` | — | *[rules] only* |
-| [`py/star-arg-unpacking-after-keyword-arg`](py/star-arg-unpacking-after-keyword-arg.md) | No `*args` after a keyword argument | `auto` | — | `py/recommended` |
-| [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `auto` | — | `py/recommended` |
-| [`py/starmap-zip`](py/starmap-zip.md) | map(f, a, b), not starmap(f, zip(a, b)) | `suggest` | — | *[rules] only* |
-| [`py/static-join-to-f-string`](py/static-join-to-f-string.md) | A `join` of a fixed list is an f-string | `suggest` | — | *[rules] only* |
-| [`py/static-key-dict-comprehension`](py/static-key-dict-comprehension.md) | A dict comprehension's key varies | `suggest` | — | `py/recommended` |
-| [`py/stdlib-module-shadowing`](py/stdlib-module-shadowing.md) | A module does not take a standard-library module's name | `manual` | `strict_checking`, `allowed_modules` | *[rules] only* |
-| [`py/stop-iteration-return`](py/stop-iteration-return.md) | A generator returns instead of raising StopIteration | `suggest` | — | *[rules] only* |
-| [`py/str-or-repr-defined-in-stub`](py/str-or-repr-defined-in-stub.md) | No __str__ or __repr__ in stubs | `auto` | — | *[rules] only* |
-| [`py/string-or-bytes-too-long`](py/string-or-bytes-too-long.md) | No long string literals in stubs | `auto` | — | *[rules] only* |
-| [`py/strip-with-multi-characters`](py/strip-with-multi-characters.md) | `.strip()` isn't given a word | `suggest` | — | `py/recommended` |
-| [`py/stub-body-multiple-statements`](py/stub-body-multiple-statements.md) | A stub function's body is one statement | `manual` | — | *[rules] only* |
+| [`py/slice-to-remove-prefix-or-suffix`](py/slice-to-remove-prefix-or-suffix.md) | str.removeprefix, not a startswith and a slice | `auto` | — | `py/strict` |
+| [`py/snake-case-type-alias`](py/snake-case-type-alias.md) | A stub's type aliases are CamelCase | `manual` | — | `py/strict` |
+| [`py/sorted-min-max`](py/sorted-min-max.md) | min(), not sorted()\[0\] | `suggest` | — | `py/strict` |
+| [`py/split-static-string`](py/split-static-string.md) | A static `str.split` is a list literal | `auto` | — | `py/strict` |
+| [`py/star-arg-unpacking-after-keyword-arg`](py/star-arg-unpacking-after-keyword-arg.md) | No `*args` after a keyword argument | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/star-import-usage`](py/star-import-usage.md) | No names that may only come from a star import | `auto` | — | `py/recommended`, `py/strict` |
+| [`py/starmap-zip`](py/starmap-zip.md) | map(f, a, b), not starmap(f, zip(a, b)) | `suggest` | — | `py/strict` |
+| [`py/static-join-to-f-string`](py/static-join-to-f-string.md) | A `join` of a fixed list is an f-string | `suggest` | — | `py/strict` |
+| [`py/static-key-dict-comprehension`](py/static-key-dict-comprehension.md) | A dict comprehension's key varies | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/stdlib-module-shadowing`](py/stdlib-module-shadowing.md) | A module does not take a standard-library module's name | `manual` | `strict_checking`, `allowed_modules` | `py/strict` |
+| [`py/stop-iteration-return`](py/stop-iteration-return.md) | A generator returns instead of raising StopIteration | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/str-or-repr-defined-in-stub`](py/str-or-repr-defined-in-stub.md) | No __str__ or __repr__ in stubs | `auto` | — | `py/strict` |
+| [`py/string-or-bytes-too-long`](py/string-or-bytes-too-long.md) | No long string literals in stubs | `auto` | — | `py/strict` |
+| [`py/strip-with-multi-characters`](py/strip-with-multi-characters.md) | `.strip()` isn't given a word | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/stub-body-multiple-statements`](py/stub-body-multiple-statements.md) | A stub function's body is one statement | `manual` | — | `py/strict` |
 | [`py/subclass-builtin`](py/subclass-builtin.md) | UserDict, not a dict subclass | `suggest` | — | *[rules] only* |
-| [`py/subclassed-final-class`](py/subclassed-final-class.md) | A class decorated `@final` is not subclassed | `manual` | — | *[rules] only* |
-| [`py/subprocess-popen-preexec-fn`](py/subprocess-popen-preexec-fn.md) | No preexec_fn | `manual` | — | *[rules] only* |
-| [`py/subprocess-run-without-check`](py/subprocess-run-without-check.md) | subprocess.run says check= | `suggest` | — | *[rules] only* |
-| [`py/super-call-with-parameters`](py/super-call-with-parameters.md) | super(), not super(Class, self) | `auto` | — | *[rules] only* |
-| [`py/super-init-not-called`](py/super-init-not-called.md) | `__init__` calls its base class's `__init__` | `manual` | — | *[rules] only* |
-| [`py/super-without-brackets`](py/super-without-brackets.md) | super(), not super | `auto` | — | *[rules] only* |
-| [`py/superfluous-else-break`](py/superfluous-else-break.md) | No else after break | `suggest` | — | *[rules] only* |
-| [`py/superfluous-else-continue`](py/superfluous-else-continue.md) | No else after continue | `suggest` | — | *[rules] only* |
-| [`py/superfluous-else-raise`](py/superfluous-else-raise.md) | No else after raise | `suggest` | — | *[rules] only* |
-| [`py/superfluous-else-return`](py/superfluous-else-return.md) | No else after return | `suggest` | — | *[rules] only* |
-| [`py/suppressible-exception`](py/suppressible-exception.md) | contextlib.suppress, not try/except/pass | `manual` | — | *[rules] only* |
-| [`py/swap-with-temporary-variable`](py/swap-with-temporary-variable.md) | a, b = b, a, not a temporary | `suggest` | — | *[rules] only* |
-| [`py/sys-exit-alias`](py/sys-exit-alias.md) | sys.exit(), not exit() | `suggest` | — | *[rules] only* |
-| [`py/sys-version-cmp-str10`](py/sys-version-cmp-str10.md) | No comparing sys.version with a one-digit string | `manual` | — | *[rules] only* |
-| [`py/sys-version-cmp-str3`](py/sys-version-cmp-str3.md) | No comparing sys.version with a string | `manual` | — | *[rules] only* |
-| [`py/sys-version-info-minor-cmp-int`](py/sys-version-info-minor-cmp-int.md) | Compare the version tuple, not .minor with an int | `suggest` | — | *[rules] only* |
-| [`py/sys-version-info0-eq3`](py/sys-version-info0-eq3.md) | sys.version_info >= (3,), not \[0\] == 3 | `suggest` | — | *[rules] only* |
-| [`py/sys-version-info1-cmp-int`](py/sys-version-info1-cmp-int.md) | Compare the version tuple, not \[1\] with an int | `suggest` | — | *[rules] only* |
-| [`py/sys-version-slice1`](py/sys-version-slice1.md) | sys.version_info\[0\], not sys.version\[:1\] | `suggest` | — | *[rules] only* |
-| [`py/sys-version-slice3`](py/sys-version-slice3.md) | sys.version_info, not sys.version\[:3\] | `suggest` | — | *[rules] only* |
-| [`py/sys-version0`](py/sys-version0.md) | sys.version_info\[0\], not sys.version\[0\] | `suggest` | — | *[rules] only* |
-| [`py/sys-version2`](py/sys-version2.md) | sys.version_info, not sys.version\[2\] | `suggest` | — | *[rules] only* |
-| [`py/t-suffixed-type-alias`](py/t-suffixed-type-alias.md) | A private type alias does not end in T | `manual` | — | *[rules] only* |
-| [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | *[rules] only* |
-| [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers` |
-| [`py/too-few-public-methods`](py/too-few-public-methods.md) | A class defines at least `min` public methods | `manual` | `max` | *[rules] only* |
-| [`py/too-many-boolean-expressions`](py/too-many-boolean-expressions.md) | An if condition joins at most `max` Boolean terms | `manual` | `max` | *[rules] only* |
-| [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended` |
-| [`py/too-many-instance-attributes`](py/too-many-instance-attributes.md) | A class sets at most `max` instance attributes | `manual` | `max` | *[rules] only* |
-| [`py/too-many-locals`](py/too-many-locals.md) | A function has at most `max` local variables | `manual` | `max` | *[rules] only* |
-| [`py/too-many-positional-sub-patterns`](py/too-many-positional-sub-patterns.md) | A class pattern has no more positional sub-patterns than the class matches | `manual` | — | *[rules] only* |
-| [`py/too-many-public-methods`](py/too-many-public-methods.md) | A class has at most `max` public methods | `manual` | `max` | *[rules] only* |
-| [`py/too-many-return-statements`](py/too-many-return-statements.md) | A function has at most `max` return statements | `manual` | `max` | *[rules] only* |
-| [`py/too-many-statements`](py/too-many-statements.md) | A function has at most `max` statements | `manual` | `max` | *[rules] only* |
+| [`py/subclassed-final-class`](py/subclassed-final-class.md) | A class decorated `@final` is not subclassed | `manual` | — | `py/pylint` |
+| [`py/subprocess-popen-preexec-fn`](py/subprocess-popen-preexec-fn.md) | No preexec_fn | `manual` | — | `py/strict` |
+| [`py/subprocess-run-without-check`](py/subprocess-run-without-check.md) | subprocess.run says check= | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/super-call-with-parameters`](py/super-call-with-parameters.md) | super(), not super(Class, self) | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/super-init-not-called`](py/super-init-not-called.md) | `__init__` calls its base class's `__init__` | `manual` | — | `py/pylint` |
+| [`py/super-without-brackets`](py/super-without-brackets.md) | super(), not super | `auto` | — | `py/strict` |
+| [`py/superfluous-else-break`](py/superfluous-else-break.md) | No else after break | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/superfluous-else-continue`](py/superfluous-else-continue.md) | No else after continue | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/superfluous-else-raise`](py/superfluous-else-raise.md) | No else after raise | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/superfluous-else-return`](py/superfluous-else-return.md) | No else after return | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/suppressible-exception`](py/suppressible-exception.md) | contextlib.suppress, not try/except/pass | `manual` | — | `py/strict` |
+| [`py/swap-with-temporary-variable`](py/swap-with-temporary-variable.md) | a, b = b, a, not a temporary | `suggest` | — | `py/pylint` |
+| [`py/sys-exit-alias`](py/sys-exit-alias.md) | sys.exit(), not exit() | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/sys-version-cmp-str10`](py/sys-version-cmp-str10.md) | No comparing sys.version with a one-digit string | `manual` | — | `py/strict` |
+| [`py/sys-version-cmp-str3`](py/sys-version-cmp-str3.md) | No comparing sys.version with a string | `manual` | — | `py/strict` |
+| [`py/sys-version-info-minor-cmp-int`](py/sys-version-info-minor-cmp-int.md) | Compare the version tuple, not .minor with an int | `suggest` | — | `py/strict` |
+| [`py/sys-version-info0-eq3`](py/sys-version-info0-eq3.md) | sys.version_info >= (3,), not \[0\] == 3 | `suggest` | — | `py/strict` |
+| [`py/sys-version-info1-cmp-int`](py/sys-version-info1-cmp-int.md) | Compare the version tuple, not \[1\] with an int | `suggest` | — | `py/strict` |
+| [`py/sys-version-slice1`](py/sys-version-slice1.md) | sys.version_info\[0\], not sys.version\[:1\] | `suggest` | — | `py/strict` |
+| [`py/sys-version-slice3`](py/sys-version-slice3.md) | sys.version_info, not sys.version\[:3\] | `suggest` | — | `py/strict` |
+| [`py/sys-version0`](py/sys-version0.md) | sys.version_info\[0\], not sys.version\[0\] | `suggest` | — | `py/strict` |
+| [`py/sys-version2`](py/sys-version2.md) | sys.version_info, not sys.version\[2\] | `suggest` | — | `py/strict` |
+| [`py/t-suffixed-type-alias`](py/t-suffixed-type-alias.md) | A private type alias does not end in T | `manual` | — | `py/strict` |
+| [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | `py/strict` |
+| [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers`, `py/pylint` |
+| [`py/too-few-public-methods`](py/too-few-public-methods.md) | A class defines at least `min` public methods | `manual` | `max` | `py/pylint` |
+| [`py/too-many-boolean-expressions`](py/too-many-boolean-expressions.md) | An if condition joins at most `max` Boolean terms | `manual` | `max` | `py/pylint` |
+| [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/too-many-instance-attributes`](py/too-many-instance-attributes.md) | A class sets at most `max` instance attributes | `manual` | `max` | `py/pylint` |
+| [`py/too-many-locals`](py/too-many-locals.md) | A function has at most `max` local variables | `manual` | `max` | `py/pylint` |
+| [`py/too-many-positional-sub-patterns`](py/too-many-positional-sub-patterns.md) | A class pattern has no more positional sub-patterns than the class matches | `manual` | — | `py/pylint` |
+| [`py/too-many-public-methods`](py/too-many-public-methods.md) | A class has at most `max` public methods | `manual` | `max` | `py/pylint` |
+| [`py/too-many-return-statements`](py/too-many-return-statements.md) | A function has at most `max` return statements | `manual` | `max` | `py/strict`, `py/pylint` |
+| [`py/too-many-statements`](py/too-many-statements.md) | A function has at most `max` statements | `manual` | `max` | `py/strict`, `py/pylint` |
 | [`py/too-many-statements-in-try-clause`](py/too-many-statements-in-try-clause.md) | A try clause holds at most `max` statements | `manual` | `max` | *[rules] only* |
-| [`py/trailing-comma-on-bare-tuple`](py/trailing-comma-on-bare-tuple.md) | No accidental one-element tuple | `manual` | — | *[rules] only* |
-| [`py/trailing-comma-tuple`](py/trailing-comma-tuple.md) | No tuple made by a trailing comma | `manual` | — | *[rules] only* |
-| [`py/trio-sync-call`](py/trio-sync-call.md) | Await trio's async functions | `suggest` | — | *[rules] only* |
-| [`py/true-false-comparison`](py/true-false-comparison.md) | Don't compare with `True` or `False` | `suggest` | — | `py/recommended` |
-| [`py/try-consider-else`](py/try-consider-else.md) | A return after the guarded work goes in else | `manual` | — | *[rules] only* |
-| [`py/type-alias-without-annotation`](py/type-alias-without-annotation.md) | A stub's type alias is annotated TypeAlias | `auto` | — | *[rules] only* |
-| [`py/type-bivariance`](py/type-bivariance.md) | A TypeVar is not both covariant and contravariant | `manual` | — | *[rules] only* |
-| [`py/type-check-without-type-error`](py/type-check-without-type-error.md) | A failed type check raises TypeError | `suggest` | — | *[rules] only* |
-| [`py/type-comparison`](py/type-comparison.md) | Don't compare types with `==` | `auto` | — | `py/recommended` |
-| [`py/type-name-incorrect-variance`](py/type-name-incorrect-variance.md) | A TypeVar's name says its variance | `manual` | — | *[rules] only* |
-| [`py/type-none-comparison`](py/type-none-comparison.md) | x is None, not type(x) is type(None) | `auto` | — | *[rules] only* |
-| [`py/type-of-primitive`](py/type-of-primitive.md) | str, not type('') | `suggest` | — | *[rules] only* |
-| [`py/typed-argument-default-in-stub`](py/typed-argument-default-in-stub.md) | Simple defaults only in stubs | `auto` | — | *[rules] only* |
-| [`py/typevar-name-mismatch`](py/typevar-name-mismatch.md) | A TypeVar's name matches its variable | `suggest` | — | *[rules] only* |
-| [`py/typing-only-first-party-import`](py/typing-only-first-party-import.md) | An import of the project's own module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
-| [`py/typing-only-standard-library-import`](py/typing-only-standard-library-import.md) | An import from the standard library used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
-| [`py/typing-only-third-party-import`](py/typing-only-third-party-import.md) | An import of a third-party module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | *[rules] only* |
-| [`py/typing-text-str-alias`](py/typing-text-str-alias.md) | str, not typing.Text | `suggest` | — | *[rules] only* |
-| [`py/unaliased-collections-abc-set-import`](py/unaliased-collections-abc-set-import.md) | `collections.abc.Set` is imported as `AbstractSet` | `suggest` | — | *[rules] only* |
-| [`py/unannotated-assignment-in-stub`](py/unannotated-assignment-in-stub.md) | A stub annotates its variables | `manual` | — | *[rules] only* |
-| [`py/unary-prefix-increment`](py/unary-prefix-increment.md) | No `++x` or `--x` | `suggest` | — | `py/recommended` |
-| [`py/unassigned-special-variable-in-stub`](py/unassigned-special-variable-in-stub.md) | A stub gives __all__ its value | `manual` | — | *[rules] only* |
-| [`py/unbalanced-dict-unpacking`](py/unbalanced-dict-unpacking.md) | Unpacking a dict literal matches its size | `manual` | — | *[rules] only* |
-| [`py/unbalanced-tuple-unpacking`](py/unbalanced-tuple-unpacking.md) | An unpacking has as many targets as the literal has values | `manual` | — | *[rules] only* |
-| [`py/uncapitalized-environment-variables`](py/uncapitalized-environment-variables.md) | Environment variable names are in capitals | `suggest` | — | *[rules] only* |
-| [`py/unconventional-import-alias`](py/unconventional-import-alias.md) | numpy is imported as np | `suggest` | — | *[rules] only* |
-| [`py/undefined-export`](py/undefined-export.md) | `__all__` names only defined names | `suggest` | — | `py/recommended` |
-| [`py/undefined-future-feature`](py/undefined-future-feature.md) | `from __future__` names only real features | `suggest` | — | `py/recommended` |
-| [`py/undefined-local`](py/undefined-local.md) | A local isn't read before the function assigns it | `suggest` | — | `py/recommended` |
-| [`py/undefined-loop-variable`](py/undefined-loop-variable.md) | A loop variable is read only where the loop ran | `manual` | — | *[rules] only* |
-| [`py/undefined-name`](py/undefined-name.md) | Every name read is defined | `suggest` | `builtins` | `py/recommended` |
-| [`py/under-indentation`](py/under-indentation.md) | A docstring's lines are not indented less than its quotes | `auto` | — | *[rules] only* |
-| [`py/undocumented-magic-method`](py/undocumented-magic-method.md) | A magic method has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-param`](py/undocumented-param.md) | Every parameter has a description in the docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-class`](py/undocumented-public-class.md) | A public class has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-function`](py/undocumented-public-function.md) | A public function has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-init`](py/undocumented-public-init.md) | A public class's __init__ has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-method`](py/undocumented-public-method.md) | A public method has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-module`](py/undocumented-public-module.md) | A public module has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-nested-class`](py/undocumented-public-nested-class.md) | A public nested class has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-public-package`](py/undocumented-public-package.md) | A public package has a docstring | `manual` | — | *[rules] only* |
-| [`py/undocumented-warn`](py/undocumented-warn.md) | logging.WARNING, not logging.WARN | `auto` | — | *[rules] only* |
-| [`py/unexpected-special-method-signature`](py/unexpected-special-method-signature.md) | Special methods take the parameters Python passes | `manual` | — | *[rules] only* |
-| [`py/ungrouped-imports`](py/ungrouped-imports.md) | Imports of one package sit together | `manual` | — | *[rules] only* |
-| [`py/unicode-kind-prefix`](py/unicode-kind-prefix.md) | No u prefix on strings | `auto` | — | *[rules] only* |
-| [`py/unintentional-type-annotation`](py/unintentional-type-annotation.md) | No annotation where an assignment was meant | `suggest` | — | `py/recommended` |
-| [`py/unnecessary-assign`](py/unnecessary-assign.md) | Return the value, not a name assigned just before | `auto` | — | *[rules] only* |
+| [`py/trailing-comma-on-bare-tuple`](py/trailing-comma-on-bare-tuple.md) | No accidental one-element tuple | `manual` | — | `py/strict` |
+| [`py/trailing-comma-tuple`](py/trailing-comma-tuple.md) | No tuple made by a trailing comma | `manual` | — | `py/pylint` |
+| [`py/trio-sync-call`](py/trio-sync-call.md) | Await trio's async functions | `suggest` | — | `py/strict` |
+| [`py/true-false-comparison`](py/true-false-comparison.md) | Don't compare with `True` or `False` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/try-consider-else`](py/try-consider-else.md) | A return after the guarded work goes in else | `manual` | — | `py/strict` |
+| [`py/type-alias-without-annotation`](py/type-alias-without-annotation.md) | A stub's type alias is annotated TypeAlias | `auto` | — | `py/strict` |
+| [`py/type-bivariance`](py/type-bivariance.md) | A TypeVar is not both covariant and contravariant | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/type-check-without-type-error`](py/type-check-without-type-error.md) | A failed type check raises TypeError | `suggest` | — | `py/strict` |
+| [`py/type-comparison`](py/type-comparison.md) | Don't compare types with `==` | `auto` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/type-name-incorrect-variance`](py/type-name-incorrect-variance.md) | A TypeVar's name says its variance | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/type-none-comparison`](py/type-none-comparison.md) | x is None, not type(x) is type(None) | `auto` | — | `py/strict` |
+| [`py/type-of-primitive`](py/type-of-primitive.md) | str, not type('') | `suggest` | — | `py/strict` |
+| [`py/typed-argument-default-in-stub`](py/typed-argument-default-in-stub.md) | Simple defaults only in stubs | `auto` | — | `py/strict` |
+| [`py/typevar-name-mismatch`](py/typevar-name-mismatch.md) | A TypeVar's name matches its variable | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/typing-only-first-party-import`](py/typing-only-first-party-import.md) | An import of the project's own module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | `py/strict` |
+| [`py/typing-only-standard-library-import`](py/typing-only-standard-library-import.md) | An import from the standard library used only in annotations is under `TYPE_CHECKING` | `suggest` | — | `py/strict` |
+| [`py/typing-only-third-party-import`](py/typing-only-third-party-import.md) | An import of a third-party module used only in annotations is under `TYPE_CHECKING` | `suggest` | — | `py/strict` |
+| [`py/typing-text-str-alias`](py/typing-text-str-alias.md) | str, not typing.Text | `suggest` | — | `py/strict` |
+| [`py/unaliased-collections-abc-set-import`](py/unaliased-collections-abc-set-import.md) | `collections.abc.Set` is imported as `AbstractSet` | `suggest` | — | `py/strict` |
+| [`py/unannotated-assignment-in-stub`](py/unannotated-assignment-in-stub.md) | A stub annotates its variables | `manual` | — | `py/strict` |
+| [`py/unary-prefix-increment`](py/unary-prefix-increment.md) | No `++x` or `--x` | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/unassigned-special-variable-in-stub`](py/unassigned-special-variable-in-stub.md) | A stub gives __all__ its value | `manual` | — | `py/strict` |
+| [`py/unbalanced-dict-unpacking`](py/unbalanced-dict-unpacking.md) | Unpacking a dict literal matches its size | `manual` | — | `py/pylint` |
+| [`py/unbalanced-tuple-unpacking`](py/unbalanced-tuple-unpacking.md) | An unpacking has as many targets as the literal has values | `manual` | — | `py/pylint` |
+| [`py/uncapitalized-environment-variables`](py/uncapitalized-environment-variables.md) | Environment variable names are in capitals | `suggest` | — | `py/strict` |
+| [`py/unconventional-import-alias`](py/unconventional-import-alias.md) | numpy is imported as np | `suggest` | — | `py/strict` |
+| [`py/undefined-export`](py/undefined-export.md) | `__all__` names only defined names | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/undefined-future-feature`](py/undefined-future-feature.md) | `from __future__` names only real features | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/undefined-local`](py/undefined-local.md) | A local isn't read before the function assigns it | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/undefined-loop-variable`](py/undefined-loop-variable.md) | A loop variable is read only where the loop ran | `manual` | — | `py/pylint` |
+| [`py/undefined-name`](py/undefined-name.md) | Every name read is defined | `suggest` | `builtins` | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/under-indentation`](py/under-indentation.md) | A docstring's lines are not indented less than its quotes | `auto` | — | `py/pydocstyle` |
+| [`py/undocumented-magic-method`](py/undocumented-magic-method.md) | A magic method has a docstring | `manual` | — | `py/pydocstyle` |
+| [`py/undocumented-param`](py/undocumented-param.md) | Every parameter has a description in the docstring | `manual` | — | `py/pydocstyle` |
+| [`py/undocumented-public-class`](py/undocumented-public-class.md) | A public class has a docstring | `manual` | — | `py/pylint`, `py/pydocstyle` |
+| [`py/undocumented-public-function`](py/undocumented-public-function.md) | A public function has a docstring | `manual` | — | `py/pylint`, `py/pydocstyle` |
+| [`py/undocumented-public-init`](py/undocumented-public-init.md) | A public class's __init__ has a docstring | `manual` | — | `py/pydocstyle` |
+| [`py/undocumented-public-method`](py/undocumented-public-method.md) | A public method has a docstring | `manual` | — | `py/pylint`, `py/pydocstyle` |
+| [`py/undocumented-public-module`](py/undocumented-public-module.md) | A public module has a docstring | `manual` | — | `py/pylint`, `py/pydocstyle` |
+| [`py/undocumented-public-nested-class`](py/undocumented-public-nested-class.md) | A public nested class has a docstring | `manual` | — | `py/pydocstyle` |
+| [`py/undocumented-public-package`](py/undocumented-public-package.md) | A public package has a docstring | `manual` | — | `py/pydocstyle` |
+| [`py/undocumented-warn`](py/undocumented-warn.md) | logging.WARNING, not logging.WARN | `auto` | — | `py/strict` |
+| [`py/unexpected-special-method-signature`](py/unexpected-special-method-signature.md) | Special methods take the parameters Python passes | `manual` | — | `py/strict` |
+| [`py/ungrouped-imports`](py/ungrouped-imports.md) | Imports of one package sit together | `manual` | — | `py/pylint` |
+| [`py/unicode-kind-prefix`](py/unicode-kind-prefix.md) | No u prefix on strings | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/unintentional-type-annotation`](py/unintentional-type-annotation.md) | No annotation where an assignment was meant | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unnecessary-assign`](py/unnecessary-assign.md) | Return the value, not a name assigned just before | `auto` | — | `py/strict` |
 | [`py/unnecessary-assign-before-yield`](py/unnecessary-assign-before-yield.md) | Yield the value, not a name assigned just before | `auto` | — | *[rules] only* |
-| [`py/unnecessary-builtin-import`](py/unnecessary-builtin-import.md) | No importing builtins | `auto` | — | *[rules] only* |
-| [`py/unnecessary-call-around-sorted`](py/unnecessary-call-around-sorted.md) | No list() around sorted() | `auto` | — | *[rules] only* |
-| [`py/unnecessary-cast-to-int`](py/unnecessary-cast-to-int.md) | No int() around what is already an int | `auto` | — | *[rules] only* |
-| [`py/unnecessary-class-parentheses`](py/unnecessary-class-parentheses.md) | class A:, not class A(): | `auto` | — | *[rules] only* |
-| [`py/unnecessary-collection-call`](py/unnecessary-collection-call.md) | {} , not dict() | `auto` | — | *[rules] only* |
-| [`py/unnecessary-comprehension`](py/unnecessary-comprehension.md) | list(y), not \[x for x in y\] | `auto` | — | *[rules] only* |
-| [`py/unnecessary-comprehension-in-call`](py/unnecessary-comprehension-in-call.md) | A generator, not a list, inside any() and all() | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-default-type-args`](py/unnecessary-default-type-args.md) | Generator\[int\], not Generator\[int, None, None\] | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-dict-comprehension-for-iterable`](py/unnecessary-dict-comprehension-for-iterable.md) | dict.fromkeys, not {k: v for k in keys} | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-dict-index-lookup`](py/unnecessary-dict-index-lookup.md) | Use the value from items(), not d\[k\] | `auto` | — | *[rules] only* |
-| [`py/unnecessary-dict-kwargs`](py/unnecessary-dict-kwargs.md) | No **{...} of literal keys in a call | `auto` | — | *[rules] only* |
-| [`py/unnecessary-direct-lambda-call`](py/unnecessary-direct-lambda-call.md) | No lambda called where it is written | `manual` | — | *[rules] only* |
-| [`py/unnecessary-double-cast-or-process`](py/unnecessary-double-cast-or-process.md) | No list() or tuple() inside a call that takes any iterable | `auto` | — | *[rules] only* |
+| [`py/unnecessary-builtin-import`](py/unnecessary-builtin-import.md) | No importing builtins | `auto` | — | `py/strict` |
+| [`py/unnecessary-call-around-sorted`](py/unnecessary-call-around-sorted.md) | No list() around sorted() | `auto` | — | `py/strict` |
+| [`py/unnecessary-cast-to-int`](py/unnecessary-cast-to-int.md) | No int() around what is already an int | `auto` | — | `py/strict` |
+| [`py/unnecessary-class-parentheses`](py/unnecessary-class-parentheses.md) | class A:, not class A(): | `auto` | — | `py/strict` |
+| [`py/unnecessary-collection-call`](py/unnecessary-collection-call.md) | {} , not dict() | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/unnecessary-comprehension`](py/unnecessary-comprehension.md) | list(y), not \[x for x in y\] | `auto` | — | `py/strict` |
+| [`py/unnecessary-comprehension-in-call`](py/unnecessary-comprehension-in-call.md) | A generator, not a list, inside any() and all() | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/unnecessary-default-type-args`](py/unnecessary-default-type-args.md) | Generator\[int\], not Generator\[int, None, None\] | `suggest` | — | `py/strict` |
+| [`py/unnecessary-dict-comprehension-for-iterable`](py/unnecessary-dict-comprehension-for-iterable.md) | dict.fromkeys, not {k: v for k in keys} | `suggest` | — | `py/strict` |
+| [`py/unnecessary-dict-index-lookup`](py/unnecessary-dict-index-lookup.md) | Use the value from items(), not d\[k\] | `auto` | — | `py/strict` |
+| [`py/unnecessary-dict-kwargs`](py/unnecessary-dict-kwargs.md) | No **{...} of literal keys in a call | `auto` | — | `py/strict` |
+| [`py/unnecessary-direct-lambda-call`](py/unnecessary-direct-lambda-call.md) | No lambda called where it is written | `manual` | — | `py/strict` |
+| [`py/unnecessary-double-cast-or-process`](py/unnecessary-double-cast-or-process.md) | No list() or tuple() inside a call that takes any iterable | `auto` | — | `py/strict` |
 | [`py/unnecessary-dunder-call`](py/unnecessary-dunder-call.md) | A dunder method is reached through its builtin or operator | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-ellipsis`](py/unnecessary-ellipsis.md) | No ... beside other statements | `auto` | — | *[rules] only* |
-| [`py/unnecessary-empty-iterable-within-deque-call`](py/unnecessary-empty-iterable-within-deque-call.md) | deque(), not deque(\[\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-encode-utf8`](py/unnecessary-encode-utf8.md) | No .encode('utf-8') on a literal | `auto` | — | *[rules] only* |
+| [`py/unnecessary-ellipsis`](py/unnecessary-ellipsis.md) | No ... beside other statements | `auto` | — | `py/pylint` |
+| [`py/unnecessary-empty-iterable-within-deque-call`](py/unnecessary-empty-iterable-within-deque-call.md) | deque(), not deque(\[\]) | `auto` | — | `py/strict` |
+| [`py/unnecessary-encode-utf8`](py/unnecessary-encode-utf8.md) | No .encode('utf-8') on a literal | `auto` | — | `py/strict` |
 | [`py/unnecessary-enumerate`](py/unnecessary-enumerate.md) | No enumerate whose index or value is unused | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-from-float`](py/unnecessary-from-float.md) | Decimal(x), not Decimal.from_float(x) | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-future-import`](py/unnecessary-future-import.md) | No __future__ imports Python 3 already has | `auto` | — | *[rules] only* |
-| [`py/unnecessary-generator-dict`](py/unnecessary-generator-dict.md) | A dict comprehension, not dict(generator of pairs) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-generator-list`](py/unnecessary-generator-list.md) | A list comprehension, not list(generator) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-generator-set`](py/unnecessary-generator-set.md) | A set comprehension, not set(generator) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-from-float`](py/unnecessary-from-float.md) | Decimal(x), not Decimal.from_float(x) | `suggest` | — | `py/strict` |
+| [`py/unnecessary-future-import`](py/unnecessary-future-import.md) | No __future__ imports Python 3 already has | `auto` | — | `py/strict` |
+| [`py/unnecessary-generator-dict`](py/unnecessary-generator-dict.md) | A dict comprehension, not dict(generator of pairs) | `auto` | — | `py/strict` |
+| [`py/unnecessary-generator-list`](py/unnecessary-generator-list.md) | A list comprehension, not list(generator) | `auto` | — | `py/strict` |
+| [`py/unnecessary-generator-set`](py/unnecessary-generator-set.md) | A set comprehension, not set(generator) | `auto` | — | `py/strict` |
 | [`py/unnecessary-if`](py/unnecessary-if.md) | No if whose body is pass | `auto` | — | *[rules] only* |
-| [`py/unnecessary-iterable-allocation-for-first-element`](py/unnecessary-iterable-allocation-for-first-element.md) | next(iter(x)), not list(x)\[0\] | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-key-check`](py/unnecessary-key-check.md) | d.get(k), not k in d and d\[k\] | `auto` | — | *[rules] only* |
-| [`py/unnecessary-lambda`](py/unnecessary-lambda.md) | No lambda that only calls a function | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-list-call`](py/unnecessary-list-call.md) | No list() around a list comprehension | `auto` | — | *[rules] only* |
-| [`py/unnecessary-list-cast`](py/unnecessary-list-cast.md) | No list() around a loop's iterable | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-list-comprehension-dict`](py/unnecessary-list-comprehension-dict.md) | A dict comprehension, not dict(\[pairs\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-list-comprehension-set`](py/unnecessary-list-comprehension-set.md) | A set comprehension, not set(\[comprehension\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-list-index-lookup`](py/unnecessary-list-index-lookup.md) | Use the item from enumerate(), not xs\[i\] | `auto` | — | *[rules] only* |
-| [`py/unnecessary-literal-dict`](py/unnecessary-literal-dict.md) | A dict literal, not dict(\[(k, v)\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-literal-set`](py/unnecessary-literal-set.md) | A set literal, not set(\[...\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-literal-union`](py/unnecessary-literal-union.md) | One Literal, not a union of Literals | `auto` | — | *[rules] only* |
-| [`py/unnecessary-literal-within-dict-call`](py/unnecessary-literal-within-dict-call.md) | No dict() around a dict literal | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-literal-within-list-call`](py/unnecessary-literal-within-list-call.md) | A list literal, not list(\[...\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-literal-within-tuple-call`](py/unnecessary-literal-within-tuple-call.md) | A tuple literal, not tuple(\[...\]) | `auto` | — | *[rules] only* |
-| [`py/unnecessary-map`](py/unnecessary-map.md) | A generator, not map(lambda ...) | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-multiline-docstring`](py/unnecessary-multiline-docstring.md) | A one-line docstring fits on one line | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-nested-literal`](py/unnecessary-nested-literal.md) | Literal\[a, b\], not Literal\[a, Literal\[b\]\] | `auto` | — | *[rules] only* |
-| [`py/unnecessary-paren-on-raise-exception`](py/unnecessary-paren-on-raise-exception.md) | raise ValueError, not raise ValueError() | `auto` | — | *[rules] only* |
-| [`py/unnecessary-placeholder`](py/unnecessary-placeholder.md) | No pass beside other statements | `auto` | — | *[rules] only* |
-| [`py/unnecessary-range-start`](py/unnecessary-range-start.md) | range(n), not range(0, n) | `auto` | — | *[rules] only* |
+| [`py/unnecessary-iterable-allocation-for-first-element`](py/unnecessary-iterable-allocation-for-first-element.md) | next(iter(x)), not list(x)\[0\] | `suggest` | — | `py/strict` |
+| [`py/unnecessary-key-check`](py/unnecessary-key-check.md) | d.get(k), not k in d and d\[k\] | `auto` | — | `py/strict` |
+| [`py/unnecessary-lambda`](py/unnecessary-lambda.md) | No lambda that only calls a function | `suggest` | — | `py/strict` |
+| [`py/unnecessary-list-call`](py/unnecessary-list-call.md) | No list() around a list comprehension | `auto` | — | `py/strict` |
+| [`py/unnecessary-list-cast`](py/unnecessary-list-cast.md) | No list() around a loop's iterable | `suggest` | — | `py/strict` |
+| [`py/unnecessary-list-comprehension-dict`](py/unnecessary-list-comprehension-dict.md) | A dict comprehension, not dict(\[pairs\]) | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/unnecessary-list-comprehension-set`](py/unnecessary-list-comprehension-set.md) | A set comprehension, not set(\[comprehension\]) | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/unnecessary-list-index-lookup`](py/unnecessary-list-index-lookup.md) | Use the item from enumerate(), not xs\[i\] | `auto` | — | `py/strict` |
+| [`py/unnecessary-literal-dict`](py/unnecessary-literal-dict.md) | A dict literal, not dict(\[(k, v)\]) | `auto` | — | `py/strict` |
+| [`py/unnecessary-literal-set`](py/unnecessary-literal-set.md) | A set literal, not set(\[...\]) | `auto` | — | `py/strict` |
+| [`py/unnecessary-literal-union`](py/unnecessary-literal-union.md) | One Literal, not a union of Literals | `auto` | — | `py/strict` |
+| [`py/unnecessary-literal-within-dict-call`](py/unnecessary-literal-within-dict-call.md) | No dict() around a dict literal | `suggest` | — | `py/strict` |
+| [`py/unnecessary-literal-within-list-call`](py/unnecessary-literal-within-list-call.md) | A list literal, not list(\[...\]) | `auto` | — | `py/strict` |
+| [`py/unnecessary-literal-within-tuple-call`](py/unnecessary-literal-within-tuple-call.md) | A tuple literal, not tuple(\[...\]) | `auto` | — | `py/strict` |
+| [`py/unnecessary-map`](py/unnecessary-map.md) | A generator, not map(lambda ...) | `suggest` | — | `py/strict` |
+| [`py/unnecessary-multiline-docstring`](py/unnecessary-multiline-docstring.md) | A one-line docstring fits on one line | `suggest` | — | `py/pydocstyle` |
+| [`py/unnecessary-nested-literal`](py/unnecessary-nested-literal.md) | Literal\[a, b\], not Literal\[a, Literal\[b\]\] | `auto` | — | `py/strict` |
+| [`py/unnecessary-paren-on-raise-exception`](py/unnecessary-paren-on-raise-exception.md) | raise ValueError, not raise ValueError() | `auto` | — | `py/strict` |
+| [`py/unnecessary-placeholder`](py/unnecessary-placeholder.md) | No pass beside other statements | `auto` | — | `py/strict`, `py/pylint` |
+| [`py/unnecessary-range-start`](py/unnecessary-range-start.md) | range(n), not range(0, n) | `auto` | — | `py/strict` |
 | [`py/unnecessary-regular-expression`](py/unnecessary-regular-expression.md) | str.replace, not re.sub with a plain string | `suggest` | — | *[rules] only* |
-| [`py/unnecessary-return-none`](py/unnecessary-return-none.md) | return, not return None, when nothing else is returned | `auto` | — | *[rules] only* |
-| [`py/unnecessary-round`](py/unnecessary-round.md) | No round() of an int | `auto` | — | *[rules] only* |
-| [`py/unnecessary-spread`](py/unnecessary-spread.md) | No spread of a dict literal | `auto` | — | *[rules] only* |
-| [`py/unnecessary-subscript-reversal`](py/unnecessary-subscript-reversal.md) | No \[::-1\] inside set() or sorted() | `auto` | — | *[rules] only* |
-| [`py/unnecessary-type-union`](py/unnecessary-type-union.md) | type\[A \| B\], not type\[A\] \| type\[B\] | `suggest` | — | *[rules] only* |
-| [`py/unpacking-non-sequence`](py/unpacking-non-sequence.md) | Only a sequence is unpacked | `manual` | — | *[rules] only* |
-| [`py/unprefixed-type-param`](py/unprefixed-type-param.md) | A stub's TypeVar is private | `manual` | — | *[rules] only* |
-| [`py/unquoted-type-alias`](py/unquoted-type-alias.md) | A type alias that names a `TYPE_CHECKING`-only import is quoted | `suggest` | — | *[rules] only* |
+| [`py/unnecessary-return-none`](py/unnecessary-return-none.md) | return, not return None, when nothing else is returned | `auto` | — | `py/strict` |
+| [`py/unnecessary-round`](py/unnecessary-round.md) | No round() of an int | `auto` | — | `py/strict` |
+| [`py/unnecessary-spread`](py/unnecessary-spread.md) | No spread of a dict literal | `auto` | — | `py/strict` |
+| [`py/unnecessary-subscript-reversal`](py/unnecessary-subscript-reversal.md) | No \[::-1\] inside set() or sorted() | `auto` | — | `py/strict` |
+| [`py/unnecessary-type-union`](py/unnecessary-type-union.md) | type\[A \| B\], not type\[A\] \| type\[B\] | `suggest` | — | `py/strict` |
+| [`py/unpacking-non-sequence`](py/unpacking-non-sequence.md) | Only a sequence is unpacked | `manual` | — | `py/pylint` |
+| [`py/unprefixed-type-param`](py/unprefixed-type-param.md) | A stub's TypeVar is private | `manual` | — | `py/strict` |
+| [`py/unquoted-type-alias`](py/unquoted-type-alias.md) | A type alias that names a `TYPE_CHECKING`-only import is quoted | `suggest` | — | `py/strict` |
 | [`py/unraw-re-pattern`](py/unraw-re-pattern.md) | Regex patterns are raw strings | `suggest` | — | *[rules] only* |
-| [`py/unreachable`](py/unreachable.md) | No code after return or raise | `suggest` | — | *[rules] only* |
-| [`py/unrecognized-platform-check`](py/unrecognized-platform-check.md) | A platform check in a stub is == or != | `manual` | — | *[rules] only* |
-| [`py/unrecognized-platform-name`](py/unrecognized-platform-name.md) | A platform check in a stub names a known platform | `manual` | — | *[rules] only* |
-| [`py/unrecognized-version-info-check`](py/unrecognized-version-info-check.md) | A stub's version check has a form type checkers understand | `manual` | — | *[rules] only* |
-| [`py/unreliable-callable-check`](py/unreliable-callable-check.md) | Test for callables with `callable()` | `suggest` | — | `py/recommended` |
-| [`py/unsorted-dunder-slots`](py/unsorted-dunder-slots.md) | `__slots__` is sorted | `auto` | — | *[rules] only* |
-| [`py/unsorted-imports`](py/unsorted-imports.md) | Imports are sorted | `auto` | `known_first_party`, `line_length` | `py/recommended` |
+| [`py/unreachable`](py/unreachable.md) | No code after return or raise | `suggest` | — | `py/pylint` |
+| [`py/unrecognized-platform-check`](py/unrecognized-platform-check.md) | A platform check in a stub is == or != | `manual` | — | `py/strict` |
+| [`py/unrecognized-platform-name`](py/unrecognized-platform-name.md) | A platform check in a stub names a known platform | `manual` | — | `py/strict` |
+| [`py/unrecognized-version-info-check`](py/unrecognized-version-info-check.md) | A stub's version check has a form type checkers understand | `manual` | — | `py/strict` |
+| [`py/unreliable-callable-check`](py/unreliable-callable-check.md) | Test for callables with `callable()` | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unsorted-dunder-slots`](py/unsorted-dunder-slots.md) | `__slots__` is sorted | `auto` | — | `py/strict` |
+| [`py/unsorted-imports`](py/unsorted-imports.md) | Imports are sorted | `auto` | `known_first_party`, `line_length` | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/unspecified-encoding`](py/unspecified-encoding.md) | open() in text mode names its encoding | `suggest` | — | *[rules] only* |
-| [`py/unsupported-method-call-on-all`](py/unsupported-method-call-on-all.md) | `__all__` grows with `+=`, not a method call | `suggest` | — | *[rules] only* |
-| [`py/unused-annotation`](py/unused-annotation.md) | Every annotated local is used | `auto` | — | `py/recommended` |
+| [`py/unsupported-method-call-on-all`](py/unsupported-method-call-on-all.md) | `__all__` grows with `+=`, not a method call | `suggest` | — | `py/strict` |
+| [`py/unused-annotation`](py/unused-annotation.md) | Every annotated local is used | `auto` | — | `py/recommended`, `py/strict` |
 | [`py/unused-async`](py/unused-async.md) | async def awaits something | `manual` | — | *[rules] only* |
-| [`py/unused-class-method-argument`](py/unused-class-method-argument.md) | No unused classmethod parameter | `manual` | — | *[rules] only* |
-| [`py/unused-function-argument`](py/unused-function-argument.md) | No unused function parameter | `manual` | — | *[rules] only* |
-| [`py/unused-import`](py/unused-import.md) | Every imported name is used | `suggest` | — | `py/recommended` |
-| [`py/unused-lambda-argument`](py/unused-lambda-argument.md) | No unused lambda parameter | `manual` | — | *[rules] only* |
-| [`py/unused-loop-control-variable`](py/unused-loop-control-variable.md) | Every loop variable is used in the loop | `suggest` | — | `py/recommended` |
-| [`py/unused-method-argument`](py/unused-method-argument.md) | No unused method parameter | `manual` | — | *[rules] only* |
-| [`py/unused-private-member`](py/unused-private-member.md) | A private class member is read inside its class | `manual` | — | *[rules] only* |
-| [`py/unused-private-protocol`](py/unused-private-protocol.md) | A private Protocol is used | `suggest` | — | *[rules] only* |
-| [`py/unused-private-type-alias`](py/unused-private-type-alias.md) | A private type alias is used | `suggest` | — | *[rules] only* |
-| [`py/unused-private-type-var`](py/unused-private-type-var.md) | A private TypeVar is used | `suggest` | — | *[rules] only* |
-| [`py/unused-private-typed-dict`](py/unused-private-typed-dict.md) | A private TypedDict is used | `suggest` | — | *[rules] only* |
-| [`py/unused-static-method-argument`](py/unused-static-method-argument.md) | No unused staticmethod parameter | `manual` | — | *[rules] only* |
-| [`py/unused-unpacked-variable`](py/unused-unpacked-variable.md) | Unused names from unpacking start with _ | `suggest` | — | *[rules] only* |
-| [`py/unused-variable`](py/unused-variable.md) | Every local variable is used | `suggest` | — | `py/recommended` |
-| [`py/use-implicit-booleaness-not-comparison`](py/use-implicit-booleaness-not-comparison.md) | if not x:, not if x == \[\] | `suggest` | — | *[rules] only* |
-| [`py/use-implicit-booleaness-not-comparison-to-zero`](py/use-implicit-booleaness-not-comparison-to-zero.md) | if not x:, not if x == 0 | `suggest` | — | *[rules] only* |
-| [`py/use-implicit-booleaness-not-len`](py/use-implicit-booleaness-not-len.md) | if x:, not if len(x): | `suggest` | — | *[rules] only* |
-| [`py/use-instead`](py/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `py/recommended` |
-| [`py/use-list-literal`](py/use-list-literal.md) | \[\], not list() | `auto` | — | *[rules] only* |
-| [`py/use-maxsplit-arg`](py/use-maxsplit-arg.md) | split(sep, maxsplit=1) when only the first part is used | `suggest` | — | *[rules] only* |
-| [`py/use-sequence-for-iteration`](py/use-sequence-for-iteration.md) | Iterate a tuple, not a set literal | `suggest` | — | *[rules] only* |
-| [`py/used-before-assignment`](py/used-before-assignment.md) | A name is bound before it is read | `manual` | — | *[rules] only* |
+| [`py/unused-class-method-argument`](py/unused-class-method-argument.md) | No unused classmethod parameter | `manual` | — | `py/strict` |
+| [`py/unused-function-argument`](py/unused-function-argument.md) | No unused function parameter | `manual` | — | `py/strict`, `py/pylint` |
+| [`py/unused-import`](py/unused-import.md) | Every imported name is used | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unused-lambda-argument`](py/unused-lambda-argument.md) | No unused lambda parameter | `manual` | — | `py/strict` |
+| [`py/unused-loop-control-variable`](py/unused-loop-control-variable.md) | Every loop variable is used in the loop | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unused-method-argument`](py/unused-method-argument.md) | No unused method parameter | `manual` | — | `py/strict` |
+| [`py/unused-private-member`](py/unused-private-member.md) | A private class member is read inside its class | `manual` | — | `py/pylint` |
+| [`py/unused-private-protocol`](py/unused-private-protocol.md) | A private Protocol is used | `suggest` | — | `py/strict` |
+| [`py/unused-private-type-alias`](py/unused-private-type-alias.md) | A private type alias is used | `suggest` | — | `py/strict` |
+| [`py/unused-private-type-var`](py/unused-private-type-var.md) | A private TypeVar is used | `suggest` | — | `py/strict` |
+| [`py/unused-private-typed-dict`](py/unused-private-typed-dict.md) | A private TypedDict is used | `suggest` | — | `py/strict` |
+| [`py/unused-static-method-argument`](py/unused-static-method-argument.md) | No unused staticmethod parameter | `manual` | — | `py/strict` |
+| [`py/unused-unpacked-variable`](py/unused-unpacked-variable.md) | Unused names from unpacking start with _ | `suggest` | — | `py/strict` |
+| [`py/unused-variable`](py/unused-variable.md) | Every local variable is used | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/use-implicit-booleaness-not-comparison`](py/use-implicit-booleaness-not-comparison.md) | if not x:, not if x == \[\] | `suggest` | — | `py/pylint` |
+| [`py/use-implicit-booleaness-not-comparison-to-zero`](py/use-implicit-booleaness-not-comparison-to-zero.md) | if not x:, not if x == 0 | `suggest` | — | `py/pylint` |
+| [`py/use-implicit-booleaness-not-len`](py/use-implicit-booleaness-not-len.md) | if x:, not if len(x): | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/use-instead`](py/use-instead.md) | Use the project's function instead of the one it wraps | `auto` | `replacements` | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/use-list-literal`](py/use-list-literal.md) | \[\], not list() | `auto` | — | `py/pylint` |
+| [`py/use-maxsplit-arg`](py/use-maxsplit-arg.md) | split(sep, maxsplit=1) when only the first part is used | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/use-sequence-for-iteration`](py/use-sequence-for-iteration.md) | Iterate a tuple, not a set literal | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/used-before-assignment`](py/used-before-assignment.md) | A name is bound before it is read | `manual` | — | `py/pylint` |
 | [`py/used-dummy-variable`](py/used-dummy-variable.md) | A local variable named like a dummy is not read | `suggest` | — | *[rules] only* |
-| [`py/used-prior-global-declaration`](py/used-prior-global-declaration.md) | A function's `global` comes before the name is used | `manual` | — | *[rules] only* |
-| [`py/useless-class-metaclass-type`](py/useless-class-metaclass-type.md) | No metaclass=type | `auto` | — | *[rules] only* |
-| [`py/useless-comparison`](py/useless-comparison.md) | No comparison whose result is thrown away | `suggest` | — | `py/recommended` |
-| [`py/useless-contextlib-suppress`](py/useless-contextlib-suppress.md) | `contextlib.suppress()` names an exception | `suggest` | — | `py/recommended` |
-| [`py/useless-else-on-loop`](py/useless-else-on-loop.md) | No else on a loop without break | `manual` | — | *[rules] only* |
-| [`py/useless-exception-statement`](py/useless-exception-statement.md) | Raise the exception you build | `suggest` | — | *[rules] only* |
-| [`py/useless-expression`](py/useless-expression.md) | No expression statement that does nothing | `suggest` | — | `py/recommended` |
+| [`py/used-prior-global-declaration`](py/used-prior-global-declaration.md) | A function's `global` comes before the name is used | `manual` | — | `py/pylint` |
+| [`py/useless-class-metaclass-type`](py/useless-class-metaclass-type.md) | No metaclass=type | `auto` | — | `py/strict` |
+| [`py/useless-comparison`](py/useless-comparison.md) | No comparison whose result is thrown away | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/useless-contextlib-suppress`](py/useless-contextlib-suppress.md) | `contextlib.suppress()` names an exception | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/useless-else-on-loop`](py/useless-else-on-loop.md) | No else on a loop without break | `manual` | — | `py/strict` |
+| [`py/useless-exception-statement`](py/useless-exception-statement.md) | Raise the exception you build | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/useless-expression`](py/useless-expression.md) | No expression statement that does nothing | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/useless-finally`](py/useless-finally.md) | No empty finally | `auto` | — | *[rules] only* |
-| [`py/useless-if-else`](py/useless-if-else.md) | No conditional whose branches are equal | `suggest` | — | *[rules] only* |
-| [`py/useless-import-alias`](py/useless-import-alias.md) | No import x as x | `auto` | — | *[rules] only* |
-| [`py/useless-metaclass-type`](py/useless-metaclass-type.md) | No __metaclass__ = type | `auto` | — | *[rules] only* |
-| [`py/useless-object-inheritance`](py/useless-object-inheritance.md) | No explicit object base | `auto` | — | *[rules] only* |
+| [`py/useless-if-else`](py/useless-if-else.md) | No conditional whose branches are equal | `suggest` | — | `py/strict` |
+| [`py/useless-import-alias`](py/useless-import-alias.md) | No import x as x | `auto` | — | `py/strict` |
+| [`py/useless-metaclass-type`](py/useless-metaclass-type.md) | No __metaclass__ = type | `auto` | — | `py/strict` |
+| [`py/useless-object-inheritance`](py/useless-object-inheritance.md) | No explicit object base | `auto` | — | `py/strict` |
 | [`py/useless-param-doc`](py/useless-param-doc.md) | A parameter that is ignored by name is not documented | `suggest` | `check_private_functions` | *[rules] only* |
-| [`py/useless-parent-delegation`](py/useless-parent-delegation.md) | No method that only calls super() | `suggest` | — | *[rules] only* |
-| [`py/useless-return`](py/useless-return.md) | No return None at the end | `auto` | — | *[rules] only* |
-| [`py/useless-try-except`](py/useless-try-except.md) | No handler that only re-raises | `suggest` | — | *[rules] only* |
+| [`py/useless-parent-delegation`](py/useless-parent-delegation.md) | No method that only calls super() | `suggest` | — | `py/pylint` |
+| [`py/useless-return`](py/useless-return.md) | No return None at the end | `auto` | — | `py/strict` |
+| [`py/useless-try-except`](py/useless-try-except.md) | No handler that only re-raises | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/useless-type-doc`](py/useless-type-doc.md) | A parameter that is ignored by name has no documented type | `suggest` | `check_private_functions` | *[rules] only* |
-| [`py/useless-with-lock`](py/useless-with-lock.md) | No with on a fresh lock | `manual` | — | *[rules] only* |
-| [`py/using-constant-test`](py/using-constant-test.md) | No if or while on a constant | `manual` | — | *[rules] only* |
-| [`py/utf8-encoding-declaration`](py/utf8-encoding-declaration.md) | No coding: utf-8 comment | `auto` | — | *[rules] only* |
-| [`py/verbose-decimal-constructor`](py/verbose-decimal-constructor.md) | Decimal('1.5'), not Decimal('  1.5 ') | `auto` | — | *[rules] only* |
-| [`py/verbose-log-message`](py/verbose-log-message.md) | logger.exception does not repeat the exception | `manual` | — | *[rules] only* |
-| [`py/verbose-raise`](py/verbose-raise.md) | raise, not raise e | `auto` | — | *[rules] only* |
-| [`py/wait-for-process-in-async-function`](py/wait-for-process-in-async-function.md) | No blocking wait for a process in an async function | `manual` | — | *[rules] only* |
+| [`py/useless-with-lock`](py/useless-with-lock.md) | No with on a fresh lock | `manual` | — | `py/strict` |
+| [`py/using-constant-test`](py/using-constant-test.md) | No if or while on a constant | `manual` | — | `py/pylint` |
+| [`py/utf8-encoding-declaration`](py/utf8-encoding-declaration.md) | No coding: utf-8 comment | `auto` | — | `py/strict` |
+| [`py/verbose-decimal-constructor`](py/verbose-decimal-constructor.md) | Decimal('1.5'), not Decimal('  1.5 ') | `auto` | — | `py/strict` |
+| [`py/verbose-log-message`](py/verbose-log-message.md) | logger.exception does not repeat the exception | `manual` | — | `py/strict` |
+| [`py/verbose-raise`](py/verbose-raise.md) | raise, not raise e | `auto` | — | `py/strict` |
+| [`py/wait-for-process-in-async-function`](py/wait-for-process-in-async-function.md) | No blocking wait for a process in an async function | `manual` | — | `py/strict` |
 | [`py/while-one`](py/while-one.md) | while True, not while 1 | `auto` | — | *[rules] only* |
 | [`py/while-used`](py/while-used.md) | No while loop | `manual` | — | *[rules] only* |
 | [`py/write-whole-file`](py/write-whole-file.md) | pathlib writes a whole file in one call | `suggest` | — | *[rules] only* |
-| [`py/wrong-exception-operation`](py/wrong-exception-operation.md) | An except names exceptions, not an expression of them | `manual` | — | *[rules] only* |
-| [`py/wrong-tuple-length-version-comparison`](py/wrong-tuple-length-version-comparison.md) | A sliced `sys.version_info` is compared with a tuple of its length | `manual` | — | *[rules] only* |
-| [`py/yield-from-in-async-function`](py/yield-from-in-async-function.md) | No yield from in an async function | `manual` | — | *[rules] only* |
+| [`py/wrong-exception-operation`](py/wrong-exception-operation.md) | An except names exceptions, not an expression of them | `manual` | — | `py/pylint` |
+| [`py/wrong-tuple-length-version-comparison`](py/wrong-tuple-length-version-comparison.md) | A sliced `sys.version_info` is compared with a tuple of its length | `manual` | — | `py/strict` |
+| [`py/yield-from-in-async-function`](py/yield-from-in-async-function.md) | No yield from in an async function | `manual` | — | `py/strict` |
 | [`py/yield-in-context-manager-in-async-generator`](py/yield-in-context-manager-in-async-generator.md) | An async generator does not yield inside a with block | `manual` | — | *[rules] only* |
-| [`py/yield-in-for-loop`](py/yield-in-for-loop.md) | yield from, not a loop that yields each item | `suggest` | — | *[rules] only* |
-| [`py/yield-in-init`](py/yield-in-init.md) | No yield in __init__ | `manual` | — | *[rules] only* |
-| [`py/yield-inside-async-function`](py/yield-inside-async-function.md) | No yield from in an async function | `manual` | — | *[rules] only* |
-| [`py/yield-outside-function`](py/yield-outside-function.md) | `yield` and `await` only inside a function | `manual` | — | `py/recommended` |
-| [`py/yoda-conditions`](py/yoda-conditions.md) | The variable goes first in a comparison | `suggest` | — | *[rules] only* |
-| [`py/zip-dict-keys-and-values`](py/zip-dict-keys-and-values.md) | d.items(), not zip(d.keys(), d.values()) | `suggest` | — | *[rules] only* |
-| [`py/zip-instead-of-pairwise`](py/zip-instead-of-pairwise.md) | itertools.pairwise, not zip(x, x\[1:\]) | `suggest` | — | *[rules] only* |
-| [`py/zip-without-explicit-strict`](py/zip-without-explicit-strict.md) | `zip()` says `strict=` | `suggest` | `target_version` | `py/recommended` |
+| [`py/yield-in-for-loop`](py/yield-in-for-loop.md) | yield from, not a loop that yields each item | `suggest` | — | `py/strict`, `py/pylint` |
+| [`py/yield-in-init`](py/yield-in-init.md) | No yield in __init__ | `manual` | — | `py/strict` |
+| [`py/yield-inside-async-function`](py/yield-inside-async-function.md) | No yield from in an async function | `manual` | — | `py/pylint` |
+| [`py/yield-outside-function`](py/yield-outside-function.md) | `yield` and `await` only inside a function | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/yoda-conditions`](py/yoda-conditions.md) | The variable goes first in a comparison | `suggest` | — | `py/strict` |
+| [`py/zip-dict-keys-and-values`](py/zip-dict-keys-and-values.md) | d.items(), not zip(d.keys(), d.values()) | `suggest` | — | `py/strict` |
+| [`py/zip-instead-of-pairwise`](py/zip-instead-of-pairwise.md) | itertools.pairwise, not zip(x, x\[1:\]) | `suggest` | — | `py/strict` |
+| [`py/zip-without-explicit-strict`](py/zip-without-explicit-strict.md) | `zip()` says `strict=` | `suggest` | `target_version` | `py/recommended`, `py/strict` |
 
 ## security-python
 

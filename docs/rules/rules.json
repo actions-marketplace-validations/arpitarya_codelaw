@@ -93376,7 +93376,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:py/strict",
+     "severity": "warn"
+    }
+   ],
    "options": {},
    "dont": null,
    "do": "#!/usr/bin/env python3",
@@ -93462,7 +93467,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:py/strict",
+     "severity": "warn"
+    }
+   ],
    "options": {},
    "dont": "#!/usr/bin/env python3",
    "do": null,

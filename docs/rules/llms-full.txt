@@ -131661,7 +131661,7 @@ env = os.environ.copy()
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
 - **Fix:** `manual` (whether the file is a script (add the shebang) or only a module (drop the bit) is the author's)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:py/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/shebang-missing-executable-file.md
 
 ### What it checks
@@ -131735,7 +131735,7 @@ print(1)
 
 - **Pack:** `codelaw-rules-python` · **Languages:** Python
 - **Fix:** `manual` (whether the file is a script (`chmod +x`) or only a module (drop the shebang) is the author's)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:py/strict` at `warn`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/py/shebang-not-executable.md
 
 ### What it checks

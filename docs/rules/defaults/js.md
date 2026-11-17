@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 934 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 237 in no preset.
+- **Rules:** 941 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 244 in no preset.
 
 ## Presets
 
@@ -302,6 +302,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-boolean-sort-comparator`](../js/no-boolean-sort-comparator.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-break-in-nested-loop`](../js/no-break-in-nested-loop.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-built-in-override`](../js/no-built-in-override.md) | off — in no preset | — | — |
+| [`js/no-bun-modules`](../js/no-bun-modules.md) | off — in no preset | — | — |
 | [`js/no-caller`](../js/no-caller.md) | off — in no preset | — | — |
 | [`js/no-canvas-to-image`](../js/no-canvas-to-image.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-case-declarations`](../js/no-case-declarations.md) | on with `preview = true` | error | `js/recommended` |
@@ -352,6 +353,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-duplicate-in-composite`](../js/no-duplicate-in-composite.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-duplicate-logical-operands`](../js/no-duplicate-logical-operands.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-duplicate-loops`](../js/no-duplicate-loops.md) | off — opt-in preset | — | `js/strict` |
+| [`js/no-duplicate-map-keys`](../js/no-duplicate-map-keys.md) | off — in no preset | — | — |
 | [`js/no-duplicate-parameterized-test-case`](../js/no-duplicate-parameterized-test-case.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-duplicate-set-values`](../js/no-duplicate-set-values.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-duplicate-string`](../js/no-duplicate-string.md) | off — in no preset | — | — |
@@ -497,6 +499,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-promise-executor-return`](../js/no-promise-executor-return.md) | off — in no preset | — | — |
 | [`js/no-proto`](../js/no-proto.md) | off — in no preset | — | — |
 | [`js/no-prototype-builtins`](../js/no-prototype-builtins.md) | on with `preview = true` | error | `js/recommended` |
+| [`js/no-re-export-all`](../js/no-re-export-all.md) | off — in no preset | — | — |
 | [`js/no-redeclare`](../js/no-redeclare.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-redundant-boolean`](../js/no-redundant-boolean.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-redundant-comparison`](../js/no-redundant-comparison.md) | off — opt-in preset | — | `js/strict` |
@@ -954,7 +957,11 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/updated-loop-counter`](../js/updated-loop-counter.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/use-instead`](../js/use-instead.md) | on with `preview = true` | warn | `js/recommended` |
 | [`js/use-isnan`](../js/use-isnan.md) | on with `preview = true` | error | `js/recommended` |
+| [`js/use-json-import-attributes`](../js/use-json-import-attributes.md) | off — in no preset | — | — |
+| [`js/use-node-assert-strict`](../js/use-node-assert-strict.md) | off — in no preset | — | — |
 | [`js/use-simple-number-keys`](../js/use-simple-number-keys.md) | on with `preview = true` | error | `js/recommended` |
+| [`js/use-static-response-methods`](../js/use-static-response-methods.md) | off — in no preset | — | — |
+| [`js/use-top-level-regex`](../js/use-top-level-regex.md) | off — in no preset | — | — |
 | [`js/use-type-alias`](../js/use-type-alias.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/valid-typeof`](../js/valid-typeof.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/vars-on-top`](../js/vars-on-top.md) | off — opt-in preset | — | `js/taste` |
