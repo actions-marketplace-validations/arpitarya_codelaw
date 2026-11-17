@@ -12,7 +12,7 @@ imports-first,retired,,,,,,,auto,,yes,deprecated upstream
 max-dependencies,port,,js,js/import-max-dependencies,manual,P2,C,none,,,
 named,port,,js,js/import-named,manual,P1,A,none,yes,,needs the project graph (SR-PROJECT-GRAPH)
 namespace,port,,js,js/import-namespace,manual,P1,A,none,yes,,needs the project graph (SR-PROJECT-GRAPH)
-newline-after-import,port,,js,js/import-newline-after-import,auto,P2,C,auto,,,
+newline-after-import,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
 no-absolute-path,port,,js,js/import-no-absolute-path,auto,P2,C,auto,,,
 no-amd,port,,js,js/import-no-amd,manual,P2,C,none,,,
 no-anonymous-default-export,port,,js,js/import-no-anonymous-default-export,manual,P2,C,none,,,

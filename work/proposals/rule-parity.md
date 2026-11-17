@@ -54,7 +54,7 @@ recommended set, markdownlint's default all-on). codelaw's side is every
 | **types** | needs type information — W-105's type questions |
 | **layout** | formatting; the formatter owns it (SR-FORMATTER decision 3) |
 | **planned** | already filed as another work item |
-| **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). `boolean-datetime` is the first row carried in the CSV with this class; the rest of §14's list still reads `port` there |
+| **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). every row §14 lists carries this class in the CSV (`method/classify.py`'s `RULED`, W-192) |
 | **needs-data** | needs runtime-support data codelaw does not ship (`n/no-unsupported-features/*`) |
 | **out-of-scope** | a language outside L3 (Vue, Svelte, Astro, GraphQL) or a framework with no codelaw pack (Ruff's Airflow, Django, FastAPI, NumPy, pandas rules) |
 | **same-as** | the same rule as one counted under another tool (Biome's sourced rules, import-x's fork, typescript-eslint's extension rules) — counted once |
@@ -330,7 +330,7 @@ Pack by pack: codelaw's rules when this proposal was written, the count it propo
 
 ## 14 · Ruled 2026-11-09: the rows W-139 left, and where each went
 
-W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 271 on the voice docket of 2026-11-09 (*"Whatever is pending, we are going to have separate work items for those. And we close W139."*). The classes below are not ports and leave the count; `method/classify.py` does not know them yet, so a regenerated CSV shows them as `port` until it does (W-192's ledger step).
+W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 271 on the voice docket of 2026-11-09 (*"Whatever is pending, we are going to have separate work items for those. And we close W139."*). The classes below are not ports and leave the count; `method/classify.py` knows them (its `RULED` table, W-192), so a regenerated CSV shows each as `layout` (formatter-owned), `out-of-scope` or `not-applicable`, not `port`.
 
 | class | rows |
 |---|---|

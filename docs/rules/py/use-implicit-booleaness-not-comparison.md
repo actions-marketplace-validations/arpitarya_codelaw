@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`not x` is true for any empty or falsy value, not only an empty list) |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 pip install codelaw-rules-python
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:py/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:py/pylint` sets it to `info`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:py/recommended"]
-
-[rules]
-"py/use-implicit-booleaness-not-comparison" = "error"
+extends = ["codelaw:py/pylint"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

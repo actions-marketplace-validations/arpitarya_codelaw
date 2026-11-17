@@ -56,7 +56,8 @@
  "eslint-plugin-import": {
   "covered": 3,
   "file": "eslint-plugin-import.csv",
-  "port": 42,
+  "layout": 1,
+  "port": 41,
   "retired": 1,
   "total": 46,
   "version": "2.32.0"
@@ -71,16 +72,16 @@
  "eslint-plugin-jest": {
   "covered": 2,
   "file": "eslint-plugin-jest.csv",
-  "layout": 1,
-  "port": 64,
+  "layout": 9,
+  "port": 56,
   "total": 71,
   "types": 4,
   "version": "29.17.0"
  },
  "eslint-plugin-jsdoc": {
   "file": "eslint-plugin-jsdoc.csv",
-  "layout": 7,
-  "port": 71,
+  "layout": 8,
+  "port": 70,
   "total": 78,
   "version": "65.4.2"
  },
@@ -117,8 +118,8 @@
  "eslint-plugin-react": {
   "covered": 19,
   "file": "eslint-plugin-react.csv",
-  "layout": 1,
-  "port": 78,
+  "layout": 14,
+  "port": 65,
   "retired": 2,
   "skip": 3,
   "total": 103,
@@ -127,7 +128,8 @@
  "eslint-plugin-react-hooks": {
   "covered": 11,
   "file": "eslint-plugin-react-hooks.csv",
-  "port": 15,
+  "out-of-scope": 4,
+  "port": 11,
   "retired": 1,
   "skip": 2,
   "total": 29,
@@ -174,8 +176,8 @@
  "eslint-plugin-unicorn": {
   "covered": 1,
   "file": "eslint-plugin-unicorn.csv",
-  "layout": 9,
-  "port": 365,
+  "layout": 10,
+  "port": 364,
   "retired": 20,
   "total": 396,
   "types": 1,
@@ -211,7 +213,9 @@
   "covered": 14,
   "file": "pylint.csv",
   "layout": 10,
-  "port": 296,
+  "not-applicable": 15,
+  "out-of-scope": 2,
+  "port": 279,
   "same-as": 80,
   "skip": 14,
   "total": 444,
@@ -222,8 +226,9 @@
   "covered": 175,
   "file": "ruff.csv",
   "layout": 66,
+  "out-of-scope": 11,
   "planned": 7,
-  "port": 706,
+  "port": 695,
   "retired": 15,
   "skip": 1,
   "total": 970,
@@ -232,7 +237,8 @@
  "stylelint": {
   "covered": 71,
   "file": "stylelint.csv",
-  "port": 79,
+  "layout": 6,
+  "port": 73,
   "total": 150,
   "version": "17.16.0"
  },

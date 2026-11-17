@@ -22,8 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-14 — next gate: W-142's pending publishers, once W-182 and W-187 are ready.*
+| 🔴 **W-192** put the 23 Oxlint `correctness` ports with no corpus finding into their pack's `recommended` preset (10 in `js/recommended`, 11 in `react/recommended`, 2 in `ts/recommended`)? Each is `preview`, so a project sees one only with `preview = true`; each had 0 findings on the corpus. Recommended: yes, all 23. [detail](open/W-192-defaults-on-and-off.md) | 2026-11-17 |
+| ↳ **blocks:** W-192 (its last step) | |
 
 
 ---
@@ -85,7 +85,7 @@ here. Read that record before changing anything below it.
 
 🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
-🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
+🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
 ### record update (0)
 

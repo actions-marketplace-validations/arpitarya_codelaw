@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` · `codelaw:py/pylint` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a method that never reads `self` becomes a `@staticmethod` without it: the cache is then shared by every instance and a subclass's override no longer replaces it through the base, so review it. A method that reads `self` is manual, as the cache must move out of the class) |

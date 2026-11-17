@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (auto when the module is the project's and the file has one star import: the star becomes the names the module binds that the function uses, read from the module; a suggestion with two. A module outside the project offers no fix (SR-MULTI-FILE-FIXES)) |

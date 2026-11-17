@@ -21,6 +21,9 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `py/project` | 1 | `graph/no-unused-exports`, the rule that reads the whole repo, from vulture's unused-function check — opt in |
 | `py/size` | 5 | size limits at `warn`: `py/max-lines` (1000 per module, Pylint's `too-many-lines`), `py/max-lines-per-function` (50) and `py/max-params` (5, Pylint's and Ruff's) — opt in |
 | `py/markers` | 2 | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry; opt in (SR-CONFIG decision 11a) |
+| `py/strict` | 622 | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import`; Ruff's preview rules stay out; opt in (W-192, B-048) |
+| `py/pylint` | 245 | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info); its optional extensions (docparams, typing, code_style and the rest) are left out; opt in (W-139, ruled 2026-10-30 on W-144: R7; built W-192) |
+| `py/pydocstyle` | 39 | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn`; `D203` (a formatter's) and `D213` (it contradicts `D212`, and Ruff drops it when both are on) are left out; opt in (W-192, B-048) |
 
 <!-- /docs-sync:presets -->
 
@@ -177,8 +180,9 @@ The ones that shape results most:
 | flake8-bugbear `B950` | never: line length is layout, and Ruff doesn't implement it |
 | `I002` missing-required-import | needs the project's list of required imports; not part of `I001` |
 
-The rest of Ruff 0.16's wider default (`UP`, `SIM`, `PL`, `C4`, …) is planned
-for a later `py/strict` preset (B-048 in [`work/BACKLOG.md`](../../work/BACKLOG.md)).
+The rest of Ruff's stable rules (`UP`, `SIM`, `PL`, `C4`, …) are in the opt-in
+`py/strict` preset, Pylint's own checkers in `py/pylint` and the `D` rules in
+`py/pydocstyle` ([SR-RULE-PACKS](../../records/0101_rule-packs.md) §1).
 
 ## Data
 

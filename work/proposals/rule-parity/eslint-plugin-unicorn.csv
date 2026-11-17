@@ -227,7 +227,7 @@ no-useless-undefined,port,,js,js/no-useless-undefined,auto,P1,B,auto,yes,,
 no-using-resource-escape,port,,js,js/no-using-resource-escape,manual,P1,B,none,yes,,
 no-xor-as-exponentiation,port,,js,js/no-xor-as-exponentiation,suggest,P1,B,suggest,yes,,
 no-zero-fractions,port,,js,js/no-zero-fractions,auto,P1,B,auto,yes,,
-number-literal-case,port,,js,js/number-literal-case,auto,P1,B,auto,yes,,
+number-literal-case,layout,,,,,,,auto,yes,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
 numeric-separators-style,port,,js,js/numeric-separators-style,auto,P1,B,auto,yes,,
 operator-assignment,port,,js,js/operator-assignment-unicorn,auto,P1,B,auto,yes,,
 prefer-abort-signal-any,port,,js,js/prefer-abort-signal-any,suggest,P1,B,suggest,yes,,

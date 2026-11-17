@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (the arguments after the third (`re.sub`, `re.subn`) or second (`re.split`) become `count=`/`maxsplit=` and `flags=`, by the real signature: the same binding. A flag in the `count` place is the bug the rule is for: its choices are `count=` (what runs today) and `flags=`) |

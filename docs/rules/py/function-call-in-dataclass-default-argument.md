@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:py/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (each instance now builds its own value, which is the usual intent but not if one shared value was meant; a call with no arguments becomes the factory itself, any other a `lambda`; `field` is imported from `dataclasses` where the file does not) |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 pip install codelaw-rules-python
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:py/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:py/strict` sets it to `warn`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:py/recommended"]
-
-[rules]
-"py/function-call-in-dataclass-default-argument" = "error"
+extends = ["codelaw:py/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

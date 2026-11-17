@@ -29,14 +29,14 @@ no-test-return-statement,port,,testing,test/no-test-return-statement,manual,P2,C
 no-unnecessary-assertion,types,,,,,,,none,,,needs type information: W-105
 no-unneeded-async-expect-function,port,,testing,test/no-unneeded-async-expect-function,auto,P2,C,auto,,,
 no-untyped-mock-factory,port,,testing,test/no-untyped-mock-factory,auto,P2,C,auto,,,
-padding-around-after-all-blocks,port,,testing,test/padding-around-after-all-blocks,auto,P2,C,auto,,,
-padding-around-after-each-blocks,port,,testing,test/padding-around-after-each-blocks,auto,P2,C,auto,,,
-padding-around-all,port,,testing,test/padding-around-all,auto,P2,C,auto,,,
-padding-around-before-all-blocks,port,,testing,test/padding-around-before-all-blocks,auto,P2,C,auto,,,
-padding-around-before-each-blocks,port,,testing,test/padding-around-before-each-blocks,auto,P2,C,auto,,,
-padding-around-describe-blocks,port,,testing,test/padding-around-describe-blocks,auto,P2,C,auto,,,
-padding-around-expect-groups,port,,testing,test/padding-around-expect-groups,auto,P2,C,auto,,,
-padding-around-test-blocks,port,,testing,test/padding-around-test-blocks,auto,P2,C,auto,,,
+padding-around-after-all-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-after-each-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-all,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-before-all-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-before-each-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-describe-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-expect-groups,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
+padding-around-test-blocks,layout,,,,,,,auto,,,"formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)"
 prefer-called-with,port,,testing,test/prefer-called-with,manual,P2,C,none,,,
 prefer-comparison-matcher,port,,testing,test/prefer-comparison-matcher,auto,P2,C,auto,,,
 prefer-each,port,,testing,test/prefer-each,manual,P2,C,none,,,
