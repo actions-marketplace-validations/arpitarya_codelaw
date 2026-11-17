@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2903 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2906 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 897 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 900 | 49 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2130,6 +2130,9 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/all-sorted`](py/all-sorted.md) | `__all__` is sorted | `auto` | — | `py/recommended`, `py/strict` |
 | [`py/ambiguous-class-name`](py/ambiguous-class-name.md) | No classes named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
 | [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/ambiguous-unicode-character-comment`](py/ambiguous-unicode-character-comment.md) | No ambiguous Unicode character in a comment | `suggest` | `allowed_confusables` | *[rules] only* |
+| [`py/ambiguous-unicode-character-docstring`](py/ambiguous-unicode-character-docstring.md) | No ambiguous Unicode character in a docstring | `suggest` | `allowed_confusables` | *[rules] only* |
+| [`py/ambiguous-unicode-character-string`](py/ambiguous-unicode-character-string.md) | No ambiguous Unicode character in a string | `suggest` | `allowed_confusables` | *[rules] only* |
 | [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
 | [`py/anomalous-unicode-escape-in-string`](py/anomalous-unicode-escape-in-string.md) | A bytes literal has no `\u`, `\U` or `\N` escape | `auto` | — | `py/pylint` |
 | [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | `py/strict` |

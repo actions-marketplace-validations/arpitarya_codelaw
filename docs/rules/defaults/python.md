@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 897 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 104 in no preset.
+- **Rules:** 900 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 107 in no preset.
 
 ## Presets
 
@@ -35,6 +35,9 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/all-sorted`](../py/all-sorted.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-class-name`](../py/ambiguous-class-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-function-name`](../py/ambiguous-function-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
+| [`py/ambiguous-unicode-character-comment`](../py/ambiguous-unicode-character-comment.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-docstring`](../py/ambiguous-unicode-character-docstring.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-string`](../py/ambiguous-unicode-character-string.md) | off — in no preset | — | — |
 | [`py/ambiguous-variable-name`](../py/ambiguous-variable-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/anomalous-unicode-escape-in-string`](../py/anomalous-unicode-escape-in-string.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/any-eq-ne-annotation`](../py/any-eq-ne-annotation.md) | off — opt-in preset | — | `py/strict` |

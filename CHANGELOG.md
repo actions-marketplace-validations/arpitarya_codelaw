@@ -7,6 +7,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 ### Added
 
 - **A file's executable bit for rules (W-184):** a native rule can ask whether the file it checks is executable (`FileContext::is_executable`; nothing is reported off Unix), and Ruff's `EXE001` (`py/shebang-not-executable`) and `EXE002` (`py/shebang-missing-executable-file`) read it; both are `manual`, `preview`. The rule tester gives a snippet file the bit with `+x` in its header.
+- **`py/ambiguous-unicode-character-string`, `-docstring` and `-comment` and the `data-confusables` package (W-182):** Ruff's RUF001, RUF002 and RUF003 — a character that looks like an ASCII one (a Cyrillic `а` for `a`, `’` for `'`, `×` for `x`) in a string, a docstring or a comment, with the ASCII character as the suggestion and an `allowed_confusables` option for the ones you write on purpose. Ruff's word rule decides: a word is reported when it has an ASCII character or is nothing but lookalikes, so Russian or Greek text is left alone. They read a new optional data package, `@codelaw/data-confusables` / `codelaw-data-confusables`, generated from Unicode's `confusables.txt` (Unicode License v3; 1,857 characters from Unicode 18.0.0) and refreshed weekly; without it the rules report nothing, and a file with only ASCII text never reads it. `preview`, in no preset.
 
 ### Changed
 
