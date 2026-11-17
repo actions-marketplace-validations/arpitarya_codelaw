@@ -28,9 +28,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (25)
+## Open items (24)
 
-### build (16)
+### build (15)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -46,8 +46,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-182** `agent` A Unicode confusables data package (ratified 11-09) and Ruff RUF001–RUF003 on it. Filed by Arpit (Cowork). [detail](open/W-182-unicode-confusables.md)
 
-🟢 **W-183** `agent` Findings gated on the project's Python version; Ruff FA100, FA102, PERF203, UP036 and two Pylint rows on it. Filed by Arpit (Cowork). [detail](open/W-183-target-gated-findings.md)
-
 🟢 **W-185** `agent` The Python side of the project graph (imports, class bases) and six Pylint rows on it (`cyclic-import`, `import-error`, …). Filed by Arpit (Cowork). [detail](open/W-185-python-project-graph.md)
 
 🟢 **W-187** `agent` A data package of deprecated standard-library names from CPython's docs (approved 11-09); Pylint's five `deprecated-*` rows. Filed by Arpit (Cowork). [detail](open/W-187-stdlib-deprecations.md)
@@ -58,7 +56,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-196** `agent` Biome's 98 unbuilt rows (Qwik, Solid, React Native, Vue and nursery ones classed first). Filed by Arpit (Cowork). [detail](open/W-196-biome-tail.md)
 
-🟡 **W-181** waits on **W-183** `agent` Ruff's moved typing names table (ratified 11-09) and UP035 on it. Filed by Arpit (Cowork). [detail](open/W-181-moved-typing-names.md)
+🟢 **W-181** `agent` Ruff's moved typing names table (ratified 11-09) and UP035 on it. Filed by Arpit (Cowork). [detail](open/W-181-moved-typing-names.md)
 
 🟡 **W-186** waits on **W-185** `agent` Ruff PLC2701, importing another package's private names. Filed by Arpit (Cowork). [detail](open/W-186-import-private-name.md)
 
@@ -83,7 +81,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

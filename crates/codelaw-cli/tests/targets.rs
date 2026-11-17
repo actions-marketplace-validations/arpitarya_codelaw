@@ -194,3 +194,46 @@ fn a_prefix_fix_is_auto_where_the_table_says_every_target_browser_supports_it() 
     assert_eq!(v["data"]["browsers"], Value::Null);
     let _ = fs::remove_dir_all(&d);
 }
+
+// ---- finding_target: (SR-RULE-FORMAT decision 2d; W-183) ------------------
+
+const GATED: &str = "py/try-except-in-loop";
+const LOOP: &str = "for raw in values:\n    try:\n        total += int(raw)\n    except ValueError:\n        pass\n";
+
+fn gated_project(name: &str, config: &str, requires_python: Option<&str>) -> PathBuf {
+    let d = temp(name);
+    let pack = Path::new(env!("CARGO_MANIFEST_DIR")).ancestors().nth(2).unwrap().join("packs/python");
+    copy_dir(&pack, &d.join(".venv/lib/python3.12/site-packages/codelaw_rules_python"));
+    fs::write(d.join("codelaw.toml"), format!("extends = [\"codelaw:py/recommended\"]\npreview = true\n\n[rules]\n\"{GATED}\" = \"warn\"\n{config}")).unwrap();
+    if let Some(r) = requires_python {
+        fs::write(d.join("pyproject.toml"), format!("[project]\nname = \"x\"\nrequires-python = \"{r}\"\n")).unwrap();
+    }
+    fs::write(d.join("app.py"), LOOP).unwrap();
+    d
+}
+
+fn reports(d: &Path) -> bool {
+    let out = run(d, &["check", "app.py", "--format", "json", "--no-cache"]);
+    let v: Value = serde_json::from_slice(&out.stdout).unwrap_or_else(|e| panic!("{e}: {}", String::from_utf8_lossy(&out.stderr)));
+    v["diagnostics"].as_array().unwrap().iter().any(|x| x["rule"] == GATED)
+}
+
+#[test]
+fn a_finding_gated_on_the_target_follows_requires_python() {
+    assert!(reports(&gated_project("fg-old", "", Some(">=3.9"))), "3.9 is below 3.11");
+    assert!(!reports(&gated_project("fg-new", "", Some(">=3.11"))), "3.11 is not below 3.11");
+    assert!(!reports(&gated_project("fg-none", "", None)), "no target: the rule is quiet");
+}
+
+#[test]
+fn a_config_target_gates_the_finding_and_rules_why_says_so() {
+    let old = gated_project("fg-cfg", "\n[targets]\npython = \"3.10\"\n", Some(">=3.12"));
+    assert!(reports(&old), "[targets] python wins over requires-python");
+    let out = run(&old, &["rules", "--why", GATED, "--for", "app.py"]);
+    let text = String::from_utf8_lossy(&out.stdout).into_owned();
+    assert!(text.contains("finding target:") && text.contains("the rule runs"), "{text}");
+    let none = gated_project("fg-why", "", None);
+    let out = run(&none, &["rules", "--why", GATED]);
+    let text = String::from_utf8_lossy(&out.stdout).into_owned();
+    assert!(text.contains("the rule is quiet until the target is known"), "{text}");
+}
