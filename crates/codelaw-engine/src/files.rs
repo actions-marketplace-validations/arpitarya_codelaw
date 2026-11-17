@@ -342,12 +342,13 @@ impl FileContext for ProjectFile<'_> {
     }
     fn data_table(&self, short: &str) -> Option<std::sync::Arc<serde_json::Value>> {
         let table = match short {
-            "polyfills" => self.project?.polyfill_table(),
+            "polyfills" => self.project?.polyfill_table().map(|t| (t.version.clone(), t.value.clone())),
+            "python-deprecations" => self.project?.python_deprecation_table().map(|t| (t.version.clone(), t.value.clone())),
             _ => None,
         };
         // The answer is the table's version: a refreshed table re-judges.
-        self.record(Question::Read(format!("data-table:{short}")), hash_text(&table.map(|t| t.version.clone())));
-        table.map(|t| t.value.clone())
+        self.record(Question::Read(format!("data-table:{short}")), hash_text(&table.as_ref().map(|t| t.0.clone())));
+        table.map(|t| t.1)
     }
     fn python_target(&self, rule: &str) -> Option<Vec<u64>> {
         self.project?.python_target(&self.root.join(self.path), Some(rule)).value
