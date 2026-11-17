@@ -1300,6 +1300,22 @@ mod tests {
     }
 
     #[test]
+    fn a_finding_target_is_a_half_open_range_of_versions() {
+        let t = FindingTarget { from: Some(vec![3, 7]), below: Some(vec![3, 10]) };
+        assert!(t.admits(&[3, 7]) && t.admits(&[3, 9, 4]) && !t.admits(&[3, 6]) && !t.admits(&[3, 10]) && !t.admits(&[3, 10, 1]));
+        let open = FindingTarget { from: None, below: Some(vec![3, 11]) };
+        assert!(open.admits(&[2, 7]) && !open.admits(&[3, 11]));
+        assert_eq!(t.label(), "python >= 3.7, < 3.10");
+    }
+
+    #[test]
+    fn a_fence_takes_a_python_target_and_refuses_a_bad_one() {
+        assert_eq!(fence_info("py python=3.10").unwrap().3.as_deref(), Some("3.10"));
+        assert!(fence_info("py").unwrap().3.is_none());
+        assert!(fence_info("py python=latest").is_err());
+    }
+
+    #[test]
     fn a_fence_takes_options_as_compact_json() {
         let (tag, path, options, _) = fence_info("js path=src/a.js options={\"max\":3,\"skip_comments\":false}").unwrap();
         assert_eq!((tag.as_str(), path.as_deref()), ("js", Some("src/a.js")));
