@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-15 — implement the open items: queue driven by eleven agents  ·  Claude Code (Sonnet 5.5, coordinator)
+
+- **Asked:** *"implement all open items."*, then *"Do a cleanup if needed. And then implement the items and implement them as fast as possible."*
+- **Done:** by hand — W-197 (three worktrees and branches removed after re-checking 0 unmerged commits), W-172 step 5 (SR-LAW-8 decision 5a; `perf/budgets.toml` `peak_memory_10k` 72 → 90; the L8 line of `CLAUDE.md` and SR-LAWS carry the exception — **`CLAUDE.md` changed**), W-174 (`boolean-datetime` re-classed not-applicable; closed), W-193 and W-194 (found already built in W-139 slice 37; closed); landed as `0386affc50` and `350d9423ab`. Cleanup: two merged `lm/` branches deleted. Then eleven agents, one per cluster, each through `lockmaster start`/`submit`; landed so far: W-184, W-191, W-196 slice 1, W-105/W-188 notes — their rows are in `work/IMPLEMENTATION.md`; the rest were still running when this entry was written (their results are in the queue and IMPLEMENTATION, not here).
+- **Decided / left open:** nothing ruled. W-105 cannot proceed: no TypeScript 7.1 RC on npm (checked 11-15). Eight old `lm/handoff-*` / `lm/save-*` branches and one more old `lm/` branch hold commits not in `main` — not removed. Disk reached 24 of 25 GB approved.
+- **Mistakes:** the end-of-turn auto-land landed two agents' unfinished worktrees (W-184, W-183) and the SR guard refused them for want of record updates; both agents were told and fixed or are fixing it. The CHANGELOG was missing from my first save's claim and docs-sync refused it; claimed and landed.
+- **Next:** read each agent's report as it lands; close or re-ball what they leave; then the decider's: W-142, the old `lm/` branches, and a push of `main`.
+
 ## 2026-11-14 — voice docket: W-197 ruled drop  ·  Cowork (Opus 5.5)
 
 - **Asked:** *fetch all the open work items, whatever are blocked, so that we can ratify in voice mode* — then, after the voice call, *"file it"*.
