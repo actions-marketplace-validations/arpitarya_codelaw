@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "changing the quotes may need re-escaping the text"
 fix_exception: value
 stability: preview
-ported_from: [eslint-plugin-unicorn/no-useless-template-literals]
+ported_from: [eslint-plugin-unicorn/no-useless-template-literals, biome/style/noUnusedTemplateLiteral]
 since: 0.5.0
 ---
 

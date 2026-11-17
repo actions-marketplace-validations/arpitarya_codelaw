@@ -1,5 +1,5 @@
 //! The per-file semantic model for JS/TS (JSX and TSX included) and Python
-//! (SR-ARCHITECTURE decision 15a): scopes, bindings, references, imports
+//! (SR-SEMANTIC-MODEL): scopes, bindings, references, imports
 //! and exports, built in one pass over the syntax tree. No type
 //! information (L3).
 

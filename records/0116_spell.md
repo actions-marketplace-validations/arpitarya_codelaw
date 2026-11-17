@@ -211,7 +211,7 @@ question its maintainers left open. The forks and the rulings are in
    - **As built (W-103, 2026-10-28), `spell/inconsistent-term`:** it needs
      every file's words at once, so it is a `scope: project` rule, not a
      `native:` one: `graph: { terms: inconsistent }` with the fix
-     `do: [respell]` ([SR-PROJECT-GRAPH](0103_project-graph.md) decision
+     `do: [respell]` ([SR-MODULE-GRAPH](0122_module-graph.md) decision
      10), which the engine runs on the graph stage. The two ways are
      VarCon's one-to-one pairs from both of `locale.json`'s tables, so the
      British `-ise` and the Oxford `-ize` are two ways too. It reads the

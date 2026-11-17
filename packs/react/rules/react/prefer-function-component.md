@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "rewriting a class as a function with hooks restructures the component"
 fix_exception: restructure
 stability: preview
-ported_from: [oxlint/react/prefer-function-component]
+ported_from: [oxlint/react/prefer-function-component, biome/style/useReactFunctionComponents]
 since: 0.5.0
 ---
 

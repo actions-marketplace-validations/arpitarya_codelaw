@@ -22,17 +22,17 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-
-*Empty since 2026-11-14 — next gate: W-142's pending publishers, once W-182 and W-187 are ready.*
+| 🔴 **W-192** put the 23 Oxlint `correctness` ports with no corpus finding into their pack's `recommended` preset (10 in `js/recommended`, 11 in `react/recommended`, 2 in `ts/recommended`)? Each is `preview`, so a project sees one only with `preview = true`; each had 0 findings on the corpus. Recommended: yes, all 23. [detail](open/W-192-defaults-on-and-off.md) | 2026-11-17 |
+| ↳ **blocks:** W-192 (its last step) | |
 
 
 ---
 
-## Open items (27)
+## Open items (24)
 
-### build (17)
+### build (15)
 
-🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin (11-10). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 
 🟢 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` raised 72 → 90 MiB by ruling, L8 decision 5a (11-15). Next: CI's next run on a pushed `main` proves `check_cold_10k` and `lsp_after_edit`; close then. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
@@ -41,13 +41,10 @@ here. Read that record before changing anything below it.
 
 🟢 **W-178** `agent` Build `key-name-casing` (data, off by default), `require-frontmatter-fields` (md) and `check-examples` — with the engine work to lint `@example` code. Filed by Arpit (Cowork). [detail](open/W-178-config-keys-frontmatter-examples.md)
 
-🟢 **W-179** `agent` Formatter: check and add Ruff's docstring and shebang layout rows (D201, D202, D203/D211, D204, EXE004) and two Pylint ones; D210 already done. Filed by Arpit (Cowork). [detail](open/W-179-formatter-docstring-shebang-rows.md)
 
 🟢 **W-180** `agent` pydocstyle's imperative-mood verb list (ratified 11-09) and Ruff D401, D421 on it. Filed by Arpit (Cowork). [detail](open/W-180-imperative-mood-verbs.md)
 
 🟢 **W-182** `agent` A Unicode confusables data package (ratified 11-09) and Ruff RUF001–RUF003 on it. Filed by Arpit (Cowork). [detail](open/W-182-unicode-confusables.md)
-
-🟢 **W-184** `agent` A file's executable bit for rules; Ruff EXE001, EXE002 on it. Filed by Arpit (Cowork). [detail](open/W-184-file-mode-bits.md)
 
 🟢 **W-185** `agent` The Python side of the project graph (imports, class bases) and six Pylint rows on it (`cyclic-import`, `import-error`, …). Filed by Arpit (Cowork). [detail](open/W-185-python-project-graph.md)
 
@@ -84,13 +81,11 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
-🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
+🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
-### record update (1)
-
-🟢 **W-191** `agent` SR-PROJECT-GRAPH as the overview of every graph; the module graph, semantic model and Python flow pass each in a record. SR-CODE-PATH-GRAPH filed 11-09. Filed by Arpit (Cowork). [detail](open/W-191-graph-records.md)
+### record update (0)
 
 ### research (3)
 

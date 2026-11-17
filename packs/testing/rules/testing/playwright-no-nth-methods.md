@@ -7,7 +7,7 @@ fix: manual
 fix_reason: "a unique locator needs knowing what distinguishes the element"
 fix_exception: restructure
 stability: preview
-ported_from: ["eslint-plugin-playwright/no-nth-methods"]
+ported_from: ["eslint-plugin-playwright/no-nth-methods", biome/nursery/noPlaywrightNthMethods]
 since: 0.5.0
 ---
 

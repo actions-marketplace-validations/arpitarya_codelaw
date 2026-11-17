@@ -6,7 +6,7 @@ fix: manual
 fix_reason: "moving the export to its own module changes its import paths"
 fix_exception: restructure
 stability: preview
-ported_from: [oxlint/react/only-export-components]
+ported_from: [oxlint/react/only-export-components, biome/style/useComponentExportOnlyModules]
 since: 0.5.0
 ---
 

@@ -1,4 +1,4 @@
-//! The `[graph]` section (SR-PROJECT-GRAPH decisions 3 and 4): its keys are
+//! The `[graph]` section (SR-MODULE-GRAPH decisions 3 and 4): its keys are
 //! this record's, validated strictly (SR-CONFIG decision 5).
 
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};

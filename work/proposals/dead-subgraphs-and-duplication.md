@@ -26,7 +26,7 @@ exists elsewhere.**
 
 ## 3 · Today
 
-- [SR-PROJECT-GRAPH](../../records/0103_project-graph.md) lists `graph/no-unused-exports`, `no-unused-files`, `no-cycles` and more; `codelaw graph why-unused` explains one verdict.
+- [SR-MODULE-GRAPH](../../records/0122_module-graph.md) lists `graph/no-unused-exports`, `no-unused-files`, `no-cycles` and more; `codelaw graph why-unused` explains one verdict.
 - A group of modules that only reference each other is not dead to a per-symbol check.
 - No duplicate-code rule exists in any pack.
 

@@ -22,7 +22,7 @@ pub enum Matcher {
     /// One compiled `match:` per grammar the rule's languages parse with.
     Match(MatchSet),
     Native(&'static dyn NativeRule),
-    /// A `scope: project` rule (SR-PROJECT-GRAPH decision 6).
+    /// A `scope: project` rule (SR-MODULE-GRAPH decision 6).
     Graph(codelaw_graph::GraphRule),
     /// `target:` + `assert:` on the data tree of a JSON, YAML or TOML file
     /// (SR-RULE-FORMAT decision 3e); it runs once per file, not per node.

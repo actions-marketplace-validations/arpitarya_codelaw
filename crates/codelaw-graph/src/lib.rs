@@ -1,4 +1,4 @@
-//! The project graph (SR-PROJECT-GRAPH): per-file facts read once and
+//! The project graph (SR-MODULE-GRAPH): per-file facts read once and
 //! cached by content, a resolver over the project's own file set, the
 //! linked graph of modules, exports, imports and uses, and the `graph:`
 //! queries `scope: project` rules run on it.

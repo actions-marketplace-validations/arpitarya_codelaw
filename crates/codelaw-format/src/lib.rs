@@ -11,6 +11,7 @@ mod engines;
 mod markers;
 mod options;
 mod oxc;
+mod python_layout;
 
 pub use classes::sort_class_lists;
 pub use options::{ArrowParens, ClassSort, EndOfLine, FormatOptions, IndentStyle, QuoteProps, QuoteStyle, Semicolons, TrailingCommas};
@@ -21,7 +22,7 @@ use std::fmt;
 /// The pinned engines, in every cache key a format result enters
 /// (SR-FORMATTER decision 7: an engine upgrade changes output).
 pub const ENGINES_FINGERPRINT: &str =
-    "biome@2.5.15 ruff_python_formatter@0.0.18 oxc@7b933d5 taplo@0.14.0 markup_fmt@0.27.6";
+    "biome@2.5.15 ruff_python_formatter@0.0.21 python-layout@1 oxc@7b933d5 taplo@0.14.0 markup_fmt@0.27.6";
 
 /// The engine that formats a language, as SR-FORMATTER decision 2 names it.
 pub fn engine(language: Language) -> &'static str {

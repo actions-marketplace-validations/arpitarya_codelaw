@@ -1,4 +1,4 @@
-//! `graph:` queries (SR-PROJECT-GRAPH decision 6), their findings and fixes,
+//! `graph:` queries (SR-MODULE-GRAPH decision 6), their findings and fixes,
 //! and the two debug commands: `graph refs` and `graph why-unused`.
 
 use crate::facts::{Decl, DeclKind, FactLang, ImportKind, Span, SpecForm};
@@ -30,7 +30,7 @@ pub enum Query {
     /// pack's, so the engine runs it, over every file's prose.
     InconsistentTerms,
     /// `flags: reads | markers | registry`: feature-flag expiry
-    /// (SR-PROJECT-GRAPH decision 11). Its registry, markers and as-of date
+    /// (SR-MODULE-GRAPH decision 11). Its registry, markers and as-of date
     /// are inputs the engine holds, so the engine runs it (`crate::flags`).
     Flags(crate::flags::FlagCheck),
     /// `import: { names: unexported | default: missing | … }`: an import
@@ -532,7 +532,7 @@ pub fn run(rule: &GraphRule, graph: &Graph, languages: &[Language]) -> Vec<Graph
         // pack's word data (SR-SPELL; `codelaw_native::spell`).
         Query::InconsistentTerms => Vec::new(),
         // The engine runs the flag rules itself, with the registry, the
-        // markers and the as-of date (SR-PROJECT-GRAPH decision 11).
+        // markers and the as-of date (SR-MODULE-GRAPH decision 11).
         Query::Flags(_) => Vec::new(),
         Query::Imports { forms, check } => imports(graph, languages, forms, *check),
         Query::UnusedModuleClasses => unused_module_classes(rule, graph, languages),

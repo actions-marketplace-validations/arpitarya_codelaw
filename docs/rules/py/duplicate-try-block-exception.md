@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an earlier handler of the `try` catches the class first, so this one never runs for it: a class named by a plain name or attribute goes from the later tuple, and a later handler with nothing else live goes whole; any other repeat (a computed class, `except*`) is manual) |

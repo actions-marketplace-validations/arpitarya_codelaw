@@ -1,4 +1,4 @@
-//! The verdicts (SR-PROJECT-GRAPH decision 11): each read against the flag
+//! The verdicts (SR-MODULE-GRAPH decision 11): each read against the flag
 //! it names — registered, expiring, expired, decided — each inline marker
 //! against the registry, and each registry entry against the reads left.
 //! Dates are judged on the as-of date only, never the clock (L5).

@@ -282,9 +282,9 @@
       "type": "object"
     },
     "graph": {
-      "x-codelaw-record": "SR-PROJECT-GRAPH",
+      "x-codelaw-record": "SR-MODULE-GRAPH",
       "x-codelaw-validated": false,
-      "description": "The project graph (SR-PROJECT-GRAPH). Its keys are validated once the graph is built.",
+      "description": "The project graph (SR-MODULE-GRAPH). Its keys are validated once the graph is built.",
       "type": "object"
     },
     "baseline": {
@@ -345,8 +345,8 @@
       }
     },
     "coverage": {
-      "x-codelaw-record": "SR-PROJECT-GRAPH",
-      "description": "The test rules of new code, `graph/untested-function` and `graph/function-coverage` (SR-PROJECT-GRAPH decision 9). Root config only.",
+      "x-codelaw-record": "SR-MODULE-GRAPH",
+      "description": "The test rules of new code, `graph/untested-function` and `graph/function-coverage` (SR-MODULE-GRAPH decision 9). Root config only.",
       "type": "object",
       "additionalProperties": false,
       "properties": {
@@ -444,7 +444,7 @@
       }
     },
     "css": {
-      "x-codelaw-record": "SR-PROJECT-GRAPH",
+      "x-codelaw-record": "SR-MODULE-GRAPH",
       "description": "CSS Modules: which stylesheets are modules, and how the bundler turns a class name into `styles.x`. Read by the `css-modules/*` rules and the project graph. Root config only.",
       "type": "object",
       "additionalProperties": false,
@@ -631,8 +631,8 @@
       }
     },
     "flags": {
-      "x-codelaw-record": "SR-PROJECT-GRAPH",
-      "description": "Feature-flag expiry (SR-PROJECT-GRAPH decision 11): which calls read a flag, and how its expiry is declared. A `[flags]` table turns on `js/flag-expiry`, `js/flag-marker`, `py/flag-expiry`, `py/flag-marker` and `data/flag-registry`; their flags are registered in `.codelaw/flags.toml` or by inline `codelaw-flag` markers. Root config only.",
+      "x-codelaw-record": "SR-MODULE-GRAPH",
+      "description": "Feature-flag expiry (SR-MODULE-GRAPH decision 11): which calls read a flag, and how its expiry is declared. A `[flags]` table turns on `js/flag-expiry`, `js/flag-marker`, `py/flag-expiry`, `py/flag-marker` and `data/flag-registry`; their flags are registered in `.codelaw/flags.toml` or by inline `codelaw-flag` markers. Root config only.",
       "type": "object",
       "additionalProperties": false,
       "properties": {

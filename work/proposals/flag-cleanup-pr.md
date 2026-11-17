@@ -25,7 +25,7 @@ loop: a weekly job opens one PR per decided flag, assigned to its owner.**
 
 ## 3 · Today
 
-- `js/flag-expiry`, `py/flag-expiry` — registry `.codelaw/flags.toml` with `owner`, `expires`, `keep`; fix `keep-branch` (`suggest`) ([SR-PROJECT-GRAPH](../../records/0103_project-graph.md) decision 11).
+- `js/flag-expiry`, `py/flag-expiry` — registry `.codelaw/flags.toml` with `owner`, `expires`, `keep`; fix `keep-branch` (`suggest`) ([SR-MODULE-GRAPH](../../records/0122_module-graph.md) decision 11).
 - `keep-branch` refuses a read inside a larger condition (`&&`, `!`, `await`) → `manual`.
 - `init --ci … --autofix daily|weekly [--unsafe]` opens **one** PR with every fix ([SR-CLI-MCP](../../records/0115_cli-and-mcp.md) decision 12); it has never run for real (B-053).
 

@@ -13,8 +13,9 @@ owns:
   - scripts/format-corpus.py
   - scripts/tailwind-parity.py
   - crates/codelaw-lang/src/class_lists.rs
+  - fixtures/format
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-11-05T23:00:00Z
+timestamp: 2026-11-17T12:00:00Z
 content_sha: ""
 ---
 
@@ -70,7 +71,7 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
    |---|---|---|---|---|
    | JS · JSX · TS · TSX | Biome formatter (`biome_js_formatter`) | Prettier-compatible (Biome tracks its Prettier compatibility in a published report) | MIT / Apache-2.0 | git dependency pinned to a Biome release tag; the crates.io copies are stale |
    | JSON · JSONC | Biome formatter (`biome_json_formatter`) | Prettier-compatible | MIT / Apache-2.0 | same pin |
-   | Python | Ruff formatter (`ruff_python_formatter`) | Black-compatible (> 99.9 % identical lines on Django and Zulip, per Ruff) | MIT | crates.io, pinned exactly (`=0.0.21`, the crates Ruff 0.17.4 publishes; from `=0.0.18` on 2026-11-07, W-173 — byte-identical output on a 756-file Python corpus) |
+   | Python | Ruff formatter (`ruff_python_formatter`) | Black-compatible (> 99.9 % identical lines on Django and Zulip, per Ruff), except the blank line after a function docstring (decision 10) | MIT | crates.io, pinned exactly (`=0.0.21`, the crates Ruff 0.17.4 publishes; from `=0.0.18` on 2026-11-07, W-173 — byte-identical output on a 756-file Python corpus) |
    | YAML | Oxc's formatter (`oxc_formatter_yaml`; W-141, replaced `pretty_yaml` 2026-11-05) | Prettier-compatible (Oxc's own Prettier fixtures: 301/302) | MIT | git revision of `oxc-project/oxc` ([L11](0013_LAW-11-dependencies.md) D-52); its parsers from crates.io |
    | TOML | `taplo` formatter | taplo style | MIT | crates.io |
    | Markdown | Oxc's formatter (`oxc_formatter_markdown`; W-141, replaced `dprint-plugin-markdown` 2026-11-05); a fenced block in a language codelaw formats, and front matter, go to that language's engine through Oxc's dispatcher (`[format.markdown] format_code_blocks`) | Prettier-compatible, CommonMark/GFM (273/283) | MIT | the same Oxc revision |
@@ -181,9 +182,27 @@ Teams run a linter and a formatter as two tools: ESLint plus Prettier, or Ruff c
 
      *Sorting* is codelaw's sorter alone on Prettier's own output (`codelaw debug sort-classes`), so the layouts match by construction: it is the measure of DoD 3 (≥ 98 %). *Format* is the whole `codelaw format`, whose ten differing files are Biome's layout, not the class order. The first run found one file sorted by Prettier and not by codelaw: tree-sitter rejects an `&` inside a JSX attribute string that Babel accepts, and the sorter then left the whole file alone; it now skips only the lists inside a part its parser could not read.
 
+10. **Python layout rows that are the formatter's, not a lint rule's** (W-179; the decider's ruling of 2026-11-09, *"All these look like format formatters to me."* · *"So whatever is handled on formatter side, they are not again needed in the linter side."*). Ruff's `D201`, `D202`, `D203`/`D211`, `D204`, `D210` and `EXE004`, and Pylint's `inconsistent-quotes` and `implicit-str-concat`, are layout: `codelaw format` writes what they ask for, and no lint rule is built for them (decision 3). Each row has a fixture, `fixtures/format/python/<row>.py.before` and `.py.after`, that `crates/codelaw-format/src/tests.rs` formats and compares, and the `after` must be a fixpoint.
+
+    | row | what the formatter writes | done by |
+    |---|---|---|
+    | `D201` no blank line before a function docstring | the blank lines directly before it go, a comment between the `def` and the docstring included | Ruff's formatter; the case with a comment is `python_layout.rs` |
+    | `D202` no blank line after a function docstring | the blank lines between the docstring and the next statement go; **one stays before a nested `def`, `async def` or `class`** (decorated or not), which the formatter writes there itself, so the two never fight (Ruff's own `D202` allows the same exception) | `python_layout.rs` (new) |
+    | `D203` / `D211` (opposites) | **`D211`**: no blank line before a class docstring. Black 24 and Ruff's formatter both write it; `D203` asks for the opposite and is never produced, so there is nothing to build for it | Ruff's formatter; the comment case is `python_layout.rs` |
+    | `D204` one blank line after a class docstring | one, when anything follows it (a comment included); several become one | Ruff's formatter |
+    | `D210` no space around a docstring's text | the whitespace before the text and after it goes | Ruff's formatter |
+    | `EXE004` no whitespace before a shebang | the first line's leading whitespace goes (`  #!/usr/bin/env python3`), a CRLF file's line ending kept | Ruff's formatter |
+    | Pylint `inconsistent-quotes` | Python is written with double quotes, except a string that holds a `"` and no `'`, which keeps its single quotes (Black's rule); `quote_style` does not reach Python | Ruff's formatter |
+    | Pylint `implicit-str-concat` | two or more strings written side by side are one string when it fits the line, an f-string among them; one that does not fit stays on its lines, which Pylint's default does not report either | Ruff's formatter |
+
+    - **`python_layout.rs`** is the formatter's own pass on Ruff's output. It parses the output once, and for every function and class whose first statement is a docstring that starts its own line it removes blank lines, never adds one and never touches a token. A `# fmt: off` ... `# fmt: on` region, a `# yapf: disable` ... `enable` region and a line ending in `# fmt: skip` are left as written, and `codelaw-format-ignore` (decision 6) reaches it as `# fmt: off`. The cache key carries it (`ENGINES_FINGERPRINT`, `python-layout@1`).
+    - **It is not Black's output.** Neither Black nor Ruff's formatter removes the blank line after a function docstring, so on `D202` this decision departs from "Black-compatible" (decision 2) by the decider's ruling. Measured 2026-11-17 on the 577 files of CPython 3.9's standard library (outside `test/`): 118 files (20 %) change, 318 blank lines removed and none added, and a second format changes nothing. A project that wants Black's blank lines after docstrings has no switch for it; one is a work item if asked.
+    - **What stays outside it.** A raw string beside a plain one on one line (`r"a" "b"`) is not joined by Ruff's formatter and is not here (joining could change an escape); `# fmt: off` regions are as written.
+    - **Cost.** One extra parse of every formatted Python file's output, skipped when the output has no blank line. Under [L8](0010_LAW-8-performance-budgets.md): `format_warm_10k` is served from the primed cache, so the budget does not see it.
+
 ### What is built
 
-Built 2026-11-05 (`W-145`): decision 9. Built 2026-11-05 (`W-141`): Oxc behind decision 2's CSS, SCSS, YAML and Markdown rows, and the four changes and the named differences in Consequences. Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
+Built 2026-11-17 (`W-179`): decision 10. Built 2026-11-05 (`W-145`): decision 9. Built 2026-11-05 (`W-141`): Oxc behind decision 2's CSS, SCSS, YAML and Markdown rows, and the four changes and the named differences in Consequences. Built 2026-10-21 (`W-07`): decisions 1, 2, 4 and 7; decision 5's keys and `exclude`; decision 8's LSP document formatting and MCP tool. Built 2026-10-22 (`W-23`): decision 3's refusal in `codelaw test`, with every pack passing it — decided by the formatter's output until 2026-10-24, when `W-28` made the token stream the judge and the formatter an advisory cross-check; decision 5's `.editorconfig` layer and `--import-config`; decision 6's markers in every engine; decision 8's LSP range formatting. The agent hook is `W-10`'s; nothing else in this record is missing.
 
 ### Consequences
 

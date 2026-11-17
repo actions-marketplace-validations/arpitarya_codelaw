@@ -130,7 +130,7 @@ Start from `TEMPLATE.md`.
 | [0062](0062_WORK-cleanup.md) | **SR-WORK-CLEANUP** | Worktrees, lock files and session leftovers — cleaned automatically when nothing is lost; red, blocked on the decider, when something would be | accepted | yes |
 | [0101](0101_rule-packs.md) | **SR-RULE-PACKS** | Twenty-seven first-party rule packs, twenty on npm and eighteen on PyPI, apart from the engine — the `deps` pack among them (W-128); providers, which build a pack's table from the project (W-145); team packs; project rules in `.codelaw/rules` | accepted | partly |
 | [0102](0102_agent-surfaces.md) | **SR-AGENT-SURFACES** | Skills, steering, instructions, agent files and hooks, generated from one source | accepted | partly |
-| [0103](0103_project-graph.md) | **SR-PROJECT-GRAPH** | A whole-repo symbol graph for cross-file rules — unused exports first | accepted | partly |
+| [0103](0103_project-graph.md) | **SR-PROJECT-GRAPH** | The overview of every graph codelaw builds — what each answers, how far it reaches, which record owns it; it decides nothing they own | accepted | partly |
 | [0104](0104_baseline-and-deprecations.md) | **SR-BASELINE** | Grandfather violations with a deadline and a touch policy; the deprecations registry | accepted | yes |
 | [0105](0105_formatter.md) | **SR-FORMATTER** | codelaw is a linter and a formatter — embedded engines, layout owned by the formatter | accepted | yes |
 | [0106](0106_linter.md) | **SR-LINTER** | The linter — nine languages, file/project/adapter rules, embedded code, one diagnostic stream | accepted | partly |
@@ -149,6 +149,9 @@ Start from `TEMPLATE.md`.
 | [0119](0119_multi-file-fixes.md) | **SR-MULTI-FILE-FIXES** | A fix may edit several files — five safeguards never configurable (every file parses, nothing left dangling, all or nothing, `auto` only when certain, never in the background); `[fix] multi_file` and per rule: `auto`, `suggest` or `off` | accepted | yes |
 | [0120](0120_python-inference.md) | **SR-PY-INFERENCE** | Python rules that need more than syntax — four lazy layers over the per-file model (scope facts, a flow pass for definite assignment, an in-file class table, literal typing); no type checker; the rows that need one stay open with their question | accepted | partly |
 | [0121](0121_code-path-graph.md) | **SR-CODE-PATH-GRAPH** | A code-path graph for JavaScript — named for the two rows that need one; its shape open until W-189's research is ruled | proposed | no |
+| [0122](0122_module-graph.md) | **SR-MODULE-GRAPH** | A whole-repo module and symbol graph for cross-file rules — unused exports first; resolution, entry points, the cache, `graph:` queries, CSS Modules, the test rules of new code, words and feature flags | accepted | partly |
+| [0123](0123_semantic-model.md) | **SR-SEMANTIC-MODEL** | The per-file semantic model — scopes, bindings, references, imports and exports for JS/TS and Python, built once and only when a rule needs it, no type information | accepted | yes |
+| [0124](0124_python-flow.md) | **SR-PY-FLOW** | The Python flow pass — is a name bound on every path to a read, over one scope; it decides no condition's value | accepted | yes |
 
 ---
 
@@ -201,14 +204,14 @@ yet is owned by an open `W-nn`.
 | `crates/codelaw-rules` | SR-RULE-FORMAT | decisions 1–7: the rule-file parser and its load checks |
 | `crates/codelaw-rules/src/engine_rules.rs` | SR-RULE-PACKS | decision 1: the engine's own rules, their fix classes, steps and exceptions |
 | `crates/codelaw-rules/src/search.rs` | SR-PACK-LOOKUP | decisions 1–9: the folders a pack is looked for in, their order and the one lookup every caller uses (W-155) |
-| `crates/codelaw-semantic` | SR-ARCHITECTURE | decision 15a |
+| `crates/codelaw-semantic` | SR-SEMANTIC-MODEL | decisions 1–9: the per-file model; `py_flow.rs` is carved out to SR-PY-FLOW |
 | `crates/codelaw-match` | SR-LINTER | decision 2: file-scope `match:` rules |
 | `crates/codelaw-adapters` | SR-LINTER | decision 2: the adapters' manifests, runner and output mapping |
 | `crates/codelaw-types` | SR-TYPES | decisions 2–7: the `codelaw-types` Node helper, its protocol and the project's TypeScript found (W-105) |
 | `crates/codelaw-baseline` | SR-BASELINE | decisions 1, 2, 5, 6 and 9: the baseline files, what a finding becomes under them, the ratchet, the deprecations registry and the dated-exception timeline |
 | `crates/codelaw-native` | SR-ARCHITECTURE | decision 15b |
 | `crates/codelaw-fix` | SR-ARCHITECTURE | decisions 5 and 18: the apply loop, verifier and external fixers |
-| `crates/codelaw-format` | SR-FORMATTER | decisions 2, 4, 5 and 7: the embedded engines, their options and the verifier; `shims/option-ext` is SR-PACKAGES decision 1's L2 patch |
+| `crates/codelaw-format` | SR-FORMATTER | decisions 2, 4, 5, 7 and 10: the embedded engines, their options and the verifier; `shims/option-ext` is SR-PACKAGES decision 1's L2 patch |
 | `crates/codelaw-engine` | SR-ARCHITECTURE | decisions 4–28: the pipelines |
 | `crates/codelaw-report` | SR-CLI-MCP | decisions 3 and 4 |
 | `crates/codelaw-test` | SR-RULE-AUTHORING | decision 4 |
@@ -216,7 +219,7 @@ yet is owned by an open `W-nn`.
 | `.pre-commit-hooks.yaml` | SR-CLI-MCP | decision 11: the pre-commit framework's hook definitions |
 | `crates/codelaw-lsp` | SR-EDITOR | decisions 1–3: the language server |
 | `crates/codelaw-mcp` | SR-CLI-MCP | decisions 5–6: the MCP server and its parity with the CLI |
-| `crates/codelaw-graph` | SR-PROJECT-GRAPH | decisions 1–6: the symbol graph, its resolver and the `graph:` queries |
+| `crates/codelaw-graph` | SR-MODULE-GRAPH | decisions 1–6: the symbol graph, its resolver and the `graph:` queries |
 | `crates/codelaw-agents` | SR-AGENT-SURFACES | decisions 1, 2 and 6: hook mode, `sync-agents` and the compiled-in skills |
 | `templates/agents` | SR-AGENT-SURFACES | decisions 1, 4 and 5: the skill sources, the custom agent and the trigger evals |
 | `templates` | SR-LAW-10 | every file codelaw writes into a consumer's repo, its registry and its slot-only renderer; `templates/agents` is carved out to SR-AGENT-SURFACES |
@@ -238,13 +241,14 @@ yet is owned by an open `W-nn`.
 | `fixtures/port-rule` | SR-RULE-AUTHORING | decision 2: the three recorded ports — ESLint, Pylint, stylelint — as project rules (W-140) |
 | `crates/codelaw-cli/tests/port_rule.rs` | SR-RULE-AUTHORING | decision 2: runs those ports under `codelaw test` and finds a rule by `ported_from:` through the CLI and MCP (a different decision from the CLI's) |
 | `crates/codelaw-cli/tests/laws.rs` | SR-LAW-3 | the fixture matrix and isolation check; it also runs the L4 and L5 checks |
+| `fixtures/format` | SR-FORMATTER | decision 10: a before and an after for each Python layout row the formatter owns (W-179) |
 | `fixtures/l3` | SR-LAW-3 | the fixture matrix |
-| `fixtures/css-modules` | SR-PROJECT-GRAPH | decision 8: the React app the `css-modules` rules run on |
-| `crates/codelaw-cli/tests/css_modules.rs` | SR-PROJECT-GRAPH | decision 8: runs that app, `[css]` and `init` through the binary |
-| `crates/codelaw-cli/tests/tests_for_new_code.rs` | SR-PROJECT-GRAPH | decision 9: the test rules of new code and `.codelawignore` on real git repos |
+| `fixtures/css-modules` | SR-MODULE-GRAPH | decision 8: the React app the `css-modules` rules run on |
+| `crates/codelaw-cli/tests/css_modules.rs` | SR-MODULE-GRAPH | decision 8: runs that app, `[css]` and `init` through the binary |
+| `crates/codelaw-cli/tests/tests_for_new_code.rs` | SR-MODULE-GRAPH | decision 9: the test rules of new code and `.codelawignore` on real git repos |
 | `crates/codelaw-cli/tests/codelawignore.rs` | SR-BASELINE | decision 12: `.codelawignore` for every rule on real git repos (W-158) |
-| `fixtures/flags` | SR-PROJECT-GRAPH | decision 11: the repo the feature-flag rules run on — every SDK preset in JS/TS and Python, a two-level wrapper, markers and a registry (W-130) |
-| `crates/codelaw-cli/tests/flags.rs` | SR-PROJECT-GRAPH | decision 11: runs that repo through `check`, `fix --unsafe` and `flags accessors` (W-130) |
+| `fixtures/flags` | SR-MODULE-GRAPH | decision 11: the repo the feature-flag rules run on — every SDK preset in JS/TS and Python, a two-level wrapper, markers and a registry (W-130) |
+| `crates/codelaw-cli/tests/flags.rs` | SR-MODULE-GRAPH | decision 11: runs that repo through `check`, `fix --unsafe` and `flags accessors` (W-130) |
 | `fixtures/scss` | SR-LAW-3 | SCSS as a CSS dialect (amended 2026-10-26): the corpus the `css` and `scss` packs hold finding counts on |
 | `crates/codelaw-cli/tests/scss.rs` | SR-LAW-3 | runs that corpus, the `css/*`-quiet-on-Sass check and `format` idempotence through the binary |
 | `crates/codelaw-cli/tests/text_config.rs` | SR-LAW-3 | decision 10: a finding on `package.json` and on the `.nvmrc` line, through `check` in every format, the LSP and the hook |
@@ -273,7 +277,7 @@ yet is owned by an open `W-nn`.
 | `scripts/tailwind-parity.py` | SR-FORMATTER | decision 9: the class sorting measured against prettier-plugin-tailwindcss (W-145) |
 | `crates/codelaw-lang/src/class_lists.rs` | SR-FORMATTER | decision 9: where class lists are written — the one finder the sorter and the `tailwind` rules share (W-145) |
 | `crates/codelaw-native/src/tailwind.rs` | SR-RULE-PACKS | decision 19: the `tailwind` pack's eight native rules (W-145) |
-| `crates/codelaw-semantic/src/py_flow.rs` | SR-PY-INFERENCE | decision 3: the flow pass — is a name bound on every path to a read (W-174) |
+| `crates/codelaw-semantic/src/py_flow.rs` | SR-PY-FLOW | decisions 1–3: the flow pass — is a name bound on every path to a read (W-174) |
 | `crates/codelaw-native/src/py_scope.rs` | SR-PY-INFERENCE | decision 2: the scope-facts rows — `nonlocal` binding, class-scope reads, f-string names, dummy variables, private members (W-174) |
 | `crates/codelaw-native/src/py_flow.rs` | SR-PY-INFERENCE | decisions 2–3: the rules that read the flow pass, and the loop and generator checks (W-174) |
 | `crates/codelaw-native/src/py_classes.rs` | SR-PY-INFERENCE | decisions 2 and 4: the in-file class table and the hierarchy rows (W-174) |

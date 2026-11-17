@@ -217,8 +217,9 @@ impl<'a> Tester<'a> {
             let set: Vec<(String, Language, String)> = files.iter().map(|f| (f.path.clone(), f.language, f.text.clone())).collect();
             // A multi-file snippet's `options=` apply too (W-130).
             let p = if snippet.options.is_empty() && snippet.python.is_none() { &self.plain } else { self.project(snippet) };
+            let executable: std::collections::BTreeSet<String> = files.iter().filter(|f| f.executable).map(|f| f.path.clone()).collect();
             return p
-                .check_files(&set)
+                .check_files_executable(&set, &executable)
                 .into_iter()
                 .filter(|d| d.rule == id)
                 .map(|d| if multi { format!("{}:{}:{} {}", d.file, d.start.line, d.start.column, d.rule) } else { format!("{}:{} {}", d.start.line, d.start.column, d.rule) })
@@ -466,11 +467,19 @@ pub struct SnippetFile {
     pub path: String,
     pub language: Language,
     pub text: String,
+    /// The header ends `+x`: the file has the executable bit (W-184).
+    pub executable: bool,
 }
 
 /// The path a header line names: `// path`, `# path`, `/* path */` or
 /// `<!-- path -->`, alone on its line.
 fn header_path(line: &str) -> Option<String> {
+    header(line).map(|(p, _)| p)
+}
+
+/// [`header_path`], and whether the header ends `+x` (`# run.py +x`): the
+/// file has the executable bit, which a text has no way to say (W-184).
+fn header(line: &str) -> Option<(String, bool)> {
     let t = line.trim();
     let inner = if let Some(r) = t.strip_prefix("//") {
         r
@@ -481,7 +490,11 @@ fn header_path(line: &str) -> Option<String> {
     } else {
         t.strip_prefix('#')?
     };
-    let p = inner.trim();
+    let mut p = inner.trim();
+    let executable = p.strip_suffix(" +x").is_some_and(|r| {
+        p = r.trim_end();
+        true
+    });
     // A plain-text config file (`CODEOWNERS`) is a file of a multi-file snippet too.
     let text_config = codelaw_core::is_text_config(p);
     if p.is_empty() || p.contains(char::is_whitespace) || (!p.contains('.') && !text_config) {
@@ -491,18 +504,18 @@ fn header_path(line: &str) -> Option<String> {
     // A lockfile no language reads (`uv.lock`, `poetry.lock`) is a file of
     // a snippet too, for the rules that read it (W-129).
     let known = Language::from_path(std::path::Path::new(p)).is_some() || matches!(name, "setup.py" | "setup.cfg" | "uv.lock" | "poetry.lock") || text_config;
-    known.then(|| p.to_owned())
+    known.then(|| (p.to_owned(), executable))
 }
 
-/// Split a `files` snippet into its `// path` sections (SR-PROJECT-GRAPH
+/// Split a `files` snippet into its `// path` sections (SR-MODULE-GRAPH
 /// decision 6); a snippet with no header is one file, `example.<ext>`.
 pub fn split_files(language: Language, code: &str) -> Vec<SnippetFile> {
     let mut out: Vec<SnippetFile> = Vec::new();
     let mut lead = String::new();
     for line in code.split_inclusive('\n') {
-        if let Some(p) = header_path(line) {
+        if let Some((p, executable)) = header(line) {
             let language = Language::from_path(std::path::Path::new(&p)).unwrap_or(language);
-            out.push(SnippetFile { header: Some(line.trim_end_matches(['\n', '\r']).to_owned()), path: p, language, text: String::new() });
+            out.push(SnippetFile { header: Some(line.trim_end_matches(['\n', '\r']).to_owned()), path: p, language, text: String::new(), executable });
         } else if let Some(f) = out.last_mut() {
             f.text.push_str(line);
         } else {
@@ -510,7 +523,7 @@ pub fn split_files(language: Language, code: &str) -> Vec<SnippetFile> {
         }
     }
     if out.is_empty() {
-        return vec![SnippetFile { header: None, path: format!("example.{}", language.extension()), language, text: code.to_owned() }];
+        return vec![SnippetFile { header: None, path: format!("example.{}", language.extension()), language, text: code.to_owned(), executable: false }];
     }
     out
 }

@@ -31,7 +31,7 @@ keep    = "on"           # optional: the branch that stays — `js/flag-expiry` 
 reason  = "…"
 ```
 
-The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11), and judges the registry once `[flags]` names a preset or an accessor. It reports, in the registry:
+The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11), and judges the registry once `[flags]` names a preset or an accessor. It reports, in the registry:
 
 | an entry that | finding | fix |
 |---|---|---|

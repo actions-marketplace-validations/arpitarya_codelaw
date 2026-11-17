@@ -22,12 +22,17 @@ pub(crate) enum Tree<'a> {
     Disk,
     /// An in-memory set: `check_files` and the rule tester. Nothing on disk
     /// is read.
-    Memory(&'a [(String, Language, String)]),
+    /// `Memory`'s second part names the files that have the executable bit
+    /// (a snippet header `# run.py +x`, W-184); every other file has none.
+    Memory(&'a [(String, Language, String)], &'a std::collections::BTreeSet<String>),
     /// The files on disk, with these texts in place of theirs: a
     /// `fix --dry-run`'s multi-file fixes, which write nothing
     /// (SR-MULTI-FILE-FIXES decision 2).
     Overlay(&'a std::collections::BTreeMap<String, String>),
 }
+
+/// The set of executable files of a tree that has none.
+pub(crate) static NO_MODES: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
 
 /// One question a rule asked.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -40,6 +45,8 @@ pub(crate) enum Question {
     Files,
     /// The as-of date (L5 decision 2).
     AsOf,
+    /// Whether the file at this path has the executable bit (W-184).
+    Executable(String),
 }
 
 /// A question and the hash of its answer.
@@ -125,6 +132,13 @@ fn hash_bool(b: bool) -> Key {
     hash_bytes(&[b as u8])
 }
 
+fn hash_exec(e: Option<bool>) -> Key {
+    hash_bytes(&[match e {
+        None => 2,
+        Some(b) => b as u8,
+    }])
+}
+
 fn hash_text(t: &Option<String>) -> Key {
     match t {
         None => hash_bytes(b"\0none"),
@@ -143,6 +157,7 @@ fn hash_list(l: &Option<Vec<String>>) -> Key {
 fn answer(root: &Path, tree: Tree<'_>, q: &Question, as_of: &dyn Fn() -> Option<String>) -> Key {
     match q {
         Question::AsOf => hash_text(&as_of()),
+        Question::Executable(p) => hash_exec(executable(root, tree, p)),
         Question::Exists(p) => hash_bool(exists(root, tree, p)),
         Question::IsDir(p) => hash_bool(is_dir(root, tree, p)),
         Question::Read(p) => hash_text(&read(root, tree, p)),
@@ -163,7 +178,7 @@ fn exists(root: &Path, tree: Tree<'_>, path: &str) -> bool {
     }
     match tree {
         Tree::Disk | Tree::Overlay(_) => root.join(path).exists(),
-        Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p == path || p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
+        Tree::Memory(files, _) => path.is_empty() || files.iter().any(|(p, _, _)| p == path || p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
 }
 
@@ -173,7 +188,7 @@ fn is_dir(root: &Path, tree: Tree<'_>, path: &str) -> bool {
     }
     match tree {
         Tree::Disk | Tree::Overlay(_) => root.join(path).is_dir(),
-        Tree::Memory(files) => path.is_empty() || files.iter().any(|(p, _, _)| p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
+        Tree::Memory(files, _) => path.is_empty() || files.iter().any(|(p, _, _)| p.strip_prefix(path).is_some_and(|r| r.starts_with('/'))),
     }
 }
 
@@ -216,19 +231,45 @@ fn read(root: &Path, tree: Tree<'_>, path: &str) -> Option<String> {
     match tree {
         Tree::Overlay(texts) if texts.contains_key(path) => texts.get(path).cloned(),
         Tree::Disk | Tree::Overlay(_) => read_disk(&root.join(path)),
-        Tree::Memory(files) => files.iter().find(|(p, _, _)| p == path).map(|(_, _, t)| t.clone()),
+        Tree::Memory(files, _) => files.iter().find(|(p, _, _)| p == path).map(|(_, _, t)| t.clone()),
     }
 }
 
 fn project_files(root: &Path, tree: Tree<'_>) -> Vec<String> {
     match tree {
         Tree::Disk | Tree::Overlay(_) => crate::discover::walk_files(root),
-        Tree::Memory(files) => {
+        Tree::Memory(files, _) => {
             let mut v: Vec<String> = files.iter().map(|(p, _, _)| p.clone()).collect();
             v.sort();
             v
         }
     }
+}
+
+/// Whether the file at `path` has the executable bit. `None` where there is
+/// no such bit to read: off Unix (no mode bits, so no rule that depends on
+/// one reports there: the same answer on every machine, L5), a path that
+/// is not a file, or a name no rule may use.
+fn executable(root: &Path, tree: Tree<'_>, path: &str) -> Option<bool> {
+    if !safe(path) || path.is_empty() {
+        return None;
+    }
+    match tree {
+        Tree::Memory(files, modes) => files.iter().any(|(p, _, _)| p == path).then(|| modes.contains(path)),
+        Tree::Disk | Tree::Overlay(_) => disk_executable(&root.join(path)),
+    }
+}
+
+#[cfg(unix)]
+fn disk_executable(p: &Path) -> Option<bool> {
+    use std::os::unix::fs::PermissionsExt;
+    let meta = std::fs::metadata(p).ok().filter(|m| m.is_file())?;
+    Some(meta.permissions().mode() & 0o111 != 0)
+}
+
+#[cfg(not(unix))]
+fn disk_executable(_: &Path) -> Option<bool> {
+    None
 }
 
 fn list(root: &Path, tree: Tree<'_>, path: &str) -> Option<Vec<String>> {
@@ -237,7 +278,7 @@ fn list(root: &Path, tree: Tree<'_>, path: &str) -> Option<Vec<String>> {
     }
     let mut names: Vec<String> = match tree {
         Tree::Disk | Tree::Overlay(_) => std::fs::read_dir(root.join(path)).ok()?.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()).collect(),
-        Tree::Memory(files) => {
+        Tree::Memory(files, _) => {
             let prefix = if path.is_empty() { String::new() } else { format!("{path}/") };
             files.iter().filter_map(|(p, _, _)| p.strip_prefix(prefix.as_str())).map(|r| r.split('/').next().unwrap_or(r).to_owned()).collect()
         }
@@ -289,6 +330,11 @@ impl FileContext for ProjectFile<'_> {
         self.record(Question::Files, hash_list(&Some(files.clone())));
         Some(files)
     }
+    fn is_executable(&self) -> Option<bool> {
+        let a = executable(self.root, self.tree, self.path);
+        self.record(Question::Executable(self.path.to_owned()), hash_exec(a));
+        a
+    }
     fn as_of(&self) -> Option<String> {
         let a = self.as_of.and_then(|f| f());
         self.record(Question::AsOf, hash_text(&a));
@@ -322,7 +368,7 @@ mod tests {
             ("docs/sub/b.md".to_owned(), Language::Markdown, "# B\n".to_owned()),
             ("README.md".to_owned(), Language::Markdown, "# R\n".to_owned()),
         ];
-        let f = ProjectFile::new("docs/a.md", "# A\n", true, Path::new("/nowhere"), Tree::Memory(&files));
+        let f = ProjectFile::new("docs/a.md", "# A\n", true, Path::new("/nowhere"), Tree::Memory(&files, &NO_MODES));
         assert_eq!(f.bytes(), "\u{feff}# A\n".as_bytes());
         assert!(f.exists("docs/sub/b.md"));
         assert!(f.exists("docs/sub"));
@@ -364,5 +410,34 @@ mod tests {
         assert!(!still_holds(Path::new("/nowhere"), &asked, &|| Some("2026-10-26".to_owned())), "a new as-of date is a new answer");
         let plain = ProjectFile::new("a.md", "", false, Path::new("/nowhere"), Tree::Disk);
         assert_eq!(plain.as_of(), None);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn the_executable_bit_is_an_answer_too() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = std::env::temp_dir().join(format!("codelaw-files-exec-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("run.py"), "print(1)\n").unwrap();
+        std::fs::set_permissions(dir.join("run.py"), std::fs::Permissions::from_mode(0o644)).unwrap();
+        let f = ProjectFile::new("run.py", "print(1)\n", false, &dir, Tree::Disk);
+        assert_eq!(f.is_executable(), Some(false));
+        let asked = f.asked();
+        assert!(still_holds(&dir, &asked, &|| None));
+        std::fs::set_permissions(dir.join("run.py"), std::fs::Permissions::from_mode(0o755)).unwrap();
+        assert!(!still_holds(&dir, &asked, &|| None), "a chmod is a new answer");
+        assert_eq!(ProjectFile::new("run.py", "", false, &dir, Tree::Disk).is_executable(), Some(true));
+        assert_eq!(ProjectFile::new("gone.py", "", false, &dir, Tree::Disk).is_executable(), None);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_memory_tree_gives_the_bit_to_the_files_named() {
+        let files = vec![("a.py".to_owned(), Language::Python, String::new()), ("b.py".to_owned(), Language::Python, String::new())];
+        let modes: std::collections::BTreeSet<String> = ["a.py".to_owned()].into();
+        let root = Path::new("/nowhere");
+        assert_eq!(ProjectFile::new("a.py", "", false, root, Tree::Memory(&files, &modes)).is_executable(), Some(true));
+        assert_eq!(ProjectFile::new("b.py", "", false, root, Tree::Memory(&files, &modes)).is_executable(), Some(false));
     }
 }

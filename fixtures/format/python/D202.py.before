@@ -1,0 +1,51 @@
+def f():
+    """Return one."""
+
+    return 1
+
+
+def g():
+    """Return two."""
+
+    # a note
+
+    return 2
+
+
+def h():
+    """Return three."""
+
+    def inner():
+        return 3
+
+    return inner
+
+
+def i():
+    """Return four."""
+    def inner():
+        return 4
+
+    return inner
+
+
+def j():
+    """Return five."""
+
+    @decorator
+    class Inner:
+        pass
+
+
+def k():
+    """Return six."""  # fmt: skip
+
+    return 6
+
+
+def l():
+    # fmt: off
+    """Return seven."""
+
+    return 7
+    # fmt: on

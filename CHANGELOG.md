@@ -4,9 +4,16 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **A file's executable bit for rules (W-184):** a native rule can ask whether the file it checks is executable (`FileContext::is_executable`; nothing is reported off Unix), and Ruff's `EXE001` (`py/shebang-not-executable`) and `EXE002` (`py/shebang-missing-executable-file`) read it; both are `manual`, `preview`. The rule tester gives a snippet file the bit with `+x` in its header.
+
 ### Changed
 
 - **Findings that depend on the project's Python version (W-183):** a rule file may say `finding_target: { python: { from: "3.7", below: "3.10" } }` and is quiet on a file whose target (`[targets] python`, or `requires-python`) is outside the range or unknown; `rules --why` shows the range and the resolved target. Six `preview` rules on it: `py/future-required-type-annotation` (FA102), `py/future-rewritable-type-annotation` (FA100), `py/try-except-in-loop` (PERF203), `py/outdated-version-block` (UP036), `py/using-exception-groups-in-unsupported-version` and `py/using-generic-type-syntax-in-unsupported-version`; a test fence takes `python=3.10`.
+- **What a fresh install turns on, and three Python presets (W-192):** `docs/rules/defaults.md` lists every pack, preset and rule as on or off by default (generated; CI holds it). `py/strict` (the rest of Ruff's stable rules at `warn`), `py/pylint` (Pylint's default checkers at its categories) and `py/pydocstyle` (the `D` rules) are new opt-in presets of the Python pack; none is in `recommended`.
+- **One record per graph (W-191):** SR-PROJECT-GRAPH is now the overview of every graph codelaw builds; the module graph is SR-MODULE-GRAPH, the per-file semantic model SR-SEMANTIC-MODEL (was SR-ARCHITECTURE decision 15a) and the Python flow pass SR-PY-FLOW (was SR-PY-INFERENCE decision 3). Records only; no behaviour changed.
+- **`codelaw format` writes Ruff's docstring layout for Python (W-179):** a blank line after a function's docstring is removed (`D202`; one stays before a nested `def` or `class`), as are the blank lines between a comment and a docstring (`D201`, `D211`). Ruff's formatter already wrote the rest of the group — `D204`, `D210`, `EXE004`, quotes and implicit string joins — so no lint rule is built for them. **This is not Black's output** (Black keeps the blank line after a function docstring): on CPython 3.9's standard library 118 of 577 files change, by 318 blank lines.
 - **L8 now lets the decider raise one budget by name (W-172):** a budget stays never exceeded and never loosened, except by the decider's own ruling naming the budget and the value (SR-LAW-8 decision 5a). The first: `peak_memory_10k` goes from 72 to 90 MiB — the packs grew from 443 to 1,581 loaded rules and the reference runner measured 86.1 MiB.
 - **Python inference closed (W-174):** Pylint's `boolean-datetime` is ruled not-applicable (it reports only below Python 3.5; codelaw's floor is 3.9), so every row in SR-PY-INFERENCE is built or ruled; the rows that need another file's classes wait on W-185 and W-177.
 - **Queue clean-up (W-193, W-194):** `py/quoted-type-alias`, `py/split-static-string` and Pylint's 15 docparams rows were already in 0.5.1; their work items are closed.
