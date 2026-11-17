@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (a second title, and the headings under it, go one level down (ATX headings, none past level 6); the outline then changes, which the reviewer confirms. A setext title is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `markdownlint/MD025` |
+| **Ported from** | `markdownlint/MD025`, `biome/nursery/useSingleTopLevelHeading` |
 
 ## What it checks
 

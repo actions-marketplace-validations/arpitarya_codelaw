@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (rewriting a class as a function with hooks restructures the component) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `oxlint/react/prefer-function-component` |
+| **Ported from** | `oxlint/react/prefer-function-component`, `biome/style/useReactFunctionComponents` |
 
 ## What it checks
 

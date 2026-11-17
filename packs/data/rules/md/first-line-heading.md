@@ -9,7 +9,7 @@ stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }
   allow_preamble: { type: "boolean", default: false, description: "allow text before the title heading" }
-ported_from: [markdownlint/MD041]
+ported_from: [markdownlint/MD041, biome/nursery/useTopLevelHeading]
 since: 0.1.0
 ---
 
