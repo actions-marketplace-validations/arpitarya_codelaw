@@ -930,7 +930,9 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
     let n = unit.rules.len();
     let mut failed: Vec<Option<String>> = vec![None; n];
     let timings = project.timings.as_ref();
-    let semantic = if unit.rules.iter().any(|(_, r, _)| r.needs_semantic) {
+    // An idle options-only rule (SR-RULE-FORMAT decision 2d) builds nothing.
+    let idle = |r: &crate::compile::CompiledRule, cfg: &RuleConfig| matches!(&r.matcher, Matcher::Native(nr) if codelaw_native::is_idle(*nr, &cfg.options));
+    let semantic = if unit.rules.iter().any(|(_, r, c)| r.needs_semantic && !idle(r, c)) {
         let _timed = timings.map(|t| t.guard(Phase::Semantic));
         match catch_unwind(AssertUnwindSafe(|| codelaw_semantic::build(unit.language, &unit.root, &unit.text))) {
             Ok(model) => model,
@@ -952,7 +954,14 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
     let _timed = timings.map(|t| t.guard(Phase::Rules));
     let mut by_kind: Vec<Vec<usize>> = Vec::new();
     let mut any_kind: Vec<usize> = Vec::new();
-    for (slot, (_, rule, _)) in unit.rules.iter().enumerate() {
+    for (slot, (_, rule, cfg)) in unit.rules.iter().enumerate() {
+        // An options-only rule (SR-RULE-FORMAT decision 2d) with none of its
+        // options set finds nothing: it is asked about no node at all.
+        if let Matcher::Native(nr) = &rule.matcher
+            && codelaw_native::is_idle(*nr, &cfg.options)
+        {
+            continue;
+        }
         match rule.kinds_for(grammar) {
             None => {}
             Some(None) => any_kind.push(slot),

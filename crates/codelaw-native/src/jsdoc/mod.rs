@@ -12,7 +12,7 @@ mod libtypes;
 mod names;
 mod prose;
 mod tags;
-mod target;
+pub(crate) mod target;
 mod typerules;
 #[cfg(test)]
 mod tests;
