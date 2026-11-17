@@ -408,4 +408,33 @@ mod tests {
         let plain = ProjectFile::new("a.md", "", false, Path::new("/nowhere"), Tree::Disk);
         assert_eq!(plain.as_of(), None);
     }
+
+    #[cfg(unix)]
+    #[test]
+    fn the_executable_bit_is_an_answer_too() {
+        use std::os::unix::fs::PermissionsExt;
+        let dir = std::env::temp_dir().join(format!("codelaw-files-exec-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("run.py"), "print(1)\n").unwrap();
+        std::fs::set_permissions(dir.join("run.py"), std::fs::Permissions::from_mode(0o644)).unwrap();
+        let f = ProjectFile::new("run.py", "print(1)\n", false, &dir, Tree::Disk);
+        assert_eq!(f.is_executable(), Some(false));
+        let asked = f.asked();
+        assert!(still_holds(&dir, &asked, &|| None));
+        std::fs::set_permissions(dir.join("run.py"), std::fs::Permissions::from_mode(0o755)).unwrap();
+        assert!(!still_holds(&dir, &asked, &|| None), "a chmod is a new answer");
+        assert_eq!(ProjectFile::new("run.py", "", false, &dir, Tree::Disk).is_executable(), Some(true));
+        assert_eq!(ProjectFile::new("gone.py", "", false, &dir, Tree::Disk).is_executable(), None);
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn the_memory_tree_gives_the_bit_to_the_files_named() {
+        let files = vec![("a.py".to_owned(), Language::Python, String::new()), ("b.py".to_owned(), Language::Python, String::new())];
+        let modes: std::collections::BTreeSet<String> = ["a.py".to_owned()].into();
+        let root = Path::new("/nowhere");
+        assert_eq!(ProjectFile::new("a.py", "", false, root, Tree::Memory(&files, &modes)).is_executable(), Some(true));
+        assert_eq!(ProjectFile::new("b.py", "", false, root, Tree::Memory(&files, &modes)).is_executable(), Some(false));
+    }
 }
