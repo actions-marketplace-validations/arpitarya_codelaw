@@ -5,8 +5,8 @@ description: "Arpit, 2026-11-09 (voice docket): Ruff's six layout rows are the f
 item: W-179
 filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-17
+updated_by: "Claude Code (Sonnet 5.5)"
 ball: agent
 ---
 
@@ -16,9 +16,9 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Check which rows the Python formatter already does, one fixture each | what is already covered | ⏳ |
-| 2 | Add the rest to the formatter | the layout handled where it belongs | ⏳ |
-| 3 | Mark every row formatter-owned in the parity ledger | none counted as a missing lint rule | ⏳ |
+| 1 | Check which rows the Python formatter already does, one fixture each | what is already covered | ✅ |
+| 2 | Add the rest to the formatter | the layout handled where it belongs | ✅ |
+| 3 | Mark every row formatter-owned in the parity ledger | none counted as a missing lint rule | ✅ |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* On Ruff's layout group: *"So whatever is handled on formatter side, they are not again needed in the linter side."* · *"All these look like format formatters to me."* · *"Not in backlog. Put it in the work item list."* — *"All six."* Filed on *"file it."*
 
@@ -32,9 +32,13 @@ Ruff `D201`, `D202`, `D203` or `D211` (they contradict: one is chosen), `D204` a
 
 | DoD | what | state |
 |---|---|---|
-| 1 · check | a fixture per row: formatted output before and after | ⏳ |
-| 2 · formatter | the rows it lacks added, matching Black and Ruff's formatter where they agree | ⏳ |
-| 3 · ledger | the rows formatter-owned in `ruff.csv`, `pylint.csv` | ⏳ |
+| 1 · check | a fixture per row: formatted output before and after | ✅ |
+| 2 · formatter | the rows it lacks added, matching Black and Ruff's formatter where they agree | ✅ |
+| 3 · ledger | the rows formatter-owned in `ruff.csv`, `pylint.csv` | ✅ |
+
+## Closed 2026-11-17
+
+Checked row by row with a fixture each (`fixtures/format/python/<row>.py.before` and `.py.after`, run by `crates/codelaw-format/src/tests.rs`): Ruff's formatter already writes `D201` (but not after a comment), `D204`, `D210`, `EXE004`, the `D211` side of `D203`/`D211`, Pylint's `inconsistent-quotes` and `implicit-str-concat`. Missing, and added in `crates/codelaw-format/src/python_layout.rs`: `D202` (a blank line after a function docstring goes; one stays before a nested `def` or `class`) and the blank lines between a comment and a docstring (`D201`, `D211`). `D211` chosen over `D203`: Black 24 and Ruff's formatter both write it. Every row is `layout` in `ruff.csv` and `pylint.csv`; the rule is [SR-FORMATTER](../../records/0105_formatter.md) decision 10, with the measured departure from Black on `D202` (118 of 577 CPython 3.9 stdlib files change, 318 blank lines removed).
 
 ## Blockers
 

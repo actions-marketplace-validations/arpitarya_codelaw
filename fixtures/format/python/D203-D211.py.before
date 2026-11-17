@@ -1,0 +1,19 @@
+class A:
+
+    """No blank line goes before this docstring."""
+
+    x = 1
+
+
+class B:
+    # a note
+
+    """The blank line after a comment goes too."""
+
+    y = 2
+
+
+class C:
+    """Already right."""
+
+    z = 3

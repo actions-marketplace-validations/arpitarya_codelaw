@@ -201,7 +201,7 @@ fn ruff(path: &str, text: &str, o: &FormatOptions, width: u16) -> Result<String,
             options::EndOfLine::Crlf => ruff_formatter::printer::LineEnding::CarriageReturnLineFeed,
         });
     match ruff_python_formatter::format_module_source(text, options) {
-        Ok(printed) => Ok(printed.into_code()),
+        Ok(printed) => Ok(crate::python_layout::apply(&printed.into_code())),
         Err(FormatModuleError::ParseError(e)) => Err(FormatError::Syntax(e.error.to_string())),
         Err(e) => Err(engine_error(e)),
     }

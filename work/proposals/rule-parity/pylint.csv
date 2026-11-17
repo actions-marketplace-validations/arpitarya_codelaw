@@ -138,14 +138,14 @@ global-statement,same-as,,,,,,,,,,W0603; the same rule as ruff/PLW0603: counted 
 global-variable-not-assigned,same-as,,,,,,,,,,W0602; the same rule as ruff/PLW0602: counted there
 global-variable-undefined,port,,python,py/global-variable-undefined,manual,P2,D,none,,,"W0601, variables"
 implicit-flag-alias,port,,python,py/implicit-flag-alias,manual,P2,D,none,,,"W0213, classes"
-implicit-str-concat,port,,python,py/implicit-str-concat,manual,P2,D,none,,,"W1404, string"
+implicit-str-concat,layout,,,,,,,,,,"W1404, string; the formatter owns it (SR-FORMATTER decision 10)"
 import-error,port,,python,py/import-error,manual,P1,A,none,yes,,"E0401, imports"
 import-outside-toplevel,port,,python,py/import-outside-toplevel,manual,P2,D,none,,,"C0415, imports"
 import-private-name,same-as,,,,,,,,,,C2701; the same rule as ruff/PLC2701: counted there
 import-self,same-as,,,,,,,,,,W0406; the same rule as ruff/PLW0406: counted there
 impossible-comparison,port,,python,py/impossible-comparison,manual,P2,D,none,,,"R1739, refactoring"
 inconsistent-mro,port,,python,py/inconsistent-mro,manual,P1,A,none,yes,,"E0240, classes"
-inconsistent-quotes,port,,python,py/inconsistent-quotes,manual,P2,D,none,,,"W1405, string"
+inconsistent-quotes,layout,,,,,,,,,,"W1405, string; the formatter owns it (SR-FORMATTER decision 10)"
 inconsistent-return-statements,port,,python,py/inconsistent-return-statements,manual,P2,D,none,,,"R1710, refactoring"
 inherit-non-class,port,,python,py/inherit-non-class,manual,P1,A,none,yes,,"E0239, classes"
 init-is-generator,port,,python,py/init-is-generator,manual,P1,A,none,yes,,"E0100, basic"
