@@ -248,8 +248,6 @@ mod tests {
         }
     }
 
-    use crate::FileContext;
-
     fn run(rule: &dyn NativeRule, src: &str, options: BTreeMap<String, Value>) -> Vec<NativeFinding> {
         let root = codelaw_lang::parse(Language::Python, src);
         let data = BTreeMap::new();
