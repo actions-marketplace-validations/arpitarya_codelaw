@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2903 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2905 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 897 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 899 | 48 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2585,6 +2585,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/non-capitalized-section-name`](py/non-capitalized-section-name.md) | A docstring section name is capitalized | `auto` | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](py/non-empty-init-module.md) | __init__.py holds imports only | `manual` | — | *[rules] only* |
 | [`py/non-empty-stub-body`](py/non-empty-stub-body.md) | A stub function has no body | `auto` | — | `py/strict` |
+| [`py/non-imperative-mood`](py/non-imperative-mood.md) | A function's docstring starts in the imperative mood | `manual` | `property_decorators`, `ignore_decorators` | `py/pydocstyle` |
 | [`py/non-iterator-returned`](py/non-iterator-returned.md) | `__iter__` returns an iterator | `manual` | — | `py/pylint` |
 | [`py/non-lowercase-variable-in-function`](py/non-lowercase-variable-in-function.md) | Variables in a function are lowercase | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/non-octal-permissions`](py/non-octal-permissions.md) | File modes are octal | `suggest` | — | `py/strict` |
@@ -2676,6 +2677,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/printf-string-formatting`](py/printf-string-formatting.md) | `%` formatting becomes `.format` | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | `py/strict`, `py/pylint` |
 | [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | `py/strict` |
+| [`py/property-docstring-starts-with-verb`](py/property-docstring-starts-with-verb.md) | A property's docstring does not start with a verb | `manual` | `property_decorators`, `ignore_decorators` | `py/pydocstyle` |
 | [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | `py/strict` |
 | [`py/property-without-return`](py/property-without-return.md) | A property returns a value | `manual` | — | *[rules] only* |
 | [`py/py-path`](py/py-path.md) | pathlib, not py.path | `manual` | — | `py/strict` |

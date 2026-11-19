@@ -28,9 +28,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (24)
+## Open items (23)
 
-### build (15)
+### build (14)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -42,7 +42,6 @@ here. Read that record before changing anything below it.
 🟢 **W-178** `agent` Build `key-name-casing` (data, off by default), `require-frontmatter-fields` (md) and `check-examples` — with the engine work to lint `@example` code. Filed by Arpit (Cowork). [detail](open/W-178-config-keys-frontmatter-examples.md)
 
 
-🟢 **W-180** `agent` pydocstyle's imperative-mood verb list (ratified 11-09) and Ruff D401, D421 on it. Filed by Arpit (Cowork). [detail](open/W-180-imperative-mood-verbs.md)
 
 🟢 **W-182** `agent` A Unicode confusables data package (ratified 11-09) and Ruff RUF001–RUF003 on it. Filed by Arpit (Cowork). [detail](open/W-182-unicode-confusables.md)
 
@@ -81,7 +80,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-181**, **W-182**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

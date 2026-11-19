@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **Two more pydocstyle rules for Python (W-180):** `py/non-imperative-mood` (Ruff `D401`: `Returns the mean.` should be `Return the mean.`; judged from pydocstyle's verb list, which `packs/python/data/python/imperatives.json` holds, generated from pydocstyle 6.3.0 and checked in CI) and `py/property-docstring-starts-with-verb` (`D421`: a property's docstring names the value, not `Returns` it). Both are `preview`, `manual`, and in the opt-in `py/pydocstyle` preset.
 - **A file's executable bit for rules (W-184):** a native rule can ask whether the file it checks is executable (`FileContext::is_executable`; nothing is reported off Unix), and Ruff's `EXE001` (`py/shebang-not-executable`) and `EXE002` (`py/shebang-missing-executable-file`) read it; both are `manual`, `preview`. The rule tester gives a snippet file the bit with `+x` in its header.
 
 ### Changed

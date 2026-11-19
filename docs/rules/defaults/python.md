@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 897 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 104 in no preset.
+- **Rules:** 899 — 0 on, 97 on with `preview = true`, 698 off in an opt-in preset, 104 in no preset.
 
 ## Presets
 
@@ -18,7 +18,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
 | `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
 | `py/pylint` | no — opt in | 245 | 69 error, 91 info, 85 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
-| `py/pydocstyle` | no — opt in | 39 | 39 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
+| `py/pydocstyle` | no — opt in | 41 | 41 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
 
 ## Rules
 
@@ -490,6 +490,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/non-capitalized-section-name`](../py/non-capitalized-section-name.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](../py/non-empty-init-module.md) | off — in no preset | — | — |
 | [`py/non-empty-stub-body`](../py/non-empty-stub-body.md) | off — opt-in preset | — | `py/strict` |
+| [`py/non-imperative-mood`](../py/non-imperative-mood.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-iterator-returned`](../py/non-iterator-returned.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/non-lowercase-variable-in-function`](../py/non-lowercase-variable-in-function.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/non-octal-permissions`](../py/non-octal-permissions.md) | off — opt-in preset | — | `py/strict` |
@@ -581,6 +582,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/printf-string-formatting`](../py/printf-string-formatting.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-member-access`](../py/private-member-access.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-type-parameter`](../py/private-type-parameter.md) | off — opt-in preset | — | `py/strict` |
+| [`py/property-docstring-starts-with-verb`](../py/property-docstring-starts-with-verb.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/property-with-parameters`](../py/property-with-parameters.md) | off — opt-in preset | — | `py/strict` |
 | [`py/property-without-return`](../py/property-without-return.md) | off — in no preset | — | — |
 | [`py/py-path`](../py/py-path.md) | off — opt-in preset | — | `py/strict` |
