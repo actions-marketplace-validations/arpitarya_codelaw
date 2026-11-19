@@ -35,7 +35,7 @@ no-namespace,port,,js,js/import-no-namespace,auto,P2,C,auto,,,
 no-nodejs-modules,port,,js,js/import-no-nodejs-modules,manual,P2,C,none,,,
 no-relative-packages,port,,js,js/import-no-relative-packages,auto,P2,C,auto,,,needs the project graph (SR-PROJECT-GRAPH)
 no-relative-parent-imports,port,,js,js/import-no-relative-parent-imports,manual,P2,C,none,,,
-no-restricted-paths,port,,js,js/import-no-restricted-paths,manual,P2,C,none,,,needs the project graph (SR-PROJECT-GRAPH)
+no-restricted-paths,options-only,,js,js/import-no-restricted-paths,manual,P2,C,none,,,"needs the project graph (SR-PROJECT-GRAPH); options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 no-self-import,port,,js,js/import-no-self-import,manual,P2,C,none,,,needs the project graph (SR-PROJECT-GRAPH)
 no-unassigned-import,port,,js,js/import-no-unassigned-import,manual,P2,C,none,,,
 no-unresolved,port,,js,js/import-no-unresolved,manual,P1,A,none,yes,,needs the project graph (SR-PROJECT-GRAPH)

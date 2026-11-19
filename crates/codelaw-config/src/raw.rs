@@ -989,6 +989,9 @@ pub struct RawLsp {
 #[serde(deny_unknown_fields)]
 pub struct RawLint {
     pub tagged_templates: Option<bool>,
+    /// Lint the code of `@example` tags in JavaScript and TypeScript doc
+    /// comments (SR-LINTER decision 3; W-178).
+    pub jsdoc_examples: Option<bool>,
     /// Other tools' line suppressions read as `codelaw-ignore` (SR-LINTER
     /// decision 6; W-94): `eslint`, `ruff`, `biome`.
     pub ignore_aliases: Option<Vec<String>>,

@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2908 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2940 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -39,16 +39,16 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 941 | 45 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 958 | 62 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 160 | 10 |
-| [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
+| [node](#node) | `@codelaw/rules-node` | — | 40 | 4 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
 | [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 146 | 83 |
 | [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
-| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 48 | 17 |
+| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 50 | 19 |
 | [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 14 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 68 | 4 |
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 902 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 913 | 51 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -115,6 +115,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/cognitive-complexity`](js/cognitive-complexity.md) | A function's cognitive complexity is at most 15 | `manual` | `threshold` | `js/sonarjs` |
 | [`js/comma-or-logical-or-case`](js/comma-or-logical-or-case.md) | No comma or \|\| in a case | `manual` | — | `js/sonarjs` |
 | [`js/comment-content`](js/comment-content.md) | Product and language names in comments are spelled their own way | `auto` | — | *[rules] only* |
+| [`js/comment-regex`](js/comment-regex.md) | No comment matching the project's pattern | `manual` | `regularExpression`, `message` | *[rules] only* |
 | [`js/complexity`](js/complexity.md) | A function's cyclomatic complexity stays under a maximum | `manual` | `max`, `count_optional_chain`, `ignore_names` | `js/size` |
 | [`js/composite-assertions`](js/composite-assertions.md) | One condition per assertion, not a && b | `suggest` | — | *[rules] only* |
 | [`js/consistent-arrow-return-style`](js/consistent-arrow-return-style.md) | A multi-line arrow body as a block; a one-line `return` as a concise body | `auto` | — | *[rules] only* |
@@ -129,6 +130,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/consistent-existence-index-check`](js/consistent-existence-index-check.md) | Check indexOf against -1 the same way | `auto` | — | `js/strict` |
 | [`js/consistent-export-decorator-position`](js/consistent-export-decorator-position.md) | Class decorators before export, not between export and class | `auto` | — | `js/strict` |
 | [`js/consistent-function-scoping`](js/consistent-function-scoping.md) | No inner function that uses nothing from its outer function | `manual` | `checkArrowFunctions` | `js/strict` |
+| [`js/consistent-function-style`](js/consistent-function-style.md) | Functions take the syntax their role asks for | `suggest` | `default`, `defaultExport`, `namedFunctions`, `namedExports`, `callbacks`, `objectProperties`, `reassignedVariables`, `typedVariables` | *[rules] only* |
 | [`js/consistent-json-file-read`](js/consistent-json-file-read.md) | Read JSON files as text | `manual` | — | `js/strict` |
 | [`js/consistent-optional-chaining`](js/consistent-optional-chaining.md) | One base, one kind of member access, in an && or \|\| chain | `suggest` | — | `js/strict` |
 | [`js/consistent-return`](js/consistent-return.md) | return undefined explicitly beside valued returns | `suggest` | — | *[rules] only* |
@@ -164,6 +166,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/explicit-timer-delay`](js/explicit-timer-delay.md) | Give setTimeout and setInterval a delay | `auto` | — | `js/strict` |
 | [`js/exports-at-end`](js/exports-at-end.md) | Exports are gathered at the end of the file | `auto` | — | `js/conventions` |
 | [`js/expression-complexity`](js/expression-complexity.md) | No expression with more than three conditional operators | `manual` | `max` | *[rules] only* |
+| [`js/file-header`](js/file-header.md) | A file starts with the project's header | `suggest` | `headerFormat`, `isRegularExpression` | *[rules] only* |
 | [`js/file-name-differ-from-class`](js/file-name-differ-from-class.md) | A file that exports only a default is named after it | `manual` | — | *[rules] only* |
 | [`js/file-permissions`](js/file-permissions.md) | No world-writable file modes | `manual` | — | `js/sonarjs` |
 | [`js/file-uploads`](js/file-uploads.md) | File uploads have size limits | `manual` | — | `js/sonarjs` |
@@ -185,7 +188,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/hardcoded-secret-signatures`](js/hardcoded-secret-signatures.md) | No hard-coded JWT secret | `manual` | — | `js/sonarjs` |
 | [`js/hashing`](js/hashing.md) | No MD5 or SHA-1 | `manual` | — | `js/sonarjs` |
 | [`js/hooks-before-test-cases`](js/hooks-before-test-cases.md) | Test hooks come before the tests | `manual` | — | `js/sonarjs` |
+| [`js/id-denylist`](js/id-denylist.md) | No identifier the project denies | `manual` | `names` | *[rules] only* |
 | [`js/id-length`](js/id-length.md) | A declared name is at least two characters long | `manual` | — | `js/taste` |
+| [`js/id-match`](js/id-match.md) | Identifiers match the project's pattern | `manual` | `pattern`, `properties`, `classFields`, `onlyDeclarations`, `ignoreDestructuring` | *[rules] only* |
+| [`js/id-match-unicorn`](js/id-match-unicorn.md) | Identifiers match the project's pattern (unicorn's) | `manual` | `pattern`, `properties`, `classFields`, `onlyDeclarations`, `ignoreDestructuring`, `checkNamedSpecifiers` | *[rules] only* |
 | [`js/import-consistent-type-specifier-style`](js/import-consistent-type-specifier-style.md) | import type rather than a type marker on every specifier | `auto` | — | *[rules] only* |
 | [`js/import-default`](js/import-default.md) | A default import needs a default export | `manual` | — | `js/project` |
 | [`js/import-dynamic-import-chunkname`](js/import-dynamic-import-chunkname.md) | Dynamic imports name their webpack chunk | `suggest` | — | *[rules] only* |
@@ -218,12 +224,14 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/import-no-relative-packages`](js/import-no-relative-packages.md) | No relative import into another package of the repository | `auto` | `commonjs` | *[rules] only* |
 | [`js/import-no-relative-parent-imports`](js/import-no-relative-parent-imports.md) | No imports from a parent folder | `manual` | — | *[rules] only* |
 | [`js/import-no-rename-default`](js/import-no-rename-default.md) | A default import should go by the default export's own name | `manual` | — | *[rules] only* |
+| [`js/import-no-restricted-paths`](js/import-no-restricted-paths.md) | No import across a restricted zone | `manual` | `zones`, `basePath` | *[rules] only* |
 | [`js/import-no-self-import`](js/import-no-self-import.md) | No module that imports itself | `manual` | — | *[rules] only* |
 | [`js/import-no-unassigned-import`](js/import-no-unassigned-import.md) | No import only for side effects | `manual` | — | *[rules] only* |
 | [`js/import-no-unused-modules`](js/import-no-unused-modules.md) | No module without exports and no export nothing imports | `suggest` | — | *[rules] only* |
 | [`js/import-no-useless-path-segments`](js/import-no-useless-path-segments.md) | No useless segments in a relative import path | `auto` | `noUselessIndex`, `commonjs` | *[rules] only* |
 | [`js/import-no-webpack-loader-syntax`](js/import-no-webpack-loader-syntax.md) | No webpack loaders in import paths | `manual` | — | *[rules] only* |
 | [`js/import-prefer-default-export`](js/import-prefer-default-export.md) | A module with one export makes it the default | `manual` | — | *[rules] only* |
+| [`js/import-prefer-namespace-import`](js/import-prefer-namespace-import.md) | Namespace imports for the modules the project lists | `auto` | `patterns` | *[rules] only* |
 | [`js/import-style`](js/import-style.md) | Each module imported in its one style | `manual` | `styles`, `extendDefaultStyles`, `checkImport`, `checkDynamicImport`, `checkRequire`, `checkExportFrom` | `js/strict` |
 | [`js/import-unambiguous`](js/import-unambiguous.md) | A module has at least one `import` or `export` | `manual` | — | *[rules] only* |
 | [`js/inconsistent-function-call`](js/inconsistent-function-call.md) | No function called both with and without `new` | `manual` | — | `js/sonarjs` |
@@ -234,6 +242,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/isolated-functions`](js/isolated-functions.md) | No outside variables in a function that runs somewhere else | `manual` | `functions`, `comments` | `js/strict` |
 | [`js/iteration-fallback-style`](js/iteration-fallback-style.md) | Guard an optional loop source instead of iterating an empty fallback | `auto` | — | *[rules] only* |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-check-examples`](js/jsdoc-check-examples.md) | The code in an `@example` is code | `manual` | `ignore` | *[rules] only* |
 | [`js/jsdoc-check-param-names`](js/jsdoc-check-param-names.md) | JSDoc @param names match the function parameters | `suggest` | `allow_extra_trailing_param_docs` | `js/jsdoc` |
 | [`js/jsdoc-check-property-names`](js/jsdoc-check-property-names.md) | JSDoc @property names are not repeated and nested ones have a root | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
@@ -248,10 +257,13 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/jsdoc-imports-as-dependencies`](js/jsdoc-imports-as-dependencies.md) | Packages named in JSDoc import() types are dependencies | `manual` | — | *[rules] only* |
 | [`js/jsdoc-informative-docs`](js/jsdoc-informative-docs.md) | JSDoc text that adds something to the name it documents | `manual` | `useless_words`, `excluded_tags` | *[rules] only* |
 | [`js/jsdoc-match-description`](js/jsdoc-match-description.md) | A function's description is a sentence | `manual` | — | *[rules] only* |
+| [`js/jsdoc-match-name`](js/jsdoc-match-name.md) | JSDoc tag names the project allows | `auto` | `match` | *[rules] only* |
 | [`js/jsdoc-multiline-blocks`](js/jsdoc-multiline-blocks.md) | /** and */ on their own lines | `auto` | — | `js/jsdoc` |
 | [`js/jsdoc-no-blank-blocks`](js/jsdoc-no-blank-blocks.md) | No empty JSDoc blocks | `auto` | — | *[rules] only* |
 | [`js/jsdoc-no-defaults`](js/jsdoc-no-defaults.md) | Defaults in the signature, not in JSDoc | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-no-missing-syntax`](js/jsdoc-no-missing-syntax.md) | JSDoc blocks the project requires | `manual` | `contexts`, `entries` | *[rules] only* |
 | [`js/jsdoc-no-multi-asterisks`](js/jsdoc-no-multi-asterisks.md) | One asterisk per JSDoc line | `auto` | — | `js/jsdoc` |
+| [`js/jsdoc-no-restricted-syntax`](js/jsdoc-no-restricted-syntax.md) | No JSDoc block the project restricts | `manual` | `contexts`, `entries` | *[rules] only* |
 | [`js/jsdoc-no-types`](js/jsdoc-no-types.md) | No JSDoc types in TypeScript | `suggest` | — | *[rules] only* |
 | [`js/jsdoc-no-undefined-types`](js/jsdoc-no-undefined-types.md) | JSDoc types name something defined | `manual` | `defined_types`, `globals`, `env` | `js/jsdoc` |
 | [`js/jsdoc-normalize-see-links`](js/jsdoc-normalize-see-links.md) | One form for labelled links in @see tags | `auto` | `enable_fixer` | *[rules] only* |
@@ -278,6 +290,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/jsdoc-require-returns-check`](js/jsdoc-require-returns-check.md) | @returns only where a value is returned | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-require-returns-description`](js/jsdoc-require-returns-description.md) | @returns says what is returned | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-require-returns-type`](js/jsdoc-require-returns-type.md) | @returns has a type | `manual` | — | `js/jsdoc` |
+| [`js/jsdoc-require-tags`](js/jsdoc-require-tags.md) | JSDoc blocks carry the tags the project requires | `manual` | `tags`, `tagContexts` | *[rules] only* |
 | [`js/jsdoc-require-template`](js/jsdoc-require-template.md) | Type parameters are documented with @template | `manual` | — | *[rules] only* |
 | [`js/jsdoc-require-template-description`](js/jsdoc-require-template-description.md) | @template says what the type parameter is | `manual` | — | *[rules] only* |
 | [`js/jsdoc-require-throws`](js/jsdoc-require-throws.md) | A function that throws documents @throws | `manual` | — | *[rules] only* |
@@ -289,6 +302,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/jsdoc-require-yields-type`](js/jsdoc-require-yields-type.md) | @yields has a type | `manual` | — | `js/jsdoc` |
 | [`js/jsdoc-sort-tags`](js/jsdoc-sort-tags.md) | JSDoc tags in the prescribed order | `auto` | — | *[rules] only* |
 | [`js/jsdoc-tag-lines`](js/jsdoc-tag-lines.md) | No blank lines between a JSDoc description and its tags, or between tags | `auto` | — | `js/jsdoc` |
+| [`js/jsdoc-text-escaping`](js/jsdoc-text-escaping.md) | JSDoc text escapes what Markdown or HTML would read | `auto` | `escapeHTML`, `escapeMarkdown` | *[rules] only* |
 | [`js/jsdoc-ts-ban-ts-comment`](js/jsdoc-ts-ban-ts-comment.md) | No @ts-ignore or @ts-nocheck in JavaScript | `manual` | — | *[rules] only* |
 | [`js/jsdoc-ts-method-signature-style`](js/jsdoc-ts-method-signature-style.md) | Function properties, not method signatures, in JSDoc object types | `suggest` | `style`, `enable_fixer` | *[rules] only* |
 | [`js/jsdoc-ts-no-empty-object-type`](js/jsdoc-ts-no-empty-object-type.md) | No {} type in JSDoc | `suggest` | — | `js/jsdoc` |
@@ -453,6 +467,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-ignored-exceptions`](js/no-ignored-exceptions.md) | No empty catch | `manual` | — | `js/sonarjs` |
 | [`js/no-immediate-mutation`](js/no-immediate-mutation.md) | No changing a new literal in the very next statement | `auto` | — | `js/strict` |
 | [`js/no-implicit-coercion`](js/no-implicit-coercion.md) | Explicit conversions, not !!x or +x | `suggest` | — | *[rules] only* |
+| [`js/no-implicit-globals`](js/no-implicit-globals.md) | No globals created by a script | `manual` | `script`, `lexicalBindings` | *[rules] only* |
 | [`js/no-implied-eval`](js/no-implied-eval.md) | No string code in setTimeout | `manual` | — | *[rules] only* |
 | [`js/no-import-assign`](js/no-import-assign.md) | An imported binding is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-impossible-length-comparison`](js/no-impossible-length-comparison.md) | No length < 0 | `manual` | — | `js/strict` |
@@ -553,6 +568,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-regex-spaces`](js/no-regex-spaces.md) | No runs of spaces in a regular expression | `auto` | — | `js/recommended` |
 | [`js/no-repeated-call-wrappers`](js/no-repeated-call-wrappers.md) | No function whose every call is wrapped the same way | `manual` | — | *[rules] only* |
 | [`js/no-restricted-exports`](js/no-restricted-exports.md) | No export named default | `suggest` | — | *[rules] only* |
+| [`js/no-restricted-syntax`](js/no-restricted-syntax.md) | No syntax the project restricts | `manual` | `patterns`, `kinds`, `messages` | *[rules] only* |
 | [`js/no-return-array-push`](js/no-return-array-push.md) | No return of push() | `manual` | — | `js/strict` |
 | [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `auto` | — | *[rules] only* |
 | [`js/no-same-argument-assert`](js/no-same-argument-assert.md) | No assertion of a value against itself | `manual` | — | `js/sonarjs` |
@@ -985,6 +1001,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/stateful-regex`](js/stateful-regex.md) | No global regular expression used in a way its `lastIndex` breaks | `manual` | — | `js/sonarjs` |
 | [`js/strict`](js/strict.md) | No "use strict" in a module | `auto` | — | *[rules] only* |
 | [`js/strict-transport-security`](js/strict-transport-security.md) | Keep the HSTS header | `suggest` | — | `js/sonarjs` |
+| [`js/string-content`](js/string-content.md) | Strings say it the project's way | `auto` | `patterns` | *[rules] only* |
 | [`js/switch-final-break`](js/switch-final-break.md) | No break at the end of the last case | `auto` | — | `js/taste` |
 | [`js/symbol-description`](js/symbol-description.md) | A Symbol has a description | `suggest` | — | *[rules] only* |
 | [`js/synchronous-suite-callback`](js/synchronous-suite-callback.md) | A describe() callback is not async | `suggest` | — | `js/sonarjs` |
@@ -1282,6 +1299,8 @@ Presets: `codelaw:node/recommended`.
 | [`node/no-path-concat`](node/no-path-concat.md) | Join paths with path.join, not + | `suggest` | — | *[rules] only* |
 | [`node/no-process-env`](node/no-process-env.md) | No process.env outside the config module | `manual` | — | *[rules] only* |
 | [`node/no-process-exit`](node/no-process-exit.md) | No process.exit() | `suggest` | — | `node/recommended` |
+| [`node/no-restricted-import`](node/no-restricted-import.md) | No import of the modules the project restricts | `manual` | `modules`, `messages` | *[rules] only* |
+| [`node/no-restricted-require`](node/no-restricted-require.md) | No require of the modules the project restricts | `manual` | `modules`, `messages` | *[rules] only* |
 | [`node/no-sync`](node/no-sync.md) | No synchronous *Sync calls | `manual` | — | *[rules] only* |
 | [`node/no-top-level-await`](node/no-top-level-await.md) | No await at the top level of a module | `manual` | — | *[rules] only* |
 | [`node/no-unpublished-bin`](node/no-unpublished-bin.md) | A package's `bin` file is one npm publishes | `manual` | — | *[rules] only* |
@@ -1650,6 +1669,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 |---|---|---|---|---|
 | [`data/codeowners-coverage`](data/codeowners-coverage.md) | Every file has a code owner, and every CODEOWNERS pattern is live | `manual` | `path`, `allow_unowned`, `ignore` | `data/codeowners` |
 | [`data/flag-registry`](data/flag-registry.md) | The feature-flag registry is valid and holds only flags still read | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
+| [`data/key-name-casing`](data/key-name-casing.md) | Keys in a data file use one casing style | `suggest` | `case`, `ignore` | *[rules] only* |
 | [`json/no-duplicate-keys`](json/no-duplicate-keys.md) | No key twice in one JSON object | `auto` | — | `data/recommended` |
 | [`json/package-deps-sorted`](json/package-deps-sorted.md) | package.json dependency lists are sorted by name | `auto` | — | `data/package-json` |
 | [`json/package-engines`](json/package-engines.md) | package.json declares engines.node | `suggest` | `node` | `data/package-json` |
@@ -1678,6 +1698,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/proper-names`](md/proper-names.md) | Proper names are spelled as the project spells them | `auto` | `names`, `code_blocks` | `md/recommended` |
 | [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `suggest` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
 | [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `suggest` | — | `md/recommended` |
+| [`md/require-frontmatter-fields`](md/require-frontmatter-fields.md) | A Markdown file's front matter carries the fields the project lists | `manual` | `fields` | *[rules] only* |
 | [`md/required-headings`](md/required-headings.md) | Documents follow the required outline | `manual` | `headings` | `md/recommended` |
 | [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `suggest` | `level` | `md/recommended` |
 | [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `auto` | — | `md/recommended` |
@@ -2130,6 +2151,9 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/all-sorted`](py/all-sorted.md) | `__all__` is sorted | `auto` | — | `py/recommended`, `py/strict` |
 | [`py/ambiguous-class-name`](py/ambiguous-class-name.md) | No classes named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
 | [`py/ambiguous-function-name`](py/ambiguous-function-name.md) | No functions named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
+| [`py/ambiguous-unicode-character-comment`](py/ambiguous-unicode-character-comment.md) | No ambiguous Unicode character in a comment | `suggest` | `allowed_confusables` | *[rules] only* |
+| [`py/ambiguous-unicode-character-docstring`](py/ambiguous-unicode-character-docstring.md) | No ambiguous Unicode character in a docstring | `suggest` | `allowed_confusables` | *[rules] only* |
+| [`py/ambiguous-unicode-character-string`](py/ambiguous-unicode-character-string.md) | No ambiguous Unicode character in a string | `suggest` | `allowed_confusables` | *[rules] only* |
 | [`py/ambiguous-variable-name`](py/ambiguous-variable-name.md) | No variables named `l`, `O` or `I` | `manual` | — | `py/recommended`, `py/strict` |
 | [`py/anomalous-unicode-escape-in-string`](py/anomalous-unicode-escape-in-string.md) | A bytes literal has no `\u`, `\U` or `\N` escape | `auto` | — | `py/pylint` |
 | [`py/any-eq-ne-annotation`](py/any-eq-ne-annotation.md) | object, not Any, for __eq__'s other | `auto` | — | `py/strict` |
@@ -2255,6 +2279,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | `py/strict` |
 | [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | `py/strict` |
 | [`py/custom-type-var-for-self`](py/custom-type-var-for-self.md) | A method is annotated with `Self`, not a custom `TypeVar` | `auto` | — | `py/strict` |
+| [`py/cyclic-import`](py/cyclic-import.md) | A module must not import its way back to itself | `manual` | — | `py/project` |
 | [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | `py/strict` |
 | [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | `py/strict` |
 | [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | `py/strict` |
@@ -2395,6 +2420,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/implicit-return`](py/implicit-return.md) | A function that returns a value ends with an explicit return | `auto` | — | `py/strict` |
 | [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | `py/strict` |
 | [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | `py/strict` |
+| [`py/import-error`](py/import-error.md) | An import of the project's own module must name a module that exists | `manual` | — | `py/project` |
 | [`py/import-outside-top-level`](py/import-outside-top-level.md) | Imports are at the top of the module | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/import-self`](py/import-self.md) | A module does not import itself | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `auto` | — | `py/recommended`, `py/strict` |
@@ -2573,6 +2599,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended`, `py/strict` |
 | [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | `py/pylint` |
 | [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/no-name-in-module`](py/no-name-in-module.md) | A name imported from the project's own module must be defined there | `manual` | — | `py/project` |
 | [`py/no-print`](py/no-print.md) | No `print()` in library code | `suggest` | — | `py/conventions` |
 | [`py/no-return-argument-annotation-in-stub`](py/no-return-argument-annotation-in-stub.md) | A stub's parameter is annotated Never, not NoReturn | `auto` | — | `py/strict` |
 | [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | `py/strict`, `py/pylint` |
@@ -2590,6 +2617,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/non-capitalized-section-name`](py/non-capitalized-section-name.md) | A docstring section name is capitalized | `auto` | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](py/non-empty-init-module.md) | __init__.py holds imports only | `manual` | — | *[rules] only* |
 | [`py/non-empty-stub-body`](py/non-empty-stub-body.md) | A stub function has no body | `auto` | — | `py/strict` |
+| [`py/non-imperative-mood`](py/non-imperative-mood.md) | A function's docstring starts in the imperative mood | `manual` | `property_decorators`, `ignore_decorators` | `py/pydocstyle` |
 | [`py/non-iterator-returned`](py/non-iterator-returned.md) | `__iter__` returns an iterator | `manual` | — | `py/pylint` |
 | [`py/non-lowercase-variable-in-function`](py/non-lowercase-variable-in-function.md) | Variables in a function are lowercase | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/non-octal-permissions`](py/non-octal-permissions.md) | File modes are octal | `suggest` | — | `py/strict` |
@@ -2681,6 +2709,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/printf-string-formatting`](py/printf-string-formatting.md) | `%` formatting becomes `.format` | `suggest` | — | `py/strict`, `py/pylint` |
 | [`py/private-member-access`](py/private-member-access.md) | No access to another object's private members | `manual` | `ignore_names` | `py/strict`, `py/pylint` |
 | [`py/private-type-parameter`](py/private-type-parameter.md) | A PEP 695 type parameter has no leading underscore | `auto` | — | `py/strict` |
+| [`py/property-docstring-starts-with-verb`](py/property-docstring-starts-with-verb.md) | A property's docstring does not start with a verb | `manual` | `property_decorators`, `ignore_decorators` | `py/pydocstyle` |
 | [`py/property-with-parameters`](py/property-with-parameters.md) | A property takes only self | `manual` | — | `py/strict` |
 | [`py/property-without-return`](py/property-without-return.md) | A property returns a value | `manual` | — | *[rules] only* |
 | [`py/py-path`](py/py-path.md) | pathlib, not py.path | `manual` | — | `py/strict` |
@@ -2756,6 +2785,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/reimplemented-operator`](py/reimplemented-operator.md) | operator.itemgetter, not a lambda | `suggest` | — | *[rules] only* |
 | [`py/reimplemented-starmap`](py/reimplemented-starmap.md) | itertools.starmap, not a comprehension that unpacks | `suggest` | — | *[rules] only* |
 | [`py/reimported`](py/reimported.md) | No module imported twice | `auto` | — | `py/pylint` |
+| [`py/relative-beyond-top-level`](py/relative-beyond-top-level.md) | A relative import must not climb past the top-level package | `manual` | — | `py/project` |
 | [`py/relative-imports`](py/relative-imports.md) | No relative import from a parent package | `manual` | — | `py/strict` |
 | [`py/repeated-append`](py/repeated-append.md) | Consecutive appends to a list are one `extend` | `suggest` | — | *[rules] only* |
 | [`py/repeated-equality-comparison`](py/repeated-equality-comparison.md) | x in (a, b), not x == a or x == b | `auto` | — | `py/strict` |
@@ -2836,6 +2866,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | `py/strict` |
 | [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers`, `py/pylint` |
 | [`py/too-few-public-methods`](py/too-few-public-methods.md) | A class defines at least `min` public methods | `manual` | `max` | `py/pylint` |
+| [`py/too-many-ancestors`](py/too-many-ancestors.md) | A class must not have more than seven ancestors | `manual` | — | `py/project` |
 | [`py/too-many-boolean-expressions`](py/too-many-boolean-expressions.md) | An if condition joins at most `max` Boolean terms | `manual` | `max` | `py/pylint` |
 | [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/too-many-instance-attributes`](py/too-many-instance-attributes.md) | A class sets at most `max` instance attributes | `manual` | `max` | `py/pylint` |
@@ -2973,6 +3004,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unused-static-method-argument`](py/unused-static-method-argument.md) | No unused staticmethod parameter | `manual` | — | `py/strict` |
 | [`py/unused-unpacked-variable`](py/unused-unpacked-variable.md) | Unused names from unpacking start with _ | `suggest` | — | `py/strict` |
 | [`py/unused-variable`](py/unused-variable.md) | Every local variable is used | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unused-wildcard-import`](py/unused-wildcard-import.md) | A wildcard import's names must be used | `manual` | — | `py/project` |
 | [`py/use-implicit-booleaness-not-comparison`](py/use-implicit-booleaness-not-comparison.md) | if not x:, not if x == \[\] | `suggest` | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-comparison-to-zero`](py/use-implicit-booleaness-not-comparison-to-zero.md) | if not x:, not if x == 0 | `suggest` | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-len`](py/use-implicit-booleaness-not-len.md) | if x:, not if len(x): | `suggest` | — | `py/strict`, `py/pylint` |

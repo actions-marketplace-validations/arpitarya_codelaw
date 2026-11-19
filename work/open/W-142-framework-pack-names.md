@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5): W-139 closed 2026-11-09 — its blocker moved to the items that took W-139's rows"
+updated: 2026-11-19
+updated_by: "Claude Code (Sonnet 5.5): W-187 closed, so no blocker is left; the item is the decider's (step 2)"
 ball: arpit
 ---
 
@@ -16,7 +16,7 @@ ball: arpit
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Wait until the packs and the two new data packages (W-182, W-187) are ready to release | names bound when they are needed, all at once | 🟡 waits on W-182, W-187 — the five packs are built (W-139 closed 2026-11-09) |
+| 1 | Wait until the packs and the two new data packages (W-182 built 2026-11-17, W-187) are ready to release | names bound when they are needed, all at once | 🟢 ready: the five packs are built (W-139 closed 2026-11-09), W-182 and W-187 closed 2026-11-19 |
 | 2 | Claude, in Chrome: pypi.org → *Publishing → Add a pending publisher*, once per name; Arpit checks and submits | `publish.yml` can create each project | 🔴 Arpit submits |
 | W-147 | npm: first publish of the `testing` and `nextjs` packs' names — merged in; its steps under [§ W-147](#merged-in-w-147) | one item, not two | ⏳ — see § |
 
@@ -61,6 +61,10 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 |---|---|---|
 | `codelaw-data-polyfills` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
 | `@codelaw/data-polyfills` | npm (first publish by hand) | — (holds no rules) |
+| `codelaw-data-confusables` | PyPI (pending publisher, as above; add it to `publish.yml`'s `PENDING`) | — (holds no rules) |
+| `@codelaw/data-confusables` | npm (first publish by hand) | — (holds no rules) |
+
+*Added 2026-11-17 by W-182:* the confusables table (Unicode's `confusables.txt`; L6 decision 15, L11 D-54) is the third data package, built and checked in `data-packages/confusables`; its two names are above.
 
 
 **PyPI only:** L6 ships `python` and `security-python` on PyPI alone (*"each registry carries only the packs its users install"*); these five follow them. Said by voice as also on npm (`@codelaw/rules-django` …) — not filed; say so if npm is wanted, and L6's table changes with it.
@@ -74,7 +78,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ## Blockers
 
-🟡 waits on **W-182**, **W-187** (the two data packages whose names are bound in the same pass). W-139 closed 2026-11-09 with the packs built.
+None: W-182 and W-187 (the two data packages) closed 2026-11-19 and W-139 closed 2026-11-09, so every package is built. What is left is the decider's: step 2.
 
 ## Record affected
 
@@ -125,7 +129,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ### Blockers
 
-🟡 waits on **W-182**, **W-187** (the two data packages whose names are bound in the same pass). W-139 closed 2026-11-09 with the packs built.
+None: W-182 and W-187 (the two data packages) closed 2026-11-19 and W-139 closed 2026-11-09, so every package is built. What is left is the decider's: step 2.
 
 ### Record affected
 

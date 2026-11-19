@@ -9,6 +9,9 @@ publish.workspace = true
 codelaw-core.workspace = true
 codelaw-lang.workspace = true
 codelaw-semantic.workspace = true
+# `js/no-restricted-syntax` compiles a project's patterns (W-176); the
+# workspace's ast-grep, already in the tree through codelaw-lang.
+ast-grep-core.workspace = true
 regex.workspace = true
 # `[css] modules` globs (W-63): the same glob crate the walker uses (D-17).
 globset.workspace = true

@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 902 — 0 on, 97 on with `preview = true`, 701 off in an opt-in preset, 104 in no preset.
+- **Rules:** 913 — 0 on, 97 on with `preview = true`, 709 off in an opt-in preset, 107 in no preset.
 
 ## Presets
 
@@ -13,12 +13,12 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 |---|---|--:|---|---|
 | `py/recommended` | yes, once the pack is installed | 97 | 96 error, 1 warn | Ruff 0.17.1's long-standing default (E4, E7, E9, F) plus flake8-bugbear (B), isort's import order (I001) and sorted __all__ (RUF022), reimplemented |
 | `py/conventions` | no — opt in | 2 | 2 warn | House conventions from codelaw's starter catalogue that no upstream preset covers |
-| `py/project` | no — opt in | 1 | 1 error | The rule that reads the whole repo: module-level names nothing imports (vulture) |
+| `py/project` | no — opt in | 7 | 4 error, 3 warn | The rules that read the whole repo, so they build the project graph: module-level names nothing imports (vulture), and Pylint's import and class rules that read other files (cyclic-import, import-error, no-name-in-module, relative-beyond-top-level, unused-wildcard-import, too-many-ancestors, W-185) |
 | `py/size` | no — opt in | 5 | 5 warn | Size limits: lines per module and function, parameters, complexity and nesting depth (Pylint's and Ruff's defaults) |
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
 | `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
 | `py/pylint` | no — opt in | 250 | 69 error, 91 info, 90 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
-| `py/pydocstyle` | no — opt in | 39 | 39 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
+| `py/pydocstyle` | no — opt in | 41 | 41 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
 
 ## Rules
 
@@ -35,6 +35,9 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/all-sorted`](../py/all-sorted.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-class-name`](../py/ambiguous-class-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-function-name`](../py/ambiguous-function-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
+| [`py/ambiguous-unicode-character-comment`](../py/ambiguous-unicode-character-comment.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-docstring`](../py/ambiguous-unicode-character-docstring.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-string`](../py/ambiguous-unicode-character-string.md) | off — in no preset | — | — |
 | [`py/ambiguous-variable-name`](../py/ambiguous-variable-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/anomalous-unicode-escape-in-string`](../py/anomalous-unicode-escape-in-string.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/any-eq-ne-annotation`](../py/any-eq-ne-annotation.md) | off — opt-in preset | — | `py/strict` |
@@ -160,6 +163,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/convert-typed-dict-functional-to-class`](../py/convert-typed-dict-functional-to-class.md) | off — opt-in preset | — | `py/strict` |
 | [`py/create-subprocess-in-async-function`](../py/create-subprocess-in-async-function.md) | off — opt-in preset | — | `py/strict` |
 | [`py/custom-type-var-for-self`](../py/custom-type-var-for-self.md) | off — opt-in preset | — | `py/strict` |
+| [`py/cyclic-import`](../py/cyclic-import.md) | off — opt-in preset | — | `py/project` |
 | [`py/dataclass-enum`](../py/dataclass-enum.md) | off — opt-in preset | — | `py/strict` |
 | [`py/datetime-min-max`](../py/datetime-min-max.md) | off — opt-in preset | — | `py/strict` |
 | [`py/datetime-timezone-utc`](../py/datetime-timezone-utc.md) | off — opt-in preset | — | `py/strict` |
@@ -300,6 +304,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/implicit-return`](../py/implicit-return.md) | off — opt-in preset | — | `py/strict` |
 | [`py/implicit-return-value`](../py/implicit-return-value.md) | off — opt-in preset | — | `py/strict` |
 | [`py/implicit-string-concatenation-in-collection-literal`](../py/implicit-string-concatenation-in-collection-literal.md) | off — opt-in preset | — | `py/strict` |
+| [`py/import-error`](../py/import-error.md) | off — opt-in preset | — | `py/project` |
 | [`py/import-outside-top-level`](../py/import-outside-top-level.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/import-self`](../py/import-self.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/import-shadowed-by-loop-var`](../py/import-shadowed-by-loop-var.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
@@ -478,6 +483,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/no-explicit-stacklevel`](../py/no-explicit-stacklevel.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/no-method-argument`](../py/no-method-argument.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/no-mutable-default`](../py/no-mutable-default.md) | on with `preview = true` | error | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/no-name-in-module`](../py/no-name-in-module.md) | off — opt-in preset | — | `py/project` |
 | [`py/no-print`](../py/no-print.md) | off — opt-in preset | — | `py/conventions` |
 | [`py/no-return-argument-annotation-in-stub`](../py/no-return-argument-annotation-in-stub.md) | off — opt-in preset | — | `py/strict` |
 | [`py/no-self-argument`](../py/no-self-argument.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
@@ -495,6 +501,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/non-capitalized-section-name`](../py/non-capitalized-section-name.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](../py/non-empty-init-module.md) | off — in no preset | — | — |
 | [`py/non-empty-stub-body`](../py/non-empty-stub-body.md) | off — opt-in preset | — | `py/strict` |
+| [`py/non-imperative-mood`](../py/non-imperative-mood.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-iterator-returned`](../py/non-iterator-returned.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/non-lowercase-variable-in-function`](../py/non-lowercase-variable-in-function.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/non-octal-permissions`](../py/non-octal-permissions.md) | off — opt-in preset | — | `py/strict` |
@@ -586,6 +593,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/printf-string-formatting`](../py/printf-string-formatting.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-member-access`](../py/private-member-access.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-type-parameter`](../py/private-type-parameter.md) | off — opt-in preset | — | `py/strict` |
+| [`py/property-docstring-starts-with-verb`](../py/property-docstring-starts-with-verb.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/property-with-parameters`](../py/property-with-parameters.md) | off — opt-in preset | — | `py/strict` |
 | [`py/property-without-return`](../py/property-without-return.md) | off — in no preset | — | — |
 | [`py/py-path`](../py/py-path.md) | off — opt-in preset | — | `py/strict` |
@@ -661,6 +669,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/reimplemented-operator`](../py/reimplemented-operator.md) | off — in no preset | — | — |
 | [`py/reimplemented-starmap`](../py/reimplemented-starmap.md) | off — in no preset | — | — |
 | [`py/reimported`](../py/reimported.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/relative-beyond-top-level`](../py/relative-beyond-top-level.md) | off — opt-in preset | — | `py/project` |
 | [`py/relative-imports`](../py/relative-imports.md) | off — opt-in preset | — | `py/strict` |
 | [`py/repeated-append`](../py/repeated-append.md) | off — in no preset | — | — |
 | [`py/repeated-equality-comparison`](../py/repeated-equality-comparison.md) | off — opt-in preset | — | `py/strict` |
@@ -741,6 +750,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/timeout-error-alias`](../py/timeout-error-alias.md) | off — opt-in preset | — | `py/strict` |
 | [`py/todo-marker`](../py/todo-marker.md) | off — opt-in preset | — | `py/markers`, `py/pylint` |
 | [`py/too-few-public-methods`](../py/too-few-public-methods.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/too-many-ancestors`](../py/too-many-ancestors.md) | off — opt-in preset | — | `py/project` |
 | [`py/too-many-boolean-expressions`](../py/too-many-boolean-expressions.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/too-many-expressions-in-star-assignment`](../py/too-many-expressions-in-star-assignment.md) | on with `preview = true` | error | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/too-many-instance-attributes`](../py/too-many-instance-attributes.md) | off — opt-in preset | — | `py/pylint` |
@@ -878,6 +888,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/unused-static-method-argument`](../py/unused-static-method-argument.md) | off — opt-in preset | — | `py/strict` |
 | [`py/unused-unpacked-variable`](../py/unused-unpacked-variable.md) | off — opt-in preset | — | `py/strict` |
 | [`py/unused-variable`](../py/unused-variable.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
+| [`py/unused-wildcard-import`](../py/unused-wildcard-import.md) | off — opt-in preset | — | `py/project` |
 | [`py/use-implicit-booleaness-not-comparison`](../py/use-implicit-booleaness-not-comparison.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-comparison-to-zero`](../py/use-implicit-booleaness-not-comparison-to-zero.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-len`](../py/use-implicit-booleaness-not-len.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |

@@ -11,6 +11,9 @@
 "py/all-sorted" = 3
 "py/ambiguous-class-name" = 0
 "py/ambiguous-function-name" = 0
+"py/ambiguous-unicode-character-comment" = 4
+"py/ambiguous-unicode-character-docstring" = 10
+"py/ambiguous-unicode-character-string" = 1501
 "py/ambiguous-variable-name" = 3
 "py/anomalous-unicode-escape-in-string" = 0
 "py/any-eq-ne-annotation" = 16

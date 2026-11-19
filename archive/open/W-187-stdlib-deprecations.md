@@ -7,7 +7,7 @@ filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-09
 updated_by: "Arpit (Cowork, Opus 5.5)"
-ball: agent
+ball: none
 ---
 
 # W-187 — A table of deprecated standard-library names for Pylint's deprecated-* rows

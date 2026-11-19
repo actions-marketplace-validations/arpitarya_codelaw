@@ -55,6 +55,7 @@ recommended set, markdownlint's default all-on). codelaw's side is every
 | **layout** | formatting; the formatter owns it (SR-FORMATTER decision 3) |
 | **planned** | already filed as another work item |
 | **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). every row §14 lists carries this class in the CSV (`method/classify.py`'s `RULED`, W-192) |
+| **options-only** | does nothing in the source tool's default configuration: it checks nothing until a project sets the option that says what (`id-match`, `no-restricted-syntax`, `jsdoc/require-tags` …); built as a rule that is silent until configured and in no preset, so it is not a missing port ([SR-RULE-FORMAT](../../records/0112_rule-format.md) decision 2e; ruled 2026-11-09, W-176). The 18 rows carry it in the CSVs; §4's counts are the ledger as filed and still list them under `port` |
 | **needs-data** | needs runtime-support data codelaw does not ship (`n/no-unsupported-features/*`) |
 | **out-of-scope** | a language outside L3 (Vue, Svelte, Astro, GraphQL) or a framework with no codelaw pack (Ruff's Airflow, Django, FastAPI, NumPy, pandas rules) |
 | **same-as** | the same rule as one counted under another tool (Biome's sourced rules, import-x's fork, typescript-eslint's extension rules) — counted once |
