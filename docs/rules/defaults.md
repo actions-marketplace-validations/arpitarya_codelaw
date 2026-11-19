@@ -15,7 +15,7 @@
 
 | Pack | Installed by `init` when | Rules | On | On with `preview = true` | Off, opt-in preset | Off, in no preset |
 |---|---|--:|--:|--:|--:|--:|
-| [js](defaults/js.md) | a JavaScript or TypeScript file | 957 | 0 | 155 | 542 | 260 |
+| [js](defaults/js.md) | a JavaScript or TypeScript file | 958 | 0 | 155 | 542 | 261 |
 | [ts](defaults/ts.md) | a TypeScript file | 67 | 0 | 23 | 11 | 33 |
 | [react](defaults/react.md) | `package.json` depends on `react` | 160 | 0 | 66 | 5 | 89 |
 | [node](defaults/node.md) | never — a project adds it | 40 | 0 | 0 | 10 | 30 |
@@ -24,7 +24,7 @@
 | [css](defaults/css.md) | a CSS or SCSS file | 146 | 31 | 10 | 32 | 73 |
 | [scss](defaults/scss.md) | an SCSS file, or `sass` in `package.json` | 51 | 0 | 12 | 9 | 30 |
 | [css-modules](defaults/css-modules.md) | a `*.module.css` or `*.module.scss` file | 5 | 0 | 3 | 2 | 0 |
-| [data](defaults/data.md) | a JSON, YAML, TOML or Markdown file | 48 | 0 | 28 | 18 | 2 |
+| [data](defaults/data.md) | a JSON, YAML, TOML or Markdown file | 50 | 0 | 28 | 18 | 4 |
 | [tanstack-query](defaults/tanstack-query.md) | `package.json` depends on `@tanstack/react-query` or `react-query` | 14 | 0 | 13 | 0 | 1 |
 | [redux-toolkit](defaults/redux-toolkit.md) | `package.json` depends on `@reduxjs/toolkit` or `redux` | 12 | 0 | 12 | 0 | 0 |
 | [security-js](defaults/security-js.md) | never — a security pack is chosen, not detected | 68 | 0 | 0 | 68 | 0 |
@@ -42,7 +42,7 @@
 | [airflow](defaults/airflow.md) | never — installing the pack is the opt-in | 8 | 0 | 0 | 1 | 7 |
 | [numpy](defaults/numpy.md) | never — installing the pack is the opt-in | 4 | 0 | 0 | 4 | 0 |
 | [pandas](defaults/pandas.md) | never — installing the pack is the opt-in | 12 | 0 | 0 | 12 | 0 |
-| **all** | | **2922** | **31** | **615** | **1529** | **747** |
+| **all** | | **2925** | **31** | **615** | **1529** | **750** |
 
 A graph rule that two packs ship counts once in each; the totals therefore may exceed the rule count.
 

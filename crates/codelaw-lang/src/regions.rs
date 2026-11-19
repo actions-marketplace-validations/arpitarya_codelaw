@@ -90,6 +90,9 @@ pub struct RegionOptions {
     /// `[lint] tagged_templates`: `` css`…` `` and `` html`…` `` in
     /// JavaScript and TypeScript; off by default.
     pub tagged_templates: bool,
+    /// `[lint] jsdoc_examples`: the code of `@example` tags in the doc
+    /// comments of JavaScript and TypeScript; off by default (W-178).
+    pub jsdoc_examples: bool,
 }
 
 /// The embedded regions of a host file, in host order.
@@ -98,8 +101,13 @@ pub fn regions(host_language: Language, root: &Root, source: &str, options: Regi
     match host_language {
         Language::Html => html_regions(root.root(), source, &mut out),
         Language::Markdown => markdown_regions(root.root(), source, options, &mut out),
-        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx if options.tagged_templates => {
-            template_regions(root.root(), source, &mut out)
+        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => {
+            if options.tagged_templates {
+                template_regions(root.root(), source, &mut out);
+            }
+            if options.jsdoc_examples {
+                jsdoc_example_regions(root.root(), source, host_language, &mut out);
+            }
         }
         _ => {}
     }
@@ -277,6 +285,134 @@ fn template_regions(root: SyntaxNode<'_>, source: &str, out: &mut Vec<Region>) {
     }
 }
 
+/// The code of `@example` tags in `/** … */` comments (SR-LINTER decision
+/// 3, W-178). The region is the example's lines as they stand in the host
+/// with each line's ` * ` margin, the tag itself and any fence line turned
+/// into a hole of the same width, so an offset of the region is the same
+/// offset in the host and no fix reaches into the comment's own layout.
+/// What follows `@example` on its line is code, as in JSDoc, unless it is a
+/// `<caption>`. An example with a fence is the first fenced block (its tag
+/// names the language, else the host's); one without is every line up to the
+/// next tag. An example that does not parse is not a region: it is not code
+/// to lint, and `js/jsdoc-check-examples` reports it.
+fn jsdoc_example_regions(root: SyntaxNode<'_>, source: &str, host: Language, out: &mut Vec<Region>) {
+    for node in root.dfs() {
+        out.extend(jsdoc_examples(&node, source, host).into_iter().filter(|e| e.parses).map(|e| e.region));
+    }
+}
+
+/// One `@example` of a doc comment: its code as a region, and whether that
+/// code parses in its language. `js/jsdoc-check-examples` reports the ones
+/// that do not.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct JsdocExample {
+    pub region: Region,
+    pub parses: bool,
+}
+
+/// The `@example` tags of `comment`, when it is a `/** … */` doc comment.
+pub fn jsdoc_examples(comment: &SyntaxNode<'_>, source: &str, host: Language) -> Vec<JsdocExample> {
+    let mut out = Vec::new();
+    {
+        let node = comment;
+        if !node.kind().contains("comment") {
+            return out;
+        }
+        let r = node.range();
+        let c = &source[r.clone()];
+        if !c.starts_with("/**") || c.starts_with("/**/") || !c.ends_with("*/") || r.end < r.start + 5 || !c.contains("@example") {
+            return out;
+        }
+        let (body_start, body_end) = (r.start + 3, r.end - 2);
+        // Each line: where it starts, where its code starts (past the
+        // margin), where it ends.
+        let mut lines: Vec<(usize, usize, usize)> = Vec::new();
+        let mut pos = body_start;
+        loop {
+            let nl = source[pos..body_end].find('\n').map(|i| pos + i);
+            let end = nl.unwrap_or(body_end);
+            let line = &source[pos..end];
+            let ws = line.len() - line.trim_start_matches([' ', '\t']).len();
+            let mut p = pos + ws;
+            if source[p..end].starts_with('*') {
+                p += 1;
+            }
+            if source[p..end].starts_with(' ') {
+                p += 1;
+            }
+            lines.push((pos, p, end));
+            match nl {
+                Some(n) => pos = n + 1,
+                None => break,
+            }
+        }
+        let mut i = 0;
+        while i < lines.len() {
+            let (_, p, end) = lines[i];
+            let content = &source[p..end];
+            let Some(after_tag) = content.trim_start().strip_prefix("@example").filter(|r| r.is_empty() || r.starts_with([' ', '\t', '\r'])) else {
+                i += 1;
+                continue;
+            };
+            // The example: this line past the tag, then lines to the next tag.
+            let first_code = p + (content.len() - after_tag.len()) + usize::from(after_tag.starts_with(' '));
+            let mut example: Vec<(usize, usize, usize)> = vec![(lines[i].0, first_code.min(end), end)];
+            let mut j = i + 1;
+            while j < lines.len() && !source[lines[j].1..lines[j].2].trim_start().starts_with('@') {
+                example.push(lines[j]);
+                j += 1;
+            }
+            i = j;
+            if let Some(e) = example_region(source, &example, host) {
+                out.push(e);
+            }
+        }
+    }
+    out
+}
+
+fn example_region(source: &str, example: &[(usize, usize, usize)], host: Language) -> Option<JsdocExample> {
+    let is_fence = |l: &(usize, usize, usize)| source[l.1..l.2].trim_start().starts_with("```");
+    let mut language = host;
+    // Which lines are code: the first fenced block, or every line.
+    let code: Vec<bool> = if let Some(open) = example.iter().position(is_fence) {
+        let close = example[open + 1..].iter().position(is_fence).map(|k| open + 1 + k).unwrap_or(example.len());
+        let tag = source[example[open].1..example[open].2].trim_start().trim_start_matches('`').trim();
+        if !tag.is_empty() {
+            language = Language::from_fence_tag(tag)?;
+        }
+        (0..example.len()).map(|k| k > open && k < close).collect()
+    } else {
+        example.iter().map(|l| !source[l.1..l.2].trim_start().starts_with("<caption>")).collect()
+    };
+    if !example.iter().zip(&code).any(|(l, &c)| c && !source[l.1..l.2].trim().is_empty()) {
+        return None;
+    }
+    let mut text = String::new();
+    let mut holes = Vec::new();
+    let blank = |text: &mut String, holes: &mut Vec<Hole>, n: usize| {
+        if n > 0 {
+            holes.push(Hole { at: text.len(), len: n, host_len: n });
+            text.push_str(&" ".repeat(n));
+        }
+    };
+    for (k, l) in example.iter().enumerate() {
+        if k > 0 {
+            text.push('\n');
+        }
+        if code[k] {
+            blank(&mut text, &mut holes, l.1 - l.0);
+            text.push_str(&source[l.1..l.2]);
+        } else {
+            blank(&mut text, &mut holes, l.2 - l.0);
+        }
+    }
+    let root = crate::parse_grammar(Grammar::for_language(language), &text);
+    let parses = crate::syntax_error_count(&root) == 0;
+    let (host_start, host_end) = (example[0].0, example[example.len() - 1].2);
+    Some(JsdocExample { region: Region { language, grammar: Grammar::for_language(language), text, prefix_len: 0, host_start, host_end, holes }, parses })
+}
+
 fn ident_byte(b: u8) -> bool {
     b.is_ascii_alphanumeric() || b == b'-' || b == b'_' || b >= 0x80
 }
@@ -398,6 +534,62 @@ See *this* and `code`.
         let in_region = r.text.find("blue").unwrap();
         assert_eq!(r.to_host(in_region), Some(src.find("blue").unwrap()));
         assert_eq!(r.to_host(0), None);
+    }
+
+    fn examples(host: Language, src: &str) -> Vec<Region> {
+        let root = parse(host, src);
+        regions(host, &root, src, RegionOptions { jsdoc_examples: true, ..Default::default() })
+    }
+
+    #[test]
+    fn jsdoc_examples_only_when_asked() {
+        let src = "/**\n * @example\n * add(1, 2);\n */\nfunction add() {}\n";
+        let root = parse(Language::Javascript, src);
+        assert!(regions(Language::Javascript, &root, src, RegionOptions::default()).is_empty());
+        assert_eq!(examples(Language::Javascript, src).len(), 1);
+    }
+
+    #[test]
+    fn a_jsdoc_example_keeps_the_hosts_offsets() {
+        let src = "/**\n * Adds.\n * @example\n * const x = add(1, 2);\n * x + 1;\n * @returns {number}\n */\nfunction add() {}\n";
+        let rs = examples(Language::Javascript, src);
+        assert_eq!(rs.len(), 1);
+        let r = &rs[0];
+        assert_eq!(r.language, Language::Javascript);
+        assert!(r.text.contains("const x = add(1, 2);") && r.text.contains("x + 1;") && !r.text.contains('*') && !r.text.contains("returns"));
+        let at = r.text.find("add(1").unwrap();
+        assert_eq!(r.to_host(at), Some(src.find("add(1").unwrap()));
+        // The margin is a hole: nothing in it maps, and no edit may reach it.
+        assert_eq!(r.to_host(r.text.find("const").unwrap() - 2), None);
+        assert!(!r.holes.is_empty() && r.holes.iter().all(|h| h.len == h.host_len));
+    }
+
+    #[test]
+    fn the_code_after_the_tag_on_its_line_is_code_and_a_caption_is_not() {
+        let rs = examples(Language::Javascript, "/** @example f() */\nfunction f() {}\n");
+        assert_eq!(rs.len(), 1);
+        assert!(rs[0].text.contains("f()"));
+        let src = "/**\n * @example <caption>Using it</caption>\n * f();\n */\nfunction f() {}\n";
+        let rs = examples(Language::Javascript, src);
+        assert_eq!(rs.len(), 1);
+        assert!(!rs[0].text.contains("caption") && rs[0].text.contains("f();"));
+    }
+
+    #[test]
+    fn a_fenced_example_takes_the_fences_language() {
+        let src = "/**\n * @example\n * ```json\n * {\"a\": 1}\n * ```\n */\nfunction f() {}\n";
+        let rs = examples(Language::Typescript, src);
+        assert_eq!(rs.len(), 1);
+        assert_eq!(rs[0].language, Language::Json);
+        assert!(rs[0].text.contains("{\"a\": 1}") && !rs[0].text.contains('`'));
+    }
+
+    #[test]
+    fn an_example_that_does_not_parse_is_not_a_region() {
+        let src = "/**\n * @example\n * add(1,\n */\nfunction add() {}\n";
+        assert!(examples(Language::Javascript, src).is_empty());
+        let src = "/** plain comment @example x */\n// line @example y\n";
+        assert!(examples(Language::Javascript, src).len() <= 1);
     }
 
     fn templates(src: &str) -> Vec<Region> {

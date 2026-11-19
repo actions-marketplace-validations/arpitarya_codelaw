@@ -10,6 +10,8 @@
 //! not a missing one.
 
 mod comments;
+mod data_keys;
+mod frontmatter;
 mod functions;
 mod globals;
 mod ids;
@@ -31,6 +33,8 @@ use tree_sitter::Node;
 pub(super) const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 
 pub(crate) static RULES: &[&dyn NativeRule] = &[
+    &data_keys::KeyNameCasing,
+    &frontmatter::RequireFrontmatterFields,
     &ids::IdDenylist,
     &ids::IdMatch,
     &ids::IdMatchUnicorn,

@@ -243,6 +243,8 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
 
 - **An options-only rule is silent in `lint`, `fix` and `check`** (W-176; [SR-RULE-FORMAT](0112_rule-format.md) decision 2e): switched on with no option it reports nothing and prints no warning; a value it cannot use is reported once, on the file's first node, and a value of the wrong type is a load error. `crates/codelaw-cli/tests/options_only.rs` runs the three cases through the binary.
 
+- **`[lint] jsdoc_examples`** (W-178; [SR-LINTER](0106_linter.md) decision 3): `check`, `fix` and the editor lint the code of an `@example` tag as code of its own and report at its place in the comment; a fix keeps the comment's ` * ` margin. `crates/codelaw-cli/tests/jsdoc_examples.rs` runs it through the binary: off, on, a fix, and an example that does not parse (reported by `js/jsdoc-check-examples`, not linted).
+
 ### Consequences
 
 - **Two front doors to keep in sync,** made cheap by keeping both thin and testing parity.

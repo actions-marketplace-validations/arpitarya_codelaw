@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 957 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 260 in no preset.
+- **Rules:** 958 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 261 in no preset.
 
 ## Presets
 
@@ -197,6 +197,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/isolated-functions`](../js/isolated-functions.md) | off — opt-in preset | — | `js/strict` |
 | [`js/iteration-fallback-style`](../js/iteration-fallback-style.md) | off — in no preset | — | — |
 | [`js/jsdoc-check-access`](../js/jsdoc-check-access.md) | off — opt-in preset | — | `js/jsdoc` |
+| [`js/jsdoc-check-examples`](../js/jsdoc-check-examples.md) | off — in no preset | — | — |
 | [`js/jsdoc-check-param-names`](../js/jsdoc-check-param-names.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-check-property-names`](../js/jsdoc-check-property-names.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](../js/jsdoc-check-syntax.md) | off — in no preset | — | — |

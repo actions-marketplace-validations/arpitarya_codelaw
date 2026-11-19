@@ -258,6 +258,7 @@
       "additionalProperties": false,
       "properties": {
         "tagged_templates": { "type": "boolean", "description": "Lint css`…` and html`…` tagged templates as CSS and HTML; off by default." },
+        "jsdoc_examples": { "type": "boolean", "description": "Lint the code of `@example` tags in JavaScript and TypeScript doc comments as code of its own; off by default." },
         "ignore_aliases": {
           "type": "array",
           "items": { "type": "string", "enum": ["eslint", "ruff", "biome"] },

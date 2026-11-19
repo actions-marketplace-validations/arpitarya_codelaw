@@ -405,14 +405,14 @@ fn with_line_endings(mut edits: Vec<TextEdit>, crlf: bool) -> Vec<TextEdit> {
 
 /// What a project extracts as embedded regions (SR-LINTER decision 3).
 pub(crate) fn region_options(project: &Project) -> RegionOptions {
-    RegionOptions { lint_code_blocks: project.config.lint_code_blocks(), tagged_templates: project.config.tagged_templates() }
+    RegionOptions { lint_code_blocks: project.config.lint_code_blocks(), tagged_templates: project.config.tagged_templates(), jsdoc_examples: project.config.jsdoc_examples() }
 }
 
 /// Whether a host language can hold regions under these options.
 pub(crate) fn has_regions(language: Language, opts: RegionOptions) -> bool {
     match language {
         Language::Html | Language::Markdown => true,
-        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => opts.tagged_templates,
+        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => opts.tagged_templates || opts.jsdoc_examples,
         _ => false,
     }
 }

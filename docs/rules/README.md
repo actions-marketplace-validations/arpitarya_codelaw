@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2921 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2924 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -39,7 +39,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 957 | 61 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 958 | 62 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 160 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 40 | 4 |
@@ -48,7 +48,7 @@ remap = { error = "warn" }
 | [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 146 | 83 |
 | [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
-| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 48 | 17 |
+| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 50 | 19 |
 | [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 14 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 68 | 4 |
@@ -242,6 +242,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/isolated-functions`](js/isolated-functions.md) | No outside variables in a function that runs somewhere else | `manual` | `functions`, `comments` | `js/strict` |
 | [`js/iteration-fallback-style`](js/iteration-fallback-style.md) | Guard an optional loop source instead of iterating an empty fallback | `auto` | — | *[rules] only* |
 | [`js/jsdoc-check-access`](js/jsdoc-check-access.md) | @access takes a known level, once | `suggest` | — | `js/jsdoc` |
+| [`js/jsdoc-check-examples`](js/jsdoc-check-examples.md) | The code in an `@example` is code | `manual` | `ignore` | *[rules] only* |
 | [`js/jsdoc-check-param-names`](js/jsdoc-check-param-names.md) | JSDoc @param names match the function parameters | `suggest` | `allow_extra_trailing_param_docs` | `js/jsdoc` |
 | [`js/jsdoc-check-property-names`](js/jsdoc-check-property-names.md) | JSDoc @property names are not repeated and nested ones have a root | `suggest` | — | `js/jsdoc` |
 | [`js/jsdoc-check-syntax`](js/jsdoc-check-syntax.md) | No Closure optional syntax in JSDoc | `suggest` | — | *[rules] only* |
@@ -1668,6 +1669,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 |---|---|---|---|---|
 | [`data/codeowners-coverage`](data/codeowners-coverage.md) | Every file has a code owner, and every CODEOWNERS pattern is live | `manual` | `path`, `allow_unowned`, `ignore` | `data/codeowners` |
 | [`data/flag-registry`](data/flag-registry.md) | The feature-flag registry is valid and holds only flags still read | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
+| [`data/key-name-casing`](data/key-name-casing.md) | Keys in a data file use one casing style | `suggest` | `case`, `ignore` | *[rules] only* |
 | [`json/no-duplicate-keys`](json/no-duplicate-keys.md) | No key twice in one JSON object | `auto` | — | `data/recommended` |
 | [`json/package-deps-sorted`](json/package-deps-sorted.md) | package.json dependency lists are sorted by name | `auto` | — | `data/package-json` |
 | [`json/package-engines`](json/package-engines.md) | package.json declares engines.node | `suggest` | `node` | `data/package-json` |
@@ -1696,6 +1698,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`md/proper-names`](md/proper-names.md) | Proper names are spelled as the project spells them | `auto` | `names`, `code_blocks` | `md/recommended` |
 | [`md/reference-links-images`](md/reference-links-images.md) | Reference links use a label that is defined | `suggest` | `ignored_labels`, `shortcut_syntax` | `md/recommended` |
 | [`md/relative-links`](md/relative-links.md) | Relative links point at a file that exists | `suggest` | — | `md/recommended` |
+| [`md/require-frontmatter-fields`](md/require-frontmatter-fields.md) | A Markdown file's front matter carries the fields the project lists | `manual` | `fields` | *[rules] only* |
 | [`md/required-headings`](md/required-headings.md) | Documents follow the required outline | `manual` | `headings` | `md/recommended` |
 | [`md/single-h1`](md/single-h1.md) | One level-1 heading per document | `suggest` | `level` | `md/recommended` |
 | [`md/table-column-count`](md/table-column-count.md) | Table rows have as many cells as the header | `auto` | — | `md/recommended` |

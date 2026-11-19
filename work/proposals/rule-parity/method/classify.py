@@ -170,7 +170,12 @@ def pid(ns, name, tag):
     taken.add(i); return i
 
 rows = collections.defaultdict(list)
+# Built under another pack or id than the proposal's default (W-178, 2026-11-19): the casing of a data file's keys and
+# Markdown front matter are the `data` pack's (`data/key-name-casing`, `md/require-frontmatter-fields`), not `js`'s.
+BUILT_AS = {('eslint-plugin-unicorn', 'key-name-casing'): ('data', 'data/key-name-casing', 'suggest'),
+            ('eslint-plugin-unicorn', 'require-frontmatter-fields'): ('data', 'md/require-frontmatter-fields', 'manual')}
 def emit(tool, version, rid, cls, *, deprecated=False, ufix='', rec=False, cids=(), pack='', newid='', nfix='', prio='', note=''):
+    if cls == 'port' and (tool, rid) in BUILT_AS: pack, newid, nfix = BUILT_AS[(tool, rid)]
     rows[tool].append(dict(tool=tool, version=version, upstream_id=rid, class_=cls, deprecated='yes' if deprecated else '',
                            upstream_fix=ufix, upstream_recommended='yes' if rec else '', codelaw=' '.join(cids),
                            proposed_pack=pack, proposed_id=newid, proposed_fix=nfix, priority=prio, note=note))
