@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-180 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-180 finished from its worktree: the python pack's imperative-mood table (`packs/python/data/python/imperatives.json`, written by `scripts/data-imperatives.py` from pydocstyle 6.3.0's lists, L11 D-56, `--check` in CI) and Ruff `D401`, `D421` as `py/non-imperative-mood` and `py/property-docstring-starts-with-verb` (`crates/codelaw-native/src/py_imperative.rs`). Merged `main` (conflicts in generated docs, `lib.rs`'s rule chain, CHANGELOG, OPEN-WORK); added the SR-PACKAGES and SR-ARCHITECTURE lines the guard wanted; reworded an SR-RULE-PACKS phrase the schema test read as a codelaw key. `codelaw test packs/python` 899 rules · 6,691 checks · 0 failed; native, engine, config tests pass; clippy clean; `data-imperatives.py --check`, `docs-sync --check`, `rule-docs --check` agree.
+- **Decided / left open:** nothing ruled.
+- **Mistakes:** I ran `git checkout --ours README.md` after regenerating it, which undid the regeneration; I noticed and ran `docs-sync --write` again before committing.
+- **Next:** W-181 (moved typing names).
+
 ## 2026-11-19 — implement the green items one by one: W-178 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"* (continued)
