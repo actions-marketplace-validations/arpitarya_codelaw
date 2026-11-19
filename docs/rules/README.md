@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2903 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2908 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 897 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 902 | 46 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2266,9 +2266,14 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/del-attr-with-constant`](py/del-attr-with-constant.md) | del obj.name, not delattr(obj, 'name') | `auto` | — | *[rules] only* |
 | [`py/delete-full-slice`](py/delete-full-slice.md) | x.clear(), not del x\[:\] | `suggest` | — | *[rules] only* |
 | [`py/deprecated-abc-decorator`](py/deprecated-abc-decorator.md) | @abstractmethod under the plain decorator, not abc.abstractproperty | `auto` | — | *[rules] only* |
+| [`py/deprecated-argument`](py/deprecated-argument.md) | No argument the documentation deprecates | `manual` | — | `py/pylint` |
+| [`py/deprecated-attribute`](py/deprecated-attribute.md) | No standard-library attribute the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | `py/strict` |
+| [`py/deprecated-class`](py/deprecated-class.md) | No standard-library class the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-decorator`](py/deprecated-decorator.md) | No decorator the standard library has deprecated | `manual` | — | `py/pylint` |
+| [`py/deprecated-method`](py/deprecated-method.md) | No standard-library function or method the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | `py/strict` |
+| [`py/deprecated-module`](py/deprecated-module.md) | No standard-library module the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-unittest-alias`](py/deprecated-unittest-alias.md) | No deprecated unittest assert aliases | `auto` | — | `py/strict` |
 | [`py/dict-get-with-none-default`](py/dict-get-with-none-default.md) | d.get(k), not d.get(k, None) | `auto` | — | `py/strict` |
 | [`py/dict-index-missing-items`](py/dict-index-missing-items.md) | A loop over a dict that reads each value iterates items() | `manual` | — | `py/strict`, `py/pylint` |

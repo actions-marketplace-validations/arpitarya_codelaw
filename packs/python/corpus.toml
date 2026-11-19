@@ -147,9 +147,14 @@
 "py/del-attr-with-constant" = 0
 "py/delete-full-slice" = 10
 "py/deprecated-abc-decorator" = 0
+"py/deprecated-argument" = 0
+"py/deprecated-attribute" = 0
 "py/deprecated-c-element-tree" = 0
+"py/deprecated-class" = 0
 "py/deprecated-decorator" = 0
+"py/deprecated-method" = 0
 "py/deprecated-mock-import" = 0
+"py/deprecated-module" = 0
 "py/deprecated-unittest-alias" = 0
 "py/dict-get-with-none-default" = 14
 "py/dict-index-missing-items" = 0

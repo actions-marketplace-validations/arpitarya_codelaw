@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 897 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 104 in no preset.
+- **Rules:** 902 — 0 on, 97 on with `preview = true`, 701 off in an opt-in preset, 104 in no preset.
 
 ## Presets
 
@@ -17,7 +17,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `py/size` | no — opt in | 5 | 5 warn | Size limits: lines per module and function, parameters, complexity and nesting depth (Pylint's and Ruff's defaults) |
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
 | `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
-| `py/pylint` | no — opt in | 245 | 69 error, 91 info, 85 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
+| `py/pylint` | no — opt in | 250 | 69 error, 91 info, 90 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
 | `py/pydocstyle` | no — opt in | 39 | 39 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
 
 ## Rules
@@ -171,9 +171,14 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/del-attr-with-constant`](../py/del-attr-with-constant.md) | off — in no preset | — | — |
 | [`py/delete-full-slice`](../py/delete-full-slice.md) | off — in no preset | — | — |
 | [`py/deprecated-abc-decorator`](../py/deprecated-abc-decorator.md) | off — in no preset | — | — |
+| [`py/deprecated-argument`](../py/deprecated-argument.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/deprecated-attribute`](../py/deprecated-attribute.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-c-element-tree`](../py/deprecated-c-element-tree.md) | off — opt-in preset | — | `py/strict` |
+| [`py/deprecated-class`](../py/deprecated-class.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-decorator`](../py/deprecated-decorator.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/deprecated-method`](../py/deprecated-method.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-mock-import`](../py/deprecated-mock-import.md) | off — opt-in preset | — | `py/strict` |
+| [`py/deprecated-module`](../py/deprecated-module.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-unittest-alias`](../py/deprecated-unittest-alias.md) | off — opt-in preset | — | `py/strict` |
 | [`py/dict-get-with-none-default`](../py/dict-get-with-none-default.md) | off — opt-in preset | — | `py/strict` |
 | [`py/dict-index-missing-items`](../py/dict-index-missing-items.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |

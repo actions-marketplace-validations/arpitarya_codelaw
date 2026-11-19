@@ -14,6 +14,9 @@ owns:
   - scripts/data-polyfills-check.py
   - .github/workflows/data-polyfills.yml
   - data-packages/polyfills
+  - scripts/data-python-deprecations-check.py
+  - .github/workflows/data-python-deprecations.yml
+  - data-packages/python-deprecations
 laws: [L0, L2, L3, L6]
 timestamp: 2026-11-05T12:00:00Z
 content_sha: ""
