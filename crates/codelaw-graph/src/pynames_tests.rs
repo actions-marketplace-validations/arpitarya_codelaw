@@ -244,3 +244,51 @@ fn the_facts_do_not_change_with_the_cache() {
     assert_eq!(py.classes[0].bases, vec!["B", "c.D"]);
     assert!(f.imports[1].type_checking && f.imports[1].guarded && !f.imports[0].guarded && !f.imports[2].guarded);
 }
+
+/// L8 measurement (W-185), not a check: `CODELAW_PY_SAMPLE=<dir> cargo test
+/// -p codelaw-graph --release measure_python_facts -- --ignored --nocapture`.
+#[test]
+#[ignore]
+fn measure_python_facts() {
+    use std::time::Instant;
+    let Ok(dir) = std::env::var("CODELAW_PY_SAMPLE") else { return };
+    let mut files = Vec::new();
+    let mut stack = vec![std::path::PathBuf::from(dir)];
+    while let Some(d) = stack.pop() {
+        for e in std::fs::read_dir(&d).unwrap().flatten() {
+            let p = e.path();
+            if p.is_dir() {
+                if !p.ends_with("test") && !p.ends_with("site-packages") {
+                    stack.push(p);
+                }
+            } else if p.extension().is_some_and(|x| x == "py")
+                && let Ok(t) = std::fs::read_to_string(&p)
+            {
+                files.push(t);
+            }
+        }
+    }
+    let bytes: usize = files.iter().map(String::len).sum();
+    let t = Instant::now();
+    let mut n = 0;
+    for f in &files {
+        n += extract(Language::Python, f).map(|x| x.imports.len()).unwrap_or(0);
+    }
+    let extract_all = t.elapsed();
+    let t = Instant::now();
+    for f in &files {
+        let root = codelaw_lang::parse(Language::Python, f);
+        let _ = codelaw_semantic::build(Language::Python, &root, f);
+    }
+    let parse_and_model = t.elapsed();
+    let t = Instant::now();
+    let mut size = 0;
+    for f in &files {
+        if let Some(x) = extract(Language::Python, f) {
+            size += serde_json::to_string(&x).unwrap().len();
+            size -= serde_json::to_string(&FileFacts { py: None, ..x }).unwrap().len();
+        }
+    }
+    println!("{} files, {} KiB of source, {} imports: extract {:?}, parse+semantic model alone {:?}; py facts add {} KiB of cache over {} KiB", files.len(), bytes / 1024, n, extract_all, parse_and_model, size / 1024, 0);
+    let _ = t;
+}

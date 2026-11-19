@@ -72,7 +72,7 @@ from pkg.wide import one, two
 ```
 
 ```expect
-app.py:1:26 py/no-name-in-module
+app.py:1:27 py/no-name-in-module
 ```
 
 ### case: the standard library is not judged

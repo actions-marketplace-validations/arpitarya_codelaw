@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2897 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2903 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 891 | 46 |
+| [python](#python) | — | `codelaw-rules-python` | 897 | 46 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2255,6 +2255,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/convert-typed-dict-functional-to-class`](py/convert-typed-dict-functional-to-class.md) | TypedDict as a class | `manual` | — | `py/strict` |
 | [`py/create-subprocess-in-async-function`](py/create-subprocess-in-async-function.md) | No blocking subprocess creation in an async function | `manual` | — | `py/strict` |
 | [`py/custom-type-var-for-self`](py/custom-type-var-for-self.md) | A method is annotated with `Self`, not a custom `TypeVar` | `auto` | — | `py/strict` |
+| [`py/cyclic-import`](py/cyclic-import.md) | A module must not import its way back to itself | `manual` | — | `py/project` |
 | [`py/dataclass-enum`](py/dataclass-enum.md) | No @dataclass on an Enum | `suggest` | — | `py/strict` |
 | [`py/datetime-min-max`](py/datetime-min-max.md) | No naive datetime.min or datetime.max | `suggest` | — | `py/strict` |
 | [`py/datetime-timezone-utc`](py/datetime-timezone-utc.md) | datetime.UTC, not datetime.timezone.utc | `suggest` | — | `py/strict` |
@@ -2388,6 +2389,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/implicit-return`](py/implicit-return.md) | A function that returns a value ends with an explicit return | `auto` | — | `py/strict` |
 | [`py/implicit-return-value`](py/implicit-return-value.md) | return None, not return, in a function that returns values | `auto` | — | `py/strict` |
 | [`py/implicit-string-concatenation-in-collection-literal`](py/implicit-string-concatenation-in-collection-literal.md) | Parenthesize implicit concatenation in a list | `auto` | — | `py/strict` |
+| [`py/import-error`](py/import-error.md) | An import of the project's own module must name a module that exists | `manual` | — | `py/project` |
 | [`py/import-outside-top-level`](py/import-outside-top-level.md) | Imports are at the top of the module | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/import-self`](py/import-self.md) | A module does not import itself | `manual` | — | `py/strict`, `py/pylint` |
 | [`py/import-shadowed-by-loop-var`](py/import-shadowed-by-loop-var.md) | A loop variable doesn't reuse an imported name | `auto` | — | `py/recommended`, `py/strict` |
@@ -2566,6 +2568,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/no-explicit-stacklevel`](py/no-explicit-stacklevel.md) | `warnings.warn` sets `stacklevel` | `suggest` | — | `py/recommended`, `py/strict` |
 | [`py/no-method-argument`](py/no-method-argument.md) | A method takes self | `suggest` | — | `py/pylint` |
 | [`py/no-mutable-default`](py/no-mutable-default.md) | No mutable default arguments | `suggest` | — | `py/recommended`, `py/strict`, `py/pylint` |
+| [`py/no-name-in-module`](py/no-name-in-module.md) | A name imported from the project's own module must be defined there | `manual` | — | `py/project` |
 | [`py/no-print`](py/no-print.md) | No `print()` in library code | `suggest` | — | `py/conventions` |
 | [`py/no-return-argument-annotation-in-stub`](py/no-return-argument-annotation-in-stub.md) | A stub's parameter is annotated Never, not NoReturn | `auto` | — | `py/strict` |
 | [`py/no-self-argument`](py/no-self-argument.md) | A method's first parameter is self | `suggest` | — | `py/strict`, `py/pylint` |
@@ -2748,6 +2751,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/reimplemented-operator`](py/reimplemented-operator.md) | operator.itemgetter, not a lambda | `suggest` | — | *[rules] only* |
 | [`py/reimplemented-starmap`](py/reimplemented-starmap.md) | itertools.starmap, not a comprehension that unpacks | `suggest` | — | *[rules] only* |
 | [`py/reimported`](py/reimported.md) | No module imported twice | `auto` | — | `py/pylint` |
+| [`py/relative-beyond-top-level`](py/relative-beyond-top-level.md) | A relative import must not climb past the top-level package | `manual` | — | `py/project` |
 | [`py/relative-imports`](py/relative-imports.md) | No relative import from a parent package | `manual` | — | `py/strict` |
 | [`py/repeated-append`](py/repeated-append.md) | Consecutive appends to a list are one `extend` | `suggest` | — | *[rules] only* |
 | [`py/repeated-equality-comparison`](py/repeated-equality-comparison.md) | x in (a, b), not x == a or x == b | `auto` | — | `py/strict` |
@@ -2828,6 +2832,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/timeout-error-alias`](py/timeout-error-alias.md) | TimeoutError, not asyncio.TimeoutError | `suggest` | — | `py/strict` |
 | [`py/todo-marker`](py/todo-marker.md) | Python TODO comments carry a ticket and, when asked, a date | `manual` | — | `py/markers`, `py/pylint` |
 | [`py/too-few-public-methods`](py/too-few-public-methods.md) | A class defines at least `min` public methods | `manual` | `max` | `py/pylint` |
+| [`py/too-many-ancestors`](py/too-many-ancestors.md) | A class must not have more than seven ancestors | `manual` | — | `py/project` |
 | [`py/too-many-boolean-expressions`](py/too-many-boolean-expressions.md) | An if condition joins at most `max` Boolean terms | `manual` | `max` | `py/pylint` |
 | [`py/too-many-expressions-in-star-assignment`](py/too-many-expressions-in-star-assignment.md) | A starred assignment stays within Python's limits | `manual` | — | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/too-many-instance-attributes`](py/too-many-instance-attributes.md) | A class sets at most `max` instance attributes | `manual` | `max` | `py/pylint` |
@@ -2964,6 +2969,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/unused-static-method-argument`](py/unused-static-method-argument.md) | No unused staticmethod parameter | `manual` | — | `py/strict` |
 | [`py/unused-unpacked-variable`](py/unused-unpacked-variable.md) | Unused names from unpacking start with _ | `suggest` | — | `py/strict` |
 | [`py/unused-variable`](py/unused-variable.md) | Every local variable is used | `suggest` | — | `py/recommended`, `py/strict` |
+| [`py/unused-wildcard-import`](py/unused-wildcard-import.md) | A wildcard import's names must be used | `manual` | — | `py/project` |
 | [`py/use-implicit-booleaness-not-comparison`](py/use-implicit-booleaness-not-comparison.md) | if not x:, not if x == \[\] | `suggest` | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-comparison-to-zero`](py/use-implicit-booleaness-not-comparison-to-zero.md) | if not x:, not if x == 0 | `suggest` | — | `py/pylint` |
 | [`py/use-implicit-booleaness-not-len`](py/use-implicit-booleaness-not-len.md) | if x:, not if len(x): | `suggest` | — | `py/strict`, `py/pylint` |

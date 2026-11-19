@@ -332,7 +332,9 @@ pub fn cycles(graph: &Graph, languages: &[Language], forms: &[SpecForm]) -> Vec<
     // (JavaScript) or the imports (Python, `pynames::import_edges`).
     let mut index: BTreeMap<&str, usize> = BTreeMap::new();
     let mut paths: Vec<&str> = Vec::new();
-    for m in graph.modules.values().filter(|m| matches!(m.facts.lang, Some(FactLang::Js | FactLang::Python))) {
+    // An import never crosses languages, so only the languages the rule names are walked.
+    let (want_js, want_py) = (languages.iter().any(|l| l.is_js_family()), languages.contains(&Language::Python));
+    for m in graph.modules.values().filter(|m| (want_js && m.facts.lang == Some(FactLang::Js)) || (want_py && m.facts.lang == Some(FactLang::Python))) {
         index.insert(&m.path, paths.len());
         paths.push(&m.path);
     }

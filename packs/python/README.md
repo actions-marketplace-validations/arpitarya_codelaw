@@ -18,7 +18,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 |---|---|---|
 | `py/recommended` | 97 | Ruff 0.17.1: its long-standing default `E4`, `E7`, `E9`, `F` (55 of 59 rules; the other four are below), all 39 stable flake8-bugbear `B` rules, isort's `I001`, `RUF022` and `py/use-instead` (inert until `replacements` is set, W-73) |
 | `py/conventions` | 2 | opt-in house conventions from the starter catalogue: `py/no-print`, `py/no-tunable-literals` |
-| `py/project` | 1 | `graph/no-unused-exports`, the rule that reads the whole repo, from vulture's unused-function check — opt in |
+| `py/project` | 7 | the rules that read the whole repo: `graph/no-unused-exports` (vulture's unused-function check) and six from Pylint that read other files — `py/cyclic-import`, `py/import-error`, `py/no-name-in-module`, `py/relative-beyond-top-level`, `py/unused-wildcard-import`, `py/too-many-ancestors` (W-185) — opt in |
 | `py/size` | 5 | size limits at `warn`: `py/max-lines` (1000 per module, Pylint's `too-many-lines`), `py/max-lines-per-function` (50) and `py/max-params` (5, Pylint's and Ruff's) — opt in |
 | `py/markers` | 2 | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry; opt in (SR-CONFIG decision 11a) |
 | `py/strict` | 622 | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import`; Ruff's preview rules stay out; opt in (W-192, B-048) |
@@ -35,7 +35,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 224 | 326 | 341 | 155 | 141 | 42 | 3 | 0 |
+| 224 | 326 | 347 | 158 | 144 | 42 | 3 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

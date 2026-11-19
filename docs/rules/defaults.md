@@ -35,14 +35,14 @@
 | [nextjs](defaults/nextjs.md) | `package.json` depends on `next` | 22 | 0 | 22 | 0 | 0 |
 | [testing](defaults/testing.md) | `package.json` depends on `jest`, `vitest`, `@testing-library/*` or `@playwright/test` | 174 | 0 | 77 | 0 | 97 |
 | [tailwind](defaults/tailwind.md) | `tailwindcss` in `package.json`, a `tailwind.config.*`, or a stylesheet that imports it | 8 | 0 | 5 | 0 | 3 |
-| [python](defaults/python.md) | a Python file | 891 | 0 | 97 | 696 | 98 |
+| [python](defaults/python.md) | a Python file | 897 | 0 | 97 | 702 | 98 |
 | [security-python](defaults/security-python.md) | never — a security pack is chosen, not detected | 66 | 0 | 0 | 61 | 5 |
 | [django](defaults/django.md) | never — installing the pack is the opt-in | 7 | 0 | 0 | 7 | 0 |
 | [fastapi](defaults/fastapi.md) | never — installing the pack is the opt-in | 3 | 0 | 0 | 2 | 1 |
 | [airflow](defaults/airflow.md) | never — installing the pack is the opt-in | 8 | 0 | 0 | 1 | 7 |
 | [numpy](defaults/numpy.md) | never — installing the pack is the opt-in | 4 | 0 | 0 | 4 | 0 |
 | [pandas](defaults/pandas.md) | never — installing the pack is the opt-in | 12 | 0 | 0 | 12 | 0 |
-| **all** | | **2898** | **31** | **615** | **1529** | **723** |
+| **all** | | **2904** | **31** | **615** | **1535** | **723** |
 
 A graph rule that two packs ship counts once in each; the totals therefore may exceed the rule count.
 
