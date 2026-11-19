@@ -47,7 +47,7 @@ fn words(gap: &str, depth: u32, out: &mut Vec<Token>) {
 
 fn stream(grammar: Grammar, language: Option<Language>, source: &str, base: u32, out: &mut Vec<Token>) {
     let root = parse_grammar(grammar, source);
-    let options = RegionOptions { lint_code_blocks: true, tagged_templates: false };
+    let options = RegionOptions { lint_code_blocks: true, tagged_templates: false, jsdoc_examples: false };
     let embedded = match language {
         Some(l) if grammar == Grammar::for_language(l) => regions(l, &root, source, options),
         _ => Vec::new(),

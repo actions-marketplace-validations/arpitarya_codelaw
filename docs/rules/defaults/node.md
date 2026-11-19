@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#node).
 
 - **Installed by `codelaw init` when:** never — a project adds it.
-- **Rules:** 38 — 0 on, 0 on with `preview = true`, 10 off in an opt-in preset, 28 in no preset.
+- **Rules:** 40 — 0 on, 0 on with `preview = true`, 10 off in an opt-in preset, 30 in no preset.
 
 ## Presets
 
@@ -38,6 +38,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`node/no-path-concat`](../node/no-path-concat.md) | off — in no preset | — | — |
 | [`node/no-process-env`](../node/no-process-env.md) | off — in no preset | — | — |
 | [`node/no-process-exit`](../node/no-process-exit.md) | off — opt-in preset | — | `node/recommended` |
+| [`node/no-restricted-import`](../node/no-restricted-import.md) | off — in no preset | — | — |
+| [`node/no-restricted-require`](../node/no-restricted-require.md) | off — in no preset | — | — |
 | [`node/no-sync`](../node/no-sync.md) | off — in no preset | — | — |
 | [`node/no-top-level-await`](../node/no-top-level-await.md) | off — in no preset | — | — |
 | [`node/no-unpublished-bin`](../node/no-unpublished-bin.md) | off — in no preset | — | — |

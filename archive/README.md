@@ -28,6 +28,8 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-178-config-keys-frontmatter-examples.md`](open/W-178-config-keys-frontmatter-examples.md) | 2026-11-19 | done — `data/key-name-casing`, `md/require-frontmatter-fields`, `js/jsdoc-check-examples`; [SR-LINTER](../records/0106_linter.md) decision 3 (`[lint] jsdoc_examples`); [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 39 |
+| [`W-176-options-only-rules.md`](open/W-176-options-only-rules.md) | 2026-11-19 | done — [SR-RULE-FORMAT](../records/0112_rule-format.md) decision 2e; 18 rules in `crates/codelaw-native/src/options_only/`, class `options-only` in `work/proposals/rule-parity/*.csv` |
 | [`W-183-target-gated-findings.md`](open/W-183-target-gated-findings.md) | 2026-11-15 | done — SR-RULE-FORMAT decision 2d (`finding_target:`); six rules in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_ruff_target.rs`) |
 | [`W-191-graph-records.md`](open/W-191-graph-records.md) | 2026-11-16 | done — [SR-PROJECT-GRAPH](../records/0103_project-graph.md) is the overview; the graphs are [SR-MODULE-GRAPH](../records/0122_module-graph.md), [SR-SEMANTIC-MODEL](../records/0123_semantic-model.md), [SR-PY-FLOW](../records/0124_python-flow.md) and [SR-CODE-PATH-GRAPH](../records/0121_code-path-graph.md) |
 | [`W-184-file-mode-bits.md`](open/W-184-file-mode-bits.md) | 2026-11-15 | done — `FileContext::is_executable` and `py/shebang-not-executable`, `py/shebang-missing-executable-file` in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_exec.rs`); [SR-ARCHITECTURE](../records/0108_architecture.md) decision 15b |

@@ -1116,6 +1116,7 @@ dependencies = [
 name = "codelaw-native"
 version = "0.5.1"
 dependencies = [
+ "ast-grep-core",
  "codelaw-core",
  "codelaw-lang",
  "codelaw-semantic",
