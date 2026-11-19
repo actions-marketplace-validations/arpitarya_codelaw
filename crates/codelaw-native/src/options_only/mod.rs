@@ -1,5 +1,5 @@
 //! W-176: the options-only rules — rules that check nothing until a project
-//! sets the option that says what to check (SR-RULE-FORMAT decision 2d).
+//! sets the option that says what to check (SR-RULE-FORMAT decision 2e).
 //!
 //! What every rule here shares: [`NativeRule::needs_options`] names the
 //! options it reads, and the engine dispatches it to no node while none is
@@ -75,15 +75,17 @@ pub(super) fn opt_strings(ctx: &NativeContext<'_>, key: &str) -> Vec<String> {
     }
 }
 
+type Compiled = Result<Arc<Regex>, String>;
+
 /// A regular expression, compiled once per distinct text (a rule is asked
 /// about many nodes with the same option). `Err` carries the compile error.
-pub(super) fn regex_of(pattern: &str) -> Result<Arc<Regex>, String> {
-    static CACHE: LazyLock<Mutex<HashMap<String, Result<Arc<Regex>, String>>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
+pub(super) fn regex_of(pattern: &str) -> Compiled {
+    static CACHE: LazyLock<Mutex<HashMap<String, Compiled>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
     let mut cache = CACHE.lock().unwrap_or_else(|e| e.into_inner());
     if let Some(r) = cache.get(pattern) {
         return r.clone();
     }
-    let r = Regex::new(pattern).map(Arc::new).map_err(|e| e.to_string().lines().last().unwrap_or("invalid").trim().to_owned());
+    let r = Regex::new(pattern).map(Arc::new).map_err(|e| e.to_string().lines().last().unwrap_or("invalid").trim().trim_start_matches("error: ").to_owned());
     cache.insert(pattern.to_owned(), r.clone());
     r
 }

@@ -280,7 +280,7 @@ pub trait NativeRule: Send + Sync {
         None
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>);
-    /// The options an options-only rule reads (SR-RULE-FORMAT decision 2d):
+    /// The options an options-only rule reads (SR-RULE-FORMAT decision 2e):
     /// it finds nothing until a project sets at least one of them, so the
     /// engine does not dispatch it to a single node while none is set. Empty
     /// for every other rule.

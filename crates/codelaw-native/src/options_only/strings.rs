@@ -56,9 +56,7 @@ fn escape_ranges(raw: &str) -> Vec<(usize, usize)> {
                 r.find('}').map_or(2, |k| 2 + k + 1)
             } else if rest.starts_with('u') && rest.len() >= 5 && rest[1..5].chars().all(|c| c.is_ascii_hexdigit()) {
                 5
-            } else if rest.starts_with('x') && rest.len() >= 3 && rest[1..3].chars().all(|c| c.is_ascii_hexdigit()) {
-                3
-            } else if rest.starts_with("\r\n") {
+            } else if (rest.starts_with('x') && rest.len() >= 3 && rest[1..3].chars().all(|c| c.is_ascii_hexdigit())) || rest.starts_with("\r\n") {
                 3
             } else {
                 1 + rest.chars().next().map_or(0, char::len_utf8)

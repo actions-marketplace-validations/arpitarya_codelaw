@@ -42,11 +42,11 @@ fn copy_dir(from: &Path, to: &Path) {
     }
 }
 
-/// A project with the `js` pack installed, `config` after `preview = true`, and `a.js`.
+/// A project with the `js` pack installed (loaded by a preset that finds nothing in `a.js`), `config` after `preview = true`, and `a.js`.
 fn project(name: &str, config: &str) -> PathBuf {
     let d = temp(name);
     copy_dir(&repo().join("packs/js"), &d.join("node_modules/@codelaw/rules-js"));
-    fs::write(d.join("codelaw.toml"), format!("preview = true\nlanguages = [\"javascript\"]\n{config}")).unwrap();
+    fs::write(d.join("codelaw.toml"), format!("extends = [\"codelaw:js/markers\"]\npreview = true\nlanguages = [\"javascript\"]\n{config}")).unwrap();
     fs::write(d.join("a.js"), "const data = load();\nconst copy = data;\n").unwrap();
     d
 }

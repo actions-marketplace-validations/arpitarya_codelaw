@@ -20,6 +20,8 @@ An identifier that does not match `pattern` is reported: `pattern = "^[a-z][a-zA
 
 With no `pattern` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/id-match" = { severity = "error", options = { pattern = "^[a-z][a-zA-Z0-9]*$" } }`.
+
 **Why:** A naming convention is a pattern; the rule applies the one the project wrote down.
 
 ```codelaw

@@ -15,10 +15,10 @@
 
 | Pack | Installed by `init` when | Rules | On | On with `preview = true` | Off, opt-in preset | Off, in no preset |
 |---|---|--:|--:|--:|--:|--:|
-| [js](defaults/js.md) | a JavaScript or TypeScript file | 941 | 0 | 155 | 542 | 244 |
+| [js](defaults/js.md) | a JavaScript or TypeScript file | 957 | 0 | 155 | 542 | 260 |
 | [ts](defaults/ts.md) | a TypeScript file | 67 | 0 | 23 | 11 | 33 |
 | [react](defaults/react.md) | `package.json` depends on `react` | 160 | 0 | 66 | 5 | 89 |
-| [node](defaults/node.md) | never — a project adds it | 38 | 0 | 0 | 10 | 28 |
+| [node](defaults/node.md) | never — a project adds it | 40 | 0 | 0 | 10 | 30 |
 | [stencil](defaults/stencil.md) | `package.json` depends on `@stencil/core` | 18 | 0 | 17 | 1 | 0 |
 | [html](defaults/html.md) | an HTML file | 85 | 0 | 64 | 10 | 11 |
 | [css](defaults/css.md) | a CSS or SCSS file | 146 | 31 | 10 | 32 | 73 |
@@ -42,7 +42,7 @@
 | [airflow](defaults/airflow.md) | never — installing the pack is the opt-in | 8 | 0 | 0 | 1 | 7 |
 | [numpy](defaults/numpy.md) | never — installing the pack is the opt-in | 4 | 0 | 0 | 4 | 0 |
 | [pandas](defaults/pandas.md) | never — installing the pack is the opt-in | 12 | 0 | 0 | 12 | 0 |
-| **all** | | **2898** | **31** | **615** | **1529** | **723** |
+| **all** | | **2916** | **31** | **615** | **1529** | **741** |
 
 A graph rule that two packs ship counts once in each; the totals therefore may exceed the rule count.
 

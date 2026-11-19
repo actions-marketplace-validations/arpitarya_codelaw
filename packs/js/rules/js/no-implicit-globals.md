@@ -17,6 +17,8 @@ In a classic script (a browser `<script>` with no `type="module"`), a top-level 
 
 Switch it on for the script files: `[scope.browser-scripts] files = ["public/**/*.js"]` with `rules = { "js/no-implicit-globals" = { severity = "error", options = { script = true } } }`. With no `script` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/no-implicit-globals" = { severity = "error", options = { script = true } }`.
+
 **Why:** A script's globals collide with every other script on the page; a declaration wrapped in a function, or put on `window` on purpose, does not.
 
 ```codelaw

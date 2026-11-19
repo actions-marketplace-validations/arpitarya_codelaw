@@ -241,6 +241,8 @@ The decider asked for an SR stating that codelaw has both an MCP server and a CL
     - **The report:** `mapped` (source → codelaw ids, severity), `changed` (mapped, with an option not carried or a preset that differs, and why), `unmapped` (no installed codelaw rule ports it, by name), `ignored` (a setting codelaw has no key for, and why), counts, and the first-party packs not installed, so not searched. `--format json` gives `{ schema_version, codelaw_version, tool, sources, mapped[], changed[], unmapped[], ignored[], not_installed[], config, written, kept[] }`, each line `{ source, codelaw[], note }`. Exit `0` once the report is made; `2` when no config is found, one cannot be read or is a program, or the file cannot be written.
     - **Deterministic:** the same files give the same bytes (`crates/codelaw-cli/tests/migrate.rs` writes each of `fixtures/migrate/`'s three repos twice and compares); no network, no model.
 
+- **An options-only rule is silent in `lint`, `fix` and `check`** (W-176; [SR-RULE-FORMAT](0112_rule-format.md) decision 2e): switched on with no option it reports nothing and prints no warning; a value it cannot use is reported once, on the file's first node, and a value of the wrong type is a load error. `crates/codelaw-cli/tests/options_only.rs` runs the three cases through the binary.
+
 ### Consequences
 
 - **Two front doors to keep in sync,** made cheap by keeping both thin and testing parity.

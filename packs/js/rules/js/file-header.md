@@ -16,6 +16,8 @@ A file must start with `headerFormat`, after a `#!` line if it has one: the text
 
 With no `headerFormat` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/file-header" = { severity = "warn", options = { headerFormat = "// Copyright Acme\n" } }`.
+
 **Why:** A licence or copyright notice has to be at the top of every file; the rule is the check that none was forgotten.
 
 ```codelaw

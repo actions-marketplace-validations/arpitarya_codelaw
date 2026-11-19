@@ -143,7 +143,7 @@ impl NativeRule for NoImplicitGlobals {
         // A write to a name nothing declares creates a global when the code is not strict.
         if let Some(model) = ctx.semantic {
             for r in &model.references {
-                if r.write && !r.read && r.symbol.is_none() && model.is_undeclared(r, &|_| false) && !exported.iter().any(|e| *e == r.name) {
+                if r.write && !r.read && r.symbol.is_none() && model.is_undeclared(r, &|_| false) && !exported.contains(&r.name) {
                     out.push(NativeFinding { start: r.start, end: r.end, message: "Global variable leak, declare the variable if it is intended to be local.".into(), edits: Vec::new() });
                 }
             }

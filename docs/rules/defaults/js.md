@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 941 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 244 in no preset.
+- **Rules:** 957 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 260 in no preset.
 
 ## Presets
 
@@ -70,6 +70,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/cognitive-complexity`](../js/cognitive-complexity.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/comma-or-logical-or-case`](../js/comma-or-logical-or-case.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/comment-content`](../js/comment-content.md) | off — in no preset | — | — |
+| [`js/comment-regex`](../js/comment-regex.md) | off — in no preset | — | — |
 | [`js/complexity`](../js/complexity.md) | off — opt-in preset | — | `js/size` |
 | [`js/composite-assertions`](../js/composite-assertions.md) | off — in no preset | — | — |
 | [`js/consistent-arrow-return-style`](../js/consistent-arrow-return-style.md) | off — in no preset | — | — |
@@ -84,6 +85,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/consistent-existence-index-check`](../js/consistent-existence-index-check.md) | off — opt-in preset | — | `js/strict` |
 | [`js/consistent-export-decorator-position`](../js/consistent-export-decorator-position.md) | off — opt-in preset | — | `js/strict` |
 | [`js/consistent-function-scoping`](../js/consistent-function-scoping.md) | off — opt-in preset | — | `js/strict` |
+| [`js/consistent-function-style`](../js/consistent-function-style.md) | off — in no preset | — | — |
 | [`js/consistent-json-file-read`](../js/consistent-json-file-read.md) | off — opt-in preset | — | `js/strict` |
 | [`js/consistent-optional-chaining`](../js/consistent-optional-chaining.md) | off — opt-in preset | — | `js/strict` |
 | [`js/consistent-return`](../js/consistent-return.md) | off — in no preset | — | — |
@@ -119,6 +121,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/explicit-timer-delay`](../js/explicit-timer-delay.md) | off — opt-in preset | — | `js/strict` |
 | [`js/exports-at-end`](../js/exports-at-end.md) | off — opt-in preset | — | `js/conventions` |
 | [`js/expression-complexity`](../js/expression-complexity.md) | off — in no preset | — | — |
+| [`js/file-header`](../js/file-header.md) | off — in no preset | — | — |
 | [`js/file-name-differ-from-class`](../js/file-name-differ-from-class.md) | off — in no preset | — | — |
 | [`js/file-permissions`](../js/file-permissions.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/file-uploads`](../js/file-uploads.md) | off — opt-in preset | — | `js/sonarjs` |
@@ -140,7 +143,10 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/hardcoded-secret-signatures`](../js/hardcoded-secret-signatures.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/hashing`](../js/hashing.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/hooks-before-test-cases`](../js/hooks-before-test-cases.md) | off — opt-in preset | — | `js/sonarjs` |
+| [`js/id-denylist`](../js/id-denylist.md) | off — in no preset | — | — |
 | [`js/id-length`](../js/id-length.md) | off — opt-in preset | — | `js/taste` |
+| [`js/id-match`](../js/id-match.md) | off — in no preset | — | — |
+| [`js/id-match-unicorn`](../js/id-match-unicorn.md) | off — in no preset | — | — |
 | [`js/import-consistent-type-specifier-style`](../js/import-consistent-type-specifier-style.md) | off — in no preset | — | — |
 | [`js/import-default`](../js/import-default.md) | off — opt-in preset | — | `js/project` |
 | [`js/import-dynamic-import-chunkname`](../js/import-dynamic-import-chunkname.md) | off — in no preset | — | — |
@@ -173,12 +179,14 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/import-no-relative-packages`](../js/import-no-relative-packages.md) | off — in no preset | — | — |
 | [`js/import-no-relative-parent-imports`](../js/import-no-relative-parent-imports.md) | off — in no preset | — | — |
 | [`js/import-no-rename-default`](../js/import-no-rename-default.md) | off — in no preset | — | — |
+| [`js/import-no-restricted-paths`](../js/import-no-restricted-paths.md) | off — in no preset | — | — |
 | [`js/import-no-self-import`](../js/import-no-self-import.md) | off — in no preset | — | — |
 | [`js/import-no-unassigned-import`](../js/import-no-unassigned-import.md) | off — in no preset | — | — |
 | [`js/import-no-unused-modules`](../js/import-no-unused-modules.md) | off — in no preset | — | — |
 | [`js/import-no-useless-path-segments`](../js/import-no-useless-path-segments.md) | off — in no preset | — | — |
 | [`js/import-no-webpack-loader-syntax`](../js/import-no-webpack-loader-syntax.md) | off — in no preset | — | — |
 | [`js/import-prefer-default-export`](../js/import-prefer-default-export.md) | off — in no preset | — | — |
+| [`js/import-prefer-namespace-import`](../js/import-prefer-namespace-import.md) | off — in no preset | — | — |
 | [`js/import-style`](../js/import-style.md) | off — opt-in preset | — | `js/strict` |
 | [`js/import-unambiguous`](../js/import-unambiguous.md) | off — in no preset | — | — |
 | [`js/inconsistent-function-call`](../js/inconsistent-function-call.md) | off — opt-in preset | — | `js/sonarjs` |
@@ -203,10 +211,13 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/jsdoc-imports-as-dependencies`](../js/jsdoc-imports-as-dependencies.md) | off — in no preset | — | — |
 | [`js/jsdoc-informative-docs`](../js/jsdoc-informative-docs.md) | off — in no preset | — | — |
 | [`js/jsdoc-match-description`](../js/jsdoc-match-description.md) | off — in no preset | — | — |
+| [`js/jsdoc-match-name`](../js/jsdoc-match-name.md) | off — in no preset | — | — |
 | [`js/jsdoc-multiline-blocks`](../js/jsdoc-multiline-blocks.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-no-blank-blocks`](../js/jsdoc-no-blank-blocks.md) | off — in no preset | — | — |
 | [`js/jsdoc-no-defaults`](../js/jsdoc-no-defaults.md) | off — opt-in preset | — | `js/jsdoc` |
+| [`js/jsdoc-no-missing-syntax`](../js/jsdoc-no-missing-syntax.md) | off — in no preset | — | — |
 | [`js/jsdoc-no-multi-asterisks`](../js/jsdoc-no-multi-asterisks.md) | off — opt-in preset | — | `js/jsdoc` |
+| [`js/jsdoc-no-restricted-syntax`](../js/jsdoc-no-restricted-syntax.md) | off — in no preset | — | — |
 | [`js/jsdoc-no-types`](../js/jsdoc-no-types.md) | off — in no preset | — | — |
 | [`js/jsdoc-no-undefined-types`](../js/jsdoc-no-undefined-types.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-normalize-see-links`](../js/jsdoc-normalize-see-links.md) | off — in no preset | — | — |
@@ -233,6 +244,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/jsdoc-require-returns-check`](../js/jsdoc-require-returns-check.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-require-returns-description`](../js/jsdoc-require-returns-description.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-require-returns-type`](../js/jsdoc-require-returns-type.md) | off — opt-in preset | — | `js/jsdoc` |
+| [`js/jsdoc-require-tags`](../js/jsdoc-require-tags.md) | off — in no preset | — | — |
 | [`js/jsdoc-require-template`](../js/jsdoc-require-template.md) | off — in no preset | — | — |
 | [`js/jsdoc-require-template-description`](../js/jsdoc-require-template-description.md) | off — in no preset | — | — |
 | [`js/jsdoc-require-throws`](../js/jsdoc-require-throws.md) | off — in no preset | — | — |
@@ -244,6 +256,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/jsdoc-require-yields-type`](../js/jsdoc-require-yields-type.md) | off — opt-in preset | — | `js/jsdoc` |
 | [`js/jsdoc-sort-tags`](../js/jsdoc-sort-tags.md) | off — in no preset | — | — |
 | [`js/jsdoc-tag-lines`](../js/jsdoc-tag-lines.md) | off — opt-in preset | — | `js/jsdoc` |
+| [`js/jsdoc-text-escaping`](../js/jsdoc-text-escaping.md) | off — in no preset | — | — |
 | [`js/jsdoc-ts-ban-ts-comment`](../js/jsdoc-ts-ban-ts-comment.md) | off — in no preset | — | — |
 | [`js/jsdoc-ts-method-signature-style`](../js/jsdoc-ts-method-signature-style.md) | off — in no preset | — | — |
 | [`js/jsdoc-ts-no-empty-object-type`](../js/jsdoc-ts-no-empty-object-type.md) | off — opt-in preset | — | `js/jsdoc` |
@@ -408,6 +421,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-ignored-exceptions`](../js/no-ignored-exceptions.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-immediate-mutation`](../js/no-immediate-mutation.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-implicit-coercion`](../js/no-implicit-coercion.md) | off — in no preset | — | — |
+| [`js/no-implicit-globals`](../js/no-implicit-globals.md) | off — in no preset | — | — |
 | [`js/no-implied-eval`](../js/no-implied-eval.md) | off — in no preset | — | — |
 | [`js/no-import-assign`](../js/no-import-assign.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-impossible-length-comparison`](../js/no-impossible-length-comparison.md) | off — opt-in preset | — | `js/strict` |
@@ -508,6 +522,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-regex-spaces`](../js/no-regex-spaces.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-repeated-call-wrappers`](../js/no-repeated-call-wrappers.md) | off — in no preset | — | — |
 | [`js/no-restricted-exports`](../js/no-restricted-exports.md) | off — in no preset | — | — |
+| [`js/no-restricted-syntax`](../js/no-restricted-syntax.md) | off — in no preset | — | — |
 | [`js/no-return-array-push`](../js/no-return-array-push.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-return-assign`](../js/no-return-assign.md) | off — in no preset | — | — |
 | [`js/no-same-argument-assert`](../js/no-same-argument-assert.md) | off — opt-in preset | — | `js/sonarjs` |
@@ -940,6 +955,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/stateful-regex`](../js/stateful-regex.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/strict`](../js/strict.md) | off — in no preset | — | — |
 | [`js/strict-transport-security`](../js/strict-transport-security.md) | off — opt-in preset | — | `js/sonarjs` |
+| [`js/string-content`](../js/string-content.md) | off — in no preset | — | — |
 | [`js/switch-final-break`](../js/switch-final-break.md) | off — opt-in preset | — | `js/taste` |
 | [`js/symbol-description`](../js/symbol-description.md) | off — in no preset | — | — |
 | [`js/synchronous-suite-callback`](../js/synchronous-suite-callback.md) | off — opt-in preset | — | `js/sonarjs` |

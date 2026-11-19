@@ -15,6 +15,8 @@ With `escapeHTML`, a `<` or an `&` in a block's description that is followed by 
 
 With no `escapeHTML` or `escapeMarkdown` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/jsdoc-text-escaping" = { severity = "warn", options = { escapeHTML = true } }`.
+
 **Why:** JSDoc is rendered as HTML or Markdown by the tools that read it, and a stray `<` or backtick pair changes what a reader sees.
 
 ```codelaw

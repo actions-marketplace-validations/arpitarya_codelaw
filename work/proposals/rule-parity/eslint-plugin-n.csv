@@ -18,8 +18,8 @@ no-new-require,port,,node,node/no-new-require,manual,P2,C,none,,,
 no-path-concat,port,,node,node/no-path-concat,manual,P2,C,none,,,
 no-process-env,port,,node,node/no-process-env,manual,P2,C,none,,,
 no-process-exit,covered,node/no-process-exit,,,,,,none,yes,,
-no-restricted-import,options-only,,node,node/no-restricted-import,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2d)"
-no-restricted-require,options-only,,node,node/no-restricted-require,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2d)"
+no-restricted-import,options-only,,node,node/no-restricted-import,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
+no-restricted-require,options-only,,node,node/no-restricted-require,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 no-sync,port,,node,node/no-sync,manual,P2,C,none,,,
 no-top-level-await,port,,node,node/no-top-level-await,manual,P2,C,none,,,
 no-unpublished-bin,port,,node,node/no-unpublished-bin,manual,P2,C,none,,,

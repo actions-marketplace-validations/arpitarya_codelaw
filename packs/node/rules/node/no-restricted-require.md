@@ -17,6 +17,8 @@ A module the project lists in `modules` is reported where it is `require()`d wit
 
 With no `modules` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"node/no-restricted-require" = { severity = "error", options = { modules = ["lodash", "lodash/*"] } }`.
+
 **Why:** A project retires a dependency or keeps a module for one layer; the rule finds the requires that went around that.
 
 ```codelaw

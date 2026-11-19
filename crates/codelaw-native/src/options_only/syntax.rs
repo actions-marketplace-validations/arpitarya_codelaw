@@ -12,8 +12,10 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex};
 
-fn compiled(pattern: &str, grammar: Grammar) -> Result<Arc<Pattern>, String> {
-    static CACHE: LazyLock<Mutex<HashMap<(String, Grammar), Result<Arc<Pattern>, String>>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
+type Compiled = Result<Arc<Pattern>, String>;
+
+fn compiled(pattern: &str, grammar: Grammar) -> Compiled {
+    static CACHE: LazyLock<Mutex<HashMap<(String, Grammar), Compiled>>> = LazyLock::new(|| Mutex::new(HashMap::new()));
     let mut cache = CACHE.lock().unwrap_or_else(|e| e.into_inner());
     cache.entry((pattern.to_owned(), grammar)).or_insert_with(|| Pattern::try_new(pattern, grammar).map(Arc::new).map_err(|e| e.to_string())).clone()
 }

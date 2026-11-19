@@ -14,6 +14,8 @@ A default import from a module in `patterns` is written as a namespace import: `
 
 With no `patterns` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/import-prefer-namespace-import" = { severity = "warn", options = { patterns = ["react"] } }`.
+
 **Why:** Some modules (`react`, `react-dom`) are used through their namespace, and one import style for them keeps usages greppable.
 
 ```codelaw
