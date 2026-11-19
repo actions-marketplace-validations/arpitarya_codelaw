@@ -22,6 +22,8 @@ A JSDoc block is reported when it documents code of an entry's `context` kind (d
 
 With no `contexts` or `entries` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/jsdoc-no-restricted-syntax" = { severity = "error", options = { entries = { typeTag = { tag = "type" } } } }`.
+
 **Why:** A TypeScript project keeps types out of its comments, or a project retires a tag; the rule finds the blocks that still carry it.
 
 ## Configuration

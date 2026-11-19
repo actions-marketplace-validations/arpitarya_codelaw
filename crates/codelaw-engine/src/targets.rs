@@ -196,12 +196,22 @@ impl Project {
         }
     }
 
+    /// Whether `rule`'s `finding_target:` admits `entry`'s Python target
+    /// (SR-RULE-FORMAT decision 2d). An unknown target admits nothing: the
+    /// rule is quiet until `[targets] python` or `requires-python` says.
+    pub(crate) fn finding_admits(&self, entry: &FileEntry, rule: &str, t: &codelaw_rules::FindingTarget) -> bool {
+        self.python_target(&entry.abs, Some(rule)).value.is_some_and(|v| t.admits(&v))
+    }
+
     /// The file's targets, for its cache key: only when a rule with
     /// `fix_target:` could fire (the config's part is in the config
     /// fingerprint; `pyproject.toml` and `browserslist` are not).
     pub(crate) fn targets_key(&self, entry: &FileEntry) -> String {
         let (mut py, mut br) = (false, false);
         for c in self.compiled.iter() {
+            if c.loaded.rule.finding_target.is_some() && c.applies_to_language(entry.language) {
+                py = true;
+            }
             match &c.loaded.rule.fix_target {
                 Some(FixTarget::Python(_)) if c.applies_to_language(entry.language) => py = true,
                 Some(FixTarget::Browsers(_)) if c.applies_to_language(entry.language) => br = true,

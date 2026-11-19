@@ -22,6 +22,8 @@ The name a JSDoc tag gives (`@param {string} user_name`: `user_name`) is reporte
 
 With no `match` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/jsdoc-match-name" = { severity = "warn", options = { match = { prop = { disallowName = "^_", replacement = "", tags = ["property"] } } } }`.
+
 **Why:** A project that names its parameters one way wants the documentation to say the same.
 
 ## Configuration

@@ -22,6 +22,8 @@ Each role a function can have has a style the project may fix: `declaration` (`f
 
 Set the roles you care about: `[rules] "js/consistent-function-style" = { severity = "error", options = { namedFunctions = "declaration", callbacks = "arrow-function" } }`. With no `default`, `namedFunctions` or another role` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/consistent-function-style" = { severity = "warn", options = { callbacks = "arrow-function" } }`.
+
 **Why:** One syntax for one kind of function lets a reader tell a declared function from a callback at a glance.
 
 ## Configuration

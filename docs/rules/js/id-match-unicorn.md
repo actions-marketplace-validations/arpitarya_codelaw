@@ -22,6 +22,8 @@
 
 With no `pattern` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/id-match-unicorn" = { severity = "error", options = { pattern = "^[a-z][a-zA-Z0-9]*$", checkNamedSpecifiers = true } }`.
+
 **Why:** The same naming convention as `js/id-match`, with a switch for names a project imports from code it does not own.
 
 ## Configuration

@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 891 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 98 in no preset.
+- **Rules:** 897 — 0 on, 97 on with `preview = true`, 696 off in an opt-in preset, 104 in no preset.
 
 ## Presets
 
@@ -263,6 +263,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/function-call-in-default-argument`](../py/function-call-in-default-argument.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/function-uses-loop-variable`](../py/function-uses-loop-variable.md) | on with `preview = true` | error | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/future-annotations-in-stub`](../py/future-annotations-in-stub.md) | off — opt-in preset | — | `py/strict` |
+| [`py/future-required-type-annotation`](../py/future-required-type-annotation.md) | off — in no preset | — | — |
+| [`py/future-rewritable-type-annotation`](../py/future-rewritable-type-annotation.md) | off — in no preset | — | — |
 | [`py/generator-return-from-iter-method`](../py/generator-return-from-iter-method.md) | off — opt-in preset | — | `py/strict` |
 | [`py/generic-not-last-base-class`](../py/generic-not-last-base-class.md) | off — opt-in preset | — | `py/strict` |
 | [`py/getattr-with-constant`](../py/getattr-with-constant.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
@@ -544,6 +546,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/os-stat`](../py/os-stat.md) | off — opt-in preset | — | `py/strict` |
 | [`py/os-symlink`](../py/os-symlink.md) | off — opt-in preset | — | `py/strict` |
 | [`py/os-unlink`](../py/os-unlink.md) | off — opt-in preset | — | `py/strict` |
+| [`py/outdated-version-block`](../py/outdated-version-block.md) | off — in no preset | — | — |
 | [`py/over-indentation`](../py/over-indentation.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/overindented-section`](../py/overindented-section.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/overindented-section-underline`](../py/overindented-section-underline.md) | off — opt-in preset | — | `py/pydocstyle` |
@@ -747,6 +750,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/trio-sync-call`](../py/trio-sync-call.md) | off — opt-in preset | — | `py/strict` |
 | [`py/true-false-comparison`](../py/true-false-comparison.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/try-consider-else`](../py/try-consider-else.md) | off — opt-in preset | — | `py/strict` |
+| [`py/try-except-in-loop`](../py/try-except-in-loop.md) | off — in no preset | — | — |
 | [`py/type-alias-without-annotation`](../py/type-alias-without-annotation.md) | off — opt-in preset | — | `py/strict` |
 | [`py/type-bivariance`](../py/type-bivariance.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/type-check-without-type-error`](../py/type-check-without-type-error.md) | off — opt-in preset | — | `py/strict` |
@@ -897,6 +901,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/useless-type-doc`](../py/useless-type-doc.md) | off — in no preset | — | — |
 | [`py/useless-with-lock`](../py/useless-with-lock.md) | off — opt-in preset | — | `py/strict` |
 | [`py/using-constant-test`](../py/using-constant-test.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/using-exception-groups-in-unsupported-version`](../py/using-exception-groups-in-unsupported-version.md) | off — in no preset | — | — |
+| [`py/using-generic-type-syntax-in-unsupported-version`](../py/using-generic-type-syntax-in-unsupported-version.md) | off — in no preset | — | — |
 | [`py/utf8-encoding-declaration`](../py/utf8-encoding-declaration.md) | off — opt-in preset | — | `py/strict` |
 | [`py/verbose-decimal-constructor`](../py/verbose-decimal-constructor.md) | off — opt-in preset | — | `py/strict` |
 | [`py/verbose-log-message`](../py/verbose-log-message.md) | off — opt-in preset | — | `py/strict` |

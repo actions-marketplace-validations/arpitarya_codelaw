@@ -22,6 +22,8 @@ A JSDoc block that lacks a tag the project lists is reported, once per missing t
 
 With no `tags` or `tagContexts` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/jsdoc-require-tags" = { severity = "error", options = { tags = ["since"] } }`.
+
 **Why:** A project asks for a tag on every block (`@since`, `@public`) so that its documentation tooling finds it.
 
 ## Configuration

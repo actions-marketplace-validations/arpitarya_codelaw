@@ -22,6 +22,8 @@ Text the project does not want in a string literal or a template's text is repla
 
 With no `patterns` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/string-content" = { severity = "warn", options = { patterns = { "\\.\\.\\." = "…" } } }`.
+
 **Why:** Typography, spelling and house style in user-facing strings are a list a project keeps; the rule applies it.
 
 ## Configuration

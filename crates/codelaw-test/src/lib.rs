@@ -71,7 +71,7 @@ impl RuleReport {
 pub const RULE_INVARIANTS: &[&str] = &["exports-unchanged"];
 
 /// A project holding only `rule`, with no config and no disk access.
-fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections::BTreeMap<String, serde_json::Value>) -> Project {
+fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections::BTreeMap<String, serde_json::Value>, python: Option<&str>) -> Project {
     let mut rule = (*loaded.rule).clone();
     if !keep_globs {
         rule.files.clear();
@@ -89,9 +89,12 @@ fn project_for(loaded: &LoadedRule, keep_globs: bool, options: &std::collections
     };
     // The compiled rule set is kept by fingerprint, and a rule compiled with
     // other options is another rule set.
-    let fingerprint = if options.is_empty() { Key([0; 32]) } else { codelaw_cache::hash_bytes(format!("{}{}", loaded.rule.id, serde_json::to_string(options).unwrap_or_default()).as_bytes()) };
+    let fingerprint = if options.is_empty() && python.is_none() { Key([0; 32]) } else { codelaw_cache::hash_bytes(format!("{}{}{python:?}", loaded.rule.id, serde_json::to_string(options).unwrap_or_default()).as_bytes()) };
     let rules = RuleSet { rules: vec![lr], packs: Vec::new(), warnings: Vec::new(), preset_scopes: Vec::new(), engine_settings: Vec::new(), fingerprint };
-    let config = Config::defaults(PathBuf::from("/codelaw-test"));
+    let config = match python {
+        Some(p) => Config::from_toml(PathBuf::from("/codelaw-test"), &format!("[targets]\npython = \"{p}\"\n")).expect("a `python=` fence value was checked at load"),
+        None => Config::defaults(PathBuf::from("/codelaw-test")),
+    };
     // A type rule's examples are answered by the TypeScript
     // `CODELAW_TYPESCRIPT` names, with Node from `PATH` (SR-TYPES).
     let env = EngineOptions::from_env();
@@ -133,12 +136,12 @@ fn first_difference(expected: &str, got: &str) -> String {
 
 impl<'a> Tester<'a> {
     fn project(&mut self, snippet: &Snippet) -> &Project {
-        if !snippet.options.is_empty() {
-            let key = format!("{}{}", snippet.path.is_some(), serde_json::to_string(&snippet.options).unwrap_or_default());
+        if !snippet.options.is_empty() || snippet.python.is_some() {
+            let key = format!("{}{}{:?}", snippet.path.is_some(), serde_json::to_string(&snippet.options).unwrap_or_default(), snippet.python);
             let at = match self.optioned.iter().position(|(k, _)| *k == key) {
                 Some(i) => i,
                 None => {
-                    self.optioned.push((key, project_for(self.loaded, snippet.path.is_some(), &snippet.options)));
+                    self.optioned.push((key, project_for(self.loaded, snippet.path.is_some(), &snippet.options, snippet.python.as_deref())));
                     self.optioned.len() - 1
                 }
             };
@@ -146,7 +149,7 @@ impl<'a> Tester<'a> {
         }
         if snippet.path.is_some() {
             if self.with_globs.is_none() {
-                self.with_globs = Some(project_for(self.loaded, true, &Default::default()));
+                self.with_globs = Some(project_for(self.loaded, true, &Default::default(), None));
             }
             self.with_globs.as_ref().expect("just set")
         } else {
@@ -213,7 +216,7 @@ impl<'a> Tester<'a> {
             let multi = files.len() > 1 || files.first().is_some_and(|f| f.header.is_some());
             let set: Vec<(String, Language, String)> = files.iter().map(|f| (f.path.clone(), f.language, f.text.clone())).collect();
             // A multi-file snippet's `options=` apply too (W-130).
-            let p = if snippet.options.is_empty() { &self.plain } else { self.project(snippet) };
+            let p = if snippet.options.is_empty() && snippet.python.is_none() { &self.plain } else { self.project(snippet) };
             let executable: std::collections::BTreeSet<String> = files.iter().filter(|f| f.executable).map(|f| f.path.clone()).collect();
             return p
                 .check_files_executable(&set, &executable)
@@ -236,7 +239,7 @@ impl<'a> Tester<'a> {
         if self.as_files(code) {
             let files = split_files(language, code);
             let set: Vec<(String, Language, String)> = files.iter().map(|f| (f.path.clone(), f.language, f.text.clone())).collect();
-            let p = if snippet.options.is_empty() { &self.plain } else { self.project(snippet) };
+            let p = if snippet.options.is_empty() && snippet.python.is_none() { &self.plain } else { self.project(snippet) };
             let fixed = p.fix_files_choice(&set, true, choice.as_deref());
             return files
                 .iter()
@@ -449,7 +452,7 @@ impl<'a> Tester<'a> {
                 self.fail(Level::Cases, at.clone(), format!("expected {}, got {}", show(&want), show(&got)));
             }
             if let Some(fixed) = &case.fixed {
-                let expected = Snippet { code: fixed.clone(), path: case.input.path.clone(), options: case.input.options.clone(), line: case.input.line };
+                let expected = Snippet { code: fixed.clone(), path: case.input.path.clone(), options: case.input.options.clone(), python: case.input.python.clone(), line: case.input.line };
                 self.fix_checks(case.language, &case.input, Some(&expected), &at, Level::Cases);
             }
         }
@@ -535,7 +538,7 @@ pub fn test_rule(loaded: &LoadedRule, case: Option<&str>) -> RuleReport {
         failures: Vec::new(),
         warnings: Vec::new(),
     };
-    let mut t = Tester { loaded, plain: project_for(loaded, false, &Default::default()), with_globs: None, optioned: Vec::new(), report, choice: None };
+    let mut t = Tester { loaded, plain: project_for(loaded, false, &Default::default(), None), with_globs: None, optioned: Vec::new(), report, choice: None };
     for inv in &loaded.rule.invariants {
         if !RULE_INVARIANTS.contains(&inv.as_str()) {
             t.fail(Level::Invariants, "frontmatter".into(), format!("unknown invariant `{inv}` (one of {})", RULE_INVARIANTS.join(", ")));
@@ -577,7 +580,7 @@ pub fn corpus_rule(loaded: &LoadedRule, files: &[(String, Language, String)]) ->
         failures: Vec::new(),
         warnings: Vec::new(),
     };
-    let mut t = Tester { loaded, plain: project_for(loaded, true, &Default::default()), with_globs: None, optioned: Vec::new(), report, choice: None };
+    let mut t = Tester { loaded, plain: project_for(loaded, true, &Default::default(), None), with_globs: None, optioned: Vec::new(), report, choice: None };
     let id = loaded.rule.id.clone();
     if t.project_scope() {
         let run = |p: &Project| -> Vec<(String, u32, u32)> {

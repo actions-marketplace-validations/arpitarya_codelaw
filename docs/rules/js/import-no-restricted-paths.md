@@ -22,6 +22,8 @@ A file under a zone's `target` that imports a file under its `from` is reported:
 
 With no `zones` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/import-no-restricted-paths" = { severity = "error", options = { zones = { client = { target = "client", from = "server" } } } }`.
+
 **Why:** Code for one environment (client, server, a layer) must not reach into another; a boundary only the rule enforces is a boundary that holds.
 
 ## Configuration

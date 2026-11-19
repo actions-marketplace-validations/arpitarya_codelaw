@@ -22,6 +22,8 @@ An identifier named in `names` is reported wherever the file declares, assigns o
 
 Set the option to switch it on, for example `[rules] "js/id-denylist" = { severity = "error", options = { names = ["data", "temp", "e"] } }`. With no `names` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/id-denylist" = { severity = "error", options = { names = ["data", "temp", "e"] } }`.
+
 **Why:** A project denies names that say nothing (`data`, `temp`, `e`) so that each name tells the reader what the value is.
 
 ## Configuration

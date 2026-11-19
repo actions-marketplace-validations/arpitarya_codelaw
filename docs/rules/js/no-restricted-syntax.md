@@ -24,6 +24,8 @@ For a restriction that needs more than a shape (a call to a particular imported 
 
 With no `patterns` or `kinds` set the rule is silent: it reports nothing, not even that the option is missing, and the engine does not run it on a single node. It is in no preset; a project switches it on by setting the option under `[rules]` (or in a `[scope.<name>]` for some files).
 
+In `codelaw.toml`, under `[rules]`: `"js/no-restricted-syntax" = { severity = "error", options = { patterns = ["Object.assign($$$ARGS)"], messages = { "Object.assign($$$ARGS)" = "UseObjectSpread" } } }`.
+
 **Why:** A team bans a construct (`for...in`, `with`, a legacy API) with the rule's message saying what to use.
 
 ## Configuration

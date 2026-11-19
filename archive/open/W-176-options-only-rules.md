@@ -7,7 +7,7 @@ filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-18
 updated_by: "Claude Code (agent session 9ab51fd9): built and closed"
-ball: agent
+ball: none
 ---
 
 # W-176 — Rules that work only once a project configures them
