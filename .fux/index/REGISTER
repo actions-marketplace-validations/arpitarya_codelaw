@@ -1,8 +1,8 @@
 # fux.register.v2	rules=5
 # loc	sha	decoder	[k=v ...]
-README.md	cc2c63c97aaa661276b4ca5410bc6cbc5fbde956	prose
+README.md	1f684fdb6ee154383203f13c3e1c072560dbca32	prose
 archive/DEPENDENCIES.md	5f61466e6adab030597fe48df0e7209792550a85	prose	archived=true
-archive/README.md	bd0af56a1292287570f561463f52b3792df394f3	prose	archived=true
+archive/README.md	0122d79567ae5abc00e312b69b610e3cf84d2d1c	prose	archived=true
 archive/bootstrap/WORK-SYSTEM.md	596ed34d20a3476fd702bfd021200e94eb35b91e	prose	archived=true
 archive/open/W-01-rule-pack-records.md	78910b43392f62d75923d781051e226450ef67a2	prose	archived=true
 archive/open/W-02-engine-p0.md	d973a1d8002070f691a826554ca3ee503ea8e0b3	prose	archived=true
@@ -89,8 +89,10 @@ archive/open/W-171-session-cleanup.md	5048a6abb6a3d04862781edc00a82917e22c876f	p
 archive/open/W-173-zip-advisories.md	4a0f061c9b66d29cb25b5aed37a75ac738371788	prose	archived=true
 archive/open/W-174-python-inference.md	56873482d6fcabe2d84ebf125c598cf07b12da30	prose	archived=true
 archive/open/W-175-js-module-graph-rules.md	d7aab87e539d758781db058de0fb0995ff3cb9d0	prose	archived=true
+archive/open/W-176-options-only-rules.md	8429b2e6283f3f06190efd9e82ee678222c0526c	prose	archived=true
 archive/open/W-179-formatter-docstring-shebang-rows.md	5e95c7834c3fe0c82d2bcb8635201fa9afbe1b70	prose	archived=true
 archive/open/W-18-release-hardening.md	90ca9a17c57507bad8e38b181c6c846848d7cfb6	prose	archived=true
+archive/open/W-183-target-gated-findings.md	8c262caf49e8e75834a0856dfe4a70250216d855	prose	archived=true
 archive/open/W-184-file-mode-bits.md	d2809b59fb004851ff04ff241c53e5983b3bc0c3	prose	archived=true
 archive/open/W-19-performance-budgets.md	f7c9ab912b0c9dedb8498c110e7d0b2ea736c7fd	prose	archived=true
 archive/open/W-191-graph-records.md	f0d50d7b47c7152fe5b723e1b2a0542ae63739ee	prose	archived=true
@@ -174,7 +176,7 @@ docs/DESIGN.md	81b75926db1dbb92386c6346a5a71605a78107a4	prose
 docs/GLOSSARY.md	44e6c5c42ae2ac77d4074726f22a476ddaf7c4b2	prose
 docs/brand/README.md	6a6acdd129f71c43395f10d99a029d9d528a7b64	prose
 docs/design/editor/README.md	7e1315e631a26fea85e5ef20b6140244a5ab387b	prose
-docs/rules/README.md	f8759ba1d1af843250cf7c7fc04c8666d9da9207	prose
+docs/rules/README.md	cc32dfa0340d7ac49c919960b3cb0649e71aadc5	prose
 docs/rules/airflow/airflow-dag-no-schedule-argument.md	554b4660352ff0610f048626b9ff94ffba65a072	prose
 docs/rules/airflow/airflow-task-branch-as-short-circuit.md	8ce8175e00abd84680512a84a11d9db0e14eeacc	prose
 docs/rules/airflow/airflow-task-implicit-multiple-outputs.md	4ddb25e6ea1da7c93e1d90f9bb14448c00b72ede	prose
@@ -335,21 +337,22 @@ docs/rules/css/value-keyword-layout-mappings.md	1d84e76c88094ce40b53111f153e53d4
 docs/rules/css/value-no-vendor-prefix.md	863cf5044b493d6d82d9f48fa4ce5ec42ec407d5	prose
 docs/rules/data/codeowners-coverage.md	9b86b87a20911f83ab60240773ba98b7cbade865	prose
 docs/rules/data/flag-registry.md	9afb96e463512f855f251e452d5cd98604138b94	prose
-docs/rules/defaults.md	389825d679b48b344f5e802d02bac8a71f9ea9ab	prose
+docs/rules/data/key-name-casing.md	b8dd034ef20d865488bd45dd0bdb20c800db1962	prose
+docs/rules/defaults.md	8932cadbd95bb36d2c904c531cd986fa37f238a1	prose
 docs/rules/defaults/airflow.md	3a397cc1064df14ef77def777fd189dad5833faa	prose
 docs/rules/defaults/css-modules.md	98694a37014ff96c72a87a489dfdf635051b5c44	prose
 docs/rules/defaults/css.md	dfbd20c60392c92b50a4934d86e59718178ef379	prose
-docs/rules/defaults/data.md	ed55c7a6424f9b0840cbea1b0ec3c76ee1d7f385	prose
+docs/rules/defaults/data.md	13c01161f2ffab01c8e24b6e076f94415e153a2b	prose
 docs/rules/defaults/deps.md	994483f8f3a3b4c25bd05152d5cd662352883ab1	prose
 docs/rules/defaults/django.md	515433a6186d8a56d6c2474fdf3628040e7f3ebc	prose
 docs/rules/defaults/fastapi.md	8fd67a197c31edbcc9ffbc093b580a3ce16710a2	prose
 docs/rules/defaults/html.md	9b445a199c385b66afe66cea5081e1a01b4d2c16	prose
-docs/rules/defaults/js.md	14a0fe6609c2fd3342b3c33ddf6b26c0deb4a1bb	prose
+docs/rules/defaults/js.md	5b84ed2533f6e34f26c966d221c070948e3ea60f	prose
 docs/rules/defaults/nextjs.md	c2781a3fedbfcf48ca4176ecf98a394865b0f531	prose
 docs/rules/defaults/node.md	48923a6310beb40f2b6f936b49d7c79b78c53e73	prose
 docs/rules/defaults/numpy.md	3910e2d9ebed3fd79a098375ede4dd304466ecc3	prose
 docs/rules/defaults/pandas.md	4e523fa1f23bcaa12d0feaae8e7740f0271a16c1	prose
-docs/rules/defaults/python.md	60b3479db7da92b2e7cf82e1b0621130fdefa552	prose
+docs/rules/defaults/python.md	50377f2aadfe6b84f8977ef6e59c3018e56da2af	prose
 docs/rules/defaults/react.md	f728f3e2983b796f966b7aad23e3ff6d521560a1	prose
 docs/rules/defaults/redux-toolkit.md	6b6673d655066b9b380f63296a03c9167462c007	prose
 docs/rules/defaults/scss.md	097783438e27d9478d660ef1e4a0b530b3a3f505	prose
@@ -509,7 +512,7 @@ docs/rules/js/class-reference-in-static-methods.md	480f19b064826b75e1d47211c2bf4
 docs/rules/js/cognitive-complexity.md	fd6379f8582ce866827197789d517e807b5fb3d6	prose
 docs/rules/js/comma-or-logical-or-case.md	33a8037f1f8dfba7429e7f49656bf87d70177587	prose
 docs/rules/js/comment-content.md	b41d0d36926316ebd4d63543a9488f65aa38c6cd	prose
-docs/rules/js/comment-regex.md	4ea84fbf5465f059cca4f21c06a926eca78bfbfc	prose
+docs/rules/js/comment-regex.md	57e611568ec378b267b6963efc3b632ae366d014	prose
 docs/rules/js/complexity.md	e19dd24b61c4081698877c1076f1a0861e6a8569	prose
 docs/rules/js/composite-assertions.md	003bc00616dfac4c30cc1d1990b1a7e24d78a0fe	prose
 docs/rules/js/consistent-arrow-return-style.md	50babbfaeb6ffb3177e91f150fd8d8939b05c0df	prose
@@ -524,7 +527,7 @@ docs/rules/js/consistent-empty-array-spread.md	58001e020ec7d5dac42266a8cacce4514
 docs/rules/js/consistent-existence-index-check.md	5ab5e5f66cdde9b509178a683bf911c5a53a50b4	prose
 docs/rules/js/consistent-export-decorator-position.md	9dbb4bcdc8b7e0dd8cca750a4d54a3ba38e56e22	prose
 docs/rules/js/consistent-function-scoping.md	e5f32ecd63b426e6d5f9c0046e2410f9a23532b6	prose
-docs/rules/js/consistent-function-style.md	34065f1c699b0d5813ef4aacccca8d6022b148bb	prose
+docs/rules/js/consistent-function-style.md	8f69141fd553063413c13593189f6cef2713fb50	prose
 docs/rules/js/consistent-json-file-read.md	3ea6440363f011f984d5dccf6674977a1e1a21a6	prose
 docs/rules/js/consistent-optional-chaining.md	79ffcd008e3e122ecfe7b500a54dc629ae3662ea	prose
 docs/rules/js/consistent-return.md	655a4b625ae8d31adedbd604499912cf120c246e	prose
@@ -560,7 +563,7 @@ docs/rules/js/explicit-test-skip.md	7085ce713de3b180b1efb575a99052ce7ae14616	pro
 docs/rules/js/explicit-timer-delay.md	dec62d421fb19ab07f80dbb5853ae0372afcc96c	prose
 docs/rules/js/exports-at-end.md	e20b56d6af332ebfc1a0230846408efc1288844f	prose
 docs/rules/js/expression-complexity.md	ce600023990c0010a3609a9e23664aa74c845c35	prose
-docs/rules/js/file-header.md	b1abe4bd42ea7054a2acd9f2f0d2abf75eb3817d	prose
+docs/rules/js/file-header.md	cdb29113e52c9ef8cd926a43321660d93ab7fddf	prose
 docs/rules/js/file-name-differ-from-class.md	f2ed95b6c0acc6352684f6d98380acd6aaa510e9	prose
 docs/rules/js/file-permissions.md	00657daf8764aa4ea4b42c6913cbf63bdaddb977	prose
 docs/rules/js/file-uploads.md	87ba0bdcbe513810e119acc242184287d5d95c85	prose
@@ -582,10 +585,10 @@ docs/rules/js/guard-for-in.md	d44c2c525dcd3591b05289bcdce41bf66c9ef7c7	prose
 docs/rules/js/hardcoded-secret-signatures.md	6af49c8fa10547e47b9ad42bcc1506f4e409278f	prose
 docs/rules/js/hashing.md	dd0d701eb0984ae9fa780ea0572ee9f192cb6ebe	prose
 docs/rules/js/hooks-before-test-cases.md	f33c66a70cd91eff689ef2e60d8b2004d2df5748	prose
-docs/rules/js/id-denylist.md	eaf7d408ad1a4e63b3f452038f574e93704eec9e	prose
+docs/rules/js/id-denylist.md	d4726d39c9ed2b396e218ad6a88daa2817e26130	prose
 docs/rules/js/id-length.md	7c273c8f09ca9e47cd4d830bd98f8ce7253a8a79	prose
-docs/rules/js/id-match-unicorn.md	9a39ef8c3f22468127e24fcc745b8518068d544d	prose
-docs/rules/js/id-match.md	84937f92f62519ff7fc5760f2eae92b7c94e832a	prose
+docs/rules/js/id-match-unicorn.md	082ac0eb1e2e8376f6583e1a4a1f76b185a0635c	prose
+docs/rules/js/id-match.md	60178fc3b5d5521d348e1f2f51b5e58a3696f523	prose
 docs/rules/js/import-consistent-type-specifier-style.md	1872054bce8a25c46470e1f290ec3705795cb66c	prose
 docs/rules/js/import-default.md	f199bf24c9ceee7a944d57e04fb47fab92543a79	prose
 docs/rules/js/import-dynamic-import-chunkname.md	1b4aa5667d4241c1ccf6f9f9ca3718f737dc6e78	prose
@@ -618,14 +621,14 @@ docs/rules/js/import-no-nodejs-modules.md	4e2d84422aece517325bb3293172d84d4e8f00
 docs/rules/js/import-no-relative-packages.md	e7bf62d08d434f82b1b47d986b36842462b645f1	prose
 docs/rules/js/import-no-relative-parent-imports.md	2a5755b9438a899ea9fa30ae34c0a75695a139d9	prose
 docs/rules/js/import-no-rename-default.md	6f407c0e97f7274627af272b6189ae0edfbe931a	prose
-docs/rules/js/import-no-restricted-paths.md	cf9d8d495e6f21bb7c31adeeb7ca64535b9b3673	prose
+docs/rules/js/import-no-restricted-paths.md	a560f1168a1a2eca756acac95245dcfc028561ea	prose
 docs/rules/js/import-no-self-import.md	03cbe562d70b353ebbb9ad4b2534852d1c6fc757	prose
 docs/rules/js/import-no-unassigned-import.md	81f630f69e5dbeaf377dac645e73684d8fbfddd7	prose
 docs/rules/js/import-no-unused-modules.md	3c8a1dce177091e822afa42422bb62c297a12f7b	prose
 docs/rules/js/import-no-useless-path-segments.md	cd772457d862362fbb5ad63897961ca7c339c8d5	prose
 docs/rules/js/import-no-webpack-loader-syntax.md	1ab0cb7c482b4fbbfdffe6e78fdc7d93605fdd7b	prose
 docs/rules/js/import-prefer-default-export.md	d6e8f62a8210fc93bda137a19ad9e465e6a548b9	prose
-docs/rules/js/import-prefer-namespace-import.md	0712bd0d06cc0709a7f07a6e9d6e6e90e864a215	prose
+docs/rules/js/import-prefer-namespace-import.md	0f746ac64124f1a64a47fd9202c71b166555e7bf	prose
 docs/rules/js/import-style.md	5551a120c66f669e3d9771f10d744285a5bd7174	prose
 docs/rules/js/import-unambiguous.md	c36be299138ceeb4c4e9eb61a6c455795f69cce1	prose
 docs/rules/js/inconsistent-function-call.md	0c35cbe9a511f3320c4f838cde7ff294eaf15f2f	prose
@@ -636,6 +639,7 @@ docs/rules/js/inverted-assertion-arguments.md	538cac79cc5a2792635021d13635f73ce1
 docs/rules/js/isolated-functions.md	83b3601f865e4424dcd1b433d0cac83a57761d4c	prose
 docs/rules/js/iteration-fallback-style.md	4ed6c9b0d800c8270b1cbfc611038283b7bb560f	prose
 docs/rules/js/jsdoc-check-access.md	8007ae0989b82ff098a11c06aad2c1fd2c68c948	prose
+docs/rules/js/jsdoc-check-examples.md	58ac90dc5f07887b05a76781921b980fc49baab2	prose
 docs/rules/js/jsdoc-check-param-names.md	ea6f880bfacf82bdb7d5cf62aaeec585734b112b	prose
 docs/rules/js/jsdoc-check-property-names.md	535861474609457b98d306bf0541187c94ac259c	prose
 docs/rules/js/jsdoc-check-syntax.md	23e81317fcedea3526fb40eb4802a9c6059c8b16	prose
@@ -650,13 +654,13 @@ docs/rules/js/jsdoc-implements-on-classes.md	7d060f2d41812296ef4c9cc7aedf4785f07
 docs/rules/js/jsdoc-imports-as-dependencies.md	27cb2ad79cea693f8f93b5e26758cc274012ea87	prose
 docs/rules/js/jsdoc-informative-docs.md	961c6662666ea3f9a4b640cdbbfce371cd855032	prose
 docs/rules/js/jsdoc-match-description.md	aa2fc7f2dcad660800e4caf5ec7e2fa9c317b171	prose
-docs/rules/js/jsdoc-match-name.md	62987cae490342a0dd6cc45d47d49116f7cb00b2	prose
+docs/rules/js/jsdoc-match-name.md	459a3a0a273d24944f484697f96a3d5f6fb554cc	prose
 docs/rules/js/jsdoc-multiline-blocks.md	89114ad1b3dd9e449457f062943333826d9855b0	prose
 docs/rules/js/jsdoc-no-blank-blocks.md	08e2f159ed7b820400222a3bb1e036984deb73da	prose
 docs/rules/js/jsdoc-no-defaults.md	91a78e50459f8e62205a4a4a66953bde5613fbf5	prose
-docs/rules/js/jsdoc-no-missing-syntax.md	613a3b0b38085a40671d8cd2dcdbb0e1ab738de5	prose
+docs/rules/js/jsdoc-no-missing-syntax.md	9bfc7618253574e130d57f8d243af1e5377484f4	prose
 docs/rules/js/jsdoc-no-multi-asterisks.md	321bf3e115178caefac3e07e146be0e64d21631e	prose
-docs/rules/js/jsdoc-no-restricted-syntax.md	2798d01c2aa7b96cb7835c9016cc54e1445efc06	prose
+docs/rules/js/jsdoc-no-restricted-syntax.md	6b74c2b843af3ec920055ab0a5df137031c0be69	prose
 docs/rules/js/jsdoc-no-types.md	875872aefb6bbbc0573311e174027b15b90b6bdc	prose
 docs/rules/js/jsdoc-no-undefined-types.md	1ccdb75f788343a3f3ed118221c5485eddacd079	prose
 docs/rules/js/jsdoc-normalize-see-links.md	3cc9441a1e20bcfa68212a96770dd14d9c29d799	prose
@@ -683,7 +687,7 @@ docs/rules/js/jsdoc-require-returns-check.md	91f190a1c9627975ad19e55ac69fd7f9823
 docs/rules/js/jsdoc-require-returns-description.md	9c6e7494b3dc7c6c62f70e1f5df045abd572ef9f	prose
 docs/rules/js/jsdoc-require-returns-type.md	97cf233be44fdd42f1a1984617bd5a3f2d9a29db	prose
 docs/rules/js/jsdoc-require-returns.md	aa1282b8bd25dde0e473630b0d292ea0f0c5cc8f	prose
-docs/rules/js/jsdoc-require-tags.md	c9b48f1a3cedcfa9876b6eca942514d33e583216	prose
+docs/rules/js/jsdoc-require-tags.md	3fb399c82cdd5224e587a93f98e5f3643d7ac7de	prose
 docs/rules/js/jsdoc-require-template-description.md	dd2e215b3e45482376c0526570c786ad70ff6ca5	prose
 docs/rules/js/jsdoc-require-template.md	c8f19e170a2cd339c7e4977ffd53daa98dc5d25a	prose
 docs/rules/js/jsdoc-require-throws-description.md	b1430baf3ba3c86574a802c364eebaebaddb73a5	prose
@@ -695,7 +699,7 @@ docs/rules/js/jsdoc-require-yields-type.md	5a5b17dcc4a72151d15bb2e049b656ae8927e
 docs/rules/js/jsdoc-require-yields.md	b6ebb28b3f82c8b4eff94bea3879181b7517595e	prose
 docs/rules/js/jsdoc-sort-tags.md	66f2171bbb2c73f54cd7f0c639622f42e0372fa3	prose
 docs/rules/js/jsdoc-tag-lines.md	76fcebae8f1f5d675b106e504a418b397ffbc60f	prose
-docs/rules/js/jsdoc-text-escaping.md	348fdb45c8413d754dc69f306e69ec9192ce47cb	prose
+docs/rules/js/jsdoc-text-escaping.md	840d9346953c9947f40366f9aa7483602435fdfa	prose
 docs/rules/js/jsdoc-ts-ban-ts-comment.md	9b746aae8e8ce274b72a0be27a790348d0ef0ae4	prose
 docs/rules/js/jsdoc-ts-method-signature-style.md	af864044ce4b529ef08faef4e8cd4ddf8cb47154	prose
 docs/rules/js/jsdoc-ts-no-empty-object-type.md	eb8d1c4987ae994f1745ab2d6ede6fee48911a9e	prose
@@ -860,7 +864,7 @@ docs/rules/js/no-identical-functions.md	f39340be13ad2d73014ff328ae0f2491e6fc1945
 docs/rules/js/no-ignored-exceptions.md	6566aa0b0cd338958e6f6fc0c3e09e05084792c5	prose
 docs/rules/js/no-immediate-mutation.md	ea8974436b88df7e0dd744c5dad757201290964e	prose
 docs/rules/js/no-implicit-coercion.md	6ba21e23abf85844f09fd065339a269014ccac5e	prose
-docs/rules/js/no-implicit-globals.md	d610d2f3c15c138310a8a68c30bebb39c6f50fb9	prose
+docs/rules/js/no-implicit-globals.md	ddcc87a58ee2f4b185cef532df1220c8e694854a	prose
 docs/rules/js/no-implied-eval.md	1e96be7976be590d27cf7b167c0fdf80eb116eff	prose
 docs/rules/js/no-import-assign.md	f2365db8cdf47bf3bf17336e8d12375cd6f3eb4a	prose
 docs/rules/js/no-impossible-length-comparison.md	06073d1926091efb1e21af21de9d97442a3bb74e	prose
@@ -961,7 +965,7 @@ docs/rules/js/no-referrer-policy.md	df8373c68c12cbeb8d448fc550a29e3334b8b4a5	pro
 docs/rules/js/no-regex-spaces.md	086fe7c459cdd91bf7b8be5640a4d64b16257135	prose
 docs/rules/js/no-repeated-call-wrappers.md	09c64fc89af2bf02adcc475e715d5fbd8acb732b	prose
 docs/rules/js/no-restricted-exports.md	f6799cc3866a1fa4907c5d98d88888ab8e3813b2	prose
-docs/rules/js/no-restricted-syntax.md	66158f34d9bd08ee707862fa3fb10f49f8854e1f	prose
+docs/rules/js/no-restricted-syntax.md	18fa46379a94df922c278d2d543e24a41f21ad21	prose
 docs/rules/js/no-return-array-push.md	b322793d57bc31cdde5ba4dcf37a6deb43593bfa	prose
 docs/rules/js/no-return-assign.md	dbc98c61b4c60a3f7a3c44e4a19cb489f4dd5ed5	prose
 docs/rules/js/no-same-argument-assert.md	18bfeff312fc70bc346e57a8886dfa57fb47884e	prose
@@ -1394,7 +1398,7 @@ docs/rules/js/stable-tests.md	ad5fea3044490a69ac4d5ba4041684dee5ab3c2f	prose
 docs/rules/js/stateful-regex.md	4a7bf9c5d5c0b32b9fd4a35c18bb1bf4a92c82e5	prose
 docs/rules/js/strict-transport-security.md	03f43fb79eaadc165e548b368955492168deb128	prose
 docs/rules/js/strict.md	9fa0995b836e8750db9738ca1bb4bf0508d724e9	prose
-docs/rules/js/string-content.md	ce48de293c5c1193ba751b8c035a044c112bec3c	prose
+docs/rules/js/string-content.md	c2805675bb0f219cf0cbfa3f5a9544faf2292950	prose
 docs/rules/js/switch-final-break.md	2e0b8427b421d73d2094da984e4e3c331df57dba	prose
 docs/rules/js/symbol-description.md	32daea154e62dc4d34b3728285b8d737a0525e8a	prose
 docs/rules/js/synchronous-suite-callback.md	43128b20c063a22d3bb0f53d78d3e1cd2ab56209	prose
@@ -1432,7 +1436,7 @@ docs/rules/json/package-json-schema.md	86f4059f187e0847c5aa4f38f0f4b1e215b20994	
 docs/rules/json/package-scripts-sorted.md	d05d5d19ab7460fd71be94c7d5f6156ef4f09f7e	prose
 docs/rules/json/tsconfig-schema.md	e5dea15a6753a89d216bb3440d47cc7958460ac8	prose
 docs/rules/json/tsconfig-strict.md	4c03226e172f7c474cf03978e7066bc58b4c50d6	prose
-docs/rules/llms-full.txt	16147ada00cc699fc656e631bc49a7cd2ca3061d	prose
+docs/rules/llms-full.txt	6bd51d9bbf7a7db62cfaa9681681b69985854197	prose
 docs/rules/md/commands-show-output.md	1f3a15e960740970c3781ea0ab5dbba463b57ef6	prose
 docs/rules/md/descriptive-link-text.md	fe966a74a10464c11b40fa38e4b73a765eb1c632	prose
 docs/rules/md/fence-language.md	a372a8929a93197cb3b92133df4836a8698b20df	prose
@@ -1454,6 +1458,7 @@ docs/rules/md/no-trailing-punctuation.md	575800c0c4c41670d64b46a26767f6a43685d61
 docs/rules/md/proper-names.md	5821d80cdac6ae0403e395cd64ae1df6e853c6d7	prose
 docs/rules/md/reference-links-images.md	987a60cda8f4100d1fe35e6ed6b1accf21dd8f56	prose
 docs/rules/md/relative-links.md	b5867141fcdd64ab5b7ff0f480100893ed367f6d	prose
+docs/rules/md/require-frontmatter-fields.md	620df5fa2626061d54c72c95d83368ca660c36bf	prose
 docs/rules/md/required-headings.md	936b900f74e4508bcf2084c094c903f7d4ce9abe	prose
 docs/rules/md/single-h1.md	18db554049b5bff89048880fec752ef30f8baad4	prose
 docs/rules/md/table-column-count.md	f1e4251469232955f44ab3c81b660a002f66828b	prose
@@ -1499,8 +1504,8 @@ docs/rules/node/no-new-require.md	c514968e9d29a6eb97efc941e46bbca3ed272323	prose
 docs/rules/node/no-path-concat.md	e30dea1a8f7ff4f07f9bb72e2e2e16c0be27289f	prose
 docs/rules/node/no-process-env.md	07b08c790aa77e2a8bd3bccafd5db5037bec3977	prose
 docs/rules/node/no-process-exit.md	bbe953162e0568a47b86a1d0dedd1a05cf352c22	prose
-docs/rules/node/no-restricted-import.md	703252cfbde8216f711882e5763d61f016f92bf9	prose
-docs/rules/node/no-restricted-require.md	58fe1d1e2d4d9506757ed0ef2e3e81d390d7ede4	prose
+docs/rules/node/no-restricted-import.md	4c24fa883dac7db0680c9f9e74928c8cd6030e9e	prose
+docs/rules/node/no-restricted-require.md	1a1ea318fd35ea1e73833aee5da8ab130cfb7692	prose
 docs/rules/node/no-sync.md	e83cd5d08a5bd2dd411999057208516ee9a7b962	prose
 docs/rules/node/no-top-level-await.md	bc5028d929f39a83cb0ddaf2dd6ea900a7bbfc60	prose
 docs/rules/node/no-unpublished-bin.md	56dff858b86ffbd9e7c397bbd8b11736b36368e8	prose
@@ -1772,6 +1777,8 @@ docs/rules/py/function-call-in-dataclass-default-argument.md	bcdc8c2d415876f9bee
 docs/rules/py/function-call-in-default-argument.md	6bdfcd52805ec95457097b43c41f7857ee163d6b	prose
 docs/rules/py/function-uses-loop-variable.md	f7361e646b088df86dec63dc2fae3652e1caba1f	prose
 docs/rules/py/future-annotations-in-stub.md	a7ea319ac238beef9b5a7a9d8db1e71f2c3da872	prose
+docs/rules/py/future-required-type-annotation.md	42a5562f878e2f0a8eaeac790e6dc5e9ae89f034	prose
+docs/rules/py/future-rewritable-type-annotation.md	c231445cb7ac4c6d089ebc24758ab13e7114e0fb	prose
 docs/rules/py/generator-return-from-iter-method.md	85bd54f5ad95886a248cdac4172d8a904a1dc424	prose
 docs/rules/py/generic-not-last-base-class.md	494d2c5471aaca1dba7a1a0135a57d74579f6c73	prose
 docs/rules/py/getattr-with-constant.md	897c42185e4677ff0e69960c546be49bb7f17c5e	prose
@@ -2053,6 +2060,7 @@ docs/rules/py/os-sep-split.md	79c0e43f07a3a36a43a7dfe3b6e7926b168d74f3	prose
 docs/rules/py/os-stat.md	863d3606799b5768e52c92aed54189685b87456d	prose
 docs/rules/py/os-symlink.md	4ef4a259ede112dc65587cb5f00099bd825fcb3b	prose
 docs/rules/py/os-unlink.md	051879f76fcb737ffae87023e5357a3c0af56602	prose
+docs/rules/py/outdated-version-block.md	c5065bc34de0921bc21d9cb7c9e6665460a94054	prose
 docs/rules/py/over-indentation.md	790f8ed89b127993f760a0871f797fb7d8cb1bca	prose
 docs/rules/py/overindented-section-underline.md	a8c83a3166602b00553f3a47174544bb694fee65	prose
 docs/rules/py/overindented-section.md	654a215e603fcd0e432a26af26d713f82a77aa81	prose
@@ -2256,6 +2264,7 @@ docs/rules/py/trailing-comma-tuple.md	db4ad9d9503aa2cabaf473a542578a13df9de56a	p
 docs/rules/py/trio-sync-call.md	83ae34535732521be5477890e0f350c35de7e4d1	prose
 docs/rules/py/true-false-comparison.md	0152a44c75ae044f986af847c98e25e6d0354780	prose
 docs/rules/py/try-consider-else.md	756b2f61b6ba674daf7db917534b8a2a469d31bf	prose
+docs/rules/py/try-except-in-loop.md	c3dcddbc23101d27a99349da22c2f9272aaeac33	prose
 docs/rules/py/type-alias-without-annotation.md	fcf97f77b3421ca2a8b6f9a943ad2a1285e517b8	prose
 docs/rules/py/type-bivariance.md	974eebf550d3c9f94d43af9f808696a292869ace	prose
 docs/rules/py/type-check-without-type-error.md	bfa8ee1dfeb757e15c9695953f2e3f87219de645	prose
@@ -2406,6 +2415,8 @@ docs/rules/py/useless-try-except.md	58cfc999308980d8fce0801067d0c9343a7ad4f8	pro
 docs/rules/py/useless-type-doc.md	b4ca9c1ab9af348d83edaa7dccfa7e8dea837692	prose
 docs/rules/py/useless-with-lock.md	884f8cbd9afa945a88143bca600a7294e8344c78	prose
 docs/rules/py/using-constant-test.md	68fa3acef0331d8a3b93cd4b1d3cd5803719d841	prose
+docs/rules/py/using-exception-groups-in-unsupported-version.md	58121a2c3aaf8dfc336bed37f6b828c3c10d42bb	prose
+docs/rules/py/using-generic-type-syntax-in-unsupported-version.md	4f70a7df9e227d03eda6766231edb792afb4f7fc	prose
 docs/rules/py/utf8-encoding-declaration.md	2474fc78151d97e98c134f143fdbfcc0b8ec3b3e	prose
 docs/rules/py/verbose-decimal-constructor.md	4c9f02d03290b1591a0434b685e0f39ade006e26	prose
 docs/rules/py/verbose-log-message.md	51dba02b12bbfa2a27063dbf9db0b6cb85dd012c	prose
@@ -2598,7 +2609,7 @@ docs/rules/redux-toolkit/object-shorthand-mapdispatch.md	4f6aa839cc2c2867c78d81e
 docs/rules/redux-toolkit/prefer-create-slice.md	406cb6c4ccb2c29a678b1500c354ef5eb9cdd841	prose
 docs/rules/redux-toolkit/prefer-hooks-api.md	282531dea784b5ee7effe6fcb92a5bbe331ce5be	prose
 docs/rules/redux-toolkit/slice-key-names.md	5b2573bc2d711e8daed868cf911eb419f4d9fdf7	prose
-docs/rules/rules.json	f11ed7a3f68c40d03ce8cff4121d0906ee882ffc	pkg:fux-decoder-json@5.1.1/json@1+limits@1
+docs/rules/rules.json	3941d911d1e7d0b5819576f69dea2dfacee00f1f	pkg:fux-decoder-json@5.1.1/json@1+limits@1
 docs/rules/scss/at-extend-no-missing-placeholder.md	904bd96b8c24250194da9f75045c1447dc34c6a5	prose
 docs/rules/scss/at-function-named-arguments.md	c01d9181e5cc3b81ad2d7e918d37c427e4183faa	prose
 docs/rules/scss/at-function-pattern.md	ac94c43f73aceed555bec7602b3d082e3e9ffb40	prose
@@ -3146,21 +3157,21 @@ records/0059_WORK-governance.md	ed8c50e3a722b4c4c13ec2d1e1943619255ef2f7	prose
 records/0060_WORK-registry.md	cb34b4d53f43c2b20b9aa0bba106cc03ca67b87a	prose
 records/0061_WORK-now.md	6a5d4bd9d653c55d232d7abf7d13d968e30ba889	prose
 records/0062_WORK-cleanup.md	d01e97992d4efc37731cc7cdb1d6c0fab81456fb	prose
-records/0101_rule-packs.md	1c4affa130037115139c74a28c661a7647330d40	prose
+records/0101_rule-packs.md	008a4fabbc546bacfc44bcef6e989ca562933165	prose
 records/0102_agent-surfaces.md	a111e861724b6d59159505fe84a6dc9452a35ec5	prose
 records/0103_project-graph.md	c74b92222f058599480427bd2f5a6bf937d5e351	prose
 records/0104_baseline-and-deprecations.md	f93c3a5422cca1bf46f37b36d5b3c13800dad91b	prose
 records/0105_formatter.md	83a66f881cfcb2c1be05b9a091efda21c812d938	prose
-records/0106_linter.md	f6d3810dc5e94f7151d8e38a937902aa4131acb6	prose
+records/0106_linter.md	44f388217c9853b65cc2a8db55e77b860831fe90	prose
 records/0107_packages.md	d2bcb1376b04c9bd7a8b7cb097ec1813cbcbdc6f	prose
-records/0108_architecture.md	c6259983c7efb81323dedeb00c0fbc1c805013a8	prose
+records/0108_architecture.md	f42af68a614f09ec44cd37bbc0fe55d37f403ed8	prose
 records/0109_cache.md	635494d7b9a5e97ee8fb0a77884ade143fb4ac76	prose
-records/0110_config.md	db608dc5905fa3c4b4e2cc28196c5d6440f9a1ca	prose
+records/0110_config.md	d70c65c9acecdebace9531daf6b52d08c177aa26	prose
 records/0111_consumer-layout.md	d9a03337f5b09c6a0d8c935ed8e9e88731ad89b3	prose
 records/0112_rule-format.md	cf6777433c07a06c4c19b818815151642f81946f	prose
 records/0113_rule-authoring.md	fa21907ac054aab545724a01e62a941faa71d5a0	prose
 records/0114_editor.md	a4d361cb2ea3a25919913fe44ca50d139fd2090f	prose
-records/0115_cli-and-mcp.md	0beb1a002cdfb22a6a6ec9c1b147991b6a19b7df	prose
+records/0115_cli-and-mcp.md	d3b566f53bdc2a606d244875def0a80f6401136e	prose
 records/0116_spell.md	11ff97b2414220c409989e2991c23070450af383	prose
 records/0117_types.md	dd726ad0bfa2c51dac7728825e78d5319ac76a86	prose
 records/0118_pack-lookup.md	168a5778c0d9a7964394f7dd94b7080f113cacde	prose
@@ -3174,14 +3185,14 @@ records/README.md	13cc82bb28033040005033bfcff27610e4fc711a	prose
 records/TEMPLATE.md	227d3572bfbb7da4327396f8d073d8269a2859ed	prose
 work/BACKLOG.md	b28f14479ec2286e38f9bc28f5efc5d6ea182a6a	prose
 work/BLOCKED.json	3fa753c12ea628534518c18d0692a3f8b4c107f2	pkg:fux-decoder-json@5.1.1/json@1+limits@1
-work/IMPLEMENTATION.md	1bb46c5a901ce611a43fc65dea11323533a6a536	prose
-work/INTERVIEW.md	fd4f5cfdd0a2706558dd3aa088a68403015391d7	prose
+work/IMPLEMENTATION.md	b19c6fefcde6b93a71a0c3775c6770fd09f58d68	prose
+work/INTERVIEW.md	1dc1a93efd9cab52ef44437d9394d547b08fb21b	prose
 work/LESSONS.md	78a40b8b232111bdb935d2b5b715016da8685e95	prose
 work/MACHINE.md	8f0fa715c0c1975678b3692707d4bc6d259284d9	prose
 work/NOW.md	5100b3531f05c21c5d02f591bcddbb16bd05b7b4	prose
-work/OPEN-WORK.md	697c62688909eb1a6cbaaa406e5b9034d34dcbe9	prose
+work/OPEN-WORK.md	5943d192dd18155fe8a69c9a6f3de50a895bb9f5	prose
 work/README.md	6b31915cf9322827f31f6b28dc4fbfe6cb29e3c4	prose
-work/WORKLOG.md	94a20a47e8ccf7e5362dd43092604df54bb8fce4	prose
+work/WORKLOG.md	721682f320338f3bd0cd99ba9673ec9416b12417	prose
 work/compare/README.md	e87a66c3340448477cc4193ca1a558c6f8ad7c7d	prose
 work/compare/ci-profiles-and-dated-exceptions.compare.md	8e0070ca1930c2bf2151d538dd7c6dc7c53e58bf	prose
 work/compare/spell-checking.compare.md	f7886f277981294d82bdb371945c0d1e1198eeda	prose
@@ -3194,7 +3205,6 @@ work/open/W-143-vue-svelte-astro-graphql.md	8da3a8009f49e03438a7cb46f3567b1aad7a
 work/open/W-167-graph-architecture-design.md	c9725069c9250d0a7fedce06a2801f25d55cf884	prose
 work/open/W-169-rules-lint-segfault.md	4c78f4a811d174b8b9cee0cc48aceab59a053ed7	prose
 work/open/W-172-l8-budgets-over-on-main.md	cae0c6406c3342b37167ba82a33ab3aa6f477376	prose
-work/open/W-176-options-only-rules.md	78f38ed52e1729a90330dc8a226dc89781ed98de	prose
 work/open/W-177-python-type-checker-research.md	973262236aea26025b8eb9f88db27bf200c60e99	prose
 work/open/W-178-config-keys-frontmatter-examples.md	66ca1dccb36b4a8c880934d549ae20a8dbd3de7c	prose
 work/open/W-180-imperative-mood-verbs.md	d53c1ed1de8491ef281c195584363b944c8f0d7a	prose

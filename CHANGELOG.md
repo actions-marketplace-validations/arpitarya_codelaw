@@ -6,6 +6,7 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ### Added
 
+- **Key casing, front matter fields and `@example` code (W-178):** `data/key-name-casing` reports the keys of a JSON, YAML or TOML file that are not in the style `case` names, and `md/require-frontmatter-fields` the Markdown files whose front matter lacks the `fields` a project lists; both are silent until set. `[lint] jsdoc_examples = true` lints the code of an `@example` in a doc comment as code of its own, and `js/jsdoc-check-examples` reports an example that does not parse. All `preview`, in no preset.
 - **Rules that work once a project configures them (W-176):** 18 `preview` rules in no preset — `js/id-denylist`, `js/id-match`, `js/no-restricted-syntax`, `js/file-header`, `js/jsdoc-require-tags`, `node/no-restricted-import` and twelve more ([`docs/rules/defaults/js.md`](docs/rules/defaults/js.md)) — are silent until their option is set: no finding and no warning about the missing option, and no cost per file. Each rule page names its option and shows a config example.
 - **A file's executable bit for rules (W-184):** a native rule can ask whether the file it checks is executable (`FileContext::is_executable`; nothing is reported off Unix), and Ruff's `EXE001` (`py/shebang-not-executable`) and `EXE002` (`py/shebang-missing-executable-file`) read it; both are `manual`, `preview`. The rule tester gives a snippet file the bit with `+x` in its header.
 

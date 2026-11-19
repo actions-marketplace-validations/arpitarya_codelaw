@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-178 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-178 in `lm/W-178`: `data/key-name-casing`, `md/require-frontmatter-fields` (options-only, `data` pack), the `@example` region (`[lint] jsdoc_examples`, `crates/codelaw-lang/src/regions.rs`: the ` * ` margin is a hole, so offsets are the host's and a fix keeps the margin) and `js/jsdoc-check-examples`. Records: SR-LINTER decision 3, SR-CONFIG, SR-RULE-PACKS decision 18 (slice 39), SR-ARCHITECTURE, SR-CLI-MCP. `codelaw test packs/data` and `packs/js` 0 failed; config, lang, engine, native and test crates pass; clippy clean. Also fixed a W-183 line in SR-RULE-FORMAT that made `cargo test -p codelaw-config --test schema` fail on `main`.
+- **Decided / left open:** an example that does not parse is reported, not linted. The corpus count and `perf` were not run for the three rules.
+- **Mistakes:** none.
+- **Next:** W-180 (imperative-mood verbs).
+
 ## 2026-11-19 — implement the green items one by one: W-176 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"*
