@@ -267,6 +267,7 @@ yet is owned by an open `W-nn`.
 | `packs` | SR-RULE-PACKS | decisions 2, 3, 7 and 8: the twenty-seven first-party packs' rules, presets and data |
 | `packs/spell` | SR-SPELL | decisions 1, 2, 5 and 6: the spell pack — its presets, rules, generated word data and notices |
 | `crates/codelaw-native/src/spell.rs` | SR-SPELL | decisions 3–5 and 8: the text read, the words and the `spell/*` native rules |
+| `scripts/data-imperatives.py` | SR-RULE-PACKS | decision 20: writes `packs/python/data/python/imperatives.json` from pydocstyle's pinned word lists (L11 §3 D-56); `--check` in CI's lint job (W-180) |
 | `scripts/spell-data.py` | SR-SPELL | decision 6: writes `packs/spell/data/spell/` from the pinned sources (L11 §3 D-42–D-44) |
 | `fixtures/spell` | SR-SPELL | decisions 3–5: one file per L3 language, the typos the rules must report and the words they must not |
 | `crates/codelaw-cli/tests/spell.rs` | SR-SPELL | decisions 3–5: runs that repo through `check` and `fix` (W-103 DoD 3 and 4) |

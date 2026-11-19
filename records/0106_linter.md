@@ -119,9 +119,11 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    | Markdown | YAML frontmatter | YAML |
    | Markdown | inline content (links, emphasis, code spans) | Markdown, with the inline grammar; a Markdown rule runs on whichever of the two grammars its kinds belong to |
    | JS/TS | `` css`…` `` / `` html`…` `` tagged templates | CSS / HTML, only when `[lint] tagged_templates = true` |
+   | JS/TS | the code of an `@example` tag in a `/** … */` comment | the file's language, or the language of the fence the example holds (`json`, `ts`), only when `[lint] jsdoc_examples = true` |
 
    - **Locations map back to the host:** diagnostics report host-file line and column.
    - **A template's `${…}` is a hole:** the region's text holds a placeholder that keeps it parseable (in CSS chosen by where it stands: a comment, a custom property, a class, `all` in `@media`, a number, `var(--…)`; in HTML `${}`). A finding wholly inside a placeholder is dropped, and a fix whose edit would touch a hole's host code is refused (`fix-outside-region`). Only a plain identifier tag, `css` or `html`, makes a region; each nested template is a region of its own. *(W-21, 2026-10-22.)*
+   - **An `@example` is a region whose margin is a hole** (W-178, 2026-11-19): the lines after the tag up to the next tag, what follows `@example` on its own line (unless it is a `<caption>`), or the first fenced block's code with its fence's language; each line's ` * ` margin, the tag and the fence lines are holes of their own width, so a region offset is the host offset, a finding in a margin is dropped and no fix may reach it (`fix-outside-region`). An example that does not parse is **not a region** — it is not code to lint; `js/jsdoc-check-examples` ([SR-RULE-PACKS](0101_rule-packs.md) decision 18) reports it. Off by default, like `tagged_templates`. `codelaw_lang::jsdoc_examples` is the one reader both use.
    - **Fixes are applied in the host:** fixes edit the host text and are verified by re-parsing the host.
    - **Rules can target a host:** a rule may say `host: html` to apply only to embedded regions (for example, "no inline `<script>` without `nonce`").
    - **A language switched off is off inside hosts too,** and a region is parsed only when something applies to it ([SR-ARCHITECTURE](0108_architecture.md) decision 16).

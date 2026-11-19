@@ -23,7 +23,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `py/markers` | 2 | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry; opt in (SR-CONFIG decision 11a) |
 | `py/strict` | 622 | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import`; Ruff's preview rules stay out; opt in (W-192, B-048) |
 | `py/pylint` | 245 | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info); its optional extensions (docparams, typing, code_style and the rest) are left out; opt in (W-139, ruled 2026-10-30 on W-144: R7; built W-192) |
-| `py/pydocstyle` | 39 | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn`; `D203` (a formatter's) and `D213` (it contradicts `D212`, and Ruff drops it when both are on) are left out; opt in (W-192, B-048) |
+| `py/pydocstyle` | 41 | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn`; `D203` (a formatter's) and `D213` (it contradicts `D212`, and Ruff drops it when both are on) are left out; opt in (W-192, B-048) |
 
 <!-- /docs-sync:presets -->
 
@@ -35,7 +35,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 226 | 330 | 344 | 155 | 144 | 42 | 3 | 0 |
+| 226 | 330 | 346 | 155 | 144 | 44 | 3 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 
@@ -45,7 +45,7 @@ The starter catalogue's other Python rules match a Ruff rule, so they sit in
 
 Every rule is **reimplemented**, not vendored: the matchers, messages and docs
 are written fresh from Ruff's documented behaviour, and each rule's
-`ported_from:` names the source rule. 251 rules are `native:` (Rust, in
+`ported_from:` names the source rule. 253 rules are `native:` (Rust, in
 `crates/codelaw-native/src/python_*.rs`); `py/no-tunable-literals` is a
 `match:` rule.
 

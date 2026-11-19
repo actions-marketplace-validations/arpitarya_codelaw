@@ -405,14 +405,14 @@ fn with_line_endings(mut edits: Vec<TextEdit>, crlf: bool) -> Vec<TextEdit> {
 
 /// What a project extracts as embedded regions (SR-LINTER decision 3).
 pub(crate) fn region_options(project: &Project) -> RegionOptions {
-    RegionOptions { lint_code_blocks: project.config.lint_code_blocks(), tagged_templates: project.config.tagged_templates() }
+    RegionOptions { lint_code_blocks: project.config.lint_code_blocks(), tagged_templates: project.config.tagged_templates(), jsdoc_examples: project.config.jsdoc_examples() }
 }
 
 /// Whether a host language can hold regions under these options.
 pub(crate) fn has_regions(language: Language, opts: RegionOptions) -> bool {
     match language {
         Language::Html | Language::Markdown => true,
-        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => opts.tagged_templates,
+        Language::Javascript | Language::Jsx | Language::Typescript | Language::Tsx => opts.tagged_templates || opts.jsdoc_examples,
         _ => false,
     }
 }
@@ -934,7 +934,9 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
     let n = unit.rules.len();
     let mut failed: Vec<Option<String>> = vec![None; n];
     let timings = project.timings.as_ref();
-    let semantic = if unit.rules.iter().any(|(_, r, _)| r.needs_semantic) {
+    // An idle options-only rule (SR-RULE-FORMAT decision 2e) builds nothing.
+    let idle = |r: &crate::compile::CompiledRule, cfg: &RuleConfig| matches!(&r.matcher, Matcher::Native(nr) if codelaw_native::is_idle(*nr, &cfg.options));
+    let semantic = if unit.rules.iter().any(|(_, r, c)| r.needs_semantic && !idle(r, c)) {
         let _timed = timings.map(|t| t.guard(Phase::Semantic));
         match catch_unwind(AssertUnwindSafe(|| codelaw_semantic::build(unit.language, &unit.root, &unit.text))) {
             Ok(model) => model,
@@ -956,7 +958,14 @@ fn run_unit(project: &Project, entry: &FileEntry, unit: &Unit<'_>, mode: &RunMod
     let _timed = timings.map(|t| t.guard(Phase::Rules));
     let mut by_kind: Vec<Vec<usize>> = Vec::new();
     let mut any_kind: Vec<usize> = Vec::new();
-    for (slot, (_, rule, _)) in unit.rules.iter().enumerate() {
+    for (slot, (_, rule, cfg)) in unit.rules.iter().enumerate() {
+        // An options-only rule (SR-RULE-FORMAT decision 2e) with none of its
+        // options set finds nothing: it is asked about no node at all.
+        if let Matcher::Native(nr) = &rule.matcher
+            && codelaw_native::is_idle(*nr, &cfg.options)
+        {
+            continue;
+        }
         match rule.kinds_for(grammar) {
             None => {}
             Some(None) => any_kind.push(slot),

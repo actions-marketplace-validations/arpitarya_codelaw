@@ -28,21 +28,18 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (23)
+## Open items (20)
 
-### build (14)
+### build (11)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 
 🟢 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` raised 72 → 90 MiB by ruling, L8 decision 5a (11-15). Next: CI's next run on a pushed `main` proves `check_cold_10k` and `lsp_after_edit`; close then. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
 
-🟢 **W-176** `agent` Options-only rules: the 19 js/node rows that check nothing until configured (`id-match`, `id-denylist`, `no-restricted-syntax`, …), built as their own class, silent by default, out of W-139's count. Filed by Arpit (Cowork). [detail](open/W-176-options-only-rules.md)
-
-🟢 **W-178** `agent` Build `key-name-casing` (data, off by default), `require-frontmatter-fields` (md) and `check-examples` — with the engine work to lint `@example` code. Filed by Arpit (Cowork). [detail](open/W-178-config-keys-frontmatter-examples.md)
 
 
-🟢 **W-180** `agent` pydocstyle's imperative-mood verb list (ratified 11-09) and Ruff D401, D421 on it. Filed by Arpit (Cowork). [detail](open/W-180-imperative-mood-verbs.md)
+
 
 🟢 **W-185** `agent` The Python side of the project graph (imports, class bases) and six Pylint rows on it (`cyclic-import`, `import-error`, …). Filed by Arpit (Cowork). [detail](open/W-185-python-project-graph.md)
 
@@ -79,7 +76,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-181**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

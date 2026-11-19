@@ -21,6 +21,8 @@
 "node/no-path-concat" = 0
 "node/no-process-env" = 44
 "node/no-process-exit" = 1
+"node/no-restricted-import" = 0
+"node/no-restricted-require" = 0
 "node/no-sync" = 0
 "node/no-top-level-await" = 0
 "node/no-unpublished-bin" = 0
