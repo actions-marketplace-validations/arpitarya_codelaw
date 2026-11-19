@@ -1141,6 +1141,10 @@ impl Config {
         self.root_raw().and_then(|r| r.lint.tagged_templates).unwrap_or(false)
     }
 
+    pub fn jsdoc_examples(&self) -> bool {
+        self.root_raw().and_then(|r| r.lint.jsdoc_examples).unwrap_or(false)
+    }
+
     /// `[lint] ignore_aliases`: the tools whose line suppressions count as
     /// `codelaw-ignore`; none by default.
     pub fn ignore_aliases(&self) -> Vec<String> {

@@ -38,7 +38,7 @@ class-prototype,types,,,,,,,none,,,needs type information: W-105
 code-eval,port,,js,js/code-eval,manual,P1,A,none,yes,,
 cognitive-complexity,port,,js,js/cognitive-complexity,manual,P1,A,none,yes,,
 comma-or-logical-or-case,port,,js,js/comma-or-logical-or-case,manual,P1,A,none,yes,,
-comment-regex,port,,js,js/comment-regex,manual,P2,C,none,,,
+comment-regex,options-only,,js,js/comment-regex,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 composite-assertions,port,,js,js/composite-assertions,manual,P2,C,none,,,
 concise-regex,types,,,,,,,none,yes,,needs type information: W-105
 conditional-indentation,retired,,,,,,,none,,yes,deprecated upstream
@@ -66,7 +66,7 @@ encryption-secure-mode,port,,js,js/encryption-secure-mode,manual,P1,A,none,yes,,
 existing-groups,types,,,,,,,none,yes,,needs type information: W-105
 explicit-test-skip,port,,js,js/explicit-test-skip,suggest,P1,A,suggest,yes,,
 expression-complexity,port,,js,js/expression-complexity,manual,P2,C,none,,,
-file-header,port,,js,js/file-header,manual,P2,C,none,,,
+file-header,options-only,,js,js/file-header,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 file-name-differ-from-class,port,,js,js/file-name-differ-from-class,manual,P2,C,none,,,
 file-permissions,port,,js,js/file-permissions,manual,P1,A,none,yes,,
 file-uploads,port,,js,js/file-uploads,manual,P1,A,none,yes,,

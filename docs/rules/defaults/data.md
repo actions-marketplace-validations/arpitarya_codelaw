@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#data).
 
 - **Installed by `codelaw init` when:** a JSON, YAML, TOML or Markdown file.
-- **Rules:** 48 — 0 on, 28 on with `preview = true`, 18 off in an opt-in preset, 2 in no preset.
+- **Rules:** 50 — 0 on, 28 on with `preview = true`, 18 off in an opt-in preset, 4 in no preset.
 
 ## Presets
 
@@ -29,6 +29,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 |---|---|---|---|
 | [`data/codeowners-coverage`](../data/codeowners-coverage.md) | off — opt-in preset | — | `data/codeowners` |
 | [`data/flag-registry`](../data/flag-registry.md) | off — in no preset | — | — |
+| [`data/key-name-casing`](../data/key-name-casing.md) | off — in no preset | — | — |
 | [`json/no-duplicate-keys`](../json/no-duplicate-keys.md) | on with `preview = true` | error | `data/recommended` |
 | [`json/package-deps-sorted`](../json/package-deps-sorted.md) | off — opt-in preset | — | `data/package-json` |
 | [`json/package-engines`](../json/package-engines.md) | off — opt-in preset | — | `data/package-json` |
@@ -57,6 +58,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`md/proper-names`](../md/proper-names.md) | on with `preview = true` | warn | `md/recommended`† |
 | [`md/reference-links-images`](../md/reference-links-images.md) | on with `preview = true` | error | `md/recommended`† |
 | [`md/relative-links`](../md/relative-links.md) | on with `preview = true` | error | `md/recommended`† |
+| [`md/require-frontmatter-fields`](../md/require-frontmatter-fields.md) | off — in no preset | — | — |
 | [`md/required-headings`](../md/required-headings.md) | on with `preview = true` | warn | `md/recommended`† |
 | [`md/single-h1`](../md/single-h1.md) | on with `preview = true` | warn | `md/recommended`† |
 | [`md/table-column-count`](../md/table-column-count.md) | on with `preview = true` | error | `md/recommended`† |

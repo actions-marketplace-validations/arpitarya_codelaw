@@ -873,9 +873,18 @@ pub fn locate(graph: &Graph, spec: &str) -> Result<(String, String), String> {
 
 /// The declaration an exported name ends at, through re-exports.
 pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Option<(String, String)> {
+    find_decl_in(graph, target, name, depth, &mut std::collections::HashSet::new())
+}
+
+/// `find_decl` with the (module, name) pairs this search has already entered:
+/// the answer for a pair is the same wherever it is reached, so a second visit
+/// can only repeat a `None` (or a cycle). Without it a few star imports that
+/// reach each other cost the branching factor to the power of the depth
+/// (W-185: a handful of Python `__init__` modules took minutes).
+fn find_decl_in(graph: &Graph, target: &Target, name: &str, depth: usize, seen: &mut std::collections::HashSet<(String, String)>) -> Option<(String, String)> {
     let Target::File(path) = target else { return None };
     let m = graph.modules.get(path)?;
-    if depth > 16 {
+    if depth > 16 || !seen.insert((path.clone(), name.to_owned())) {
         return None;
     }
     if let Some(e) = m.facts.exports.iter().find(|e| e.name == name) {
@@ -884,7 +893,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
         }
         if let (Some(src), Some(imp)) = (&e.source, &e.imported) {
             for t in resolve_from(graph, path, src) {
-                if let Some(x) = find_decl(graph, &t, imp, depth + 1) {
+                if let Some(x) = find_decl_in(graph, &t, imp, depth + 1, seen) {
                     return Some(x);
                 }
             }
@@ -904,7 +913,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
             _ => name.to_owned(),
         };
         for t in resolve_from(graph, path, &imp.source) {
-            if let Some(x) = find_decl(graph, &t, &inner, depth + 1) {
+            if let Some(x) = find_decl_in(graph, &t, &inner, depth + 1, seen) {
                 return Some(x);
             }
         }
@@ -912,7 +921,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
     for e in m.facts.exports.iter().filter(|e| e.name == "*") {
         if let Some(src) = &e.source {
             for t in resolve_from(graph, path, src) {
-                if let Some(x) = find_decl(graph, &t, name, depth + 1) {
+                if let Some(x) = find_decl_in(graph, &t, name, depth + 1, seen) {
                     return Some(x);
                 }
             }

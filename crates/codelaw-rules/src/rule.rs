@@ -217,6 +217,7 @@ struct Frontmatter {
     fix_pending: Option<String>,
     on_edit: Option<bool>,
     fix_target: Option<FixTargetFm>,
+    finding_target: Option<FindingTargetFm>,
     stability: Option<String>,
     host: Option<String>,
     invariant: Option<OneOrMany>,
@@ -235,6 +236,51 @@ struct Frontmatter {
 struct FixTargetFm {
     python: Option<String>,
     browsers: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FindingTargetFm {
+    python: Option<PythonRangeFm>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PythonRangeFm {
+    from: Option<String>,
+    below: Option<String>,
+}
+
+/// The target versions a rule's finding applies to (SR-RULE-FORMAT decision
+/// 2d): Python `from` (inclusive) and/or `below` (exclusive).
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct FindingTarget {
+    pub from: Option<Vec<u64>>,
+    pub below: Option<Vec<u64>>,
+}
+
+impl FindingTarget {
+    /// Whether `target` is inside the range.
+    pub fn admits(&self, target: &[u64]) -> bool {
+        let part = |v: &[u64], i: usize| v.get(i).copied().unwrap_or(0);
+        let cmp = |a: &[u64], b: &[u64]| {
+            (0..a.len().max(b.len())).map(|i| part(a, i).cmp(&part(b, i))).find(|o| o.is_ne()).unwrap_or(std::cmp::Ordering::Equal)
+        };
+        self.from.as_ref().is_none_or(|f| cmp(target, f).is_ge()) && self.below.as_ref().is_none_or(|b| cmp(target, b).is_lt())
+    }
+
+    /// `python >= 3.7, < 3.10`.
+    pub fn label(&self) -> String {
+        let dotted = |v: &[u64]| v.iter().map(u64::to_string).collect::<Vec<_>>().join(".");
+        let mut parts = Vec::new();
+        if let Some(f) = &self.from {
+            parts.push(format!(">= {}", dotted(f)));
+        }
+        if let Some(b) = &self.below {
+            parts.push(format!("< {}", dotted(b)));
+        }
+        format!("python {}", parts.join(", "))
+    }
 }
 
 /// The version a rule's fix is safe from (SR-RULE-FORMAT decision 2c):
@@ -344,6 +390,10 @@ pub struct Snippet {
     /// (`options={"max":3}`, compact JSON): a threshold rule's Don't needs
     /// a limit a snippet can exceed.
     pub options: BTreeMap<String, serde_json::Value>,
+    /// The Python target the example runs under (`python=3.10`): the
+    /// tester has no `pyproject.toml`, so a rule gated on the target
+    /// (SR-RULE-FORMAT decision 2d) names one.
+    pub python: Option<String>,
     /// 1-based line of the fence in the rule file.
     pub line: usize,
 }
@@ -469,6 +519,9 @@ pub struct RuleFile {
     pub on_edit: bool,
     /// `fix_target:` (SR-RULE-FORMAT decision 2c).
     pub fix_target: Option<FixTarget>,
+    /// `finding_target:` (SR-RULE-FORMAT decision 2d): the targets the
+    /// rule's finding applies to; the rule is quiet elsewhere.
+    pub finding_target: Option<FindingTarget>,
     pub stability: Stability,
     pub host: Option<Language>,
     pub invariants: Vec<String>,
@@ -531,8 +584,8 @@ fn line_of(body: &str, offset: usize, body_line: usize) -> usize {
     body_line + body[..offset.min(body.len())].matches('\n').count()
 }
 
-/// A fence's tag, its `path=` and its `options=`.
-type FenceInfo = (String, Option<String>, BTreeMap<String, serde_json::Value>);
+/// A fence's tag, its `path=`, its `options=` and its `python=` target.
+type FenceInfo = (String, Option<String>, BTreeMap<String, serde_json::Value>, Option<String>);
 
 /// Parse the info string of an example fence: `<tag> [path=<file>]
 /// [options=<json>]`. Options that are not a JSON object are an error.
@@ -545,7 +598,13 @@ fn fence_info(info: &str) -> Result<FenceInfo, String> {
         None => BTreeMap::new(),
         Some(json) => serde_json::from_str(json).map_err(|e| format!("`options=` must be a compact JSON object (no spaces): {e}"))?,
     };
-    Ok((tag, path, options))
+    let python = rest.iter().find_map(|p| p.strip_prefix("python=").map(|s| s.trim_matches('"').to_owned()));
+    if let Some(p) = &python
+        && codelaw_config::parse_python_target(p).is_none()
+    {
+        return Err(format!("`python={p}` is not a version; write it as `python=3.10`"));
+    }
+    Ok((tag, path, options, python))
 }
 
 fn normalise_kind(heading: &str) -> Option<ExampleKind> {
@@ -658,7 +717,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
             let msg = if msg.contains("unknown field") {
                 let valid = [
                     "id", "title", "languages", "scope", "files", "exclude", "severity", "fix", "fix_reason", "fix_skill",
-                    "fix_exception", "fix_pending", "on_edit", "fix_target", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
+                    "fix_exception", "fix_pending", "on_edit", "fix_target", "finding_target", "stability", "host", "invariant", "options", "ported_from", "tags", "security", "since",
                 ];
                 let unknown = msg.split('`').nth(1).unwrap_or_default();
                 let near = codelaw_config::did_you_mean(unknown, valid).map(|n| format!("; did you mean `{n}`?")).unwrap_or_default();
@@ -768,6 +827,32 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
     if fix_target.is_some() && fix == Some(FixClass::Manual) {
         err(&mut errors, 2, "`fix_target:` says from which version a fix is safe; this rule's fix is `manual` (SR-RULE-FORMAT decision 2c)".into());
     }
+    // SR-RULE-FORMAT decision 2d: a range of Python targets for the finding.
+    let finding_target = match &fm.finding_target {
+        None => None,
+        Some(FindingTargetFm { python: Some(PythonRangeFm { from, below }) }) if from.is_some() || below.is_some() => {
+            let mut parse = |key: &str, v: &Option<String>| -> Option<Vec<u64>> {
+                let v = v.as_deref()?;
+                let parsed = codelaw_config::parse_python_target(v);
+                if parsed.is_none() {
+                    err(&mut errors, 2, format!("`finding_target: {{ python: {{ {key}: \"{v}\" }} }}` is not a version; write it as `\"3.11\"` (SR-RULE-FORMAT decision 2d)"));
+                }
+                parsed
+            };
+            let (from, below) = (parse("from", from), parse("below", below));
+            let ft = FindingTarget { from, below };
+            if let (Some(f), Some(_)) = (&ft.from, &ft.below)
+                && !ft.admits(f)
+            {
+                err(&mut errors, 2, "`finding_target:` `from` is not below `below`: no target is in the range (SR-RULE-FORMAT decision 2d)".into());
+            }
+            Some(ft)
+        }
+        Some(_) => {
+            err(&mut errors, 2, "`finding_target:` is `{ python: { from: \"3.11\", below: \"3.13\" } }`, with `from` or `below` or both (SR-RULE-FORMAT decision 2d)".into());
+            None
+        }
+    };
     if let Some(skill) = &fm.fix_skill
         && !KNOWN_SKILLS.contains(&skill.as_str())
     {
@@ -949,11 +1034,11 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
                 }
             }
             Piece::Fence { info, code } => {
-                let (tag, fence_path, fence_options) = match fence_info(info) {
+                let (tag, fence_path, fence_options, fence_python) = match fence_info(info) {
                     Ok(t) => t,
                     Err(e) => {
                         err(&mut errors, line, e);
-                        (String::new(), None, BTreeMap::new())
+                        (String::new(), None, BTreeMap::new(), None)
                     }
                 };
                 if h2.is_none() && tag == "codelaw" {
@@ -969,7 +1054,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
                     && let (Some(l), Some(k)) = (lang, kind)
                 {
                     let entry = examples.iter_mut().find(|e| e.language == l).expect("pushed at its heading");
-                    let snippet = Snippet { code: code.clone(), path: fence_path, options: fence_options, line };
+                    let snippet = Snippet { code: code.clone(), path: fence_path, options: fence_options, python: fence_python, line };
                     match k {
                         ExampleKind::Dont => entry.donts.push(snippet),
                         ExampleKind::Do => entry.dos.push(snippet),
@@ -1112,6 +1197,7 @@ pub fn parse_rule(path: &Path, text: &str, expected_id: Option<&str>) -> Result<
         fix_reason: fm.fix_reason,
         on_edit: fm.on_edit.unwrap_or(true),
         fix_target,
+        finding_target,
         fix_skill: fm.fix_skill,
         fix_exception,
         fix_pending,
@@ -1172,7 +1258,7 @@ pub fn parse_cases(path: &Path, text: &str) -> Result<Vec<Case>, Vec<LoadError>>
             }
             Piece::Fence { info, code } => {
                 let Some(o) = open.as_mut() else { continue };
-                let (tag, fence_path, fence_options) = match fence_info(&info) {
+                let (tag, fence_path, fence_options, fence_python) = match fence_info(&info) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(LoadError::at(path, line, format!("case `{}`: {e}", o.title)));
@@ -1186,7 +1272,7 @@ pub fn parse_cases(path: &Path, text: &str) -> Result<Vec<Case>, Vec<LoadError>>
                     }
                     "fixed" => o.fixed = Some(code),
                     _ => match Language::from_fence_tag(&tag) {
-                        Some(l) if o.input.is_none() => o.input = Some((l, Snippet { code, path: fence_path, options: fence_options, line })),
+                        Some(l) if o.input.is_none() => o.input = Some((l, Snippet { code, path: fence_path, options: fence_options, python: fence_python, line })),
                         Some(_) => errors.push(LoadError::at(path, line, format!("case `{}` has two input fences", o.title))),
                         None => errors.push(LoadError::at(path, line, format!("case `{}`: unknown fence `{tag}`", o.title))),
                     },
@@ -1214,8 +1300,24 @@ mod tests {
     }
 
     #[test]
+    fn a_finding_target_is_a_half_open_range_of_versions() {
+        let t = FindingTarget { from: Some(vec![3, 7]), below: Some(vec![3, 10]) };
+        assert!(t.admits(&[3, 7]) && t.admits(&[3, 9, 4]) && !t.admits(&[3, 6]) && !t.admits(&[3, 10]) && !t.admits(&[3, 10, 1]));
+        let open = FindingTarget { from: None, below: Some(vec![3, 11]) };
+        assert!(open.admits(&[2, 7]) && !open.admits(&[3, 11]));
+        assert_eq!(t.label(), "python >= 3.7, < 3.10");
+    }
+
+    #[test]
+    fn a_fence_takes_a_python_target_and_refuses_a_bad_one() {
+        assert_eq!(fence_info("py python=3.10").unwrap().3.as_deref(), Some("3.10"));
+        assert!(fence_info("py").unwrap().3.is_none());
+        assert!(fence_info("py python=latest").is_err());
+    }
+
+    #[test]
     fn a_fence_takes_options_as_compact_json() {
-        let (tag, path, options) = fence_info("js path=src/a.js options={\"max\":3,\"skip_comments\":false}").unwrap();
+        let (tag, path, options, _) = fence_info("js path=src/a.js options={\"max\":3,\"skip_comments\":false}").unwrap();
         assert_eq!((tag.as_str(), path.as_deref()), ("js", Some("src/a.js")));
         assert_eq!(options.get("max"), Some(&serde_json::json!(3)));
         assert_eq!(options.get("skip_comments"), Some(&serde_json::json!(false)));

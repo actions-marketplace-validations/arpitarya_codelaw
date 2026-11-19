@@ -292,3 +292,27 @@ fn measure_python_facts() {
     println!("{} files, {} KiB of source, {} imports: extract {:?}, parse+semantic model alone {:?}; py facts add {} KiB of cache over {} KiB", files.len(), bytes / 1024, n, extract_all, parse_and_model, size / 1024, 0);
     let _ = t;
 }
+
+#[test]
+fn star_imports_that_reach_each_other_are_followed_once_each() {
+    // Six modules star-import the five others, and each re-exports a name
+    // none of them defines: the search for it tried every star at every level
+    // to the depth cap, 5^16 steps (W-185: a few Python `__init__` modules
+    // took minutes in `graph/no-unused-exports`). A (module, name) is now
+    // entered once.
+    let mut files: Vec<(String, String)> = vec![("pkg/__init__.py".into(), String::new())];
+    for i in 0..6 {
+        let mut t = String::new();
+        for j in (0..6).filter(|j| *j != i) {
+            t.push_str(&format!("from .m{j} import *\n"));
+        }
+        t.push_str(&format!("from .m{} import ghost\n__all__ = ['ghost', 'f{i}']\n\n\ndef f{i}():\n    return 1\n", (i + 1) % 6));
+        files.push((format!("pkg/m{i}.py"), t));
+    }
+    let refs: Vec<(&str, &str)> = files.iter().map(|(p, t)| (p.as_str(), t.as_str())).collect();
+    let rule = compile(&json!({"symbol": {"exported": true, "kind": ["function"]}, "when": {"external_references": 0}}), None).unwrap();
+    let gr = graph_with(&refs, GraphConfig::default());
+    let started = std::time::Instant::now();
+    let _ = run(&rule, &gr, &[Language::Python]);
+    assert!(started.elapsed().as_secs() < 20, "took {:?}", started.elapsed());
+}

@@ -180,6 +180,9 @@ yet is owned by an open `W-nn`.
 | `scripts/data-polyfills-check.py` | SR-LAW-6 | decision 15: the polyfill table's checks and its generator — `--check` in CI's lint job, `--refresh` for the weekly job (W-175) |
 | `.github/workflows/data-polyfills.yml` | SR-LAW-6 | decision 15: the weekly job that regenerates the polyfill table and opens one PR (W-175) |
 | `data-packages/polyfills` | SR-LAW-6 | decision 15: the `data-polyfills` package's source — the generated table, its NOTICE and README (W-175) |
+| `scripts/data-confusables-check.py` | SR-LAW-6 | decision 15: the confusables table's checks and its generator — `--check` in CI's lint job, `--refresh` for the weekly job (W-182) |
+| `.github/workflows/data-confusables.yml` | SR-LAW-6 | decision 15: the weekly job that regenerates the confusables table and opens one PR (W-182) |
+| `data-packages/confusables` | SR-LAW-6 | decision 15: the `data-confusables` package's source — the generated table, its NOTICE and README (W-182) |
 | `scripts/vsix.py` | SR-PACKAGES | decision 6: the editor extension's eight platform `.vsix` files, built and checked in CI (W-95) |
 | `.claude/hooks/guard-open-work-inbox.sh` | SR-WORK-OPEN-QUEUE | rule 45a, in-session |
 | `.claude/hooks/inject-inbox.sh` | SR-WORK-BLOCKERS | decision 7 |
@@ -264,6 +267,7 @@ yet is owned by an open `W-nn`.
 | `packs` | SR-RULE-PACKS | decisions 2, 3, 7 and 8: the twenty-seven first-party packs' rules, presets and data |
 | `packs/spell` | SR-SPELL | decisions 1, 2, 5 and 6: the spell pack — its presets, rules, generated word data and notices |
 | `crates/codelaw-native/src/spell.rs` | SR-SPELL | decisions 3–5 and 8: the text read, the words and the `spell/*` native rules |
+| `scripts/data-imperatives.py` | SR-RULE-PACKS | decision 20: writes `packs/python/data/python/imperatives.json` from pydocstyle's pinned word lists (L11 §3 D-56); `--check` in CI's lint job (W-180) |
 | `scripts/spell-data.py` | SR-SPELL | decision 6: writes `packs/spell/data/spell/` from the pinned sources (L11 §3 D-42–D-44) |
 | `fixtures/spell` | SR-SPELL | decisions 3–5: one file per L3 language, the typos the rules must report and the words they must not |
 | `crates/codelaw-cli/tests/spell.rs` | SR-SPELL | decisions 3–5: runs that repo through `check` and `fix` (W-103 DoD 3 and 4) |
@@ -282,6 +286,7 @@ yet is owned by an open `W-nn`.
 | `crates/codelaw-native/src/py_flow.rs` | SR-PY-INFERENCE | decisions 2–3: the rules that read the flow pass, and the loop and generator checks (W-174) |
 | `crates/codelaw-native/src/py_classes.rs` | SR-PY-INFERENCE | decisions 2 and 4: the in-file class table and the hierarchy rows (W-174) |
 | `crates/codelaw-native/src/py_values.rs` | SR-PY-INFERENCE | decision 2: the literal-typing rows (W-174) |
+| `crates/codelaw-native/src/py_confusables.rs` | SR-RULE-PACKS | decision 18: RUF001–RUF003, the three `py/ambiguous-unicode-character-*` rules (W-182) |
 | `fixtures/tailwind` | SR-RULE-PACKS | decision 19: the Tailwind CSS the provider and the `tailwind` rules are tested on (L11 §3 D-48) |
 | `scripts/format-corpus.py` | SR-FORMATTER | fetches W-141's pinned real-world corpus for the parity measurement |
 | `scripts/law-gate.py` | SR-PACKAGES | decision 11: refuses a release while the engine lacks `format`, `mcp` or `lsp` (L6 decision 3, L7) |

@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 897 — 0 on, 97 on with `preview = true`, 702 off in an opt-in preset, 98 in no preset.
+- **Rules:** 908 — 0 on, 97 on with `preview = true`, 704 off in an opt-in preset, 107 in no preset.
 
 ## Presets
 
@@ -18,7 +18,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
 | `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
 | `py/pylint` | no — opt in | 245 | 69 error, 91 info, 85 warn | Pylint 4.1.3's own checkers — everything it enables with no plugin loaded — reimplemented from its documented behaviour, at its categories (`E` error, `W` warn, `R` and `C` info) |
-| `py/pydocstyle` | no — opt in | 39 | 39 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
+| `py/pydocstyle` | no — opt in | 41 | 41 warn | pydocstyle's `D` rules as Ruff runs them with no convention set, reimplemented, at `warn` |
 
 ## Rules
 
@@ -35,6 +35,9 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/all-sorted`](../py/all-sorted.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-class-name`](../py/ambiguous-class-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/ambiguous-function-name`](../py/ambiguous-function-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
+| [`py/ambiguous-unicode-character-comment`](../py/ambiguous-unicode-character-comment.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-docstring`](../py/ambiguous-unicode-character-docstring.md) | off — in no preset | — | — |
+| [`py/ambiguous-unicode-character-string`](../py/ambiguous-unicode-character-string.md) | off — in no preset | — | — |
 | [`py/ambiguous-variable-name`](../py/ambiguous-variable-name.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/anomalous-unicode-escape-in-string`](../py/anomalous-unicode-escape-in-string.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/any-eq-ne-annotation`](../py/any-eq-ne-annotation.md) | off — opt-in preset | — | `py/strict` |
@@ -264,6 +267,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/function-call-in-default-argument`](../py/function-call-in-default-argument.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/function-uses-loop-variable`](../py/function-uses-loop-variable.md) | on with `preview = true` | error | `py/recommended`, `py/strict`, `py/pylint` |
 | [`py/future-annotations-in-stub`](../py/future-annotations-in-stub.md) | off — opt-in preset | — | `py/strict` |
+| [`py/future-required-type-annotation`](../py/future-required-type-annotation.md) | off — in no preset | — | — |
+| [`py/future-rewritable-type-annotation`](../py/future-rewritable-type-annotation.md) | off — in no preset | — | — |
 | [`py/generator-return-from-iter-method`](../py/generator-return-from-iter-method.md) | off — opt-in preset | — | `py/strict` |
 | [`py/generic-not-last-base-class`](../py/generic-not-last-base-class.md) | off — opt-in preset | — | `py/strict` |
 | [`py/getattr-with-constant`](../py/getattr-with-constant.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
@@ -491,6 +496,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/non-capitalized-section-name`](../py/non-capitalized-section-name.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-empty-init-module`](../py/non-empty-init-module.md) | off — in no preset | — | — |
 | [`py/non-empty-stub-body`](../py/non-empty-stub-body.md) | off — opt-in preset | — | `py/strict` |
+| [`py/non-imperative-mood`](../py/non-imperative-mood.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/non-iterator-returned`](../py/non-iterator-returned.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/non-lowercase-variable-in-function`](../py/non-lowercase-variable-in-function.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/non-octal-permissions`](../py/non-octal-permissions.md) | off — opt-in preset | — | `py/strict` |
@@ -547,6 +553,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/os-stat`](../py/os-stat.md) | off — opt-in preset | — | `py/strict` |
 | [`py/os-symlink`](../py/os-symlink.md) | off — opt-in preset | — | `py/strict` |
 | [`py/os-unlink`](../py/os-unlink.md) | off — opt-in preset | — | `py/strict` |
+| [`py/outdated-version-block`](../py/outdated-version-block.md) | off — in no preset | — | — |
 | [`py/over-indentation`](../py/over-indentation.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/overindented-section`](../py/overindented-section.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/overindented-section-underline`](../py/overindented-section-underline.md) | off — opt-in preset | — | `py/pydocstyle` |
@@ -581,6 +588,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/printf-string-formatting`](../py/printf-string-formatting.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-member-access`](../py/private-member-access.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/private-type-parameter`](../py/private-type-parameter.md) | off — opt-in preset | — | `py/strict` |
+| [`py/property-docstring-starts-with-verb`](../py/property-docstring-starts-with-verb.md) | off — opt-in preset | — | `py/pydocstyle` |
 | [`py/property-with-parameters`](../py/property-with-parameters.md) | off — opt-in preset | — | `py/strict` |
 | [`py/property-without-return`](../py/property-without-return.md) | off — in no preset | — | — |
 | [`py/py-path`](../py/py-path.md) | off — opt-in preset | — | `py/strict` |
@@ -752,6 +760,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/trio-sync-call`](../py/trio-sync-call.md) | off — opt-in preset | — | `py/strict` |
 | [`py/true-false-comparison`](../py/true-false-comparison.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/try-consider-else`](../py/try-consider-else.md) | off — opt-in preset | — | `py/strict` |
+| [`py/try-except-in-loop`](../py/try-except-in-loop.md) | off — in no preset | — | — |
 | [`py/type-alias-without-annotation`](../py/type-alias-without-annotation.md) | off — opt-in preset | — | `py/strict` |
 | [`py/type-bivariance`](../py/type-bivariance.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/type-check-without-type-error`](../py/type-check-without-type-error.md) | off — opt-in preset | — | `py/strict` |
@@ -903,6 +912,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/useless-type-doc`](../py/useless-type-doc.md) | off — in no preset | — | — |
 | [`py/useless-with-lock`](../py/useless-with-lock.md) | off — opt-in preset | — | `py/strict` |
 | [`py/using-constant-test`](../py/using-constant-test.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/using-exception-groups-in-unsupported-version`](../py/using-exception-groups-in-unsupported-version.md) | off — in no preset | — | — |
+| [`py/using-generic-type-syntax-in-unsupported-version`](../py/using-generic-type-syntax-in-unsupported-version.md) | off — in no preset | — | — |
 | [`py/utf8-encoding-declaration`](../py/utf8-encoding-declaration.md) | off — opt-in preset | — | `py/strict` |
 | [`py/verbose-decimal-constructor`](../py/verbose-decimal-constructor.md) | off — opt-in preset | — | `py/strict` |
 | [`py/verbose-log-message`](../py/verbose-log-message.md) | off — opt-in preset | — | `py/strict` |

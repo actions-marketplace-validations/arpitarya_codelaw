@@ -24,6 +24,46 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-185 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-185 (the Python side of the project graph) was built in `lm/W-185` but its cost line was an unfilled placeholder. Merged `main` (generated docs, SR-RULE-PACKS decision 18), then measured it: 176 stdlib files, `check --no-cache`, a debug build, `py/recommended` 4.4–5.0 s, with `py/project` 6.0–6.4 s. **The first run did not finish in ten minutes**: `graph/no-unused-exports` (already in `py/project`) hung in `find_decl`, which followed every star import at every level to the depth cap, the branching factor to the 16th power; it now enters a (module, name) once, with a test that hangs without it. Closed: IMPLEMENTATION, CHANGELOG, item archived, queue row gone, **W-186 re-balled 🟢** (it waited on W-185), W-102's wait list. `codelaw test packs/python` 908 rules · 6,778 checks · 0 failed; graph, semantic, engine, native, config tests pass; clippy clean.
+- **Decided / left open:** `perf` was not run. The worktree's regenerated `.fux/index` files are in a tagged stash `W-185-fux-index-regenerated-2026-11-19`, not discarded.
+- **Mistakes:** my first synthetic reproducer did not hang with the guard off (it never reached the search); a second one, built from `__all__` re-exports, does. A command I backgrounded left the guard disabled in `query.rs` until I stopped it and restored the file; the committed file has the guard.
+- **Next:** W-186 (Ruff PLC2701), then W-187 (stdlib deprecations).
+
+## 2026-11-19 — implement the green items one by one: W-182 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-182 was already built and closed in `lm/W-182` (`c5a53f17`: the `data-confusables` package from Unicode 18.0.0 `confusables.txt`, L11 D-54, and Ruff RUF001–RUF003 as `py/ambiguous-unicode-character-{string,docstring,comment}`); this session merged `main` into it. Conflicts with W-180's data table in `ci.yml`, SR-LAW-11, SR-PACKAGES, SR-RULE-PACKS, `lib.rs` and OPEN-WORK resolved by keeping both; docs regenerated. `codelaw test packs/python` 902 rules · 6,726 checks · 0 failed; native, config and dependencies tests pass; `data-confusables-check.py --check`, `data-imperatives.py --check`, `docs-sync --check`, `rule-docs --check` agree.
+- **Decided / left open:** the worktree's 513 regenerated `.fux/index` files were set aside in a tagged stash (`W-182-fux-index-regenerated-2026-11-19`), not discarded: the harness refused a discard, and the stash loses nothing. Drop it when W-198 is ruled.
+- **Mistakes:** none.
+- **Next:** W-185 (the Python side of the project graph).
+
+## 2026-11-19 — implement the green items one by one: W-180 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-180 finished from its worktree: the python pack's imperative-mood table (`packs/python/data/python/imperatives.json`, written by `scripts/data-imperatives.py` from pydocstyle 6.3.0's lists, L11 D-56, `--check` in CI) and Ruff `D401`, `D421` as `py/non-imperative-mood` and `py/property-docstring-starts-with-verb` (`crates/codelaw-native/src/py_imperative.rs`). Merged `main` (conflicts in generated docs, `lib.rs`'s rule chain, CHANGELOG, OPEN-WORK); added the SR-PACKAGES and SR-ARCHITECTURE lines the guard wanted; reworded an SR-RULE-PACKS phrase the schema test read as a codelaw key. `codelaw test packs/python` 899 rules · 6,691 checks · 0 failed; native, engine, config tests pass; clippy clean; `data-imperatives.py --check`, `docs-sync --check`, `rule-docs --check` agree.
+- **Decided / left open:** nothing ruled.
+- **Mistakes:** I ran `git checkout --ours README.md` after regenerating it, which undid the regeneration; I noticed and ran `docs-sync --write` again before committing.
+- **Next:** W-181 (moved typing names).
+
+## 2026-11-19 — implement the green items one by one: W-178 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-178 in `lm/W-178`: `data/key-name-casing`, `md/require-frontmatter-fields` (options-only, `data` pack), the `@example` region (`[lint] jsdoc_examples`, `crates/codelaw-lang/src/regions.rs`: the ` * ` margin is a hole, so offsets are the host's and a fix keeps the margin) and `js/jsdoc-check-examples`. Records: SR-LINTER decision 3, SR-CONFIG, SR-RULE-PACKS decision 18 (slice 39), SR-ARCHITECTURE, SR-CLI-MCP. `codelaw test packs/data` and `packs/js` 0 failed; config, lang, engine, native and test crates pass; clippy clean. Also fixed a W-183 line in SR-RULE-FORMAT that made `cargo test -p codelaw-config --test schema` fail on `main`.
+- **Decided / left open:** an example that does not parse is reported, not linted. The corpus count and `perf` were not run for the three rules.
+- **Mistakes:** none.
+- **Next:** W-180 (imperative-mood verbs).
+
+## 2026-11-19 — implement the green items one by one: W-176 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"*
+- **Done:** W-176 (options-only rules) finished in its own worktree `lm/W-176`: 18 rules, `crates/codelaw-native/src/options_only/`, the shape in SR-RULE-FORMAT decision **2e** (renumbered from 2d, which W-183 took on `main`), ledger class `options-only`, pages and docs. Merged `main` into the branch (conflicts only in generated docs, `lib.rs`'s rule chain and SR-RULE-PACKS decision 18; docs regenerated). Closed: IMPLEMENTATION row, CHANGELOG, item archived, queue row and W-102's wait removed. `cargo test` options_only 4 + 4, `codelaw test packs/js` and `packs/node` 0 failed, clippy clean, `check-work-system`, `check-open-work-inbox`, `docs-sync --check` pass.
+- **Decided / left open:** W-198 (keep or drop the eight worktrees) is still the decider's; carrying on in a worktree is a *keep*. W-169, W-172, W-126, W-95 are green but need a pushed `main` or a release, which an agent does not do.
+- **Mistakes:** none.
+- **Next:** land `lm/W-176` on `main`; then W-178.
+
 ## 2026-11-15 — implement the open items: queue driven by eleven agents  ·  Claude Code (Sonnet 5.5, coordinator)
 
 - **Asked:** *"implement all open items."*, then *"Do a cleanup if needed. And then implement the items and implement them as fast as possible."*

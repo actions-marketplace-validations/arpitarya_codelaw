@@ -7,7 +7,7 @@ filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-17
 updated_by: "Claude Code (Sonnet 5.5)"
-ball: agent
+ball: none
 ---
 
 # W-185 — The Python side of the project graph
@@ -42,7 +42,7 @@ The project graph answers for Python what it answers for JavaScript. Rows: Pylin
 - **Queries** (SR-MODULE-GRAPH decision 12): `cycle:` reads Python files; `python: { imports: unresolved | unexported | beyond_top | wildcard_unused }`; `python: { classes: ancestors }`; `[graph] max_ancestors` (default 7).
 - **Rules** in `packs/python/rules/py/`, `preview`, `manual`, in `py/project`: `py/cyclic-import`, `py/import-error`, `py/no-name-in-module`, `py/relative-beyond-top-level`, `py/unused-wildcard-import`, `py/too-many-ancestors`.
 - **The hazards, answered.** Namespace packages are never judged by `unresolved` and `unexported`; a `src/` layout and each `pyproject.toml` / `setup.py` folder are roots; a `sys.path` change is not followed (a file that touches it is not judged by `unresolved`); nothing reads `site-packages`, so Pylint's `import-error` for an uninstalled package is not built. W-177 (should the project's own type checker answer the rows that need an imported class's methods) is untouched: the class facts here carry bases for a count only.
-- **Cost (L8).** `<<L8>>`
+- **Cost (L8).** Measured 2026-11-19 on 176 files of CPython 3.14's `asyncio`, `email`, `json`, `importlib`, `concurrent`, `unittest`, `http`, `xml`, `logging`, `multiprocessing` and `urllib`, `check --no-cache --no-adapters`, a debug build on the decider's loaded Mac, three runs each: `py/recommended` 4.4–5.0 s; with `py/project` 6.0–6.4 s (+1.4 s: the graph build and its six queries); the extra findings 352 `py/cyclic-import`, 148 `graph/no-unused-exports`, 3 `py/unused-wildcard-import`, 2 `py/too-many-ancestors`. **The first run did not finish in ten minutes**: `find_decl`, which follows a re-export through every `from m import *` to a depth of 16 and tries every import at every level, took the branching factor to the 16th power on a package of `__init__` modules; it now enters a (module, name) once (`query.rs`, test `star_imports_that_reach_each_other_are_followed_once_each`, which hangs without it). Nothing here is on by default: `py/project` is opt-in, so `check_cold_10k` pays nothing; `perf` was not run.
 
 ## Blockers
 

@@ -14,7 +14,7 @@ const YAML: &[Language] = &[Language::Yaml];
 
 /// A scalar key's value: plain text, or a quoted string with its escapes
 /// decoded. `None` for keys that aren't a single scalar.
-fn key_value(key: Node<'_>, src: &str) -> Option<String> {
+pub(crate) fn key_value(key: Node<'_>, src: &str) -> Option<String> {
     let scalar = if key.kind() == "flow_node" { named_children(key).into_iter().find(|c| c.kind() != "comment")? } else { key };
     if named_children(key).iter().any(|c| matches!(c.kind(), "anchor" | "tag")) {
         // `&a key` or `!!str key`: compare what remains.
