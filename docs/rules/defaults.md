@@ -15,7 +15,7 @@
 
 | Pack | Installed by `init` when | Rules | On | On with `preview = true` | Off, opt-in preset | Off, in no preset |
 |---|---|--:|--:|--:|--:|--:|
-| [js](defaults/js.md) | a JavaScript or TypeScript file | 958 | 0 | 155 | 542 | 261 |
+| [js](defaults/js.md) | a JavaScript or TypeScript file | 960 | 0 | 155 | 542 | 263 |
 | [ts](defaults/ts.md) | a TypeScript file | 67 | 0 | 23 | 11 | 33 |
 | [react](defaults/react.md) | `package.json` depends on `react` | 160 | 0 | 66 | 5 | 89 |
 | [node](defaults/node.md) | never — a project adds it | 40 | 0 | 0 | 10 | 30 |
@@ -42,7 +42,7 @@
 | [airflow](defaults/airflow.md) | never — installing the pack is the opt-in | 8 | 0 | 0 | 1 | 7 |
 | [numpy](defaults/numpy.md) | never — installing the pack is the opt-in | 4 | 0 | 0 | 4 | 0 |
 | [pandas](defaults/pandas.md) | never — installing the pack is the opt-in | 12 | 0 | 0 | 12 | 0 |
-| **all** | | **2941** | **31** | **615** | **1542** | **753** |
+| **all** | | **2943** | **31** | **615** | **1542** | **755** |
 
 A graph rule that two packs ship counts once in each; the totals therefore may exceed the rule count.
 

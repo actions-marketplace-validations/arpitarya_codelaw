@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-190-using-declarations.md`](open/W-190-using-declarations.md) | 2026-11-19 | done for JavaScript — `js/no-using-resource-escape`, `js/prefer-dispose` in [`packs/js/rules/js/`](../packs/js/rules/js/) (`crates/codelaw-native/src/js_using.rs`); the TypeScript gap is named in [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 41 |
 | [`W-187-stdlib-deprecations.md`](open/W-187-stdlib-deprecations.md) | 2026-11-19 | done — the data package [`data-packages/python-deprecations/`](../data-packages/python-deprecations/) ([SR-LAW-6](../records/0008_LAW-6-python-and-node-packages.md) decision 15); five rules in [`packs/python/rules/py/`](../packs/python/rules/py/) (`crates/codelaw-native/src/py_deprecated.rs`) |
 | [`W-185-python-project-graph.md`](open/W-185-python-project-graph.md) | 2026-11-19 | done — [SR-MODULE-GRAPH](../records/0122_module-graph.md) decision 12; `crates/codelaw-graph/src/pynames.rs`; `py/project` in [`packs/python/presets/py/`](../packs/python/presets/py/) |
 | [`W-178-config-keys-frontmatter-examples.md`](open/W-178-config-keys-frontmatter-examples.md) | 2026-11-19 | done — `data/key-name-casing`, `md/require-frontmatter-fields`, `js/jsdoc-check-examples`; [SR-LINTER](../records/0106_linter.md) decision 3 (`[lint] jsdoc_examples`); [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 39 |

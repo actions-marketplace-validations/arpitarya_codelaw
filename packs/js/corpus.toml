@@ -619,6 +619,7 @@
 "js/no-useless-switch-case" = 1
 "js/no-useless-template-literals" = 107
 "js/no-useless-undefined" = 6
+"js/no-using-resource-escape" = 0
 "js/no-var" = 0
 "js/no-variable-usage-before-declaration" = 0
 "js/no-void" = 2
@@ -670,6 +671,7 @@
 "js/prefer-default-parameters" = 0
 "js/prefer-destructuring" = 0
 "js/prefer-direct-iteration" = 0
+"js/prefer-dispose" = 0
 "js/prefer-dom-node-append" = 2
 "js/prefer-dom-node-html-methods" = 0
 "js/prefer-dom-node-remove" = 2

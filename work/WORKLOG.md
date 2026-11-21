@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-190 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-190 from scratch in `lm/W-190`: the pinned JavaScript grammar parses `using`, so `js/no-using-resource-escape` and `js/prefer-dispose` are built for `javascript` and `jsx` (`crates/codelaw-native/src/js_using.rs`), their behaviour read from unicorn 79.0.0's documentation. Step 2: no official `tree-sitter-typescript` release parses `using` (0.23.2 is the newest); the gap is named, the grammar not moved. `codelaw test packs/js` 960 · 24,523 · 0 failed, `ts`/`react`/`node` unchanged; native, config, engine tests; clippy clean.
+- **Decided / left open:** the TypeScript side waits on a grammar release or on the decider ratifying `tree-sitter-typescript-next` (an unofficial fork) under L11; no item filed, since DoD 2 allows naming the gap. Corpus counts entered as 0 without a corpus run; `perf` not run.
+- **Mistakes:** none.
+- **Next:** W-186, W-195, W-196, W-181.
+
 ## 2026-11-19 — implement the green items one by one: W-187 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"* (continued)

@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 958 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 261 in no preset.
+- **Rules:** 960 — 0 on, 155 on with `preview = true`, 542 off in an opt-in preset, 263 in no preset.
 
 ## Presets
 
@@ -650,6 +650,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-useless-switch-case`](../js/no-useless-switch-case.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-useless-template-literals`](../js/no-useless-template-literals.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-useless-undefined`](../js/no-useless-undefined.md) | off — opt-in preset | — | `js/strict` |
+| [`js/no-using-resource-escape`](../js/no-using-resource-escape.md) | off — in no preset | — | — |
 | [`js/no-var`](../js/no-var.md) | on with `preview = true` | error | `js/typescript`† |
 | [`js/no-variable-usage-before-declaration`](../js/no-variable-usage-before-declaration.md) | off — in no preset | — | — |
 | [`js/no-void`](../js/no-void.md) | off — in no preset | — | — |
@@ -701,6 +702,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/prefer-default-parameters`](../js/prefer-default-parameters.md) | off — opt-in preset | — | `js/strict` |
 | [`js/prefer-destructuring`](../js/prefer-destructuring.md) | off — in no preset | — | — |
 | [`js/prefer-direct-iteration`](../js/prefer-direct-iteration.md) | off — opt-in preset | — | `js/strict` |
+| [`js/prefer-dispose`](../js/prefer-dispose.md) | off — in no preset | — | — |
 | [`js/prefer-dom-node-append`](../js/prefer-dom-node-append.md) | off — opt-in preset | — | `js/strict` |
 | [`js/prefer-dom-node-html-methods`](../js/prefer-dom-node-html-methods.md) | off — opt-in preset | — | `js/strict` |
 | [`js/prefer-dom-node-remove`](../js/prefer-dom-node-remove.md) | off — opt-in preset | — | `js/strict` |

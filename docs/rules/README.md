@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2940 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2942 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -39,7 +39,7 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 958 | 62 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 960 | 62 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 160 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 40 | 4 |
@@ -695,6 +695,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-switch-case`](js/no-useless-switch-case.md) | No empty case before default | `suggest` | — | `js/strict` |
 | [`js/no-useless-template-literals`](js/no-useless-template-literals.md) | No template literal without substitutions | `manual` | — | `js/strict` |
 | [`js/no-useless-undefined`](js/no-useless-undefined.md) | No return undefined | `auto` | — | `js/strict` |
+| [`js/no-using-resource-escape`](js/no-using-resource-escape.md) | A `using` resource does not leave the scope that disposes it | `manual` | — | *[rules] only* |
 | [`js/no-var`](js/no-var.md) | let or const instead of var | `suggest` | — | `js/typescript` |
 | [`js/no-variable-usage-before-declaration`](js/no-variable-usage-before-declaration.md) | No `var` used before its declaration | `manual` | — | *[rules] only* |
 | [`js/no-void`](js/no-void.md) | No void operator | `auto` | — | *[rules] only* |
@@ -746,6 +747,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/prefer-default-parameters`](js/prefer-default-parameters.md) | A default parameter rather than reassigning it | `suggest` | — | `js/strict` |
 | [`js/prefer-destructuring`](js/prefer-destructuring.md) | Destructure a property into a variable of its name | `suggest` | — | *[rules] only* |
 | [`js/prefer-direct-iteration`](js/prefer-direct-iteration.md) | for…of an array, not array.values() | `suggest` | — | `js/strict` |
+| [`js/prefer-dispose`](js/prefer-dispose.md) | Dispose a resource with `using`, not a `try`/`finally` | `suggest` | — | *[rules] only* |
 | [`js/prefer-dom-node-append`](js/prefer-dom-node-append.md) | append() rather than appendChild() | `suggest` | — | `js/strict` |
 | [`js/prefer-dom-node-html-methods`](js/prefer-dom-node-html-methods.md) | getHTML() rather than reading innerHTML | `auto` | — | `js/strict` |
 | [`js/prefer-dom-node-remove`](js/prefer-dom-node-remove.md) | node.remove() rather than parent.removeChild(node) | `suggest` | — | `js/strict` |
