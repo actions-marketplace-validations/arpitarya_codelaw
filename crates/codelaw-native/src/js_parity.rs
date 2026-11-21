@@ -38,6 +38,7 @@ mod params;
 mod names;
 mod parameterized;
 mod atomic;
+mod comment_type;
 
 const JS: &[Language] = &[Language::Javascript, Language::Jsx, Language::Typescript, Language::Tsx];
 const TS: &[Language] = &[Language::Typescript, Language::Tsx];
@@ -724,6 +725,7 @@ pub static RULES: &[&dyn NativeRule] = &[
     &names::NameReplacements,
     &parameterized::ParameterizedTests,
     &atomic::RequireAtomicUpdates,
+    &comment_type::CommentType,
     &MaxNestedCalls,
     &TryComplexity,
     &TooManyBreakOrContinueInLoop,

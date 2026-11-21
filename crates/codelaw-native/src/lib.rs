@@ -746,6 +746,7 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &no_undef::NoUndef,
     &literals::NoUnexpectedMultiline,
     &no_unreachable::NoUnreachable,
+    &no_unreachable::ProcessExitAsThrow,
     &expressions::NoUnsafeOptionalChaining,
     &classes::NoUnusedPrivateClassMembers,
     &JS_NO_UNUSED_VARS,

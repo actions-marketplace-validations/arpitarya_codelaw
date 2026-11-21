@@ -149,3 +149,12 @@ const b = <p>&amp;{"x"}</p>;
 
 ```expect
 ```
+
+### case: a character reference beside a child
+
+```jsx
+const b = <p>&amp;{"x"}</p>;
+```
+
+```expect
+```
