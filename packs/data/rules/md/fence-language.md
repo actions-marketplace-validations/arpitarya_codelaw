@@ -5,7 +5,7 @@ languages: [markdown]
 fix: suggest
 fix_reason: "the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases"
 stability: preview
-ported_from: [markdownlint/MD040]
+ported_from: [markdownlint/MD040, biome/nursery/useFencedCodeLanguage]
 since: 0.1.0
 ---
 

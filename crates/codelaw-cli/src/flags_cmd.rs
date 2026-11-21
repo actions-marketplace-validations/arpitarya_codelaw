@@ -1,4 +1,4 @@
-//! `codelaw flags accessors` (SR-CLI-MCP decision 1; SR-PROJECT-GRAPH
+//! `codelaw flags accessors` (SR-CLI-MCP decision 1; SR-MODULE-GRAPH
 //! decision 11): every call the flag rules read a flag through — the
 //! patterns of `[flags] accessors`, those of its presets, and the wrappers
 //! found through the project graph, each with where it comes from.

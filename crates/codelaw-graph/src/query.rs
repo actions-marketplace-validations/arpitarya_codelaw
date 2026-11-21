@@ -1,4 +1,4 @@
-//! `graph:` queries (SR-PROJECT-GRAPH decision 6), their findings and fixes,
+//! `graph:` queries (SR-MODULE-GRAPH decision 6), their findings and fixes,
 //! and the two debug commands: `graph refs` and `graph why-unused`.
 
 use crate::facts::{Decl, DeclKind, FactLang, ImportKind, Span, SpecForm};
@@ -30,7 +30,7 @@ pub enum Query {
     /// pack's, so the engine runs it, over every file's prose.
     InconsistentTerms,
     /// `flags: reads | markers | registry`: feature-flag expiry
-    /// (SR-PROJECT-GRAPH decision 11). Its registry, markers and as-of date
+    /// (SR-MODULE-GRAPH decision 11). Its registry, markers and as-of date
     /// are inputs the engine holds, so the engine runs it (`crate::flags`).
     Flags(crate::flags::FlagCheck),
     /// `import: { names: unexported | default: missing | … }`: an import
@@ -42,6 +42,11 @@ pub enum Query {
     ExportStar,
     /// `module: { exports: [missing, unused] }`.
     ModuleExports { missing: bool, unused: bool },
+    /// `python: { imports: unresolved | unexported | beyond_top | wildcard_unused | private }`:
+    /// a Python import read against the project's files (W-185, `pynames.rs`).
+    PyImports(crate::pynames::PyImportCheck),
+    /// `python: { classes: ancestors }`: a class with too many ancestors.
+    PyAncestors,
 }
 
 /// What a `graph: import:` query reports.
@@ -137,7 +142,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
         Some(other) => return Err(format!("`certainty_from: {other}` must be `module.dynamic`")),
     };
     for k in g.keys() {
-        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "cycle", "export", "certainty_from"].contains(&k.as_str()) {
+        if !["symbol", "unless", "when", "class", "deprecated", "import", "module", "terms", "flags", "cycle", "export", "python", "certainty_from"].contains(&k.as_str()) {
             return Err(format!("unknown `graph:` key `{k}`"));
         }
     }
@@ -216,6 +221,17 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             forms = vec![SpecForm::Import, SpecForm::Export, SpecForm::Dynamic];
         }
         Query::Cycle { forms }
+    } else if let Some(python) = g.get("python") {
+        use crate::pynames::PyImportCheck;
+        match (python.get("imports").and_then(Value::as_str), python.get("classes").and_then(Value::as_str)) {
+            (Some("unresolved"), None) => Query::PyImports(PyImportCheck::Unresolved),
+            (Some("unexported"), None) => Query::PyImports(PyImportCheck::Unexported),
+            (Some("beyond_top"), None) => Query::PyImports(PyImportCheck::BeyondTop),
+            (Some("wildcard_unused"), None) => Query::PyImports(PyImportCheck::WildcardUnused),
+            (Some("private"), None) => Query::PyImports(PyImportCheck::PrivateName),
+            (None, Some("ancestors")) => Query::PyAncestors,
+            _ => return Err("`graph: python:` takes `imports: unresolved | unexported | beyond_top | wildcard_unused | private` or `classes: ancestors`".into()),
+        }
     } else if let Some(export) = g.get("export") {
         if export.get("star").and_then(Value::as_str) != Some("conflicts") {
             return Err("`graph: export:` takes `star: conflicts`".into());
@@ -265,7 +281,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             _ => return Err("`graph: import:` takes exactly one of `resolves: false`, `declared: false`, `published: false`, `names: unexported`, `default: missing`, `namespace: unexported`, `default_name: named | differs`, `default_member: named`, `deprecated: jsdoc`".into()),
         }
     } else {
-        return Err("`graph:` names no query (`symbol:`, `class:`, `module:`, `import:`, `terms:`, `flags:` or `deprecated:`)".into());
+        return Err("`graph:` names no query (`symbol:`, `class:`, `module:`, `import:`, `cycle:`, `export:`, `python:`, `terms:`, `flags:` or `deprecated:`)".into());
     };
     let mut gf = GraphFix::default();
     match fix {
@@ -320,7 +336,7 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
     let allowed: &[Primitive] = match &query {
         Query::Names(ImportTarget::NamedMissing | ImportTarget::NamespaceMember) => &[Primitive::NearestExport],
         Query::ModuleExports { .. } => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration],
-        Query::Names(_) | Query::Cycle { .. } | Query::ExportStar => &[],
+        Query::Names(_) | Query::Cycle { .. } | Query::ExportStar | Query::PyImports(_) | Query::PyAncestors => &[],
         _ => &[Primitive::StripExportKeyword, Primitive::RemoveDeclaration, Primitive::RemoveRule, Primitive::Respell, Primitive::KeepBranch, Primitive::FixMarker, Primitive::RemoveEntry, Primitive::AddDependency, Primitive::NearestPath, Primitive::NearestClass],
     };
     if let Some(p) = fixes.iter().find(|p| !allowed.contains(p)) {
@@ -532,7 +548,7 @@ pub fn run(rule: &GraphRule, graph: &Graph, languages: &[Language]) -> Vec<Graph
         // pack's word data (SR-SPELL; `codelaw_native::spell`).
         Query::InconsistentTerms => Vec::new(),
         // The engine runs the flag rules itself, with the registry, the
-        // markers and the as-of date (SR-PROJECT-GRAPH decision 11).
+        // markers and the as-of date (SR-MODULE-GRAPH decision 11).
         Query::Flags(_) => Vec::new(),
         Query::Imports { forms, check } => imports(graph, languages, forms, *check),
         Query::UnusedModuleClasses => unused_module_classes(rule, graph, languages),
@@ -541,6 +557,8 @@ pub fn run(rule: &GraphRule, graph: &Graph, languages: &[Language]) -> Vec<Graph
         Query::Cycle { forms } => crate::names::cycles(graph, languages, forms),
         Query::ExportStar => crate::names::export_star(graph, languages),
         Query::ModuleExports { missing, unused } => crate::names::modules(rule, graph, languages, *missing, *unused),
+        Query::PyImports(check) => crate::pynames::imports(graph, languages, *check),
+        Query::PyAncestors => crate::pynames::too_many_ancestors(graph, languages),
     }
 }
 
@@ -856,9 +874,18 @@ pub fn locate(graph: &Graph, spec: &str) -> Result<(String, String), String> {
 
 /// The declaration an exported name ends at, through re-exports.
 pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Option<(String, String)> {
+    find_decl_in(graph, target, name, depth, &mut std::collections::HashSet::new())
+}
+
+/// `find_decl` with the (module, name) pairs this search has already entered:
+/// the answer for a pair is the same wherever it is reached, so a second visit
+/// can only repeat a `None` (or a cycle). Without it a few star imports that
+/// reach each other cost the branching factor to the power of the depth
+/// (W-185: a handful of Python `__init__` modules took minutes).
+fn find_decl_in(graph: &Graph, target: &Target, name: &str, depth: usize, seen: &mut std::collections::HashSet<(String, String)>) -> Option<(String, String)> {
     let Target::File(path) = target else { return None };
     let m = graph.modules.get(path)?;
-    if depth > 16 {
+    if depth > 16 || !seen.insert((path.clone(), name.to_owned())) {
         return None;
     }
     if let Some(e) = m.facts.exports.iter().find(|e| e.name == name) {
@@ -867,7 +894,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
         }
         if let (Some(src), Some(imp)) = (&e.source, &e.imported) {
             for t in resolve_from(graph, path, src) {
-                if let Some(x) = find_decl(graph, &t, imp, depth + 1) {
+                if let Some(x) = find_decl_in(graph, &t, imp, depth + 1, seen) {
                     return Some(x);
                 }
             }
@@ -887,7 +914,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
             _ => name.to_owned(),
         };
         for t in resolve_from(graph, path, &imp.source) {
-            if let Some(x) = find_decl(graph, &t, &inner, depth + 1) {
+            if let Some(x) = find_decl_in(graph, &t, &inner, depth + 1, seen) {
                 return Some(x);
             }
         }
@@ -895,7 +922,7 @@ pub fn find_decl(graph: &Graph, target: &Target, name: &str, depth: usize) -> Op
     for e in m.facts.exports.iter().filter(|e| e.name == "*") {
         if let Some(src) = &e.source {
             for t in resolve_from(graph, path, src) {
-                if let Some(x) = find_decl(graph, &t, name, depth + 1) {
+                if let Some(x) = find_decl_in(graph, &t, name, depth + 1, seen) {
                     return Some(x);
                 }
             }

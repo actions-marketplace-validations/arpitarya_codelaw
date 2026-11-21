@@ -103,6 +103,63 @@ MD_LAYOUT = {'MD003', 'MD004', 'MD005', 'MD007', 'MD009', 'MD010', 'MD012', 'MD0
              'MD047', 'MD048', 'MD049', 'MD050', 'MD055', 'MD058', 'MD060'}
 RUFF_OUT = {'Airflow', 'flake8-django', 'FastAPI', 'NumPy-specific rules', 'pandas-vet'}
 
+# Ruled 2026-11-09 (Arpit, voice docket; the proposal's §14): rows that are not ports, by tool and upstream id.
+# Consulted by plan() after what a codelaw rule already does and what upstream retired; the class and the note
+# replace the port's (a ruling can only take a row off the port list, never put one on it).
+_FMT = 'formatter-owned, ruled 2026-11-09 (SR-FORMATTER decision 3)'
+_OUT = 'out of scope, ruled 2026-11-09'
+_NA = 'not-applicable, ruled 2026-11-09'
+RULED = {}
+for _t, _ids in {
+    'eslint-plugin-jest': ['padding-around-after-all-blocks', 'padding-around-after-each-blocks', 'padding-around-all',
+                           'padding-around-before-all-blocks', 'padding-around-before-each-blocks', 'padding-around-describe-blocks',
+                           'padding-around-expect-groups', 'padding-around-test-blocks'],
+    'eslint-plugin-react': ['jsx-closing-bracket-location', 'jsx-closing-tag-location', 'jsx-curly-spacing', 'jsx-equals-spacing',
+                            'jsx-first-prop-new-line', 'jsx-indent', 'jsx-indent-props', 'jsx-max-props-per-line', 'jsx-newline',
+                            'jsx-one-expression-per-line', 'jsx-props-no-multi-spaces', 'jsx-tag-spacing', 'jsx-wrap-multilines'],
+    'eslint-plugin-unicorn': ['number-literal-case'],
+    'eslint-plugin-import': ['newline-after-import'],
+    'eslint-plugin-jsdoc': ['lines-before-block'],
+    'stylelint': ['at-rule-empty-line-before', 'comment-empty-line-before', 'custom-property-empty-line-before',
+                  'declaration-empty-line-before', 'rule-empty-line-before', 'declaration-block-single-line-max-declarations'],
+}.items():
+    for _i in _ids: RULED[(_t, _i)] = ('layout', _FMT)
+# the rows W-179 checked against the formatter's own output (SR-FORMATTER decision 10)
+for _t, _ids in {'ruff': ['D201', 'D202', 'D204', 'D210', 'D211', 'EXE004'], 'pylint': ['inconsistent-quotes', 'implicit-str-concat']}.items():
+    for _i in _ids: RULED[(_t, _i)] = ('layout', 'the formatter owns it (SR-FORMATTER decision 10)')
+RULED[('ruff', 'D203')] = ('layout', 'the formatter owns it (SR-FORMATTER decision 10); the opposite of D211, never produced')
+for _t, _ids in {
+    'eslint-plugin-react-hooks': ['fbt', 'invariant', 'syntax', 'todo'],
+    'ruff': ['RUF028', 'RUF054', 'RUF100', 'RUF101', 'RUF102', 'RUF103', 'RUF104', 'RUF105', 'RUF106', 'RUF200', 'RUF201'],
+    'pylint': ['duplicate-code', 'invalid-characters-in-docstring'],
+}.items():
+    for _i in _ids: RULED[(_t, _i)] = ('out-of-scope', _OUT)
+for _i in ['bad-configuration-section', 'bad-plugin-value', 'unknown-option-value', 'unrecognized-inline-option', 'unrecognized-option', 'useless-option-value']:
+    RULED[('pylint', _i)] = ('not-applicable', _NA + ": checks Pylint's own configuration or inline options, not code")
+RULED[('pylint', 'boolean-datetime')] = ('not-applicable', _NA + ' (W-174): Pylint reports it only below Python 3.5, the floor is 3.9')
+for _i in ['broken-noreturn', 'broken-collections-callable']:
+    RULED[('pylint', _i)] = ('not-applicable', _NA + ": reported only for interpreters below codelaw's Python 3.9 floor")
+for _i in ['using-assignment-expression-in-unsupported-version', 'using-comprehension-unpacking-in-unsupported-version',
+           'using-f-string-in-unsupported-version', 'using-final-decorator-in-unsupported-version', 'using-positional-only-args-in-unsupported-version']:
+    RULED[('pylint', _i)] = ('not-applicable', _NA + ': flags syntax newer than the target version, and the 3.9 floor already has it')
+for _i in ['duplicate-argument-name', 'return-arg-in-generator']:
+    RULED[('pylint', _i)] = ('not-applicable', _NA + ': a syntax error in every Python codelaw supports, so the file does not parse and no rule runs')
+
+# Ruled 2026-11-09 (Arpit, voice docket; W-176): rows whose upstream rule does nothing in its default configuration are
+# built as rules that are silent until a project sets their option (SR-RULE-FORMAT decision 2e), a class of their own.
+# `unicorn/name-replacements` is not here: upstream runs it on a built-in table, and W-139 slice 36 built it that way.
+_OPT = "options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
+for _t, _ids in {
+    'eslint': ['no-implicit-globals', 'id-denylist', 'id-match', 'no-restricted-syntax'],
+    'eslint-plugin-import': ['no-restricted-paths'],
+    'eslint-plugin-import-x': ['prefer-namespace-import'],
+    'eslint-plugin-sonarjs': ['comment-regex', 'file-header'],
+    'eslint-plugin-unicorn': ['consistent-function-style', 'id-match', 'string-content'],
+    'eslint-plugin-jsdoc': ['match-name', 'no-missing-syntax', 'no-restricted-syntax', 'require-tags', 'text-escaping'],
+    'eslint-plugin-n': ['no-restricted-import', 'no-restricted-require'],
+}.items():
+    for _i in _ids: RULED[(_t, _i)] = ('options-only', _OPT)
+
 def kebab(s): return re.sub(r'(?<!^)(?=[A-Z])', '-', s).lower()
 taken = set(cl_ids)
 COLLIDE = {}
@@ -113,7 +170,12 @@ def pid(ns, name, tag):
     taken.add(i); return i
 
 rows = collections.defaultdict(list)
+# Built under another pack or id than the proposal's default (W-178, 2026-11-19): the casing of a data file's keys and
+# Markdown front matter are the `data` pack's (`data/key-name-casing`, `md/require-frontmatter-fields`), not `js`'s.
+BUILT_AS = {('eslint-plugin-unicorn', 'key-name-casing'): ('data', 'data/key-name-casing', 'suggest'),
+            ('eslint-plugin-unicorn', 'require-frontmatter-fields'): ('data', 'md/require-frontmatter-fields', 'manual')}
 def emit(tool, version, rid, cls, *, deprecated=False, ufix='', rec=False, cids=(), pack='', newid='', nfix='', prio='', note=''):
+    if cls == 'port' and (tool, rid) in BUILT_AS: pack, newid, nfix = BUILT_AS[(tool, rid)]
     rows[tool].append(dict(tool=tool, version=version, upstream_id=rid, class_=cls, deprecated='yes' if deprecated else '',
                            upstream_fix=ufix, upstream_recommended='yes' if rec else '', codelaw=' '.join(cids),
                            proposed_pack=pack, proposed_id=newid, proposed_fix=nfix, priority=prio, note=note))
@@ -126,6 +188,9 @@ def plan(tool, version, rid, *, name=None, deprecated=False, ufix='none', rec=Fa
     if c: return emit(tool, version, rid, 'covered', deprecated=deprecated, ufix=ufix, rec=rec, cids=c)
     if deprecated: return emit(tool, version, rid, 'retired', deprecated=True, ufix=ufix, rec=rec, note=note or 'deprecated upstream')
     if (tool, rid) in PLANNED: return emit(tool, version, rid, 'planned', ufix=ufix, rec=rec, note=f'filed as {PLANNED[(tool, rid)]}')
+    if (tool, rid) in RULED:
+        cls, why = RULED[(tool, rid)]
+        return emit(tool, version, rid, cls, ufix=ufix, rec=rec, note=(note + '; ' if note else '') + why)
     if extends:
         b = covered('eslint', rid if extends == 'base' else extends)
         if b: return emit(tool, version, rid, 'covered', ufix=ufix, rec=rec, cids=b, note=f'through its base, eslint/{rid if extends == "base" else extends}')

@@ -16,7 +16,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `node/recommended` | 10 | eslint-plugin-n 18.5.0 `recommended-module` — 10 of its 14 rules: the 3 that need no `package.json`, `node/hashbang`, which reads the nearest `package.json`'s `bin`, and the 6 import rules, which run on the project graph |
+| `node/recommended` | 11 | eslint-plugin-n 18.5.0 `recommended-module` — 10 of its 14 rules: the 3 that need no `package.json`, `node/hashbang`, which reads the nearest `package.json`'s `bin`, and the 6 import rules, which run on the project graph |
 
 <!-- /docs-sync:presets -->
 
@@ -28,7 +28,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 4 | 24 | 10 | 4 | 6 | 0 | 0 | 0 |
+| 4 | 25 | 12 | 6 | 6 | 0 | 0 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

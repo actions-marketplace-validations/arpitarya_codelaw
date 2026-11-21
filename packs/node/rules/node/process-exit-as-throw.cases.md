@@ -1,5 +1,32 @@
 # node/process-exit-as-throw — cases
 
+### case: what follows an exit never runs
+
+```js
+function stop() {
+  process.exit(1);
+  cleanup();
+}
+```
+
+```expect
+3:3 node/process-exit-as-throw
+```
+
+### case: a file with its own process
+
+```js
+const process = mine();
+function stop() {
+  process.exit(1);
+  cleanup();
+}
+```
+
+```expect
+(none)
+```
+
 ### case: a conditional exit lets the rest run
 
 ```js

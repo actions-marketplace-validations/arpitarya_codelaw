@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (moving the export to its own module changes its import paths) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `oxlint/react/only-export-components` |
+| **Ported from** | `oxlint/react/only-export-components`, `biome/style/useComponentExportOnlyModules` |
 
 ## What it checks
 

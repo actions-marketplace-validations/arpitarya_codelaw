@@ -14,7 +14,7 @@
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (which names are used is read through the file; the author lists them) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
-| **Ported from** | `eslint-plugin-import/no-namespace`, `eslint-plugin-sonarjs/no-wildcard-import` |
+| **Ported from** | `eslint-plugin-import/no-namespace`, `eslint-plugin-sonarjs/no-wildcard-import`, `biome/performance/noNamespaceImport` |
 
 ## What it checks
 

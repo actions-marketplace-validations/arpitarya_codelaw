@@ -373,7 +373,7 @@ modules = ["src/**/*.styles.css"]    # besides *.module.css and *.module.scss
 modules_convention = "camelCase"     # css-loader's localsConvention: .btn-primary is also styles.btnPrimary
 ```
 
-`css-modules/no-unused-class` reports a class no file reads (in the stylesheet; `codelaw fix --unsafe` deletes the rule), and `css-modules/no-undefined-class` reports `styles.x` where the module has no `.x` (in the JS or TS file). A module read by a computed name (`styles[name]`), spread, or passed to a function is never reported, and neither is one no file imports ([SR-PROJECT-GRAPH](records/0103_project-graph.md) decision 8).
+`css-modules/no-unused-class` reports a class no file reads (in the stylesheet; `codelaw fix --unsafe` deletes the rule), and `css-modules/no-undefined-class` reports `styles.x` where the module has no `.x` (in the JS or TS file). A module read by a computed name (`styles[name]`), spread, or passed to a function is never reported, and neither is one no file imports ([SR-MODULE-GRAPH](records/0122_module-graph.md) decision 8).
 
 ### Spelling
 
@@ -469,7 +469,7 @@ scope = "all"                   # "public": only exported functions (JS/TS), no 
   vendor                                js/*  forever: third-party code, never edited here
   ```
 
-  `on_touch=error` (the default) revokes an exemption when its file is edited — every function it covers in that file is judged again; `warn` brings the findings back as warnings; `keep` keeps it. `on_touch_scope=function` narrows "edited" to that function's own tokens. `forever` never expires and is never revoked. An exempted finding is not reported and `codelaw fix` does not fix it; the editor shows it dotted grey, as a baseline finding. `[codelawignore]` (formerly `[coverage.ignore]`) sets `require_expiry` and `require_on_touch` (both `true`) and the defaults of a line; a line missing a field, or naming a rule the project does not have, is `codelaw/incomplete-ignore` and exempts nothing; a line that names no rule still means the two test rules, with a warning, until the next minor release; and a line that matches nothing is `codelaw/stale-ignore`, which `codelaw fix` removes. `codelaw exceptions` lists every line. A `// codelaw-ignore graph/untested-function: <why>` above one function works too ([SR-PROJECT-GRAPH](records/0103_project-graph.md) decision 9, [SR-BASELINE](records/0104_baseline-and-deprecations.md) decision 12).
+  `on_touch=error` (the default) revokes an exemption when its file is edited — every function it covers in that file is judged again; `warn` brings the findings back as warnings; `keep` keeps it. `on_touch_scope=function` narrows "edited" to that function's own tokens. `forever` never expires and is never revoked. An exempted finding is not reported and `codelaw fix` does not fix it; the editor shows it dotted grey, as a baseline finding. `[codelawignore]` (formerly `[coverage.ignore]`) sets `require_expiry` and `require_on_touch` (both `true`) and the defaults of a line; a line missing a field, or naming a rule the project does not have, is `codelaw/incomplete-ignore` and exempts nothing; a line that names no rule still means the two test rules, with a warning, until the next minor release; and a line that matches nothing is `codelaw/stale-ignore`, which `codelaw fix` removes. `codelaw exceptions` lists every line. A `// codelaw-ignore graph/untested-function: <why>` above one function works too ([SR-MODULE-GRAPH](records/0122_module-graph.md) decision 9, [SR-BASELINE](records/0104_baseline-and-deprecations.md) decision 12).
 
 ---
 
@@ -779,7 +779,7 @@ The rule packs come from the repository's own dependencies, so the step installs
 | `codelaw brief` | What is specific to this repo for the files an agent is about to write (SR-CLI-MCP decision 14) |
 | `codelaw migrate` | Translate an ESLint, Prettier, Biome, Ruff or stylelint config into codelaw.toml, with a report of what mapped and what did not (SR-CLI-MCP decision 14) |
 | `codelaw spell` | The spell pack's words file: `learn` adds the words no dictionary knows (SR-SPELL) |
-| `codelaw flags` | Feature flags: `accessors` lists every call the flag rules read a flag through (SR-PROJECT-GRAPH decision 11) |
+| `codelaw flags` | Feature flags: `accessors` lists every call the flag rules read a flag through (SR-MODULE-GRAPH decision 11) |
 
 <!-- /docs-sync:commands -->
 

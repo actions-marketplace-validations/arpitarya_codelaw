@@ -1,4 +1,4 @@
-//! Module resolution without a type checker (SR-PROJECT-GRAPH decision 2),
+//! Module resolution without a type checker (SR-MODULE-GRAPH decision 2),
 //! over the project's own file set: no file is read here, so the result
 //! is a pure function of the files given (L5) and the rule tester's
 //! virtual repos resolve exactly as a disk checkout does.

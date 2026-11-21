@@ -24,7 +24,7 @@ An inline marker registers a flag where it is read, when no `.codelaw/flags.toml
 // codelaw-flag new-checkout expires 2027-02-28 owner @payments ticket PAY-12 keep on reason <the rest of the line>
 ```
 
-`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11). It reports:
+`expires` is a date (`YYYY-MM-DD`) or `never`, which needs a `reason`; `keep` is `on` or `off`. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11). It reports:
 
 | the marker | finding | fix |
 |---|---|---|

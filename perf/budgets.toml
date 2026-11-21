@@ -150,7 +150,7 @@ budget = "unset" # 10k: 2322.6 / 2972.8; 100k 13933.0; 1M 955083.3
 
 [operation.graph_hook_one_file]
 unit = "ms"
-budget = "unset" # 10k: 2028.3 / 4518.2 — SR-PROJECT-GRAPH decision 5's target is 300; 100k 12082.0; 1M 235538.1
+budget = "unset" # 10k: 2028.3 / 4518.2 — SR-MODULE-GRAPH decision 5's target is 300; 100k 12082.0; 1M 235538.1
 
 [operation.graph_peak_memory]
 unit = "MiB"

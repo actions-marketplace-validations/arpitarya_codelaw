@@ -1,4 +1,4 @@
-//! The project graph (SR-PROJECT-GRAPH): per-file facts read once and
+//! The project graph (SR-MODULE-GRAPH): per-file facts read once and
 //! cached by content, a resolver over the project's own file set, the
 //! linked graph of modules, exports, imports and uses, and the `graph:`
 //! queries `scope: project` rules run on it.
@@ -15,6 +15,7 @@ pub mod flags;
 pub mod link;
 pub mod modules;
 pub mod names;
+pub mod pynames;
 pub mod query;
 pub mod resolve;
 
@@ -26,7 +27,7 @@ pub use link::{BuildTimes, Graph, GraphInput, Manifest, Module, Use, is_manifest
 pub use query::{GraphFinding, GraphRule, Query, compile, refs, run, why_unused};
 
 /// Bumped whenever extraction changes: part of the facts cache key.
-pub const FACTS_VERSION: &str = "graph-facts-7";
+pub const FACTS_VERSION: &str = "graph-facts-8";
 
 /// Whether the graph reads facts from a language.
 pub fn reads(language: codelaw_core::Language) -> bool {
@@ -35,5 +36,7 @@ pub fn reads(language: codelaw_core::Language) -> bool {
 
 #[cfg(test)]
 mod names_tests;
+#[cfg(test)]
+mod pynames_tests;
 #[cfg(test)]
 mod tests;

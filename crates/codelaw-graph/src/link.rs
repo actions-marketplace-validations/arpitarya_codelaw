@@ -1,4 +1,4 @@
-//! Linking (SR-PROJECT-GRAPH decisions 1–4): resolve every import to the
+//! Linking (SR-MODULE-GRAPH decisions 1–4): resolve every import to the
 //! module it names and record, for every top-level declaration, each use
 //! from another module — through re-exports, barrels, namespace members
 //! and Python packages — plus the entry points that keep a whole module.

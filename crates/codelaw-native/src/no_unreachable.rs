@@ -54,7 +54,10 @@ fn process_exit(n: &tree_sitter::Node<'_>, src: &str) -> bool {
 
 /// Whether the file makes its own `process`, which is then not the global.
 fn declares_process(src: &str) -> bool {
-    ["const process", "let process", "var process", "function process", "import process", "* as process", "class process", "process =", "{ process", "process }", "process,"].iter().any(|d| src.contains(d))
+    static OWN: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"\b(?:const|let|var|function|class)\s+process\b|\bimport\s+(?:\*\s+as\s+)?process\b|\bimport\s*\{[^}]*\bprocess\b[^}]*\}|[{,]\s*process\s*[,}]|(?:^|[^.\w])process\s*=[^=]").unwrap()
+    });
+    OWN.is_match(src)
 }
 
 /// The statements after one that leaves the block. With `as_throw`, only

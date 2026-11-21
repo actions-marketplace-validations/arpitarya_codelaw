@@ -38,7 +38,7 @@ ball: agent
 
 ## Blockers
 
-🟡 waits on **W-183**: the finding depends on the project's Python version. The table itself is ratified (2026-11-09).
+None. W-183 built the finding gate (SR-RULE-FORMAT decision 2d, `finding_target:`, `FileContext::python_target`); the table itself is ratified (2026-11-09).
 
 ## Record affected
 

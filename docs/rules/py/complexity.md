@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/size` at `warn` |
+| **Turned on by** | `codelaw:py/size` at `warn` · `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | `max`, `ignore_names` |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting a function changes its structure; where to cut and what to call each piece is the author's call) |

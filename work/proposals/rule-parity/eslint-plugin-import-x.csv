@@ -44,5 +44,5 @@ no-useless-path-segments,same-as,,,,,,,auto,,,fork of eslint-plugin-import/no-us
 no-webpack-loader-syntax,same-as,,,,,,,none,,,fork of eslint-plugin-import/no-webpack-loader-syntax: counted there
 order,same-as,,,,,,,auto,,,fork of eslint-plugin-import/order: counted there
 prefer-default-export,same-as,,,,,,,none,,,fork of eslint-plugin-import/prefer-default-export: counted there
-prefer-namespace-import,port,,js,js/import-prefer-namespace-import,auto,P2,C,auto,,,
+prefer-namespace-import,options-only,,js,js/import-prefer-namespace-import,auto,P2,C,auto,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 unambiguous,same-as,,,,,,,none,,,fork of eslint-plugin-import/unambiguous: counted there

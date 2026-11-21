@@ -27,7 +27,7 @@ content_sha: ""
 | Scope | Looks at | Example | Defined by |
 |---|---|---|---|
 | **file** (default) | one file's syntax tree | `js/exports-at-end`, `css/no-empty-block`, `html/img-alt` | a Markdown rule with an ast-grep matcher |
-| **project** | the whole-repo graph | `graph/no-unused-exports`, `graph/no-deprecated-usage` | [SR-PROJECT-GRAPH](0103_project-graph.md) |
+| **project** | the whole-repo graph | `graph/no-unused-exports`, `graph/no-deprecated-usage` | [SR-MODULE-GRAPH](0122_module-graph.md) |
 | **adapter** | an external linter's findings | oxlint, Ruff, stylelint, html-validate | config; must pass [L2](0004_LAW-2-foss-dependencies.md) |
 
 **Code inside other files is linted as its own language.** A `<script>` in HTML is checked by the JS/TS rules, a `<style>` by the CSS rules, and a fenced `py` block in Markdown by the Python rules (when switched on). Each finding points at the line in the host file.
@@ -97,7 +97,7 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    - **`scope: file`** (the default): an ast-grep pattern or YAML rule with relational clauses (`inside`, `has`, `precedes`, `follows`) and the semantic-model predicates ([SR-RULE-FORMAT](0112_rule-format.md) decision 3a; `trailing`, a node with code before it on its line, W-169), or a `native:` rule ([SR-ARCHITECTURE](0108_architecture.md) decision 15b) for checks a pattern can't express, or for JSON, YAML and TOML a `target:` + `assert:` rule on the file's data tree ([SR-RULE-FORMAT](0112_rule-format.md) decision 3e); fixes come from the edit primitives;
      A `match:` rule may also ask type questions under `type:` (SR-RULE-FORMAT decision 3f; `crates/codelaw-match/src/types.rs`), answered by the project's TypeScript ([SR-TYPES](0117_types.md), W-105).
      A `match:` rule's fix may compute its text: ast-grep's `transform:` and codelaw's template filters (SR-RULE-FORMAT decision 3b; W-162, built 2026-11-05: `Match.transformed`, `crates/codelaw-match/src/filters.rs`; `|nearest`, `|arrow-body` and `|style-object` added by change 5, 2026-11-07).
-   - **`scope: project`**: a `graph:` query ([SR-PROJECT-GRAPH](0103_project-graph.md));
+   - **`scope: project`**: a `graph:` query ([SR-MODULE-GRAPH](0122_module-graph.md));
    - **adapters**: oxlint and Ruff by default when installed; stylelint (CSS) and html-validate (HTML) available. Each one is run only if installed, its output is mapped to the three fix classes, and none of them is bundled ([L6](0008_LAW-6-python-and-node-packages.md) completeness never depends on an adapter). Built in `crates/codelaw-adapters` (W-14):
      - **Which run:** `[adapters] enabled` lists them by name (`"oxlint"`, `"ruff"`, `"stylelint"`, `"html-validate"`); unset, it is the two defaults; `[]` turns every adapter off. A name codelaw has no manifest for is a config error (exit 2), so yamllint, refused by [L2](0004_LAW-2-foss-dependencies.md) as GPL-3.0, can't be named. `[adapters] timeout` bounds each run of a program, 60 s by default. Both are root config only.
      - **Each tool's licence is in its manifest** and must be on L2's permissive list; all four are MIT. The tools are the user's install, never codelaw's dependency.
@@ -119,9 +119,11 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
    | Markdown | YAML frontmatter | YAML |
    | Markdown | inline content (links, emphasis, code spans) | Markdown, with the inline grammar; a Markdown rule runs on whichever of the two grammars its kinds belong to |
    | JS/TS | `` css`…` `` / `` html`…` `` tagged templates | CSS / HTML, only when `[lint] tagged_templates = true` |
+   | JS/TS | the code of an `@example` tag in a `/** … */` comment | the file's language, or the language of the fence the example holds (`json`, `ts`), only when `[lint] jsdoc_examples = true` |
 
    - **Locations map back to the host:** diagnostics report host-file line and column.
    - **A template's `${…}` is a hole:** the region's text holds a placeholder that keeps it parseable (in CSS chosen by where it stands: a comment, a custom property, a class, `all` in `@media`, a number, `var(--…)`; in HTML `${}`). A finding wholly inside a placeholder is dropped, and a fix whose edit would touch a hole's host code is refused (`fix-outside-region`). Only a plain identifier tag, `css` or `html`, makes a region; each nested template is a region of its own. *(W-21, 2026-10-22.)*
+   - **An `@example` is a region whose margin is a hole** (W-178, 2026-11-19): the lines after the tag up to the next tag, what follows `@example` on its own line (unless it is a `<caption>`), or the first fenced block's code with its fence's language; each line's ` * ` margin, the tag and the fence lines are holes of their own width, so a region offset is the host offset, a finding in a margin is dropped and no fix may reach it (`fix-outside-region`). An example that does not parse is **not a region** — it is not code to lint; `js/jsdoc-check-examples` ([SR-RULE-PACKS](0101_rule-packs.md) decision 18) reports it. Off by default, like `tagged_templates`. `codelaw_lang::jsdoc_examples` is the one reader both use.
    - **Fixes are applied in the host:** fixes edit the host text and are verified by re-parsing the host.
    - **Rules can target a host:** a rule may say `host: html` to apply only to embedded regions (for example, "no inline `<script>` without `nonce`").
    - **A language switched off is off inside hosts too,** and a region is parsed only when something applies to it ([SR-ARCHITECTURE](0108_architecture.md) decision 16).
@@ -199,6 +201,6 @@ The decider asked for an SR for the linter itself, covering JavaScript, TypeScri
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-BASELINE](0104_baseline-and-deprecations.md) · [SR-FORMATTER](0105_formatter.md) · [SR-ARCHITECTURE](0108_architecture.md)
+**Records** — [SR-RULE-PACKS](0101_rule-packs.md) · [SR-MODULE-GRAPH](0122_module-graph.md) · [SR-BASELINE](0104_baseline-and-deprecations.md) · [SR-FORMATTER](0105_formatter.md) · [SR-ARCHITECTURE](0108_architecture.md)
 
 **Project docs** — [`docs/DESIGN.md`](../docs/DESIGN.md)

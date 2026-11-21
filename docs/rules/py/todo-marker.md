@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/markers` at `error` |
+| **Turned on by** | `codelaw:py/markers` at `error` · `codelaw:py/pylint` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (a ticket and a date are facts about the work that only the author knows; the engine can't invent them) |

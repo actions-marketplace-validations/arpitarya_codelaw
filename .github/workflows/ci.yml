@@ -184,6 +184,12 @@ jobs:
         run: python3 scripts/data-browsers-check.py --check
       - name: the polyfill table is well-formed and names its source (L6 decision 15, W-175)
         run: python3 scripts/data-polyfills-check.py --check
+      - name: the confusables table is well-formed and names its source (L6 decision 15, W-182)
+        run: python3 scripts/data-confusables-check.py --check
+      - name: the imperative-mood table is what pydocstyle's pinned word lists write (L11 D-56, W-180)
+        run: python3 scripts/data-imperatives.py --check
+      - name: the Python deprecation table is well-formed and names its source (L6 decision 15, W-187)
+        run: python3 scripts/data-python-deprecations-check.py --check
       - id: rustc # the pinned toolchain, read from the file — nothing is installed to learn it
         run: echo "v=$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)" >> "$GITHUB_OUTPUT"
       - id: verdict

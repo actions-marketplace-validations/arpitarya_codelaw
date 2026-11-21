@@ -1,0 +1,19 @@
+def f():
+
+    """Return one."""
+    return 1
+
+
+class K:
+    def m(self):
+
+        """Return two."""
+        return 2
+
+
+@decorator
+async def g():
+    # why the docstring is not first
+    
+    """Return three."""
+    return 3

@@ -1121,7 +1121,7 @@ impl Config {
     }
 
     /// Whether the root config has a `[flags]` table: it turns the flag
-    /// rules on (SR-PROJECT-GRAPH decision 11).
+    /// rules on (SR-MODULE-GRAPH decision 11).
     pub fn flags_on(&self) -> bool {
         self.root_raw().is_some_and(|r| r.flags.is_some())
     }
@@ -1139,6 +1139,10 @@ impl Config {
 
     pub fn tagged_templates(&self) -> bool {
         self.root_raw().and_then(|r| r.lint.tagged_templates).unwrap_or(false)
+    }
+
+    pub fn jsdoc_examples(&self) -> bool {
+        self.root_raw().and_then(|r| r.lint.jsdoc_examples).unwrap_or(false)
     }
 
     /// `[lint] ignore_aliases`: the tools whose line suppressions count as

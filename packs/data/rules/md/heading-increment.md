@@ -5,7 +5,7 @@ languages: [markdown]
 fix: suggest
 fix_reason: "the fix raises the skipped heading and its subsections, which changes the outline readers and tools see"
 stability: preview
-ported_from: [markdownlint/MD001]
+ported_from: [markdownlint/MD001, biome/nursery/useConsistentHeadingLevel]
 since: 0.1.0
 ---
 

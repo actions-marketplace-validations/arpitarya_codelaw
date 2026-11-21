@@ -18,7 +18,7 @@
 
 ## What it checks
 
-Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-PROJECT-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor.
+Each call that reads a feature flag names a flag that is registered — in `.codelaw/flags.toml` or by an inline `codelaw-flag` marker — and that has not expired on the as-of date. The rule is on when the root config has a `[flags]` table (SR-MODULE-GRAPH decision 11), and reads nothing until `[flags]` names a preset or an accessor.
 
 ```toml
 [flags]

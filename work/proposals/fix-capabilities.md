@@ -161,7 +161,7 @@ mark sits in bytes the text never sees.
   makes the name a `value`, so the rule stays `manual`.
 - **The rung.** `auto` only when every reference is resolved statically: SCSS
   `$var` and `@mixin` through `@use`, and a JS export whose importers are all
-  static (no `dynamic` module, SR-PROJECT-GRAPH decision 4). A rename that
+  static (no `dynamic` module, SR-MODULE-GRAPH decision 4). A rename that
   touches a class token in a string is **never** `auto`: those tokens are
   words that *may* name a class. Everything else is `suggest`.
 - **The verifier, across files.** Every file touched still parses. A second
@@ -174,7 +174,7 @@ mark sits in bytes the text never sees.
   action.
 
 **Records.** SR-LAW-4 decisions 8, 9, 10 and 12 (needs a ruling, §5);
-SR-PROJECT-GRAPH; SR-CLI-AND-MCP; SR-CACHE.
+SR-MODULE-GRAPH; SR-CLI-AND-MCP; SR-CACHE.
 **Prior art.** LSP rename and `WorkspaceEdit`; TypeScript's language service
 (`getEditsForFileRename`, rename returning `FileTextChanges`). ESLint and Ruff
 stay single-file by design: a rule there sees one file.
@@ -363,6 +363,6 @@ makes.
 [SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.md) ·
 [SR-RULE-FORMAT](../../records/0112_rule-format.md) 3a–3c ·
 [SR-TYPES](../../records/0117_types.md) 4 ·
-[SR-PROJECT-GRAPH](../../records/0103_project-graph.md) ·
+[SR-MODULE-GRAPH](../../records/0122_module-graph.md) ·
 [`fix-ladder.md`](fix-ladder.md) — the 2026-10-30 review ·
 [ast-grep `transform`](https://ast-grep.github.io/guide/rewrite/transform.html)

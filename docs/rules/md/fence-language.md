@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the reviewer picks the language the block holds; `text` is always accepted, `sh` and `json` are offered for the common cases) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `markdownlint/MD040` |
+| **Ported from** | `markdownlint/MD040`, `biome/nursery/useFencedCodeLanguage` |
 
 ## What it checks
 
