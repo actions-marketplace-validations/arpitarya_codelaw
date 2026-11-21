@@ -28,6 +28,9 @@ pub enum PyImportCheck {
     BeyondTop,
     /// `wildcard_unused`: names a `from m import *` brings that the file never reads.
     WildcardUnused,
+    /// `private`: a `_name`, or a module with a `_part`, imported from another
+    /// top-level package (W-186, Ruff `PLC2701`).
+    PrivateName,
 }
 
 /// The number of leading dots of a Python module spelling (`..a.b` is 2).
@@ -168,6 +171,24 @@ pub fn imports(graph: &Graph, languages: &[Language], check: PyImportCheck) -> V
                         continue;
                     }
                     out.push(finding(&m.path, imp.span, &[("NAME", n), ("SOURCE", &imp.source), ("FILE", file_name(&t))], None, Vec::new()));
+                }
+                PyImportCheck::PrivateName => {
+                    if imp.type_checking || imp.type_only || lv > 0 || imp.kind == ImportKind::SideEffect {
+                        continue;
+                    }
+                    let private = |s: &str| s.starts_with('_') && !(s.starts_with("__") && s.ends_with("__"));
+                    let module_part = imp.source.split('.').find(|p| private(p));
+                    let name = match &imp.kind {
+                        ImportKind::Named(n) if private(n) => Some(n.as_str()),
+                        _ => None,
+                    };
+                    let Some(shown) = name.or(module_part) else { continue };
+                    // The same top-level package may use its own private names.
+                    let mine = dotted(graph, &m.path);
+                    if mine.split('.').next() == imp.source.split('.').next() || !seen.insert(imp.span) {
+                        continue;
+                    }
+                    out.push(finding(&m.path, imp.span, &[("NAME", shown), ("SOURCE", &imp.source)], None, Vec::new()));
                 }
                 PyImportCheck::WildcardUnused => {
                     if imp.kind != ImportKind::Star || is_init(&m.path) || lv > depth {

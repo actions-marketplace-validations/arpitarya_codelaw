@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 913 — 0 on, 97 on with `preview = true`, 709 off in an opt-in preset, 107 in no preset.
+- **Rules:** 914 — 0 on, 97 on with `preview = true`, 710 off in an opt-in preset, 107 in no preset.
 
 ## Presets
 
@@ -13,7 +13,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 |---|---|--:|---|---|
 | `py/recommended` | yes, once the pack is installed | 97 | 96 error, 1 warn | Ruff 0.17.1's long-standing default (E4, E7, E9, F) plus flake8-bugbear (B), isort's import order (I001) and sorted __all__ (RUF022), reimplemented |
 | `py/conventions` | no — opt in | 2 | 2 warn | House conventions from codelaw's starter catalogue that no upstream preset covers |
-| `py/project` | no — opt in | 7 | 4 error, 3 warn | The rules that read the whole repo, so they build the project graph: module-level names nothing imports (vulture), and Pylint's import and class rules that read other files (cyclic-import, import-error, no-name-in-module, relative-beyond-top-level, unused-wildcard-import, too-many-ancestors, W-185) |
+| `py/project` | no — opt in | 8 | 4 error, 4 warn | The rules that read the whole repo, so they build the project graph: module-level names nothing imports (vulture), and Pylint's import and class rules that read other files (cyclic-import, import-error, no-name-in-module, relative-beyond-top-level, unused-wildcard-import, too-many-ancestors, W-185 |
 | `py/size` | no — opt in | 5 | 5 warn | Size limits: lines per module and function, parameters, complexity and nesting depth (Pylint's and Ruff's defaults) |
 | `py/markers` | no — opt in | 2 | 2 error | TODO comments with a ticket (and a date when asked), skipped tests with a reason and an expiry |
 | `py/strict` | no — opt in | 622 | 96 error, 526 warn | `py/recommended` plus the rest of Ruff's stable rules, reimplemented, at `warn` — every rule Ruff ships stable that no other `py/*` preset holds, apart from the `D` rules (`py/pydocstyle`), the copyright-notice rule (a team's policy) and the options-only `py/missing-required-import` |
@@ -306,6 +306,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/implicit-string-concatenation-in-collection-literal`](../py/implicit-string-concatenation-in-collection-literal.md) | off — opt-in preset | — | `py/strict` |
 | [`py/import-error`](../py/import-error.md) | off — opt-in preset | — | `py/project` |
 | [`py/import-outside-top-level`](../py/import-outside-top-level.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
+| [`py/import-private-name`](../py/import-private-name.md) | off — opt-in preset | — | `py/project` |
 | [`py/import-self`](../py/import-self.md) | off — opt-in preset | — | `py/strict`, `py/pylint` |
 | [`py/import-shadowed-by-loop-var`](../py/import-shadowed-by-loop-var.md) | on with `preview = true` | error | `py/recommended`, `py/strict` |
 | [`py/impossible-comparison`](../py/impossible-comparison.md) | off — opt-in preset | — | `py/pylint` |

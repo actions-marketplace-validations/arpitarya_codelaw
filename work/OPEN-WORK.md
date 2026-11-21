@@ -30,9 +30,9 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (17)
+## Open items (16)
 
-### build (8)
+### build (7)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
@@ -52,7 +52,6 @@ here. Read that record before changing anything below it.
 
 🟢 **W-181** `agent` Ruff's moved typing names table (ratified 11-09) and UP035 on it. Filed by Arpit (Cowork). [detail](open/W-181-moved-typing-names.md)
 
-🟢 **W-186** `agent` Ruff PLC2701, importing another package's private names. Filed by Arpit (Cowork). [detail](open/W-186-import-private-name.md)
 
 🟣 **W-188** waits on **W-105** `agent` The JS value-type rows (built 11-09 on one file's facts) ask the type helper; `jsdoc-no-unnecessary-type-assertion`. Filed by Arpit (Cowork). [detail](open/W-188-js-value-rows-type-aware.md)
 
@@ -75,7 +74,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-181**, **W-186**, **W-189**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-181**, **W-189**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

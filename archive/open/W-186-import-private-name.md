@@ -5,9 +5,9 @@ description: "Arpit, 2026-11-09 (voice docket): PLC2701 gets its own item, waiti
 item: W-186
 filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5)"
-ball: agent
+updated: 2026-11-19
+updated_by: "Claude Code (Sonnet 5.5): built and closed"
+ball: none
 ---
 
 # W-186 — Ruff PLC2701: importing another package's private names
@@ -16,7 +16,7 @@ ball: agent
 
 | step | what we do | what it gives us | state |
 |---|---|---|---|
-| 1 | Build PLC2701 on the Python graph | an import of a `_private` name from another package is reported | ⏳ |
+| 1 | Build PLC2701 on the Python graph | an import of a `_private` name from another package is reported | ✅ `py/import-private-name` |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* *"PLC 2701 have a separate work item for it."* Filed on *"file it."*
 
@@ -30,11 +30,11 @@ ball: agent
 
 | DoD | what | state |
 |---|---|---|
-| 1 · rule | PLC2701 with cases, on W-185's queries | ⏳ |
+| 1 · rule | PLC2701 with cases, on W-185's queries | ✅ `python: { imports: private }`, 5 cases and a graph test |
 
 ## Blockers
 
-🟡 waits on **W-185** (the Python project graph).
+None: W-185 closed 2026-11-19.
 
 ## Record affected
 

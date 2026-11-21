@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-186 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-186 in `lm/W-186`: `py/import-private-name` (Ruff PLC2701) on a new graph query `python: { imports: private }`, in `py/project`; a graph test and five cases. `codelaw test packs/python` 914 · 6,847 · 0 failed; graph, config, engine tests; clippy clean.
+- **Decided / left open:** the rule judges the import alone, so `from os import _exit` is reported as Ruff does. `perf` not run.
+- **Mistakes:** none.
+- **Next:** W-195, W-196, W-181 (each has a worktree from an earlier session).
+
 ## 2026-11-19 — implement the green items one by one: W-190 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"* (continued)

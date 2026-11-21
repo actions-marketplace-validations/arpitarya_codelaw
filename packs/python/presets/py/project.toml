@@ -1,4 +1,4 @@
-description = "The rules that read the whole repo, so they build the project graph: module-level names nothing imports (vulture), and Pylint's import and class rules that read other files (cyclic-import, import-error, no-name-in-module, relative-beyond-top-level, unused-wildcard-import, too-many-ancestors, W-185); opt in"
+description = "The rules that read the whole repo, so they build the project graph: module-level names nothing imports (vulture), and Pylint's import and class rules that read other files (cyclic-import, import-error, no-name-in-module, relative-beyond-top-level, unused-wildcard-import, too-many-ancestors, W-185; import-private-name, W-186); opt in"
 
 [rules]
 "graph/no-unused-exports" = "error"
@@ -8,3 +8,4 @@ description = "The rules that read the whole repo, so they build the project gra
 "py/relative-beyond-top-level" = "error"
 "py/unused-wildcard-import" = "warn"
 "py/too-many-ancestors" = "warn"
+"py/import-private-name" = "warn"

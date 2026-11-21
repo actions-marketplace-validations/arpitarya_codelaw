@@ -42,7 +42,7 @@ pub enum Query {
     ExportStar,
     /// `module: { exports: [missing, unused] }`.
     ModuleExports { missing: bool, unused: bool },
-    /// `python: { imports: unresolved | unexported | beyond_top | wildcard_unused }`:
+    /// `python: { imports: unresolved | unexported | beyond_top | wildcard_unused | private }`:
     /// a Python import read against the project's files (W-185, `pynames.rs`).
     PyImports(crate::pynames::PyImportCheck),
     /// `python: { classes: ancestors }`: a class with too many ancestors.
@@ -228,8 +228,9 @@ pub fn compile(graph: &Value, fix: Option<&Value>) -> Result<GraphRule, String> 
             (Some("unexported"), None) => Query::PyImports(PyImportCheck::Unexported),
             (Some("beyond_top"), None) => Query::PyImports(PyImportCheck::BeyondTop),
             (Some("wildcard_unused"), None) => Query::PyImports(PyImportCheck::WildcardUnused),
+            (Some("private"), None) => Query::PyImports(PyImportCheck::PrivateName),
             (None, Some("ancestors")) => Query::PyAncestors,
-            _ => return Err("`graph: python:` takes `imports: unresolved | unexported | beyond_top | wildcard_unused` or `classes: ancestors`".into()),
+            _ => return Err("`graph: python:` takes `imports: unresolved | unexported | beyond_top | wildcard_unused | private` or `classes: ancestors`".into()),
         }
     } else if let Some(export) = g.get("export") {
         if export.get("star").and_then(Value::as_str) != Some("conflicts") {

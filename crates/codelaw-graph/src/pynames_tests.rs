@@ -316,3 +316,21 @@ fn star_imports_that_reach_each_other_are_followed_once_each() {
     let _ = run(&rule, &gr, &[Language::Python]);
     assert!(started.elapsed().as_secs() < 20, "took {:?}", started.elapsed());
 }
+
+#[test]
+fn a_private_name_of_another_package() {
+    let files = [
+        ("pkg/__init__.py", ""),
+        ("pkg/_impl.py", "def _helper(): ...\ndef public(): ...\n"),
+        ("pkg/app.py", "from pkg._impl import public\nfrom pkg import _helper\nfrom . import _impl\nfrom .core import _x\n"),
+        ("other/__init__.py", ""),
+        (
+            "other/use.py",
+            "from pkg import _helper, public\nfrom pkg._impl import public as p\nimport pkg._impl\nfrom pkg import __version__\nfrom os import _exit\nfrom typing import TYPE_CHECKING\nif TYPE_CHECKING:\n    from pkg import _Typed\n",
+        ),
+    ];
+    assert_eq!(
+        hits(&files, q("imports", "private")),
+        vec!["other/use.py:_helper", "other/use.py:public as p", "other/use.py:pkg._impl", "other/use.py:_exit"]
+    );
+}
