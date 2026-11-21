@@ -4,6 +4,10 @@ Every user-visible change, newest first. The format follows [Keep a Changelog](h
 
 ## Unreleased
 
+### Added
+
+- **Biome's remaining rows (W-196):** 41 `preview` rules, in no preset — `js/no-process-global`, `js/no-shouty-constants`, `js/no-exported-imports`, `js/no-redundant-default-export`, `js/no-parameters-only-used-in-recursion`, `js/use-simplified-logic-expression` (auto), `js/no-secrets`, `js/use-node-assert-strict`, `js/use-json-import-attributes`, `js/no-duplicate-map-keys`, `js/no-bun-modules`, `js/use-top-level-regex`, `js/no-re-export-all`, `js/use-static-response-methods`, `ts/no-enum`, `ts/no-evolving-types`, twelve `react/*` rules (inline styles, `forwardRef`, obsolete HTML, viewport, iframe sandbox, Tailwind raw colours and static class strings, React naming), eight `json/*` and `yaml/*` rules (empty keys, top-level literals, `cpu`, `engines`, duplicate dependencies, required scripts, unsafe values, boolean keys) and five `css/*` rules (`@value`, layers, `@property` initial values). 13 more of Biome's rows are linked to rules that were already there; 44 are classed (frameworks with no pack, Vue and Svelte to W-143, type information, data codelaw does not ship, four project-wide rows in W-198).
+
 ### Changed
 
 - **One record per graph (W-191):** SR-PROJECT-GRAPH is now the overview of every graph codelaw builds; the module graph is SR-MODULE-GRAPH, the per-file semantic model SR-SEMANTIC-MODEL (was SR-ARCHITECTURE decision 15a) and the Python flow pass SR-PY-FLOW (was SR-PY-INFERENCE decision 3). Records only; no behaviour changed.

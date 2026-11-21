@@ -128,7 +128,7 @@ correctness/noNodejsModules,same-as,,,,,,,none,,,counted under eslint-plugin-imp
 correctness/noNonoctalDecimalEscape,covered,js/no-nonoctal-decimal-escape,,,,,,auto,yes,,through its source: eslint/no-nonoctal-decimal-escape
 correctness/noPlaywrightMissingAwait,same-as,,,,,,,suggest,,,counted under eslint-plugin-playwright/missing-playwright-await
 correctness/noPrecisionLoss,covered,js/no-loss-of-precision,,,,,,none,yes,,"through its source: eslint/no-loss-of-precision, typescript-eslint/no-loss-of-precision, clippy/lossy_float_literal, eslint-plugin-vue/no-loss-of-precision"
-correctness/noPrivateImports,port,,js,js/no-private-imports,manual,P2,C,none,,,source: eslint-plugin-import-access/eslint-plugin-import-access
+correctness/noPrivateImports,planned,,,,,P2,C,none,,,a project-wide rule on JSDoc `@private`/`@package` of exports — filed as W-198
 correctness/noProcessGlobal,port,,js,js/no-process-global,auto,P2,C,auto,,,source: deno_lint/no-process-global
 correctness/noQwikUseVisibleTask,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/noReactNativeRawText,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
@@ -251,7 +251,7 @@ nursery/noPlaywrightNthMethods,port,,js,js/no-playwright-nth-methods,manual,P3,E
 nursery/noProcessExit,covered,node/no-process-exit,,,,,,none,,,"through its source: eslint/no-process-exit, eslint-plugin-n/no-process-exit, eslint-plugin-unicorn/no-process-exit"
 nursery/noPromiseExecutorReturn,same-as,,,,,,,suggest,,,counted under eslint/no-promise-executor-return
 nursery/noReactObjectTypeAsDefaultProp,same-as,,,,,,,none,,,counted under eslint-plugin-react/no-object-type-as-default-prop
-nursery/noRestrictedDependencies,port,,js,js/no-restricted-dependencies,manual,P3,E,none,,,nursery upstream; source: @e18e/eslint-plugin/ban-dependencies
+nursery/noRestrictedDependencies,needs-data,,,,,P3,E,none,,,"needs e18e's module-replacements table, which codelaw does not ship; the decider rules whether to ship it as data (W-196)"
 nursery/noReturnArrayPush,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/no-return-array-push
 nursery/noReturnInFinally,same-as,,,,,,,none,yes,,counted under eslint-plugin-promise/no-return-in-finally
 nursery/noSelfImport,same-as,,,,,,,none,,,counted under eslint-plugin-import/no-self-import
@@ -271,11 +271,11 @@ nursery/noSvelteUselessDerivedBy,out-of-scope,,,,,,,auto,,,language outside L3: 
 nursery/noTailwindArbitraryValue,same-as,,,,,,,none,,,counted under EslintTailwindcss/no-arbitrary-value
 nursery/noTailwindLegacyUtilities,same-as,,,,,,,auto,,,counted under EslintBetterTailwindcss/no-deprecated-classes
 nursery/noTailwindRawColors,port,,react,react/no-tailwind-raw-colors,manual,P3,E,none,,,nursery upstream; source: EslintShadcn/no-raw-colors
-nursery/noTailwindRestyledComponents,port,,react,react/no-tailwind-restyled-components,manual,P3,E,none,,,nursery upstream; source: EslintShadcn/no-restyle
+nursery/noTailwindRestyledComponents,needs-data,,,,,P3,E,none,,,needs the Tailwind class table to tell a restyling utility from a layout one — the `tailwind` pack's provider; not built (W-196)
 nursery/noTanstackQueryRestDestructuring,covered,tanstack-query/no-rest-destructuring,,,,,,none,,,through its source: EslintTanstackQuery/no-rest-destructuring
 nursery/noThisOutsideOfClass,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-this-outside-of-class
-nursery/noUndeclaredClasses,port,,js,js/no-undeclared-classes,manual,P3,E,none,,,nursery upstream; Biome only
-nursery/noUndeclaredCustomProperties,port,,react,react/no-undeclared-custom-properties,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noUndeclaredClasses,planned,,,,,P3,E,none,,,classes used in JSX/HTML against the stylesheets that reach the file: a project graph for plain CSS — filed as W-198
+nursery/noUndeclaredCustomProperties,planned,,,,,P3,E,none,,,`var(--x)` against the declarations and `@property` rules that reach it: a project graph for plain CSS — filed as W-198
 nursery/noUnmodifiedLoopCondition,same-as,,,,,,,none,,,counted under eslint/no-unmodified-loop-condition
 nursery/noUnreadableForOfExpression,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-unreadable-for-of-expression
 nursery/noUnreadableIife,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/no-unreadable-iife
@@ -284,7 +284,7 @@ nursery/noUnsafePlusOperands,same-as,,,,,,,none,,,counted under typescript-eslin
 nursery/noUnsafeReturn,covered,ts/no-unsafe-return,,,,,,none,,,through its source: typescript-eslint/no-unsafe-return
 nursery/noUnsafeTypeAssertion,types,,,,,P3,E,none,,,needs type information — W-105; not built (W-196)
 nursery/noUnsafeUnaryMinus,same-as,,,,,,,none,,,counted under typescript-eslint/no-unsafe-unary-minus
-nursery/noUnusedClasses,port,,css,css/no-unused-classes,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noUnusedClasses,planned,,,,,P3,E,none,,,classes declared in CSS against the JSX/HTML that uses them: a project graph for plain CSS — filed as W-198
 nursery/noUselessAssignment,covered,js/no-useless-assignment,,,,,,none,yes,,through its source: eslint/no-useless-assignment
 nursery/noUselessCall,same-as,,,,,,,none,yes,,counted under eslint/no-useless-call
 nursery/noUselessDateGetTime,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/consistent-date-clone
@@ -327,7 +327,7 @@ nursery/useConsistentFunctionStyle,same-as,,,,,,,none,,,counted under eslint/fun
 nursery/useConsistentHeadingLevel,port,,js,js/use-consistent-heading-level,manual,P3,E,none,yes,,nursery upstream; Biome only
 nursery/useConsistentJsonFileRead,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/consistent-json-file-read
 nursery/useConsistentLightnessNotation,covered,css/lightness-notation,,,,,,auto,,,through its source: stylelint/lightness-notation
-nursery/useConsistentObjectKeys,port,,data,json/use-consistent-object-keys,suggest,P3,E,suggest,yes,,nursery upstream; source: EslintJson/no-unnormalized-keys
+nursery/useConsistentObjectKeys,needs-data,,,,,P3,E,suggest,yes,,needs Unicode normalization (NFC) tables codelaw does not ship; the only source is a dependency (L11) (W-196)
 nursery/useConsistentUnicodeBom,same-as,,,,,,,auto,,,counted under eslint/unicode-bom
 nursery/useControlLabel,same-as,,,,,,,none,,,counted under eslint-plugin-jsx-a11y/control-has-associated-label
 nursery/useDisposables,types,,,,,P3,E,suggest,,,needs type information — W-105; not built (W-196)
@@ -352,7 +352,7 @@ nursery/useNullishCoalescing,same-as,,,,,,,auto,,,counted under typescript-eslin
 nursery/usePackageJsonValidCpu,port,,data,json/use-package-json-valid-cpu,manual,P3,E,none,yes,,nursery upstream; source: eslint-plugin-package-json/valid-cpu
 nursery/usePackageJsonValidEngines,port,,data,json/use-package-json-valid-engines,manual,P3,E,none,yes,,nursery upstream; source: eslint-plugin-package-json/valid-engines
 nursery/usePromiseRejectErrors,same-as,,,,,,,none,,,"counted under eslint/prefer-promise-reject-errors, typescript-eslint/prefer-promise-reject-errors"
-nursery/useReactCompiler,port,,react,react/use-react-compiler,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/useReactCompiler,out-of-scope,,,,,P3,E,none,,,runs React's own compiler in lint mode; codelaw has no model of it and takes no dependency (L11); `react-hooks/*` rules cover its checks one by one (W-196)
 nursery/useReactFunctionComponentDefinition,same-as,,,,,,,suggest,,,counted under eslint-plugin-react/function-component-definition
 nursery/useReactNamingConvention,port,,react,react/use-react-naming-convention,manual,P3,E,none,,,"nursery upstream; source: @eslint-react/naming-convention-context-name, EslintReactNamingConvention/context-name, @eslint-react/naming-convention-id-name, EslintReactNamingConvention/id-name, @eslint-react/naming-convention-ref-name, EslintReactNamingConvention/ref-name"
 nursery/useReactNativeValidPlatformColors,out-of-scope,,,,,P3,E,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
@@ -504,7 +504,7 @@ style/useInputName,out-of-scope,,,,,,,none,,,language outside L3: graphql — W-
 style/useLiteralEnumMembers,same-as,,,,,,,none,yes,,counted under typescript-eslint/prefer-literal-enum-member
 style/useLoneExecutableDefinition,out-of-scope,,,,,,,none,,,language outside L3: graphql — W-143
 style/useNamedCaptureGroup,same-as,,,,,,,none,,,counted under eslint/prefer-named-capture-group
-style/useNamingConvention,port,,react,react/use-naming-convention,auto,P2,C,auto,,,Biome only
+style/useNamingConvention,types,,,,,P2,C,auto,,,"a configurable naming rule over every symbol kind, with the kinds from type information — as typescript-eslint's `naming-convention` (W-105); not built (W-196)"
 style/useNodeAssertStrict,port,,js,js/use-node-assert-strict,auto,P2,C,auto,,,Biome only
 style/useNodejsImportProtocol,same-as,,,,,,,suggest,yes,,"counted under eslint-plugin-unicorn/prefer-node-protocol, eslint-plugin-import/enforce-node-protocol-usage, eslint-plugin-n/prefer-node-protocol"
 style/useNumberNamespace,same-as,,,,,,,auto,,,counted under eslint-plugin-unicorn/prefer-number-properties
@@ -659,7 +659,7 @@ suspicious/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration,
 suspicious/useAdjacentOverloadSignatures,same-as,,,,,,,none,yes,,counted under typescript-eslint/adjacent-overload-signatures
 suspicious/useArraySortCompare,same-as,,,,,,,none,,,counted under typescript-eslint/require-array-sort-compare
 suspicious/useAwait,same-as,,,,,,,none,,,"counted under eslint/require-await, typescript-eslint/require-await"
-suspicious/useBaseline,port,,css,css/use-baseline,manual,P2,C,none,,,"source: EslintCss/use-baseline, @html-eslint/use-baseline"
+suspicious/useBaseline,needs-data,,,,,P2,C,none,,,"needs the web-features Baseline table (which feature is widely available), which codelaw does not ship (W-196)"
 suspicious/useBiomeIgnoreFolder,skip,,,,,,,auto,yes,,about Biome's own config or comments
 suspicious/useDefaultSwitchClauseLast,same-as,,,,,,,none,yes,,counted under eslint/default-case-last
 suspicious/useDeprecatedDate,retired,,,,,,,none,,yes,

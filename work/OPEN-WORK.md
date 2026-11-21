@@ -59,7 +59,7 @@ here. Read that record before changing anything below it.
 
 🟢 **W-195** `agent` JS rows with no blocker: four unicorn/SonarJS rows, `comment-type`, `process-exit-as-throw`, six second fixes. Filed by Arpit (Cowork). [detail](open/W-195-js-tail.md)
 
-🟢 **W-196** `agent` Biome's 98 unbuilt rows (Qwik, Solid, React Native, Vue and nursery ones classed first). Filed by Arpit (Cowork). [detail](open/W-196-biome-tail.md)
+🟢 **W-198** `agent` Biome's four project-wide rows (`noPrivateImports`, `noUndeclaredClasses`, `noUnusedClasses`, `noUndeclaredCustomProperties`) that need a view across files. Filed by Claude Code (from W-196). [detail](open/W-198-biome-project-rows.md)
 
 🟡 **W-181** waits on **W-183** `agent` Ruff's moved typing names table (ratified 11-09) and UP035 on it. Filed by Arpit (Cowork). [detail](open/W-181-moved-typing-names.md)
 
@@ -68,7 +68,7 @@ here. Read that record before changing anything below it.
 🟣 **W-188** waits on **W-105** `agent` The JS value-type rows (built 11-09 on one file's facts) ask the type helper; `jsdoc-no-unnecessary-type-assertion`. Filed by Arpit (Cowork). [detail](open/W-188-js-value-rows-type-aware.md)
 
 
-🟡 **W-143** waits on **W-195**, **W-196** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
+🟡 **W-143** waits on **W-195** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 ### ci/cd (4)
 
@@ -86,7 +86,7 @@ here. Read that record before changing anything below it.
 
 ### reporting and benchmarks (2)
 
-🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-196** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
+🟡 **W-102** waits on **W-176**, **W-178**, **W-180**, **W-181**, **W-182**, **W-183**, **W-184**, **W-185**, **W-186**, **W-187**, **W-189**, **W-190**, **W-195**, **W-198** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
 🟢 **W-192** `agent` A generated page of what is on and off by default per pack and preset; W-139's missing presets and its Oxlint promotions. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 

@@ -5,8 +5,8 @@ description: "W-139's Biome rows not built when it closed, 2026-11-09: 98 rows, 
 item: W-196
 filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-18
+updated_by: "Claude Code (Sonnet 5.5)"
 ball: agent
 ---
 
@@ -17,7 +17,7 @@ ball: agent
 | step | what we do | what it gives us | state |
 |---|---|---|---|
 | 1 | Class the rows for frameworks codelaw has no pack for (Qwik, Solid, React Native, Vue, Svelte, Drizzle, Turbo) | what belongs here and what belongs with W-143 or nowhere | ✅ 2026-11-15: 34 rows classed in `biome.csv` |
-| 2 | Build the rest in their packs | Biome's rows done | 🔄 slice 1: 18 built, 12 linked; 34 left |
+| 2 | Build the rest in their packs | Biome's rows done | ✅ 2026-11-18: 41 built, 13 linked |
 | 3 | Class Biome's 7 `*/preset` rows as not rules | the ledger honest | ✅ `skip` in `biome.csv` |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* These rows were not discussed on the call; they are filed here so that closing W-139 leaves nothing without a home (SR-WORK-OPEN-QUEUE rule 11). Filed on *"file it."*
@@ -41,7 +41,7 @@ Every `port` row of `work/proposals/rule-parity/biome.csv` that no rule carries 
 | DoD | what | state |
 |---|---|---|
 | 1 · class | the framework rows classed, each with a reason | ✅ |
-| 2 · rules | the rest built, with cases and fix classes | 🔄 |
+| 2 · rules | the rest built, with cases and fix classes | ✅ |
 | 3 · ledger | the 7 `*/preset` rows classed not-a-rule | ✅ |
 
 ## State (2026-11-15, slice 1)
@@ -52,7 +52,13 @@ Every `port` row of `work/proposals/rule-parity/biome.csv` that no rule carries 
 
 **Built (slice 1, 18, `preview`, in no preset):** `js/use-node-assert-strict`, `js/use-json-import-attributes`, `js/no-duplicate-map-keys`, `js/no-bun-modules`, `js/use-top-level-regex`, `js/no-re-export-all`, `js/use-static-response-methods`, `ts/no-enum`, `ts/no-evolving-types`, `react/no-inline-styles`, `react/use-unique-element-ids`, `react/no-react-forward-ref`, `react/no-jsx-leaked-dollar`, `react/no-obsolete-tags`, `react/no-obsolete-attributes`, `react/no-non-scalable-viewport`, `react/no-unsafe-iframe-sandbox`, `react/no-misplaced-list-elements`.
 
-**Left (34):** js — `no-redundant-default-export`, `use-simplified-logic-expression`, `no-private-imports`, `no-process-global`, `no-restricted-dependencies`, `no-exported-imports`, `no-shouty-constants`, `no-parameters-only-used-in-recursion`, `no-secrets`, `no-undeclared-classes`, `no-yaml-boolean-keys`; css — 7; data — 9; react — 7 (the three shadcn Tailwind rows, `no-undeclared-custom-properties`, `use-react-compiler`, `use-react-naming-convention`, `use-naming-convention`).
+**Built (slice 2, 23, `preview`, in no preset):** js — `no-process-global`, `no-shouty-constants`, `no-exported-imports`, `no-redundant-default-export`, `no-parameters-only-used-in-recursion` (natives, `crates/codelaw-native/src/biome_tail.rs`), `use-simplified-logic-expression` (auto), `no-secrets` (native: Biome's token formats and an entropy check); data — `json/no-empty-object-keys`, `json/no-top-level-literals`, `json/use-package-json-valid-cpu`, `json/use-package-json-valid-engines`, `json/no-duplicate-dependencies`, `json/use-required-scripts` (options-only), `json/no-json-unsafe-values`, `yaml/no-boolean-keys`; css — `no-value-at-rule`, `use-named-layer`, `no-self-nested-layer`, `use-layered-styles`, `no-invalid-property-init-value` (native); react — `no-tailwind-raw-colors`, `use-tailwind-static-class-strings`, `use-react-naming-convention`. `suspicious/noUntrustedLicenses` is linked to `deps/licence`.
+
+**Classed in slice 2 (10):** `nursery/noRestrictedDependencies`, `nursery/noTailwindRestyledComponents`, `nursery/useConsistentObjectKeys` (NFC tables) and `suspicious/useBaseline` are `needs-data`; `nursery/useReactCompiler` is `out-of-scope`; `style/useNamingConvention` is `types`, as typescript-eslint's `naming-convention`; `correctness/noPrivateImports`, `nursery/noUndeclaredClasses`, `nursery/noUnusedClasses` and `nursery/noUndeclaredCustomProperties` are `planned`, [W-198](../../work/open/W-198-biome-project-rows.md).
+
+**Totals:** of the 98 rows — 41 built, 13 linked to a rule that was already there, 44 classed (31 frameworks and 3 types in slice 1, 10 in slice 2), and Biome's 7 `*/preset` rows are not rules. `biome.csv`'s 129 `port` rows are 78 now, every one carried by a rule or named in a `ported_from:`.
+
+**For the decider, not decided here:** (1) a new pack for Qwik, Solid, React Native, Drizzle or Turborepo — each needs registry names (W-142) and an owner; the 17 rows classed `out-of-scope` for it stay classed until one is ruled; (2) whether to ship the e18e module-replacements table as pack data, which would let `js/no-restricted-dependencies` be built; (3) whether to ship Unicode NFC tables and the Baseline table as data (a dependency, L11, or a generated table).
 
 ## Blockers
 
@@ -60,7 +66,7 @@ None.
 
 ## Record affected
 
-no SR affected (SR-RULE-PACKS if a row needs a new pack).
+SR-RULE-PACKS decision 18 (updated in the same changes).
 
 ## Hazards
 

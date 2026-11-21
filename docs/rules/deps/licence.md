@@ -15,6 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/package.json`, `**/pyproject.toml` |
+| **Ported from** | `biome/suspicious/noUntrustedLicenses` |
 
 ## What it checks
 

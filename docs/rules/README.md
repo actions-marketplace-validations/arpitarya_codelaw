@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2895 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2918 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -35,16 +35,16 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 941 | 45 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 948 | 46 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
-| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 160 | 10 |
+| [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 163 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 38 | 2 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
-| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 146 | 83 |
+| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 151 | 83 |
 | [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
-| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 48 | 17 |
+| [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 56 | 18 |
 | [tanstack-query](#tanstack-query) | `@codelaw/rules-tanstack-query` | — | 14 | 1 |
 | [redux-toolkit](#redux-toolkit) | `@codelaw/rules-redux-toolkit` | — | 12 | 1 |
 | [security-js](#security-js) | `@codelaw/rules-security-js` | `codelaw-rules-security-js` | 68 | 4 |
@@ -418,6 +418,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-error-property-assignment`](js/no-error-property-assignment.md) | No overwriting name, stack, cause or errors on a new built-in error | `manual` | — | `js/strict` |
 | [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | `js/sonarjs` |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
+| [`js/no-exported-imports`](js/no-exported-imports.md) | No import that is exported in a separate statement | `manual` | — | *[rules] only* |
 | [`js/no-exports-in-scripts`](js/no-exports-in-scripts.md) | No exports in a file run as a script | `manual` | — | `js/strict` |
 | [`js/no-extend-native`](js/no-extend-native.md) | No changes to built-in prototypes | `manual` | — | *[rules] only* |
 | [`js/no-extra-arguments`](js/no-extra-arguments.md) | No call with more arguments than the function takes | `manual` | — | `js/sonarjs` |
@@ -535,8 +536,10 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-optional-chaining-on-undeclared-variable`](js/no-optional-chaining-on-undeclared-variable.md) | No ?. on an undeclared name | `manual` | — | `js/strict` |
 | [`js/no-os-command-from-path`](js/no-os-command-from-path.md) | Run commands by absolute path | `manual` | — | `js/sonarjs` |
 | [`js/no-param-reassign`](js/no-param-reassign.md) | Parameters are not reassigned | `manual` | — | `js/sonarjs` |
+| [`js/no-parameters-only-used-in-recursion`](js/no-parameters-only-used-in-recursion.md) | No parameter that is only passed to the function's own recursive call | `suggest` | — | *[rules] only* |
 | [`js/no-plusplus`](js/no-plusplus.md) | No ++ or -- | `manual` | — | `js/taste` |
 | [`js/no-prevent-default-in-passive-listener`](js/no-prevent-default-in-passive-listener.md) | No preventDefault() in a passive listener | `suggest` | — | `js/strict` |
+| [`js/no-process-global`](js/no-process-global.md) | Import `process` instead of using the global | `suggest` | — | *[rules] only* |
 | [`js/no-promise-executor-return`](js/no-promise-executor-return.md) | A promise executor returns nothing | `auto` | — | *[rules] only* |
 | [`js/no-proto`](js/no-proto.md) | No __proto__ | `suggest` | — | *[rules] only* |
 | [`js/no-prototype-builtins`](js/no-prototype-builtins.md) | No calling Object.prototype methods on the object itself | `suggest` | — | `js/recommended` |
@@ -544,6 +547,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-redeclare`](js/no-redeclare.md) | No variable is declared twice | `auto` | — | `js/recommended` |
 | [`js/no-redundant-boolean`](js/no-redundant-boolean.md) | No comparison with a boolean literal | `manual` | — | `js/sonarjs` |
 | [`js/no-redundant-comparison`](js/no-redundant-comparison.md) | No comparison an earlier one in the same `&&` chain already decides | `auto` | — | `js/strict` |
+| [`js/no-redundant-default-export`](js/no-redundant-default-export.md) | No default export of a name that is also exported by name | `manual` | — | *[rules] only* |
 | [`js/no-redundant-use-strict`](js/no-redundant-use-strict.md) | No redundant "use strict" | `auto` | — | `js/recommended` |
 | [`js/no-referrer-policy`](js/no-referrer-policy.md) | A strict Referrer-Policy | `suggest` | — | `js/sonarjs` |
 | [`js/no-regex-spaces`](js/no-regex-spaces.md) | No runs of spaces in a regular expression | `auto` | — | `js/recommended` |
@@ -553,6 +557,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-return-assign`](js/no-return-assign.md) | No assignment in a return | `auto` | — | *[rules] only* |
 | [`js/no-same-argument-assert`](js/no-same-argument-assert.md) | No assertion of a value against itself | `manual` | — | `js/sonarjs` |
 | [`js/no-same-line-conditional`](js/no-same-line-conditional.md) | No `if` starting on the line the previous `if` ends | `suggest` | — | `js/sonarjs` |
+| [`js/no-secrets`](js/no-secrets.md) | No string that looks like a secret | `manual` | `entropyThreshold`, `minLength` | *[rules] only* |
 | [`js/no-selector-as-dom-name`](js/no-selector-as-dom-name.md) | No selector syntax where a DOM name is expected | `auto` | — | `js/strict` |
 | [`js/no-self-assign`](js/no-self-assign.md) | No assigning a variable to itself | `suggest` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-self-compare`](js/no-self-compare.md) | No comparing a value with itself | `auto` | — | *[rules] only* |
@@ -562,6 +567,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-shadow`](js/no-shadow.md) | No declaration that shadows an outer one | `manual` | — | *[rules] only* |
 | [`js/no-shadow-restricted-names`](js/no-shadow-restricted-names.md) | No declaring undefined, NaN, Infinity, arguments, eval or globalThis | `auto` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-shorthand-property-overrides`](js/no-shorthand-property-overrides.md) | No CSS shorthand after a longhand it resets in a `style` object | `manual` | — | `js/strict` |
+| [`js/no-shouty-constants`](js/no-shouty-constants.md) | No constant whose value is its own name | `suggest` | — | *[rules] only* |
 | [`js/no-single-promise-in-promise-methods`](js/no-single-promise-in-promise-methods.md) | No Promise.all(\[single\]) | `manual` | — | `js/strict` |
 | [`js/no-sonar-comments`](js/no-sonar-comments.md) | No NOSONAR comment | `manual` | — | *[rules] only* |
 | [`js/no-sparse-arrays`](js/no-sparse-arrays.md) | No holes in array literals | `suggest` | — | `js/recommended` |
@@ -1001,6 +1007,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/use-json-import-attributes`](js/use-json-import-attributes.md) | A JSON import carries `with { type: "json" }` | `suggest` | — | *[rules] only* |
 | [`js/use-node-assert-strict`](js/use-node-assert-strict.md) | Import `node:assert/strict` | `suggest` | — | *[rules] only* |
 | [`js/use-simple-number-keys`](js/use-simple-number-keys.md) | Plain decimal numbers as object keys | `auto` | — | `js/recommended` |
+| [`js/use-simplified-logic-expression`](js/use-simplified-logic-expression.md) | Simplify a logical expression | `auto` | — | *[rules] only* |
 | [`js/use-static-response-methods`](js/use-static-response-methods.md) | `Response.json()` instead of `new Response(JSON.stringify())` | `suggest` | — | *[rules] only* |
 | [`js/use-top-level-regex`](js/use-top-level-regex.md) | Declare a regular expression literal at the top level | `manual` | — | *[rules] only* |
 | [`js/use-type-alias`](js/use-type-alias.md) | A union written three times is a type alias | `manual` | — | `js/sonarjs` |
@@ -1215,6 +1222,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-string-refs`](react/no-string-refs.md) | No string refs | `manual` | — | `react/recommended` |
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
 | [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `suggest` | — | `react/recommended` |
+| [`react/no-tailwind-raw-colors`](react/no-tailwind-raw-colors.md) | A Tailwind colour utility names a token, not a palette colour | `manual` | — | *[rules] only* |
 | [`react/no-this-in-sfc`](react/no-this-in-sfc.md) | No this in a function component | `manual` | — | *[rules] only* |
 | [`react/no-typos`](react/no-typos.md) | No miscased React class members | `suggest` | — | *[rules] only* |
 | [`react/no-unescaped-entities`](react/no-unescaped-entities.md) | No unescaped >, ", ' or } in JSX text | `auto` | — | `react/recommended` |
@@ -1250,6 +1258,8 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/style-prop-object`](react/style-prop-object.md) | style is an object | `suggest` | — | *[rules] only* |
 | [`react/unsupported-syntax`](react/unsupported-syntax.md) | No eval or with in components and hooks | `manual` | — | `react/recommended` |
 | [`react/use-memo`](react/use-memo.md) | useMemo's callback computes and returns a value | `suggest` | — | `react/recommended` |
+| [`react/use-react-naming-convention`](react/use-react-naming-convention.md) | React's context, id and ref variables are named for what they hold | `manual` | — | *[rules] only* |
+| [`react/use-tailwind-static-class-strings`](react/use-tailwind-static-class-strings.md) | A Tailwind `className` is written out in full | `manual` | — | *[rules] only* |
 | [`react/use-unique-element-ids`](react/use-unique-element-ids.md) | No static `id` on an element | `manual` | — | *[rules] only* |
 | [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
 
@@ -1505,11 +1515,14 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/no-invalid-double-slash-comments`](css/no-invalid-double-slash-comments.md) | No `//` comments | `auto` | — | `css/recommended` |
 | [`css/no-invalid-position-at-import-rule`](css/no-invalid-position-at-import-rule.md) | `@import` comes first | `suggest` | `ignoreAtRules` | `css/recommended` |
 | [`css/no-invalid-position-declaration`](css/no-invalid-position-declaration.md) | Declarations sit inside rules | `suggest` | — | `css/recommended` |
+| [`css/no-invalid-property-init-value`](css/no-invalid-property-init-value.md) | `initial-value` of a registered property matches its `syntax` | `manual` | — | *[rules] only* |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
+| [`css/no-self-nested-layer`](css/no-self-nested-layer.md) | No `@layer` inside a layer of the same name | `manual` | — | *[rules] only* |
 | [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-custom-media`](css/no-unknown-custom-media.md) | No custom media that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-custom-properties`](css/no-unknown-custom-properties.md) | No custom property that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-property`](css/no-unknown-property.md) | No unknown properties | `suggest` | `ignoreProperties`, `checkPrefixed` | `css/recommended` |
+| [`css/no-value-at-rule`](css/no-value-at-rule.md) | No `@value` | `manual` | — | *[rules] only* |
 | [`css/number-max-precision`](css/number-max-precision.md) | At most four decimal places | `suggest` | `precision`, `ignoreUnits` | `css/standard` |
 | [`css/property-allowed-list`](css/property-allowed-list.md) | Only propertys the project allows | `manual` | `list` | *[rules] only* |
 | [`css/property-disallowed-list`](css/property-disallowed-list.md) | No property the project disallows | `manual` | `list` | *[rules] only* |
@@ -1563,6 +1576,8 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/unit-disallowed-list`](css/unit-disallowed-list.md) | No unit the project disallows | `manual` | `list` | *[rules] only* |
 | [`css/unit-layout-mappings`](css/unit-layout-mappings.md) | Flow-relative units, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/unit-no-unknown`](css/unit-no-unknown.md) | No unknown units | `manual` | `ignore` | *[rules] only* |
+| [`css/use-layered-styles`](css/use-layered-styles.md) | Style rules sit in a `@layer` | `manual` | — | *[rules] only* |
+| [`css/use-named-layer`](css/use-named-layer.md) | A `@layer` block has a name | `manual` | — | *[rules] only* |
 | [`css/value-keyword-case`](css/value-keyword-case.md) | Keywords in lower case | `auto` | — | *[rules] only* |
 | [`css/value-keyword-layout-mappings`](css/value-keyword-layout-mappings.md) | Flow-relative keywords, not physical ones | `suggest` | — | *[rules] only* |
 | [`css/value-no-vendor-prefix`](css/value-no-vendor-prefix.md) | No vendor-prefixed values | `auto` | `ignoreValues` | `css/standard` |
@@ -1646,13 +1661,20 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 |---|---|---|---|---|
 | [`data/codeowners-coverage`](data/codeowners-coverage.md) | Every file has a code owner, and every CODEOWNERS pattern is live | `manual` | `path`, `allow_unowned`, `ignore` | `data/codeowners` |
 | [`data/flag-registry`](data/flag-registry.md) | The feature-flag registry is valid and holds only flags still read | `auto` | `presets`, `accessors`, `inline`, `warn_days` | *[rules] only* |
+| [`json/no-duplicate-dependencies`](json/no-duplicate-dependencies.md) | A dependency is listed in one group only | `manual` | — | *[rules] only* |
 | [`json/no-duplicate-keys`](json/no-duplicate-keys.md) | No key twice in one JSON object | `auto` | — | `data/recommended` |
+| [`json/no-empty-object-keys`](json/no-empty-object-keys.md) | No empty key in a JSON object | `manual` | — | *[rules] only* |
+| [`json/no-json-unsafe-values`](json/no-json-unsafe-values.md) | No value JSON parsers read differently | `manual` | — | *[rules] only* |
+| [`json/no-top-level-literals`](json/no-top-level-literals.md) | A JSON file is an object or an array at the top | `manual` | — | *[rules] only* |
 | [`json/package-deps-sorted`](json/package-deps-sorted.md) | package.json dependency lists are sorted by name | `auto` | — | `data/package-json` |
 | [`json/package-engines`](json/package-engines.md) | package.json declares engines.node | `suggest` | `node` | `data/package-json` |
 | [`json/package-json-schema`](json/package-json-schema.md) | package.json matches its schema | `manual` | — | `data/package-json` |
 | [`json/package-scripts-sorted`](json/package-scripts-sorted.md) | package.json scripts are sorted by name | `auto` | — | `data/package-json` |
 | [`json/tsconfig-schema`](json/tsconfig-schema.md) | tsconfig.json matches its schema | `manual` | — | `data/tsconfig` |
 | [`json/tsconfig-strict`](json/tsconfig-strict.md) | tsconfig.json turns on strict mode | `suggest` | — | `data/tsconfig` |
+| [`json/use-package-json-valid-cpu`](json/use-package-json-valid-cpu.md) | `cpu` in package.json names real architectures | `manual` | — | *[rules] only* |
+| [`json/use-package-json-valid-engines`](json/use-package-json-valid-engines.md) | `engines` in package.json holds version ranges | `manual` | — | *[rules] only* |
+| [`json/use-required-scripts`](json/use-required-scripts.md) | package.json has the scripts the project requires | `manual` | `scripts` | *[rules] only* |
 | [`md/commands-show-output`](md/commands-show-output.md) | No $ before shell commands that show no output | `auto` | — | `md/recommended` |
 | [`md/descriptive-link-text`](md/descriptive-link-text.md) | Link text says where the link goes | `manual` | `prohibited_texts` | `md/recommended` |
 | [`md/fence-language`](md/fence-language.md) | Fenced code blocks name their language | `suggest` | — | `md/recommended` |
@@ -1689,6 +1711,7 @@ Presets: `codelaw:data/recommended` · `codelaw:md/recommended` · `codelaw:data
 | [`yaml/gha-workflow-schema`](yaml/gha-workflow-schema.md) | GitHub Actions workflows match their schema | `manual` | — | `data/github-actions` |
 | [`yaml/no-ambiguous-booleans`](yaml/no-ambiguous-booleans.md) | No yes/no/on/off as unquoted values | `suggest` | — | `data/recommended` |
 | [`yaml/no-ambiguous-numbers`](yaml/no-ambiguous-numbers.md) | No numbers that YAML 1.1 and 1.2 read differently | `suggest` | — | `data/recommended` |
+| [`yaml/no-boolean-keys`](yaml/no-boolean-keys.md) | No unquoted key that YAML 1.1 reads as a boolean | `suggest` | — | *[rules] only* |
 | [`yaml/no-duplicate-keys`](yaml/no-duplicate-keys.md) | No key twice in one YAML mapping | `auto` | — | `data/recommended` |
 | [`yaml/no-undeclared-alias`](yaml/no-undeclared-alias.md) | Every alias refers to an anchor defined before it | `suggest` | — | `data/recommended` |
 | [`yaml/todo-marker`](yaml/todo-marker.md) | YAML TODO comments carry a ticket and, when asked, a date | `manual` | — | `data/markers` |
