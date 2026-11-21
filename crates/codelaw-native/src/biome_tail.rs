@@ -70,7 +70,7 @@ macro_rules! native {
 /// hashbang and the directives, else the start of the file.
 fn import_point(root: Node<'_>) -> (usize, bool) {
     let kids = named_children(root);
-    if let Some(last) = kids.iter().filter(|k| k.kind() == "import_statement").last() {
+    if let Some(last) = kids.iter().rfind(|k| k.kind() == "import_statement") {
         return (last.end_byte(), true);
     }
     let mut at = 0;
@@ -499,10 +499,10 @@ native!(NoInvalidPropertyInitValue, "css/no-invalid-property-init-value", CSS, &
             _ => {}
         }
     }
-    if let (Some(syntax), Some((decl, value))) = (syntax, init) {
-        if !syntax_accepts(&syntax, &value) {
-            out.push(finding(decl, format!("`initial-value: {value}` does not match the registered `syntax: \"{syntax}\"`"), Vec::new()));
-        }
+    if let (Some(syntax), Some((decl, value))) = (syntax, init)
+        && !syntax_accepts(&syntax, &value)
+    {
+        out.push(finding(decl, format!("`initial-value: {value}` does not match the registered `syntax: \"{syntax}\"`"), Vec::new()));
     }
 });
 
