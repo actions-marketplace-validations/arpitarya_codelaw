@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#python).
 
 - **Installed by `codelaw init` when:** a Python file.
-- **Rules:** 914 — 0 on, 97 on with `preview = true`, 710 off in an opt-in preset, 107 in no preset.
+- **Rules:** 915 — 0 on, 97 on with `preview = true`, 710 off in an opt-in preset, 108 in no preset.
 
 ## Presets
 
@@ -180,6 +180,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`py/deprecated-c-element-tree`](../py/deprecated-c-element-tree.md) | off — opt-in preset | — | `py/strict` |
 | [`py/deprecated-class`](../py/deprecated-class.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-decorator`](../py/deprecated-decorator.md) | off — opt-in preset | — | `py/pylint` |
+| [`py/deprecated-import`](../py/deprecated-import.md) | off — in no preset | — | — |
 | [`py/deprecated-method`](../py/deprecated-method.md) | off — opt-in preset | — | `py/pylint` |
 | [`py/deprecated-mock-import`](../py/deprecated-mock-import.md) | off — opt-in preset | — | `py/strict` |
 | [`py/deprecated-module`](../py/deprecated-module.md) | off — opt-in preset | — | `py/pylint` |

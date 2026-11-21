@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2945 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2946 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -59,7 +59,7 @@ remap = { error = "warn" }
 | [nextjs](#nextjs) | `@codelaw/rules-nextjs` | — | 22 | 0 |
 | [testing](#testing) | `@codelaw/rules-testing` | — | 174 | 10 |
 | [tailwind](#tailwind) | `@codelaw/rules-tailwind` | `codelaw-rules-tailwind` | 8 | 2 |
-| [python](#python) | — | `codelaw-rules-python` | 914 | 51 |
+| [python](#python) | — | `codelaw-rules-python` | 915 | 51 |
 | [security-python](#security-python) | — | `codelaw-rules-security-python` | 66 | 0 |
 | [django](#django) | — | `codelaw-rules-django` | 7 | 0 |
 | [fastapi](#fastapi) | — | `codelaw-rules-fastapi` | 3 | 0 |
@@ -2300,6 +2300,7 @@ Presets: `codelaw:py/recommended` · `codelaw:py/conventions` · `codelaw:py/pro
 | [`py/deprecated-c-element-tree`](py/deprecated-c-element-tree.md) | xml.etree.ElementTree, not cElementTree | `auto` | — | `py/strict` |
 | [`py/deprecated-class`](py/deprecated-class.md) | No standard-library class the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-decorator`](py/deprecated-decorator.md) | No decorator the standard library has deprecated | `manual` | — | `py/pylint` |
+| [`py/deprecated-import`](py/deprecated-import.md) | Import a name from where it lives now | `suggest` | — | *[rules] only* |
 | [`py/deprecated-method`](py/deprecated-method.md) | No standard-library function or method the documentation deprecates | `manual` | — | `py/pylint` |
 | [`py/deprecated-mock-import`](py/deprecated-mock-import.md) | unittest.mock, not mock | `suggest` | — | `py/strict` |
 | [`py/deprecated-module`](py/deprecated-module.md) | No standard-library module the documentation deprecates | `manual` | — | `py/pylint` |

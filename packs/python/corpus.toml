@@ -155,6 +155,7 @@
 "py/deprecated-c-element-tree" = 0
 "py/deprecated-class" = 0
 "py/deprecated-decorator" = 0
+"py/deprecated-import" = 0
 "py/deprecated-method" = 0
 "py/deprecated-mock-import" = 0
 "py/deprecated-module" = 0

@@ -188,6 +188,10 @@ jobs:
         run: python3 scripts/data-confusables-check.py --check
       - name: the imperative-mood table is what pydocstyle's pinned word lists write (L11 D-56, W-180)
         run: python3 scripts/data-imperatives.py --check
+      - name: the moved names table is what Ruff's pinned member lists write (L11 D-57, W-181)
+        run: |
+          python3 scripts/ruff-moved-names.py --check
+          python3 scripts/ruff-moved-names.py --verify
       - name: the Python deprecation table is well-formed and names its source (L6 decision 15, W-187)
         run: python3 scripts/data-python-deprecations-check.py --check
       - id: rustc # the pinned toolchain, read from the file — nothing is installed to learn it

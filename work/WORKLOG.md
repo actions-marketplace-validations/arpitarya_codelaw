@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-181 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-181 finished from its worktree (the table, its generator and `py/deprecated-import` were written but nothing else): fixed two cases that had two input fences, wrote L11 D-57, SR-RULE-PACKS decision 21 (and its `owns:` line), the pack's NOTICE, the CI step (`--check` and online `--verify`), the register row, SR-PACKAGES and SR-ARCHITECTURE lines. The generator's header said D-54, which is the CPython table; it says D-57. `codelaw test packs/python` 915 · 6,895 · 0 failed; native, config, dependencies tests; clippy clean.
+- **Decided / left open:** `perf` and the corpus not run (count entered as 0). The worktree's `.fux/index` files are in the tagged stash `W-181-fux-index-regenerated-2026-11-19`.
+- **Mistakes:** none.
+- **Next:** W-196 (Biome's 98 unbuilt rows).
+
 ## 2026-11-19 — implement the green items one by one: W-195 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"* (continued)

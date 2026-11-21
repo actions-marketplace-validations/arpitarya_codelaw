@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-181-moved-typing-names.md`](open/W-181-moved-typing-names.md) | 2026-11-19 | done — `py/deprecated-import` and the table `python/moved-names` ([SR-RULE-PACKS](../records/0101_rule-packs.md) decision 21; [L11](../records/0013_LAW-11-dependencies.md) D-57) |
 | [`W-195-js-tail.md`](open/W-195-js-tail.md) | 2026-11-19 | done — `js/comment-type`, `node/process-exit-as-throw` and six second fixes; [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 43 |
 | [`W-186-import-private-name.md`](open/W-186-import-private-name.md) | 2026-11-19 | done — `py/import-private-name` in [`packs/python/rules/py/`](../packs/python/rules/py/); the query `python: { imports: private }` in [SR-MODULE-GRAPH](../records/0122_module-graph.md) |
 | [`W-190-using-declarations.md`](open/W-190-using-declarations.md) | 2026-11-19 | done for JavaScript — `js/no-using-resource-escape`, `js/prefer-dispose` in [`packs/js/rules/js/`](../packs/js/rules/js/) (`crates/codelaw-native/src/js_using.rs`); the TypeScript gap is named in [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 41 |
