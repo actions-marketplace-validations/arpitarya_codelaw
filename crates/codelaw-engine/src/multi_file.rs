@@ -132,7 +132,7 @@ impl<'a> MultiFix<'a> {
         match &self.base {
             Base::Memory(files) => {
                 let set: Vec<(String, Language, String)> = files.iter().map(|(p, l, t)| (p.clone(), *l, texts.get(p).cloned().unwrap_or_else(|| t.clone()))).collect();
-                let mode = RunMode { external_fixers: false, refused: None, bom, tree: Tree::Memory(&set), choice: self.choice };
+                let mode = RunMode { external_fixers: false, refused: None, bom, tree: Tree::Memory(&set, &crate::files::NO_MODES), choice: self.choice };
                 lint_text(self.project, &entry, text, &mode).diagnostics
             }
             Base::Disk { .. } => {

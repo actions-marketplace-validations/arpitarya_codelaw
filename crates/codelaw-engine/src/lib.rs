@@ -6,6 +6,8 @@ mod adapters;
 mod baseline;
 pub mod browsers;
 pub mod polyfills;
+pub mod confusables;
+pub mod python_deprecations;
 mod codelawignore;
 mod changed_functions;
 mod compile;
@@ -276,6 +278,10 @@ pub struct Project {
     pub(crate) browsers: std::sync::OnceLock<Option<browsers::BrowserTable>>,
     /// The polyfill table, read on first use by a rule that asks (W-175).
     pub(crate) polyfills: std::sync::OnceLock<Option<polyfills::PolyfillTable>>,
+    /// The confusables table, read on first use by a rule that asks (W-182).
+    pub(crate) confusables: std::sync::OnceLock<Option<confusables::ConfusablesTable>>,
+    /// The Python deprecation table, read on first use by a rule that asks (W-187).
+    pub(crate) python_deprecations: std::sync::OnceLock<Option<python_deprecations::PythonDeprecationTable>>,
 }
 
 /// The other tools' suppressions a project reads, and the ids they map to.
@@ -399,6 +405,8 @@ impl Project {
             providers,
             browsers: std::sync::OnceLock::new(),
             polyfills: std::sync::OnceLock::new(),
+            confusables: std::sync::OnceLock::new(),
+            python_deprecations: std::sync::OnceLock::new(),
         })
     }
 

@@ -11,6 +11,9 @@
 "py/all-sorted" = 3
 "py/ambiguous-class-name" = 0
 "py/ambiguous-function-name" = 0
+"py/ambiguous-unicode-character-comment" = 4
+"py/ambiguous-unicode-character-docstring" = 10
+"py/ambiguous-unicode-character-string" = 1501
 "py/ambiguous-variable-name" = 3
 "py/anomalous-unicode-escape-in-string" = 0
 "py/any-eq-ne-annotation" = 16
@@ -147,9 +150,15 @@
 "py/del-attr-with-constant" = 0
 "py/delete-full-slice" = 10
 "py/deprecated-abc-decorator" = 0
+"py/deprecated-argument" = 0
+"py/deprecated-attribute" = 0
 "py/deprecated-c-element-tree" = 0
+"py/deprecated-class" = 0
 "py/deprecated-decorator" = 0
+"py/deprecated-import" = 0
+"py/deprecated-method" = 0
 "py/deprecated-mock-import" = 0
+"py/deprecated-module" = 0
 "py/deprecated-unittest-alias" = 0
 "py/dict-get-with-none-default" = 14
 "py/dict-index-missing-items" = 0
@@ -652,7 +661,9 @@
 "py/setattr-with-constant" = 1
 "py/shadowed-import" = 0
 "py/shallow-copy-environ" = 0
+"py/shebang-missing-executable-file" = 0
 "py/shebang-missing-python" = 0
+"py/shebang-not-executable" = 0
 "py/shebang-not-first-line" = 0
 "py/signature-differs" = 0
 "py/signature-in-docstring" = 1

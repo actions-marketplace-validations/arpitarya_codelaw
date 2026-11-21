@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`@abstractmethod` goes right above the `def`, imported from `abc` when it isn't: a subclass that doesn't define the method can no longer be instantiated, so review the optional hooks. A name `abstractmethod` taken by something else is manual) |

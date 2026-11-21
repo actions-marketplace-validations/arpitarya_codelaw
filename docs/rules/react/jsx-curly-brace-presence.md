@@ -18,7 +18,7 @@
 
 ## What it checks
 
-A prop whose value is a string literal in braces (`title={"Save"}`) is written as a plain attribute string (`title="Save"`). Strings with a backslash or a newline are left alone, since an attribute string reads them differently.
+A prop whose value is a string literal in braces (`title={"Save"}`) is written as a plain attribute string (`title="Save"`). A child that is a string literal in braces (`<b>{"Save"}</b>`) is written as plain text (`<b>Save</b>`). Strings with a backslash or a newline are left alone, since an attribute string reads them differently. A child string is also left alone when it is empty, starts or ends with a space, or holds `<`, `>`, `{`, `}` or `&`, which text reads as markup; and when its neighbour is text on another line (or a braced child is on its own line after another braced child, or next to a character reference), since JSX joins the lines of a text with a space and the fix would change the string it renders.
 
 **Why:** The braces add nothing to a fixed string, and the plain form is what the rest of the markup uses.
 

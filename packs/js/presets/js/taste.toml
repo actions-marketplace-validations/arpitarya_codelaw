@@ -2,6 +2,7 @@ description = "ESLint's style-only rules and two TSLint ones, which no defect st
 
 [rules]
 "js/capitalized-comments" = "warn"
+"js/comment-type" = "warn"
 "js/func-names" = "warn"
 "js/func-style" = "warn"
 "js/id-length" = "warn"

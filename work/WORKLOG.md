@@ -24,6 +24,102 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-19 — implement the green items one by one: W-196 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-196 (Biome's tail) slice 2 was built and closed in `lm/W-196-s2` (`crates/codelaw-native/src/biome_tail.rs`; css, data, js and react rows) but not landed. Merged `main` (generated docs, CHANGELOG, IMPLEMENTATION, the archive map, SR-RULE-PACKS decision 18, SR-ARCHITECTURE, `lib.rs`); `js` 968 rules · 24,763 checks, `css` 151 · 1,899, `data` 58 · 541, `react` 163 · 3,013, `ts` 67 · 823, `deps` 8 · 95, `python` 915 · 6,895, all 0 failed; native, config, engine, graph tests and clippy.
+- **Decided / left open:** **id collision:** the branch had filed Biome's four project-wide rows as **W-198**, but W-198 is the session-cleanup item (filed by the hook, 2026-11-19); ids are never reused, so the Biome item is **W-199** everywhere (file, row, ledger notes, records). W-143 waited only on W-196 and is 🟢 now (its first step amends L3 and L7: take it to the decider before starting); W-102 waits on W-199 too. The worktree's `.fux/index` files are in the tagged stash `W-196-s2-fux-index-regenerated-2026-11-19`.
+- **Mistakes:** none.
+- **Next:** W-199 (the four project-wide Biome rows), then the CI-bound items, which need a push or a release.
+
+## 2026-11-19 — implement the green items one by one: W-181 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-181 finished from its worktree (the table, its generator and `py/deprecated-import` were written but nothing else): fixed two cases that had two input fences, wrote L11 D-57, SR-RULE-PACKS decision 21 (and its `owns:` line), the pack's NOTICE, the CI step (`--check` and online `--verify`), the register row, SR-PACKAGES and SR-ARCHITECTURE lines. The generator's header said D-54, which is the CPython table; it says D-57. `codelaw test packs/python` 915 · 6,895 · 0 failed; native, config, dependencies tests; clippy clean.
+- **Decided / left open:** `perf` and the corpus not run (count entered as 0). The worktree's `.fux/index` files are in the tagged stash `W-181-fux-index-regenerated-2026-11-19`.
+- **Mistakes:** none.
+- **Next:** W-196 (Biome's 98 unbuilt rows).
+
+## 2026-11-19 — implement the green items one by one: W-195 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-195 finished from its worktree: `js/comment-type`, `node/process-exit-as-throw` and the six second fixes were built but not closed. Two defects fixed on the way: a case with the wrong line number, and `declares_process`, a substring test that matched `{ process.exit` and made the rule skip nearly every file (a failing unit test found it); a pattern now, with a case for the plain exit. The item's four unicorn/SonarJS rows were already built in W-139 slice 36. Merged `main`; all five packs 0 failed; native, config, graph tests; clippy clean.
+- **Decided / left open:** `perf` and the corpus not run. W-143 now waits only on W-196. The worktree's `.fux/index` files are in the tagged stash `W-195-fux-index-regenerated-2026-11-19`.
+- **Mistakes:** none.
+- **Next:** W-196 (Biome's tail), W-181 (moved typing names).
+
+## 2026-11-19 — implement the green items one by one: W-186 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-186 in `lm/W-186`: `py/import-private-name` (Ruff PLC2701) on a new graph query `python: { imports: private }`, in `py/project`; a graph test and five cases. `codelaw test packs/python` 914 · 6,847 · 0 failed; graph, config, engine tests; clippy clean.
+- **Decided / left open:** the rule judges the import alone, so `from os import _exit` is reported as Ruff does. `perf` not run.
+- **Mistakes:** none.
+- **Next:** W-195, W-196, W-181 (each has a worktree from an earlier session).
+
+## 2026-11-19 — implement the green items one by one: W-190 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-190 from scratch in `lm/W-190`: the pinned JavaScript grammar parses `using`, so `js/no-using-resource-escape` and `js/prefer-dispose` are built for `javascript` and `jsx` (`crates/codelaw-native/src/js_using.rs`), their behaviour read from unicorn 79.0.0's documentation. Step 2: no official `tree-sitter-typescript` release parses `using` (0.23.2 is the newest); the gap is named, the grammar not moved. `codelaw test packs/js` 960 · 24,523 · 0 failed, `ts`/`react`/`node` unchanged; native, config, engine tests; clippy clean.
+- **Decided / left open:** the TypeScript side waits on a grammar release or on the decider ratifying `tree-sitter-typescript-next` (an unofficial fork) under L11; no item filed, since DoD 2 allows naming the gap. Corpus counts entered as 0 without a corpus run; `perf` not run.
+- **Mistakes:** none.
+- **Next:** W-186, W-195, W-196, W-181.
+
+## 2026-11-19 — implement the green items one by one: W-187 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-187 was built in `lm/W-187` (the data package `python-deprecations`, its generator and weekly workflow, the engine loader, five rules in `py_deprecated.rs`) but not closed. Merged `main`: W-182's confusables package sits beside it in `ci.yml`, `files.rs`, `lib.rs`, SR-LAW-6 decision 15 (the table of packages now says four) and the register; docs regenerated. Closed: IMPLEMENTATION, CHANGELOG, item archived, queue row gone. `codelaw test packs/python` 913 rules · 6,838 checks · 0 failed; engine, native, config tests pass; the three data checks and `docs-sync --check` agree.
+- **Decided / left open:** **W-142 (registry names) had waited only on W-187, so it is now 🔴 and in the decider's inbox**: Claude fills the pending-publisher forms in Chrome, Arpit checks and submits. `perf` was not run for the five rules (a data table read only when one is on). The worktree's `.fux/index` files are in the tagged stash `W-187-fux-index-regenerated-2026-11-19`.
+- **Mistakes:** none.
+- **Next:** W-186 (Ruff PLC2701), then W-190.
+
+## 2026-11-19 — implement the green items one by one: W-185 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-185 (the Python side of the project graph) was built in `lm/W-185` but its cost line was an unfilled placeholder. Merged `main` (generated docs, SR-RULE-PACKS decision 18), then measured it: 176 stdlib files, `check --no-cache`, a debug build, `py/recommended` 4.4–5.0 s, with `py/project` 6.0–6.4 s. **The first run did not finish in ten minutes**: `graph/no-unused-exports` (already in `py/project`) hung in `find_decl`, which followed every star import at every level to the depth cap, the branching factor to the 16th power; it now enters a (module, name) once, with a test that hangs without it. Closed: IMPLEMENTATION, CHANGELOG, item archived, queue row gone, **W-186 re-balled 🟢** (it waited on W-185), W-102's wait list. `codelaw test packs/python` 908 rules · 6,778 checks · 0 failed; graph, semantic, engine, native, config tests pass; clippy clean.
+- **Decided / left open:** `perf` was not run. The worktree's regenerated `.fux/index` files are in a tagged stash `W-185-fux-index-regenerated-2026-11-19`, not discarded.
+- **Mistakes:** my first synthetic reproducer did not hang with the guard off (it never reached the search); a second one, built from `__all__` re-exports, does. A command I backgrounded left the guard disabled in `query.rs` until I stopped it and restored the file; the committed file has the guard.
+- **Next:** W-186 (Ruff PLC2701), then W-187 (stdlib deprecations).
+
+## 2026-11-19 — implement the green items one by one: W-182 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-182 was already built and closed in `lm/W-182` (`c5a53f17`: the `data-confusables` package from Unicode 18.0.0 `confusables.txt`, L11 D-54, and Ruff RUF001–RUF003 as `py/ambiguous-unicode-character-{string,docstring,comment}`); this session merged `main` into it. Conflicts with W-180's data table in `ci.yml`, SR-LAW-11, SR-PACKAGES, SR-RULE-PACKS, `lib.rs` and OPEN-WORK resolved by keeping both; docs regenerated. `codelaw test packs/python` 902 rules · 6,726 checks · 0 failed; native, config and dependencies tests pass; `data-confusables-check.py --check`, `data-imperatives.py --check`, `docs-sync --check`, `rule-docs --check` agree.
+- **Decided / left open:** the worktree's 513 regenerated `.fux/index` files were set aside in a tagged stash (`W-182-fux-index-regenerated-2026-11-19`), not discarded: the harness refused a discard, and the stash loses nothing. Drop it when W-198 is ruled.
+- **Mistakes:** none.
+- **Next:** W-185 (the Python side of the project graph).
+
+## 2026-11-19 — implement the green items one by one: W-180 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-180 finished from its worktree: the python pack's imperative-mood table (`packs/python/data/python/imperatives.json`, written by `scripts/data-imperatives.py` from pydocstyle 6.3.0's lists, L11 D-56, `--check` in CI) and Ruff `D401`, `D421` as `py/non-imperative-mood` and `py/property-docstring-starts-with-verb` (`crates/codelaw-native/src/py_imperative.rs`). Merged `main` (conflicts in generated docs, `lib.rs`'s rule chain, CHANGELOG, OPEN-WORK); added the SR-PACKAGES and SR-ARCHITECTURE lines the guard wanted; reworded an SR-RULE-PACKS phrase the schema test read as a codelaw key. `codelaw test packs/python` 899 rules · 6,691 checks · 0 failed; native, engine, config tests pass; clippy clean; `data-imperatives.py --check`, `docs-sync --check`, `rule-docs --check` agree.
+- **Decided / left open:** nothing ruled.
+- **Mistakes:** I ran `git checkout --ours README.md` after regenerating it, which undid the regeneration; I noticed and ran `docs-sync --write` again before committing.
+- **Next:** W-181 (moved typing names).
+
+## 2026-11-19 — implement the green items one by one: W-178 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"* (continued)
+- **Done:** W-178 in `lm/W-178`: `data/key-name-casing`, `md/require-frontmatter-fields` (options-only, `data` pack), the `@example` region (`[lint] jsdoc_examples`, `crates/codelaw-lang/src/regions.rs`: the ` * ` margin is a hole, so offsets are the host's and a fix keeps the margin) and `js/jsdoc-check-examples`. Records: SR-LINTER decision 3, SR-CONFIG, SR-RULE-PACKS decision 18 (slice 39), SR-ARCHITECTURE, SR-CLI-MCP. `codelaw test packs/data` and `packs/js` 0 failed; config, lang, engine, native and test crates pass; clippy clean. Also fixed a W-183 line in SR-RULE-FORMAT that made `cargo test -p codelaw-config --test schema` fail on `main`.
+- **Decided / left open:** an example that does not parse is reported, not linted. The corpus count and `perf` were not run for the three rules.
+- **Mistakes:** none.
+- **Next:** W-180 (imperative-mood verbs).
+
+## 2026-11-19 — implement the green items one by one: W-176 closed  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"*
+- **Done:** W-176 (options-only rules) finished in its own worktree `lm/W-176`: 18 rules, `crates/codelaw-native/src/options_only/`, the shape in SR-RULE-FORMAT decision **2e** (renumbered from 2d, which W-183 took on `main`), ledger class `options-only`, pages and docs. Merged `main` into the branch (conflicts only in generated docs, `lib.rs`'s rule chain and SR-RULE-PACKS decision 18; docs regenerated). Closed: IMPLEMENTATION row, CHANGELOG, item archived, queue row and W-102's wait removed. `cargo test` options_only 4 + 4, `codelaw test packs/js` and `packs/node` 0 failed, clippy clean, `check-work-system`, `check-open-work-inbox`, `docs-sync --check` pass.
+- **Decided / left open:** W-198 (keep or drop the eight worktrees) is still the decider's; carrying on in a worktree is a *keep*. W-169, W-172, W-126, W-95 are green but need a pushed `main` or a release, which an agent does not do.
+- **Mistakes:** none.
+- **Next:** land `lm/W-176` on `main`; then W-178.
+
+## 2026-11-15 — implement the open items: queue driven by eleven agents  ·  Claude Code (Sonnet 5.5, coordinator)
+
+- **Asked:** *"implement all open items."*, then *"Do a cleanup if needed. And then implement the items and implement them as fast as possible."*
+- **Done:** by hand — W-197 (three worktrees and branches removed after re-checking 0 unmerged commits), W-172 step 5 (SR-LAW-8 decision 5a; `perf/budgets.toml` `peak_memory_10k` 72 → 90; the L8 line of `CLAUDE.md` and SR-LAWS carry the exception — **`CLAUDE.md` changed**), W-174 (`boolean-datetime` re-classed not-applicable; closed), W-193 and W-194 (found already built in W-139 slice 37; closed); landed as `0386affc50` and `350d9423ab`. Cleanup: two merged `lm/` branches deleted. Then eleven agents, one per cluster, each through `lockmaster start`/`submit`; landed so far: W-184, W-191, W-196 slice 1, W-105/W-188 notes — their rows are in `work/IMPLEMENTATION.md`; the rest were still running when this entry was written (their results are in the queue and IMPLEMENTATION, not here).
+- **Decided / left open:** nothing ruled. W-105 cannot proceed: no TypeScript 7.1 RC on npm (checked 11-15). Eight old `lm/handoff-*` / `lm/save-*` branches and one more old `lm/` branch hold commits not in `main` — not removed. Disk reached 24 of 25 GB approved.
+- **Mistakes:** the end-of-turn auto-land landed two agents' unfinished worktrees (W-184, W-183) and the SR guard refused them for want of record updates; both agents were told and fixed or are fixing it. The CHANGELOG was missing from my first save's claim and docs-sync refused it; claimed and landed.
+- **Next:** read each agent's report as it lands; close or re-ball what they leave; then the decider's: W-142, the old `lm/` branches, and a push of `main`.
+
 ## 2026-11-14 — voice docket: W-197 ruled drop  ·  Cowork (Opus 5.5)
 
 - **Asked:** *fetch all the open work items, whatever are blocked, so that we can ratify in voice mode* — then, after the voice call, *"file it"*.

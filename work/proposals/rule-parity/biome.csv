@@ -128,7 +128,7 @@ correctness/noNodejsModules,same-as,,,,,,,none,,,counted under eslint-plugin-imp
 correctness/noNonoctalDecimalEscape,covered,js/no-nonoctal-decimal-escape,,,,,,auto,yes,,through its source: eslint/no-nonoctal-decimal-escape
 correctness/noPlaywrightMissingAwait,same-as,,,,,,,suggest,,,counted under eslint-plugin-playwright/missing-playwright-await
 correctness/noPrecisionLoss,covered,js/no-loss-of-precision,,,,,,none,yes,,"through its source: eslint/no-loss-of-precision, typescript-eslint/no-loss-of-precision, clippy/lossy_float_literal, eslint-plugin-vue/no-loss-of-precision"
-correctness/noPrivateImports,planned,,,,,P2,C,none,,,a project-wide rule on JSDoc `@private`/`@package` of exports — filed as W-198
+correctness/noPrivateImports,planned,,,,,P2,C,none,,,a project-wide rule on JSDoc `@private`/`@package` of exports — filed as W-199
 correctness/noProcessGlobal,port,,js,js/no-process-global,auto,P2,C,auto,,,source: deno_lint/no-process-global
 correctness/noQwikUseVisibleTask,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/noReactNativeRawText,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
@@ -274,8 +274,8 @@ nursery/noTailwindRawColors,port,,react,react/no-tailwind-raw-colors,manual,P3,E
 nursery/noTailwindRestyledComponents,needs-data,,,,,P3,E,none,,,needs the Tailwind class table to tell a restyling utility from a layout one — the `tailwind` pack's provider; not built (W-196)
 nursery/noTanstackQueryRestDestructuring,covered,tanstack-query/no-rest-destructuring,,,,,,none,,,through its source: EslintTanstackQuery/no-rest-destructuring
 nursery/noThisOutsideOfClass,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-this-outside-of-class
-nursery/noUndeclaredClasses,planned,,,,,P3,E,none,,,classes used in JSX/HTML against the stylesheets that reach the file: a project graph for plain CSS — filed as W-198
-nursery/noUndeclaredCustomProperties,planned,,,,,P3,E,none,,,`var(--x)` against the declarations and `@property` rules that reach it: a project graph for plain CSS — filed as W-198
+nursery/noUndeclaredClasses,planned,,,,,P3,E,none,,,classes used in JSX/HTML against the stylesheets that reach the file: a project graph for plain CSS — filed as W-199
+nursery/noUndeclaredCustomProperties,planned,,,,,P3,E,none,,,`var(--x)` against the declarations and `@property` rules that reach it: a project graph for plain CSS — filed as W-199
 nursery/noUnmodifiedLoopCondition,same-as,,,,,,,none,,,counted under eslint/no-unmodified-loop-condition
 nursery/noUnreadableForOfExpression,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-unreadable-for-of-expression
 nursery/noUnreadableIife,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/no-unreadable-iife
@@ -284,7 +284,7 @@ nursery/noUnsafePlusOperands,same-as,,,,,,,none,,,counted under typescript-eslin
 nursery/noUnsafeReturn,covered,ts/no-unsafe-return,,,,,,none,,,through its source: typescript-eslint/no-unsafe-return
 nursery/noUnsafeTypeAssertion,types,,,,,P3,E,none,,,needs type information — W-105; not built (W-196)
 nursery/noUnsafeUnaryMinus,same-as,,,,,,,none,,,counted under typescript-eslint/no-unsafe-unary-minus
-nursery/noUnusedClasses,planned,,,,,P3,E,none,,,classes declared in CSS against the JSX/HTML that uses them: a project graph for plain CSS — filed as W-198
+nursery/noUnusedClasses,planned,,,,,P3,E,none,,,classes declared in CSS against the JSX/HTML that uses them: a project graph for plain CSS — filed as W-199
 nursery/noUselessAssignment,covered,js/no-useless-assignment,,,,,,none,yes,,through its source: eslint/no-useless-assignment
 nursery/noUselessCall,same-as,,,,,,,none,yes,,counted under eslint/no-useless-call
 nursery/noUselessDateGetTime,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/consistent-date-clone

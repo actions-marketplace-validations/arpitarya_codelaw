@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` · `codelaw:py/pylint` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | `builtins` |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the names in scope and the builtins within two edits are choices, the nearest the default; the NameError becomes a read of that name. A name with none near is manual, as the right one is a value the code doesn't hold) |

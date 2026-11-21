@@ -274,3 +274,49 @@ fn html_doctype_and_embeds_match_prettier() {
         assert_eq!(fmt(Language::Html, "a.html", kept), kept);
     }
 }
+
+/// W-179: one fixture per row of Ruff's and Pylint's layout group that is
+/// the formatter's (SR-FORMATTER decision 10): `before` formats to `after`,
+/// and `after` is already formatted.
+#[test]
+fn python_layout_rows_have_a_fixture_each() {
+    let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/format/python");
+    let rows = ["D201", "D202", "D203-D211", "D204", "D210", "EXE004", "implicit-str-concat", "inconsistent-quotes"];
+    for row in rows {
+        let read = |kind: &str| std::fs::read_to_string(dir.join(format!("{row}.py.{kind}"))).unwrap_or_else(|e| panic!("{row}: {e}"));
+        let (before, after) = (read("before"), read("after"));
+        assert_ne!(before, after, "{row}: the fixture changes nothing");
+        assert_eq!(fmt(Language::Python, "x.py", &before), after, "{row}: before -> after");
+        assert_eq!(fmt(Language::Python, "x.py", &after), after, "{row}: after is not stable");
+    }
+    // A fixture file no row names is a mistake.
+    let named = std::fs::read_dir(&dir).unwrap().count();
+    assert_eq!(named, rows.len() * 2, "a fixture in {} is named by no row", dir.display());
+}
+
+#[test]
+fn a_blank_line_after_a_function_docstring_goes_except_before_a_nested_def() {
+    let cases = [
+        ("def f():\n    \"\"\"d\"\"\"\n\n    x = 1\n", "def f():\n    \"\"\"d\"\"\"\n    x = 1\n"),
+        ("def f():\n    \"\"\"d\"\"\"\n\n    def g():\n        pass\n", "def f():\n    \"\"\"d\"\"\"\n\n    def g():\n        pass\n"),
+        ("def f():\n    \"\"\"d\"\"\"\n    def g():\n        pass\n", "def f():\n    \"\"\"d\"\"\"\n\n    def g():\n        pass\n"),
+        // a class docstring keeps the blank line D204 asks for
+        ("class C:\n    \"\"\"d\"\"\"\n    x = 1\n", "class C:\n    \"\"\"d\"\"\"\n\n    x = 1\n"),
+        // CRLF
+        ("def f():\r\n    \"\"\"d\"\"\"\r\n\r\n    x = 1\r\n", "def f():\r\n    \"\"\"d\"\"\"\r\n    x = 1\r\n"),
+    ];
+    let o = FormatOptions::default();
+    for (input, want) in cases {
+        let got = format(Language::Python, "x.py", input, &o).unwrap();
+        assert_eq!(got, want, "{input:?}");
+        assert_eq!(format(Language::Python, "x.py", &got, &o).unwrap(), got, "{input:?}: not stable");
+    }
+}
+
+#[test]
+fn the_layout_pass_leaves_fmt_off_regions_and_ignore_markers_alone() {
+    let kept = "def f():\n    # fmt: off\n    \"\"\"d\"\"\"\n\n    x = 1\n    # fmt: on\n";
+    assert_eq!(fmt(Language::Python, "x.py", kept), kept);
+    let ignored = "# codelaw-format-ignore\ndef f():\n\n    \"\"\"d\"\"\"\n\n    x   =   1\n";
+    assert_eq!(fmt(Language::Python, "x.py", ignored), ignored);
+}

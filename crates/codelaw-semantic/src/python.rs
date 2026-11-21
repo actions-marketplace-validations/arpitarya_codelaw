@@ -15,6 +15,8 @@ pub(crate) fn build(root: Node<'_>, src: &str) -> SemanticModel {
     b.children(root, MODULE);
     b.m.resolve();
     b.finish_exports();
+    b.m.py_all = b.all.clone();
+    b.m.py_all_dynamic = b.all_dynamic;
     b.m
 }
 

@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are `removeprefix`/`removesuffix` (Python 3.9+), what a repeated character suggests was meant, and the character set without its repeats, which strips the same; `.strip()` offers only the second. Neither is the default) |

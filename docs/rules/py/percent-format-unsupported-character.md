@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `error` |
+| **Turned on by** | `codelaw:py/recommended` at `error` · `codelaw:py/strict` at `error` · `codelaw:py/pylint` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the string raises ValueError today: the choices are escaping the `%` as `%%` and replacing the conversion with `s`; neither is the default. A string with escapes is manual) |

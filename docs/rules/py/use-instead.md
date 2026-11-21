@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/recommended` at `warn` |
+| **Turned on by** | `codelaw:py/recommended` at `warn` · `codelaw:py/strict` at `warn` · `codelaw:py/pylint` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | `replacements` |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |

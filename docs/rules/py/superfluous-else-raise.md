@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:py/strict` at `warn` · `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the `else` goes and its body moves up one level, comments kept; a name it binds is now bound on the other path too, and an `elif`, or a body holding a multi-line string, is rewritten by hand) |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 pip install codelaw-rules-python
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:py/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:py/strict` sets it to `warn`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:py/recommended"]
-
-[rules]
-"py/superfluous-else-raise" = "error"
+extends = ["codelaw:py/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

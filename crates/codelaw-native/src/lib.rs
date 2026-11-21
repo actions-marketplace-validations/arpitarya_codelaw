@@ -44,6 +44,7 @@ mod markers;
 mod multi_file;
 mod test_markers;
 mod no_undef;
+mod options_only;
 mod no_unreachable;
 mod node;
 mod python_bugbear;
@@ -72,15 +73,21 @@ mod html_extra;
 mod md_extra;
 mod oxlint_extra;
 mod js_parity;
+mod js_using;
 mod biome_tail;
 mod jsdoc;
 mod py_parity;
 mod py_ruff;
+mod py_confusables;
+mod py_imperative;
 mod py_ruff_doc;
 mod py_ruff_fmt;
 mod py_ruff_generic;
+mod py_ruff_target;
 mod py_ruff_tc;
+mod py_exec;
 mod py_classes;
+mod py_deprecated;
 mod py_pylint_doc;
 mod py_pylint_imports;
 mod py_flow;
@@ -149,6 +156,14 @@ pub trait FileContext: Sync {
     fn project_files(&self) -> Option<Vec<String>> {
         None
     }
+    /// Whether the file itself has the executable bit, read only when a rule
+    /// asks (W-184). `None` where there is no bit to read: off Unix (nothing
+    /// is reported there, the same answer on every machine, L5), a file
+    /// checked alone, a path that is not a file. The engine records the
+    /// question, so a cached result is reused only while the bit is the same.
+    fn is_executable(&self) -> Option<bool> {
+        None
+    }
     /// The as-of date, `YYYY-MM-DD`, when there is one (L5 decision 2):
     /// the only date a rule may judge by. The engine records the question,
     /// so a cached result is reused only on the same date.
@@ -161,11 +176,18 @@ pub trait FileContext: Sync {
     fn class_table(&self, _short: &str) -> Option<std::sync::Arc<dyn codelaw_core::class_table::ClassTable>> {
         None
     }
-    /// The table of the data package `short` (`polyfills`: `@codelaw/data-polyfills`,
+    /// The table of the data package `short` (`polyfills`: `@codelaw/data-polyfills`;
+    /// `python-deprecations`: `@codelaw/data-python-deprecations`,
     /// L6 decision 15), parsed once per run and read only when a rule asks.
     /// `None` when it is not installed. The engine records its version as
     /// the answer, so a refreshed table re-judges the files.
     fn data_table(&self, _short: &str) -> Option<std::sync::Arc<serde_json::Value>> {
+        None
+    }
+    /// The oldest Python the file must run on, as `rule` resolves it
+    /// (SR-CONFIG decision 11f): `None` when the target is unknown. The
+    /// target is in the file's cache key, so the question is not recorded.
+    fn python_target(&self, _rule: &str) -> Option<Vec<u64>> {
         None
     }
 }
@@ -225,6 +247,27 @@ pub fn resolve_path(from: &str, link: &str) -> Option<String> {
     Some(parts.join("/"))
 }
 
+/// Whether a rule's option holds a value: not absent, `null`, `false`, `0`
+/// or empty (`""`, `[]`, `{}`). The test of [`NativeRule::needs_options`].
+pub fn option_is_set(options: &BTreeMap<String, serde_json::Value>, key: &str) -> bool {
+    use serde_json::Value;
+    match options.get(key) {
+        None | Some(Value::Null) | Some(Value::Bool(false)) => false,
+        Some(Value::String(s)) => !s.is_empty(),
+        Some(Value::Array(a)) => !a.is_empty(),
+        Some(Value::Object(o)) => !o.is_empty(),
+        Some(Value::Number(n)) => n.as_f64().is_some_and(|x| x != 0.0),
+        Some(Value::Bool(true)) => true,
+    }
+}
+
+/// Whether an options-only rule has nothing to check with these options:
+/// it names options it needs and none of them is set.
+pub fn is_idle(rule: &dyn NativeRule, options: &BTreeMap<String, serde_json::Value>) -> bool {
+    let needs = rule.needs_options();
+    !needs.is_empty() && !needs.iter().any(|k| option_is_set(options, k))
+}
+
 /// One finding of a native rule. `edits` are offered when the rule file's
 /// fix class is `auto` or `suggest`.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -250,6 +293,13 @@ pub trait NativeRule: Send + Sync {
         None
     }
     fn check(&self, node: SyntaxNode<'_>, ctx: &NativeContext<'_>, out: &mut Vec<NativeFinding>);
+    /// The options an options-only rule reads (SR-RULE-FORMAT decision 2e):
+    /// it finds nothing until a project sets at least one of them, so the
+    /// engine does not dispatch it to a single node while none is set. Empty
+    /// for every other rule.
+    fn needs_options(&self) -> &'static [&'static str] {
+        &[]
+    }
     /// A config section whose keys the rule reads as its options (the
     /// rule's own options win): `[deps]` for the dependency rules
     /// (SR-RULE-PACKS decision 15).
@@ -747,6 +797,7 @@ static REGISTRY: &[&dyn NativeRule] = &[
     &no_undef::NoUndef,
     &literals::NoUnexpectedMultiline,
     &no_unreachable::NoUnreachable,
+    &no_unreachable::ProcessExitAsThrow,
     &expressions::NoUnsafeOptionalChaining,
     &classes::NoUnusedPrivateClassMembers,
     &JS_NO_UNUSED_VARS,
@@ -976,7 +1027,7 @@ pub fn registry() -> &'static [&'static dyn NativeRule] {
 }
 
 /// `REGISTRY` and the rule families kept in their own lists.
-static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(biome_tail::RULES).chain(jsdoc::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_tc::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(py_pylint_doc::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).copied().collect());
+static ALL: std::sync::LazyLock<Vec<&'static dyn NativeRule>> = std::sync::LazyLock::new(|| REGISTRY.iter().chain(regexp_rules::RULES).chain(react_ts_extra::RULES).chain(css_lists::RULES).chain(css_style::RULES).chain(scss_extra::RULES).chain(html_extra::RULES).chain(md_extra::RULES).chain(oxlint_extra::RULES).chain(js_parity::RULES).chain(jsdoc::RULES).chain(js_using::RULES).chain(options_only::RULES).chain(py_parity::RULES).chain(py_ruff_doc::RULES).chain(py_ruff::RULES).chain(py_ruff_fmt::RULES).chain(py_ruff_generic::RULES).chain(py_ruff_target::RULES).chain(py_ruff_tc::RULES).chain(py_exec::RULES).chain(py_scope::RULES).chain(py_flow::RULES).chain(py_classes::RULES).chain(py_values::RULES).chain(py_pylint_imports::RULES).chain(py_pylint_doc::RULES).chain(testing_parity::RULES).chain(query_parity::RULES).chain(py_framework::RULES).chain(py_imperative::RULES).chain(py_confusables::RULES).chain(py_deprecated::RULES).chain(biome_tail::RULES).copied().collect());
 
 pub fn lookup(id: &str) -> Option<&'static dyn NativeRule> {
     #[cfg(feature = "fault-injection")]

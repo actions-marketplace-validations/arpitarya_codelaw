@@ -8,7 +8,7 @@ ported_from: [typescript-eslint/no-import-type-side-effects]
 since: 0.5.0
 ---
 
-An import whose every named specifier is marked `type` (`import { type A } from "m"`) is written `import type { A } from "m"`. The first keeps a bare `import "m"` in the output under `verbatimModuleSyntax`; the second is removed whole. For now the rule reads an import of one specifier with no alias; a longer list waits for a native fix.
+An import whose every named specifier is marked `type` (`import { type A, type B as C } from "m"`) is written `import type { A, B as C } from "m"`. The first keeps a bare `import "m"` in the output under `verbatimModuleSyntax`; the second is removed whole. Any number of specifiers, aliased or not, is read; an import that also has a default or namespace binding, or one value specifier, is left alone.
 
 **Why:** An inline-`type`-only import still loads the module at run time, with whatever side effects it has.
 
@@ -19,16 +19,18 @@ match:
   all:
     - has:
         kind: import_clause
+        pattern: $CL
         not: { has: { kind: identifier } }
         has:
           kind: named_imports
+          pattern: $NI
           all:
-            - has: { kind: import_specifier, nthChild: 1, has: { field: name, pattern: $A }, not: { has: { field: alias, regex: '[\s\S]' } } }
+            - has: { kind: import_specifier }
             - not: { has: { kind: import_specifier, not: { regex: '^type\s' } } }
-            - not: { has: { nthChild: 2 } }
-    - has: { field: source, pattern: $M }
 message: "Every specifier is a type; write `import type`"
-fix: "import type { $A } from $M;"
+fix:
+  - insert-before: { target: $CL, text: "type " }
+  - edit-text: { target: $NI, pattern: '(\{|,)(\s*)type\s+', replace: '$1$2' }
 ```
 
 ## Examples

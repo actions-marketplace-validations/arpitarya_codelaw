@@ -18,7 +18,7 @@
 
 ## What it checks
 
-An import whose every named specifier is marked `type` (`import { type A } from "m"`) is written `import type { A } from "m"`. The first keeps a bare `import "m"` in the output under `verbatimModuleSyntax`; the second is removed whole. For now the rule reads an import of one specifier with no alias; a longer list waits for a native fix.
+An import whose every named specifier is marked `type` (`import { type A, type B as C } from "m"`) is written `import type { A, B as C } from "m"`. The first keeps a bare `import "m"` in the output under `verbatimModuleSyntax`; the second is removed whole. Any number of specifiers, aliased or not, is read; an import that also has a default or namespace binding, or one value specifier, is left alone.
 
 **Why:** An inline-`type`-only import still loads the module at run time, with whatever side effects it has.
 

@@ -142,6 +142,7 @@ pub fn why_json(w: &RuleWhy) -> Value {
         "on_edit": json!({ "value": w.on_edit.0, "source": w.on_edit.1 }),
         "multi_file": json!({ "value": w.multi_file.0.name(), "source": w.multi_file.1 }),
         "fix_target": w.fix_target.as_ref().map(|(needs, target)| json!({ "needs": needs, "target": target })),
+        "finding_target": w.finding_target.as_ref().map(|(applies, target)| json!({ "applies": applies, "target": target })),
         "for": for_file,
     }))
 }
@@ -171,6 +172,9 @@ pub fn why_text(w: &RuleWhy) -> String {
     out.push_str(&format!("  multi-file: {multi} ({})\n", w.multi_file.1));
     if let Some((needs, target)) = &w.fix_target {
         out.push_str(&format!("  fix target: needs {needs}; target {target}\n"));
+    }
+    if let Some((applies, target)) = &w.finding_target {
+        out.push_str(&format!("  finding target: reports on {applies}; target {target}\n"));
     }
     if w.preview {
         out.push_str("  preview:    yes — runs only with `preview = true`\n");

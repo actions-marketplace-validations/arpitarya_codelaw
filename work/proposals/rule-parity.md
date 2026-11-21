@@ -54,7 +54,8 @@ recommended set, markdownlint's default all-on). codelaw's side is every
 | **types** | needs type information — W-105's type questions |
 | **layout** | formatting; the formatter owns it (SR-FORMATTER decision 3) |
 | **planned** | already filed as another work item |
-| **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). `boolean-datetime` is the first row carried in the CSV with this class; the rest of §14's list still reads `port` there |
+| **not-applicable** | cannot fire under codelaw's floors (Python 3.9+, Node 18+) or checks the source tool's own config; ruled 2026-11-09 (§14). every row §14 lists carries this class in the CSV (`method/classify.py`'s `RULED`, W-192) |
+| **options-only** | does nothing in the source tool's default configuration: it checks nothing until a project sets the option that says what (`id-match`, `no-restricted-syntax`, `jsdoc/require-tags` …); built as a rule that is silent until configured and in no preset, so it is not a missing port ([SR-RULE-FORMAT](../../records/0112_rule-format.md) decision 2e; ruled 2026-11-09, W-176). The 18 rows carry it in the CSVs; §4's counts are the ledger as filed and still list them under `port` |
 | **needs-data** | needs runtime-support data codelaw does not ship (`n/no-unsupported-features/*`) |
 | **out-of-scope** | a language outside L3 (Vue, Svelte, Astro, GraphQL) or a framework with no codelaw pack (Ruff's Airflow, Django, FastAPI, NumPy, pandas rules) |
 | **same-as** | the same rule as one counted under another tool (Biome's sourced rules, import-x's fork, typescript-eslint's extension rules) — counted once |
@@ -330,7 +331,7 @@ Pack by pack: codelaw's rules when this proposal was written, the count it propo
 
 ## 14 · Ruled 2026-11-09: the rows W-139 left, and where each went
 
-W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 271 on the voice docket of 2026-11-09 (*"Whatever is pending, we are going to have separate work items for those. And we close W139."*). The classes below are not ports and leave the count; `method/classify.py` does not know them yet, so a regenerated CSV shows them as `port` until it does (W-192's ledger step).
+W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 271 on the voice docket of 2026-11-09 (*"Whatever is pending, we are going to have separate work items for those. And we close W139."*). The classes below are not ports and leave the count; `method/classify.py` knows them (its `RULED` table, W-192), so a regenerated CSV shows each as `layout` (formatter-owned), `out-of-scope` or `not-applicable`, not `port`.
 
 | class | rows |
 |---|---|
@@ -339,7 +340,7 @@ W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 27
 | not applicable | Pylint `bad-configuration-section`, `bad-plugin-value`, `unknown-option-value`, `unrecognized-inline-option`, `unrecognized-option`, `useless-option-value`, `boolean-datetime`, `broken-noreturn`, `broken-collections-callable`, the five `using-*-in-unsupported-version` at or below the 3.9 floor, `duplicate-argument-name`, `return-arg-in-generator` |
 | options-only (built, silent until configured) | W-176's 19 rows |
 | link (an existing rule does the job) | Pylint `preferred-module`, `consider-using-f-string` (W-194) |
-| still to build | W-178, W-180–W-190, W-193–W-195, W-198 |
-| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's, `needs-data` ×4, `types` ×4, four project-wide rows `planned` as W-198; the 7 `*/preset` rows are `skip` |
+| still to build | W-178, W-180–W-190, W-193–W-195, W-199 |
+| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's, `needs-data` ×4, `types` ×4, four project-wide rows `planned` as W-199; the 7 `*/preset` rows are `skip` |
 | backlog | B-081 (Airflow ×5), B-082 (`PLE2514`), B-083 (`TID254`, `TID255`), B-084 (two Pylint rows) |
 

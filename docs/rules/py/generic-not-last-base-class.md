@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:py/strict` at `warn` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (moving the base changes the class's method resolution order, which is what the rule asks for; a comment on the moved base may need moving by hand) |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 pip install codelaw-rules-python
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:py/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:py/strict` sets it to `warn`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:py/recommended"]
-
-[rules]
-"py/generic-not-last-base-class" = "error"
+extends = ["codelaw:py/strict"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

@@ -206,6 +206,7 @@ idle_timeout = 1800
 tree_cache = 64
 [lint]
 tagged_templates = true
+jsdoc_examples = true
 [markdown]
 lint_code_blocks = true
 [reviews]

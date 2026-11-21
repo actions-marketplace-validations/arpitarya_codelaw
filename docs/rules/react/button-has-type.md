@@ -18,9 +18,9 @@
 
 ## What it checks
 
-A `<button>` has an explicit `type`. A `type` with a value other than `button`, `submit` or `reset` is left to the DOM types for now.
+A `<button>` has an explicit `type` of `button`, `submit` or `reset`. A `type` written as a string with any other value (`type="buton"`) is reported too, and the suggestion replaces it with `"button"`; a `type` whose value is an expression is left to the DOM types.
 
-**Why:** A button's default type is `submit`, so a button meant only for a click handler submits the form around it.
+**Why:** A button's default type is `submit`, so a button meant only for a click handler submits the form around it, and a misspelt `type` is dropped by the browser and falls back to the same default.
 
 ## Configuration
 

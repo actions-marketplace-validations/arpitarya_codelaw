@@ -18,9 +18,9 @@
 
 ## What it checks
 
-Every `<iframe>` has a `sandbox` attribute.
+Every `<iframe>` has a `sandbox` attribute. A `sandbox` written as a string that holds a word the HTML standard does not define (`allow-script`) is reported, and the suggestion drops that word; a `sandbox` that gives both `allow-scripts` and `allow-same-origin` is reported too, and the suggestion drops `allow-same-origin`, since together they let the framed page remove its own sandbox. A `sandbox` whose value is an expression is left alone.
 
-**Why:** An unsandboxed frame runs its scripts with the full rights the browser gives its origin.
+**Why:** An unsandboxed frame runs its scripts with the full rights the browser gives its origin; a misspelt word is ignored by the browser, so the frame is more open than the author meant.
 
 ## Configuration
 

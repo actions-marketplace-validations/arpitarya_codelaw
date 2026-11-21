@@ -1,0 +1,6 @@
+a = "one"
+b = "two"
+c = 'say "three"'
+d = "its"
+e = f"{a}"
+f = b"bytes"
