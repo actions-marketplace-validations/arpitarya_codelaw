@@ -68,7 +68,7 @@ On 2026-10-26 codelaw had 47 direct Rust crates (376 in `Cargo.lock` with their 
    - **Except a unit ratified unversioned:** D-34 (`fux-engine`) is ratified for every release (the decider, 2026-10-27: *"whenever there is a latest version available, we should be using that"*); each commit pins one in `FUX_VERSION` and a scheduled job bumps it by PR (W-91). It is a CI build tool, so it has no ledger tree.
 5. **Today's dependencies are `pending`:** they stay at their current pin until the decider rules each one. A `pending` unit may not be upgraded to a version that adds transitive packages. `remove` opens a work item that replaces it with codelaw's own code; the row goes when the code no longer uses it.
 6. **What ships to users already holds:** the npm and PyPI `codelaw` packages have zero runtime dependencies ([SR-PACKAGES](0107_packages.md)); this law keeps it so.
-7. **Checked mechanically** (built, W-65): `crates/codelaw-cli/tests/dependencies.rs`, run by CI's `cargo test --workspace`, compares every manifest and lockfile — `Cargo.toml`/`Cargo.lock`, `packaging/**/package.json` and `package-lock.json`, `pyproject.toml` build requirements, `.github/workflows/*.yml` (`uses:` and `pip`/`npm`/`cargo install`) — with the ledger at the end of this record (§3). It fails on any dependency that is a member of no unit, on a transitive package its unit's ledger line does not hold (a patch or minor bump passes; a new package or a new major fails), on a unit in use whose row has no valid status, and on a script in `scripts/` or `.claude/hooks/` that imports past the Python standard library. Code codelaw wrote itself (`option-ext`'s stand-in, the sibling tool `lockmaster`) is listed as `own` in the ledger, not as a dependency.
+7. **Checked mechanically** (built, W-65): `crates/codelaw-cli/tests/dependencies.rs`, run by CI's `cargo test --workspace`, compares every manifest and lockfile — `Cargo.toml`/`Cargo.lock`, `packaging/**/package.json` and `package-lock.json`, `pyproject.toml` build requirements, `.github/workflows/*.yml` (`uses:` and `pip`/`npm`/`cargo install`) — with the ledger at the end of this record (§3). It fails on any dependency that is a member of no unit, on a transitive package its unit's ledger line does not hold (a patch or minor bump passes; a new package or a new major fails), on a unit in use whose row has no valid status, and on a script in `scripts/` or `.claude/hooks/` that imports past the Python standard library. Code codelaw wrote itself (`option-ext`'s stand-in) is listed as `own` in the ledger, not as a dependency.
 
 ### Consequences
 
@@ -273,7 +273,6 @@ Allowed only to publish the codelaw extension and to check what each registry ho
 <!-- l11-ledger:begin -->
 ```text
 own cargo option-ext
-own python lockmaster
 D-01 cargo members biome_css_formatter biome_css_parser biome_formatter biome_js_formatter biome_js_parser biome_json_formatter biome_json_parser biome_languages
 D-01 cargo tree addr2line@0.25 adler2@2 aho-corasick@1 allocator-api2@0.2 backtrace@0.3
    biome_aria@0.7 biome_aria_metadata@0.7 biome_console@0.7 biome_css_factory@0.7

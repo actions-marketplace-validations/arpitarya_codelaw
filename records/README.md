@@ -195,12 +195,8 @@ yet is owned by an open `W-nn`.
 | `.claude/hooks/worktree-cleanup.py` | SR-WORK-CLEANUP | decisions 1–6 |
 | `.claude/hooks/require-progress.sh` | SR-WORK-SESSION | decision 5 |
 | `.claude/hooks/now-ledger.py` | SR-WORK-NOW | decisions 2–5 |
-| `.claude/hooks/block-main.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: only lockmaster writes to main |
-| `.claude/hooks/claim-guard.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: a write outside the claim is warned |
-| `.claude/hooks/auto-land.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: at the end of every turn it lands what a change holds, and picks up Cowork's handoffs |
-| `.claude/hooks/work-files.py` | SR-WORK-SESSION | decision 15 — lockmaster's kit: at `Stop`, tells a session once that it changed files but no work file (lockmaster's L10) |
+| `.claude/hooks/work-files.py` | SR-WORK-SESSION | decision 15 — at `Stop`, tells a session once that it changed files but no work file |
 | `.claude/hooks/fux-index-hint.sh` | SR-WORK-DOCS | advisory only — the Fux setup's PreToolUse hint to search the committed fux index before grepping; never blocks (W-75) |
-| `lockmaster.toml` | SR-WORK-SESSION | decision 15 — this repo's landing checks and merge drivers |
 | `.claude/hooks/disk-budget.py` | SR-LAW-9 | decision 4 |
 | `Cargo.toml` | SR-PACKAGES | decision 1: the workspace and its one version |
 | `crates/codelaw-core` | SR-ARCHITECTURE | decision 13: offsets and positions; the shared types; `process`: the one process-group kill (decisions 18 and 19) |

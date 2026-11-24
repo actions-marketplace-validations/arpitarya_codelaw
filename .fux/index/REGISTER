@@ -3199,11 +3199,11 @@ records/0009_LAW-7-linter-and-formatter.md	7d04139c1435532f210e273bd3613a9cf02c5
 records/0010_LAW-8-performance-budgets.md	9acda193f57c936ffce257677f8f1f19d206d8d9	prose
 records/0011_LAW-9-machine-budget.md	7d7c3902bbad96257c125b86b737f2dd7a1c8810	prose
 records/0012_LAW-10-consumer-templates.md	3105dda1163c6363a1b4e647285ec640e875c1bb	prose
-records/0013_LAW-11-dependencies.md	d9b96cdc3c0286c5431cf7e0def33c8b6373422b	prose
+records/0013_LAW-11-dependencies.md	c031faf5343aca56acc7ec0325d89af841f05732	prose
 records/0051_WORK-open-queue.md	f1eaa5e3b18b6c5d3d5b5721b8452bbce53a725a	prose
 records/0052_WORK-backlog.md	f31b16cf6433a7949fc3cc15da418430dc9b87eb	prose
 records/0053_WORK-lifecycle.md	6beee72d6c2cb0df11cfc54d8ee8d42a4a13e97f	prose
-records/0054_WORK-session.md	c82b2278a9504d6217928dee31b013e1f72920dc	prose
+records/0054_WORK-session.md	1baf39a456b0ad2ba5d217d91fc60cc44fffd944	prose
 records/0055_WORK-docs.md	4a85e496462bdb018cf4296a8a9d23ac42c1197e	prose
 records/0056_WORK-blockers.md	11353a9b6eb9e86d1172a31e47809457a9f3366b	prose
 records/0057_WORK-archive.md	1360d7d398540cdab891dab3fcb22615306a1b2e	prose
@@ -3236,7 +3236,7 @@ records/0121_code-path-graph.md	e5c1244edfc3df33b61ee78b15f7dc4b3b0e540d	prose
 records/0122_module-graph.md	47a7e5b628509d212d0dc64a4446a066d4606094	prose
 records/0123_semantic-model.md	904061690ec66fabd1e49f9dc8b73999d26799e5	prose
 records/0124_python-flow.md	00e70a949e3cc6b39e21dcca8128378e833ba39d	prose
-records/README.md	c058c06ad7ebba6eb1effd714844cde695800862	prose
+records/README.md	e704abb2d73d00236cb0a1b42a0ba47ce407106d	prose
 records/TEMPLATE.md	227d3572bfbb7da4327396f8d073d8269a2859ed	prose
 work/BACKLOG.md	b28f14479ec2286e38f9bc28f5efc5d6ea182a6a	prose
 work/BLOCKED.json	3fa753c12ea628534518c18d0692a3f8b4c107f2	pkg:fux-decoder-json@5.1.1/json@1+limits@1
@@ -3244,7 +3244,7 @@ work/IMPLEMENTATION.md	fff1981a43d4b45812fd6f83cb299a0d3af513be	prose
 work/INTERVIEW.md	be9ce87b6b3e068ec06472c07876c161753c3a65	prose
 work/LESSONS.md	78a40b8b232111bdb935d2b5b715016da8685e95	prose
 work/MACHINE.md	8f0fa715c0c1975678b3692707d4bc6d259284d9	prose
-work/NOW.md	5100b3531f05c21c5d02f591bcddbb16bd05b7b4	prose
+work/NOW.md	c9dd6a3aad18c4a06629e2bb869da8b836bed246	prose
 work/OPEN-WORK.md	1e51aec8786f9247719aceb7cc9278da41eb1cf7	prose
 work/README.md	6b31915cf9322827f31f6b28dc4fbfe6cb29e3c4	prose
 work/WORKLOG.md	a023ba6f72f9782e8c15a3d8dd2091de5f95356e	prose
@@ -3264,6 +3264,7 @@ work/open/W-177-python-type-checker-research.md	973262236aea26025b8eb9f88db27bf2
 work/open/W-188-js-value-rows-type-aware.md	deca4ea9824302ca45ce00e72332b558e9027cf6	prose
 work/open/W-189-js-code-path-graph-research.md	c0fae4dd0593e958d62db3ce8a7c11be0395f91f	prose
 work/open/W-192-defaults-on-and-off.md	300375e2eb90d584715bd0110c7651d9cba807bc	prose
+work/open/W-198-session-cleanup.md	a92b92c6014504421941ee29525ee3b8ca4a6359	prose
 work/open/W-199-biome-project-rows.md	b21e72478804d69ff70a5945165c79b9eb397150	prose
 work/open/W-95-publish-vscode-extension.md	c8068e49ee3e43aa4ca5e1f1a23c092b8ed540fa	prose
 work/proposals/README.md	fd60eedd435a024cfa4c29857d3dd622aa6e8cec	prose

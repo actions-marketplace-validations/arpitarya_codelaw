@@ -9,11 +9,7 @@ date: 2026-10-18
 feature: session continuity
 owns:
   - .claude/hooks/require-progress.sh
-  - .claude/hooks/block-main.py
-  - .claude/hooks/claim-guard.py
-  - .claude/hooks/auto-land.py
   - .claude/hooks/work-files.py
-  - lockmaster.toml
 laws: [L0]
 timestamp: 2026-10-18T12:52:51Z
 content_sha: ""
@@ -96,17 +92,17 @@ not after.
     becomes a check — a hook, a script, or (once tests exist) a test — **in the
     same change that records the second occurrence.**
 14. The worklog is cut at each major release into `archive/worklog/`.
-15. 🔴 **Changes land on `main` through lockmaster** (Arpit, 2026-10-26 —
-    lockmaster W-09). An agent session never commits to `main`:
-    `.claude/hooks/block-main.py` refuses it, and `claim-guard.py` warns on a
-    write outside the change's claim. The way round is
-    `lockmaster start W-nn --paths …` → edit in its worktree →
-    `lockmaster submit -m "…"`, which lands only the claimed paths, one change
-    at a time, after the checks in [`lockmaster.toml`](../lockmaster.toml).
-    **The hooks pinned in `.claude/lockmaster.lock` are lockmaster's kit** —
-    changed in the lockmaster repository's `kit/` and re-installed with
-    `lockmaster install .`, never edited here (`lockmaster doctor` reports a
-    hand edit). The decider's own terminal can still commit by hand.
+15. 🔴 **Changes land on `main` by an ordinary commit** (Arpit, 2026-11-17 —
+    reverses the 2026-10-26 ruling that routed every change through
+    lockmaster). lockmaster, its hooks (`block-main.py`, `claim-guard.py`,
+    `auto-land.py`), `lockmaster.toml`, `.claude/lockmaster.lock`, its merge
+    drivers and the `landing` skill are removed; nothing in this repository
+    refers to it. A session commits with explicit pathspecs (decision 10)
+    and the `commit-msg` guard ([SR-WORK-OWNERSHIP](0058_WORK-ownership.md)
+    decisions 3 and 6) still refuses a commit that leaves a record stale.
+    `work/WORKLOG.md`, `LESSONS.md`, `IMPLEMENTATION.md`, `OPEN-WORK.md`
+    and `BACKLOG.md` no longer have a custom merge driver, so a merge
+    conflict in them is resolved by hand.
 
 ### Consequences
 

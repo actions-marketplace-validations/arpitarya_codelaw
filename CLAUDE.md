@@ -16,30 +16,11 @@ decisions 3 and 6. Install its `commit-msg` hook once:
 ln -sf ../../scripts/sr-guard.sh .git/hooks/commit-msg
 ```
 
-## Landing on main — lockmaster
+## Landing on main
 
-**An agent session never commits to `main`** — the kit's `block-main.py`
-refuses it (SR-WORK-SESSION decision 15). Work goes through
-[lockmaster](https://github.com/arpitarya/lockmaster), which lands claimed
-paths one change at a time after the checks in [`lockmaster.toml`](lockmaster.toml):
-
-```bash
-# `lockmaster` = PYTHONPATH=~/my_programs/lockmaster/src python3 -m lockmaster  (until it is on PyPI)
-lockmaster start W-nn --paths <path> …   # branch + worktree + claim
-lockmaster submit -m "W-nn: …"           # commit the claimed paths and land them
-lockmaster queue · status · doctor
-```
-
-**Nothing waits for `submit`:** the kit's `auto-land.py` lands a session's
-change at the end of every turn (the change stays open, its worktree follows
-`main`) and lands what Cowork handed over. **From Cowork, never commit:**
-`lockmaster save -m "W-nn: …" <path> …` lands the edits, or hands them to the
-next Claude Code session. The [`landing`](.claude/skills/landing/SKILL.md)
-skill has the rest.
-
-The hooks pinned in `.claude/lockmaster.lock` are lockmaster's kit: change them
-in `~/my_programs/lockmaster/kit/`, then `lockmaster install .` — an edit made
-here is reported by `lockmaster doctor` and overwritten by the next install.
+A change lands on `main` by an ordinary commit with explicit pathspecs; the
+`commit-msg` guard above is the only gate —
+[SR-WORK-SESSION](records/0054_WORK-session.md) decisions 10 and 15.
 
 ## Triage first — a human-blocked queue stops the session
 

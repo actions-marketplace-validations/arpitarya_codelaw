@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-21 — green items: session close  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement green items 1 by 1 to closure"*
+- **Done:** W-176, W-178, W-180, W-182, W-185, W-186, W-187, W-190, W-195, W-181, W-196 are landed on `main` (entries above). The queue (OPEN-WORK) and INTERVIEW say where each stands.
+- **Decided / left open:** W-199 (Biome's four project-wide rows) is the next 🟢 build; W-172, W-169, W-126, W-95 need a pushed `main` or a release; W-143 is 🟢 but its first step amends L3 and L7; W-142 and W-198 are in the decider's inbox.
+- **Mistakes:** none new.
+- **Next:** W-199.
+
 ## 2026-11-19 — implement the green items one by one: W-196 closed  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"* (continued)
@@ -110,7 +118,15 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Done:** W-176 (options-only rules) finished in its own worktree `lm/W-176`: 18 rules, `crates/codelaw-native/src/options_only/`, the shape in SR-RULE-FORMAT decision **2e** (renumbered from 2d, which W-183 took on `main`), ledger class `options-only`, pages and docs. Merged `main` into the branch (conflicts only in generated docs, `lib.rs`'s rule chain and SR-RULE-PACKS decision 18; docs regenerated). Closed: IMPLEMENTATION row, CHANGELOG, item archived, queue row and W-102's wait removed. `cargo test` options_only 4 + 4, `codelaw test packs/js` and `packs/node` 0 failed, clippy clean, `check-work-system`, `check-open-work-inbox`, `docs-sync --check` pass.
 - **Decided / left open:** W-198 (keep or drop the eight worktrees) is still the decider's; carrying on in a worktree is a *keep*. W-169, W-172, W-126, W-95 are green but need a pushed `main` or a release, which an agent does not do.
 - **Mistakes:** none.
-- **Next:** land `lm/W-176` on `main`; then W-178.
+- **Next:** W-178, W-180, W-181… in queue order (W-176 landed on `main` as a fast-forward to `781ca52d`).
+
+## 2026-11-17 — remove lockmaster from the repository  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"delete/remove lock master from this repo completely"*
+- **Done:** removed `lockmaster.toml`, `.claude/lockmaster.lock`, the hooks `auto-land.py`, `block-main.py`, `claim-guard.py` (and their `settings.json` wiring), the `landing` skill, the `.gitattributes` merge-driver block and the three `merge.lockmaster-*` drivers in `.git/config`; the lockmaster paths and wording in `now-ledger.py`, `work-files.py`, `worktree-cleanup.py`; **`CLAUDE.md` changed** — the "Landing on main — lockmaster" section is now three lines. SR-WORK-SESSION decision 15 rewritten (changes land by an ordinary commit), SR-WORK-SESSION's `owns` list, the SR README ownership rows and SR-LAW-11's `own python lockmaster` ledger line removed. `check-work-system`, `docs-sync --check`, `check-open-work-inbox`, `version --check` pass. Not committed.
+- **Decided / left open:** the eleven `.claude/worktrees/*` checkouts and the `lm/*` branches are **not** removed: seven hold commits not on `main` and most have uncommitted work, from the coordinator session still in `NOW.md`. Past worklog, interview and `RULE-SINCE` mentions stay — they are history. `~/my_programs/lockmaster` and the `uv tool` install are outside the repository and untouched.
+- **Mistakes:** none.
+- **Next:** Arpit commits this by hand; then decides what to do with the `lm/*` branches (W-165 had ruled to keep the old ones).
 
 ## 2026-11-15 — implement the open items: queue driven by eleven agents  ·  Claude Code (Sonnet 5.5, coordinator)
 

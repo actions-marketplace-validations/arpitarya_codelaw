@@ -22,6 +22,8 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
+| 🔴 **W-198** — keep or drop each worktree in [the item](open/W-198-session-cleanup.md): removing it would lose data (SR-WORK-CLEANUP decision 3) | 2026-11-19 |
+| ↳ **blocks:** nothing else in the queue | |
 | 🔴 **W-192** put the 23 Oxlint `correctness` ports with no corpus finding into their pack's `recommended` preset (10 in `js/recommended`, 11 in `react/recommended`, 2 in `ts/recommended`)? Each is `preview`, so a project sees one only with `preview = true`; each had 0 findings on the corpus. Recommended: yes, all 23. [detail](open/W-192-defaults-on-and-off.md) | 2026-11-17 |
 | ↳ **blocks:** W-192 (its last step) | |
 | 🔴 **W-142** bind the registry names for the packs and data packages before their release: five PyPI pending publishers, the npm first publishes, the two data packages; Claude fills the forms in Chrome, you check and submit. Every package is built now. [detail](open/W-142-framework-pack-names.md) | 2026-10-30 |
@@ -30,9 +32,11 @@ here. Read that record before changing anything below it.
 
 ---
 
-## Open items (14)
+## Open items (15)
 
-### build (5)
+### build (6)
+
+🔴 **W-198** `arpit` Worktrees left by session 9ab51fd9-b91e-413a-b52b-d301ac73f5fa would lose data if removed. Filed by now-ledger.py (Claude Code). [detail](open/W-198-session-cleanup.md)
 
 🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
