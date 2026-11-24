@@ -25232,7 +25232,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "for (const m of text.matchAll(/\\d+/)) {",
    "do": "for (const m of text.matchAll(/\\d+/g)) {",
@@ -26798,7 +26803,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "return arguments.reduce((a, b) => a + b, 0);",
    "do": "return Array.from(arguments).reduce((a, b) => a + b, 0);",
@@ -27759,7 +27769,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const f = function () { return arguments.callee; };",
    "do": "const f = function self() { return self; };",
@@ -28006,6 +28021,10 @@
    "since": "0.5.0",
    "scope": "file",
    "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    },
     {
      "preset": "codelaw:js/strict",
      "severity": "error"
@@ -31304,6 +31323,10 @@
    "scope": "file",
    "presets": [
     {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    },
+    {
      "preset": "codelaw:js/sonarjs",
      "severity": "error"
     }
@@ -34584,7 +34607,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "Foo.prototype.__iterator__ = function () { return items(this); };",
    "do": "Foo.prototype[Symbol.iterator] = function () { return items(this); };",
@@ -40415,7 +40443,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const ids = new Array(5).map((_, i) => i);",
    "do": "const ids = Array.from({ length: 5 }).map((_, i) => i);",
@@ -44041,7 +44074,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "import { readFile as readFile } from 'node:fs';",
    "do": "import { readFile } from 'node:fs';",
@@ -45049,7 +45087,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const hex = n.toString(160);",
    "do": "const hex = n.toString(16);",
@@ -58118,7 +58161,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:js/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const out = text.replaceAll(/\\s+/i, \" \");",
    "do": "const out = text.replaceAll(/\\s+/ig, \" \");",
@@ -108737,7 +108785,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const page = <html lang=\"english\"><body /></html>;",
    "do": "const page = <html lang=\"en\"><body /></html>;",
@@ -108940,7 +108993,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const b = <button aria-hidden=\"true\">Close</button>;",
    "do": "const b = <button>Close</button>;",
@@ -109406,7 +109464,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const b = <div role=\"button\" tabIndex={0} onClick={go}>Go</div>;",
    "do": "const b = <button type=\"button\" onClick={go}>Go</button>;",
@@ -110376,7 +110439,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const Input = forwardRef((props) => <input {...props} />);",
    "do": "const Input = forwardRef((props, ref) => <input ref={ref} {...props} />);",
@@ -111690,7 +111758,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const c = <Card {...props} title=\"x\" {...props} />;",
    "do": "const c = <Card {...props} title=\"x\" />;",
@@ -112449,7 +112522,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "this.setState({ ready: true });",
    "do": "this.timer = setTimeout(() => this.setState({ ready: true }), 100);",
@@ -112493,7 +112571,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "this.setState({ ready: true });",
    "do": "this.timer = setTimeout(() => this.setState({ ready: true }), 100);",
@@ -113759,7 +113842,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "return <p>{this.props.name}</p>;",
    "do": "return <p>{props.name}</p>;",
@@ -113994,7 +114082,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "UNSAFE_componentWillMount() {",
    "do": "componentDidMount() {",
@@ -114215,7 +114308,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "this.setState({ ready: true });",
    "do": "this.timer = setTimeout(() => this.setState({ ready: true }), 100);",
@@ -115506,7 +115604,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:react/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "const l = <br>Line</br>;",
    "do": "const l = <>Line<br /></>;",
@@ -141529,7 +141632,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:ts/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "constructor(private x: number) {",
    "do": "constructor(private x: number) {}",
@@ -142066,7 +142174,12 @@
    "stability": "preview",
    "since": "0.5.0",
    "scope": "file",
-   "presets": [],
+   "presets": [
+    {
+     "preset": "codelaw:ts/recommended",
+     "severity": "error"
+    }
+   ],
    "options": {},
    "dont": "export {};",
    "do": null,

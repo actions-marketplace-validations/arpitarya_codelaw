@@ -95,6 +95,16 @@ description = "The correctness core of ESLint's recommended preset (@eslint/js 1
 "js/use-isnan" = "error"
 "js/use-simple-number-keys" = "error"
 "js/valid-typeof" = "error"
+"js/no-caller" = "error"
+"js/no-eval" = "error"
+"js/no-iterator" = "error"
+"js/no-useless-rename" = "error"
+"js/no-array-method-on-arguments" = "error"
+"js/no-char-at-multichar-compare" = "error"
+"js/match-all-needs-global" = "error"
+"js/replace-all-needs-global" = "error"
+"js/number-arg-out-of-range" = "error"
+"js/no-uninvoked-array-callback" = "error"
 
 [scope.tests]
 files = ["**/*.test.*", "**/*.spec.*"]

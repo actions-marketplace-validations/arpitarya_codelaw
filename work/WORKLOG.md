@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-24 — voice docket: W-192, W-142, W-105 ruled; W-143 to the backlog  ·  Cowork (Opus 5.5)
+
+- **Asked:** *"Fetch all the open work items and its details so that we can go to voice mode and ratify them."* — then, by voice, *"Let's go one by one."* and *"file it"*.
+- **Done:** read the queue and all 13 item files; the voice docket's rulings written back (not committed): W-192 🟢 (all 23 into `recommended`); W-143 closed to BACKLOG B-085 and archived (`git mv`, map row, IMPLEMENTATION row; SR-RULE-PACKS decision 18 and the rule-parity proposal point at B-085); W-142's inbox row reworded (PyPI-only, bind just before the release); W-105 re-pinned to 7.1 GA, SR-TYPES decision 11 amended, W-188's blocker line updated. npm checked 13:40 IST: no 7.1 RC or GA (newest `7.1.0-beta`).
+- **Decided / left open:** Arpit — W-192: *"Go with the recommendation."* · W-143: *"Put this in backlog."* · W-142: *"Keep it that way."*, *"Just before the release."* · W-105: *"Yes."* Left for him: name the release for W-142; push `main` (78 commits ahead of `origin/main` at the last fetch) for W-172, W-169, W-126, W-95.
+- **Mistakes:** none.
+- **Next:** W-192's build — the 23 into the three presets at `error`, `rule-docs.py --write`, `docs-sync.py --write`, close.
+
 ## 2026-11-24 — worktree cleanup, lockmaster commit, W-198 and W-199 closed, W-143 to the decider  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"do the cleanup of worktrees which arent needed, sibling repo codelaw-w139-held"*, then *"Commit everything. And then proceed towards implementing one work item at a time and keep closing them."*

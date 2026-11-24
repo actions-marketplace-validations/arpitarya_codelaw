@@ -5,8 +5,8 @@ description: "Arpit, 2026-10-30 (voice): the registry names of the packs W-139 b
 item: W-142
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-19
-updated_by: "Claude Code (Sonnet 5.5): W-187 closed, so no blocker is left; the item is the decider's (step 2)"
+updated: 2026-11-24
+updated_by: "Arpit (Cowork, Opus 5.5): the voice docket's ruling written back"
 ball: arpit
 ---
 
@@ -17,7 +17,7 @@ ball: arpit
 | step | what we do | what it gives us | state |
 |---|---|---|---|
 | 1 | Wait until the packs and the two new data packages (W-182 built 2026-11-17, W-187) are ready to release | names bound when they are needed, all at once | 🟢 ready: the five packs are built (W-139 closed 2026-11-09), W-182 and W-187 closed 2026-11-19 |
-| 2 | Claude, in Chrome: pypi.org → *Publishing → Add a pending publisher*, once per name; Arpit checks and submits | `publish.yml` can create each project | 🔴 Arpit submits |
+| 2 | Claude, in Chrome: pypi.org → *Publishing → Add a pending publisher*, once per name; Arpit checks and submits — **just before the release that carries the packs** (ruled 2026-11-24) | `publish.yml` can create each project | 🔴 Arpit says when the release is, then submits |
 | W-147 | npm: first publish of the `testing` and `nextjs` packs' names — merged in; its steps under [§ W-147](#merged-in-w-147) | one item, not two | ⏳ — see § |
 
 **Merged 2026-10-30 (Arpit, text):** *"There are too many work items. See if we can review all the work items and merge them into few of them."* → *"go ahead, merge them."* Merged in: W-147.
@@ -27,6 +27,8 @@ ball: arpit
 **Model:** Cowork with Claude in Chrome; Arpit submits.
 
 **Arpit, 2026-11-05 (voice docket):** *"Go with the recommendation."* — nothing now; the pending publishers, the four npm first publishes and their trusted publishers are done just before the release that carries the packs, once W-139 is ready.
+
+**Arpit, 2026-11-24 (voice docket, Cowork):** asked whether the five framework packs stay PyPI-only or go to npm too — *"Keep it that way."*; asked whether to bind the names now or just before the release — *"Just before the release."* Filed on *"file it."* So L6's table is unchanged and the row stays with the decider until he names the release.
 
 ## The names (all free on PyPI, checked 2026-10-30 08:30)
 
@@ -78,7 +80,7 @@ Form values for each: owner `arpitarya` · repository `codelaw` · workflow `pub
 
 ## Blockers
 
-None: W-182 and W-187 (the two data packages) closed 2026-11-19 and W-139 closed 2026-11-09, so every package is built. What is left is the decider's: step 2.
+None from other items: W-182 and W-187 (the two data packages) closed 2026-11-19 and W-139 closed 2026-11-09, so every package is built. What is left is the decider's: name the release (ruled 2026-11-24: bind just before it), then step 2.
 
 ## Record affected
 

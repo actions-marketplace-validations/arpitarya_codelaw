@@ -283,7 +283,7 @@ Asked as *"auxlint"* — no tool by that name; read as **Oxlint** (Oxc, MIT). Ox
 |---|--:|---|
 | `same-as` | 805 | 795 by name in a CSV above (535 of them `port`, 138 `covered`, 56 `types`), 10 by behaviour |
 | `port` | 18 | Oxlint-only: 11 `oxc` (bug checks, from DeepScan and Clippy), 4 `react` (react-refresh, @eslint-react), 3 `react_perf` |
-| `out-of-scope` | 46 | `vue` — W-143 |
+| `out-of-scope` | 46 | `vue` — W-143, now BACKLOG B-085 (2026-11-24) |
 | `skip` | 3 | `no-async-await`, `no-optional-chaining`, `no-rest-spread-properties`: old-target restrictions |
 
 - **Its categories as a signal:** 38 of our tranche B/C ports are Oxlint `correctness` (outright bugs) — W-148 corpus-runs them for `recommended`.
@@ -341,6 +341,6 @@ W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 27
 | options-only (built, silent until configured) | W-176's 19 rows |
 | link (an existing rule does the job) | Pylint `preferred-module`, `consider-using-f-string` (W-194) |
 | still to build | W-178, W-180–W-190, W-193–W-195 |
-| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's, `needs-data` ×4, `types` ×4, four project-wide rows built as W-199 (closed 2026-11-24: `js/no-private-imports`, `js/no-undeclared-classes`, `css/no-unused-classes`, `css/no-undeclared-custom-properties`); the 7 `*/preset` rows are `skip` |
+| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's (moved to BACKLOG B-085, 2026-11-24), `needs-data` ×4, `types` ×4, four project-wide rows built as W-199 (closed 2026-11-24: `js/no-private-imports`, `js/no-undeclared-classes`, `css/no-unused-classes`, `css/no-undeclared-custom-properties`); the 7 `*/preset` rows are `skip` |
 | backlog | B-081 (Airflow ×5), B-082 (`PLE2514`), B-083 (`TID254`, `TID255`), B-084 (two Pylint rows) |
 

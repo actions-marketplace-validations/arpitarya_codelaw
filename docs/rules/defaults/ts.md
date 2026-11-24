@@ -5,13 +5,13 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#ts).
 
 - **Installed by `codelaw init` when:** a TypeScript file.
-- **Rules:** 67 — 0 on, 23 on with `preview = true`, 11 off in an opt-in preset, 33 in no preset.
+- **Rules:** 67 — 0 on, 25 on with `preview = true`, 11 off in an opt-in preset, 31 in no preset.
 
 ## Presets
 
 | Preset | Written by `init` | Rules | Severities | What it is |
 |---|---|--:|---|---|
-| `ts/recommended` | yes, once the pack is installed | 23 | 23 error | typescript-eslint's recommended preset (8.71.2, not type-checked), reimplemented |
+| `ts/recommended` | yes, once the pack is installed | 25 | 25 error | typescript-eslint's recommended preset (8.71.2, not type-checked), reimplemented |
 | `ts/conventions` | no — opt in | 1 | 1 error | House conventions from codelaw's starter catalogue |
 | `ts/type-checked` | no — opt in | 10 | 10 error | typescript-eslint's type-checked rules, answered by the project's own TypeScript ≥ 7.1 (SR-TYPES) |
 
@@ -63,7 +63,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`ts/no-require-imports`](../ts/no-require-imports.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-restricted-types`](../ts/no-restricted-types.md) | off — in no preset | — | — |
 | [`ts/no-this-alias`](../ts/no-this-alias.md) | on with `preview = true` | error | `ts/recommended` |
-| [`ts/no-unnecessary-parameter-property-assignment`](../ts/no-unnecessary-parameter-property-assignment.md) | off — in no preset | — | — |
+| [`ts/no-unnecessary-parameter-property-assignment`](../ts/no-unnecessary-parameter-property-assignment.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-unnecessary-type-constraint`](../ts/no-unnecessary-type-constraint.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-unsafe-argument`](../ts/no-unsafe-argument.md) | off — opt-in preset | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](../ts/no-unsafe-assignment.md) | off — opt-in preset | — | `ts/type-checked` |
@@ -74,7 +74,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`ts/no-unsafe-return`](../ts/no-unsafe-return.md) | off — opt-in preset | — | `ts/type-checked` |
 | [`ts/no-unused-expressions`](../ts/no-unused-expressions.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-unused-vars`](../ts/no-unused-vars.md) | on with `preview = true` | error | `ts/recommended` |
-| [`ts/no-useless-empty-export`](../ts/no-useless-empty-export.md) | off — in no preset | — | — |
+| [`ts/no-useless-empty-export`](../ts/no-useless-empty-export.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/no-wrapper-object-types`](../ts/no-wrapper-object-types.md) | on with `preview = true` | error | `ts/recommended` |
 | [`ts/parameter-properties`](../ts/parameter-properties.md) | off — in no preset | — | — |
 | [`ts/prefer-as-const`](../ts/prefer-as-const.md) | on with `preview = true` | error | `ts/recommended` |

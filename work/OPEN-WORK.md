@@ -22,21 +22,17 @@ here. Read that record before changing anything below it.
 
 | what the decider decides | filed |
 |---|---|
-| 🔴 **W-192** put the 23 Oxlint `correctness` ports with no corpus finding into their pack's `recommended` preset (10 in `js/recommended`, 11 in `react/recommended`, 2 in `ts/recommended`)? Each is `preview`, so a project sees one only with `preview = true`; each had 0 findings on the corpus. Recommended: yes, all 23. [detail](open/W-192-defaults-on-and-off.md) | 2026-11-17 |
-| ↳ **blocks:** W-192 (its last step) | |
-| 🔴 **W-143** ratify the four tree-sitter grammars for Vue, Svelte, Astro and GraphQL (L11 §3), so they can become codelaw languages — each then needs a parser, a formatter within 2% of Prettier, and Biome's 89 rules; the formatters are the bulk. Candidates and licences in [the item](open/W-143-vue-svelte-astro-graphql.md); the licences are unverified. Recommended: ratify all four, then Claude amends L3 and L7 and starts with GraphQL (smallest). | 2026-11-24 |
-| ↳ **blocks:** W-143 (all four steps) | |
-| 🔴 **W-142** bind the registry names for the packs and data packages before their release: five PyPI pending publishers, the npm first publishes, the two data packages; Claude fills the forms in Chrome, you check and submit. Every package is built now. [detail](open/W-142-framework-pack-names.md) | 2026-10-30 |
+| 🔴 **W-142** ruled 11-24: the framework packs stay PyPI-only and the names are bound just before the release that carries them. Left for you: say when that release is; Claude then fills the PyPI forms in Chrome, you submit them and publish the npm names once by hand. [detail](open/W-142-framework-pack-names.md) | 2026-10-30 |
 | ↳ **blocks:** nothing else in the queue | |
 
 
 ---
 
-## Open items (13)
+## Open items (11)
 
-### build (4)
+### build (3)
 
-🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven (PR #7, issue #6). `check_types_*` budgets ruled 11-07: left unset (reported only). Next: the RC re-pin; no 7.1 RC on npm yet (11-15). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
+🟣 **W-105** `agent` Type-aware TypeScript: nine rules; helper batched, version watch proven. Ruled 11-24: re-pin to TypeScript 7.1 GA, not the RC; GA was due 2026-11-24 and is not on npm yet (newest `7.1.0-beta`). Merged 10-30. Filed by Arpit (Cowork). [detail](open/W-105-type-aware-engine.md)
 
 
 🟢 **W-172** `agent` L8: time side built (11-08); `peak_memory_10k` raised 72 → 90 MiB by ruling, L8 decision 5a (11-15). Next: CI's next run on a pushed `main` proves `check_cold_10k` and `lsp_after_edit`; close then. Filed by Claude Code (W-139). [detail](open/W-172-l8-budgets-over-on-main.md)
@@ -55,8 +51,6 @@ here. Read that record before changing anything below it.
 🟣 **W-188** waits on **W-105** `agent` The JS value-type rows (built 11-09 on one file's facts) ask the type helper; `jsdoc-no-unnecessary-type-assertion`. Filed by Arpit (Cowork). [detail](open/W-188-js-value-rows-type-aware.md)
 
 
-🔴 **W-143** `arpit` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
-
 ### ci/cd (4)
 
 🟢🧨 **W-169** `agent` `codelaw` segfaulted on the musl build legs now and then; cause found and fixed 11-07. Pushed 11-08: all eight build legs green in `ci` 42454141410 — 1 of 5 runs on the fix; four more needed. Filed by Arpit (Claude Code). [detail](open/W-169-rules-lint-segfault.md)
@@ -71,11 +65,10 @@ here. Read that record before changing anything below it.
 
 ### testing (0)
 
-### reporting and benchmarks (2)
+### reporting and benchmarks (1)
 
 🟡 **W-102** waits on **W-189** `agent` 7 tasks × 9 runs (~$65), `PREREG.md` amended first; once every rule is built. Filed by Arpit (Cowork). [detail](open/W-102-guidance-vs-check-experiment.md)
 
-🔴 **W-192** `agent` The page of defaults (`docs/rules/defaults.md`) and `py/strict`, `py/pylint`, `py/pydocstyle` are built (11-17). Left: the 23 Oxlint ports for `recommended`, in the inbox. Filed by Arpit (Cowork). [detail](open/W-192-defaults-on-and-off.md)
 
 ### record update (0)
 

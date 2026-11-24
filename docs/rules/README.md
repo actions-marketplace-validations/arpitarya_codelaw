@@ -314,7 +314,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/label-position`](js/label-position.md) | Only loops and switches are labelled | `manual` | — | `js/sonarjs` |
 | [`js/link-with-target-blank`](js/link-with-target-blank.md) | target="_blank" with rel="noopener" | `suggest` | — | `js/sonarjs` |
 | [`js/logical-assignment-operators`](js/logical-assignment-operators.md) | a \|\|= b rather than a = a \|\| b | `suggest` | — | `js/strict` |
-| [`js/match-all-needs-global`](js/match-all-needs-global.md) | matchAll() needs a global regex | `suggest` | — | *[rules] only* |
+| [`js/match-all-needs-global`](js/match-all-needs-global.md) | matchAll() needs a global regex | `suggest` | — | `js/recommended` |
 | [`js/max-classes-per-file`](js/max-classes-per-file.md) | One class per file | `manual` | — | *[rules] only* |
 | [`js/max-depth`](js/max-depth.md) | Blocks nest no deeper than a maximum | `manual` | `max` | `js/size` |
 | [`js/max-lines`](js/max-lines.md) | A file stays under a maximum number of lines | `manual` | `max`, `skip_blank_lines`, `skip_comments`, `skip_imports` | `js/size` |
@@ -343,7 +343,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-array-fill-with-reference-type`](js/no-array-fill-with-reference-type.md) | No fill() with an object | `suggest` | — | `js/strict` |
 | [`js/no-array-from-fill`](js/no-array-from-fill.md) | Array.from with a mapper rather than fill() | `suggest` | — | `js/strict` |
 | [`js/no-array-front-mutation`](js/no-array-front-mutation.md) | No unshift() or shift() | `manual` | — | *[rules] only* |
-| [`js/no-array-method-on-arguments`](js/no-array-method-on-arguments.md) | arguments has no array methods | `suggest` | — | *[rules] only* |
+| [`js/no-array-method-on-arguments`](js/no-array-method-on-arguments.md) | arguments has no array methods | `suggest` | — | `js/recommended` |
 | [`js/no-array-method-this-argument`](js/no-array-method-this-argument.md) | No thisArg to array callbacks | `suggest` | — | `js/strict` |
 | [`js/no-array-reduce`](js/no-array-reduce.md) | No reduce() | `manual` | — | `js/strict` |
 | [`js/no-array-reverse`](js/no-array-reverse.md) | toReversed() rather than reverse() | `suggest` | — | `js/strict` |
@@ -363,12 +363,12 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-break-in-nested-loop`](js/no-break-in-nested-loop.md) | No unlabelled break out of a loop or switch nested in a loop | `manual` | — | `js/strict` |
 | [`js/no-built-in-override`](js/no-built-in-override.md) | No declaration named like a built-in object | `manual` | — | *[rules] only* |
 | [`js/no-bun-modules`](js/no-bun-modules.md) | No Bun-specific module | `manual` | — | *[rules] only* |
-| [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `suggest` | — | *[rules] only* |
+| [`js/no-caller`](js/no-caller.md) | No arguments.callee or arguments.caller | `suggest` | — | `js/recommended` |
 | [`js/no-canvas-to-image`](js/no-canvas-to-image.md) | No round trip of canvas pixels through an image | `manual` | — | `js/strict` |
 | [`js/no-case-declarations`](js/no-case-declarations.md) | No let, const, function or class directly in a case | `suggest` | — | `js/recommended` |
 | [`js/no-case-label-in-switch`](js/no-case-label-in-switch.md) | No label inside a case | `manual` | — | `js/sonarjs` |
 | [`js/no-chained-comparison`](js/no-chained-comparison.md) | No a < b < c | `suggest` | — | `js/strict` |
-| [`js/no-char-at-multichar-compare`](js/no-char-at-multichar-compare.md) | charAt() compared with a longer string | `suggest` | — | `js/strict` |
+| [`js/no-char-at-multichar-compare`](js/no-char-at-multichar-compare.md) | charAt() compared with a longer string | `suggest` | — | `js/recommended`, `js/strict` |
 | [`js/no-class-assign`](js/no-class-assign.md) | A class name is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-clear-text-protocols`](js/no-clear-text-protocols.md) | No http:// or ftp:// URLs | `manual` | — | `js/sonarjs` |
 | [`js/no-code-after-done`](js/no-code-after-done.md) | No code after done() in a callback test | `manual` | — | `js/sonarjs` |
@@ -435,7 +435,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-equals-in-for-termination`](js/no-equals-in-for-termination.md) | No == or != as a for loop end test | `manual` | — | `js/sonarjs` |
 | [`js/no-erasing-op`](js/no-erasing-op.md) | Multiplying by zero erases the value | `suggest` | — | *[rules] only* |
 | [`js/no-error-property-assignment`](js/no-error-property-assignment.md) | No overwriting name, stack, cause or errors on a new built-in error | `manual` | — | `js/strict` |
-| [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | `js/sonarjs` |
+| [`js/no-eval`](js/no-eval.md) | No eval | `manual` | — | `js/recommended`, `js/sonarjs` |
 | [`js/no-ex-assign`](js/no-ex-assign.md) | A caught error is not reassigned | `manual` | — | `js/recommended` |
 | [`js/no-exported-imports`](js/no-exported-imports.md) | No import that is exported in a separate statement | `manual` | — | *[rules] only* |
 | [`js/no-exports-in-scripts`](js/no-exports-in-scripts.md) | No exports in a file run as a script | `manual` | — | `js/strict` |
@@ -502,7 +502,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-invariant-returns`](js/no-invariant-returns.md) | No function that returns the same value on every path | `manual` | — | `js/sonarjs` |
 | [`js/no-inverted-boolean-check`](js/no-inverted-boolean-check.md) | No !(a === b) | `manual` | — | `js/sonarjs` |
 | [`js/no-irregular-whitespace`](js/no-irregular-whitespace.md) | No irregular whitespace in templates, regular expressions, JSX text or comments | `suggest` | — | `js/recommended` |
-| [`js/no-iterator`](js/no-iterator.md) | No __iterator__ | `suggest` | — | *[rules] only* |
+| [`js/no-iterator`](js/no-iterator.md) | No __iterator__ | `suggest` | — | `js/recommended` |
 | [`js/no-javascript-url`](js/no-javascript-url.md) | No javascript: URLs | `manual` | — | *[rules] only* |
 | [`js/no-keyword-prefix`](js/no-keyword-prefix.md) | No new or class prefix in names | `manual` | — | *[rules] only* |
 | [`js/no-label-var`](js/no-label-var.md) | No label with a variable's name | `manual` | — | *[rules] only* |
@@ -622,7 +622,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-underscore-dangle`](js/no-underscore-dangle.md) | No leading or trailing underscore in names | `manual` | — | *[rules] only* |
 | [`js/no-unenclosed-multiline-block`](js/no-unenclosed-multiline-block.md) | No statement indented as if it were in a braceless block | `manual` | — | `js/sonarjs` |
 | [`js/no-unexpected-multiline`](js/no-unexpected-multiline.md) | A line break doesn't silently join two lines into one expression | `suggest` | — | `js/recommended`, `js/sonarjs` |
-| [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | *[rules] only* |
+| [`js/no-uninvoked-array-callback`](js/no-uninvoked-array-callback.md) | map() over new Array(n) never runs | `suggest` | — | `js/recommended` |
 | [`js/no-uniq-key`](js/no-uniq-key.md) | No React key made fresh on each render | `manual` | — | `js/sonarjs` |
 | [`js/no-unmodified-loop-condition`](js/no-unmodified-loop-condition.md) | No loop condition the loop never changes | `manual` | — | *[rules] only* |
 | [`js/no-unnecessary-array-flat-depth`](js/no-unnecessary-array-flat-depth.md) | No flat(1) | `auto` | — | `js/strict` |
@@ -696,7 +696,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-useless-re-export`](js/no-useless-re-export.md) | No named re-export that `export *` from the same module already covers | `auto` | — | `js/strict` |
 | [`js/no-useless-react-setstate`](js/no-useless-react-setstate.md) | No state setter called with its own state | `manual` | — | `js/sonarjs` |
 | [`js/no-useless-recursion`](js/no-useless-recursion.md) | No function that only returns a call to itself | `manual` | — | `js/strict` |
-| [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | *[rules] only* |
+| [`js/no-useless-rename`](js/no-useless-rename.md) | No rename to the same name | `auto` | — | `js/recommended` |
 | [`js/no-useless-return`](js/no-useless-return.md) | No return; at the end of a function | `auto` | — | *[rules] only* |
 | [`js/no-useless-set-construction`](js/no-useless-set-construction.md) | No `new Set()` around a collection a `Set` method already accepts | `auto` | — | `js/strict` |
 | [`js/no-useless-spread`](js/no-useless-spread.md) | No spread of an array literal | `auto` | — | `js/strict` |
@@ -717,7 +717,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-xor-as-exponentiation`](js/no-xor-as-exponentiation.md) | No ^ where a power was meant | `suggest` | — | `js/strict` |
 | [`js/no-zero-fractions`](js/no-zero-fractions.md) | No zero fraction on a number | `auto` | — | `js/strict` |
 | [`js/non-existent-operator`](js/non-existent-operator.md) | No =+, =- or =! | `manual` | — | `js/sonarjs` |
-| [`js/number-arg-out-of-range`](js/number-arg-out-of-range.md) | Number method argument out of range | `manual` | — | *[rules] only* |
+| [`js/number-arg-out-of-range`](js/number-arg-out-of-range.md) | Number method argument out of range | `manual` | — | `js/recommended` |
 | [`js/numeric-separators-style`](js/numeric-separators-style.md) | Group digits of long numbers | `auto` | — | `js/strict` |
 | [`js/object-alt-content`](js/object-alt-content.md) | object elements have fallback content | `manual` | — | `js/sonarjs` |
 | [`js/object-shorthand`](js/object-shorthand.md) | { x } rather than { x: x } | `auto` | — | *[rules] only* |
@@ -986,7 +986,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/regexp-unicode-property`](js/regexp-unicode-property.md) | Unicode properties in their usual form | `auto` | — | *[rules] only* |
 | [`js/regexp-use-ignore-case`](js/regexp-use-ignore-case.md) | Both cases of every letter means the `i` flag | `auto` | — | `js/recommended`, `js/regexp` |
 | [`js/relative-url-style`](js/relative-url-style.md) | No ./ in a relative URL | `manual` | — | `js/strict` |
-| [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | *[rules] only* |
+| [`js/replace-all-needs-global`](js/replace-all-needs-global.md) | replaceAll() needs a global regex | `suggest` | — | `js/recommended` |
 | [`js/require-array-join-separator`](js/require-array-join-separator.md) | join() names its separator | `auto` | — | `js/strict` |
 | [`js/require-array-sort-compare`](js/require-array-sort-compare.md) | A compare function for sort() | `suggest` | — | `js/strict` |
 | [`js/require-atomic-updates`](js/require-atomic-updates.md) | No assignment from a value read before an `await` or `yield` | `manual` | `allowProperties` | *[rules] only* |
@@ -1093,7 +1093,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-require-imports`](ts/no-require-imports.md) | No require() calls | `suggest` | — | `ts/recommended` |
 | [`ts/no-restricted-types`](ts/no-restricted-types.md) | No type the project restricts | `suggest` | `types` | *[rules] only* |
 | [`ts/no-this-alias`](ts/no-this-alias.md) | No aliasing this to a variable | `manual` | — | `ts/recommended` |
-| [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `auto` | — | *[rules] only* |
+| [`ts/no-unnecessary-parameter-property-assignment`](ts/no-unnecessary-parameter-property-assignment.md) | No assignment a parameter property already makes | `auto` | — | `ts/recommended` |
 | [`ts/no-unnecessary-type-constraint`](ts/no-unnecessary-type-constraint.md) | No extends any or extends unknown on a type parameter | `suggest` | — | `ts/recommended` |
 | [`ts/no-unsafe-argument`](ts/no-unsafe-argument.md) | No argument typed `any` for a typed parameter | `manual` | — | `ts/type-checked` |
 | [`ts/no-unsafe-assignment`](ts/no-unsafe-assignment.md) | No value typed `any` assigned to a typed target | `manual` | — | `ts/type-checked` |
@@ -1104,7 +1104,7 @@ Presets: `codelaw:ts/recommended` · `codelaw:ts/conventions` · `codelaw:ts/typ
 | [`ts/no-unsafe-return`](ts/no-unsafe-return.md) | No `return` of a value typed `any` | `manual` | — | `ts/type-checked` |
 | [`ts/no-unused-expressions`](ts/no-unused-expressions.md) | No expression statements that do nothing | `suggest` | — | `ts/recommended` |
 | [`ts/no-unused-vars`](ts/no-unused-vars.md) | Every declared name is used | `auto` | `vars`, `args`, `caughtErrors`, `ignoreRestSiblings`, `varsIgnorePattern`, `argsIgnorePattern`, `caughtErrorsIgnorePattern`, `destructuredArrayIgnorePattern` | `ts/recommended` |
-| [`ts/no-useless-empty-export`](ts/no-useless-empty-export.md) | No export {} in a module | `auto` | — | *[rules] only* |
+| [`ts/no-useless-empty-export`](ts/no-useless-empty-export.md) | No export {} in a module | `auto` | — | `ts/recommended` |
 | [`ts/no-wrapper-object-types`](ts/no-wrapper-object-types.md) | Primitive types, not wrapper object types | `auto` | — | `ts/recommended` |
 | [`ts/parameter-properties`](ts/parameter-properties.md) | No parameter properties | `manual` | — | *[rules] only* |
 | [`ts/prefer-as-const`](ts/prefer-as-const.md) | as const instead of repeating a literal as its type | `auto` | — | `ts/recommended` |
@@ -1143,11 +1143,11 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-img-redundant-alt`](react/a11y-img-redundant-alt.md) | Alt text does not say "image" | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-interactive-supports-focus`](react/a11y-interactive-supports-focus.md) | An element with an interactive role is focusable | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-label-has-associated-control`](react/a11y-label-has-associated-control.md) | A label is tied to a control | `suggest` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-lang`](react/a11y-lang.md) | lang is a valid language tag | `manual` | — | *[rules] only* |
+| [`react/a11y-lang`](react/a11y-lang.md) | lang is a valid language tag | `manual` | — | `react/recommended` |
 | [`react/a11y-media-has-caption`](react/a11y-media-has-caption.md) | Audio and video have captions | `manual` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-mouse-events-have-key-events`](react/a11y-mouse-events-have-key-events.md) | Hover handlers have focus twins | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-access-key`](react/a11y-no-access-key.md) | No accessKey | `suggest` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `suggest` | — | *[rules] only* |
+| [`react/a11y-no-aria-hidden-on-focusable`](react/a11y-no-aria-hidden-on-focusable.md) | No aria-hidden on a focusable element | `suggest` | — | `react/recommended` |
 | [`react/a11y-no-autofocus`](react/a11y-no-autofocus.md) | No autoFocus | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-distracting-elements`](react/a11y-no-distracting-elements.md) | No marquee or blink | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-interactive-element-to-noninteractive-role`](react/a11y-no-interactive-element-to-noninteractive-role.md) | Interactive elements keep an interactive role | `suggest` | — | `react/recommended`, `react/a11y` |
@@ -1156,7 +1156,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/a11y-no-noninteractive-tabindex`](react/a11y-no-noninteractive-tabindex.md) | Non-interactive elements are not in the tab order | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-redundant-roles`](react/a11y-no-redundant-roles.md) | No role an element already has | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-static-element-interactions`](react/a11y-no-static-element-interactions.md) | div and span have a role when they handle events | `manual` | — | `react/recommended`, `react/a11y` |
-| [`react/a11y-prefer-tag-over-role`](react/a11y-prefer-tag-over-role.md) | The native element, not a role | `manual` | — | *[rules] only* |
+| [`react/a11y-prefer-tag-over-role`](react/a11y-prefer-tag-over-role.md) | The native element, not a role | `manual` | — | `react/recommended` |
 | [`react/a11y-role-has-required-aria-props`](react/a11y-role-has-required-aria-props.md) | A role carries the ARIA attributes it requires | `auto` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-role-supports-aria-props`](react/a11y-role-supports-aria-props.md) | ARIA attributes fit the element's role | `suggest` | — | `react/recommended`, `react/a11y` |
 | [`react/a11y-scope`](react/a11y-scope.md) | scope only on th | `auto` | — | `react/recommended`, `react/a11y` |
@@ -1176,7 +1176,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/forbid-elements`](react/forbid-elements.md) | No element the project forbids | `manual` | `forbid` | *[rules] only* |
 | [`react/forbid-foreign-prop-types`](react/forbid-foreign-prop-types.md) | No reading another component's propTypes | `manual` | — | *[rules] only* |
 | [`react/forbid-prop-types`](react/forbid-prop-types.md) | No PropTypes.any, array or object | `manual` | — | *[rules] only* |
-| [`react/forward-ref-uses-ref`](react/forward-ref-uses-ref.md) | A forwardRef callback takes the ref | `suggest` | — | *[rules] only* |
+| [`react/forward-ref-uses-ref`](react/forward-ref-uses-ref.md) | A forwardRef callback takes the ref | `suggest` | — | `react/recommended` |
 | [`react/function-component-definition`](react/function-component-definition.md) | Named components are function declarations | `manual` | — | *[rules] only* |
 | [`react/globals`](react/globals.md) | Render doesn't change module-level or global values | `manual` | — | `react/recommended` |
 | [`react/hook-prefix`](react/hook-prefix.md) | Functions that call hooks are named use… | `auto` | — | `react/conventions` |
@@ -1205,7 +1205,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/jsx-no-undef`](react/jsx-no-undef.md) | Components used in JSX are declared | `suggest` | — | `react/recommended` |
 | [`react/jsx-no-useless-fragment`](react/jsx-no-useless-fragment.md) | No fragment around a single element | `auto` | — | *[rules] only* |
 | [`react/jsx-pascal-case`](react/jsx-pascal-case.md) | Component names are PascalCase | `suggest` | — | *[rules] only* |
-| [`react/jsx-props-no-spread-multi`](react/jsx-props-no-spread-multi.md) | One object is not spread twice into a JSX element | `suggest` | — | *[rules] only* |
+| [`react/jsx-props-no-spread-multi`](react/jsx-props-no-spread-multi.md) | One object is not spread twice into a JSX element | `suggest` | — | `react/recommended` |
 | [`react/jsx-props-no-spreading`](react/jsx-props-no-spreading.md) | No spread props in JSX | `manual` | — | *[rules] only* |
 | [`react/jsx-sort-props`](react/jsx-sort-props.md) | JSX props are in alphabetical order | `suggest` | `ignore_case` | *[rules] only* |
 | [`react/max-jsx-depth`](react/max-jsx-depth.md) | JSX elements nest no deeper than a maximum | `manual` | `max` | `react/size` |
@@ -1221,8 +1221,8 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-danger-with-children`](react/no-danger-with-children.md) | No dangerouslySetInnerHTML together with children | `suggest` | — | `react/recommended` |
 | [`react/no-deprecated`](react/no-deprecated.md) | No deprecated React APIs | `suggest` | — | `react/recommended` |
 | [`react/no-deriving-state-in-effects`](react/no-deriving-state-in-effects.md) | No effect that only copies a value into state | `manual` | — | *[rules] only* |
-| [`react/no-did-mount-set-state`](react/no-did-mount-set-state.md) | No setState in componentDidMount | `manual` | — | *[rules] only* |
-| [`react/no-did-update-set-state`](react/no-did-update-set-state.md) | No setState in componentDidUpdate | `manual` | — | *[rules] only* |
+| [`react/no-did-mount-set-state`](react/no-did-mount-set-state.md) | No setState in componentDidMount | `manual` | — | `react/recommended` |
+| [`react/no-did-update-set-state`](react/no-did-update-set-state.md) | No setState in componentDidUpdate | `manual` | — | `react/recommended` |
 | [`react/no-direct-mutation-state`](react/no-direct-mutation-state.md) | No assigning to this.state outside the constructor | `suggest` | — | `react/recommended` |
 | [`react/no-find-dom-node`](react/no-find-dom-node.md) | No findDOMNode | `manual` | — | `react/recommended` |
 | [`react/no-inline-styles`](react/no-inline-styles.md) | No object literal in a `style` prop | `manual` | — | *[rules] only* |
@@ -1249,17 +1249,17 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/no-suspicious-semicolon-in-jsx`](react/no-suspicious-semicolon-in-jsx.md) | No stray semicolon after a JSX element | `manual` | — | `react/recommended` |
 | [`react/no-svg-without-title`](react/no-svg-without-title.md) | An SVG has a title or is hidden | `suggest` | — | `react/recommended` |
 | [`react/no-tailwind-raw-colors`](react/no-tailwind-raw-colors.md) | A Tailwind colour utility names a token, not a palette colour | `manual` | — | *[rules] only* |
-| [`react/no-this-in-sfc`](react/no-this-in-sfc.md) | No this in a function component | `manual` | — | *[rules] only* |
+| [`react/no-this-in-sfc`](react/no-this-in-sfc.md) | No this in a function component | `manual` | — | `react/recommended` |
 | [`react/no-typos`](react/no-typos.md) | No miscased React class members | `suggest` | — | *[rules] only* |
 | [`react/no-unescaped-entities`](react/no-unescaped-entities.md) | No unescaped >, ", ' or } in JSX text | `auto` | — | `react/recommended` |
 | [`react/no-unknown-property`](react/no-unknown-property.md) | DOM elements use React's prop names, not HTML attribute names | `auto` | — | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](react/no-unnecessary-use-prefix.md) | A use… function calls a hook | `auto` | — | `react/recommended` |
-| [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | *[rules] only* |
+| [`react/no-unsafe`](react/no-unsafe.md) | No UNSAFE_ lifecycle methods | `manual` | — | `react/recommended` |
 | [`react/no-unsafe-iframe-sandbox`](react/no-unsafe-iframe-sandbox.md) | An `<iframe>` sandbox does not combine `allow-scripts` and `allow-same-origin` | `manual` | — | *[rules] only* |
 | [`react/no-unused-class-component-methods`](react/no-unused-class-component-methods.md) | Every class component method is used | `suggest` | — | *[rules] only* |
 | [`react/no-unused-prop-types`](react/no-unused-prop-types.md) | No prop type a component never reads | `suggest` | — | *[rules] only* |
 | [`react/no-unused-state`](react/no-unused-state.md) | No state field a component never reads | `manual` | — | *[rules] only* |
-| [`react/no-will-update-set-state`](react/no-will-update-set-state.md) | No setState in componentWillUpdate | `manual` | — | *[rules] only* |
+| [`react/no-will-update-set-state`](react/no-will-update-set-state.md) | No setState in componentWillUpdate | `manual` | — | `react/recommended` |
 | [`react/only-export-components`](react/only-export-components.md) | A module that exports components exports only components | `manual` | — | *[rules] only* |
 | [`react/prefer-es6-class`](react/prefer-es6-class.md) | Class components, not createReactClass | `manual` | — | *[rules] only* |
 | [`react/prefer-exact-props`](react/prefer-exact-props.md) | Prop types are exact | `auto` | `exact_wrappers` | *[rules] only* |
@@ -1287,7 +1287,7 @@ Presets: `codelaw:react/recommended` · `codelaw:react/a11y` · `codelaw:react/c
 | [`react/use-react-naming-convention`](react/use-react-naming-convention.md) | React's context, id and ref variables are named for what they hold | `manual` | — | *[rules] only* |
 | [`react/use-tailwind-static-class-strings`](react/use-tailwind-static-class-strings.md) | A Tailwind `className` is written out in full | `manual` | — | *[rules] only* |
 | [`react/use-unique-element-ids`](react/use-unique-element-ids.md) | No static `id` on an element | `manual` | — | *[rules] only* |
-| [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | *[rules] only* |
+| [`react/void-dom-elements-no-children`](react/void-dom-elements-no-children.md) | Void elements have no children | `manual` | — | `react/recommended` |
 
 ## node
 

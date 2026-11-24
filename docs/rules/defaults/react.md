@@ -5,13 +5,13 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#react).
 
 - **Installed by `codelaw init` when:** `package.json` depends on `react`.
-- **Rules:** 163 — 0 on, 66 on with `preview = true`, 5 off in an opt-in preset, 92 in no preset.
+- **Rules:** 163 — 0 on, 77 on with `preview = true`, 5 off in an opt-in preset, 81 in no preset.
 
 ## Presets
 
 | Preset | Written by `init` | Rules | Severities | What it is |
 |---|---|--:|---|---|
-| `react/recommended` | yes, once the pack is installed | 66 | 63 error, 3 warn | eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eleven of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented |
+| `react/recommended` | yes, once the pack is installed | 77 | 74 error, 3 warn | eslint-plugin-react 7.37.5 recommended with jsx-runtime, eslint-plugin-react-hooks 7.1.1 rules-of-hooks and exhaustive-deps and eleven of its React Compiler rules, and two of @eslint-react 5.28.8's hooks rules, reimplemented |
 | `react/a11y` | no — opt in | 31 | 31 error | eslint-plugin-jsx-a11y 6.10.2's recommended — all 31 rules, at error — reimplemented (W-139) |
 | `react/conventions` | no — opt in | 2 | 2 error | House conventions from codelaw's starter catalogue |
 | `react/size` | no — opt in | 3 | 3 warn | Component size: lines per component, props per component and JSX nesting depth |
@@ -40,11 +40,11 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/a11y-img-redundant-alt`](../react/a11y-img-redundant-alt.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-interactive-supports-focus`](../react/a11y-interactive-supports-focus.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-label-has-associated-control`](../react/a11y-label-has-associated-control.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
-| [`react/a11y-lang`](../react/a11y-lang.md) | off — in no preset | — | — |
+| [`react/a11y-lang`](../react/a11y-lang.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/a11y-media-has-caption`](../react/a11y-media-has-caption.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-mouse-events-have-key-events`](../react/a11y-mouse-events-have-key-events.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-access-key`](../react/a11y-no-access-key.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
-| [`react/a11y-no-aria-hidden-on-focusable`](../react/a11y-no-aria-hidden-on-focusable.md) | off — in no preset | — | — |
+| [`react/a11y-no-aria-hidden-on-focusable`](../react/a11y-no-aria-hidden-on-focusable.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/a11y-no-autofocus`](../react/a11y-no-autofocus.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-distracting-elements`](../react/a11y-no-distracting-elements.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-interactive-element-to-noninteractive-role`](../react/a11y-no-interactive-element-to-noninteractive-role.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
@@ -53,7 +53,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/a11y-no-noninteractive-tabindex`](../react/a11y-no-noninteractive-tabindex.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-redundant-roles`](../react/a11y-no-redundant-roles.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-no-static-element-interactions`](../react/a11y-no-static-element-interactions.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
-| [`react/a11y-prefer-tag-over-role`](../react/a11y-prefer-tag-over-role.md) | off — in no preset | — | — |
+| [`react/a11y-prefer-tag-over-role`](../react/a11y-prefer-tag-over-role.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/a11y-role-has-required-aria-props`](../react/a11y-role-has-required-aria-props.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-role-supports-aria-props`](../react/a11y-role-supports-aria-props.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
 | [`react/a11y-scope`](../react/a11y-scope.md) | on with `preview = true` | error | `react/recommended`, `react/a11y` |
@@ -73,7 +73,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/forbid-elements`](../react/forbid-elements.md) | off — in no preset | — | — |
 | [`react/forbid-foreign-prop-types`](../react/forbid-foreign-prop-types.md) | off — in no preset | — | — |
 | [`react/forbid-prop-types`](../react/forbid-prop-types.md) | off — in no preset | — | — |
-| [`react/forward-ref-uses-ref`](../react/forward-ref-uses-ref.md) | off — in no preset | — | — |
+| [`react/forward-ref-uses-ref`](../react/forward-ref-uses-ref.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/function-component-definition`](../react/function-component-definition.md) | off — in no preset | — | — |
 | [`react/globals`](../react/globals.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/hook-prefix`](../react/hook-prefix.md) | off — opt-in preset | — | `react/conventions` |
@@ -102,7 +102,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/jsx-no-undef`](../react/jsx-no-undef.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/jsx-no-useless-fragment`](../react/jsx-no-useless-fragment.md) | off — in no preset | — | — |
 | [`react/jsx-pascal-case`](../react/jsx-pascal-case.md) | off — in no preset | — | — |
-| [`react/jsx-props-no-spread-multi`](../react/jsx-props-no-spread-multi.md) | off — in no preset | — | — |
+| [`react/jsx-props-no-spread-multi`](../react/jsx-props-no-spread-multi.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/jsx-props-no-spreading`](../react/jsx-props-no-spreading.md) | off — in no preset | — | — |
 | [`react/jsx-sort-props`](../react/jsx-sort-props.md) | off — in no preset | — | — |
 | [`react/max-jsx-depth`](../react/max-jsx-depth.md) | off — opt-in preset | — | `react/size` |
@@ -118,8 +118,8 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/no-danger-with-children`](../react/no-danger-with-children.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-deprecated`](../react/no-deprecated.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-deriving-state-in-effects`](../react/no-deriving-state-in-effects.md) | off — in no preset | — | — |
-| [`react/no-did-mount-set-state`](../react/no-did-mount-set-state.md) | off — in no preset | — | — |
-| [`react/no-did-update-set-state`](../react/no-did-update-set-state.md) | off — in no preset | — | — |
+| [`react/no-did-mount-set-state`](../react/no-did-mount-set-state.md) | on with `preview = true` | error | `react/recommended` |
+| [`react/no-did-update-set-state`](../react/no-did-update-set-state.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-direct-mutation-state`](../react/no-direct-mutation-state.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-find-dom-node`](../react/no-find-dom-node.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-inline-styles`](../react/no-inline-styles.md) | off — in no preset | — | — |
@@ -146,17 +146,17 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/no-suspicious-semicolon-in-jsx`](../react/no-suspicious-semicolon-in-jsx.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-svg-without-title`](../react/no-svg-without-title.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-tailwind-raw-colors`](../react/no-tailwind-raw-colors.md) | off — in no preset | — | — |
-| [`react/no-this-in-sfc`](../react/no-this-in-sfc.md) | off — in no preset | — | — |
+| [`react/no-this-in-sfc`](../react/no-this-in-sfc.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-typos`](../react/no-typos.md) | off — in no preset | — | — |
 | [`react/no-unescaped-entities`](../react/no-unescaped-entities.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-unknown-property`](../react/no-unknown-property.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-unnecessary-use-prefix`](../react/no-unnecessary-use-prefix.md) | on with `preview = true` | warn | `react/recommended` |
-| [`react/no-unsafe`](../react/no-unsafe.md) | off — in no preset | — | — |
+| [`react/no-unsafe`](../react/no-unsafe.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/no-unsafe-iframe-sandbox`](../react/no-unsafe-iframe-sandbox.md) | off — in no preset | — | — |
 | [`react/no-unused-class-component-methods`](../react/no-unused-class-component-methods.md) | off — in no preset | — | — |
 | [`react/no-unused-prop-types`](../react/no-unused-prop-types.md) | off — in no preset | — | — |
 | [`react/no-unused-state`](../react/no-unused-state.md) | off — in no preset | — | — |
-| [`react/no-will-update-set-state`](../react/no-will-update-set-state.md) | off — in no preset | — | — |
+| [`react/no-will-update-set-state`](../react/no-will-update-set-state.md) | on with `preview = true` | error | `react/recommended` |
 | [`react/only-export-components`](../react/only-export-components.md) | off — in no preset | — | — |
 | [`react/prefer-es6-class`](../react/prefer-es6-class.md) | off — in no preset | — | — |
 | [`react/prefer-exact-props`](../react/prefer-exact-props.md) | off — in no preset | — | — |
@@ -184,4 +184,4 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`react/use-react-naming-convention`](../react/use-react-naming-convention.md) | off — in no preset | — | — |
 | [`react/use-tailwind-static-class-strings`](../react/use-tailwind-static-class-strings.md) | off — in no preset | — | — |
 | [`react/use-unique-element-ids`](../react/use-unique-element-ids.md) | off — in no preset | — | — |
-| [`react/void-dom-elements-no-children`](../react/void-dom-elements-no-children.md) | off — in no preset | — | — |
+| [`react/void-dom-elements-no-children`](../react/void-dom-elements-no-children.md) | on with `preview = true` | error | `react/recommended` |

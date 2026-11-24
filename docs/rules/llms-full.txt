@@ -40722,7 +40722,7 @@ opts ||= {};
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the call throws today; adding the `g` flag makes it run)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/match-all-needs-global.md
 
 ### What it checks
@@ -43523,7 +43523,7 @@ queue.push(job);
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the call throws today; `Array.from(arguments)` makes it run, on a copy, so a mutating method no longer touches `arguments`)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-array-method-on-arguments.md
 
 ### What it checks
@@ -45342,7 +45342,7 @@ import { DatabaseSync } from "node:sqlite";
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the function refers to itself by its own name, which code that reassigns that name, or shadows it inside, reads differently; an anonymous function is named the first of `self`, `self2`, … the file does not use; `arguments.caller` has no replacement and is removed by hand)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-caller.md
 
 ### What it checks
@@ -45815,7 +45815,7 @@ if (0 <= x && x <= 10) {
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (`startsWith` is one reading of the comparison; a `slice` or a one-character string is another, so the author confirms)
-- **Severity when named:** `error` · **Turned on by:** `codelaw:js/strict` at `error`
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/strict` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-char-at-multichar-compare.md
 
 ### What it checks
@@ -52212,7 +52212,7 @@ throw Object.assign(new Error("failed"), { code: "HTTP_500" });
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `manual` (what replaces it depends on what the string held)
-- **Severity when named:** `error` · **Turned on by:** `codelaw:js/sonarjs` at `error`
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error` · `codelaw:js/sonarjs` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-eval.md
 
 ### What it checks
@@ -58019,7 +58019,7 @@ const label = <p>Total:&#x00A0;1</p>;
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the edit activates the standard iteration protocol in place of the dead SpiderMonkey one, which the reviewer confirms)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-iterator.md
 
 ### What it checks
@@ -69058,7 +69058,7 @@ const total = sum;
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the callback starts running, once per index, where today it never runs)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-uninvoked-array-callback.md
 
 ### What it checks
@@ -75457,7 +75457,7 @@ function last(node) {
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `auto`
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/no-useless-rename.md
 
 ### What it checks
@@ -77251,7 +77251,7 @@ total += price;
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `manual` (the radix or digit count that was meant is not in the code)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/number-arg-out-of-range.md
 
 ### What it checks
@@ -99224,7 +99224,7 @@ const u = new URL("api/users", base);
 
 - **Pack:** `@codelaw/rules-js` · `codelaw-rules-js` · **Languages:** JavaScript, JSX, TypeScript, TSX
 - **Fix:** `suggest` (the call throws today; adding the `g` flag makes it run)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:js/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/js/replace-all-needs-global.md
 
 ### What it checks
@@ -146765,7 +146765,7 @@ A component or an expression inside the label counts as its control; the source 
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (the page's language is the author's)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-lang.md
 
 ### What it checks
@@ -147045,7 +147045,7 @@ const s = <button>Save</button>;
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `suggest` (removing aria-hidden exposes the element to assistive technology while tabIndex -1 keeps it hidden but unfocusable; the reviewer picks)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-no-aria-hidden-on-focusable.md
 
 ### What it checks
@@ -147778,7 +147778,7 @@ Only `div` and `span` are checked as static elements; the source also covers rar
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (swapping the element changes markup and styling)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/a11y-prefer-tag-over-role.md
 
 ### What it checks
@@ -149267,7 +149267,7 @@ List.propTypes = { items: PropTypes.arrayOf(PropTypes.string) };
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `suggest` (adding the `ref` parameter is what the wrapper is for, but the author still has to attach it, or drop `forwardRef` instead)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/forward-ref-uses-ref.md
 
 ### What it checks
@@ -151508,7 +151508,7 @@ export const App = () => <UserCard></UserCard>;
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `suggest` (the later spread wins for every key it sets, so removing it can change a prop set between the two)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/jsx-props-no-spread-multi.md
 
 ### What it checks
@@ -152888,7 +152888,7 @@ function Name({ first, last }) {
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (restructure: the state is derived in render, or the update moves to a handler)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-did-mount-set-state.md
 
 ### What it checks
@@ -152973,7 +152973,7 @@ class Panel extends Component {
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (restructure: the state is derived in render, or the update moves to a handler)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-did-update-set-state.md
 
 ### What it checks
@@ -155201,7 +155201,7 @@ const b = <button className="bg-primary p-2">Go</button>;
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (restructure: what `this` was meant to reach — props, state, a ref — is passed in or held in a hook)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-this-in-sfc.md
 
 ### What it checks
@@ -155604,7 +155604,7 @@ const greeting = (name: string) => <p>Hello, {name}</p>;
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (restructure: each legacy method has a different modern replacement)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-unsafe.md
 
 ### What it checks
@@ -156012,7 +156012,7 @@ class A extends React.Component {
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (restructure: the state is derived in render, or the update moves to a handler)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/no-will-update-set-state.md
 
 ### What it checks
@@ -158215,7 +158215,7 @@ function F() {
 
 - **Pack:** `@codelaw/rules-react` · `codelaw-rules-react` · **Languages:** JavaScript, JSX, TSX
 - **Fix:** `manual` (value: the children have to go somewhere else in the markup, which is the author's call)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:react/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/react/void-dom-elements-no-children.md
 
 ### What it checks
@@ -196500,7 +196500,7 @@ button.onclick = () => {
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
 - **Fix:** `auto` (auto when the assignment is the constructor's first statement, so nothing can change the value before it; a later one is reported as a suggestion)
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-unnecessary-parameter-property-assignment.md
 
 ### What it checks
@@ -197220,7 +197220,7 @@ export const load = (path: string) => readFile(path);
 
 - **Pack:** `@codelaw/rules-ts` · **Languages:** TypeScript, TSX
 - **Fix:** `auto`
-- **Severity when named:** `error` · **Turned on by:** no preset
+- **Severity when named:** `error` · **Turned on by:** `codelaw:ts/recommended` at `error`
 - **Page:** https://github.com/arpitarya/codelaw/blob/main/docs/rules/ts/no-useless-empty-export.md
 
 ### What it checks

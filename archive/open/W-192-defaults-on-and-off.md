@@ -5,9 +5,9 @@ description: "Arpit, 2026-11-09 (voice docket): one place that lists every rule 
 item: W-192
 filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-17
-updated_by: "Claude Code (Sonnet 5.5)"
-ball: arpit
+updated: 2026-11-24
+updated_by: "Claude Code (Sonnet 5.5): the 23 added; closed"
+ball: none
 ---
 
 # W-192 — What is on and what is off when codelaw is installed
@@ -18,7 +18,8 @@ ball: arpit
 |---|---|---|---|
 | 1 | Generate a page: every pack, every preset, each rule on or off by default | the defaults reviewed in one place | ✅ 2026-11-17 |
 | 2 | Build the presets ruled and not yet made: `py/pylint`, `py/strict`, a pydocstyle preset | the opt-in presets that were promised | ✅ 2026-11-17 |
-| 3 | Put the 23 Oxlint correctness ports with no corpus finding to the decider for `recommended` | a ruling on what turns on by default | 🔴 in the inbox 2026-11-17 — the ruling is the decider's |
+| 3 | Put the 23 Oxlint correctness ports with no corpus finding to the decider for `recommended` | a ruling on what turns on by default | ✅ ruled 2026-11-24: all 23 |
+| 4 | Add the 23 to their `recommended` presets and regenerate the docs | the ruling in the packs | ✅ 2026-11-24 |
 
 **Arpit (voice, Cowork docket), 2026-11-09:** closing W-139, *"Whatever is pending, we are going to have separate work items for those. And we close W139."* *"add one more item to the list what all things are by default turned on and turned off when code law is installed"*. Filed on *"file it."*
 
@@ -34,10 +35,13 @@ A page, generated from the packs and checked in CI, that says what a fresh insta
 |---|---|---|
 | 1 · page | generated, with `--check` in CI so it cannot drift | ✅ `docs/rules/defaults.md` and `docs/rules/defaults/<pack>.md`, written by `scripts/rule-docs.py`, held by its `--check` (CI's `lint` job) |
 | 2 · presets | `py/pylint` (W-144 R7), `py/strict` and a pydocstyle preset (B-048) — or each one's reason it is not built | ✅ `py/strict` (622 rules with `py/recommended`), `py/pylint` (245), `py/pydocstyle` (39), opt in; `codelaw test packs/python` 889 rules · 0 failed |
-| 3 · 2d | the 23 rules' corpus counts put to the decider | 🔴 filed to the inbox, below |
+| 3 · 2d | the 23 rules' corpus counts put to the decider | ✅ ruled 2026-11-24: all 23, below |
+| 5 · built | the 23 in `js/recommended`, `react/recommended`, `ts/recommended` at `error`; `rule-docs.py --write`, `docs-sync.py --write`; `codelaw test` on the three packs | ✅ 2026-11-24 — `codelaw test`: js 970 rules, react 163, ts 67, 0 failed |
 | 4 · ledger | `work/proposals/rule-parity/method/classify.py` learns the classes ruled 2026-11-09 (the proposal's §14), so a regenerated CSV agrees | ✅ its `RULED` table; `classify.py` then `tables.py` regenerates exactly the committed CSVs |
 
 ## The decider's ruling — the 23 Oxlint correctness ports (DoD 3)
+
+**Ruled — Arpit, 2026-11-24 (voice docket, Cowork):** asked *all 23, all but `no-eval` and `react/no-unsafe`, or none?* — *"Go with the recommendation."* So **all 23**, those two included. Filed on *"file it."*
 
 **Question:** should these 23 rules join their pack's `recommended` preset? Each is Oxlint's `correctness` category, none is in `recommended` today, each had **0 findings** on the corpus run (`packs/*/corpus.toml`), and each is `preview` — so joining `recommended` changes nothing for a project until it sets `preview = true`, and nothing is on by default until a promotion makes the rule `stable` ([SR-RULE-PACKS](../../records/0101_rule-packs.md) decision 9; the [page of defaults](../../docs/rules/defaults.md) shows both gates).
 
@@ -55,7 +59,7 @@ A page, generated from the packs and checked in CI, that says what a fresh insta
 
 ## Blockers
 
-The decider's ruling above (DoD 3); everything else is done.
+None. Ruled 2026-11-24; what is left (DoD 5) is the *If yes* step above.
 
 ## Record affected
 

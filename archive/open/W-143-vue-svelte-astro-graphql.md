@@ -6,7 +6,7 @@ item: W-143
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
 updated: 2026-11-24
-updated_by: "Claude Code (Sonnet 5.5): W-195 and W-196 closed; the start now waits on the decider ratifying the four grammars"
+updated_by: "Arpit (Cowork, Opus 5.5): moved to the backlog on the decider's ruling, as B-085"
 ball: arpit
 ---
 
@@ -24,6 +24,8 @@ ball: arpit
 **Arpit, 2026-10-30 (voice):** *"The biome 89 rules, let's go ahead and do that as well."* — told this is four new languages, not 89 rules (L3, a parser each, a formatter each under L7), and asked whether to file it as its own item after W-139: *"Yes."*
 
 **Model:** Opus (Claude Code).
+
+**Closed — moved to the backlog. Arpit, 2026-11-24 (voice docket, Cowork):** asked to ratify the four grammars (all four, after an agent reads each LICENSE) — *"Put this in backlog."* Filed on *"file it."* No grammar is ratified; L3 and L7 are unchanged. The live row is [BACKLOG](../../work/BACKLOG.md) **B-085**; it returns as a new `W-nn` when the decider ratifies the grammars.
 
 ## Goal
 

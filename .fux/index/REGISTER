@@ -1,8 +1,8 @@
 # fux.register.v2	rules=5
 # loc	sha	decoder	[k=v ...]
-README.md	facfb4cfa6f3d842e25c21a17794be54cf6f40e4	prose
+README.md	a3ecd852a3a9cd637283b8b6eaae9bea7c828b32	prose
 archive/DEPENDENCIES.md	5f61466e6adab030597fe48df0e7209792550a85	prose	archived=true
-archive/README.md	aaeca5ec5d1c744340de6e5e6e7f38b3f02089a3	prose	archived=true
+archive/README.md	68205e001b38c3c526c7394e9c7816b513207912	prose	archived=true
 archive/bootstrap/WORK-SYSTEM.md	596ed34d20a3476fd702bfd021200e94eb35b91e	prose	archived=true
 archive/open/W-01-rule-pack-records.md	78910b43392f62d75923d781051e226450ef67a2	prose	archived=true
 archive/open/W-02-engine-p0.md	d973a1d8002070f691a826554ca3ee503ea8e0b3	prose	archived=true
@@ -110,6 +110,7 @@ archive/open/W-195-js-tail.md	32efbc19b3a0ba58829fc599d5e26c6ae27ae71c	prose	arc
 archive/open/W-196-biome-tail.md	15dd0ed066d71870375ff41e9ce9cadc836e23a8	prose	archived=true
 archive/open/W-197-session-cleanup.md	2183ce0661c37544370e61c4238f1116ed5df6fc	prose	archived=true
 archive/open/W-198-session-cleanup.md	a92b92c6014504421941ee29525ee3b8ca4a6359	prose	archived=true
+archive/open/W-199-biome-project-rows.md	602e19a4a47a39ae6d96706306bce32ccee59139	prose	archived=true
 archive/open/W-20-conformance-tests.md	1cd85eb4ca5f7a42f4225f94bd29fb3418cdffda	prose	archived=true
 archive/open/W-21-pack-engine-gaps.md	7afda106f779f4a8e17bb926ad1535afb3252af6	prose	archived=true
 archive/open/W-22-record-drift.md	3b995fab0daff70b75da49d76ba8079fa4c178db	prose	archived=true
@@ -187,7 +188,7 @@ docs/DESIGN.md	81b75926db1dbb92386c6346a5a71605a78107a4	prose
 docs/GLOSSARY.md	44e6c5c42ae2ac77d4074726f22a476ddaf7c4b2	prose
 docs/brand/README.md	6a6acdd129f71c43395f10d99a029d9d528a7b64	prose
 docs/design/editor/README.md	7e1315e631a26fea85e5ef20b6140244a5ab387b	prose
-docs/rules/README.md	a62db9bc8197d33d462844266c110b0946a5e3e8	prose
+docs/rules/README.md	971523d39c2986f5a71a111b357365f42b65183f	prose
 docs/rules/airflow/airflow-dag-no-schedule-argument.md	554b4660352ff0610f048626b9ff94ffba65a072	prose
 docs/rules/airflow/airflow-task-branch-as-short-circuit.md	8ce8175e00abd84680512a84a11d9db0e14eeacc	prose
 docs/rules/airflow/airflow-task-implicit-multiple-outputs.md	4ddb25e6ea1da7c93e1d90f9bb14448c00b72ede	prose
@@ -288,10 +289,12 @@ docs/rules/css/no-invalid-position-declaration.md	5f38bda2a502fc62fed673c82f47a4
 docs/rules/css/no-invalid-property-init-value.md	405e2a47b41d9756aa308ada2af2870ce4309791	prose
 docs/rules/css/no-irregular-whitespace.md	0db3000642b950caa45d2eecb4130432553a19c5	prose
 docs/rules/css/no-self-nested-layer.md	40fa475c2c1f61433d3f74765a944942853e6b54	prose
+docs/rules/css/no-undeclared-custom-properties.md	943e09dcea9187e14a3506618cdb2a49d6d3a0e8	prose
 docs/rules/css/no-unknown-animations.md	7113e95721c84ea54e17820419260220683a13d7	prose
 docs/rules/css/no-unknown-custom-media.md	3b676b25b97b57a2907c40e34aa84385bdb47bb9	prose
 docs/rules/css/no-unknown-custom-properties.md	26d33ca10e5a79dd65782115e2e1535ff5c3108b	prose
 docs/rules/css/no-unknown-property.md	cc19ef5bfd025254077c4b5e30c19d533926ecc7	prose
+docs/rules/css/no-unused-classes.md	709f215af68be69fff55ffb913faf154c18721bc	prose
 docs/rules/css/no-value-at-rule.md	b82157dbadb0cc8f7d5b55ebdaeb2bcc73aea7a2	prose
 docs/rules/css/number-max-precision.md	08c4b1513cd5b12b7a03ed262e43b0e617634474	prose
 docs/rules/css/property-allowed-list.md	a6560de3aff04df33006a201c7dee3bcbb848520	prose
@@ -354,16 +357,16 @@ docs/rules/css/value-no-vendor-prefix.md	863cf5044b493d6d82d9f48fa4ce5ec42ec407d
 docs/rules/data/codeowners-coverage.md	9b86b87a20911f83ab60240773ba98b7cbade865	prose
 docs/rules/data/flag-registry.md	9afb96e463512f855f251e452d5cd98604138b94	prose
 docs/rules/data/key-name-casing.md	b8dd034ef20d865488bd45dd0bdb20c800db1962	prose
-docs/rules/defaults.md	f9ac056319a206e520a88905f7e51bdf996d9012	prose
+docs/rules/defaults.md	a64cdbed1d2bb3a56326105e03885186f8431eb9	prose
 docs/rules/defaults/airflow.md	3a397cc1064df14ef77def777fd189dad5833faa	prose
 docs/rules/defaults/css-modules.md	98694a37014ff96c72a87a489dfdf635051b5c44	prose
-docs/rules/defaults/css.md	ea2290baf76594e7c23ecbb9713cadad29e0cc85	prose
+docs/rules/defaults/css.md	43a1a44b68452b171c70f92364338552bc2d5af2	prose
 docs/rules/defaults/data.md	12341a4abeecc38b869f5fe20e95793f24c3d3a1	prose
 docs/rules/defaults/deps.md	994483f8f3a3b4c25bd05152d5cd662352883ab1	prose
 docs/rules/defaults/django.md	515433a6186d8a56d6c2474fdf3628040e7f3ebc	prose
 docs/rules/defaults/fastapi.md	8fd67a197c31edbcc9ffbc093b580a3ce16710a2	prose
 docs/rules/defaults/html.md	9b445a199c385b66afe66cea5081e1a01b4d2c16	prose
-docs/rules/defaults/js.md	cb141523cd3c1522eba8394dace48c3c4051e50a	prose
+docs/rules/defaults/js.md	cd6416796192646d738816043c9cb8808db12b0b	prose
 docs/rules/defaults/nextjs.md	c2781a3fedbfcf48ca4176ecf98a394865b0f531	prose
 docs/rules/defaults/node.md	5b79853ca74ea516ae7c45cbfd01482deb4424f3	prose
 docs/rules/defaults/numpy.md	3910e2d9ebed3fd79a098375ede4dd304466ecc3	prose
@@ -972,6 +975,7 @@ docs/rules/js/no-param-reassign.md	35686b08e8f2f5b9e99ad7f8da7262714e87eeee	pros
 docs/rules/js/no-parameters-only-used-in-recursion.md	ad908296d982c51c67cbd451bcca9dec6f1077d7	prose
 docs/rules/js/no-plusplus.md	cbbb9d3e84f433b5bca35c18d0dc10aedeb5c753	prose
 docs/rules/js/no-prevent-default-in-passive-listener.md	0370c951b77f4895059555ae854ffc241a46e21e	prose
+docs/rules/js/no-private-imports.md	e57d7b96dc1836a497307840af9402eeb09cd507	prose
 docs/rules/js/no-process-global.md	705de483e7c6c2c4f3d4b6ff090c7c08961cc000	prose
 docs/rules/js/no-promise-executor-return.md	10eb8bb5437950456cd6ac0ab9d445082a0b7b12	prose
 docs/rules/js/no-proto.md	6cafc1e596ff085de8c29002e3456353a8da615a	prose
@@ -1026,6 +1030,7 @@ docs/rules/js/no-typeof-undefined.md	0db4f083e7b18c99ecb2ceb595b9685f7d038b30	pr
 docs/rules/js/no-unassigned-vars.md	76e36a41c0dc33260cb4c32d0736ceb35b93bdc6	prose
 docs/rules/js/no-uncalled-method.md	c5b95e05e6c260651a605cfac9a4d8d5fc28959a	prose
 docs/rules/js/no-undeclared-class-members.md	ccbb256ce401a9ac6e1cf44c4cae085164e62a88	prose
+docs/rules/js/no-undeclared-classes.md	11d0bc7ecf74584ba78adf5ce3dc4dbd7a7f461a	prose
 docs/rules/js/no-undef-init.md	3641eddafa4770165f67c02a6a08758911302107	prose
 docs/rules/js/no-undef.md	2d7a7bd0371e0b3e4e1e4fd763c952ba2b15469b	prose
 docs/rules/js/no-undefined-assignment.md	96dee09432b8a7183c78bac0a9f389d90aa612ef	prose
@@ -1469,7 +1474,7 @@ docs/rules/json/tsconfig-strict.md	4c03226e172f7c474cf03978e7066bc58b4c50d6	pros
 docs/rules/json/use-package-json-valid-cpu.md	e8e060398b363a65c19d22427d184aef85361e14	prose
 docs/rules/json/use-package-json-valid-engines.md	87323afb1e8c1a946efd07fb951c6dd0c3b5fe84	prose
 docs/rules/json/use-required-scripts.md	a70d2c4d9313618c1426c6403a6a15235c237f6e	prose
-docs/rules/llms-full.txt	aa00b244dcfc337035661bb3d2bdd2858b1c3a8c	prose
+docs/rules/llms-full.txt	4ad6191b7164c7c4c4bd04a624cb228fca927cf4	prose
 docs/rules/md/commands-show-output.md	1f3a15e960740970c3781ea0ab5dbba463b57ef6	prose
 docs/rules/md/descriptive-link-text.md	fe966a74a10464c11b40fa38e4b73a765eb1c632	prose
 docs/rules/md/fence-language.md	a372a8929a93197cb3b92133df4836a8698b20df	prose
@@ -2664,7 +2669,7 @@ docs/rules/redux-toolkit/object-shorthand-mapdispatch.md	4f6aa839cc2c2867c78d81e
 docs/rules/redux-toolkit/prefer-create-slice.md	406cb6c4ccb2c29a678b1500c354ef5eb9cdd841	prose
 docs/rules/redux-toolkit/prefer-hooks-api.md	282531dea784b5ee7effe6fcb92a5bbe331ce5be	prose
 docs/rules/redux-toolkit/slice-key-names.md	5b2573bc2d711e8daed868cf911eb419f4d9fdf7	prose
-docs/rules/rules.json	ee09fe181bdc53e5a396c08b36295da9c40123b3	pkg:fux-decoder-json@5.1.1/json@1+limits@1
+docs/rules/rules.json	056faa4eed3e6798a54f8ad51d412210102b802d	pkg:fux-decoder-json@5.1.1/json@1+limits@1
 docs/rules/scss/at-extend-no-missing-placeholder.md	904bd96b8c24250194da9f75045c1447dc34c6a5	prose
 docs/rules/scss/at-function-named-arguments.md	c01d9181e5cc3b81ad2d7e918d37c427e4183faa	prose
 docs/rules/scss/at-function-pattern.md	ac94c43f73aceed555bec7602b3d082e3e9ffb40	prose
@@ -3213,7 +3218,7 @@ records/0059_WORK-governance.md	ed8c50e3a722b4c4c13ec2d1e1943619255ef2f7	prose
 records/0060_WORK-registry.md	cb34b4d53f43c2b20b9aa0bba106cc03ca67b87a	prose
 records/0061_WORK-now.md	6a5d4bd9d653c55d232d7abf7d13d968e30ba889	prose
 records/0062_WORK-cleanup.md	d01e97992d4efc37731cc7cdb1d6c0fab81456fb	prose
-records/0101_rule-packs.md	23ec3e00fa0ac2f9e39ba03f7c018c510e40dfc7	prose
+records/0101_rule-packs.md	db751783b0a5f573aa7feccaa6b309872ace0f5d	prose
 records/0102_agent-surfaces.md	a111e861724b6d59159505fe84a6dc9452a35ec5	prose
 records/0103_project-graph.md	c74b92222f058599480427bd2f5a6bf937d5e351	prose
 records/0104_baseline-and-deprecations.md	f93c3a5422cca1bf46f37b36d5b3c13800dad91b	prose
@@ -3234,21 +3239,21 @@ records/0118_pack-lookup.md	168a5778c0d9a7964394f7dd94b7080f113cacde	prose
 records/0119_multi-file-fixes.md	9995f040b3263e358d02f5f3a4a587ff135f31ad	prose
 records/0120_python-inference.md	552d3ce5ea9485c408f18300ec88470a8ddface9	prose
 records/0121_code-path-graph.md	e5c1244edfc3df33b61ee78b15f7dc4b3b0e540d	prose
-records/0122_module-graph.md	47a7e5b628509d212d0dc64a4446a066d4606094	prose
+records/0122_module-graph.md	784a1665452f7abfee2beecb671154e96f4d9d50	prose
 records/0123_semantic-model.md	904061690ec66fabd1e49f9dc8b73999d26799e5	prose
 records/0124_python-flow.md	00e70a949e3cc6b39e21dcca8128378e833ba39d	prose
 records/README.md	e704abb2d73d00236cb0a1b42a0ba47ce407106d	prose
 records/TEMPLATE.md	227d3572bfbb7da4327396f8d073d8269a2859ed	prose
 work/BACKLOG.md	b28f14479ec2286e38f9bc28f5efc5d6ea182a6a	prose
 work/BLOCKED.json	3fa753c12ea628534518c18d0692a3f8b4c107f2	pkg:fux-decoder-json@5.1.1/json@1+limits@1
-work/IMPLEMENTATION.md	fff1981a43d4b45812fd6f83cb299a0d3af513be	prose
-work/INTERVIEW.md	be9ce87b6b3e068ec06472c07876c161753c3a65	prose
+work/IMPLEMENTATION.md	733bb41004f8b73cbb1cd705ea74891ffb31d746	prose
+work/INTERVIEW.md	bee8a498c0103db11e78cabe122d4439d661b9a8	prose
 work/LESSONS.md	78a40b8b232111bdb935d2b5b715016da8685e95	prose
 work/MACHINE.md	8f0fa715c0c1975678b3692707d4bc6d259284d9	prose
-work/NOW.md	5027d277c020d6c6ad7de6f6cc68835b3a3a3583	prose
-work/OPEN-WORK.md	1e51aec8786f9247719aceb7cc9278da41eb1cf7	prose
+work/NOW.md	c1fb3723d4626a4ff0bc78a7e53ab22891e9951f	prose
+work/OPEN-WORK.md	0454e9276a99a10e321e7837cfbad982ad923638	prose
 work/README.md	6b31915cf9322827f31f6b28dc4fbfe6cb29e3c4	prose
-work/WORKLOG.md	fd70aa24b74f3eecb2e802c364282ef250ee0040	prose
+work/WORKLOG.md	0318ad33e45117a3574a1f81de1390936c40353f	prose
 work/compare/README.md	e87a66c3340448477cc4193ca1a558c6f8ad7c7d	prose
 work/compare/ci-profiles-and-dated-exceptions.compare.md	8e0070ca1930c2bf2151d538dd7c6dc7c53e58bf	prose
 work/compare/spell-checking.compare.md	f7886f277981294d82bdb371945c0d1e1198eeda	prose
@@ -3257,7 +3262,7 @@ work/open/W-102-guidance-vs-check-experiment.md	d95301a0ffa4c5ab30c88546d3047e71
 work/open/W-105-type-aware-engine.md	ea966f3c691bc278d966a35ce279f4f313817bf4	prose
 work/open/W-126-fast-pipeline.md	8b199da2c084b6c162d5ba7bbbe7f425d38c2263	prose
 work/open/W-142-framework-pack-names.md	975d23ac4984a271863373dac085ffac7a564e96	prose
-work/open/W-143-vue-svelte-astro-graphql.md	8da3a8009f49e03438a7cb46f3567b1aad7a5204	prose
+work/open/W-143-vue-svelte-astro-graphql.md	7c33e556121914f59be45a9d34969b6628375e5e	prose
 work/open/W-167-graph-architecture-design.md	c9725069c9250d0a7fedce06a2801f25d55cf884	prose
 work/open/W-169-rules-lint-segfault.md	4c78f4a811d174b8b9cee0cc48aceab59a053ed7	prose
 work/open/W-172-l8-budgets-over-on-main.md	cae0c6406c3342b37167ba82a33ab3aa6f477376	prose
@@ -3265,7 +3270,6 @@ work/open/W-177-python-type-checker-research.md	973262236aea26025b8eb9f88db27bf2
 work/open/W-188-js-value-rows-type-aware.md	deca4ea9824302ca45ce00e72332b558e9027cf6	prose
 work/open/W-189-js-code-path-graph-research.md	c0fae4dd0593e958d62db3ce8a7c11be0395f91f	prose
 work/open/W-192-defaults-on-and-off.md	300375e2eb90d584715bd0110c7651d9cba807bc	prose
-work/open/W-199-biome-project-rows.md	b21e72478804d69ff70a5945165c79b9eb397150	prose
 work/open/W-95-publish-vscode-extension.md	c8068e49ee3e43aa4ca5e1f1a23c092b8ed540fa	prose
 work/proposals/README.md	fd60eedd435a024cfa4c29857d3dd622aa6e8cec	prose
 work/proposals/agent-done-gate.md	f69979533ff94e75012f97932b694f1d6d578693	prose
@@ -3278,7 +3282,7 @@ work/proposals/flag-cleanup-pr.md	8aaf71a658c96982d8e5dc9547779b4e54cb0969	prose
 work/proposals/guidance-experiment-redesign.md	1722fed590336d5d12b3c41268183b690d3b6451	prose
 work/proposals/hallucinated-packages-and-api-evolution.md	fa22a64616ccf9196af39b4e41fa15d859d1f53b	prose
 work/proposals/linter-for-ai-positioning.md	350d6f7b1aab8760b5b97a7b2b2b6f0280b72b11	prose
-work/proposals/rule-parity.md	5fe278995e507fb2ead3ad621f18dfff86fb8f7e	prose
+work/proposals/rule-parity.md	d39fed74e330c462f8d644e6967aa3ae12621e0e	prose
 work/proposals/rule-parity/method/biome-sources.json	844be5f9b300c6ebfc5795b29ef4ce5285c77413	pkg:fux-decoder-json@5.1.1/json@1+limits@1
 work/proposals/rule-parity/method/biome.json	2a31dcf8db878b6027a05fb452a1bf440eeeb217	pkg:fux-decoder-json@5.1.1/json@1+limits@1
 work/proposals/rule-parity/method/codelaw.json	630f7f0cccb98136b8992533374e55d1148c61b3	pkg:fux-decoder-json@5.1.1/json@1+limits@1

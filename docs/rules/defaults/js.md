@@ -5,13 +5,13 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 970 — 0 on, 155 on with `preview = true`, 545 off in an opt-in preset, 270 in no preset.
+- **Rules:** 970 — 0 on, 165 on with `preview = true`, 543 off in an opt-in preset, 262 in no preset.
 
 ## Presets
 
 | Preset | Written by `init` | Rules | Severities | What it is |
 |---|---|--:|---|---|
-| `js/recommended` | yes, once the pack is installed | 151 | 136 error, 15 warn | The correctness core of ESLint's recommended preset (@eslint/js 10.0.1), eslint-plugin-promise 7.3.0's recommended, and the rules Biome 2.6.4 recommends that no other tool has (W-139), reimplemented |
+| `js/recommended` | yes, once the pack is installed | 161 | 146 error, 15 warn | The correctness core of ESLint's recommended preset (@eslint/js 10.0.1), eslint-plugin-promise 7.3.0's recommended, and the rules Biome 2.6.4 recommends that no other tool has (W-139), reimplemented |
 | `js/typescript` | when the repo has TypeScript | 4 | 4 error | The four core rules typescript-eslint's eslint-recommended switches on for TypeScript (8.71.2) |
 | `js/conventions` | no — opt in | 3 | 3 error | House conventions from codelaw's starter catalogue |
 | `js/project` | no — opt in | 8 | 4 error, 4 warn | The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175), and two Biome rules that read the project (no-private-imports, no-undeclared-classes, W-199) |
@@ -269,7 +269,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/label-position`](../js/label-position.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/link-with-target-blank`](../js/link-with-target-blank.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/logical-assignment-operators`](../js/logical-assignment-operators.md) | off — opt-in preset | — | `js/strict` |
-| [`js/match-all-needs-global`](../js/match-all-needs-global.md) | off — in no preset | — | — |
+| [`js/match-all-needs-global`](../js/match-all-needs-global.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/max-classes-per-file`](../js/max-classes-per-file.md) | off — in no preset | — | — |
 | [`js/max-depth`](../js/max-depth.md) | off — opt-in preset | — | `js/size` |
 | [`js/max-lines`](../js/max-lines.md) | off — opt-in preset | — | `js/size` |
@@ -298,7 +298,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-array-fill-with-reference-type`](../js/no-array-fill-with-reference-type.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-array-from-fill`](../js/no-array-from-fill.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-array-front-mutation`](../js/no-array-front-mutation.md) | off — in no preset | — | — |
-| [`js/no-array-method-on-arguments`](../js/no-array-method-on-arguments.md) | off — in no preset | — | — |
+| [`js/no-array-method-on-arguments`](../js/no-array-method-on-arguments.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-array-method-this-argument`](../js/no-array-method-this-argument.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-array-reduce`](../js/no-array-reduce.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-array-reverse`](../js/no-array-reverse.md) | off — opt-in preset | — | `js/strict` |
@@ -318,12 +318,12 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-break-in-nested-loop`](../js/no-break-in-nested-loop.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-built-in-override`](../js/no-built-in-override.md) | off — in no preset | — | — |
 | [`js/no-bun-modules`](../js/no-bun-modules.md) | off — in no preset | — | — |
-| [`js/no-caller`](../js/no-caller.md) | off — in no preset | — | — |
+| [`js/no-caller`](../js/no-caller.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-canvas-to-image`](../js/no-canvas-to-image.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-case-declarations`](../js/no-case-declarations.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-case-label-in-switch`](../js/no-case-label-in-switch.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-chained-comparison`](../js/no-chained-comparison.md) | off — opt-in preset | — | `js/strict` |
-| [`js/no-char-at-multichar-compare`](../js/no-char-at-multichar-compare.md) | off — opt-in preset | — | `js/strict` |
+| [`js/no-char-at-multichar-compare`](../js/no-char-at-multichar-compare.md) | on with `preview = true` | error | `js/recommended`, `js/strict` |
 | [`js/no-class-assign`](../js/no-class-assign.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-clear-text-protocols`](../js/no-clear-text-protocols.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-code-after-done`](../js/no-code-after-done.md) | off — opt-in preset | — | `js/sonarjs` |
@@ -390,7 +390,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-equals-in-for-termination`](../js/no-equals-in-for-termination.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-erasing-op`](../js/no-erasing-op.md) | off — in no preset | — | — |
 | [`js/no-error-property-assignment`](../js/no-error-property-assignment.md) | off — opt-in preset | — | `js/strict` |
-| [`js/no-eval`](../js/no-eval.md) | off — opt-in preset | — | `js/sonarjs` |
+| [`js/no-eval`](../js/no-eval.md) | on with `preview = true` | error | `js/recommended`, `js/sonarjs` |
 | [`js/no-ex-assign`](../js/no-ex-assign.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-exported-imports`](../js/no-exported-imports.md) | off — in no preset | — | — |
 | [`js/no-exports-in-scripts`](../js/no-exports-in-scripts.md) | off — opt-in preset | — | `js/strict` |
@@ -457,7 +457,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-invariant-returns`](../js/no-invariant-returns.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-inverted-boolean-check`](../js/no-inverted-boolean-check.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-irregular-whitespace`](../js/no-irregular-whitespace.md) | on with `preview = true` | error | `js/recommended` |
-| [`js/no-iterator`](../js/no-iterator.md) | off — in no preset | — | — |
+| [`js/no-iterator`](../js/no-iterator.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-javascript-url`](../js/no-javascript-url.md) | off — in no preset | — | — |
 | [`js/no-keyword-prefix`](../js/no-keyword-prefix.md) | off — in no preset | — | — |
 | [`js/no-label-var`](../js/no-label-var.md) | off — in no preset | — | — |
@@ -577,7 +577,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-underscore-dangle`](../js/no-underscore-dangle.md) | off — in no preset | — | — |
 | [`js/no-unenclosed-multiline-block`](../js/no-unenclosed-multiline-block.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-unexpected-multiline`](../js/no-unexpected-multiline.md) | on with `preview = true` | error | `js/recommended`, `js/sonarjs` |
-| [`js/no-uninvoked-array-callback`](../js/no-uninvoked-array-callback.md) | off — in no preset | — | — |
+| [`js/no-uninvoked-array-callback`](../js/no-uninvoked-array-callback.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-uniq-key`](../js/no-uniq-key.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-unmodified-loop-condition`](../js/no-unmodified-loop-condition.md) | off — in no preset | — | — |
 | [`js/no-unnecessary-array-flat-depth`](../js/no-unnecessary-array-flat-depth.md) | off — opt-in preset | — | `js/strict` |
@@ -651,7 +651,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-useless-re-export`](../js/no-useless-re-export.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-useless-react-setstate`](../js/no-useless-react-setstate.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/no-useless-recursion`](../js/no-useless-recursion.md) | off — opt-in preset | — | `js/strict` |
-| [`js/no-useless-rename`](../js/no-useless-rename.md) | off — in no preset | — | — |
+| [`js/no-useless-rename`](../js/no-useless-rename.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-useless-return`](../js/no-useless-return.md) | off — in no preset | — | — |
 | [`js/no-useless-set-construction`](../js/no-useless-set-construction.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-useless-spread`](../js/no-useless-spread.md) | off — opt-in preset | — | `js/strict` |
@@ -672,7 +672,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-xor-as-exponentiation`](../js/no-xor-as-exponentiation.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-zero-fractions`](../js/no-zero-fractions.md) | off — opt-in preset | — | `js/strict` |
 | [`js/non-existent-operator`](../js/non-existent-operator.md) | off — opt-in preset | — | `js/sonarjs` |
-| [`js/number-arg-out-of-range`](../js/number-arg-out-of-range.md) | off — in no preset | — | — |
+| [`js/number-arg-out-of-range`](../js/number-arg-out-of-range.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/numeric-separators-style`](../js/numeric-separators-style.md) | off — opt-in preset | — | `js/strict` |
 | [`js/object-alt-content`](../js/object-alt-content.md) | off — opt-in preset | — | `js/sonarjs` |
 | [`js/object-shorthand`](../js/object-shorthand.md) | off — in no preset | — | — |
@@ -941,7 +941,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/regexp-unicode-property`](../js/regexp-unicode-property.md) | off — in no preset | — | — |
 | [`js/regexp-use-ignore-case`](../js/regexp-use-ignore-case.md) | on with `preview = true` | error | `js/recommended`, `js/regexp` |
 | [`js/relative-url-style`](../js/relative-url-style.md) | off — opt-in preset | — | `js/strict` |
-| [`js/replace-all-needs-global`](../js/replace-all-needs-global.md) | off — in no preset | — | — |
+| [`js/replace-all-needs-global`](../js/replace-all-needs-global.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/require-array-join-separator`](../js/require-array-join-separator.md) | off — opt-in preset | — | `js/strict` |
 | [`js/require-array-sort-compare`](../js/require-array-sort-compare.md) | off — opt-in preset | — | `js/strict` |
 | [`js/require-atomic-updates`](../js/require-atomic-updates.md) | off — in no preset | — | — |
