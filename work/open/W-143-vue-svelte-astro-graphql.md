@@ -5,9 +5,9 @@ description: "Arpit, 2026-10-30 (voice): build Biome's 89 rules for Vue, Svelte,
 item: W-143
 filed: 2026-10-30
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5): W-139 closed 2026-11-09 — its blocker moved to the items that took W-139's rows"
-ball: agent
+updated: 2026-11-24
+updated_by: "Claude Code (Sonnet 5.5): W-195 and W-196 closed; the start now waits on the decider ratifying the four grammars"
+ball: arpit
 ---
 
 # W-143 — Vue, Svelte, Astro and GraphQL as codelaw languages
@@ -41,7 +41,7 @@ The four become L3 languages with the same standing as the nine: embedded `<scri
 
 ## Blockers
 
-🟡 waits on **W-195**, **W-196** — ruled to follow W-139 (2026-10-30); W-139 closed 2026-11-09 and its JavaScript-side rows are those two items. 🔴 at start: the decider ratifies each grammar (L11).
+🔴 **The decider ratifies each grammar by name (L11 §3) before step 2, and the law amendment of step 1 should follow that ruling, not precede it.** W-195 and W-196, which this once waited on, closed 2026-11-19 and 2026-11-18. Candidates (licences from a web search 2026-11-24, **not yet read from each repo's LICENSE file** — an agent checks them before the ruling is acted on): `tree-sitter-grammars/tree-sitter-vue` (MIT), `tree-sitter-svelte` (the `himujjal` fork lists MIT; upstream `Himujjal/tree-sitter-svelte`), `virchau13/tree-sitter-astro` (MIT per a language pack; no direct statement found), `bkegley/tree-sitter-graphql` (MIT per its forks). Each would be vendored and pinned as tree-sitter-scss was (W-62).
 
 ## Record affected
 

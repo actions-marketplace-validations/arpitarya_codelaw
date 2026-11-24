@@ -24,6 +24,8 @@ here. Read that record before changing anything below it.
 |---|---|
 | 🔴 **W-192** put the 23 Oxlint `correctness` ports with no corpus finding into their pack's `recommended` preset (10 in `js/recommended`, 11 in `react/recommended`, 2 in `ts/recommended`)? Each is `preview`, so a project sees one only with `preview = true`; each had 0 findings on the corpus. Recommended: yes, all 23. [detail](open/W-192-defaults-on-and-off.md) | 2026-11-17 |
 | ↳ **blocks:** W-192 (its last step) | |
+| 🔴 **W-143** ratify the four tree-sitter grammars for Vue, Svelte, Astro and GraphQL (L11 §3), so they can become codelaw languages — each then needs a parser, a formatter within 2% of Prettier, and Biome's 89 rules; the formatters are the bulk. Candidates and licences in [the item](open/W-143-vue-svelte-astro-graphql.md); the licences are unverified. Recommended: ratify all four, then Claude amends L3 and L7 and starts with GraphQL (smallest). | 2026-11-24 |
+| ↳ **blocks:** W-143 (all four steps) | |
 | 🔴 **W-142** bind the registry names for the packs and data packages before their release: five PyPI pending publishers, the npm first publishes, the two data packages; Claude fills the forms in Chrome, you check and submit. Every package is built now. [detail](open/W-142-framework-pack-names.md) | 2026-10-30 |
 | ↳ **blocks:** nothing else in the queue | |
 
@@ -53,7 +55,7 @@ here. Read that record before changing anything below it.
 🟣 **W-188** waits on **W-105** `agent` The JS value-type rows (built 11-09 on one file's facts) ask the type helper; `jsdoc-no-unnecessary-type-assertion`. Filed by Arpit (Cowork). [detail](open/W-188-js-value-rows-type-aware.md)
 
 
-🟢 **W-143** `agent` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
+🔴 **W-143** `arpit` Vue, Svelte, Astro, GraphQL as codelaw languages (L3, L7; a parser and a formatter each, grammars ratified under L11) and Biome's 89 rules for them. Filed by Arpit (Cowork). [detail](open/W-143-vue-svelte-astro-graphql.md)
 
 ### ci/cd (4)
 

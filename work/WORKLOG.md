@@ -24,6 +24,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 
 ---
 
+## 2026-11-24 — worktree cleanup, lockmaster commit, W-198 and W-199 closed, W-143 to the decider  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"do the cleanup of worktrees which arent needed, sibling repo codelaw-w139-held"*, then *"Commit everything. And then proceed towards implementing one work item at a time and keep closing them."*
+- **Done:** deleted `~/my_programs/codelaw-w139-held` (non-git scratch, 78 MB) and the two fux-cache-only dirs under `.claude/worktrees/`; no registered worktree besides `main` remains. Committed the lockmaster removal and the pending record edits (`d3589ef2`, `no SR affected` for the two hook edits, which only lose their lockmaster paths). Closed W-198 (`efadfb61`; archived). W-199 built by a forked agent and landed (`9ea3d2b4`, `59b6ac11`): four `preview` rules on the new `sheets:` and `import: { visibility }` graph queries. W-143 re-balled 🔴 with the grammar-ratification question in the inbox.
+- **Decided / left open:** left for Arpit: close nothing further until he rules on W-192 (23 Oxlint ports into `recommended`), W-142 (registry names) and W-143 (four grammars); delete the 13 unmerged `lm/`, `keep/`, `demo/` branches? W-172, W-169, W-126, W-95 need a pushed `main` or a release. `work/NOW.md` is not committed (it is the live ledger).
+- **Mistakes:** my first W-198 closure filter dropped W-142's `blocks` sub-row; caught from the diff and restored before committing. The W-199 fork's first `git add` failed on a moved path, so the commit carried only a rename; it re-staged and amended before anything was pushed.
+- **Next:** Arpit's rulings on W-192, W-142 and W-143; then W-143 step 1.
+
 ## 2026-11-21 — green items: session close  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"implement green items 1 by 1 to closure"*
