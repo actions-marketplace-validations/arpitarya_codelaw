@@ -20,7 +20,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 | `css/recommended` | 41 | stylelint-config-recommended 18.0.0 (stylelint 17.16.0) — all 41 rules |
 | `css/standard` | 28 | the rules stylelint-config-standard 40.0.0 adds to the recommended set, less the 13 layout rules (see below). It holds only the additions: extend it together with `css/recommended` |
 | `css/conventions` | 1 | house conventions, opt-in: `css/no-important` |
-| `css/project` | 1 | `graph/no-unused-css-classes`, the rule that reads the whole repo, from purgecss — opt in |
+| `css/project` | 3 | `graph/no-unused-css-classes`, the rule that reads the whole repo, from purgecss — opt in |
 | `css/size` | 1 | Size limits for stylesheets, opt-in: a line limit per file (CSS, SCSS and CSS Modules) |
 | `css/markers` | 1 | TODO comments with a ticket (and a date when asked); opt in (SR-CONFIG decision 11a) |
 
@@ -34,7 +34,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 42 | 47 | 62 | 49 | 13 | 0 | 0 | 0 |
+| 42 | 48 | 63 | 50 | 13 | 0 | 0 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

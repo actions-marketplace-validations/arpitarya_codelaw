@@ -2,7 +2,7 @@
 
 # Rule reference
 
-**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2969 rules in 27 packs, plus the engine's 28 own rules.
+**One page per rule: what it checks, every way to configure it, how to fix it, and its examples.** 2973 rules in 27 packs, plus the engine's 28 own rules.
 
 ## Configuring any rule — the forms
 
@@ -39,13 +39,13 @@ remap = { error = "warn" }
 
 | Pack | npm | PyPI | Rules | With options |
 |---|---|---|---|---|
-| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 968 | 64 |
+| [js](#js) | `@codelaw/rules-js` | `codelaw-rules-js` | 970 | 64 |
 | [ts](#ts) | `@codelaw/rules-ts` | — | 67 | 2 |
 | [react](#react) | `@codelaw/rules-react` | `codelaw-rules-react` | 163 | 10 |
 | [node](#node) | `@codelaw/rules-node` | — | 41 | 4 |
 | [stencil](#stencil) | `@codelaw/rules-stencil` | — | 18 | 3 |
 | [html](#html) | `@codelaw/rules-html` | `codelaw-rules-html` | 85 | 24 |
-| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 151 | 83 |
+| [css](#css) | `@codelaw/rules-css` | `codelaw-rules-css` | 153 | 83 |
 | [scss](#scss) | `@codelaw/rules-scss` | `codelaw-rules-scss` | 51 | 10 |
 | [css-modules](#css-modules) | `@codelaw/rules-css-modules` | — | 5 | 1 |
 | [data](#data) | `@codelaw/rules-data` | `codelaw-rules-data` | 58 | 20 |
@@ -559,6 +559,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-parameters-only-used-in-recursion`](js/no-parameters-only-used-in-recursion.md) | No parameter that is only passed to the function's own recursive call | `suggest` | — | *[rules] only* |
 | [`js/no-plusplus`](js/no-plusplus.md) | No ++ or -- | `manual` | — | `js/taste` |
 | [`js/no-prevent-default-in-passive-listener`](js/no-prevent-default-in-passive-listener.md) | No preventDefault() in a passive listener | `suggest` | — | `js/strict` |
+| [`js/no-private-imports`](js/no-private-imports.md) | Do not import an export its JSDoc marks `@private` or `@package` from outside its folder | `manual` | — | `js/project` |
 | [`js/no-process-global`](js/no-process-global.md) | Import `process` instead of using the global | `suggest` | — | *[rules] only* |
 | [`js/no-promise-executor-return`](js/no-promise-executor-return.md) | A promise executor returns nothing | `auto` | — | *[rules] only* |
 | [`js/no-proto`](js/no-proto.md) | No __proto__ | `suggest` | — | *[rules] only* |
@@ -613,6 +614,7 @@ Presets: `codelaw:js/recommended` · `codelaw:js/typescript` · `codelaw:js/conv
 | [`js/no-unassigned-vars`](js/no-unassigned-vars.md) | A variable that is read is also assigned | `manual` | — | `js/recommended` |
 | [`js/no-uncalled-method`](js/no-uncalled-method.md) | No array or string method read without being called | `manual` | — | `js/strict` |
 | [`js/no-undeclared-class-members`](js/no-undeclared-class-members.md) | No `this.x` the class does not declare | `suggest` | — | `js/strict` |
+| [`js/no-undeclared-classes`](js/no-undeclared-classes.md) | A class a script writes is declared by a stylesheet that loads with it | `manual` | — | `js/project` |
 | [`js/no-undef`](js/no-undef.md) | No references to undeclared names | `suggest` | `env`, `globals`, `typeof` | `js/recommended`, `js/sonarjs` |
 | [`js/no-undef-init`](js/no-undef-init.md) | No initialising to undefined | `auto` | — | *[rules] only* |
 | [`js/no-undefined`](js/no-undefined.md) | No undefined identifier | `suggest` | — | `js/taste` |
@@ -1545,10 +1547,12 @@ Presets: `codelaw:css/recommended` · `codelaw:css/standard` · `codelaw:css/con
 | [`css/no-invalid-property-init-value`](css/no-invalid-property-init-value.md) | `initial-value` of a registered property matches its `syntax` | `manual` | — | *[rules] only* |
 | [`css/no-irregular-whitespace`](css/no-irregular-whitespace.md) | No irregular whitespace | `suggest` | — | `css/recommended` |
 | [`css/no-self-nested-layer`](css/no-self-nested-layer.md) | No `@layer` inside a layer of the same name | `manual` | — | *[rules] only* |
+| [`css/no-undeclared-custom-properties`](css/no-undeclared-custom-properties.md) | A custom property a stylesheet reads is declared by one that loads with it | `manual` | — | `css/project` |
 | [`css/no-unknown-animations`](css/no-unknown-animations.md) | No animation that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-custom-media`](css/no-unknown-custom-media.md) | No custom media that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-custom-properties`](css/no-unknown-custom-properties.md) | No custom property that isn't defined | `manual` | — | *[rules] only* |
 | [`css/no-unknown-property`](css/no-unknown-property.md) | No unknown properties | `suggest` | `ignoreProperties`, `checkPrefixed` | `css/recommended` |
+| [`css/no-unused-classes`](css/no-unused-classes.md) | A class a global stylesheet declares is used by a file that loads it | `suggest` | — | `css/project` |
 | [`css/no-value-at-rule`](css/no-value-at-rule.md) | No `@value` | `manual` | — | *[rules] only* |
 | [`css/number-max-precision`](css/number-max-precision.md) | At most four decimal places | `suggest` | `precision`, `ignoreUnits` | `css/standard` |
 | [`css/property-allowed-list`](css/property-allowed-list.md) | Only propertys the project allows | `manual` | `list` | *[rules] only* |

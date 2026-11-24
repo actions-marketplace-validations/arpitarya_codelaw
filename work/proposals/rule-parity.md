@@ -340,7 +340,7 @@ W-139 closed with 2,319 of the 2,590 port rows carried. Arpit ruled the other 27
 | not applicable | Pylint `bad-configuration-section`, `bad-plugin-value`, `unknown-option-value`, `unrecognized-inline-option`, `unrecognized-option`, `useless-option-value`, `boolean-datetime`, `broken-noreturn`, `broken-collections-callable`, the five `using-*-in-unsupported-version` at or below the 3.9 floor, `duplicate-argument-name`, `return-arg-in-generator` |
 | options-only (built, silent until configured) | W-176's 19 rows |
 | link (an existing rule does the job) | Pylint `preferred-module`, `consider-using-f-string` (W-194) |
-| still to build | W-178, W-180–W-190, W-193–W-195, W-199 |
-| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's, `needs-data` ×4, `types` ×4, four project-wide rows `planned` as W-199; the 7 `*/preset` rows are `skip` |
+| still to build | W-178, W-180–W-190, W-193–W-195 |
+| Biome's tail (W-196, closed 2026-11-18) | 41 built; 13 linked; 44 classed — 17 framework rows with no pack are `out-of-scope` pending the decider's new-pack ruling, Vue and Svelte are W-143's, `needs-data` ×4, `types` ×4, four project-wide rows built as W-199 (closed 2026-11-24: `js/no-private-imports`, `js/no-undeclared-classes`, `css/no-unused-classes`, `css/no-undeclared-custom-properties`); the 7 `*/preset` rows are `skip` |
 | backlog | B-081 (Airflow ×5), B-082 (`PLE2514`), B-083 (`TID254`, `TID255`), B-084 (two Pylint rows) |
 

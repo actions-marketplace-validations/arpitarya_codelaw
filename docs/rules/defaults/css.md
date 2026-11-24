@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#css).
 
 - **Installed by `codelaw init` when:** a CSS or SCSS file.
-- **Rules:** 151 — 31 on, 10 on with `preview = true`, 32 off in an opt-in preset, 78 in no preset.
+- **Rules:** 153 — 31 on, 10 on with `preview = true`, 34 off in an opt-in preset, 78 in no preset.
 
 ## Presets
 
@@ -14,7 +14,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `css/recommended` | yes, once the pack is installed | 41 | 41 error | The correctness core of stylelint-config-recommended 18.0.0 (stylelint 17.16.0), reimplemented |
 | `css/standard` | no — opt in | 28 | 28 error | The non-layout rules stylelint-config-standard 40.0.0 adds to the recommended set, reimplemented |
 | `css/conventions` | no — opt in | 1 | 1 error | House conventions for CSS, opt-in |
-| `css/project` | no — opt in | 1 | 1 warn | The rule that reads the whole repo: classes no markup or script uses (purgecss) |
+| `css/project` | no — opt in | 3 | 3 warn | The rules that read the whole repo: classes no markup or script uses (purgecss), and two Biome rules that read the stylesheets a file loads with (no-unused-classes, no-undeclared-custom-properties |
 | `css/size` | no — opt in | 1 | 1 error | Size limits for stylesheets, opt-in: a line limit per file (CSS, SCSS and CSS Modules) |
 | `css/markers` | no — opt in | 1 | 1 error | TODO comments with a ticket (and a date when asked) |
 
@@ -111,10 +111,12 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`css/no-invalid-property-init-value`](../css/no-invalid-property-init-value.md) | off — in no preset | — | — |
 | [`css/no-irregular-whitespace`](../css/no-irregular-whitespace.md) | on | error | `css/recommended` |
 | [`css/no-self-nested-layer`](../css/no-self-nested-layer.md) | off — in no preset | — | — |
+| [`css/no-undeclared-custom-properties`](../css/no-undeclared-custom-properties.md) | off — opt-in preset | — | `css/project` |
 | [`css/no-unknown-animations`](../css/no-unknown-animations.md) | off — in no preset | — | — |
 | [`css/no-unknown-custom-media`](../css/no-unknown-custom-media.md) | off — in no preset | — | — |
 | [`css/no-unknown-custom-properties`](../css/no-unknown-custom-properties.md) | off — in no preset | — | — |
 | [`css/no-unknown-property`](../css/no-unknown-property.md) | on | error | `css/recommended` |
+| [`css/no-unused-classes`](../css/no-unused-classes.md) | off — opt-in preset | — | `css/project` |
 | [`css/no-value-at-rule`](../css/no-value-at-rule.md) | off — in no preset | — | — |
 | [`css/number-max-precision`](../css/number-max-precision.md) | off — opt-in preset | — | `css/standard` |
 | [`css/property-allowed-list`](../css/property-allowed-list.md) | off — in no preset | — | — |

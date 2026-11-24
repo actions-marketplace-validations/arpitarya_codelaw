@@ -15,7 +15,7 @@ owns:
   - fixtures/flags
   - crates/codelaw-cli/tests/flags.rs
 laws: [L0, L2, L3, L4, L5, L6]
-timestamp: 2026-11-17T12:00:00Z
+timestamp: 2026-11-24T12:00:00Z
 content_sha: ""
 ---
 
@@ -231,6 +231,7 @@ console.log(formatDate(new Date()));
   | `import: { default_member: named }` | `x.y` and `const { y } = x` off a default import `x`, where `./m` also exports `y` by name | none |
   | `import: { default_name: differs }` | a default import (or `{ default as x }`) bound to another name than the default export's own (`default_name`) | none |
   | `import: { deprecated: jsdoc }` | an import, and each use of it, of an export whose declaration carries a JSDoc `@deprecated` (through re-exports), and `ns.x` of a deprecated `x`; the note is the message | none |
+  | `import: { visibility: restricted }` | a named, default or namespace-member import of an export whose declaration carries a JSDoc `@private` (importable from the module's own folder only) or `@package` (its folder and the folders under it), found through re-exports (W-199); an import written in an `index` file, a dynamic `import()`, a `require()`, a type-only import and a tag that is only a prefix (`@packageDocumentation`) are not judged. `FACTS_VERSION` 9 adds the tags to `Decl::tags` | none |
   | `cycle: { form: [import, export, dynamic] }` | each import whose target reaches the importing module again through imports (strongly connected components, the shortest way back named); `import type` and an import whose every specifier is a type close no cycle | none |
   | `export: { star: conflicts }` | a name two `export *` of one module bring in, or an `export *` and a named export of that module both do (types and values of one name are two exports); an `export *` of a module with no named export | none |
   | `module: { exports: [missing, unused] }` | a module with no export at all; a named or default export no other module imports, `export *` passing the names of a module that is itself read | `strip-export-keyword` / `remove-declaration`, as `graph/no-unused-exports` |
@@ -267,6 +268,18 @@ packages/legacy/src/plugins.py:14:1  info  graph/no-unused-exports  `register` l
 - **The bundler's names.** `[css] modules_convention` is css-loader's `localsConvention` (`asIs`, `camelCase`, `camelCaseOnly`, `dashes`, `dashesOnly`): `.btn-primary` is `styles["btn-primary"]` under `asIs` and also `styles.btnPrimary` under `camelCase`; both queries compare through it.
 - **Per-file rules** (`css-modules/composes-valid`, `class-naming`, `no-global`) are `native:` rules of the `css-modules` pack; `composes-valid` reads the file a `composes` points at through the project view ([SR-ARCHITECTURE](0108_architecture.md) decision 15b). The `css/*` rules read a module stylesheet in a *module mode* and report none of its syntax (`@value`, `composes`, `:export`, `:import()`, `:global`, `:local`).
 - **Not built:** the graph does not follow `composes` through an `@import`, a `@value … from` is read as an export only, and a module imported only from HTML or a template is unjudged.
+
+
+#### 8a. Global stylesheets and what loads with them (W-199)
+
+*Three Biome rows that need a view across files — `noUndeclaredClasses`, `noUnusedClasses`, `noUndeclaredCustomProperties` — as `graph: { sheets: … }` queries (`crates/codelaw-graph/src/sheets.rs`).*
+
+- **What loads with a file.** The graph's own edges, read from what the project's files say: a JS or TS module specifier (`import "./x.css"`, `require`, `import()`), an HTML `<script src>` and `<link href>`, a stylesheet's `@import`, `@use` and `@forward` (Sass spellings: no extension, `_partial`, `index`). A file's **scope** is what each of its *entries* reaches — the files nobody loads that reach it through those edges (an app's `main.jsx`, a page; the file itself when nobody loads it) and everything they load. So a global `index.css` imported by `main.jsx` is in the scope of every component under it. A CSS Module (decision 8) is not a global stylesheet and is left out of all three queries.
+- **What is read.** Each stylesheet's classes (decision 8's scan, the same text read, `incomplete` included), its custom properties (`--x: …` and `@property --x`) and its `var(--x …)` reads with whether a fallback is given (`SheetFacts`, `FileFacts::sheet`); each JS file's static JSX `className` / `class` words (`FileFacts::class_uses`: a string, `{"…"}`, a template with no interpolation; only a word of letters, digits, `-` and `_`, so `md:w-1/2` is no class); every `--name` a script or page writes (`FileFacts::props_set`: it may set a property at run time). `FACTS_VERSION` 9.
+- **Three queries.** `sheets: { classes: undeclared }` — a class a script writes that no global stylesheet of its scope declares (reported in the script, at the word; `js/no-undeclared-classes`); `sheets: { classes: unused }` — a class a global stylesheet declares that no JS or HTML file whose scope holds the stylesheet writes, by the words every file holds (strings, attribute values, the static start of a built name, `@apply` / `composes` in the stylesheets of the scope), fix `remove-rule` as `graph/no-unused-css-classes` (reported in the stylesheet; `css/no-unused-classes`); `sheets: { properties: undeclared }` — a `var(--x)` without a fallback that no stylesheet of the scope declares and no script or page of it writes (reported in the stylesheet, at the name; `css/no-undeclared-custom-properties`).
+- **Never a guess.** A scope that holds anything the graph cannot read is *unreadable* and the queries are silent for it: a stylesheet of a package or another host (an `@import` that is not a project file, `@import url(https://…)`), a Sass partial that is not found, Tailwind's directives (`@tailwind`, `@plugin`, `@theme`, `@source`, `@config`, `@utility`), a stylesheet whose class names or property names are interpolated, a JS specifier that names a stylesheet and resolves to none (`import "bootstrap/dist/css/bootstrap.css"`), an HTML page with an inline `<style>` or a `<link>` of another host. A file no stylesheet loads with, and a stylesheet no file loads (`classes: unused`, `properties: undeclared`), are unjudged.
+- **Not built.** An HTML `class` attribute as the place of a finding (the `html` pack has no rule that reads a graph); a class used only in a JSX `style` string or a property in one; classes added by `classList`, a library or a template engine are seen only as words (they keep a class, they do not declare one); a stylesheet reached through a bundler alias or `~package`; the order or specificity of the cascade.
+- **Cost ([L8](0010_LAW-8-performance-budgets.md)).** Built only for a rule that names a `sheets:` query, which no preset in a `recommended` turns on (`js/project` and `css/project` do); the edges are one pass over the modules, each entry's closure is computed once per run. The facts add one scan of each stylesheet and a walk of each JS file's JSX attributes, and make each cache entry be read once more (`FACTS_VERSION` 9).
 
 
 #### 9. Tests for new code: `graph/untested-function` and `graph/function-coverage`

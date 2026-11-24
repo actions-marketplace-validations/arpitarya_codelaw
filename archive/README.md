@@ -28,6 +28,7 @@ Rules: [SR-WORK-ARCHIVE](../records/0057_WORK-archive.md).
 
 | file | closed | where the live answer lives now |
 |---|---|---|
+| [`W-199-biome-project-rows.md`](open/W-199-biome-project-rows.md) | 2026-11-24 | done — `js/no-private-imports`, `js/no-undeclared-classes` in [`packs/js/rules/js/`](../packs/js/rules/js/), `css/no-unused-classes`, `css/no-undeclared-custom-properties` in [`packs/css/rules/css/`](../packs/css/rules/css/); the queries `sheets:` and `import: { visibility: restricted }` are in [SR-MODULE-GRAPH](../records/0122_module-graph.md) decision 8a (`crates/codelaw-graph/src/sheets.rs`) |
 | [`W-198-session-cleanup.md`](open/W-198-session-cleanup.md) | 2026-11-24 | closed on the decider's ruling ("do the cleanup of worktrees which aren't needed") — the eight worktrees it listed no longer exist on disk or in git, `codelaw-w139-held` and `.claude/worktrees/*` were deleted; rule: [SR-WORK-CLEANUP](../records/0062_WORK-cleanup.md) |
 | [`W-181-moved-typing-names.md`](open/W-181-moved-typing-names.md) | 2026-11-19 | done — `py/deprecated-import` and the table `python/moved-names` ([SR-RULE-PACKS](../records/0101_rule-packs.md) decision 21; [L11](../records/0013_LAW-11-dependencies.md) D-57) |
 | [`W-195-js-tail.md`](open/W-195-js-tail.md) | 2026-11-19 | done — `js/comment-type`, `node/process-exit-as-throw` and six second fixes; [SR-RULE-PACKS](../records/0101_rule-packs.md) decision 18, slice 43 |

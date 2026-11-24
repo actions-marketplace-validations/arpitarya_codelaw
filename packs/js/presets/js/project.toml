@@ -1,4 +1,4 @@
-description = "The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175); opt in"
+description = "The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175), and two Biome rules that read the project (no-private-imports, no-undeclared-classes, W-199); opt in"
 
 [rules]
 "graph/no-unused-exports" = "error"
@@ -7,3 +7,5 @@ description = "The rules that read the whole repo, so they build the project gra
 "js/import-namespace" = "error"
 "js/import-no-named-as-default" = "warn"
 "js/import-no-named-as-default-member" = "warn"
+"js/no-private-imports" = "warn"
+"js/no-undeclared-classes" = "warn"

@@ -1,4 +1,6 @@
-description = "The rule that reads the whole repo: classes no markup or script uses (purgecss); opt in"
+description = "The rules that read the whole repo: classes no markup or script uses (purgecss), and two Biome rules that read the stylesheets a file loads with (no-unused-classes, no-undeclared-custom-properties; W-199); opt in"
 
 [rules]
 "graph/no-unused-css-classes" = "warn"
+"css/no-unused-classes" = "warn"
+"css/no-undeclared-custom-properties" = "warn"

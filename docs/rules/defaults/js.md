@@ -5,7 +5,7 @@
 Back to [what a fresh install turns on](../defaults.md) · [every rule of the pack](../README.md#js).
 
 - **Installed by `codelaw init` when:** a JavaScript or TypeScript file.
-- **Rules:** 968 — 0 on, 155 on with `preview = true`, 543 off in an opt-in preset, 270 in no preset.
+- **Rules:** 970 — 0 on, 155 on with `preview = true`, 545 off in an opt-in preset, 270 in no preset.
 
 ## Presets
 
@@ -14,7 +14,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | `js/recommended` | yes, once the pack is installed | 151 | 136 error, 15 warn | The correctness core of ESLint's recommended preset (@eslint/js 10.0.1), eslint-plugin-promise 7.3.0's recommended, and the rules Biome 2.6.4 recommends that no other tool has (W-139), reimplemented |
 | `js/typescript` | when the repo has TypeScript | 4 | 4 error | The four core rules typescript-eslint's eslint-recommended switches on for TypeScript (8.71.2) |
 | `js/conventions` | no — opt in | 3 | 3 error | House conventions from codelaw's starter catalogue |
-| `js/project` | no — opt in | 6 | 4 error, 2 warn | The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175) |
+| `js/project` | no — opt in | 8 | 4 error, 4 warn | The rules that read the whole repo, so they build the project graph: exports nothing imports (knip's exports and types), and eslint-plugin-import 2.32.0's recommended rules that read another module (named, default, namespace, no-named-as-default, no-named-as-default-member, W-175), and two Biome rules that read the project (no-private-imports, no-undeclared-classes, W-199) |
 | `js/size` | no — opt in | 5 | 5 warn | Size limits: lines per file and function, parameters, complexity and nesting depth (ESLint's defaults) |
 | `js/markers` | no — opt in | 3 | 3 error | TODO comments with a ticket (and a date when asked), no focused tests, skipped tests with a reason and an expiry |
 | `js/jsdoc` | no — opt in | 36 | 36 warn | eslint-plugin-jsdoc 65.4.2 recommended, reimplemented as js/jsdoc-* rules at the plugin's warn |
@@ -514,6 +514,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-parameters-only-used-in-recursion`](../js/no-parameters-only-used-in-recursion.md) | off — in no preset | — | — |
 | [`js/no-plusplus`](../js/no-plusplus.md) | off — opt-in preset | — | `js/taste` |
 | [`js/no-prevent-default-in-passive-listener`](../js/no-prevent-default-in-passive-listener.md) | off — opt-in preset | — | `js/strict` |
+| [`js/no-private-imports`](../js/no-private-imports.md) | off — opt-in preset | — | `js/project` |
 | [`js/no-process-global`](../js/no-process-global.md) | off — in no preset | — | — |
 | [`js/no-promise-executor-return`](../js/no-promise-executor-return.md) | off — in no preset | — | — |
 | [`js/no-proto`](../js/no-proto.md) | off — in no preset | — | — |
@@ -568,6 +569,7 @@ Back to [what a fresh install turns on](../defaults.md) · [every rule of the pa
 | [`js/no-unassigned-vars`](../js/no-unassigned-vars.md) | on with `preview = true` | error | `js/recommended` |
 | [`js/no-uncalled-method`](../js/no-uncalled-method.md) | off — opt-in preset | — | `js/strict` |
 | [`js/no-undeclared-class-members`](../js/no-undeclared-class-members.md) | off — opt-in preset | — | `js/strict` |
+| [`js/no-undeclared-classes`](../js/no-undeclared-classes.md) | off — opt-in preset | — | `js/project` |
 | [`js/no-undef`](../js/no-undef.md) | on with `preview = true` | error | `js/recommended`, `js/sonarjs` |
 | [`js/no-undef-init`](../js/no-undef-init.md) | off — in no preset | — | — |
 | [`js/no-undefined`](../js/no-undefined.md) | off — opt-in preset | — | `js/taste` |

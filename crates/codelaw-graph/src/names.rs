@@ -32,6 +32,9 @@ pub enum ImportTarget {
     RenameDefault,
     /// `deprecated: jsdoc`: a name the module marks `@deprecated`, imported or used.
     Deprecated,
+    /// `visibility: restricted`: a name the module marks `@private` or `@package`,
+    /// imported from outside the folders the tag allows (W-199).
+    Private,
 }
 
 /// The export names of a module, `export *` followed.
@@ -210,6 +213,7 @@ pub fn names(rule: &GraphRule, graph: &Graph, languages: &[Language], check: Imp
                 (ImportTarget::Deprecated, kind) => {
                     deprecated_import(graph, &mut cache, &m.path, imp, kind, &target, &mut out);
                 }
+                (ImportTarget::Private, kind) => private_import(graph, &m.path, imp, kind, &target, &mut out),
                 _ => {}
             }
         }
@@ -244,6 +248,43 @@ fn deprecation(graph: &Graph, target: &str, name: &str) -> Option<String> {
     let (module, decl) = find_decl(graph, &Target::File(target.to_owned()), name, 0)?;
     let d = graph.modules.get(&module)?.facts.decls.iter().find(|d| d.name == decl)?;
     d.deprecated.clone()
+}
+
+/// Whether a file may import a name its module tags `@private` (only from
+/// the module's own folder) or `@package` (from it and its subfolders).
+fn allowed_importer(from: &str, module: &str, private: bool) -> bool {
+    let (dir, here) = (crate::resolve::dirname(module), crate::resolve::dirname(from));
+    here == dir || (!private && (dir.is_empty() || here.starts_with(&format!("{dir}/"))))
+}
+
+/// `visibility: restricted` (W-199): a named, default or namespace-member
+/// import of an export whose declaration says `@private` or `@package`, from
+/// a file the tag does not allow. Index files import freely: a folder's
+/// `index` is where it chooses what to show.
+fn private_import(graph: &Graph, from: &str, imp: &crate::facts::ImportFact, kind: &ImportKind, target: &str, out: &mut Vec<GraphFinding>) {
+    if file_name(from).split('.').next() == Some("index") {
+        return;
+    }
+    let mut judge = |name: &str, span: Span| {
+        let Some((module, decl)) = find_decl(graph, &Target::File(target.to_owned()), name, 0) else { return };
+        let Some(d) = graph.modules.get(&module).and_then(|m| m.facts.decls.iter().find(|d| d.name == decl)) else { return };
+        let private = d.tags.iter().any(|t| t == "private");
+        if !(private || d.tags.iter().any(|t| t == "package")) || allowed_importer(from, &module, private) {
+            return;
+        }
+        let tag = if private { "@private" } else { "@package" };
+        out.push(finding(from, span, &[("NAME", name), ("TAG", tag), ("FILE", file_name(&module))], None, Vec::new()));
+    };
+    match kind {
+        ImportKind::Named(n) => judge(n, imp.span),
+        ImportKind::Default => judge("default", imp.span),
+        ImportKind::Namespace => {
+            for mem in imp.members.iter().flatten() {
+                judge(&mem.name, mem.span);
+            }
+        }
+        _ => {}
+    }
 }
 
 fn deprecated_message(note: &str) -> String {
