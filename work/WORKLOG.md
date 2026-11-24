@@ -32,6 +32,14 @@ entry is corrected by a new one. Distinct from `INTERVIEW.md`, which is the
 - **Mistakes:** none.
 - **Next:** W-192's build — the 23 into the three presets at `error`, `rule-docs.py --write`, `docs-sync.py --write`, close.
 
+## 2026-11-24 — W-192 closed; the queue has nothing left an agent can close unasked  ·  Claude Code (Sonnet 5.5)
+
+- **Asked:** *"implement all the items one by one."*
+- **Done:** W-192 step 4 after Arpit's ruling (voice docket, written back by Cowork): 23 rules added to `js/recommended` (10), `react/recommended` (11), `ts/recommended` (2) at `error`; docs regenerated; `codelaw test` js 970 rules, react 163, ts 67, 0 failed; item archived, IMPLEMENTATION, CHANGELOG, SR-RULE-PACKS updated. Committed with Cowork's uncommitted rulings (W-143 to the backlog, W-105 and W-142 re-timed) as `c15e7c59`.
+- **Decided / left open:** not done, and why: W-105 and W-188 (TypeScript 7.1 GA not on npm), W-172, W-169, W-126, W-95 (need a pushed `main` or a release — `main` is 79 commits ahead; pushing is Arpit's word), W-142 (Arpit names the release date), W-102 (waits on W-189), W-167, W-177, W-189 (Cowork research).
+- **Mistakes:** none.
+- **Next:** Arpit's word to push `main`; then check CI for W-172, W-169, W-126.
+
 ## 2026-11-24 — worktree cleanup, lockmaster commit, W-198 and W-199 closed, W-143 to the decider  ·  Claude Code (Sonnet 5.5)
 
 - **Asked:** *"do the cleanup of worktrees which arent needed, sibling repo codelaw-w139-held"*, then *"Commit everything. And then proceed towards implementing one work item at a time and keep closing them."*
