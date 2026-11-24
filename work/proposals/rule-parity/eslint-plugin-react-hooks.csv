@@ -5,13 +5,13 @@ config,skip,,,,,,,auto,yes,,validates the React Compiler's own config
 error-boundaries,covered,react/error-boundaries,,,,,,auto,yes,,
 exhaustive-deps,covered,react/exhaustive-deps,,,,,,auto,yes,,
 exhaustive-effect-dependencies,port,,react,react/exhaustive-effect-dependencies,auto,P2,C,auto,,,
-fbt,port,,react,react/fbt,auto,P2,C,auto,,,
+fbt,out-of-scope,,,,,,,auto,,,"out of scope, ruled 2026-11-09"
 gating,skip,,,,,,,auto,yes,,validates the React Compiler's gating config
 globals,covered,react/globals,,,,,,auto,yes,,
 hooks,port,,react,react/hooks,auto,P2,C,auto,,,
 immutability,port,,react,react/immutability,auto,P1,A,auto,yes,,
 incompatible-library,port,,react,react/incompatible-library,auto,P1,A,auto,yes,,
-invariant,port,,react,react/invariant,auto,P2,C,auto,,,
+invariant,out-of-scope,,,,,,,auto,,,"out of scope, ruled 2026-11-09"
 memo-dependencies,port,,react,react/memo-dependencies,auto,P2,C,auto,,,
 memoized-effect-dependencies,port,,react,react/memoized-effect-dependencies,auto,P2,C,auto,,,
 no-deriving-state-in-effects,port,,react,react/no-deriving-state-in-effects,auto,P2,C,auto,,,
@@ -23,8 +23,8 @@ rules-of-hooks,covered,react/rules-of-hooks,,,,,,none,yes,,
 set-state-in-effect,covered,react/no-set-state-in-effect,,,,,,auto,yes,,
 set-state-in-render,covered,react/no-set-state-in-render,,,,,,auto,yes,,
 static-components,covered,react/no-nested-components,,,,,,auto,yes,,
-syntax,port,,react,react/syntax,auto,P2,C,auto,,,
-todo,port,,react,react/todo,auto,P2,C,auto,,,
+syntax,out-of-scope,,,,,,,auto,,,"out of scope, ruled 2026-11-09"
+todo,out-of-scope,,,,,,,auto,,,"out of scope, ruled 2026-11-09"
 unsupported-syntax,port,,react,react/unsupported-syntax,auto,P1,A,auto,yes,,
 use-memo,covered,react/use-memo,,,,,,auto,yes,,
 void-use-memo,covered,react/use-memo,,,,,,auto,,,

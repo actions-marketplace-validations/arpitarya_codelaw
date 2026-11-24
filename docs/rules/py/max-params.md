@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/size` at `warn` |
+| **Turned on by** | `codelaw:py/size` at `warn` · `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | `max`, `max_positional`, `count_varargs`, `ignore_self_cls`, `ignore_names`, `ignore_overrides`, `ignore_declarations` |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (grouping parameters changes the function's signature and every call to it; which belong together is the author's call) |

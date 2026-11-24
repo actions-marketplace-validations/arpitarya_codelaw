@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:js/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the function refers to itself by its own name, which code that reassigns that name, or shadows it inside, reads differently; an anonymous function is named the first of `self`, `self2`, … the file does not use; `arguments.caller` has no replacement and is removed by hand) |
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:js/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:js/recommended` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
 extends = ["codelaw:js/recommended"]
-
-[rules]
-"js/no-caller" = "error"
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

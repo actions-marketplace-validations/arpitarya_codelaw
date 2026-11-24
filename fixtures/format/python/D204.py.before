@@ -1,0 +1,21 @@
+class A:
+    """Needs a blank line after it."""
+    x = 1
+
+
+class B:
+    """Too many blank lines after it."""
+
+
+
+    y = 2
+
+
+class C:
+    """A comment follows."""
+    # note
+    z = 3
+
+
+class D:
+    """Alone."""

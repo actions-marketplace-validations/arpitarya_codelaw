@@ -1,6 +1,6 @@
 //! `match:` rules: an ast-grep rule (patterns, kinds and the relational
 //! clauses `inside`, `has`, `precedes`, `follows`) plus codelaw's semantic
-//! predicates under `where:` (SR-ARCHITECTURE decision 15a).
+//! predicates under `where:` (SR-SEMANTIC-MODEL).
 //!
 //! ```yaml
 //! match:

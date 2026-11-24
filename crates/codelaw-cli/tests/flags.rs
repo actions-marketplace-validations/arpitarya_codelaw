@@ -1,4 +1,4 @@
-//! W-130: feature-flag expiry (SR-PROJECT-GRAPH decision 11) through the
+//! W-130: feature-flag expiry (SR-MODULE-GRAPH decision 11) through the
 //! real binary, on `fixtures/flags`: one read per SDK preset in JS/TS and in
 //! Python, a wrapper of a wrapper in each, an inline marker and the
 //! registry, judged on a fixed as-of date; then `fix --unsafe` and

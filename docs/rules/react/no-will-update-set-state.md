@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `@codelaw/rules-react` (npm) · `codelaw-rules-react` (PyPI) |
 | **Languages** | JavaScript, JSX, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:react/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (restructure: the state is derived in render, or the update moves to a handler) |
@@ -35,14 +35,11 @@ npm install --save-dev @codelaw/rules-react
 pip install codelaw-rules-react
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:react/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:react/recommended` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
 extends = ["codelaw:react/recommended"]
-
-[rules]
-"react/no-will-update-set-state" = "error"
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

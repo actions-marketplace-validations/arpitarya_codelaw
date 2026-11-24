@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the choices are promoting a first heading of another level to the title, or moving the document's title up to the top; a document with neither is manual) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `markdownlint/MD041` |
+| **Ported from** | `markdownlint/MD041`, `biome/nursery/useTopLevelHeading` |
 
 ## What it checks
 

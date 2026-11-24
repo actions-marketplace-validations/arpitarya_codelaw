@@ -1,0 +1,11 @@
+def f():
+    """Return one."""
+
+
+class K:
+    """Return two."""
+
+
+def g():
+    """
+    Return three."""

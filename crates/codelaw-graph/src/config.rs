@@ -1,4 +1,4 @@
-//! The `[graph]` section (SR-PROJECT-GRAPH decisions 3 and 4): its keys are
+//! The `[graph]` section (SR-MODULE-GRAPH decisions 3 and 4): its keys are
 //! this record's, validated strictly (SR-CONFIG decision 5).
 
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
@@ -96,6 +96,10 @@ pub struct GraphConfig {
     /// More registrar decorators, added to the defaults.
     #[serde(default)]
     pub registrars: Vec<String>,
+    /// The most ancestors a Python class may have before
+    /// `py/too-many-ancestors` reports it (default 7, Pylint's `max-parents`).
+    #[serde(default)]
+    pub max_ancestors: Option<usize>,
     /// `[css] modules`: globs of CSS Module stylesheets besides
     /// `*.module.css` and `*.module.scss`. Set by the engine from `[css]`.
     #[serde(skip)]

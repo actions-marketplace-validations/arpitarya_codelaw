@@ -8,7 +8,7 @@ fix_exception: restructure
 stability: preview
 options:
   level: { type: "integer", default: 1, description: "the level of the title heading" }
-ported_from: [markdownlint/MD025]
+ported_from: [markdownlint/MD025, biome/nursery/useSingleTopLevelHeading]
 since: 0.1.0
 ---
 

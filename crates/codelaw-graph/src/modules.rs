@@ -1,4 +1,4 @@
-//! CSS Modules facts (W-63, SR-PROJECT-GRAPH decision 8): what a stylesheet
+//! CSS Modules facts (W-63, SR-MODULE-GRAPH decision 8): what a stylesheet
 //! defines as a local class, what it composes, and what it exports to
 //! JavaScript (`:export`, `@value`).
 //!
@@ -105,7 +105,7 @@ pub fn scan(text: &str, scss: bool) -> ModuleFacts {
 
 /// `text` with comments, string contents and unquoted `url(…)` blanked
 /// (same length, newlines kept).
-fn mask(text: &str, scss: bool) -> String {
+pub(crate) fn mask(text: &str, scss: bool) -> String {
     let b = text.as_bytes();
     let mut out = b.to_vec();
     let blank = |out: &mut Vec<u8>, from: usize, to: usize| {
@@ -153,7 +153,7 @@ fn mask(text: &str, scss: bool) -> String {
     String::from_utf8(out).expect("blanking ASCII-delimited runs keeps UTF-8")
 }
 
-fn is_ident(b: u8) -> bool {
+pub(crate) fn is_ident(b: u8) -> bool {
     b.is_ascii_alphanumeric() || b == b'-' || b == b'_' || b >= 0x80
 }
 

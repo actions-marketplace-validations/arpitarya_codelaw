@@ -44,9 +44,9 @@ grouped-accessor-pairs,port,,js,js/grouped-accessor-pairs,manual,P2,C,none,,,
 guard-for-in,port,,js,js/guard-for-in,manual,P2,C,none,,,
 handle-callback-err,retired,,,,,,,none,,yes,deprecated upstream
 id-blacklist,retired,,,,,,,none,,yes,deprecated upstream
-id-denylist,port,,js,js/id-denylist,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30)"
+id-denylist,options-only,,js,js/id-denylist,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30); options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 id-length,port,,js,js/id-length,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30)"
-id-match,port,,js,js/id-match,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30)"
+id-match,options-only,,js,js/id-match,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30); options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 implicit-arrow-linebreak,retired,,,,,,,auto,,yes,deprecated upstream
 indent,retired,,,,,,,auto,,yes,deprecated upstream
 indent-legacy,retired,,,,,,,auto,,yes,deprecated upstream
@@ -125,7 +125,7 @@ no-floating-decimal,retired,,,,,,,auto,,yes,deprecated upstream
 no-func-assign,covered,js/no-func-assign,,,,,,none,yes,,
 no-global-assign,covered,js/no-global-assign,,,,,,none,yes,,
 no-implicit-coercion,port,,js,js/no-implicit-coercion,auto,P2,C,auto,,,
-no-implicit-globals,port,,js,js/no-implicit-globals,manual,P2,C,none,,,
+no-implicit-globals,options-only,,js,js/no-implicit-globals,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 no-implied-eval,port,,js,js/no-implied-eval,manual,P2,C,none,,,
 no-import-assign,covered,js/no-import-assign,,,,,,none,yes,,
 no-inline-comments,port,,js,js/no-inline-comments,manual,P3,E,none,,,"taste, no defect behind it: the opt-in taste preset (ruled 2026-10-30)"
@@ -180,7 +180,7 @@ no-restricted-globals,covered,js/use-instead*,,,,,,none,,,
 no-restricted-imports,covered,js/use-instead*,,,,,,none,,,
 no-restricted-modules,retired,,,,,,,none,,yes,deprecated upstream
 no-restricted-properties,covered,js/use-instead*,,,,,,none,,,
-no-restricted-syntax,port,,js,js/no-restricted-syntax,manual,P2,C,none,,,
+no-restricted-syntax,options-only,,js,js/no-restricted-syntax,manual,P2,C,none,,,"options-only, ruled 2026-11-09 (W-176): silent until its option is set (SR-RULE-FORMAT decision 2e)"
 no-return-assign,port,,js,js/no-return-assign,manual,P2,C,none,,,
 no-return-await,retired,,,,,,,suggest,,yes,deprecated upstream
 no-script-url,covered,sec-js/no-javascript-url,,,,,,none,,,

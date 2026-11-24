@@ -11,16 +11,16 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (a fragment around one element is replaced by it, so nothing changes; a fragment around one expression inside another element is replaced by the braced expression, which renders the same; one anywhere else becomes the bare expression, a different kind of value, so that is a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-react/jsx-no-useless-fragment` |
 
 ## What it checks
 
-A short fragment `<>…</>` that holds exactly one element, and no text or expression, is replaced by that element. A fragment holding one expression is left alone for now.
+A short fragment `<>…</>` that holds exactly one element, and no text or expression, is replaced by that element. A fragment that holds exactly one expression is reported too: inside another element it is replaced by the braced expression (`<div><>{items}</></div>` is `<div>{items}</div>`, an `auto` fix); anywhere else it is replaced by the bare expression (`const r = <>{items}</>` is `const r = items`), a suggestion, since the value is then no longer a React element. A fragment holding a spread, a comment or a sequence is left alone.
 
-**Why:** A fragment exists to group several children; around one element it's noise.
+**Why:** A fragment exists to group several children; around one child it's noise.
 
 ## Configuration
 

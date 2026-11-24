@@ -1,7 +1,12 @@
 # >>> fux: not indexed >>>
 # a committed list said not to index these. Rewritten by every `fux ingest`.
 # Delete a line and it comes back next run unless the list that rejected it changed.
-records/RULE-SINCE   # not an indexed file type
+records/RULE-SINCE                                  # not an indexed file type
+work/proposals/rule-parity/method/classify.py       # not an indexed file type
+work/proposals/rule-parity/method/extract.mjs       # not an indexed file type
+work/proposals/rule-parity/method/pylint_rules.py   # not an indexed file type
+work/proposals/rule-parity/method/rec.mjs           # not an indexed file type
+work/proposals/rule-parity/method/tables.py         # not an indexed file type
 # <<< fux: not indexed <<<
 
 # What fux does NOT index. Same grammar as .gitignore, and it is the ONE place

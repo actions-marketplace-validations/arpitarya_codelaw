@@ -251,7 +251,7 @@ pub fn suspicion<'d>(word: &str, data: &'d BTreeMap<String, Arc<serde_json::Valu
 /// across the project — `canceled` in one file, `cancelled` in another.
 /// It needs every file's words at once, so it is a `scope: project` rule
 /// the engine runs on the graph stage (`graph: { terms: inconsistent }`,
-/// SR-PROJECT-GRAPH decision 10); this module gives it the words of one
+/// SR-MODULE-GRAPH decision 10); this module gives it the words of one
 /// file ([`term_uses`]) and the verdict over all of them
 /// ([`inconsistent_terms`]).
 ///

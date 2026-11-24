@@ -16,7 +16,7 @@ a11y/noRedundantAlt,same-as,,,,,,,none,yes,,counted under eslint-plugin-jsx-a11y
 a11y/noRedundantRoles,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-jsx-a11y/no-redundant-roles
 a11y/noStaticElementInteractions,same-as,,,,,,,none,yes,,counted under eslint-plugin-jsx-a11y/no-static-element-interactions
 a11y/noSvgWithoutTitle,port,,react,react/no-svg-without-title,manual,P1,A,none,yes,,Biome only
-a11y/preset,port,,react,react/preset,manual,P2,C,none,,,Biome only
+a11y/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 a11y/useAltText,same-as,,,,,,,none,yes,,counted under eslint-plugin-jsx-a11y/alt-text
 a11y/useAnchorContent,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-jsx-a11y/anchor-has-content
 a11y/useAriaActivedescendantWithTabindex,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-jsx-a11y/aria-activedescendant-has-tabindex
@@ -79,7 +79,7 @@ complexity/noUselessTypeConstraint,covered,ts/no-unnecessary-type-constraint,,,,
 complexity/noUselessUndefined,same-as,,,,,,,auto,,,counted under eslint-plugin-unicorn/no-useless-undefined
 complexity/noUselessUndefinedInitialization,same-as,,,,,,,auto,yes,,counted under eslint/no-undef-init
 complexity/noVoid,same-as,,,,,,,none,,,counted under eslint/no-void
-complexity/preset,port,,js,js/preset,manual,P2,C,none,,,Biome only
+complexity/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 complexity/useArrayFind,same-as,,,,,,,none,,,counted under typescript-eslint/prefer-find
 complexity/useArraySome,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/prefer-array-some
 complexity/useArrowFunction,same-as,,,,,,,auto,yes,,counted under eslint/prefer-arrow-callback
@@ -128,16 +128,16 @@ correctness/noNodejsModules,same-as,,,,,,,none,,,counted under eslint-plugin-imp
 correctness/noNonoctalDecimalEscape,covered,js/no-nonoctal-decimal-escape,,,,,,auto,yes,,through its source: eslint/no-nonoctal-decimal-escape
 correctness/noPlaywrightMissingAwait,same-as,,,,,,,suggest,,,counted under eslint-plugin-playwright/missing-playwright-await
 correctness/noPrecisionLoss,covered,js/no-loss-of-precision,,,,,,none,yes,,"through its source: eslint/no-loss-of-precision, typescript-eslint/no-loss-of-precision, clippy/lossy_float_literal, eslint-plugin-vue/no-loss-of-precision"
-correctness/noPrivateImports,port,,js,js/no-private-imports,manual,P2,C,none,,,source: eslint-plugin-import-access/eslint-plugin-import-access
+correctness/noPrivateImports,port,,js,js/no-private-imports,manual,P2,C,none,,,"Biome only; built on the project graph — `graph: { import: { visibility: restricted } }` (W-199)"
 correctness/noProcessGlobal,port,,js,js/no-process-global,auto,P2,C,auto,,,source: deno_lint/no-process-global
-correctness/noQwikUseVisibleTask,port,,js,js/no-qwik-use-visible-task,manual,P2,C,none,,,source: eslint-plugin-qwik/no-use-visible-task
-correctness/noReactNativeRawText,port,,react,react/no-react-native-raw-text,manual,P2,C,none,,,source: EslintReactNativeIntellicode/no-raw-text
+correctness/noQwikUseVisibleTask,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
+correctness/noReactNativeRawText,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/noReactPropAssignments,same-as,,,,,,,none,,,counted under eslint-plugin-react-hooks/react-compiler
 correctness/noRenderReturnValue,covered,react/no-render-return-value,,,,,,none,,,"through its source: eslint-plugin-react/no-render-return-value, EslintReactDom/no-render-return-value, @eslint-react/dom-no-render-return-value"
 correctness/noRestrictedElements,same-as,,,,,,,none,,,counted under eslint-plugin-react/forbid-elements
 correctness/noSelfAssign,covered,js/no-self-assign,,,,,,none,yes,,"through its source: eslint/no-self-assign, clippy/self_assignment"
 correctness/noSetterReturn,covered,js/no-setter-return,,,,,,none,yes,,through its source: eslint/no-setter-return
-correctness/noSolidDestructuredProps,port,,react,react/no-solid-destructured-props,manual,P2,C,none,,,source: eslint-plugin-solid/no-destructure
+correctness/noSolidDestructuredProps,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Solid (eslint-plugin-solid) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/noStringCaseMismatch,port,,js,js/no-string-case-mismatch,suggest,P1,A,suggest,yes,,source: clippy/match_str_case_mismatch
 correctness/noSwitchDeclarations,covered,js/no-case-declarations,,,,,,auto,yes,,through its source: eslint/no-case-declarations
 correctness/noUndeclaredDependencies,same-as,,,,,,,none,,,counted under eslint-plugin-import/no-extraneous-dependencies
@@ -163,20 +163,20 @@ correctness/noUnusedPrivateClassMembers,covered,js/no-unused-private-class-membe
 correctness/noUnusedVariables,covered,js/no-unused-vars ts/no-unused-vars,,,,,,suggest,yes,,"through its source: eslint/no-unused-vars, typescript-eslint/no-unused-vars, eslint-plugin-unused-imports/no-unused-vars, eslint-plugin-vue/no-unused-vars, deno_lint/no-unused-vars"
 correctness/noVoidElementsWithChildren,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-react/void-dom-elements-no-children
 correctness/noVoidTypeReturn,port,,js,js/no-void-type-return,manual,P1,A,none,yes,,Biome only
-correctness/noVueDataObjectDeclaration,port,,js,js/no-vue-data-object-declaration,auto,P2,C,auto,,,"source: eslint-plugin-vue/no-deprecated-data-object-declaration, eslint-plugin-vue/no-shared-component-data"
+correctness/noVueDataObjectDeclaration,out-of-scope,,,,,P2,C,auto,,,language outside L3: vue — W-143
 correctness/noVueDuplicateKeys,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 correctness/noVueImportCompilerMacros,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-correctness/noVueRefAsOperand,port,,js,js/no-vue-ref-as-operand,manual,P2,C,none,,,source: eslint-plugin-vue/no-ref-as-operand
+correctness/noVueRefAsOperand,out-of-scope,,,,,P2,C,none,,,language outside L3: vue — W-143
 correctness/noVueReservedKeys,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-correctness/noVueReservedProps,port,,js,js/no-vue-reserved-props,manual,P2,C,none,,,source: eslint-plugin-vue/no-reserved-props
-correctness/noVueSetupPropsReactivityLoss,port,,js,js/no-vue-setup-props-reactivity-loss,manual,P2,C,none,,,source: eslint-plugin-vue/no-setup-props-reactivity-loss
+correctness/noVueReservedProps,out-of-scope,,,,,P2,C,none,,,language outside L3: vue — W-143
+correctness/noVueSetupPropsReactivityLoss,out-of-scope,,,,,P2,C,none,,,language outside L3: vue — W-143
 correctness/noVueVIfWithVFor,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 correctness/noVueVOnNumberValues,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-correctness/preset,port,,js,js/preset-biome,manual,P2,C,none,,,Biome only
+correctness/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 correctness/useExhaustiveDependencies,covered,react/exhaustive-deps,,,,,,suggest,,,"through its source: eslint-plugin-react-hooks/exhaustive-deps, @eslint-react/exhaustive-deps, @eslint-react/exhaustive-deps"
 correctness/useGraphqlNamedOperations,out-of-scope,,,,,,,suggest,yes,,language outside L3: graphql — W-143
 correctness/useHookAtTopLevel,covered,react/rules-of-hooks,,,,,,none,,,through its source: eslint-plugin-react-hooks/rules-of-hooks
-correctness/useImageSize,port,,react,react/use-image-size,manual,P2,C,none,,,source: eslint-plugin-qwik/jsx-img
+correctness/useImageSize,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/useImportExtensions,same-as,,,,,,,auto,,,counted under eslint-plugin-import/extensions
 correctness/useInlineScriptId,same-as,,,,,,,none,,,counted under @next/eslint-plugin-next/inline-script-id
 correctness/useIsNan,covered,js/use-isnan,,,,,,suggest,yes,,through its source: eslint/use-isnan
@@ -185,12 +185,12 @@ correctness/useJsxKeyInIterable,covered,react/jsx-key,,,,,,none,,,"through its s
 correctness/useLoneAnonymousOperation,out-of-scope,,,,,,,none,yes,,language outside L3: graphql — W-143
 correctness/useParseIntRadix,same-as,,,,,,,suggest,yes,,counted under eslint/radix
 correctness/usePlaywrightValidDescribeCallback,same-as,,,,,,,none,,,counted under eslint-plugin-playwright/valid-describe-callback
-correctness/useQwikClasslist,port,,react,react/use-qwik-classlist,manual,P2,C,none,,,source: eslint-plugin-qwik/prefer-classlist
-correctness/useQwikLoaderLocation,port,,react,react/use-qwik-loader-location,manual,P2,C,none,,,source: eslint-plugin-qwik/loader-location
-correctness/useQwikMethodUsage,port,,js,js/use-qwik-method-usage,manual,P2,C,none,,,source: eslint-plugin-qwik/use-method-usage
-correctness/useQwikValidLexicalScope,port,,js,js/use-qwik-valid-lexical-scope,manual,P2,C,none,,,source: eslint-plugin-qwik/valid-lexical-scope
+correctness/useQwikClasslist,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
+correctness/useQwikLoaderLocation,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
+correctness/useQwikMethodUsage,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
+correctness/useQwikValidLexicalScope,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Qwik (eslint-plugin-qwik) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/useReactAsyncServerFunction,same-as,,,,,,,suggest,,,counted under eslint-plugin-react/async-server-action
-correctness/useReactNativePlatformComponents,port,,react,react/use-react-native-platform-components,manual,P2,C,none,,,source: EslintReactNativeIntellicode/split-platform-components
+correctness/useReactNativePlatformComponents,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
 correctness/useSingleJsDocAsterisk,same-as,,,,,,,suggest,,,counted under eslint-plugin-jsdoc/no-multi-asterisks
 correctness/useUniqueElementIds,port,,react,react/use-unique-element-ids,manual,P2,C,none,,,Biome only
 correctness/useValidForDirection,covered,js/for-direction,,,,,,none,yes,,through its source: eslint/for-direction
@@ -233,7 +233,7 @@ nursery/noJsRestrictedProperties,covered,js/use-instead*,,,,,,none,,,through its
 nursery/noJsonUnsafeValues,port,,data,json/no-json-unsafe-values,manual,P3,E,none,yes,,nursery upstream; source: EslintJson/no-unsafe-values
 nursery/noMagicArrayFlatDepth,same-as,,,,,,,none,yes,,counted under eslint-plugin-unicorn/no-magic-array-flat-depth
 nursery/noMeaninglessVoidOperator,same-as,,,,,,,suggest,,,counted under typescript-eslint/no-meaningless-void-operator
-nursery/noMisleadingReturnType,port,,ts,ts/no-misleading-return-type,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noMisleadingReturnType,types,,,,,P3,E,none,,,needs type information — W-105; not built (W-196)
 nursery/noMisplacedListElements,port,,react,react/no-misplaced-list-elements,manual,P3,E,none,yes,,nursery upstream; source: @html-eslint/require-li-container
 nursery/noMisusedPromises,same-as,,,,,,,suggest,,,counted under typescript-eslint/no-misused-promises
 nursery/noNegationInEqualityCheck,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/no-negation-in-equality-check
@@ -251,7 +251,7 @@ nursery/noPlaywrightNthMethods,port,,js,js/no-playwright-nth-methods,manual,P3,E
 nursery/noProcessExit,covered,node/no-process-exit,,,,,,none,,,"through its source: eslint/no-process-exit, eslint-plugin-n/no-process-exit, eslint-plugin-unicorn/no-process-exit"
 nursery/noPromiseExecutorReturn,same-as,,,,,,,suggest,,,counted under eslint/no-promise-executor-return
 nursery/noReactObjectTypeAsDefaultProp,same-as,,,,,,,none,,,counted under eslint-plugin-react/no-object-type-as-default-prop
-nursery/noRestrictedDependencies,port,,js,js/no-restricted-dependencies,manual,P3,E,none,,,nursery upstream; source: @e18e/eslint-plugin/ban-dependencies
+nursery/noRestrictedDependencies,needs-data,,,,,P3,E,none,,,"needs e18e's module-replacements table, which codelaw does not ship; the decider rules whether to ship it as data (W-196)"
 nursery/noReturnArrayPush,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/no-return-array-push
 nursery/noReturnInFinally,same-as,,,,,,,none,yes,,counted under eslint-plugin-promise/no-return-in-finally
 nursery/noSelfImport,same-as,,,,,,,none,,,counted under eslint-plugin-import/no-self-import
@@ -263,7 +263,7 @@ nursery/noSvelteAtHtmlTags,out-of-scope,,,,,,,none,,,language outside L3: svelte
 nursery/noSvelteClassDirective,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/noSvelteExportLet,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/noSvelteInspect,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
-nursery/noSvelteInternal,port,,js,js/no-svelte-internal,manual,P3,E,none,,,nursery upstream; source: eslint-plugin-svelte/no-svelte-internal
+nursery/noSvelteInternal,out-of-scope,,,,,P3,E,none,,,language outside L3: svelte — W-143
 nursery/noSvelteLegacyConst,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/noSvelteObjectInTextMustaches,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/noSvelteUnnecessaryStateWrap,out-of-scope,,,,,,,suggest,,,language outside L3: svelte — W-143
@@ -271,20 +271,20 @@ nursery/noSvelteUselessDerivedBy,out-of-scope,,,,,,,auto,,,language outside L3: 
 nursery/noTailwindArbitraryValue,same-as,,,,,,,none,,,counted under EslintTailwindcss/no-arbitrary-value
 nursery/noTailwindLegacyUtilities,same-as,,,,,,,auto,,,counted under EslintBetterTailwindcss/no-deprecated-classes
 nursery/noTailwindRawColors,port,,react,react/no-tailwind-raw-colors,manual,P3,E,none,,,nursery upstream; source: EslintShadcn/no-raw-colors
-nursery/noTailwindRestyledComponents,port,,react,react/no-tailwind-restyled-components,manual,P3,E,none,,,nursery upstream; source: EslintShadcn/no-restyle
+nursery/noTailwindRestyledComponents,needs-data,,,,,P3,E,none,,,needs the Tailwind class table to tell a restyling utility from a layout one — the `tailwind` pack's provider; not built (W-196)
 nursery/noTanstackQueryRestDestructuring,covered,tanstack-query/no-rest-destructuring,,,,,,none,,,through its source: EslintTanstackQuery/no-rest-destructuring
 nursery/noThisOutsideOfClass,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-this-outside-of-class
-nursery/noUndeclaredClasses,port,,js,js/no-undeclared-classes,manual,P3,E,none,,,nursery upstream; Biome only
-nursery/noUndeclaredCustomProperties,port,,react,react/no-undeclared-custom-properties,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noUndeclaredClasses,port,,js,js/no-undeclared-classes,manual,P3,E,none,,,"Biome only; built on the stylesheets that load with a file — `graph: { sheets: { classes: undeclared } }`; JSX only, HTML findings not built (W-199)"
+nursery/noUndeclaredCustomProperties,port,,css,css/no-undeclared-custom-properties,manual,P3,E,none,,,"Biome only; `graph: { sheets: { properties: undeclared } }`; in the css pack, not react: `var()` is read in stylesheets (W-199)"
 nursery/noUnmodifiedLoopCondition,same-as,,,,,,,none,,,counted under eslint/no-unmodified-loop-condition
 nursery/noUnreadableForOfExpression,same-as,,,,,,,none,,,counted under eslint-plugin-unicorn/no-unreadable-for-of-expression
 nursery/noUnreadableIife,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/no-unreadable-iife
 nursery/noUnsafeIframeSandbox,port,,react,react/no-unsafe-iframe-sandbox,manual,P3,E,none,yes,,"nursery upstream; source: EslintReactDom/no-unsafe-iframe-sandbox, @eslint-react/dom-no-unsafe-iframe-sandbox"
 nursery/noUnsafePlusOperands,same-as,,,,,,,none,,,counted under typescript-eslint/restrict-plus-operands
 nursery/noUnsafeReturn,covered,ts/no-unsafe-return,,,,,,none,,,through its source: typescript-eslint/no-unsafe-return
-nursery/noUnsafeTypeAssertion,port,,ts,ts/no-unsafe-type-assertion,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noUnsafeTypeAssertion,types,,,,,P3,E,none,,,needs type information — W-105; not built (W-196)
 nursery/noUnsafeUnaryMinus,same-as,,,,,,,none,,,counted under typescript-eslint/no-unsafe-unary-minus
-nursery/noUnusedClasses,port,,css,css/no-unused-classes,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/noUnusedClasses,port,,css,css/no-unused-classes,suggest,P3,E,none,,,"Biome only; `graph: { sheets: { classes: unused } }`, beside `graph/no-unused-css-classes` (W-199)"
 nursery/noUselessAssignment,covered,js/no-useless-assignment,,,,,,none,yes,,through its source: eslint/no-useless-assignment
 nursery/noUselessCall,same-as,,,,,,,none,yes,,counted under eslint/no-useless-call
 nursery/noUselessDateGetTime,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/consistent-date-clone
@@ -300,13 +300,13 @@ nursery/noVueDeprecatedScopeAttribute,retired,,,,,,,none,,yes,
 nursery/noVueDeprecatedScopedSlots,retired,,,,,,,suggest,,yes,
 nursery/noVueLifecycleAfterAwait,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueMultipleSlotArgs,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-nursery/noVueMutatingProps,port,,js,js/no-vue-mutating-props,manual,P3,E,none,,,nursery upstream; source: eslint-plugin-vue/no-mutating-props
+nursery/noVueMutatingProps,out-of-scope,,,,,P3,E,none,,,language outside L3: vue — W-143
 nursery/noVueRequiredPropWithDefault,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 nursery/noVueRootVIf,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueShadowNativeEvents,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueSideEffectsInComputed,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueUndeclaredDirectives,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-nursery/noVueUnusedEmitDeclarations,port,,js,js/no-vue-unused-emit-declarations,manual,P3,E,none,,,nursery upstream; source: eslint-plugin-vue/no-unused-emit-declarations
+nursery/noVueUnusedEmitDeclarations,out-of-scope,,,,,P3,E,none,,,language outside L3: vue — W-143
 nursery/noVueUnusedRefs,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueVHtml,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/noVueVText,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
@@ -327,10 +327,10 @@ nursery/useConsistentFunctionStyle,same-as,,,,,,,none,,,counted under eslint/fun
 nursery/useConsistentHeadingLevel,port,,js,js/use-consistent-heading-level,manual,P3,E,none,yes,,nursery upstream; Biome only
 nursery/useConsistentJsonFileRead,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/consistent-json-file-read
 nursery/useConsistentLightnessNotation,covered,css/lightness-notation,,,,,,auto,,,through its source: stylelint/lightness-notation
-nursery/useConsistentObjectKeys,port,,data,json/use-consistent-object-keys,suggest,P3,E,suggest,yes,,nursery upstream; source: EslintJson/no-unnormalized-keys
+nursery/useConsistentObjectKeys,needs-data,,,,,P3,E,suggest,yes,,needs Unicode normalization (NFC) tables codelaw does not ship; the only source is a dependency (L11) (W-196)
 nursery/useConsistentUnicodeBom,same-as,,,,,,,auto,,,counted under eslint/unicode-bom
 nursery/useControlLabel,same-as,,,,,,,none,,,counted under eslint-plugin-jsx-a11y/control-has-associated-label
-nursery/useDisposables,port,,ts,ts/use-disposables,suggest,P3,E,suggest,,,nursery upstream; Biome only
+nursery/useDisposables,types,,,,,P3,E,suggest,,,needs type information — W-105; not built (W-196)
 nursery/useExhaustiveSwitchCases,same-as,,,,,,,suggest,,,counted under typescript-eslint/switch-exhaustiveness-check
 nursery/useExpectToContain,same-as,,,,,,,suggest,,,"counted under eslint-plugin-jest/prefer-to-contain, @vitest/eslint-plugin/prefer-to-contain, eslint-plugin-playwright/prefer-to-contain"
 nursery/useExplicitReturnType,same-as,,,,,,,none,,,counted under typescript-eslint/explicit-function-return-type
@@ -352,18 +352,18 @@ nursery/useNullishCoalescing,same-as,,,,,,,auto,,,counted under typescript-eslin
 nursery/usePackageJsonValidCpu,port,,data,json/use-package-json-valid-cpu,manual,P3,E,none,yes,,nursery upstream; source: eslint-plugin-package-json/valid-cpu
 nursery/usePackageJsonValidEngines,port,,data,json/use-package-json-valid-engines,manual,P3,E,none,yes,,nursery upstream; source: eslint-plugin-package-json/valid-engines
 nursery/usePromiseRejectErrors,same-as,,,,,,,none,,,"counted under eslint/prefer-promise-reject-errors, typescript-eslint/prefer-promise-reject-errors"
-nursery/useReactCompiler,port,,react,react/use-react-compiler,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/useReactCompiler,out-of-scope,,,,,P3,E,none,,,runs React's own compiler in lint mode; codelaw has no model of it and takes no dependency (L11); `react-hooks/*` rules cover its checks one by one (W-196)
 nursery/useReactFunctionComponentDefinition,same-as,,,,,,,suggest,,,counted under eslint-plugin-react/function-component-definition
 nursery/useReactNamingConvention,port,,react,react/use-react-naming-convention,manual,P3,E,none,,,"nursery upstream; source: @eslint-react/naming-convention-context-name, EslintReactNamingConvention/context-name, @eslint-react/naming-convention-id-name, EslintReactNamingConvention/id-name, @eslint-react/naming-convention-ref-name, EslintReactNamingConvention/ref-name"
-nursery/useReactNativeValidPlatformColors,port,,js,js/use-react-native-valid-platform-colors,manual,P3,E,none,,,nursery upstream; source: EslintReactNative/platform-colors
+nursery/useReactNativeValidPlatformColors,out-of-scope,,,,,P3,E,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
 nursery/useRegexpExec,same-as,,,,,,,none,,,"counted under typescript-eslint/prefer-regexp-exec, eslint-plugin-regexp/prefer-regexp-exec"
 nursery/useSimplifiedBooleanReturn,same-as,,,,,,,auto,yes,,counted under eslint-plugin-unicorn/prefer-boolean-return
 nursery/useSingleTopLevelHeading,port,,js,js/use-single-top-level-heading,manual,P3,E,none,yes,,nursery upstream; Biome only
 nursery/useStrictBooleanExpressions,same-as,,,,,,,none,,,counted under typescript-eslint/strict-boolean-expressions
 nursery/useStringStartsEndsWith,same-as,,,,,,,suggest,,,counted under typescript-eslint/prefer-string-starts-ends-with
 nursery/useSvelteEventDispatcherTypes,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
-nursery/useSvelteKitResolve,port,,js,js/use-svelte-kit-resolve,manual,P3,E,none,,,nursery upstream; source: eslint-plugin-svelte/no-navigation-without-resolve
-nursery/useSvelteKitRuneImports,port,,js,js/use-svelte-kit-rune-imports,manual,P3,E,none,,,nursery upstream; Biome only
+nursery/useSvelteKitResolve,out-of-scope,,,,,P3,E,none,,,language outside L3: svelte — W-143
+nursery/useSvelteKitRuneImports,out-of-scope,,,,,P3,E,none,,,language outside L3: svelte — W-143
 nursery/useSvelteReactiveClasses,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/useSvelteRequireEachKey,out-of-scope,,,,,,,none,,,language outside L3: svelte — W-143
 nursery/useSvelteShorthandDirective,out-of-scope,,,,,,,auto,,,language outside L3: svelte — W-143
@@ -373,16 +373,16 @@ nursery/useTailwindStaticClassStrings,port,,react,react/use-tailwind-static-clas
 nursery/useTopLevelHeading,port,,js,js/use-top-level-heading,manual,P3,E,none,,,nursery upstream; Biome only
 nursery/useUnaryMinus,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/prefer-unary-minus
 nursery/useValidTestTitle,same-as,,,,,,,auto,,,"counted under eslint-plugin-jest/valid-title, @vitest/eslint-plugin/valid-title"
-nursery/useVueBaseImport,port,,js,js/use-vue-base-import,auto,P3,E,auto,,,nursery upstream; source: eslint-plugin-vue/prefer-import-from-vue
+nursery/useVueBaseImport,out-of-scope,,,,,P3,E,auto,,,language outside L3: vue — W-143
 nursery/useVueComponentIs,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/useVueConsistentEventHyphenation,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 nursery/useVueDefineOptions,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/useVueDefinePropsDestructuring,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-nursery/useVueMatchingComponentFileName,port,,js,js/use-vue-matching-component-file-name,suggest,P3,E,suggest,,,nursery upstream; Biome only
+nursery/useVueMatchingComponentFileName,out-of-scope,,,,,P3,E,suggest,,,language outside L3: vue — W-143
 nursery/useVueTemplateRef,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/useVueToggleInsideTransition,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/useVueTypedProps,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
-nursery/useVueTypedRef,port,,ts,ts/use-vue-typed-ref,manual,P3,E,none,,,nursery upstream; source: eslint-plugin-vue/require-typed-ref
+nursery/useVueTypedRef,out-of-scope,,,,,P3,E,none,,,language outside L3: vue — W-143
 nursery/useVueVModel,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 nursery/useVueVOnExact,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 nursery/useVueValidDefineEmits,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
@@ -404,10 +404,10 @@ performance/noNamespaceImport,port,,js,js/no-namespace-import,manual,P2,C,none,,
 performance/noReExportAll,port,,js,js/no-re-export-all,manual,P2,C,none,,,source: eslint-plugin-barrel-files/avoid-re-export-all
 performance/noSyncScripts,same-as,,,,,,,none,,,counted under @next/eslint-plugin-next/no-sync-scripts
 performance/noUnwantedPolyfillio,same-as,,,,,,,none,,,counted under @next/eslint-plugin-next/no-unwanted-polyfillio
-performance/preset,port,,js,js/preset-biome,manual,P2,C,none,,,Biome only
+performance/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 performance/useDomNodeTextContent,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/prefer-dom-node-text-content
 performance/useGoogleFontPreconnect,same-as,,,,,,,auto,,,counted under @next/eslint-plugin-next/google-font-preconnect
-performance/useSolidForComponent,port,,react,react/use-solid-for-component,manual,P2,C,none,,,source: eslint-plugin-solid/prefer-for
+performance/useSolidForComponent,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Solid (eslint-plugin-solid) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 performance/useTopLevelRegex,port,,js,js/use-top-level-regex,manual,P2,C,none,,,Biome only
 performance/useVueVapor,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 security/noBlankTarget,covered,react/jsx-no-target-blank,,,,,,auto,yes,,"through its source: eslint-plugin-react/jsx-no-target-blank, EslintReactDom/no-unsafe-target-blank, @eslint-react/dom-no-unsafe-target-blank, eslint-plugin-svelte/no-target-blank, eslint-plugin-vue/no-template-target-blank, @html-eslint/no-target-blank"
@@ -416,7 +416,7 @@ security/noDangerouslySetInnerHtmlWithChildren,covered,react/no-danger-with-chil
 security/noGlobalEval,same-as,,,,,,,none,yes,,counted under eslint/no-eval
 security/noScriptUrl,covered,sec-js/no-javascript-url,,,,,,none,yes,,"through its source: eslint/no-script-url, eslint-plugin-react/jsx-no-script-url, eslint-plugin-qwik/jsx-no-script-url, eslint-plugin-solid/jsx-no-script-url, EslintReactDom/no-script-url, @eslint-react/dom-no-script-url"
 security/noSecrets,port,,js,js/no-secrets,manual,P2,C,none,,,source: eslint-plugin-no-secrets/no-secrets
-security/preset,port,,js,js/preset-biome,manual,P2,C,none,,,Biome only
+security/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 security/useIframeSandbox,same-as,,,,,,,none,,,counted under eslint-plugin-react/iframe-missing-sandbox
 style/noCommonJs,covered,ts/no-require-imports,,,,,,none,,,"through its source: typescript-eslint/no-require-imports, typescript-eslint/no-var-requires, eslint-plugin-import/no-commonjs"
 style/noContinue,same-as,,,,,,,none,,,counted under eslint/no-continue
@@ -447,7 +447,7 @@ style/noPlaywrightElementHandle,same-as,,,,,,,suggest,,,counted under eslint-plu
 style/noPlaywrightEval,same-as,,,,,,,none,,,counted under eslint-plugin-playwright/no-eval
 style/noPlaywrightWaitForSelector,same-as,,,,,,,suggest,,,counted under eslint-plugin-playwright/no-wait-for-selector
 style/noProcessEnv,same-as,,,,,,,none,,,"counted under eslint-plugin-n/no-process-env, eslint/no-process-env"
-style/noReactNativeLiteralColors,port,,react,react/no-react-native-literal-colors,manual,P2,C,none,,,source: EslintReactNativeIntellicode/no-color-literals
+style/noReactNativeLiteralColors,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
 style/noRestrictedGlobals,covered,js/use-instead*,,,,,,none,,,through its source: eslint/no-restricted-globals
 style/noRestrictedImports,covered,js/use-instead*,,,,,,none,,,"through its source: eslint/no-restricted-imports, typescript-eslint/no-restricted-imports"
 style/noRestrictedTypes,same-as,,,,,,,auto,,,counted under typescript-eslint/no-restricted-types
@@ -459,9 +459,9 @@ style/noTopLevelLiterals,port,,data,json/no-top-level-literals,manual,P2,C,none,
 style/noUnusedTemplateLiteral,port,,js,js/no-unused-template-literal,auto,P2,C,auto,,,Biome only
 style/noUselessElse,same-as,,,,,,,auto,,,counted under eslint/no-else-return
 style/noValueAtRule,port,,css,css/no-value-at-rule,manual,P2,C,none,,,Biome only
-style/noVueOptionsApi,port,,js,js/no-vue-options-api,manual,P2,C,none,,,source: eslint-plugin-vue/component-api-style
+style/noVueOptionsApi,out-of-scope,,,,,P2,C,none,,,language outside L3: vue — W-143
 style/noYodaExpression,same-as,,,,,,,auto,,,counted under eslint/yoda
-style/preset,port,,js,js/preset-biome,manual,P2,C,none,,,Biome only
+style/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 style/useArrayLiterals,covered,ts/no-array-constructor,,,,,,auto,yes,,"through its source: eslint/no-array-constructor, typescript-eslint/no-array-constructor"
 style/useAsConstAssertion,covered,ts/prefer-as-const,,,,,,auto,,,through its source: typescript-eslint/prefer-as-const
 style/useAtIndex,same-as,,,,,,,suggest,,,counted under eslint-plugin-unicorn/prefer-at
@@ -504,7 +504,7 @@ style/useInputName,out-of-scope,,,,,,,none,,,language outside L3: graphql — W-
 style/useLiteralEnumMembers,same-as,,,,,,,none,yes,,counted under typescript-eslint/prefer-literal-enum-member
 style/useLoneExecutableDefinition,out-of-scope,,,,,,,none,,,language outside L3: graphql — W-143
 style/useNamedCaptureGroup,same-as,,,,,,,none,,,counted under eslint/prefer-named-capture-group
-style/useNamingConvention,port,,react,react/use-naming-convention,auto,P2,C,auto,,,Biome only
+style/useNamingConvention,types,,,,,P2,C,auto,,,"a configurable naming rule over every symbol kind, with the kinds from type information — as typescript-eslint's `naming-convention` (W-105); not built (W-196)"
 style/useNodeAssertStrict,port,,js,js/use-node-assert-strict,auto,P2,C,auto,,,Biome only
 style/useNodejsImportProtocol,same-as,,,,,,,suggest,yes,,"counted under eslint-plugin-unicorn/prefer-node-protocol, eslint-plugin-import/enforce-node-protocol-usage, eslint-plugin-n/prefer-node-protocol"
 style/useNumberNamespace,same-as,,,,,,,auto,,,counted under eslint-plugin-unicorn/prefer-number-properties
@@ -534,7 +534,7 @@ style/useVueConsistentVBindStyle,out-of-scope,,,,,,,suggest,,,language outside L
 style/useVueConsistentVOnStyle,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 style/useVueDefineMacrosOrder,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 style/useVueHyphenatedAttributes,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
-style/useVueMultiWordComponentNames,port,,js,js/use-vue-multi-word-component-names,manual,P2,C,none,,,Biome only
+style/useVueMultiWordComponentNames,out-of-scope,,,,,P2,C,none,,,language outside L3: vue — W-143
 style/useVueNextTickPromise,out-of-scope,,,,,,,none,,,language outside L3: vue — W-143
 suspicious/noAlert,same-as,,,,,,,none,,,counted under eslint/no-alert
 suspicious/noApproximativeNumericConstant,same-as,,,,,,,suggest,yes,,counted under eslint-plugin-unicorn/prefer-math-constants
@@ -560,8 +560,8 @@ suspicious/noDeprecatedMediaType,covered,css/media-type-no-deprecated,,,,,,none,
 suspicious/noDocumentCookie,port,,js,js/no-document-cookie-biome,manual,P1,A,none,yes,,Biome only
 suspicious/noDocumentImportInPage,same-as,,,,,,,none,,,counted under @next/eslint-plugin-next/no-document-import-in-page
 suspicious/noDoubleEquals,same-as,,,,,,,suggest,yes,,counted under eslint/eqeqeq
-suspicious/noDrizzleDeleteWithoutWhere,port,,js,js/no-drizzle-delete-without-where,manual,P2,C,none,,,source: eslint-plugin-drizzle/enforce-delete-with-where
-suspicious/noDrizzleUpdateWithoutWhere,port,,js,js/no-drizzle-update-without-where,manual,P2,C,none,,,Biome only
+suspicious/noDrizzleDeleteWithoutWhere,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Drizzle ORM — to a new pack, the decider's call (names: W-142); not built (W-196)"
+suspicious/noDrizzleUpdateWithoutWhere,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Drizzle ORM — to a new pack, the decider's call (names: W-142); not built (W-196)"
 suspicious/noDuplicateAtImportRules,covered,css/no-duplicate-at-import-rules,,,,,,none,yes,,"through its source: stylelint/no-duplicate-at-import-rules, EslintCss/no-duplicate-imports"
 suspicious/noDuplicateCase,covered,js/no-duplicate-case,,,,,,none,yes,,through its source: eslint/no-duplicate-case
 suspicious/noDuplicateClassMembers,covered,js/no-dupe-class-members,,,,,,none,yes,,"through its source: eslint/no-dupe-class-members, typescript-eslint/no-dupe-class-members"
@@ -625,8 +625,8 @@ suspicious/noProto,same-as,,,,,,,none,yes,,counted under eslint/no-proto
 suspicious/noPrototypeBuiltins,covered,js/no-prototype-builtins,,,,,,auto,yes,,"through its source: eslint/no-prototype-builtins, eslint/prefer-object-has-own, @e18e/eslint-plugin/prefer-object-has-own"
 suspicious/noQuickfixBiome,skip,,,,,,,auto,yes,,about Biome's own config or comments
 suspicious/noReactForwardRef,port,,react,react/no-react-forward-ref,suggest,P2,C,suggest,,,"source: @eslint-react/no-forward-ref, @eslint-react/no-forward-ref"
-suspicious/noReactNativeDeepImports,port,,js,js/no-react-native-deep-imports,manual,P2,C,none,,,source: EslintReactNative/no-deep-imports
-suspicious/noReactSpecificProps,port,,react,react/no-react-specific-props,auto,P2,C,auto,,,"source: eslint-plugin-solid/no-react-specific-props, eslint-plugin-qwik/no-react-props"
+suspicious/noReactNativeDeepImports,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: React Native — to a new pack, the decider's call (names: W-142); not built (W-196)"
+suspicious/noReactSpecificProps,out-of-scope,,,,,P2,C,auto,,,"framework with no codelaw pack: Solid (eslint-plugin-solid) — to a new pack, the decider's call (names: W-142); not built (W-196)"
 suspicious/noReactStringRefs,covered,react/no-string-refs,,,,,,none,,,through its source: eslint-plugin-react/no-string-refs
 suspicious/noRedeclare,covered,js/no-redeclare,,,,,,none,yes,,"through its source: eslint/no-redeclare, typescript-eslint/no-redeclare"
 suspicious/noRedundantUseStrict,port,,js,js/no-redundant-use-strict,auto,P1,A,auto,yes,,Biome only
@@ -642,7 +642,7 @@ suspicious/noTemplateCurlyInString,same-as,,,,,,,none,yes,,counted under eslint/
 suspicious/noThenProperty,same-as,,,,,,,none,yes,,counted under eslint-plugin-unicorn/no-thenable
 suspicious/noTsIgnore,covered,ts/ban-ts-comment,,,,,,auto,yes,,through its source: typescript-eslint/ban-ts-comment
 suspicious/noUnassignedVariables,covered,js/no-unassigned-vars,,,,,,none,,,"through its source: eslint/no-unassigned-vars, eslint/init-declarations"
-suspicious/noUndeclaredEnvVars,port,,js,js/no-undeclared-env-vars,manual,P2,C,none,,,source: eslint-plugin-turbo/no-undeclared-env-vars
+suspicious/noUndeclaredEnvVars,out-of-scope,,,,,P2,C,none,,,"framework with no codelaw pack: Turborepo — to a new pack, the decider's call (names: W-142); not built (W-196)"
 suspicious/noUnknownAtRules,covered,css/at-rule-no-unknown,,,,,,none,yes,,"through its source: stylelint/at-rule-no-unknown, EslintCss/no-invalid-at-rules"
 suspicious/noUnknownAttribute,covered,react/no-unknown-property,,,,,,none,,,through its source: eslint-plugin-react/no-unknown-property
 suspicious/noUnnecessaryConditions,same-as,,,,,,,none,,,counted under typescript-eslint/no-unnecessary-condition
@@ -655,11 +655,11 @@ suspicious/noUselessRegexBackrefs,covered,js/no-useless-backreference,,,,,,none,
 suspicious/noVar,covered,js/no-var,,,,,,suggest,,,"through its source: eslint/no-var, deno_lint/no-var"
 suspicious/noVueArrowFuncInWatch,out-of-scope,,,,,,,suggest,,,language outside L3: vue — W-143
 suspicious/noWith,covered,js/no-with,,,,,,none,yes,,through its source: eslint/no-with
-suspicious/preset,port,,js,js/preset-biome,manual,P2,C,none,,,Biome only
+suspicious/preset,skip,,,,,P2,C,none,,,"a group switch of Biome's configuration, not a rule (W-196)"
 suspicious/useAdjacentOverloadSignatures,same-as,,,,,,,none,yes,,counted under typescript-eslint/adjacent-overload-signatures
 suspicious/useArraySortCompare,same-as,,,,,,,none,,,counted under typescript-eslint/require-array-sort-compare
 suspicious/useAwait,same-as,,,,,,,none,,,"counted under eslint/require-await, typescript-eslint/require-await"
-suspicious/useBaseline,port,,css,css/use-baseline,manual,P2,C,none,,,"source: EslintCss/use-baseline, @html-eslint/use-baseline"
+suspicious/useBaseline,needs-data,,,,,P2,C,none,,,"needs the web-features Baseline table (which feature is widely available), which codelaw does not ship (W-196)"
 suspicious/useBiomeIgnoreFolder,skip,,,,,,,auto,yes,,about Biome's own config or comments
 suspicious/useDefaultSwitchClauseLast,same-as,,,,,,,none,yes,,counted under eslint/default-case-last
 suspicious/useDeprecatedDate,retired,,,,,,,none,,yes,

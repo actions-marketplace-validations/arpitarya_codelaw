@@ -128,17 +128,17 @@ D105,port,,python,py/undocumented-magic-method,manual,P2,D,none,,,pydocstyle
 D106,port,,python,py/undocumented-public-nested-class,manual,P2,D,none,,,pydocstyle
 D107,port,,python,py/undocumented-public-init,manual,P2,D,none,,,pydocstyle
 D200,port,,python,py/unnecessary-multiline-docstring,suggest,P2,D,suggest,,,pydocstyle
-D201,port,,python,py/blank-line-before-function,suggest,P2,D,suggest,,,pydocstyle
-D202,port,,python,py/blank-line-after-function,suggest,P2,D,suggest,,,pydocstyle
-D203,port,,python,py/incorrect-blank-line-before-class,auto,P2,D,auto,,,pydocstyle
-D204,port,,python,py/incorrect-blank-line-after-class,auto,P2,D,auto,,,pydocstyle
+D201,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D202,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D203,layout,,,,,,,auto,,,"pydocstyle; the formatter owns it (SR-FORMATTER decision 10); the opposite of D211, never produced"
+D204,layout,,,,,,,auto,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
 D205,port,,python,py/missing-blank-line-after-summary,suggest,P2,D,suggest,,,pydocstyle
 D206,port,,python,py/docstring-tab-indentation,manual,P2,D,none,,,pydocstyle
 D207,port,,python,py/under-indentation,auto,P2,D,auto,,,pydocstyle
 D208,port,,python,py/over-indentation,auto,P2,D,auto,,,pydocstyle
 D209,port,,python,py/new-line-after-last-paragraph,auto,P2,D,auto,,,pydocstyle
-D210,port,,python,py/surrounding-whitespace,suggest,P2,D,suggest,,,pydocstyle
-D211,port,,python,py/blank-line-before-class,auto,P2,D,auto,,,pydocstyle
+D210,layout,,,,,,,suggest,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
+D211,layout,,,,,,,auto,,,pydocstyle; the formatter owns it (SR-FORMATTER decision 10)
 D212,port,,python,py/multi-line-summary-first-line,auto,P2,D,auto,,,pydocstyle
 D213,port,,python,py/multi-line-summary-second-line,auto,P2,D,auto,,,pydocstyle
 D214,port,,python,py/overindented-section,auto,P2,D,auto,,,pydocstyle
@@ -258,7 +258,7 @@ ERA001,port,,python,py/commented-out-code,manual,P2,D,none,,,eradicate
 EXE001,port,,python,py/shebang-not-executable,manual,P2,D,none,,,flake8-executable
 EXE002,port,,python,py/shebang-missing-executable-file,manual,P2,D,none,,,flake8-executable
 EXE003,port,,python,py/shebang-missing-python,manual,P2,D,none,,,flake8-executable
-EXE004,port,,python,py/shebang-leading-whitespace,auto,P2,D,auto,,,flake8-executable
+EXE004,layout,,,,,,,auto,,,flake8-executable; the formatter owns it (SR-FORMATTER decision 10)
 EXE005,port,,python,py/shebang-not-first-line,manual,P2,D,none,,,flake8-executable
 F401,covered,py/unused-import,,,,,,suggest,yes,,
 F402,covered,py/import-shadowed-by-loop-var,,,,,,none,yes,,
@@ -707,7 +707,7 @@ RUF023,port,,python,py/unsorted-dunder-slots,suggest,P2,D,suggest,,,Ruff-specifi
 RUF024,port,,python,py/mutable-fromkeys-value,auto,P2,D,auto,,,Ruff-specific rules
 RUF026,port,,python,py/default-factory-kwarg,suggest,P2,D,suggest,,,Ruff-specific rules
 RUF027,port,,python,py/missing-f-string-syntax,auto,P3,E,auto,,,"Ruff-specific rules, preview upstream"
-RUF028,port,,python,py/invalid-formatter-suppression-comment,auto,P2,D,auto,,,Ruff-specific rules
+RUF028,out-of-scope,,,,,,,auto,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
 RUF029,port,,python,py/unused-async,manual,P3,E,none,,,"Ruff-specific rules, preview upstream"
 RUF030,port,,python,py/assert-with-print-message,auto,P2,D,auto,,,Ruff-specific rules
 RUF031,port,,python,py/incorrectly-parenthesized-tuple-in-subscript,auto,P3,E,auto,,,"Ruff-specific rules, preview upstream"
@@ -731,7 +731,7 @@ RUF050,port,,python,py/unnecessary-if,auto,P3,E,auto,,,"Ruff-specific rules, pre
 RUF051,port,,python,py/if-key-in-dict-del,auto,P2,D,auto,,,Ruff-specific rules
 RUF052,port,,python,py/used-dummy-variable,suggest,P3,E,suggest,,,"Ruff-specific rules, preview upstream"
 RUF053,port,,python,py/class-with-mixed-type-vars,suggest,P2,D,suggest,,,Ruff-specific rules
-RUF054,port,,python,py/indented-form-feed,manual,P3,E,none,,,"Ruff-specific rules, preview upstream"
+RUF054,out-of-scope,,,,,,,none,,,"Ruff-specific rules, preview upstream; out of scope, ruled 2026-11-09"
 RUF055,port,,python,py/unnecessary-regular-expression,suggest,P3,E,suggest,,,"Ruff-specific rules, preview upstream"
 RUF056,port,,python,py/falsy-dict-get-fallback,suggest,P3,E,suggest,,,"Ruff-specific rules, preview upstream"
 RUF057,port,,python,py/unnecessary-round,auto,P2,D,auto,,,Ruff-specific rules
@@ -753,15 +753,15 @@ RUF073,port,,python,py/f-string-percent-format,manual,P3,E,none,,,"Ruff-specific
 RUF074,port,,python,py/incorrect-decorator-order,manual,P3,E,none,,,"Ruff-specific rules, preview upstream"
 RUF075,port,,python,py/fallible-context-manager,manual,P3,E,none,,,"Ruff-specific rules, preview upstream"
 RUF077,port,,python,py/method-receiver-default,auto,P3,E,auto,,,"Ruff-specific rules, preview upstream"
-RUF100,port,,python,py/unused-noqa,auto,P2,D,auto,,,Ruff-specific rules
-RUF101,port,,python,py/redirected-noqa,auto,P2,D,auto,,,Ruff-specific rules
-RUF102,port,,python,py/invalid-rule-code,auto,P2,D,auto,,,Ruff-specific rules
-RUF103,port,,python,py/invalid-suppression-comment,auto,P2,D,auto,,,Ruff-specific rules
-RUF104,port,,python,py/unmatched-suppression-comment,manual,P2,D,none,,,Ruff-specific rules
-RUF105,port,,python,py/noqa-comments,suggest,P3,E,suggest,,,"Ruff-specific rules, preview upstream"
-RUF106,port,,python,py/rule-codes-in-suppression-comments,auto,P3,E,auto,,,"Ruff-specific rules, preview upstream"
-RUF200,port,,python,py/invalid-pyproject-toml,manual,P2,D,none,,,Ruff-specific rules
-RUF201,port,,python,py/rule-codes-in-selectors,auto,P3,E,auto,,,"Ruff-specific rules, preview upstream"
+RUF100,out-of-scope,,,,,,,auto,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF101,out-of-scope,,,,,,,auto,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF102,out-of-scope,,,,,,,auto,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF103,out-of-scope,,,,,,,auto,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF104,out-of-scope,,,,,,,none,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF105,out-of-scope,,,,,,,suggest,,,"Ruff-specific rules, preview upstream; out of scope, ruled 2026-11-09"
+RUF106,out-of-scope,,,,,,,auto,,,"Ruff-specific rules, preview upstream; out of scope, ruled 2026-11-09"
+RUF200,out-of-scope,,,,,,,none,,,"Ruff-specific rules; out of scope, ruled 2026-11-09"
+RUF201,out-of-scope,,,,,,,auto,,,"Ruff-specific rules, preview upstream; out of scope, ruled 2026-11-09"
 S101,covered,sec-py/no-assert-for-auth,,,,,,none,,,
 S102,covered,sec-py/no-exec-eval,,,,,,none,,,
 S103,covered,sec-py/no-world-writable,,,,,,none,,,

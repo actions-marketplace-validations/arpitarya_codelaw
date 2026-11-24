@@ -38,7 +38,10 @@ The hard requirements are stated as **laws** in [`records/`](../records/README.m
 Feature decisions:
 - [SR-RULE-PACKS](../records/0101_rule-packs.md): nineteen first-party rule packs (seventeen `@codelaw/rules-*` on npm, twelve `codelaw-rules-*` on PyPI), team packs and local rules.
 - [SR-AGENT-SURFACES](../records/0102_agent-surfaces.md): skills, steering, instructions, hooks.
-- [SR-PROJECT-GRAPH](../records/0103_project-graph.md): cross-file rules over a whole-repo symbol graph.
+- [SR-PROJECT-GRAPH](../records/0103_project-graph.md): the overview of every graph codelaw builds and which record owns each.
+- [SR-MODULE-GRAPH](../records/0122_module-graph.md): cross-file rules over a whole-repo symbol graph.
+- [SR-SEMANTIC-MODEL](../records/0123_semantic-model.md): the per-file scopes, bindings, references, imports and exports.
+- [SR-PY-FLOW](../records/0124_python-flow.md): the Python flow pass: is a name bound on every path to a read.
 - [SR-BASELINE](../records/0104_baseline-and-deprecations.md): grandfathering with deadlines, touch policy and deprecations.
 - [SR-LINTER](../records/0106_linter.md): the lint engine: nine languages, file/project/adapter rules, embedded code in HTML and Markdown.
 - [SR-FORMATTER](../records/0105_formatter.md): codelaw also formats (Prettier-style JS/TS/JSON, Black-style Python), with embedded engines.

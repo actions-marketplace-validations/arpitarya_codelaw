@@ -1,9 +1,10 @@
-//! Per-file facts (SR-PROJECT-GRAPH decision 5): what one file declares,
+//! Per-file facts (SR-MODULE-GRAPH decision 5): what one file declares,
 //! exports, imports and references, read once from its syntax tree and
 //! semantic model. Facts depend on the file's text alone, so they are
 //! cached by content; linking them is the graph's job.
 
 use codelaw_core::Language;
+use std::collections::BTreeSet;
 use codelaw_semantic::{Imported, SemanticModel, SymbolKind};
 use serde::{Deserialize, Serialize};
 use tree_sitter::Node;
@@ -126,6 +127,18 @@ pub struct ImportFact {
     /// is passed around, so every member counts as used.
     pub members: Option<Vec<Member>>,
     pub type_only: bool,
+    /// Python: inside a guard that makes Pylint ignore an import failure —
+    /// `try … except ImportError` (or a base of it), `if TYPE_CHECKING:`,
+    /// `if sys.version_info …:` (W-185).
+    #[serde(default)]
+    pub guarded: bool,
+    /// Python: in the `if TYPE_CHECKING:` branch, erased at run time.
+    #[serde(default)]
+    pub type_checking: bool,
+    /// Python: the whole import statement (`from m import a, b`), which
+    /// every name of it shares.
+    #[serde(default)]
+    pub stmt: Span,
 }
 
 /// How a JS/TS file names a module (the `node/` import rules).
@@ -181,6 +194,43 @@ pub struct CssClass {
     pub rule: Option<Span>,
 }
 
+/// A Python class: its name and the bases it names (W-185).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PyClass {
+    pub name: String,
+    /// The class name.
+    pub span: Span,
+    /// Declared at the module's top level, so another file can import it.
+    pub top: bool,
+    /// Each base as written, dotted (`Base`, `pkg.mod.Base`; a subscript
+    /// `Generic[T]` is `Generic`). Keyword arguments, calls and `*bases`
+    /// are not bases the graph can follow.
+    pub bases: Vec<String>,
+}
+
+/// What the Python queries read about one file beyond its imports and
+/// declarations (W-185, SR-PROJECT-GRAPH decision 12).
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PyFacts {
+    /// Every name bound at the module's top level, sorted: declarations,
+    /// imports, loop and `with` targets, `global` writes from functions.
+    pub names: Vec<String>,
+    /// The names a literal `__all__` lists.
+    pub all: Option<Vec<String>>,
+    /// `__all__` has a part that is not a literal.
+    pub all_dynamic: bool,
+    /// The module may bind names the facts cannot see: it defines
+    /// `__getattr__` or `__path__`, or reads `globals()` / `vars()`.
+    pub open: bool,
+    /// The file changes `sys.path` (or calls `site.addsitedir`), so what
+    /// its imports name is not what the project's roots say.
+    pub path_hack: bool,
+    /// Names the file reads that no binding of it explains — read only
+    /// for a file with a `from m import *`, empty otherwise.
+    pub free: Vec<String>,
+    pub classes: Vec<PyClass>,
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FileFacts {
     pub lang: Option<FactLang>,
@@ -188,7 +238,7 @@ pub struct FileFacts {
     pub exports: Vec<ExportFact>,
     pub imports: Vec<ImportFact>,
     pub dynamic_imports: Vec<DynamicImport>,
-    /// Why the module is `dynamic` (SR-PROJECT-GRAPH decision 4).
+    /// Why the module is `dynamic` (SR-MODULE-GRAPH decision 4).
     pub dynamic: Option<String>,
     /// Python: the module sets `__all__`.
     pub python_all: bool,
@@ -212,6 +262,33 @@ pub struct FileFacts {
     /// the call it wraps (`export default connect(Foo)` is `Foo`).
     #[serde(default)]
     pub default_name: Option<String>,
+    /// Python: what the cross-file Python queries read (W-185).
+    #[serde(default)]
+    pub py: Option<PyFacts>,
+    /// JS/TS: the words of every static JSX `className` / `class` string
+    /// (W-199, `sheets.rs`).
+    #[serde(default)]
+    pub class_uses: Vec<ClassUse>,
+    /// A stylesheet's imports, custom properties and `var()` reads (W-199).
+    #[serde(default)]
+    pub sheet: Option<crate::sheets::SheetFacts>,
+    /// JS and HTML: every `--name` written in the file, which may set a
+    /// custom property at run time (W-199).
+    #[serde(default)]
+    pub props_set: Vec<String>,
+    /// HTML: styles the graph cannot read: an inline `<style>` or a
+    /// `<link>` to another host (W-199).
+    #[serde(default)]
+    pub markup_opaque: bool,
+}
+
+/// A class written in a static string of a JSX `className` (or `class`)
+/// attribute (W-199).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClassUse {
+    pub name: String,
+    /// The word, in the file.
+    pub span: Span,
 }
 
 /// The facts of one file, or `None` for a language the graph doesn't read.
@@ -233,12 +310,20 @@ pub fn extract(language: Language, text: &str) -> Option<FileFacts> {
         FactLang::Js | FactLang::Python => {
             let model = codelaw_semantic::build(language, &root, text)?;
             Extractor { text, root: node, m: &model, f: &mut f, python: lang == FactLang::Python }.run();
+            if lang == FactLang::Js {
+                jsx_classes(node, text, &mut f);
+                f.props_set = custom_names(text);
+            }
         }
         FactLang::Css => {
             css(node, text, &mut f);
             f.module = Some(crate::modules::scan(text, language == Language::Scss));
+            f.sheet = Some(crate::sheets::scan(text, language == Language::Scss));
         }
-        FactLang::Html => html(text, &mut f),
+        FactLang::Html => {
+            html(text, &mut f);
+            f.props_set = custom_names(text);
+        }
     }
     f.class_tokens.sort();
     f.class_tokens.dedup();
@@ -354,6 +439,7 @@ impl<'a> Extractor<'a> {
         }
         self.walk(self.root);
         if self.python {
+            self.py_facts();
             for n in named_children(self.root) {
                 match n.kind() {
                     "if_statement" => {
@@ -460,6 +546,14 @@ impl<'a> Extractor<'a> {
             }
             if c.contains("@keep") || c.contains("codelaw: keep") {
                 decl.tags.push("keep".into());
+            }
+            if !self.python {
+                // Biome's visibility tags (W-199): a tag, not a prefix of a longer one.
+                for (tag, name) in [("@private", "private"), ("@package", "package")] {
+                    if jsdoc_tag(c, tag) {
+                        decl.tags.push(name.into());
+                    }
+                }
             }
             if let Some(i) = c.find("@deprecated") {
                 let rest = &c[i + "@deprecated".len()..];
@@ -611,8 +705,88 @@ impl<'a> Extractor<'a> {
                 _ => Vec::new(),
             };
             let members = if local.is_some() { self.members(&uses, &expected) } else { Some(Vec::new()) };
-            self.f.imports.push(ImportFact { source: i.source.clone(), kind, local, span: (i.start, i.end), uses, members, type_only: i.type_only });
+            let (guarded, type_checking, stmt) = if self.python { self.import_context(i.start, i.end) } else { (false, false, (i.start, i.end)) };
+            self.f.imports.push(ImportFact { source: i.source.clone(), kind, local, span: (i.start, i.end), uses, members, type_only: i.type_only, guarded, type_checking, stmt });
         }
+    }
+
+    /// Whether a Python import sits in a guard Pylint ignores an import
+    /// failure under (`guarded`), and in an `if TYPE_CHECKING:` branch
+    /// (`type_checking`), and the statement that holds it.
+    fn import_context(&self, start: usize, end: usize) -> (bool, bool, Span) {
+        let (mut guarded, mut type_checking, mut stmt) = (false, false, (start, end));
+        let Some(mut child) = self.root.descendant_for_byte_range(start, end) else { return (false, false, stmt) };
+        while let Some(parent) = child.parent() {
+            match parent.kind() {
+                "import_statement" | "import_from_statement" | "future_import_statement" => stmt = (parent.start_byte(), parent.end_byte()),
+                "try_statement" if parent.child_by_field_name("body").is_some_and(|b| b.id() == child.id()) => {
+                    guarded |= named_children(parent).into_iter().any(|h| {
+                        if !matches!(h.kind(), "except_clause" | "except_group_clause") {
+                            return false;
+                        }
+                        let kids = named_children(h);
+                        let head_end = kids.last().filter(|b| b.kind() == "block").map_or(h.end_byte(), |b| b.start_byte());
+                        let head = &self.text[h.start_byte()..head_end];
+                        let words: Vec<&str> = head.split(|c: char| !c.is_alphanumeric() && c != '_').filter(|w| !w.is_empty() && *w != "except" && *w != "as").collect();
+                        // A bare `except:` has no words.
+                        words.is_empty() || words.iter().any(|w| matches!(*w, "ImportError" | "ModuleNotFoundError" | "Exception" | "BaseException"))
+                    });
+                }
+                "if_statement" if !matches!(child.kind(), "else_clause" | "elif_clause") => {
+                    let cond = parent.child_by_field_name("condition").map(|c| self.t(c)).unwrap_or_default();
+                    let is_type_checking = cond == "TYPE_CHECKING" || cond.ends_with(".TYPE_CHECKING");
+                    if is_type_checking || cond.contains("sys.version_info") || cond.contains("sys.platform") {
+                        guarded = true;
+                    }
+                    type_checking |= is_type_checking && parent.child_by_field_name("consequence").is_some_and(|c| c.id() == child.id());
+                }
+                _ => {}
+            }
+            child = parent;
+        }
+        (guarded, type_checking, stmt)
+    }
+
+    /// The Python queries' facts (SR-PROJECT-GRAPH decision 12).
+    fn py_facts(&mut self) {
+        let m = self.m;
+        let names: Vec<String> = m.scopes[0].bindings.keys().cloned().collect();
+        let mut free: BTreeSet<String> = m.references.iter().filter(|r| r.read && r.symbol.is_none()).map(|r| r.name.clone()).collect();
+        if let Some(all) = &m.py_all {
+            // A name in `__all__` is a use of it.
+            free.extend(all.iter().cloned());
+        }
+        let open = names.iter().any(|n| n == "__getattr__" || n == "__path__") || free.contains("globals") || free.contains("vars");
+        let mut classes = Vec::new();
+        for s in m.symbols.iter().filter(|s| s.kind == SymbolKind::Class) {
+            let Some(&span) = s.decls.first() else { continue };
+            let Some(def) = self.root.descendant_for_byte_range(span.0, span.1).and_then(|n| n.parent()).filter(|p| p.kind() == "class_definition") else { continue };
+            let mut bases = Vec::new();
+            if let Some(list) = def.child_by_field_name("superclasses") {
+                for b in named_children(list) {
+                    match b.kind() {
+                        "identifier" | "attribute" => bases.push(self.t(b).split_whitespace().collect()),
+                        "subscript" => {
+                            if let Some(v) = b.child_by_field_name("value").filter(|v| matches!(v.kind(), "identifier" | "attribute")) {
+                                bases.push(self.t(v).split_whitespace().collect());
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            classes.push(PyClass { name: s.name.clone(), span, top: s.scope == 0, bases });
+        }
+        classes.sort_by_key(|c| c.span);
+        self.f.py = Some(PyFacts {
+            names,
+            all: m.py_all.clone(),
+            all_dynamic: m.py_all_dynamic,
+            open,
+            path_hack: self.text.contains("sys.path") || self.text.contains("addsitedir"),
+            free: if m.has_star_import { free.into_iter().collect() } else { Vec::new() },
+            classes,
+        });
     }
 
     /// `declare module "./x" { interface I { … } }` merges into `./x`'s
@@ -640,6 +814,9 @@ impl<'a> Extractor<'a> {
                     uses: vec![span],
                     members: Some(Vec::new()),
                     type_only: true,
+                    guarded: false,
+                    type_checking: false,
+                    stmt: span,
                 });
             }
         }
@@ -860,6 +1037,94 @@ fn unquote(s: &str) -> String {
     s.trim_matches(|c| c == '"' || c == '\'' || c == '`').to_owned()
 }
 
+/// Whether a comment carries a JSDoc tag as a whole word (`@package` is
+/// not `@packageDocumentation`).
+fn jsdoc_tag(comment: &str, tag: &str) -> bool {
+    comment.match_indices(tag).any(|(i, _)| {
+        let after = comment[i + tag.len()..].chars().next();
+        !after.is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
+    })
+}
+
+/// Every `--name` of a script or a page (not `a--b`): it may set that
+/// custom property at run time.
+fn custom_names(text: &str) -> Vec<String> {
+    let b = text.as_bytes();
+    let mut out = Vec::new();
+    let mut i = 0;
+    while let Some(at) = text[i..].find("--") {
+        let s = i + at;
+        i = s + 2;
+        let ident = |c: u8| c.is_ascii_alphanumeric() || c == b'-' || c == b'_';
+        if s > 0 && ident(b[s - 1]) {
+            continue;
+        }
+        let mut e = i;
+        while e < b.len() && ident(b[e]) {
+            e += 1;
+        }
+        if e > i && (b[i].is_ascii_alphabetic() || b[i] == b'_') {
+            out.push(text[s..e].to_owned());
+        }
+        i = e.max(i);
+    }
+    out.sort();
+    out.dedup();
+    out
+}
+
+/// A name that can be a class: no colon, slash or bracket, so a utility
+/// framework's `md:w-1/2` is not one.
+fn class_like(w: &str) -> bool {
+    let w = w.strip_prefix('-').unwrap_or(w);
+    w.chars().next().is_some_and(|c| c.is_ascii_alphabetic() || c == '_') && w.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
+/// The text of a string literal, or of a template with nothing
+/// interpolated, and where it starts.
+fn static_text<'t>(n: Node<'t>, text: &'t str) -> Option<(usize, &'t str)> {
+    match n.kind() {
+        "string" => {
+            let (a, b) = (n.start_byte() + 1, n.end_byte().checked_sub(1)?);
+            (a <= b).then(|| (a, &text[a..b]))
+        }
+        "template_string" if !children(n).iter().any(|c| c.kind() == "template_substitution") => {
+            let (a, b) = (n.start_byte() + 1, n.end_byte().checked_sub(1)?);
+            (a <= b).then(|| (a, &text[a..b]))
+        }
+        "jsx_expression" => static_text(named_children(n).into_iter().next()?, text),
+        _ => None,
+    }
+}
+
+/// `className="a b"`, `className={"a b"}`, `className={`a b`}` (and
+/// `class=`): the words, each at its place (W-199).
+fn jsx_classes(root: Node<'_>, text: &str, f: &mut FileFacts) {
+    let mut stack = vec![root];
+    while let Some(n) = stack.pop() {
+        if n.kind() == "jsx_attribute" {
+            let kids = named_children(n);
+            if let (Some(name), Some(value)) = (kids.first(), kids.get(1))
+                && name.kind() == "property_identifier"
+                && matches!(&text[name.byte_range()], "className" | "class")
+                && let Some((base, raw)) = static_text(*value, text)
+            {
+                let mut at = 0;
+                for w in raw.split_whitespace() {
+                    let start = raw[at..].find(w).map_or(at, |o| at + o);
+                    at = start + w.len();
+                    if class_like(w) {
+                        f.class_uses.push(ClassUse { name: w.to_owned(), span: (base + start, base + at) });
+                    }
+                }
+            }
+            continue;
+        }
+        stack.extend(children(n));
+    }
+    f.class_uses.sort_by_key(|c| c.span);
+}
+
 fn css(root: Node<'_>, text: &str, f: &mut FileFacts) {
     let mut stack = vec![root];
     while let Some(n) = stack.pop() {
@@ -895,6 +1160,8 @@ fn css(root: Node<'_>, text: &str, f: &mut FileFacts) {
 /// HTML: every word may be a class (PurgeCSS's default extractor), and
 /// `<script src>` / `<link href>` name files.
 fn html(text: &str, f: &mut FileFacts) {
+    // A style the graph cannot read: an inline `<style>`, a stylesheet of another host (W-199).
+    f.markup_opaque = text.contains("<style");
     for t in text.split(|c: char| c.is_whitespace() || matches!(c, '"' | '\'' | '<' | '>' | '=' | '{' | '}' | '(' | ')' | ',' | ';' | '`')) {
         if !t.is_empty() && t.len() <= 100 {
             f.class_tokens.push(t.to_owned());
@@ -913,6 +1180,8 @@ fn html(text: &str, f: &mut FileFacts) {
                     let v = if q == '"' || q == '\'' { v[1..].split(q).next().unwrap_or_default() } else { v.split_whitespace().next().unwrap_or_default() };
                     if !v.is_empty() && !v.contains("://") && !v.starts_with("//") {
                         f.links.push(v.to_owned());
+                    } else if tag == "<link" && key == "href=" && (attrs.contains("stylesheet") || v.split(['?', '#']).next().is_some_and(|x| x.ends_with(".css"))) {
+                        f.markup_opaque = true;
                     }
                 }
             }

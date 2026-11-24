@@ -1,4 +1,4 @@
-//! The test rules of new code (W-71; SR-PROJECT-GRAPH decision 9,
+//! The test rules of new code (W-71; SR-MODULE-GRAPH decision 9,
 //! SR-BASELINE decision 12): `graph/untested-function` — a new or edited
 //! JS, TS or Python function that no test file reaches — and
 //! `graph/function-coverage` — one whose lines an lcov report shows under

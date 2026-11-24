@@ -26,7 +26,7 @@ work/.NOW.md.tmp
 .claude/.disk-usage
 .claude/.disk-nudged
 
-# lockmaster kit — runtime state its hooks write (lockmaster W-09)
+# disk-budget hook — runtime state
 .claude/.disk-approved
 
 .DS_store

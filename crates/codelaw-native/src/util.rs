@@ -23,22 +23,31 @@ pub fn has_token(n: Node<'_>, token: &str) -> bool {
 
 /// Whether a statement always leaves the block it is in.
 pub fn exits(node: &Node<'_>) -> bool {
+    exits_with(node, &|_| false)
+}
+
+/// [`exits`], where `extra` names statements that also leave the block (a
+/// `process.exit()` read as a `throw`).
+pub fn exits_with(node: &Node<'_>, extra: &dyn Fn(&Node<'_>) -> bool) -> bool {
+    if extra(node) {
+        return true;
+    }
     match node.kind() {
         "return_statement" | "throw_statement" | "break_statement" | "continue_statement" => true,
-        "statement_block" => named_children(*node).iter().any(exits),
+        "statement_block" => named_children(*node).iter().any(|c| exits_with(c, extra)),
         "if_statement" => {
             let consequence = node.child_by_field_name("consequence");
             let alternative = node.child_by_field_name("alternative").and_then(|a| a.named_child(0));
-            matches!((consequence, alternative), (Some(c), Some(a)) if exits(&c) && exits(&a))
+            matches!((consequence, alternative), (Some(c), Some(a)) if exits_with(&c, extra) && exits_with(&a, extra))
         }
         "try_statement" => {
             let finally = node.child_by_field_name("finalizer").and_then(|f| f.child_by_field_name("body").or(Some(f)));
-            if finally.is_some_and(|f| exits(&f)) {
+            if finally.is_some_and(|f| exits_with(&f, extra)) {
                 return true;
             }
             let body = node.child_by_field_name("body");
             let handler = node.child_by_field_name("handler").and_then(|h| h.child_by_field_name("body"));
-            body.is_some_and(|b| exits(&b)) && handler.is_none_or(|h| exits(&h))
+            body.is_some_and(|b| exits_with(&b, extra)) && handler.is_none_or(|h| exits_with(&h, extra))
         }
         _ => false,
     }

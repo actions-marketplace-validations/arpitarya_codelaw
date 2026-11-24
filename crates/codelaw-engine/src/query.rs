@@ -74,6 +74,9 @@ pub struct RuleWhy {
     /// its source (SR-RULE-FORMAT decision 2c), for `--for`'s file, else
     /// the project root.
     pub fix_target: Option<(String, String)>,
+    /// The rule's `finding_target:` and the target it meets or misses, with
+    /// its source (SR-RULE-FORMAT decision 2d), as `fix_target` is.
+    pub finding_target: Option<(String, String)>,
     pub for_file: Option<WhyForFile>,
 }
 
@@ -202,6 +205,18 @@ impl Project {
         Some((t.label(), got))
     }
 
+    /// `rules --why`'s `finding target:` line.
+    fn finding_target_why(&self, r: &LoadedRule, abs: &Path) -> Option<(String, String)> {
+        let t = r.rule.finding_target.as_ref()?;
+        let p = self.python_target(abs, Some(r.rule.id.as_str()));
+        let got = match p.value {
+            Some(v) if t.admits(&v) => format!("python {} ({}): the rule runs", crate::targets::dotted(&v), p.source),
+            Some(v) => format!("python {} ({}): the rule is quiet", crate::targets::dotted(&v), p.source),
+            None => format!("{}: the rule is quiet until the target is known; `[targets] python` in codelaw.toml, or `requires-python`, turns it on where the range holds", p.source),
+        };
+        Some((t.label(), got))
+    }
+
     /// The rules whose `auto` fix waits for `codelaw fix` in `abs`: save
     /// and the agent hook leave them (SR-LAW-4 decision 12).
     pub(crate) fn on_edit_held(&self, abs: &Path) -> std::collections::BTreeSet<String> {
@@ -240,6 +255,7 @@ impl Project {
             on_edit: self.on_edit(&r, &self.config.layers_for(self.root())),
             multi_file: self.multi_file(&r, &self.config.layers_for(self.root())),
             fix_target: self.fix_target_why(&r, &self.root().join("_")),
+            finding_target: self.finding_target_why(&r, &self.root().join("_")),
             for_file: None,
         };
         let lowered = |layers: &[codelaw_config::Layer]| -> Option<(String, String)> {
@@ -258,6 +274,7 @@ impl Project {
         why.on_edit = self.on_edit(&r, &layers);
         why.multi_file = self.multi_file(&r, &layers);
         why.fix_target = self.fix_target_why(&r, &abs);
+        why.finding_target = self.finding_target_why(&r, &abs);
         let set_by = layers
             .iter()
             .filter(|l| l.rules.contains_key(id))

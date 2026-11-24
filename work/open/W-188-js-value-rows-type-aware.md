@@ -5,8 +5,8 @@ description: "Arpit, 2026-11-09 (voice docket): the JS rows that need a value's 
 item: W-188
 filed: 2026-11-09
 filed_by: "Arpit (Cowork, Opus 5.5)"
-updated: 2026-11-09
-updated_by: "Arpit (Cowork, Opus 5.5)"
+updated: 2026-11-24
+updated_by: "Arpit (Cowork, Opus 5.5): the voice docket's ruling written back"
 ball: agent
 ---
 
@@ -36,7 +36,7 @@ Fifteen of the sixteen rows were built on 2026-11-09 (W-139 slice 29) from what 
 
 ## Blockers
 
-🟣 waits on **W-105** (its RC re-pin, 2026-11-10).
+🟣 waits on **W-105** (its re-pin; ruled 2026-11-24 to be TypeScript 7.1 GA, not the RC). Checked 2026-11-15: the 7.1 RC is not on npm yet (newest is `7.1.0-beta`, the current pin), so W-105's re-pin has not happened and this still waits. The helper itself is built (W-105 steps 1–5), so the first slice is not technically blocked on the RC; start it as a preview on the beta when W-105 closes, or earlier if the decider says so.
 
 ## Record affected
 

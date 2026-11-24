@@ -16,7 +16,7 @@ mod tokens;
 pub use ast_grep_core::Language as AgLanguage;
 pub use functions::{Change, Function, classify, functions, has_functions};
 pub use grammar::Grammar;
-pub use regions::{Hole, Region, RegionOptions, regions};
+pub use regions::{Hole, JsdocExample, Region, RegionOptions, jsdoc_examples, regions};
 pub use tokens::{Token, same_tokens, token_stream};
 
 use ast_grep_core::tree_sitter::{LanguageExt, StrDoc};

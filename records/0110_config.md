@@ -51,7 +51,7 @@ remap = { error = "warn" }
 "js/no-console" = "error"
 
 [format]   # SR-FORMATTER      [lint]     # SR-LINTER
-[graph]    # SR-PROJECT-GRAPH [baseline] # SR-BASELINE
+[graph]    # SR-MODULE-GRAPH [baseline] # SR-BASELINE
 [adapters] # SR-LINTER        [agents]   # SR-AGENT-SURFACES
 [cache]    # SR-CACHE        [files]    # SR-ARCHITECTURE (discovery, encoding, size)
 [daemon]   # SR-ARCHITECTURE  [lsp]      # SR-ARCHITECTURE
@@ -59,15 +59,15 @@ remap = { error = "warn" }
 [deprecation] # SR-BASELINE (the policy of a symbol marked deprecated in code)
 [exceptions]  # SR-BASELINE (dated exceptions: require_expiry, warn_days)
 [deps]        # SR-RULE-PACKS (the deps pack: its rules, snapshot, advisory sources and agent setting)
-[css]         # SR-PROJECT-GRAPH (CSS Modules: which stylesheets, and the bundler's class-name mapping)
-[coverage]    # SR-PROJECT-GRAPH (the test rules of new code; [coverage.ignore] is the old spelling of [codelawignore])
+[css]         # SR-MODULE-GRAPH (CSS Modules: which stylesheets, and the bundler's class-name mapping)
+[coverage]    # SR-MODULE-GRAPH (the test rules of new code; [coverage.ignore] is the old spelling of [codelawignore])
 [codelawignore] # SR-BASELINE (what every `.codelawignore` line must carry, and a line's defaults)
 [spell]       # SR-SPELL (the spell pack's locale, accepted words and words file)
 [todo]        # SR-CONFIG (what a TODO-style comment must carry: decision 11a)
 [tests]       # SR-CONFIG (`[tests.skip]`: what a skipped test must carry: decision 11a)
 [reviews]     # SR-AGENT-SURFACES (the codelaw-rules-from-reviews skill's platform and thresholds; validated, read by no engine code)
 [codeowners]  # SR-RULE-PACKS (CODEOWNERS coverage: the file's path, patterns that need no owner)
-[flags]       # SR-PROJECT-GRAPH (feature-flag expiry: accessors, SDK presets, inline markers, warn_days)
+[flags]       # SR-MODULE-GRAPH (feature-flag expiry: accessors, SDK presets, inline markers, warn_days)
 [packs]       # SR-PACK-LOOKUP (where rule packs are found: order, node_modules, venv)
 [providers]   # SR-RULE-PACKS (what a run does when a provider gives no table; each provider's settings: decision 19)
 [commits]     # SR-CONFIG (what a commit message must look like: decision 11b)
@@ -135,9 +135,10 @@ Configuration keys were scattered across six records. The decider asked for one 
 
    Sizes are bytes or a string such as `"1 MiB"` or `"512MB"`; durations are seconds or a string such as `"5s"` or `"500ms"`; a number of days (`[deps]`'s ages) is an integer or a string such as `"7d"` or `"2w"`.
 
-   `extends` takes first-party presets as `codelaw:<namespace>/<preset>`, resolved from the installed rule pack, and team packs as `npm:`, `pypi:` or `path:` ([SR-RULE-PACKS](0101_rule-packs.md) decisions 4 and 11). One preset has no namespace: `codelaw:tests` is the engine's own and turns on the test rules of new code ([SR-PROJECT-GRAPH](0103_project-graph.md) decision 9); no pack resolves it.
+   `extends` takes first-party presets as `codelaw:<namespace>/<preset>`, resolved from the installed rule pack, and team packs as `npm:`, `pypi:` or `path:` ([SR-RULE-PACKS](0101_rule-packs.md) decisions 4 and 11). One preset has no namespace: `codelaw:tests` is the engine's own and turns on the test rules of new code ([SR-MODULE-GRAPH](0122_module-graph.md) decision 9); no pack resolves it.
 
    Each `[section]` belongs to the record named beside it in §1, and that record states its keys. A record adding a key adds it to the schema in the same change. `[adapters]`, `[agents]`, `[daemon]`, `[lsp]`, `[deprecation]`, `[exceptions]`, `[deps]`, `[css]`, `[coverage]`, `[spell]`, `[todo]`, `[tests]`, `[reviews]`, `[codeowners]`, `[flags]`, `[packs]` and `[providers]` are validated by the loader like `[fix]` and `[lint]` — `[reviews]` only that: no engine code reads it, a skill does ([SR-AGENT-SURFACES](0102_agent-surfaces.md) decision 10; W-133, 2026-10-30); `[format]`, `[graph]` and `[baseline]` are still read as tables. **`[packs]` names folders** (W-155, 2026-10-30): `node_modules` and `venv`, relative to the root config's folder; a set folder that is missing is a load error naming it ([SR-PACK-LOOKUP](0118_pack-lookup.md) decisions 6–7); the loader parses and checks the section in `crates/codelaw-config/src/packs.rs`, and `config --print` traces its keys and the places they resolve to (SR-PACK-LOOKUP decision 8). **One key names a file the loader reads:** `[spell] words_file` (default `.codelaw/spell/words.txt`, relative to the root config's folder; W-112, 2026-10-28): its words join `[spell] words`, a set path that is missing is a load error naming it, and a missing default is none ([SR-SPELL](0116_spell.md) decision 7).
+   `[lint]`'s keys are [SR-LINTER](0106_linter.md)'s: `tagged_templates`, `ignore_aliases` and, since W-178 (2026-11-19), `jsdoc_examples` (boolean, off by default; `codelaw config --trace` shows it as `lint.jsdoc_examples`). Root config only.
 4. **Precedence, last wins:**
    1. Built-in defaults.
    2. `.editorconfig` (formatter keys only).
@@ -203,7 +204,7 @@ Configuration keys were scattered across six records. The decider asked for one 
 11f. **`[targets]`: the versions a project supports, an input to fixes** (W-163, the decider, 2026-11-05, as decision 11e; [`save-behaviour-and-targets.md`](../work/proposals/save-behaviour-and-targets.md) §2). This record owns the section; §1's map and the schema gain it when it is built. Two keys, `python` and `browsers`, each also allowed as `targets.python` / `targets.browsers` in a rule entry and in a `[scope.<name>]`.
    - **Python**, highest first: a rule entry's `targets.python`; a scope's; `[targets] python = "3.10"`; the **lower bound** of `project.requires-python` in the nearest `pyproject.toml` above the file (`>=3.10`, `~=3.10`, `>3.9`, `==3.11.*` give one; `<4` or `*` gives none), read with the parser `[deps.runtime]` already uses; otherwise unknown. `.python-version` is not a source. `codelaw migrate` copies Ruff's `target-version` into `[targets] python`.
    - **Browsers:** explicit minimums only — `browsers = ["chrome >= 111", "firefox >= 113", "safari >= 16.4"]`, names from the closed set `chrome`, `edge`, `firefox`, `safari`, `ios_saf`, `samsung`. A `browserslist` in `package.json` or a `.browserslistrc` counts only when every query is `<browser> >= <version>`; any other query leaves the target unknown, and `config --print` says why. No caniuse or MDN data is read: both stay refused under [L2](0004_LAW-2-foss-dependencies.md); the feature versions come from codelaw's own cited table ([SR-RULE-FORMAT](0112_rule-format.md) decision 2c).
-   - **Unknown target:** a target-gated fix is `suggest`, never `auto` ([SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) decision 3), and the finding names the line that would make it `auto`.
+   - **Unknown target:** a target-gated fix is `suggest`, never `auto` ([SR-LAW-4](0006_LAW-4-every-rule-has-a-fix.md) decision 3), and the finding names the line that would make it `auto`. A rule with `finding_target:` ([SR-RULE-FORMAT](0112_rule-format.md) decision 2d) is quiet where the target is unknown or outside its range.
    - `config --print` and `rules --why` show each resolved target and its source. Built: yes (W-166 step 2, 2026-11-05): `RawTargets` in `[targets]`, `RawScope.targets` and `RuleSetting::Full.targets`, validated at load (exit 2); `Config::python_target` / `browsers_target` for the config's sources, `Project::python_target` / `browsers_target` (`crates/codelaw-engine/src/targets.rs`) for `pyproject.toml` and `browserslist`, the lower bound from `codelaw_native::deps::pep440::lower_bound` (the PEP 440 parser the `deps` rules use); the file's targets in its cache key; `config --print` prints `targets.python` and `targets.browsers`; `codelaw migrate ruff` writes `target-version` as `[targets] python`; `crates/codelaw-cli/tests/targets.rs`.
 
 11g. **`multi_file`: whether a fix may edit several files, and how** (W-162, the decider, 2026-11-05). `[fix] multi_file` and a rule entry's `multi_file` (in `[rules]`, a scope or a profile, as decision 11d) take `"auto"` (the default), `"suggest"` or `"off"`; the rule entry wins. What each value does, and the five safeguards no setting changes, are [SR-MULTI-FILE-FIXES](0119_multi-file-fixes.md) decision 3. Built: yes (W-162, 2026-11-08): `[fix] multi_file` (W-166 step 0) and `RuleSetting::Full.multi_file` load and are in `codelaw.schema.json`; `Project::multi_file` resolves the last rule entry naming it, then `[fix] multi_file`, then `auto`, with its source; a finding whose fix edits another file is made `suggest` or `manual` (`restructure`) there (`lint.rs`); `config --print` prints `fix.multi_file`, `rules --why` a `multi-file:` line and `set_by`'s `multi_file = …`; `crates/codelaw-cli/tests/multi_file.rs`.

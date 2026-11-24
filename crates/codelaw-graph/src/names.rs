@@ -1,5 +1,5 @@
 //! The `graph:` queries that read what another module exports
-//! (SR-PROJECT-GRAPH decision 6, W-175): an import against its target's
+//! (SR-MODULE-GRAPH decision 6, W-175): an import against its target's
 //! export names, the target's default export's own name, a JSDoc
 //! `@deprecated` on an export, `export *` conflicts, import cycles, and
 //! modules with no exports or exports nothing imports.
@@ -32,6 +32,9 @@ pub enum ImportTarget {
     RenameDefault,
     /// `deprecated: jsdoc`: a name the module marks `@deprecated`, imported or used.
     Deprecated,
+    /// `visibility: restricted`: a name the module marks `@private` or `@package`,
+    /// imported from outside the folders the tag allows (W-199).
+    Private,
 }
 
 /// The export names of a module, `export *` followed.
@@ -99,7 +102,7 @@ impl<'g> Cache<'g> {
     }
 }
 
-fn finding(file: &str, span: Span, captures: &[(&str, &str)], message: Option<String>, edits: Vec<TextEdit>) -> GraphFinding {
+pub(crate) fn finding(file: &str, span: Span, captures: &[(&str, &str)], message: Option<String>, edits: Vec<TextEdit>) -> GraphFinding {
     GraphFinding { file: file.to_owned(), span, captures: captures.iter().map(|(k, v)| ((*k).to_owned(), (*v).to_owned())).collect(), edits, uncertain: None, message }
 }
 
@@ -210,6 +213,7 @@ pub fn names(rule: &GraphRule, graph: &Graph, languages: &[Language], check: Imp
                 (ImportTarget::Deprecated, kind) => {
                     deprecated_import(graph, &mut cache, &m.path, imp, kind, &target, &mut out);
                 }
+                (ImportTarget::Private, kind) => private_import(graph, &m.path, imp, kind, &target, &mut out),
                 _ => {}
             }
         }
@@ -244,6 +248,43 @@ fn deprecation(graph: &Graph, target: &str, name: &str) -> Option<String> {
     let (module, decl) = find_decl(graph, &Target::File(target.to_owned()), name, 0)?;
     let d = graph.modules.get(&module)?.facts.decls.iter().find(|d| d.name == decl)?;
     d.deprecated.clone()
+}
+
+/// Whether a file may import a name its module tags `@private` (only from
+/// the module's own folder) or `@package` (from it and its subfolders).
+fn allowed_importer(from: &str, module: &str, private: bool) -> bool {
+    let (dir, here) = (crate::resolve::dirname(module), crate::resolve::dirname(from));
+    here == dir || (!private && (dir.is_empty() || here.starts_with(&format!("{dir}/"))))
+}
+
+/// `visibility: restricted` (W-199): a named, default or namespace-member
+/// import of an export whose declaration says `@private` or `@package`, from
+/// a file the tag does not allow. Index files import freely: a folder's
+/// `index` is where it chooses what to show.
+fn private_import(graph: &Graph, from: &str, imp: &crate::facts::ImportFact, kind: &ImportKind, target: &str, out: &mut Vec<GraphFinding>) {
+    if file_name(from).split('.').next() == Some("index") {
+        return;
+    }
+    let mut judge = |name: &str, span: Span| {
+        let Some((module, decl)) = find_decl(graph, &Target::File(target.to_owned()), name, 0) else { return };
+        let Some(d) = graph.modules.get(&module).and_then(|m| m.facts.decls.iter().find(|d| d.name == decl)) else { return };
+        let private = d.tags.iter().any(|t| t == "private");
+        if !(private || d.tags.iter().any(|t| t == "package")) || allowed_importer(from, &module, private) {
+            return;
+        }
+        let tag = if private { "@private" } else { "@package" };
+        out.push(finding(from, span, &[("NAME", name), ("TAG", tag), ("FILE", file_name(&module))], None, Vec::new()));
+    };
+    match kind {
+        ImportKind::Named(n) => judge(n, imp.span),
+        ImportKind::Default => judge("default", imp.span),
+        ImportKind::Namespace => {
+            for mem in imp.members.iter().flatten() {
+                judge(&mem.name, mem.span);
+            }
+        }
+        _ => {}
+    }
 }
 
 fn deprecated_message(note: &str) -> String {
@@ -328,16 +369,30 @@ pub fn export_star(graph: &Graph, languages: &[Language]) -> Vec<GraphFinding> {
 
 /// `graph: { cycle: … }`: an import whose target imports its way back.
 pub fn cycles(graph: &Graph, languages: &[Language], forms: &[SpecForm]) -> Vec<GraphFinding> {
-    // Edges between modules of the project, from the specifiers written.
+    // Edges between modules of the project, from the specifiers written
+    // (JavaScript) or the imports (Python, `pynames::import_edges`).
     let mut index: BTreeMap<&str, usize> = BTreeMap::new();
     let mut paths: Vec<&str> = Vec::new();
-    for m in graph.modules.values().filter(|m| m.facts.lang == Some(FactLang::Js)) {
+    // An import never crosses languages, so only the languages the rule names are walked.
+    let (want_js, want_py) = (languages.iter().any(|l| l.is_js_family()), languages.contains(&Language::Python));
+    for m in graph.modules.values().filter(|m| (want_js && m.facts.lang == Some(FactLang::Js)) || (want_py && m.facts.lang == Some(FactLang::Python))) {
         index.insert(&m.path, paths.len());
         paths.push(&m.path);
     }
+    let python = |p: &str| graph.modules[p].facts.lang == Some(FactLang::Python);
     let mut edges: Vec<Vec<(usize, usize, Span)>> = vec![Vec::new(); paths.len()];
     for (i, p) in paths.iter().enumerate() {
         let m = &graph.modules[*p];
+        if python(p) {
+            if forms.contains(&SpecForm::Import) {
+                for (t, span) in crate::pynames::import_edges(graph, m) {
+                    if let Some(&t) = index.get(t.as_str()) {
+                        edges[i].push((t, 0, span));
+                    }
+                }
+            }
+            continue;
+        }
         for s in m.facts.specifiers.iter().filter(|s| forms.contains(&s.form) && !s.type_only) {
             if s.form == SpecForm::Import {
                 let mut of = m.facts.imports.iter().filter(|x| x.source == s.spec).peekable();
@@ -364,6 +419,13 @@ pub fn cycles(graph: &Graph, languages: &[Language], forms: &[SpecForm]) -> Vec<
             }
             // The way back, shortest first.
             let route = way_back(&edges, &component, t, i);
+            if python(p) {
+                let mut names: Vec<String> = vec![crate::pynames::dotted(graph, p)];
+                names.extend(route.iter().map(|&x| crate::pynames::dotted(graph, paths[x])));
+                let way = names.join(" -> ");
+                out.push(finding(p, span, &[("ROUTE", &way)], Some(format!("Cyclic import ({way})")), Vec::new()));
+                continue;
+            }
             let names: Vec<&str> = route.iter().map(|&x| file_name(paths[x])).collect();
             let message = if names.len() > 1 { format!("Dependency cycle via {}", names.join(" -> ")) } else { "Dependency cycle detected".to_owned() };
             out.push(finding(p, span, &[("ROUTE", &names.join(" -> "))], Some(message), Vec::new()));

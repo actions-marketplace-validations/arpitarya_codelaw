@@ -7,6 +7,7 @@ fix: manual
 fix_reason: "replacing a package, or accepting its licence, is a legal and product decision no tool can make"
 fix_exception: value
 stability: preview
+ported_from: [biome/suspicious/noUntrustedLicenses]
 since: 0.5.0
 ---
 

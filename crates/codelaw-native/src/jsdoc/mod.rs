@@ -6,13 +6,14 @@
 //! the tag names. Nothing here depends on a library (L11).
 
 pub(crate) mod block;
+mod examples;
 mod imports;
 mod layout;
 mod libtypes;
 mod names;
 mod prose;
 mod tags;
-mod target;
+pub(crate) mod target;
 mod typerules;
 #[cfg(test)]
 mod tests;
@@ -70,6 +71,7 @@ macro_rules! jsdoc_rule {
 pub(super) use jsdoc_rule;
 
 pub(crate) static RULES: &[&dyn NativeRule] = &[
+    &examples::CheckExamples,
     &names::CheckTagNames,
     &names::CheckParamNames,
     &names::CheckPropertyNames,

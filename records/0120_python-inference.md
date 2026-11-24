@@ -8,7 +8,6 @@ status: accepted
 date: 2026-11-08
 feature: "Python scope, flow, class-hierarchy and value-type rules"
 owns:
-  - crates/codelaw-semantic/src/py_flow.rs
   - crates/codelaw-native/src/py_scope.rs
   - crates/codelaw-native/src/py_flow.rs
   - crates/codelaw-native/src/py_classes.rs
@@ -60,7 +59,7 @@ flowchart LR
 
 ### Context
 
-[SR-TYPES](0117_types.md) asks a TypeScript the project already has. Python offers no such thing: the per-file model of [SR-ARCHITECTURE](0108_architecture.md) decision 15a knows which binding a name resolves to, not what a value is, which class derives from which, what a call returns, or whether a name is bound on this path. Round one of the Ruff and Pylint port (W-139) therefore left 38 rows unwritten rather than fake them from syntax, and filed them as [W-174](../work/open/W-174-python-inference.md), each with its question. Upstream behaviour is Ruff 0.16.9 (source and fixtures, MIT) and Pylint 4.1.3 (behaviour from its functional tests only, never its code; [L2](0004_LAW-2-foss-dependencies.md)).
+[SR-TYPES](0117_types.md) asks a TypeScript the project already has. Python offers no such thing: the per-file model of [SR-SEMANTIC-MODEL](0123_semantic-model.md) knows which binding a name resolves to, not what a value is, which class derives from which, what a call returns, or whether a name is bound on this path. Round one of the Ruff and Pylint port (W-139) therefore left 38 rows unwritten rather than fake them from syntax, and filed them as [W-174](../archive/open/W-174-python-inference.md), each with its question. Upstream behaviour is Ruff 0.16.9 (source and fixtures, MIT) and Pylint 4.1.3 (behaviour from its functional tests only, never its code; [L2](0004_LAW-2-foss-dependencies.md)).
 
 ### Decision
 
@@ -70,12 +69,12 @@ flowchart LR
    | group | layer | where | what it knows |
    |---|---|---|---|
    | scope facts | queries on the per-file model | `codelaw-semantic` `SemanticModel::lookup`, `nonlocal_bound`, `scope_starting_at` | which binding a name read at a byte offset finds (own scope only before that offset, enclosing functions and the module whole, class scopes skipped); whether an enclosing function binds a `nonlocal` name; the scope of a `def` or `class` |
-   | flow | `codelaw_semantic::python_flow`, a pass over **one** module or function | `crates/codelaw-semantic/src/py_flow.rs` | for each read of a name the scope binds: bound on every path, on some paths (and whether an `if` or a possibly-empty loop made the difference), or on none |
+   | flow | `codelaw_semantic::python_flow`, a pass over **one** module or function ([SR-PY-FLOW](0124_python-flow.md)) | `crates/codelaw-semantic/src/py_flow.rs` | for each read of a name the scope binds: bound on every path, on some paths (and whether an `if` or a possibly-empty loop made the difference), or on none |
    | class hierarchy | a class table the rule builds from the tree | `crates/codelaw-native/src/py_classes.rs` | the classes of **this file**, their bases by name, their methods and decorators, the C3 linearization over them; a base the file imports is opaque |
    | value type | literal typing | `crates/codelaw-native/src/py_values.rs` | the type a literal, a `dict()`/`set()` call, a comprehension or an annotation (`dict[...]`, `set[...]`) gives a name bound once in its scope |
 
-3. **The flow pass (`python_flow`).** It walks the statements of the scope in execution order. It keeps, per name, *bound*, *bound on some paths* or *absent*; branches of `if`/`elif`/`match` join; a loop is walked twice (the second from the join of entry and the first walk's end); a `try` handler starts from the names the body binds with a chance the binding never ran (a name whose first binding is a literal assignment that opens the body is safe); `return`, `raise`, `break`, `continue`, `sys.exit()` and a call to a function this file annotates `NoReturn` or `Never` end a path. A condition `a and (b := f())` binds `b` where it held. A later `if` with the same condition text as the one that bound a name is not reported (the two agree). Nested functions, lambdas, class bodies and comprehension bodies are evaluated elsewhere and not read; a scope with a wildcard import is not analysed; a module-level read of a builtin before the module binds it finds the builtin. It decides no condition's value: `if FALSE:` is a branch like any other, which is where it parts from Pylint's inference, and each rule's page says so.
-4. **The class table.** Built by the rule from the file's `class_definition` nodes the first time a class rule fires on the file. Bases are looked up by name among the file's module-level classes; a base the file imports, a call, or a subscript makes the class's ancestry *open*, and a rule that needs the whole ancestry skips it. Cross-file bases resolve through the project graph ([SR-PROJECT-GRAPH](0103_project-graph.md)): not built; the rows that need them stay open (decision 7). A parameter list is read the way the grammar nests it: `*args: T` and `**kwargs: T` are a `typed_parameter` wrapping the splat, and count as the variadic, never as a positional parameter (the first corpus run found Flask's `**kwargs: t.Any` read as one).
+3. **The flow pass (`python_flow`)** is [SR-PY-FLOW](0124_python-flow.md)'s: how it walks a scope, what ends a path, what it will not decide. This record names it as the second layer and owns the rules that read it (decision 7).
+4. **The class table.** Built by the rule from the file's `class_definition` nodes the first time a class rule fires on the file. Bases are looked up by name among the file's module-level classes; a base the file imports, a call, or a subscript makes the class's ancestry *open*, and a rule that needs the whole ancestry skips it. Cross-file bases resolve through the project graph ([SR-MODULE-GRAPH](0122_module-graph.md)): not built; the rows that need them stay open (decision 7). A parameter list is read the way the grammar nests it: `*args: T` and `**kwargs: T` are a `typed_parameter` wrapping the splat, and count as the variadic, never as a positional parameter (the first corpus run found Flask's `**kwargs: t.Any` read as one).
 5. **Cost ([L8](0010_LAW-8-performance-budgets.md)).** Nothing here runs unless a rule that needs it is on. The model gains **methods only** — no field is filled while building it, so `check_cold_10k` is unchanged when none of these rules is on. The flow pass runs per scope when one of the three rules that read it fires on that scope; a rule that needs the class table builds it from the tree on that file. The rules are `preview`, so no default run turns them on. The first measured cost is recorded in W-139 once the corpus has run.
 6. **No dependency.** The layers use `tree-sitter` and the per-file model already in the workspace. No type checker, no stub package, no network ([L5](0007_LAW-5-no-model-in-the-engine.md)).
 7. **The rows, by layer.** Built (W-174): scope facts — `nonlocal-without-binding` (PLE0117), `builtin-attribute-shadowing` (A003), `missing-f-string-syntax` (RUF027), `used-dummy-variable` (RUF052), `unused-private-member`; flow — `used-before-assignment`, `possibly-used-before-assignment`, `undefined-loop-variable`, `possibly-unused-variable`, `looping-through-iterator`, `contextmanager-generator-missing-cleanup`; class hierarchy, in-file — the rows listed in W-174's item; value type — the rows listed there. **Second pass (W-174b, 2026-11-09):** `signature-differs`, `access-member-before-definition` (the class table gains each method's `self.x` reads and assignments, in source order), `non-iterator-returned`, `not-async-context-manager`, `redefined-variable-type` (literal typing plus a per-scope flow join: a branch starts from the state before it, and after it a name holds what the last branch that assigned it gave it), `invalid-format-index` and `missing-format-attribute` (a `str.format` field read against a literal's shape and the attribute table of CPython's builtin types). **Left, with the question each needs:** a class from another file (`arguments-differ` and the other override rows against a base the file imports; `abstract-class-instantiated` and `super-init-not-called` for an imported base) — *what are this class's bases' methods*, which the project graph's class facts would answer; a call's return or a receiver's type (`ASYNC212` on a client that is not built in the same scope; every row above answers only what the file itself states, so a value from a call to other code is unknown and never reported); `boolean-datetime` is not a question of inference: Pylint reports it only below Python 3.5, so under the 3.9+ floor it cannot fire — re-rule it `not-applicable` (the decider's, W-174); a rule whose dedupe with an existing rule is unclear is linked, not duplicated (Pylint's `assigning-non-slot` is `py/non-slot-assignment`).
@@ -97,7 +96,7 @@ flowchart LR
 ### Reference (required)
 
 - [`crates/codelaw-semantic/src/py_flow.rs`](../crates/codelaw-semantic/src/py_flow.rs) and [`crates/codelaw-native/src/py_flow.rs`](../crates/codelaw-native/src/py_flow.rs): the pass and the rules that read it; `cargo test -p codelaw-native` and `codelaw test packs/python` hold their cases.
-- [`work/open/W-174-python-inference.md`](../work/open/W-174-python-inference.md): the 38 rows, each with its question, and what each slice built.
+- [`archive/open/W-174-python-inference.md`](../archive/open/W-174-python-inference.md): the 38 rows, each with its question, and what each slice built.
 
 ### Veto condition
 
@@ -111,13 +110,12 @@ flowchart LR
 
 *Every source this record cites, gathered in one place. An archived document is never listed here.*
 
-**Records** — [SR-TYPES](0117_types.md) · [SR-ARCHITECTURE](0108_architecture.md) · [SR-PROJECT-GRAPH](0103_project-graph.md) · [SR-RULE-AUTHORING](0113_rule-authoring.md) · [SR-LAW-2](0004_LAW-2-foss-dependencies.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md) · [SR-LAW-11](0013_LAW-11-dependencies.md)
+**Records** — [SR-TYPES](0117_types.md) · [SR-SEMANTIC-MODEL](0123_semantic-model.md) · [SR-PY-FLOW](0124_python-flow.md) · [SR-ARCHITECTURE](0108_architecture.md) · [SR-MODULE-GRAPH](0122_module-graph.md) · [SR-RULE-AUTHORING](0113_rule-authoring.md) · [SR-LAW-2](0004_LAW-2-foss-dependencies.md) · [SR-LAW-5](0007_LAW-5-no-model-in-the-engine.md) · [SR-LAW-8](0010_LAW-8-performance-budgets.md) · [SR-LAW-11](0013_LAW-11-dependencies.md)
 
 **Code**
 
-- [`crates/codelaw-semantic/src/py_flow.rs`](../crates/codelaw-semantic/src/py_flow.rs)
 - [`crates/codelaw-native/src/py_scope.rs`](../crates/codelaw-native/src/py_scope.rs) · [`py_flow.rs`](../crates/codelaw-native/src/py_flow.rs) · [`py_classes.rs`](../crates/codelaw-native/src/py_classes.rs) · [`py_values.rs`](../crates/codelaw-native/src/py_values.rs)
 
 **Project docs**
 
-- [`work/open/W-174-python-inference.md`](../work/open/W-174-python-inference.md)
+- [`archive/open/W-174-python-inference.md`](../archive/open/W-174-python-inference.md)

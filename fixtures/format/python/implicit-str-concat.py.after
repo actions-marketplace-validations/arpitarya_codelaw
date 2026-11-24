@@ -1,0 +1,8 @@
+a = "onetwo"
+b = "onetwo"
+c = "onetwothree"
+d = (
+    "a very long string that is "
+    "continued on the next line because the whole of it cannot fit within the line width of "
+    "eighty-eight characters"
+)

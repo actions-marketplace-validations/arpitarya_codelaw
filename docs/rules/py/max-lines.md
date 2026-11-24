@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `codelaw-rules-python` (PyPI) |
 | **Languages** | Python |
-| **Turned on by** | `codelaw:py/size` at `warn` |
+| **Turned on by** | `codelaw:py/size` at `warn` · `codelaw:py/pylint` at `info` |
 | **Severity when named without one** | `error` |
 | **Options** | `max`, `skip_blank_lines`, `skip_comments`, `skip_docstrings`, `skip_imports` |
 | **Fix** | `manual` — no automatic fix; the steps are under *How to fix* (splitting a module changes its structure; which names belong together is the author's call) |

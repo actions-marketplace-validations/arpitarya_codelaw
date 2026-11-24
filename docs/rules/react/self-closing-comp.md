@@ -11,14 +11,14 @@
 | **Turned on by** | no preset — name it in `[rules]` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
-| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
+| **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does (an element with nothing, or only a line break, between its tags renders the same self-closed; spaces alone on one line are a text child that renders, so closing the element drops them, a suggestion) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Ported from** | `eslint-plugin-react/self-closing-comp` |
 
 ## What it checks
 
-An element with no children is written self-closing: `<Spinner />`, not `<Spinner></Spinner>`. For now only an element with nothing at all between its tags is reported.
+An element with no children is written self-closing: `<Spinner />`, not `<Spinner></Spinner>`. An element with only white space between its tags is reported too. White space with a line break is dropped by JSX, so that fix is `auto`; spaces alone on one line are a text child that renders, so removing them is a suggestion. A non-breaking space or a character reference is content and is left alone.
 
 **Why:** The closing tag carries no information when there is nothing between the tags.
 

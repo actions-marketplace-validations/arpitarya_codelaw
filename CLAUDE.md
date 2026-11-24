@@ -16,30 +16,11 @@ decisions 3 and 6. Install its `commit-msg` hook once:
 ln -sf ../../scripts/sr-guard.sh .git/hooks/commit-msg
 ```
 
-## Landing on main — lockmaster
+## Landing on main
 
-**An agent session never commits to `main`** — the kit's `block-main.py`
-refuses it (SR-WORK-SESSION decision 15). Work goes through
-[lockmaster](https://github.com/arpitarya/lockmaster), which lands claimed
-paths one change at a time after the checks in [`lockmaster.toml`](lockmaster.toml):
-
-```bash
-# `lockmaster` = PYTHONPATH=~/my_programs/lockmaster/src python3 -m lockmaster  (until it is on PyPI)
-lockmaster start W-nn --paths <path> …   # branch + worktree + claim
-lockmaster submit -m "W-nn: …"           # commit the claimed paths and land them
-lockmaster queue · status · doctor
-```
-
-**Nothing waits for `submit`:** the kit's `auto-land.py` lands a session's
-change at the end of every turn (the change stays open, its worktree follows
-`main`) and lands what Cowork handed over. **From Cowork, never commit:**
-`lockmaster save -m "W-nn: …" <path> …` lands the edits, or hands them to the
-next Claude Code session. The [`landing`](.claude/skills/landing/SKILL.md)
-skill has the rest.
-
-The hooks pinned in `.claude/lockmaster.lock` are lockmaster's kit: change them
-in `~/my_programs/lockmaster/kit/`, then `lockmaster install .` — an edit made
-here is reported by `lockmaster doctor` and overwritten by the next install.
+A change lands on `main` by an ordinary commit with explicit pathspecs; the
+`commit-msg` guard above is the only gate —
+[SR-WORK-SESSION](records/0054_WORK-session.md) decisions 10 and 15.
 
 ## Triage first — a human-blocked queue stops the session
 
@@ -92,7 +73,7 @@ Each law is stated in exactly one record and is **not restated here**:
 - **L5** — no model in the engine, and no network in it: `codelaw deps refresh` is the one networked command, outside the engine; works the same with or without an agent — [SR-LAW-5](records/0007_LAW-5-no-model-in-the-engine.md)
 - **L6** — one release — `codelaw` on PyPI and on npm — each a complete engine, identical output; rules as twenty-seven packs, twenty on npm (`@codelaw/rules-*`) and eighteen on PyPI (`codelaw-rules-*`); a pack's table may come from its own npm-only provider (`@codelaw/provider-*`); data as `@codelaw/data-*` / `codelaw-data-*`; npm sub-packages only as `@codelaw/*` — [SR-LAW-6](records/0008_LAW-6-python-and-node-packages.md)
 - **L7** — always both a linter and a formatter, for every L3 language — [SR-LAW-7](records/0009_LAW-7-linter-and-formatter.md)
-- **L8** — performance budgets — set from measurement, never exceeded, never loosened — [SR-LAW-8](records/0010_LAW-8-performance-budgets.md)
+- **L8** — performance budgets — set from measurement, never exceeded, never loosened but by the decider's ruling naming the budget (decision 5a) — [SR-LAW-8](records/0010_LAW-8-performance-budgets.md)
 - **L9** — `work/MACHINE.md`'s budget section is always followed — 5 GB of disk per project, all agents combined; every GB past it needs the decider's approval — [SR-LAW-9](records/0011_LAW-9-machine-budget.md)
 - **L10** — every file codelaw writes into a consumer's repo comes from a template in `templates/`; code only fills slots — [SR-LAW-10](records/0012_LAW-10-consumer-templates.md)
 - **L11** — dependencies: none, in any ecosystem or scope, unless the decider ratifies each one by name; the law holds the list — [SR-LAW-11](records/0013_LAW-11-dependencies.md)

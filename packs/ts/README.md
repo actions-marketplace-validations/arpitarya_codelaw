@@ -16,7 +16,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `ts/recommended` | 23 | typescript-eslint `recommended` 8.71.2 (not type-checked) — all 20 rules; the four core rules its `eslint-recommended` switches on are `codelaw:js/typescript` in `@codelaw/rules-js`; plus the 3 TypeScript rules Biome 2.6.4 recommends that no other tool has (`ts/no-const-enum`, `ts/no-empty-type-parameters`, `ts/no-implicit-any-let`; W-139) |
+| `ts/recommended` | 25 | typescript-eslint `recommended` 8.71.2 (not type-checked) — all 20 rules; the four core rules its `eslint-recommended` switches on are `codelaw:js/typescript` in `@codelaw/rules-js`; plus the 3 TypeScript rules Biome 2.6.4 recommends that no other tool has (`ts/no-const-enum`, `ts/no-empty-type-parameters`, `ts/no-implicit-any-let`; W-139) |
 | `ts/conventions` | 1 | codelaw's starter catalogue: `ts/type-only-imports` — opt in |
 | `ts/type-checked` | 10 | typescript-eslint's type-checked rules, answered by the project's own TypeScript ≥ 7.1 (SR-TYPES); every rule is preview until TypeScript 7.1 is GA |
 
@@ -30,7 +30,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 22 | 20 | 23 | 9 | 9 | 0 | 0 | 5 |
+| 22 | 20 | 25 | 9 | 11 | 0 | 0 | 5 |
 
 <!-- /rule-docs:fix-ladder -->
 

@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `@codelaw/rules-ts` (npm) |
 | **Languages** | TypeScript, TSX |
-| **Turned on by** | no preset — name it in `[rules]` |
+| **Turned on by** | `codelaw:ts/recommended` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `auto` — `codelaw fix` applies it; it never changes what the code does |
@@ -34,14 +34,11 @@ Everything below goes in `codelaw.toml` at the repo root. The same keys work as 
 npm install --save-dev @codelaw/rules-ts
 ```
 
-**No preset turns it on.** Load its pack through any preset (`codelaw:ts/recommended` here), then name the rule in `[rules]`:
+**Then extend a preset that turns it on** — `codelaw:ts/recommended` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
 extends = ["codelaw:ts/recommended"]
-
-[rules]
-"ts/no-useless-empty-export" = "error"
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

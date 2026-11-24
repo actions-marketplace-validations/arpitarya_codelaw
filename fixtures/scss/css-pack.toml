@@ -86,11 +86,16 @@
 "css/no-invalid-double-slash-comments" = 0
 "css/no-invalid-position-at-import-rule" = 0
 "css/no-invalid-position-declaration" = 0
+"css/no-invalid-property-init-value" = 0
 "css/no-irregular-whitespace" = 0
+"css/no-self-nested-layer" = 0
+"css/no-undeclared-custom-properties" = 0
 "css/no-unknown-animations" = 0
 "css/no-unknown-custom-media" = 0
 "css/no-unknown-custom-properties" = 0
 "css/no-unknown-property" = 1
+"css/no-unused-classes" = 0
+"css/no-value-at-rule" = 0
 "css/number-max-precision" = 0
 "css/property-allowed-list" = 0
 "css/property-disallowed-list" = 0
@@ -144,6 +149,8 @@
 "css/unit-disallowed-list" = 0
 "css/unit-layout-mappings" = 1
 "css/unit-no-unknown" = 0
+"css/use-layered-styles" = 0
+"css/use-named-layer" = 0
 "css/value-keyword-case" = 0
 "css/value-keyword-layout-mappings" = 0
 "css/value-no-vendor-prefix" = 0

@@ -15,7 +15,7 @@
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.5.0 |
 | **Files** | only `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/test/**`, `**/tests/**`, `**/e2e/**` |
-| **Ported from** | `eslint-plugin-playwright/no-nth-methods` |
+| **Ported from** | `eslint-plugin-playwright/no-nth-methods`, `biome/nursery/noPlaywrightNthMethods` |
 
 ## What it checks
 

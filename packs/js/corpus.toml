@@ -43,6 +43,7 @@
 "js/cognitive-complexity" = 24
 "js/comma-or-logical-or-case" = 0
 "js/comment-content" = 0
+"js/comment-regex" = 0
 "js/complexity" = 1
 "js/composite-assertions" = 0
 "js/consistent-arrow-return-style" = 359
@@ -57,6 +58,7 @@
 "js/consistent-existence-index-check" = 6
 "js/consistent-export-decorator-position" = 0
 "js/consistent-function-scoping" = 81
+"js/consistent-function-style" = 0
 "js/consistent-json-file-read" = 0
 "js/consistent-optional-chaining" = 0
 "js/consistent-return" = 12
@@ -92,6 +94,7 @@
 "js/explicit-timer-delay" = 11
 "js/exports-at-end" = 436
 "js/expression-complexity" = 2
+"js/file-header" = 0
 "js/file-name-differ-from-class" = 3
 "js/file-permissions" = 0
 "js/file-uploads" = 0
@@ -113,7 +116,10 @@
 "js/hardcoded-secret-signatures" = 0
 "js/hashing" = 0
 "js/hooks-before-test-cases" = 0
+"js/id-denylist" = 0
 "js/id-length" = 686
+"js/id-match" = 0
+"js/id-match-unicorn" = 0
 "js/import-consistent-type-specifier-style" = 1
 "js/import-default" = 0
 "js/import-dynamic-import-chunkname" = 8
@@ -146,12 +152,14 @@
 "js/import-no-relative-packages" = 0
 "js/import-no-relative-parent-imports" = 193
 "js/import-no-rename-default" = 0
+"js/import-no-restricted-paths" = 0
 "js/import-no-self-import" = 0
 "js/import-no-unassigned-import" = 20
 "js/import-no-unused-modules" = 225
 "js/import-no-useless-path-segments" = 0
 "js/import-no-webpack-loader-syntax" = 0
 "js/import-prefer-default-export" = 84
+"js/import-prefer-namespace-import" = 0
 "js/import-style" = 2
 "js/import-unambiguous" = 21
 "js/inconsistent-function-call" = 0
@@ -176,10 +184,13 @@
 "js/jsdoc-imports-as-dependencies" = 0
 "js/jsdoc-informative-docs" = 92
 "js/jsdoc-match-description" = 7
+"js/jsdoc-match-name" = 0
 "js/jsdoc-multiline-blocks" = 0
 "js/jsdoc-no-blank-blocks" = 0
 "js/jsdoc-no-defaults" = 0
+"js/jsdoc-no-missing-syntax" = 0
 "js/jsdoc-no-multi-asterisks" = 0
+"js/jsdoc-no-restricted-syntax" = 0
 "js/jsdoc-no-types" = 0
 "js/jsdoc-no-undefined-types" = 0
 "js/jsdoc-normalize-see-links" = 0
@@ -206,6 +217,7 @@
 "js/jsdoc-require-returns-check" = 0
 "js/jsdoc-require-returns-description" = 0
 "js/jsdoc-require-returns-type" = 0
+"js/jsdoc-require-tags" = 0
 "js/jsdoc-require-template" = 6
 "js/jsdoc-require-template-description" = 0
 "js/jsdoc-require-throws" = 0
@@ -217,6 +229,7 @@
 "js/jsdoc-require-yields-type" = 0
 "js/jsdoc-sort-tags" = 0
 "js/jsdoc-tag-lines" = 12
+"js/jsdoc-text-escaping" = 0
 "js/jsdoc-ts-ban-ts-comment" = 0
 "js/jsdoc-ts-method-signature-style" = 0
 "js/jsdoc-ts-no-empty-object-type" = 0
@@ -379,6 +392,7 @@
 "js/no-ignored-exceptions" = 0
 "js/no-immediate-mutation" = 1
 "js/no-implicit-coercion" = 11
+"js/no-implicit-globals" = 0
 "js/no-implied-eval" = 0
 "js/no-import-assign" = 0
 "js/no-impossible-length-comparison" = 0
@@ -478,6 +492,7 @@
 "js/no-regex-spaces" = 0
 "js/no-repeated-call-wrappers" = 0
 "js/no-restricted-exports" = 0
+"js/no-restricted-syntax" = 0
 "js/no-return-array-push" = 0
 "js/no-return-assign" = 0
 "js/no-same-argument-assert" = 0
@@ -604,6 +619,7 @@
 "js/no-useless-switch-case" = 1
 "js/no-useless-template-literals" = 107
 "js/no-useless-undefined" = 6
+"js/no-using-resource-escape" = 0
 "js/no-var" = 0
 "js/no-variable-usage-before-declaration" = 0
 "js/no-void" = 2
@@ -655,6 +671,7 @@
 "js/prefer-default-parameters" = 0
 "js/prefer-destructuring" = 0
 "js/prefer-direct-iteration" = 0
+"js/prefer-dispose" = 0
 "js/prefer-dom-node-append" = 2
 "js/prefer-dom-node-html-methods" = 0
 "js/prefer-dom-node-remove" = 2
@@ -910,6 +927,7 @@
 "js/stateful-regex" = 0
 "js/strict" = 0
 "js/strict-transport-security" = 0
+"js/string-content" = 0
 "js/switch-final-break" = 1
 "js/symbol-description" = 3
 "js/synchronous-suite-callback" = 1

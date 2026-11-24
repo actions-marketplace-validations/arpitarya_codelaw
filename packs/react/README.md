@@ -16,7 +16,7 @@ preview = true   # every rule is `preview` until a corpus run promotes it
 
 | preset | rules | ported from |
 |---|---|---|
-| `react/recommended` | 66 | eslint-plugin-react 7.37.5 `recommended` + `jsx-runtime` (17 of its 20 active rules); eslint-plugin-react-hooks 7.1.1's `rules-of-hooks`, `exhaustive-deps` and 8 of the 14 React Compiler rules its `recommended` turns on; and 2 of @eslint-react 5.28.8's hooks rules (`no-unnecessary-use-prefix`, the lazy-initialisation part of `use-state`), at `warn` as there; and, through `react/a11y`, eslint-plugin-jsx-a11y's `recommended`; and Biome 2.6.4's `noSvgWithoutTitle` and `noSuspiciousSemicolonInJsx` (W-139) |
+| `react/recommended` | 77 | eslint-plugin-react 7.37.5 `recommended` + `jsx-runtime` (17 of its 20 active rules); eslint-plugin-react-hooks 7.1.1's `rules-of-hooks`, `exhaustive-deps` and 8 of the 14 React Compiler rules its `recommended` turns on; and 2 of @eslint-react 5.28.8's hooks rules (`no-unnecessary-use-prefix`, the lazy-initialisation part of `use-state`), at `warn` as there; and, through `react/a11y`, eslint-plugin-jsx-a11y's `recommended`; and Biome 2.6.4's `noSvgWithoutTitle` and `noSuspiciousSemicolonInJsx` (W-139) |
 | `react/a11y` | 31 | eslint-plugin-jsx-a11y 6.10.2 `recommended` — all 31 rules, at `error` (W-139); `react/recommended` extends it, and it can be used alone |
 | `react/conventions` | 2 | codelaw's starter catalogue: `react/hook-prefix`, `react/props-type-name` — opt in |
 | `react/size` | 3 | Component size: lines per component, props per component and JSX nesting depth; opt in |
@@ -31,7 +31,7 @@ Each rule's fix class ([SR-LAW-4](../../records/0006_LAW-4-every-rule-has-a-fix.
 
 | auto | suggest | manual | value | restructure | authored | security | waiting to move up |
 |---|---|---|---|---|---|---|---|
-| 23 | 53 | 75 | 20 | 46 | 8 | 1 | 0 |
+| 23 | 54 | 86 | 25 | 52 | 8 | 1 | 0 |
 
 <!-- /rule-docs:fix-ladder -->
 

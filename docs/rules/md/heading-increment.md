@@ -14,7 +14,7 @@
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (the fix raises the skipped heading and its subsections, which changes the outline readers and tools see) |
 | **Stability** | `preview` — runs only with `preview = true` |
 | **Since** | 0.1.0 |
-| **Ported from** | `markdownlint/MD001` |
+| **Ported from** | `markdownlint/MD001`, `biome/nursery/useConsistentHeadingLevel` |
 
 ## What it checks
 

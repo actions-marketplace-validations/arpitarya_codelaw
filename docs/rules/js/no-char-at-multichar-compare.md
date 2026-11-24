@@ -8,7 +8,7 @@
 |---|---|
 | **Pack** | `@codelaw/rules-js` (npm) · `codelaw-rules-js` (PyPI) |
 | **Languages** | JavaScript, JSX, TypeScript, TSX |
-| **Turned on by** | `codelaw:js/strict` at `error` |
+| **Turned on by** | `codelaw:js/recommended` at `error` · `codelaw:js/strict` at `error` |
 | **Severity when named without one** | `error` |
 | **Options** | none — severity only |
 | **Fix** | `suggest` — `codelaw fix --unsafe` applies it; review the diff, it can change behaviour (`startsWith` is one reading of the comparison; a `slice` or a one-character string is another, so the author confirms) |
@@ -35,11 +35,11 @@ npm install --save-dev @codelaw/rules-js
 pip install codelaw-rules-js
 ```
 
-**Then extend a preset that turns it on** — `codelaw:js/strict` sets it to `error`:
+**Then extend a preset that turns it on** — `codelaw:js/recommended` sets it to `error`:
 
 ```toml
 preview = true                        # pack rules are preview today
-extends = ["codelaw:js/strict"]
+extends = ["codelaw:js/recommended"]
 ```
 
 - **A rule exists only once its pack is loaded** through `extends`; naming it in `[rules]` without that is an unknown rule id (exit 2).

@@ -236,6 +236,8 @@ impl Config {
         push("lsp.tree_cache", json!(self.lsp_tree_cache()), s);
         let (v, s) = root_key(&["lint", "tagged_templates"], |r| r.lint.tagged_templates.map(|x| json!(x)), json!(false));
         push("lint.tagged_templates", v, s);
+        let (v, s) = root_key(&["lint", "jsdoc_examples"], |r| r.lint.jsdoc_examples.map(|x| json!(x)), json!(false));
+        push("lint.jsdoc_examples", v, s);
         let (v, s) = root_key(&["lint", "ignore_aliases"], |r| r.lint.ignore_aliases.as_ref().map(|x| json!(x)), json!([]));
         push("lint.ignore_aliases", v, s);
         let (v, s) = root_key(&["markdown", "lint_code_blocks"], |r| r.markdown.lint_code_blocks.map(|x| json!(x)), json!(false));
@@ -349,7 +351,7 @@ impl Config {
         push("deps.runtime.source.node", v, s);
         let (v, s) = root_key(&["deps", "runtime", "source", "python"], |r| r.deps.runtime.as_ref().and_then(|d| d.source.as_ref()).and_then(|x| x.python.as_ref()).map(|x| json!(x)), json!("requires-python"));
         push("deps.runtime.source.python", v, s);
-        // `[css]` (SR-PROJECT-GRAPH decision 8).
+        // `[css]` (SR-MODULE-GRAPH decision 8).
         let (v, s) = root_key(&["css", "modules"], |r| r.css.modules.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!([]));
         push("css.modules", v, s);
         let (v, s) = root_key(&["css", "modules_convention"], |r| r.css.modules_convention.as_ref().map(|x| json!(x)), json!("asIs"));
@@ -389,7 +391,7 @@ impl Config {
         push("spell.words", v, s);
         let (v, s) = root_key(&["spell", "words_file"], |r| r.spell.words_file.as_ref().map(|x| json!(x)), json!(crate::raw::SPELL_WORDS_FILE));
         push("spell.words_file", v, s);
-        // `[flags]` (SR-PROJECT-GRAPH decision 11).
+        // `[flags]` (SR-MODULE-GRAPH decision 11).
         let (v, s) = root_key(&["flags", "presets"], |r| r.flags.as_ref()?.presets.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!([]));
         push("flags.presets", v, s);
         let (v, s) = root_key(&["flags", "accessors"], |r| r.flags.as_ref()?.accessors.as_ref().and_then(|x| serde_json::to_value(x).ok()), json!([]));

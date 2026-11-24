@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The work files stay current — lockmaster's SR-LAW-10 decision 4, at the source (W-15).
+"""The work files stay current — at the source (W-15).
 
     edit  PostToolUse(Write|Edit|MultiEdit|NotebookEdit)  note the path this
           session wrote, relative to its own checkout or worktree
@@ -7,11 +7,11 @@
           work/WORKLOG.md, work/INTERVIEW.md, work/OPEN-WORK.md is told once,
           before it stops, to update them in the same change
 
-The notes live in git's own directory (`<git-common-dir>/lockmaster/sessions/`),
+The notes live in git's own directory (`<git-common-dir>/work-files/sessions/`),
 never in the tree. Whether a lesson, a machine quirk or a backlog row should
 have been written is judgment; this hook does not judge it. A Stop reached
 while already continuing for a Stop hook never blocks again. It never fails a
-session. Python >= 3.9, standard library only; it does not need lockmaster.
+session. Python >= 3.9, standard library only.
 """
 import json
 import os
@@ -33,7 +33,7 @@ def notes_file(sid):
     common = Path(r.stdout.strip())
     common = common if common.is_absolute() else (ROOT / common).resolve()
     safe = "".join(ch if ch.isalnum() or ch in "-_." else "_" for ch in sid)
-    return common / "lockmaster" / "sessions" / (safe + ".work-files.json")
+    return common / "work-files" / "sessions" / (safe + ".work-files.json")
 
 
 def read(f):
@@ -89,7 +89,7 @@ def stop(sid, hook):
     if f is None or hook.get("stop_hook_active"):
         return None
     if not any((ROOT / w).is_file() for w in WATCHED):
-        return None  # no work system here yet: `lockmaster doctor` names that (SR-LAW-10 decision 6)
+        return None  # no work system here yet: nothing to remind
     notes = read(f)
     paths = notes.get("paths") or []
     outside = [p for p in paths if not p.startswith("work/")]
@@ -100,7 +100,7 @@ def stop(sid, hook):
     shown = ", ".join(outside[:5]) + (" and {} more".format(len(outside) - 5) if len(outside) > 5 else "")
     return {"decision": "block", "reason": (
         "This session changed {} but none of work/WORKLOG.md, work/INTERVIEW.md or work/OPEN-WORK.md. "
-        "The work files travel with the work they describe (lockmaster's L10): update the queue row, the "
+        "The work files travel with the work they describe : update the queue row, the "
         "state of play and this session's worklog entry in the same change, then stop.").format(shown)}
 
 
